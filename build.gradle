@@ -1,0 +1,146 @@
+buildscript {
+    repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://maven.maxhenkel.de/repository/public' }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.2'
+    }
+}
+
+plugins {
+    // https://github.com/matthewprenger/CurseGradle
+    id "com.matthewprenger.cursegradle" version "1.4.0"
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'forge-update'
+
+version = mod_version
+group = mod_packagename
+archivesBaseName = mod_id
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+minecraft {
+    mappings channel: 'snapshot', version: "${mappings_version}"
+
+    runs {
+        client {
+            Random rnd = new Random()
+            workingDirectory project.file('run').canonicalPath
+            property 'forge.logging.console.level', 'debug'
+            args = ['--username', 'henkelmax' + rnd.nextInt(1000)]
+            source sourceSets.main
+        }
+
+        server {
+            workingDirectory project.file('run/server').canonicalPath
+            property 'forge.logging.console.level', 'debug'
+            source sourceSets.main
+        }
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${mod_minecraft_version}-${forge_version}"
+}
+
+jar {
+    manifest {
+        attributes(["Specification-Title"     : mod_name,
+                    "Specification-Vendor"    : mod_vendor,
+                    "Specification-Version"   : "1",
+                    "Implementation-Title"    : mod_name,
+                    "Implementation-Version"  : mod_version,
+                    "Implementation-Vendor"   : mod_vendor,
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include '**/*.toml'
+
+        expand 'mod_id': mod_id, 'mod_version': mod_version, 'mod_vendor': mod_vendor, 'mod_name': mod_name,
+                'mod_forge_version': mod_forge_version, 'mod_minecraft_version': mod_minecraft_version
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*.toml'
+    }
+}
+
+curseforge {
+    apiKey = System.env.CURSEFORGE_API_KEY != null ? System.env.CURSEFORGE_API_KEY : file('curseforge_api_key.txt').text
+    project {
+        id = curse_id
+        changelogType = 'markdown'
+        changelog = file('changelog.md')
+        releaseType = curse_release_type
+        addGameVersion mod_minecraft_version
+        mainArtifact(jar) {
+            displayName = "[${mod_minecraft_version}] ${mod_name} ${mod_version}"
+        }
+    }
+}
+
+forgeUpdate {
+    def messages = []
+    file('changelog.md').eachLine { String line ->
+        if (line.trim().startsWith('-')) {
+            messages.add(line.replaceFirst('-', '').trim())
+        }
+    }
+
+    serverURL = 'https://update.maxhenkel.de/'
+    apiKey = System.env.FORGE_UPDATE_API_KEY != null ? System.env.FORGE_UPDATE_API_KEY : file('forge_update_api_key.txt').text
+    modID = mod_id
+    gameVersion = mod_minecraft_version
+    modVersion = mod_version
+    updateMessages = messages
+    releaseType = curse_release_type
+    tags = recommended == 'true' ? ['recommended'] : []
+}
+
+repositories {
+    
+}
+
+javadoc {
+    failOnError = false
+}
+
+task deobfJar(type: Jar) {
+    classifier = 'deobf'
+    from sourceSets.main.output
+    manifest {
+        attributes(["Specification-Title"     : mod_name,
+                    "Specification-Vendor"    : mod_vendor,
+                    "Specification-Version"   : "1",
+                    "Implementation-Title"    : mod_name,
+                    "Implementation-Version"  : mod_version,
+                    "Implementation-Vendor"   : mod_vendor,
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
+    }
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.getDestinationDir()
+}
+
+artifacts {
+    archives deobfJar
+    archives sourcesJar
+    archives javadocJar
+}
