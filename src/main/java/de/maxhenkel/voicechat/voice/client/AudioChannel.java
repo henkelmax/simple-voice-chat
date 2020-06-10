@@ -16,7 +16,9 @@ import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 
 public class AudioChannel extends Thread {
+
     private Minecraft minecraft;
+    private Client client;
     private UUID uuid;
     private ArrayList<NetworkMessage<?>> queue;
     private long lastPacketTime;
@@ -24,7 +26,8 @@ public class AudioChannel extends Thread {
     private FloatControl gainControl;
     private boolean stopped;
 
-    public AudioChannel(UUID uuid) {
+    public AudioChannel(Client client, UUID uuid) {
+        this.client = client;
         this.uuid = uuid;
         this.queue = new ArrayList<>();
         this.lastPacketTime = System.nanoTime();
@@ -86,6 +89,7 @@ public class AudioChannel extends Thread {
 
                     PlayerEntity player = minecraft.world.getPlayerByUuid(message.getPlayerUUID());
                     if (player != null) {
+                        client.getTalkCache().updateTalking(player.getUniqueID());
                         float distance = player.getDistance(minecraft.player);
                         float percentage = 1F;
                         float fadeDistance = Config.SERVER.VOICE_CHAT_FADE_DISTANCE.get().floatValue();

@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.voice.client;
 
-
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.common.AuthenticatePacket;
 import de.maxhenkel.voicechat.voice.common.KeepAlivePacket;
@@ -23,6 +22,7 @@ public class Client extends Thread {
     private List<AudioChannel> audioChannels;
     private MicThread micThread;
     private boolean running;
+    private TalkCache talkCache;
 
     public Client(String serverIp, int serverPort) throws IOException {
         this.socket = new Socket(serverIp, serverPort);
@@ -30,6 +30,7 @@ public class Client extends Thread {
         this.toServer = new ObjectOutputStream(socket.getOutputStream());
         this.audioChannels = new ArrayList<>();
         this.running = true;
+        this.talkCache = new TalkCache();
         setDaemon(true);
     }
 
@@ -50,7 +51,7 @@ public class Client extends Thread {
                     }
                     AudioChannel sendTo = audioChannels.stream().filter(audioChannel -> audioChannel.getUUID().equals(in.getPlayerUUID())).findFirst().orElse(null); //TODO to map
                     if (sendTo == null) {
-                        AudioChannel ch = new AudioChannel(in.getPlayerUUID());
+                        AudioChannel ch = new AudioChannel(this, in.getPlayerUUID());
                         ch.addToQueue(in);
                         ch.start();
                         audioChannels.add(ch);
@@ -89,6 +90,10 @@ public class Client extends Thread {
 
     public boolean isConnected() {
         return running && !socket.isClosed();
+    }
+
+    public TalkCache getTalkCache() {
+        return talkCache;
     }
 }
  

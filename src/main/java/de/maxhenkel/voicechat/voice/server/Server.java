@@ -57,7 +57,7 @@ public class Server extends Thread {
         }
     }
 
-    public void sendMessageToNearby(NetworkMessage m) {
+    public void sendMessageToNearby(NetworkMessage<?> m) {
         try {
             sendQueue.add(m);
         } catch (Throwable t) {
