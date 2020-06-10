@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.voice.client;
 
+import de.maxhenkel.voicechat.Config;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
@@ -86,8 +87,15 @@ public class AudioChannel extends Thread {
                     PlayerEntity player = minecraft.world.getPlayerByUuid(message.getPlayerUUID());
                     if (player != null) {
                         float distance = player.getDistance(minecraft.player);
-                        float percentage = 1F - Math.min(distance / 25F, 1F);
-                        gainControl.setValue(gainControl.getMinimum() + percentage * (gainControl.getMaximum() - gainControl.getMinimum()));
+                        float percentage = 1F;
+                        float fadeDistance = Config.SERVER.VOICE_CHAT_FADE_DISTANCE.get().floatValue();
+                        float maxDistance = Config.SERVER.VOICE_CHAT_DISTANCE.get().floatValue();
+
+                        if (distance > fadeDistance) {
+                            percentage = 1F - Math.min((distance - fadeDistance) / (maxDistance - fadeDistance), 1F);
+                        }
+
+                        gainControl.setValue(Utils.percentageToDB(percentage * Config.CLIENT.VOICE_CHAT_VOLUME.get().floatValue()));
                         speaker.write(toPlay, 0, toPlay.length);
                     }
                 }

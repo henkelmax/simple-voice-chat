@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Config;
 import de.maxhenkel.voicechat.Main;
+import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -11,6 +12,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -97,6 +99,13 @@ public class ClientVoiceEvents {
         tessellator.draw();
 
         RenderSystem.popMatrix();
+    }
+
+    @SubscribeEvent
+    public void onInput(InputEvent.KeyInputEvent event) {
+        if (Main.KEY_VOICE_CHAT_SETTINGS.isPressed()) {
+            minecraft.displayGuiScreen(new VoiceChatScreen());
+        }
     }
 
 }

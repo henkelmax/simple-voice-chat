@@ -39,6 +39,9 @@ public class Main {
     @OnlyIn(Dist.CLIENT)
     public static KeyBinding KEY_PTT;
 
+    @OnlyIn(Dist.CLIENT)
+    public static KeyBinding KEY_VOICE_CHAT_SETTINGS;
+
     public Main() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStarting);
@@ -68,8 +71,8 @@ public class Main {
         KEY_PTT = new KeyBinding("key.push_to_talk", GLFW.GLFW_KEY_CAPS_LOCK, "key.categories.misc");
         ClientRegistry.registerKeyBinding(KEY_PTT);
 
-        //ScreenManager.IScreenFactory factory = (ScreenManager.IScreenFactory<ContainerAlbumInventory, AlbumInventoryScreen>) (container, playerInventory, name) -> new AlbumInventoryScreen(playerInventory, container, name);
-        //ScreenManager.registerFactory(Main.ALBUM_INVENTORY_CONTAINER, factory);
+        KEY_VOICE_CHAT_SETTINGS = new KeyBinding("key.voice_chat_settings", GLFW.GLFW_KEY_V, "key.categories.misc");
+        ClientRegistry.registerKeyBinding(KEY_VOICE_CHAT_SETTINGS);
     }
 
     @SubscribeEvent

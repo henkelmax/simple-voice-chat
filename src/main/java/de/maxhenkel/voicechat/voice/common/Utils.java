@@ -7,4 +7,8 @@ public class Utils {
         } catch (InterruptedException ex) {
         }
     }
+
+    public static float percentageToDB(float percentage) {
+        return (float) (10D * Math.log(percentage));
+    }
 }

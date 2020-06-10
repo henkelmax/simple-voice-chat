@@ -1,3 +1,6 @@
 {
-  "key.push_to_talk": "Push To Talk"
+  "key.push_to_talk": "Push To Talk",
+  "gui.voice_chat_settings.title": "Voice Chat Settings",
+  "key.voice_chat_settings": "Voice Chat Settings",
+  "message.voice_chat_volume": "Voice Chat Volume: %s"
 }
