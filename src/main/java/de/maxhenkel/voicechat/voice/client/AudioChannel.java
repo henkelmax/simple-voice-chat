@@ -9,18 +9,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 
 import javax.sound.sampled.*;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.zip.GZIPInputStream;
 
 public class AudioChannel extends Thread {
 
     private Minecraft minecraft;
     private Client client;
     private UUID uuid;
-    private ArrayList<NetworkMessage<?>> queue;
+    private ArrayList<NetworkMessage> queue;
     private long lastPacketTime;
     private SourceDataLine speaker;
     private FloatControl gainControl;
@@ -52,7 +49,7 @@ public class AudioChannel extends Thread {
         return uuid;
     }
 
-    public void addToQueue(NetworkMessage<?> m) {
+    public void addToQueue(NetworkMessage m) {
         queue.add(m);
     }
 
@@ -71,22 +68,11 @@ public class AudioChannel extends Thread {
                     continue;
                 }
                 lastPacketTime = System.nanoTime();
-                NetworkMessage<?> message = queue.get(0);
+                NetworkMessage message = queue.get(0);
                 queue.remove(message);
-                if (message.getData() instanceof SoundPacket) {
-                    SoundPacket soundPacket = (SoundPacket) (message.getData());
-                    GZIPInputStream gzipInputStream = new GZIPInputStream(new ByteArrayInputStream(soundPacket.getData()));
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    while (true) {
-                        int b = gzipInputStream.read();
-                        if (b == -1) {
-                            break;
-                        } else {
-                            byteArrayOutputStream.write((byte) b);
-                        }
-                    }
-                    byte[] toPlay = byteArrayOutputStream.toByteArray();
-
+                if (message.getPacket() instanceof SoundPacket) {
+                    SoundPacket soundPacket = (SoundPacket) (message.getPacket());
+                    byte[] toPlay = soundPacket.getData();
                     PlayerEntity player = minecraft.world.getPlayerByUuid(message.getPlayerUUID());
                     if (player != null) {
                         client.getTalkCache().updateTalking(player.getUniqueID());
@@ -99,7 +85,7 @@ public class AudioChannel extends Thread {
                             percentage = 1F - Math.min((distance - fadeDistance) / (maxDistance - fadeDistance), 1F);
                         }
 
-                        gainControl.setValue(Utils.percentageToDB(percentage * Config.CLIENT.VOICE_CHAT_VOLUME.get().floatValue()));
+                        gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(percentage * Config.CLIENT.VOICE_CHAT_VOLUME.get().floatValue()), gainControl.getMinimum()), gainControl.getMaximum()));
                         speaker.write(toPlay, 0, toPlay.length);
                     }
                 }

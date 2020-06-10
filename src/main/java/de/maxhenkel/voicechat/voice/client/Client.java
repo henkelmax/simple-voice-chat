@@ -6,9 +6,7 @@ import de.maxhenkel.voicechat.voice.common.KeepAlivePacket;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +15,8 @@ import java.util.UUID;
 public class Client extends Thread {
 
     private Socket socket;
-    private ObjectInputStream fromServer;
-    private ObjectOutputStream toServer;
+    private DataInputStream fromServer;
+    private DataOutputStream toServer;
     private List<AudioChannel> audioChannels;
     private MicThread micThread;
     private boolean running;
@@ -26,8 +24,8 @@ public class Client extends Thread {
 
     public Client(String serverIp, int serverPort) throws IOException {
         this.socket = new Socket(serverIp, serverPort);
-        this.fromServer = new ObjectInputStream(socket.getInputStream());
-        this.toServer = new ObjectOutputStream(socket.getOutputStream());
+        this.fromServer = new DataInputStream(socket.getInputStream());
+        this.toServer = new DataOutputStream(socket.getOutputStream());
         this.audioChannels = new ArrayList<>();
         this.running = true;
         this.talkCache = new TalkCache();
@@ -45,8 +43,9 @@ public class Client extends Thread {
             }
             while (running) {
                 if (socket.getInputStream().available() > 0) {
-                    NetworkMessage<?> in = (NetworkMessage<?>) (fromServer.readObject());
-                    if (in.getData() instanceof KeepAlivePacket) { //TODO more elegant solution
+                    NetworkMessage in = NetworkMessage.readPacket(fromServer);
+                    // Ignoring KeepAlive packets
+                    if (in.getPacket() instanceof KeepAlivePacket) {
                         continue;
                     }
                     AudioChannel sendTo = audioChannels.stream().filter(audioChannel -> audioChannel.getUUID().equals(in.getPlayerUUID())).findFirst().orElse(null); //TODO to map
@@ -71,7 +70,7 @@ public class Client extends Thread {
 
     public void authenticate(UUID playerUUID, UUID secret) {
         try {
-            toServer.writeObject(new NetworkMessage<>(new AuthenticatePacket(playerUUID, secret)));
+            (new NetworkMessage(new AuthenticatePacket(playerUUID, secret))).send(toServer);
         } catch (IOException e) {
             e.printStackTrace();
         }

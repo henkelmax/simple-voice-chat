@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class Server extends Thread {
 
     private Map<UUID, UUID> secrets; //TODO clean up
-    private List<NetworkMessage<?>> sendQueue;
+    private List<NetworkMessage> sendQueue;
     private List<ClientConnection> connections;
     private ServerSocket serverSocket;
     private BroadcastThread broadcastThread;
@@ -57,7 +57,7 @@ public class Server extends Thread {
         }
     }
 
-    public void sendMessageToNearby(NetworkMessage<?> m) {
+    public void sendMessageToNearby(NetworkMessage m) {
         try {
             sendQueue.add(m);
         } catch (Throwable t) {
@@ -113,7 +113,7 @@ public class Server extends Thread {
                         Utils.sleep(10);
                     } else {
                         //TODO only for audio packets
-                        NetworkMessage<?> message = sendQueue.get(0);
+                        NetworkMessage message = sendQueue.get(0);
                         ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(message.getPlayerUUID());
                         if (player == null) {
                             Utils.sleep(10);

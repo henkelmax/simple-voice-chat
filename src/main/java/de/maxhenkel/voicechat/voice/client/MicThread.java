@@ -6,20 +6,18 @@ import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
 import javax.sound.sampled.*;
-import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.zip.GZIPOutputStream;
 
 public class MicThread extends Thread {
 
     public static final double AMPLIFICATION = 1D;
 
-    private ObjectOutputStream toServer;
+    private DataOutputStream toServer;
     private TargetDataLine mic;
     private boolean running;
 
-    public MicThread(ObjectOutputStream toServer) throws LineUnavailableException {
+    public MicThread(DataOutputStream toServer) throws LineUnavailableException {
         this.toServer = toServer;
         this.running = true;
         setDaemon(true);
@@ -49,15 +47,8 @@ public class MicThread extends Thread {
                 for (int i = 0; i < buff.length; i++) {
                     buff[i] *= AMPLIFICATION;
                 }
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                GZIPOutputStream gzipOutputStream = new GZIPOutputStream(byteArrayOutputStream);
-                gzipOutputStream.write(buff);
-                gzipOutputStream.flush();
-                gzipOutputStream.close();
-                byteArrayOutputStream.flush();
-                byteArrayOutputStream.close();
 
-                toServer.writeObject(new NetworkMessage<>(new SoundPacket(byteArrayOutputStream.toByteArray())));
+                (new NetworkMessage(new SoundPacket(buff))).send(toServer);
             } catch (IOException e) {
                 e.printStackTrace();
                 return;

@@ -3,9 +3,7 @@ package de.maxhenkel.voicechat.voice.server;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.common.*;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -13,12 +11,14 @@ import java.util.UUID;
 
 public class ClientConnection extends Thread {
 
+    private static final long KEEP_ALIVE = 10_000L;
+
     private Server server;
     private Socket socket;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
+    private DataInputStream in;
+    private DataOutputStream out;
     private UUID playerUUID;
-    private ArrayList<NetworkMessage<?>> toSend;
+    private ArrayList<NetworkMessage> toSend;
     private boolean running;
     private long lastKeepAlive;
 
@@ -56,8 +56,8 @@ public class ClientConnection extends Thread {
     @Override
     public void run() {
         try {
-            out = new ObjectOutputStream(socket.getOutputStream());
-            in = new ObjectInputStream(socket.getInputStream());
+            out = new DataOutputStream(socket.getOutputStream());
+            in = new DataInputStream(socket.getInputStream());
         } catch (IOException e) {
             try {
                 socket.close();
@@ -69,43 +69,32 @@ public class ClientConnection extends Thread {
         while (running) {
             try {
                 if (socket.getInputStream().available() > 0) {
-                    NetworkMessage<?> incoming = (NetworkMessage<?>) in.readObject();
-                    if (incoming.getPlayerUUID() == null) {
-                        incoming.setTimestamp(System.nanoTime() / 1000000L);
-                        incoming.setPlayerUUID(playerUUID);
+                    NetworkMessage incoming = NetworkMessage.readPacket(in, playerUUID);
 
-                        if (incoming.getData() instanceof SoundPacket && playerUUID != null) {
-                            server.sendMessageToNearby(incoming);
-                        } else if (incoming.getData() instanceof AuthenticatePacket) {
-                            AuthenticatePacket authenticatePacket = (AuthenticatePacket) incoming.getData();
-                            if (server.getSecrets().get(authenticatePacket.getPlayerUUID()).equals(authenticatePacket.getSecret())) {
-                                playerUUID = authenticatePacket.getPlayerUUID();
-                                Main.LOGGER.info("Successfully authenticated " + playerUUID);
-                                server.getSecrets().remove(authenticatePacket.getPlayerUUID());
-                            } else {
-                                Main.LOGGER.warn("Authentication for " + playerUUID + " failed... terminating");
-                                close();
-                            }
+                    if (incoming.getPacket() instanceof SoundPacket && playerUUID != null) {
+                        server.sendMessageToNearby(incoming);
+                    } else if (incoming.getPacket() instanceof AuthenticatePacket) {
+                        AuthenticatePacket authenticatePacket = (AuthenticatePacket) incoming.getPacket();
+                        if (server.getSecrets().get(authenticatePacket.getPlayerUUID()).equals(authenticatePacket.getSecret())) {
+                            playerUUID = authenticatePacket.getPlayerUUID();
+                            Main.LOGGER.info("Successfully authenticated " + playerUUID);
+                            server.getSecrets().remove(authenticatePacket.getPlayerUUID());
+                        } else {
+                            Main.LOGGER.warn("Authentication for " + playerUUID + " failed... terminating");
+                            close();
                         }
                     }
+
                 }
                 try {
                     if (!toSend.isEmpty()) {
-                        NetworkMessage<?> toClient = toSend.get(0);
-                        if (toClient.getData() instanceof SoundPacket) {
-                            if (toClient.getTimestamp() + toClient.getTtl() < System.nanoTime() / 1_000_000L) {
-                                Main.LOGGER.warn("Dropping packet from " + toClient.getPlayerUUID() + " to " + playerUUID);
-                            } else {
-                                out.writeObject(toClient);
-                            }
-                        } else if (toClient.getData() instanceof KeepAlivePacket) {
-                            out.writeObject(toClient);
-                        }
+                        NetworkMessage toClient = toSend.get(0);
                         toSend.remove(toClient);
+                        toClient.send(out);
                     } else {
-                        if (System.currentTimeMillis() - lastKeepAlive > 10_000) { //TODO default keepalive
+                        if (System.currentTimeMillis() - lastKeepAlive > KEEP_ALIVE) {
                             lastKeepAlive = System.currentTimeMillis();
-                            out.writeObject(new NetworkMessage<>(new KeepAlivePacket()));
+                            new NetworkMessage(new KeepAlivePacket()).send(out);
                         }
 
                         Utils.sleep(10);
