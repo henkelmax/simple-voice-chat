@@ -7,6 +7,7 @@ import javax.sound.sampled.AudioFormat;
 public class SoundPacket implements Packet<SoundPacket> {
 
     public static final AudioFormat DEFAULT_FORMAT = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100F, 16, 1, 2, 44100F, false);
+    public static final AudioFormat DEFAULT_FORMAT_STEREO = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100F, 16, 2, 4, 44100F, false);
     public static final int DEFAULT_DATA_LENGTH = 20_000;
 
     private byte[] data;

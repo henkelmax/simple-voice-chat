@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.sound.sampled.*;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class AudioChannel extends Thread {
     @Override
     public void run() {
         try {
-            AudioFormat af = SoundPacket.DEFAULT_FORMAT;
+            AudioFormat af = SoundPacket.DEFAULT_FORMAT_STEREO;
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, af);
             speaker = (SourceDataLine) AudioSystem.getLine(info);
             speaker.open(af);
@@ -72,7 +73,6 @@ public class AudioChannel extends Thread {
                 queue.remove(message);
                 if (message.getPacket() instanceof SoundPacket) {
                     SoundPacket soundPacket = (SoundPacket) (message.getPacket());
-                    byte[] toPlay = soundPacket.getData();
                     PlayerEntity player = minecraft.world.getPlayerByUuid(message.getPlayerUUID());
                     if (player != null) {
                         client.getTalkCache().updateTalking(player.getUniqueID());
@@ -86,7 +86,14 @@ public class AudioChannel extends Thread {
                         }
 
                         gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(percentage * Config.CLIENT.VOICE_CHAT_VOLUME.get().floatValue()), gainControl.getMinimum()), gainControl.getMaximum()));
-                        speaker.write(toPlay, 0, toPlay.length);
+
+                        byte[] mono = soundPacket.getData();
+
+                        Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft.player.getPositionVector(), minecraft.player.rotationYaw, player.getPositionVector());
+
+                        byte[] stereo = Utils.convertToStereo(mono, stereoVolume.getLeft(), stereoVolume.getRight());
+
+                        speaker.write(stereo, 0, stereo.length);
                     }
                 }
             }
