@@ -27,22 +27,11 @@ public class MicThread extends Thread {
         mic.start();
     }
 
-    private boolean wasPTT;
-
     @Override
     public void run() {
         while (running) {
             int dataLength = AudioChannelConfig.getDataLength();
             if (!Main.KEY_PTT.isKeyDown()) {
-                if (wasPTT) {
-                    try {
-                        // To prevent last sound repeating when no more audio data is available
-                        (new NetworkMessage(new SoundPacket(new byte[dataLength]))).send(toServer);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    wasPTT = false;
-                }
                 Utils.sleep(10);
                 continue;
             }
@@ -61,7 +50,6 @@ public class MicThread extends Thread {
                 e.printStackTrace();
                 return;
             }
-            wasPTT = true;
         }
     }
 
