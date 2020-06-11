@@ -90,7 +90,11 @@ public class ClientConnection extends Thread {
                     if (!toSend.isEmpty()) {
                         NetworkMessage toClient = toSend.get(0);
                         toSend.remove(toClient);
-                        toClient.send(out);
+                        if (toClient.getPacket() instanceof SoundPacket && (System.currentTimeMillis() - toClient.getTimestamp()) > toClient.getTTL()) {
+                            Main.LOGGER.debug("Dropped packet from " + toClient.getPlayerUUID() + " to " + playerUUID);
+                        } else {
+                            toClient.send(out);
+                        }
                     } else {
                         if (System.currentTimeMillis() - lastKeepAlive > KEEP_ALIVE) {
                             lastKeepAlive = System.currentTimeMillis();

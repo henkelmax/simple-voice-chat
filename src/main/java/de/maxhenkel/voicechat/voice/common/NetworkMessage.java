@@ -15,18 +15,22 @@ public class NetworkMessage {
 
     private Packet<? extends Packet> packet;
     private UUID playerUUID;
+    private long timestamp;
+    private long ttl;
 
     public NetworkMessage(Packet<?> packet, UUID playerUUID) {
         this.packet = packet;
         this.playerUUID = playerUUID;
+        this.timestamp = System.currentTimeMillis();
+        this.ttl = 2000L;
     }
 
     public NetworkMessage(Packet<?> packet) {
-        this.packet = packet;
+        this(packet, null);
     }
 
     private NetworkMessage() {
-
+        this(null);
     }
 
     @Nonnull
@@ -36,6 +40,14 @@ public class NetworkMessage {
 
     public UUID getPlayerUUID() {
         return playerUUID;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public long getTTL() {
+        return ttl;
     }
 
     private static final Map<Byte, Class<? extends Packet>> packetRegistry;
