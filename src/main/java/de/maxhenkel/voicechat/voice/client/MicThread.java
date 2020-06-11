@@ -24,17 +24,31 @@ public class MicThread extends Thread {
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, null);
         mic = (TargetDataLine) (AudioSystem.getLine(info));
         mic.open(af);
-        mic.start();
     }
+
+    private boolean wasPTT;
 
     @Override
     public void run() {
         while (running) {
             int dataLength = AudioChannelConfig.getDataLength();
             if (!Main.KEY_PTT.isKeyDown()) {
+                if (wasPTT) {
+                    mic.stop();
+                    mic.flush();
+                    try {
+                        // To prevent last sound repeating when no more audio data is available
+                        (new NetworkMessage(new SoundPacket(new byte[0]))).send(toServer);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    wasPTT = false;
+                }
                 Utils.sleep(10);
                 continue;
             }
+            mic.start();
+
             if (mic.available() < dataLength) {
                 Utils.sleep(10);
                 continue;
@@ -50,6 +64,7 @@ public class MicThread extends Thread {
                 e.printStackTrace();
                 return;
             }
+            wasPTT = true;
         }
     }
 
@@ -59,6 +74,8 @@ public class MicThread extends Thread {
 
     public void close() {
         running = false;
+        mic.stop();
+        mic.flush();
         mic.close();
     }
 }

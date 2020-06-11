@@ -61,7 +61,6 @@ public class AudioChannel extends Thread {
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, af);
             speaker = (SourceDataLine) AudioSystem.getLine(info);
             speaker.open(af);
-            speaker.start();
             gainControl = (FloatControl) speaker.getControl(FloatControl.Type.MASTER_GAIN);
             while (!stopped) {
                 if (queue.isEmpty()) {
@@ -73,6 +72,12 @@ public class AudioChannel extends Thread {
                 queue.remove(message);
                 if (message.getPacket() instanceof SoundPacket) {
                     SoundPacket soundPacket = (SoundPacket) (message.getPacket());
+                    if (soundPacket.getData().length == 0) {
+                        System.out.println("STOP");
+                        speaker.stop();
+                        speaker.flush();
+                        continue;
+                    }
                     PlayerEntity player = minecraft.world.getPlayerByUuid(message.getPlayerUUID());
                     if (player != null) {
                         client.getTalkCache().updateTalking(player.getUniqueID());
@@ -92,7 +97,7 @@ public class AudioChannel extends Thread {
                         Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft.player.getPositionVector(), minecraft.player.rotationYaw, player.getPositionVector());
 
                         byte[] stereo = Utils.convertToStereo(mono, stereoVolume.getLeft(), stereoVolume.getRight());
-
+                        speaker.start();
                         speaker.write(stereo, 0, stereo.length);
                     }
                 }
@@ -100,6 +105,8 @@ public class AudioChannel extends Thread {
         } catch (Throwable e) {
             e.printStackTrace();
             if (speaker != null) {
+                speaker.stop();
+                speaker.flush();
                 speaker.close();
             }
         }

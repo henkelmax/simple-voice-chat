@@ -117,7 +117,7 @@ public class MicTestButton extends AbstractButton {
                     close();
                     return;
                 }
-
+                mic.start();
                 int dataLength = AudioChannelConfig.getDataLength();
                 if (mic.available() < dataLength) {
                     Utils.sleep(10);
@@ -141,8 +141,12 @@ public class MicTestButton extends AbstractButton {
 
         public void close() {
             Main.LOGGER.debug("Closing mic test audio channel");
-            speaker.close();
             running = false;
+            speaker.stop();
+            speaker.flush();
+            speaker.close();
+            mic.stop();
+            mic.flush();
         }
 
     }
