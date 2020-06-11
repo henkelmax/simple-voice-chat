@@ -5,5 +5,7 @@
   "message.voice_chat_volume": "Voice Chat Volume: %s",
   "message.microphone_amplification": "Microphone Amplification: %s",
   "message.mic_test_on": "Disable Microphone Testing",
-  "message.mic_test_off": "Enable Microphone Testing"
+  "message.mic_test_off": "Enable Microphone Testing",
+  "message.mic_test_unavailable": "Microphone Testing Unavailable",
+  "message.voice_chat_unavailable": "Voice Chat Unavailable"
 }

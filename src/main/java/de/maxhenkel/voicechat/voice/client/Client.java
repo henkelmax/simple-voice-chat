@@ -30,17 +30,18 @@ public class Client extends Thread {
         this.running = true;
         this.talkCache = new TalkCache();
         setDaemon(true);
+
+        try {
+            micThread = new MicThread(toServer);
+            micThread.start();
+        } catch (Exception e) {
+            Main.LOGGER.error("Mic unavailable " + e);
+        }
     }
 
     @Override
     public void run() {
         try {
-            try {
-                micThread = new MicThread(toServer);
-                micThread.start();
-            } catch (Exception e) {
-                Main.LOGGER.error("Mic unavailable " + e);
-            }
             while (running) {
                 if (socket.getInputStream().available() > 0) {
                     NetworkMessage in = NetworkMessage.readPacket(fromServer);
@@ -84,7 +85,13 @@ public class Client extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        micThread.close();
+        if (micThread != null) {
+            micThread.close();
+        }
+    }
+
+    public MicThread getMicThread() {
+        return micThread;
     }
 
     public boolean isConnected() {

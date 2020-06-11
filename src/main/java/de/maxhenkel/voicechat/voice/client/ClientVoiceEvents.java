@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -109,7 +110,17 @@ public class ClientVoiceEvents {
     @SubscribeEvent
     public void onInput(InputEvent.KeyInputEvent event) {
         if (Main.KEY_VOICE_CHAT_SETTINGS.isPressed()) {
-            minecraft.displayGuiScreen(new VoiceChatScreen());
+            if (Main.CLIENT_VOICE_EVENTS.getClient() == null) {
+                minecraft.player.sendStatusMessage(new TranslationTextComponent("message.voice_chat_unavailable"), true);
+            } else {
+                minecraft.displayGuiScreen(new VoiceChatScreen());
+            }
+        }
+
+        if (Main.KEY_PTT.isPressed()) {
+            if (Main.CLIENT_VOICE_EVENTS.getClient() == null) {
+                minecraft.player.sendStatusMessage(new TranslationTextComponent("message.voice_chat_unavailable"), true);
+            }
         }
 
         // if (Main.KEY_PTT.getKey().getKeyCode() == GLFW.GLFW_KEY_CAPS_LOCK) {} //TODO caps lock disabler
