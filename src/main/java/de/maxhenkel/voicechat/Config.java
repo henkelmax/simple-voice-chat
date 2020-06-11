@@ -26,19 +26,24 @@ public class Config {
         public final ForgeConfigSpec.IntValue VOICE_CHAT_PORT;
         public final ForgeConfigSpec.DoubleValue VOICE_CHAT_DISTANCE;
         public final ForgeConfigSpec.DoubleValue VOICE_CHAT_FADE_DISTANCE;
+        public final ForgeConfigSpec.IntValue VOICE_CHAT_SAMPLE_RATE;
 
         public ServerConfig(ForgeConfigSpec.Builder builder) {
             VOICE_CHAT_PORT = builder
                     .comment("The port of the voice chat server")
-                    .defineInRange("voice_chat_port", 24454, 0, 65535);
+                    .defineInRange("voice_chat.port", 24454, 0, 65535);
 
             VOICE_CHAT_DISTANCE = builder
                     .comment("The distance to where the voice can be heard")
-                    .defineInRange("voice_chat_distance", 32D, 1D, 1_000_000D);
-
+                    .defineInRange("voice_chat.distance", 32D, 1D, 1_000_000D);
             VOICE_CHAT_FADE_DISTANCE = builder
                     .comment("The distance to where the voice starts fading")
-                    .defineInRange("voice_chat_fade_distance", 16D, 1D, 1_000_000D);
+                    .worldRestart()
+                    .defineInRange("voice_chat.fade_distance", 16D, 1D, 1_000_000D);
+            VOICE_CHAT_SAMPLE_RATE = builder
+                    .comment("The sample rate for the voice chat")
+                    .worldRestart()
+                    .defineInRange("voice_chat.quality.sample_rate", 22050, 1000, 44100);
         }
     }
 

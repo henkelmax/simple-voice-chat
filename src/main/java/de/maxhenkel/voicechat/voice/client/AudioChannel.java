@@ -28,14 +28,14 @@ public class AudioChannel extends Thread {
         this.client = client;
         this.uuid = uuid;
         this.queue = new ArrayList<>();
-        this.lastPacketTime = System.nanoTime();
+        this.lastPacketTime = System.currentTimeMillis();
         this.stopped = false;
         this.minecraft = Minecraft.getInstance();
         Main.LOGGER.debug("Creating audio channel for " + uuid);
     }
 
     public boolean canKill() {
-        return System.nanoTime() - lastPacketTime > 30_000_000_000L;
+        return System.currentTimeMillis() - lastPacketTime > 30_000L;
     }
 
     public void closeAndKill() {
@@ -57,7 +57,7 @@ public class AudioChannel extends Thread {
     @Override
     public void run() {
         try {
-            AudioFormat af = SoundPacket.DEFAULT_FORMAT_STEREO;
+            AudioFormat af = AudioChannelConfig.getStereoFormat();
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, af);
             speaker = (SourceDataLine) AudioSystem.getLine(info);
             speaker.open(af);
@@ -68,7 +68,7 @@ public class AudioChannel extends Thread {
                     Utils.sleep(10);
                     continue;
                 }
-                lastPacketTime = System.nanoTime();
+                lastPacketTime = System.currentTimeMillis();
                 NetworkMessage message = queue.get(0);
                 queue.remove(message);
                 if (message.getPacket() instanceof SoundPacket) {
@@ -104,4 +104,5 @@ public class AudioChannel extends Thread {
             }
         }
     }
+
 }

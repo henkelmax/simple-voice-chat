@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat;
 
 import de.maxhenkel.voicechat.net.AuthenticationMessage;
+import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
 import de.maxhenkel.voicechat.voice.client.ClientVoiceEvents;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import net.minecraft.client.settings.KeyBinding;
@@ -45,11 +46,20 @@ public class Main {
     public Main() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStarting);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(Main.this::clientSetup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SERVER_SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_SPEC);
 
+    }
+
+    @SubscribeEvent
+    public void configEvent(ModConfig.ModConfigEvent event) {
+        if (event.getConfig().getType() == ModConfig.Type.SERVER) {
+            AudioChannelConfig.onServerConfigUpdate();
+        } else if (event.getConfig().getType() == ModConfig.Type.CLIENT) {
+            AudioChannelConfig.onClientConfigUpdate();
+        }
     }
 
     @SubscribeEvent
@@ -64,6 +74,8 @@ public class Main {
 
     @SubscribeEvent
     public void clientSetup(FMLClientSetupEvent event) {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::configEvent);
+
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
         CLIENT_VOICE_EVENTS = new ClientVoiceEvents();
         MinecraftForge.EVENT_BUS.register(CLIENT_VOICE_EVENTS);

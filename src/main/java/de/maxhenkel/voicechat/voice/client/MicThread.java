@@ -11,8 +11,6 @@ import java.io.IOException;
 
 public class MicThread extends Thread {
 
-    public static final double AMPLIFICATION = 1D;
-
     private DataOutputStream toServer;
     private TargetDataLine mic;
     private boolean running;
@@ -21,7 +19,7 @@ public class MicThread extends Thread {
         this.toServer = toServer;
         this.running = true;
         setDaemon(true);
-        AudioFormat af = SoundPacket.DEFAULT_FORMAT;
+        AudioFormat af = AudioChannelConfig.getMonoFormat();
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, null);
         mic = (TargetDataLine) (AudioSystem.getLine(info));
         mic.open(af);
@@ -35,18 +33,17 @@ public class MicThread extends Thread {
                 Utils.sleep(10);
                 continue;
             }
-            if (mic.available() < SoundPacket.DEFAULT_DATA_LENGTH) {
+            int dataLength = AudioChannelConfig.getDataLength();
+            if (mic.available() < dataLength) {
                 Utils.sleep(10);
                 continue;
             }
-            byte[] buff = new byte[SoundPacket.DEFAULT_DATA_LENGTH];
-            while (mic.available() >= SoundPacket.DEFAULT_DATA_LENGTH) {
+            byte[] buff = new byte[dataLength];
+            while (mic.available() >= dataLength) {
                 mic.read(buff, 0, buff.length);
             }
             try {
-                for (int i = 0; i < buff.length; i++) {
-                    buff[i] *= AMPLIFICATION;
-                }
+                // TODO amplification
 
                 (new NetworkMessage(new SoundPacket(buff))).send(toServer);
             } catch (IOException e) {
