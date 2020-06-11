@@ -30,6 +30,17 @@ public class VoiceChatScreen extends Screen {
         this.guiTop = (this.height - this.ySize) / 2;
 
         addButton(new VoiceSoundSlider(guiLeft + 10, guiTop + 20, xSize - 20, 20));
+        addButton(new MicAmplificationSlider(guiLeft + 10, guiTop + 50, xSize - 20, 20));
+        addButton(new MicTestButton(guiLeft + 10, guiTop + 80, xSize - 20, 20));
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == minecraft.gameSettings.keyBindInventory.getKey().getKeyCode() || keyCode == Main.KEY_VOICE_CHAT_SETTINGS.getKey().getKeyCode()) {
+            minecraft.displayGuiScreen(null);
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override

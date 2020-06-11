@@ -111,6 +111,8 @@ public class ClientVoiceEvents {
         if (Main.KEY_VOICE_CHAT_SETTINGS.isPressed()) {
             minecraft.displayGuiScreen(new VoiceChatScreen());
         }
+
+        // if (Main.KEY_PTT.getKey().getKeyCode() == GLFW.GLFW_KEY_CAPS_LOCK) {} //TODO caps lock disabler
     }
 
     @SubscribeEvent

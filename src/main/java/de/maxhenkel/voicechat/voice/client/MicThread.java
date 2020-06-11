@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.voice.client;
 
+import de.maxhenkel.voicechat.Config;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
@@ -42,9 +43,8 @@ public class MicThread extends Thread {
             while (mic.available() >= dataLength) {
                 mic.read(buff, 0, buff.length);
             }
+            Utils.adjustVolumeMono(buff, Config.CLIENT.MICROPHONE_AMPLIFICATION.get().floatValue());
             try {
-                // TODO amplification
-
                 (new NetworkMessage(new SoundPacket(buff))).send(toServer);
             } catch (IOException e) {
                 e.printStackTrace();

@@ -76,7 +76,6 @@ public class Main {
     public void clientSetup(FMLClientSetupEvent event) {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::configEvent);
 
-        MinecraftForge.EVENT_BUS.register(new ClientEvents());
         CLIENT_VOICE_EVENTS = new ClientVoiceEvents();
         MinecraftForge.EVENT_BUS.register(CLIENT_VOICE_EVENTS);
 

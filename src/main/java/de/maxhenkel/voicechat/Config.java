@@ -50,11 +50,15 @@ public class Config {
     public static class ClientConfig {
 
         public final ForgeConfigSpec.DoubleValue VOICE_CHAT_VOLUME;
+        public final ForgeConfigSpec.DoubleValue MICROPHONE_AMPLIFICATION;
 
         public ClientConfig(ForgeConfigSpec.Builder builder) {
             VOICE_CHAT_VOLUME = builder
                     .comment("The voice chat volume")
                     .defineInRange("voice_chat_volume", 1D, 0D, 2D);
+            MICROPHONE_AMPLIFICATION = builder
+                    .comment("The voice chat microphone amplification")
+                    .defineInRange("microphone_amplification", 1D, 0D, 4D);
         }
     }
 
