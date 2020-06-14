@@ -8,7 +8,10 @@ import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
@@ -145,21 +148,41 @@ public class ClientVoiceEvents {
         matrixStackIn.scale(-0.025F, -0.025F, 0.025F);
         matrixStackIn.translate(0D, -1D, 0D);
 
-        float offset = (float) (minecraft.fontRenderer.getStringWidth(displayNameIn) / 2 + 1);
-        IVertexBuilder builder = bufferIn.getBuffer(RenderType.getEntityCutout(SPEAKER_ICON));
+        float offset = (float) (minecraft.fontRenderer.getStringWidth(displayNameIn) / 2 + 2);
 
-        vertex(builder, matrixStackIn, offset, 10F, 0F, 0F, 1F, packedLightIn);
-        vertex(builder, matrixStackIn, offset + 10F, 10F, 0F, 1F, 1F, packedLightIn);
-        vertex(builder, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, packedLightIn);
-        vertex(builder, matrixStackIn, offset, 0F, 0F, 0F, 0F, packedLightIn);
+
+        IVertexBuilder builder = bufferIn.getBuffer(RenderType.getText(SPEAKER_ICON));
+        int alpha = 32;
+
+        if (player.isDiscrete()) {
+            vertex(builder, matrixStackIn, offset, 10F, 0F, 0F, 1F, alpha, packedLightIn);
+            vertex(builder, matrixStackIn, offset + 10F, 10F, 0F, 1F, 1F, alpha, packedLightIn);
+            vertex(builder, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, alpha, packedLightIn);
+            vertex(builder, matrixStackIn, offset, 0F, 0F, 0F, 0F, alpha, packedLightIn);
+        } else {
+            vertex(builder, matrixStackIn, offset, 10F, 0F, 0F, 1F, packedLightIn);
+            vertex(builder, matrixStackIn, offset + 10F, 10F, 0F, 1F, 1F, packedLightIn);
+            vertex(builder, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, packedLightIn);
+            vertex(builder, matrixStackIn, offset, 0F, 0F, 0F, 0F, packedLightIn);
+
+            IVertexBuilder builderSeeThrough = bufferIn.getBuffer(RenderType.getTextSeeThrough(SPEAKER_ICON));
+            vertex(builderSeeThrough, matrixStackIn, offset, 10F, 0F, 0F, 1F, alpha, packedLightIn);
+            vertex(builderSeeThrough, matrixStackIn, offset + 10F, 10F, 0F, 1F, 1F, alpha, packedLightIn);
+            vertex(builderSeeThrough, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, alpha, packedLightIn);
+            vertex(builderSeeThrough, matrixStackIn, offset, 0F, 0F, 0F, 0F, alpha, packedLightIn);
+        }
 
         matrixStackIn.pop();
     }
 
     private static void vertex(IVertexBuilder builder, MatrixStack matrixStack, float x, float y, float z, float u, float v, int light) {
+        vertex(builder, matrixStack, x, y, z, u, v, 255, light);
+    }
+
+    private static void vertex(IVertexBuilder builder, MatrixStack matrixStack, float x, float y, float z, float u, float v, int alpha, int light) {
         MatrixStack.Entry entry = matrixStack.getLast();
         builder.pos(entry.getMatrix(), x, y, z)
-                .color(255, 255, 255, 255)
+                .color(255, 255, 255, alpha)
                 .tex(u, v)
                 .overlay(OverlayTexture.NO_OVERLAY)
                 .lightmap(light)
