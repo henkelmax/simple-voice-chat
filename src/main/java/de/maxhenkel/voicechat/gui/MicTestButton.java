@@ -15,9 +15,11 @@ public class MicTestButton extends AbstractButton {
 
     private boolean micActive;
     private VoiceThread voiceThread;
+    private MicListener micListener;
 
-    public MicTestButton(int xIn, int yIn, int widthIn, int heightIn) {
+    public MicTestButton(int xIn, int yIn, int widthIn, int heightIn, MicListener micListener) {
         super(xIn, yIn, widthIn, heightIn, null);
+        this.micListener = micListener;
         if (getMic() == null) {
             micActive = false;
         }
@@ -83,6 +85,18 @@ public class MicTestButton extends AbstractButton {
         return micThread.getMic();
     }
 
+    private void setMicLocked(boolean locked) {
+        Client client = Main.CLIENT_VOICE_EVENTS.getClient();
+        if (client == null) {
+            return;
+        }
+        MicThread micThread = client.getMicThread();
+        if (micThread == null) {
+            return;
+        }
+        micThread.setMicrophoneLocked(locked);
+    }
+
     private class VoiceThread extends Thread {
 
         private final AudioFormat audioFormat;
@@ -108,6 +122,7 @@ public class MicTestButton extends AbstractButton {
             gainControl = (FloatControl) speaker.getControl(FloatControl.Type.MASTER_GAIN);
 
             updateLastRender();
+            setMicLocked(true);
         }
 
         @Override
@@ -129,6 +144,8 @@ public class MicTestButton extends AbstractButton {
                 }
                 Utils.adjustVolumeMono(buff, Config.CLIENT.MICROPHONE_AMPLIFICATION.get().floatValue());
 
+                micListener.onMicValue(Utils.dbToPerc(Utils.getHighestAudioLevel(buff)));
+
                 gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(Config.CLIENT.VOICE_CHAT_VOLUME.get().floatValue()), gainControl.getMinimum()), gainControl.getMaximum()));
 
                 speaker.write(buff, 0, buff.length);
@@ -147,7 +164,13 @@ public class MicTestButton extends AbstractButton {
             speaker.close();
             mic.stop();
             mic.flush();
+            setMicLocked(false);
+            micListener.onMicValue(0D);
         }
 
+    }
+
+    public static interface MicListener {
+        void onMicValue(double perc);
     }
 }

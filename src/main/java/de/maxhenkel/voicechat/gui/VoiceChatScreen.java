@@ -6,7 +6,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class VoiceChatScreen extends Screen {
+public class VoiceChatScreen extends Screen implements MicTestButton.MicListener {
 
     protected static final int FONT_COLOR = 4210752;
 
@@ -17,10 +17,14 @@ public class VoiceChatScreen extends Screen {
     private int xSize;
     private int ySize;
 
+    private double micValue;
+
+    private VoiceActivationSlider voiceActivationSlider;
+
     public VoiceChatScreen() {
         super(new TranslationTextComponent("gui.voice_chat_settings.title"));
         xSize = 248;
-        ySize = 166;
+        ySize = 176;
     }
 
     @Override
@@ -29,9 +33,12 @@ public class VoiceChatScreen extends Screen {
         this.guiLeft = (this.width - this.xSize) / 2;
         this.guiTop = (this.height - this.ySize) / 2;
 
+        voiceActivationSlider = new VoiceActivationSlider(guiLeft + 10, guiTop + 95, xSize - 20, 20);
         addButton(new VoiceSoundSlider(guiLeft + 10, guiTop + 20, xSize - 20, 20));
-        addButton(new MicAmplificationSlider(guiLeft + 10, guiTop + 50, xSize - 20, 20));
-        addButton(new MicTestButton(guiLeft + 10, guiTop + 80, xSize - 20, 20));
+        addButton(new MicAmplificationSlider(guiLeft + 10, guiTop + 45, xSize - 20, 20));
+        addButton(new MicActivationButton(guiLeft + 10, guiTop + 70, xSize - 20, 20, voiceActivationSlider));
+        addButton(voiceActivationSlider);
+        addButton(new MicTestButton(guiLeft + 10, guiTop + 145, xSize - 20, 20, this));
     }
 
     @Override
@@ -51,13 +58,19 @@ public class VoiceChatScreen extends Screen {
         minecraft.getTextureManager().bindTexture(TEXTURE);
         blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
+        blit(guiLeft + 10, guiTop + 120, 0, 194, xSize - 20, 20);
+        blit(guiLeft + 11, guiTop + 121, 0, 176, (int) ((xSize - 18) * micValue), 18);
+
         super.render(mouseX, mouseY, partialTicks);
 
         // Title
         String title = new TranslationTextComponent("gui.voice_chat_settings.title").getFormattedText();
         int titleWidth = font.getStringWidth(title);
         font.drawString(title, (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
+    }
 
-
+    @Override
+    public void onMicValue(double perc) {
+        this.micValue = perc;
     }
 }

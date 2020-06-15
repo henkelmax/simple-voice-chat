@@ -9,12 +9,14 @@ import de.maxhenkel.voicechat.voice.common.Utils;
 import javax.sound.sampled.*;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class MicThread extends Thread {
 
     private DataOutputStream toServer;
     private TargetDataLine mic;
     private boolean running;
+    private boolean microphoneLocked;
 
     public MicThread(DataOutputStream toServer) throws LineUnavailableException {
         this.toServer = toServer;
@@ -26,50 +28,132 @@ public class MicThread extends Thread {
         mic.open(af);
     }
 
-    private boolean wasPTT;
-
     @Override
     public void run() {
         while (running) {
-            int dataLength = AudioChannelConfig.getDataLength();
-            if (!Main.KEY_PTT.isKeyDown()) {
-                if (wasPTT) {
-                    mic.stop();
-                    mic.flush();
-                    try {
-                        // To prevent last sound repeating when no more audio data is available
-                        (new NetworkMessage(new SoundPacket(new byte[0]))).send(toServer);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    wasPTT = false;
+            if (microphoneLocked) {
+                Utils.sleep(10);
+            } else {
+                MicrophoneActivationType type = Config.CLIENT.MICROPHONE_ACTIVATION_TYPE.get();
+                if (type.equals(MicrophoneActivationType.PTT)) {
+                    ptt();
+                } else if (type.equals(MicrophoneActivationType.VOICE)) {
+                    voice();
                 }
-                Utils.sleep(10);
-                continue;
             }
-            mic.start();
+        }
+    }
 
-            if (mic.available() < dataLength) {
-                Utils.sleep(10);
-                continue;
+    private boolean activating;
+    private int deactivationDelay;
+    private byte[] lastBuff;
+
+    private void voice() {
+        wasPTT = false;
+        int dataLength = AudioChannelConfig.getDataLength();
+
+        mic.start();
+
+        if (mic.available() < dataLength) {
+            Utils.sleep(10);
+            return;
+        }
+        byte[] buff = new byte[dataLength];
+        while (mic.available() >= dataLength) {
+            mic.read(buff, 0, buff.length);
+        }
+        Utils.adjustVolumeMono(buff, Config.CLIENT.MICROPHONE_AMPLIFICATION.get().floatValue());
+
+        int offset = Utils.getActivationOffset(buff, -50D);
+        if (activating) {
+            if (offset < 0) {
+                if (deactivationDelay >= 2) {
+                    activating = false;
+                    sendStopPacket();
+                    deactivationDelay = 0;
+                } else {
+                    sendAudioPacket(buff);
+                    deactivationDelay++;
+                }
+            } else {
+                sendAudioPacket(buff);
             }
-            byte[] buff = new byte[dataLength];
-            while (mic.available() >= dataLength) {
-                mic.read(buff, 0, buff.length);
+        } else {
+            if (offset >= 0) {
+                if (lastBuff != null) {
+                    int lastPacketOffset = buff.length - offset;
+                    sendAudioPacket(Arrays.copyOfRange(lastBuff, lastPacketOffset, lastBuff.length));
+                }
+                sendAudioPacket(buff);
+                activating = true;
             }
-            Utils.adjustVolumeMono(buff, Config.CLIENT.MICROPHONE_AMPLIFICATION.get().floatValue());
-            try {
-                (new NetworkMessage(new SoundPacket(buff))).send(toServer);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
+        }
+        lastBuff = buff;
+    }
+
+    private boolean wasPTT;
+
+    private void ptt() {
+        activating = false;
+        int dataLength = AudioChannelConfig.getDataLength();
+        if (!Main.KEY_PTT.isKeyDown()) {
+            if (wasPTT) {
+                mic.stop();
+                mic.flush();
+                sendStopPacket();
+                wasPTT = false;
             }
+            Utils.sleep(10);
+            return;
+        } else {
             wasPTT = true;
+        }
+
+        mic.start();
+
+        if (mic.available() < dataLength) {
+            Utils.sleep(10);
+            return;
+        }
+        byte[] buff = new byte[dataLength];
+        while (mic.available() >= dataLength) { //TODO fix?
+            mic.read(buff, 0, buff.length);
+        }
+        Utils.adjustVolumeMono(buff, Config.CLIENT.MICROPHONE_AMPLIFICATION.get().floatValue());
+        sendAudioPacket(buff);
+    }
+
+    private void sendStopPacket() {
+        try {
+            // To prevent last sound repeating when no more audio data is available
+            (new NetworkMessage(new SoundPacket(new byte[0]))).send(toServer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendAudioPacket(byte[] data) {
+        try {
+            (new NetworkMessage(new SoundPacket(data))).send(toServer);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     public TargetDataLine getMic() {
         return mic;
+    }
+
+    public boolean isTalking() {
+        return !microphoneLocked && (activating || wasPTT);
+    }
+
+    public void setMicrophoneLocked(boolean microphoneLocked) {
+        this.microphoneLocked = microphoneLocked;
+        activating = false;
+        wasPTT = false;
+        deactivationDelay = 0;
+        lastBuff = null;
     }
 
     public void close() {

@@ -7,5 +7,9 @@
   "message.mic_test_on": "Disable Microphone Testing",
   "message.mic_test_off": "Enable Microphone Testing",
   "message.mic_test_unavailable": "Microphone Testing Unavailable",
-  "message.voice_chat_unavailable": "Voice Chat Unavailable"
+  "message.voice_chat_unavailable": "Voice Chat Unavailable",
+  "message.activation_type": "Activation type: %s",
+  "message.activation_type.ptt": "Push to Talk",
+  "message.activation_type.voice": "Voice",
+  "message.voice_activation": "Voice Activation Threshold: %s dB"
 }

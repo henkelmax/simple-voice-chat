@@ -82,11 +82,11 @@ public class ClientVoiceEvents {
             return;
         }
 
-        if (client == null || !client.isConnected()) {
+        if (client == null || !client.isConnected() || client.getMicThread() == null) {
             return;
         }
 
-        if (!Main.KEY_PTT.isKeyDown()) {
+        if (!client.getMicThread().isTalking()) {
             return;
         }
 
@@ -136,7 +136,7 @@ public class ClientVoiceEvents {
         }
 
         PlayerEntity playerEntity = (PlayerEntity) event.getEntity();
-        if (client.getTalkCache().isTalking(playerEntity)) {
+        if (client != null && client.getTalkCache().isTalking(playerEntity)) {
             renderSpeaker(playerEntity, event.getContent(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
         }
     }

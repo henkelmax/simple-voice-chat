@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat;
 
+import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -50,9 +51,17 @@ public class Config {
     public static class ClientConfig {
 
         public final ForgeConfigSpec.DoubleValue VOICE_CHAT_VOLUME;
+        public final ForgeConfigSpec.DoubleValue VOICE_ACTIVATION_THRESHOLD;
         public final ForgeConfigSpec.DoubleValue MICROPHONE_AMPLIFICATION;
+        public final ForgeConfigSpec.EnumValue<MicrophoneActivationType> MICROPHONE_ACTIVATION_TYPE;
 
         public ClientConfig(ForgeConfigSpec.Builder builder) {
+            MICROPHONE_ACTIVATION_TYPE = builder
+                    .comment("Microphone activation type")
+                    .defineEnum("microphone_activation_type", MicrophoneActivationType.PTT);
+            VOICE_ACTIVATION_THRESHOLD = builder
+                    .comment("The threshold for voice activation in dB")
+                    .defineInRange("voice_activation_threshold", -50D, -127D, 0D);
             VOICE_CHAT_VOLUME = builder
                     .comment("The voice chat volume")
                     .defineInRange("voice_chat_volume", 1D, 0D, 2D);

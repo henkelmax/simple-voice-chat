@@ -69,6 +69,10 @@ public class Utils {
         return compressed;
     }
 
+    public static short bytesToShort(byte b1, byte b2) {
+        return (short) (((b2 & 0xff) << 8) | (b1 & 0xff));
+    }
+
     /**
      * Changes the volume of 16 bit audio
      * Note that this modifies the input array
@@ -79,7 +83,7 @@ public class Utils {
      */
     public static byte[] adjustVolumeMono(byte[] audio, float volume) {
         for (int i = 0; i < audio.length; i += 2) {
-            short audioSample = (short) (((audio[i + 1] & 0xff) << 8) | (audio[i] & 0xff));
+            short audioSample = bytesToShort(audio[i], audio[i + 1]); //(short) (((audio[i + 1] & 0xff) << 8) | (audio[i] & 0xff));
 
             audioSample = (short) (audioSample * volume);
 
@@ -101,7 +105,7 @@ public class Utils {
      */
     public static byte[] adjustVolumeStereo(byte[] audio, float volumeLeft, float volumeRight) {
         for (int i = 0; i < audio.length; i += 2) {
-            short audioSample = (short) (((audio[i + 1] & 0xff) << 8) | (audio[i] & 0xff));
+            short audioSample = bytesToShort(audio[i], audio[i + 1]); //(short) (((audio[i + 1] & 0xff) << 8) | (audio[i] & 0xff));
 
             audioSample = (short) (audioSample * (i % 4 == 0 ? volumeLeft : volumeRight));
 
@@ -141,7 +145,7 @@ public class Utils {
     public static byte[] convertToStereo(byte[] audio, float volumeLeft, float volumeRight) {
         byte[] stereo = new byte[audio.length * 2];
         for (int i = 0; i < audio.length; i += 2) {
-            short audioSample = (short) (((audio[i + 1] & 0xff) << 8) | (audio[i] & 0xff));
+            short audioSample = bytesToShort(audio[i], audio[i + 1]);//(short) (((audio[i + 1] & 0xff) << 8) | (audio[i] & 0xff));
             short left = (short) (audioSample * volumeLeft);
             short right = (short) (audioSample * volumeRight);
             stereo[i * 2] = (byte) left;
@@ -206,6 +210,92 @@ public class Utils {
 
     private static Vec2f rotate(Vec2f vec, float angle) {
         return new Vec2f(vec.x * MathHelper.cos(angle) - vec.y * MathHelper.sin(angle), vec.x * MathHelper.sin(angle) + vec.y * MathHelper.cos(angle));
+    }
+
+    /**
+     * Calculates the audio level of a signal with specific samples.
+     *
+     * @param samples the samples of the signal to calculate the audio level of
+     * @param offset  the offset in samples in which the samples start
+     * @param length  the length in bytes of the signal in samples starting at offset
+     * @return the audio level of the specified signal in db
+     */
+    public static double calculateAudioLevel(byte[] samples, int offset, int length) {
+        double rms = 0D; // root mean square (RMS) amplitude
+
+        for (int i = offset; i < length; i += 2) {
+            double sample = (double) Utils.bytesToShort(samples[i], samples[i + 1]) / Short.MAX_VALUE;
+            rms += sample * sample;
+        }
+
+        int sampleCount = length / 2;
+
+        rms = (sampleCount == 0) ? 0 : Math.sqrt(rms / sampleCount);
+
+        double db;
+
+        if (rms > 0D) {
+            db = Math.min(Math.max(20D * Math.log10(rms), -127D), 0D);
+        } else {
+            db = -127D;
+        }
+
+        return db;
+    }
+
+    /**
+     * Calculates the highest audio level in packs of 100
+     *
+     * @param samples the audio samples
+     * @return the audio level in db
+     */
+    public static double getHighestAudioLevel(byte[] samples) {
+        double highest = -127D;
+        for (int i = 0; i < samples.length; i += 100) {
+            double level = Utils.calculateAudioLevel(samples, i, Math.min(i + 100, samples.length));
+            if (level > highest) {
+                highest = level;
+            }
+        }
+        return highest;
+    }
+
+    /**
+     * Gets the offset of the highest audio level in packs of 100
+     *
+     * @param samples         the audio samples
+     * @param activationLevel the activation threshold
+     * @return the audio level in db
+     */
+    public static int getActivationOffset(byte[] samples, double activationLevel) {
+        int highestPos = -1;
+        for (int i = 0; i < samples.length; i += 100) {
+            double level = Utils.calculateAudioLevel(samples, i, Math.min(i + 100, samples.length));
+            if (level >= activationLevel) {
+                highestPos = i;
+            }
+        }
+        return highestPos;
+    }
+
+    /**
+     * Converts a dB value to a percentage value (-127 - 0) - (0 - 1)
+     *
+     * @param db the decibel value
+     * @return the percantage
+     */
+    public static double dbToPerc(double db) {
+        return (db + 127D) / 127D;
+    }
+
+    /**
+     * Converts a percentage to a dB value (0 - 1) - (-127 - 0)
+     *
+     * @param perc the percantage
+     * @return the decibel value
+     */
+    public static double percToDb(double perc) {
+        return (perc * 127D) - 127D;
     }
 
 }
