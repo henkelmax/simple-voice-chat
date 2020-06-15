@@ -1,7 +1,9 @@
 package de.maxhenkel.voicechat.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import de.maxhenkel.voicechat.Config;
 import de.maxhenkel.voicechat.Main;
+import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -60,6 +62,10 @@ public class VoiceChatScreen extends Screen implements MicTestButton.MicListener
 
         blit(guiLeft + 10, guiTop + 120, 0, 194, xSize - 20, 20);
         blit(guiLeft + 11, guiTop + 121, 0, 176, (int) ((xSize - 18) * micValue), 18);
+
+        int pos = (int) ((xSize - 20) * Utils.dbToPerc(Config.CLIENT.VOICE_ACTIVATION_THRESHOLD.get()));
+
+        blit(guiLeft + 10 + pos, guiTop + 120, 0, 194, 1, 20);
 
         super.render(mouseX, mouseY, partialTicks);
 

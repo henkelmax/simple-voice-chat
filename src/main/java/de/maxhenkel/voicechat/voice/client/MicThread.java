@@ -64,7 +64,7 @@ public class MicThread extends Thread {
         }
         Utils.adjustVolumeMono(buff, Config.CLIENT.MICROPHONE_AMPLIFICATION.get().floatValue());
 
-        int offset = Utils.getActivationOffset(buff, -50D);
+        int offset = Utils.getActivationOffset(buff, Config.CLIENT.VOICE_ACTIVATION_THRESHOLD.get());
         if (activating) {
             if (offset < 0) {
                 if (deactivationDelay >= 2) {
