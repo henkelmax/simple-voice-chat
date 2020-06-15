@@ -1,8 +1,18 @@
 package de.maxhenkel.voicechat;
 
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Properties;
+import java.util.UUID;
 
 public class Config {
 
@@ -12,6 +22,8 @@ public class Config {
     public static final ClientConfig CLIENT;
     public static final ForgeConfigSpec CLIENT_SPEC;
 
+    public static final PlayerVolumeConfig VOLUME_CONFIG;
+
     static {
         Pair<ServerConfig, ForgeConfigSpec> specPairServer = new ForgeConfigSpec.Builder().configure(ServerConfig::new);
         SERVER_SPEC = specPairServer.getRight();
@@ -20,6 +32,8 @@ public class Config {
         Pair<ClientConfig, ForgeConfigSpec> specPairClient = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
         CLIENT_SPEC = specPairClient.getRight();
         CLIENT = specPairClient.getLeft();
+
+        VOLUME_CONFIG = new PlayerVolumeConfig();
     }
 
     public static class ServerConfig {
@@ -33,7 +47,6 @@ public class Config {
             VOICE_CHAT_PORT = builder
                     .comment("The port of the voice chat server")
                     .defineInRange("voice_chat.port", 24454, 0, 65535);
-
             VOICE_CHAT_DISTANCE = builder
                     .comment("The distance to where the voice can be heard")
                     .defineInRange("voice_chat.distance", 32D, 1D, 1_000_000D);
@@ -68,6 +81,63 @@ public class Config {
             MICROPHONE_AMPLIFICATION = builder
                     .comment("The voice chat microphone amplification")
                     .defineInRange("microphone_amplification", 1D, 0D, 4D);
+        }
+    }
+
+    public static class PlayerVolumeConfig {
+        private Properties properties;
+        private Path path;
+
+        public PlayerVolumeConfig() {
+            path = FMLPaths.CONFIGDIR.get().resolve(Main.MODID).resolve("player-volumes.properties");
+            properties = new Properties();
+            try {
+                load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void load() throws IOException {
+            File file = path.toFile();
+            if (file.exists()) {
+                properties.load(new FileInputStream(file));
+            }
+        }
+
+        public void save() throws IOException {
+            File file = path.toFile();
+            file.getParentFile().mkdirs();
+            properties.store(new FileWriter(file, false), "The adjusted volumes for all other players");
+        }
+
+        public double getVolume(UUID uuid, double def) {
+            String property = properties.getProperty(uuid.toString());
+            if (property == null) {
+                return setVolume(uuid, def);
+            }
+            try {
+                return Double.parseDouble(property);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                return setVolume(uuid, def);
+            }
+        }
+
+        public double getVolume(PlayerEntity playerEntity) {
+            return getVolume(playerEntity.getUniqueID(), 1D);
+        }
+
+        public double setVolume(UUID uuid, double value) {
+            properties.put(uuid.toString(), String.valueOf(value));
+            new Thread(() -> {
+                try {
+                    save();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+            return value;
         }
     }
 

@@ -73,7 +73,6 @@ public class AudioChannel extends Thread {
                 if (message.getPacket() instanceof SoundPacket) {
                     SoundPacket soundPacket = (SoundPacket) (message.getPacket());
                     if (soundPacket.getData().length == 0) {
-                        System.out.println("STOP");
                         speaker.stop();
                         speaker.flush();
                         continue;
@@ -90,7 +89,7 @@ public class AudioChannel extends Thread {
                             percentage = 1F - Math.min((distance - fadeDistance) / (maxDistance - fadeDistance), 1F);
                         }
 
-                        gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(percentage * Config.CLIENT.VOICE_CHAT_VOLUME.get().floatValue()), gainControl.getMinimum()), gainControl.getMaximum()));
+                        gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(percentage * Config.CLIENT.VOICE_CHAT_VOLUME.get().floatValue() * (float) Config.VOLUME_CONFIG.getVolume(player)), gainControl.getMinimum()), gainControl.getMaximum()));
 
                         byte[] mono = soundPacket.getData();
 

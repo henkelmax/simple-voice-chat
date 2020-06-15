@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.Config;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -26,7 +27,7 @@ public class VoiceChatScreen extends Screen implements MicTestButton.MicListener
     public VoiceChatScreen() {
         super(new TranslationTextComponent("gui.voice_chat_settings.title"));
         xSize = 248;
-        ySize = 176;
+        ySize = 201;
     }
 
     @Override
@@ -41,6 +42,9 @@ public class VoiceChatScreen extends Screen implements MicTestButton.MicListener
         addButton(new MicActivationButton(guiLeft + 10, guiTop + 70, xSize - 20, 20, voiceActivationSlider));
         addButton(voiceActivationSlider);
         addButton(new MicTestButton(guiLeft + 10, guiTop + 145, xSize - 20, 20, this));
+        addButton(new Button(guiLeft + 10, guiTop + 170, xSize - 20, 20, new TranslationTextComponent("message.adjust_volumes").getFormattedText(), button -> {
+            minecraft.displayGuiScreen(new AdjustVolumeScreen());
+        }));
     }
 
     @Override
@@ -56,16 +60,16 @@ public class VoiceChatScreen extends Screen implements MicTestButton.MicListener
     public void render(int mouseX, int mouseY, float partialTicks) {
         renderBackground();
 
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.color4f(1F, 1F, 1F, 1F);
         minecraft.getTextureManager().bindTexture(TEXTURE);
         blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-        blit(guiLeft + 10, guiTop + 120, 0, 194, xSize - 20, 20);
-        blit(guiLeft + 11, guiTop + 121, 0, 176, (int) ((xSize - 18) * micValue), 18);
+        blit(guiLeft + 10, guiTop + 120, 0, 219, xSize - 20, 20);
+        blit(guiLeft + 11, guiTop + 121, 0, 201, (int) ((xSize - 18) * micValue), 18);
 
         int pos = (int) ((xSize - 20) * Utils.dbToPerc(Config.CLIENT.VOICE_ACTIVATION_THRESHOLD.get()));
 
-        blit(guiLeft + 10 + pos, guiTop + 120, 0, 194, 1, 20);
+        blit(guiLeft + 10 + pos, guiTop + 120, 0, 219, 1, 20);
 
         super.render(mouseX, mouseY, partialTicks);
 
