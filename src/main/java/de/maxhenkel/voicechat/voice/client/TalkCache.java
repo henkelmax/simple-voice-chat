@@ -2,9 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import net.minecraft.entity.player.PlayerEntity;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class TalkCache {
 
@@ -22,10 +20,14 @@ public class TalkCache {
 
     public void updateCache() {
         long time = System.currentTimeMillis();
+        List<UUID> toRemove = new ArrayList<>();
         for (Map.Entry<UUID, Long> entry : cache.entrySet()) {
             if (time - entry.getValue() > TIMEOUT) {
-                cache.remove(entry.getKey());
+                toRemove.add(entry.getKey());
             }
+        }
+        for (UUID uuid : toRemove) {
+            cache.remove(uuid);
         }
     }
 
