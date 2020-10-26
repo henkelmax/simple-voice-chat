@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.voice.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import de.maxhenkel.voicechat.Config;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import net.minecraft.client.Minecraft;
@@ -51,8 +50,8 @@ public class ClientVoiceEvents {
         ServerData serverData = minecraft.getCurrentServerData();
         if (serverData != null) {
             try {
-                Main.LOGGER.info("Connecting to server: '" + serverData.serverIP + ":" + Config.SERVER.VOICE_CHAT_PORT.get() + "'");
-                client = new Client(serverData.serverIP, Config.SERVER.VOICE_CHAT_PORT.get());
+                Main.LOGGER.info("Connecting to server: '" + serverData.serverIP + ":" + Main.SERVER_CONFIG.voiceChatPort.get() + "'");
+                client = new Client(serverData.serverIP, Main.SERVER_CONFIG.voiceChatPort.get());
                 client.start();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -137,7 +136,7 @@ public class ClientVoiceEvents {
 
         PlayerEntity playerEntity = (PlayerEntity) event.getEntity();
         if (client != null && client.getTalkCache().isTalking(playerEntity)) {
-            renderSpeaker(playerEntity, event.getContent(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
+            renderSpeaker(playerEntity, event.getContent().getString(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
         }
     }
 

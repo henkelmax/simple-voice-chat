@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.gui;
 
-import de.maxhenkel.voicechat.Config;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
 import de.maxhenkel.voicechat.voice.client.Client;
@@ -27,20 +27,20 @@ public class MicTestButton extends AbstractButton {
     }
 
     private void updateText() {
-        if (!active) {
-            setMessage(new TranslationTextComponent("message.mic_test_unavailable").getFormattedText());
+        if (!field_230694_p_) {
+            func_238482_a_(new TranslationTextComponent("message.mic_test_unavailable"));
             return;
         }
         if (micActive) {
-            setMessage(new TranslationTextComponent("message.mic_test_on").getFormattedText());
+            func_238482_a_(new TranslationTextComponent("message.mic_test_on"));
         } else {
-            setMessage(new TranslationTextComponent("message.mic_test_off").getFormattedText());
+            func_238482_a_(new TranslationTextComponent("message.mic_test_off"));
         }
     }
 
     @Override
-    public void render(int x, int y, float partialTicks) {
-        super.render(x, y, partialTicks);
+    public void func_230430_a_(MatrixStack matrixStack, int x, int y, float partialTicks) {
+        super.func_230430_a_(matrixStack, x, y, partialTicks);
         if (voiceThread != null) {
             voiceThread.updateLastRender();
         }
@@ -52,7 +52,7 @@ public class MicTestButton extends AbstractButton {
     }
 
     @Override
-    public void onPress() {
+    public void func_230930_b_() {
         setMicActive(!micActive);
         updateText();
         if (micActive) {
@@ -142,11 +142,11 @@ public class MicTestButton extends AbstractButton {
                 while (mic.available() >= dataLength) {
                     mic.read(buff, 0, buff.length);
                 }
-                Utils.adjustVolumeMono(buff, Config.CLIENT.MICROPHONE_AMPLIFICATION.get().floatValue());
+                Utils.adjustVolumeMono(buff, Main.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
 
                 micListener.onMicValue(Utils.dbToPerc(Utils.getHighestAudioLevel(buff)));
 
-                gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(Config.CLIENT.VOICE_CHAT_VOLUME.get().floatValue()), gainControl.getMinimum()), gainControl.getMaximum()));
+                gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(Main.CLIENT_CONFIG.voiceChatVolume.get().floatValue()), gainControl.getMinimum()), gainControl.getMaximum()));
 
                 speaker.write(buff, 0, buff.length);
             }

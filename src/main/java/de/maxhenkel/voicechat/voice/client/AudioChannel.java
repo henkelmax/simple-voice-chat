@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import de.maxhenkel.voicechat.Config;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
@@ -82,18 +81,18 @@ public class AudioChannel extends Thread {
                         client.getTalkCache().updateTalking(player.getUniqueID());
                         float distance = player.getDistance(minecraft.player);
                         float percentage = 1F;
-                        float fadeDistance = Config.SERVER.VOICE_CHAT_FADE_DISTANCE.get().floatValue();
-                        float maxDistance = Config.SERVER.VOICE_CHAT_DISTANCE.get().floatValue();
+                        float fadeDistance = Main.SERVER_CONFIG.voiceChatDistance.get().floatValue();
+                        float maxDistance = Main.SERVER_CONFIG.voiceChatDistance.get().floatValue();
 
                         if (distance > fadeDistance) {
                             percentage = 1F - Math.min((distance - fadeDistance) / (maxDistance - fadeDistance), 1F);
                         }
 
-                        gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(percentage * Config.CLIENT.VOICE_CHAT_VOLUME.get().floatValue() * (float) Config.VOLUME_CONFIG.getVolume(player)), gainControl.getMinimum()), gainControl.getMaximum()));
+                        gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(percentage * Main.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * (float) Main.VOLUME_CONFIG.getVolume(player)), gainControl.getMinimum()), gainControl.getMaximum()));
 
                         byte[] mono = soundPacket.getData();
 
-                        Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft.player.getPositionVector(), minecraft.player.rotationYaw, player.getPositionVector());
+                        Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft.player.getPositionVec(), minecraft.player.rotationYaw, player.getPositionVec());
 
                         byte[] stereo = Utils.convertToStereo(mono, stereoVolume.getLeft(), stereoVolume.getRight());
                         speaker.start();

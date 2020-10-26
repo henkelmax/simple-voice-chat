@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import de.maxhenkel.voicechat.Config;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
@@ -34,7 +33,7 @@ public class MicThread extends Thread {
             if (microphoneLocked) {
                 Utils.sleep(10);
             } else {
-                MicrophoneActivationType type = Config.CLIENT.MICROPHONE_ACTIVATION_TYPE.get();
+                MicrophoneActivationType type = Main.CLIENT_CONFIG.microphoneActivationType.get();
                 if (type.equals(MicrophoneActivationType.PTT)) {
                     ptt();
                 } else if (type.equals(MicrophoneActivationType.VOICE)) {
@@ -62,9 +61,9 @@ public class MicThread extends Thread {
         while (mic.available() >= dataLength) {
             mic.read(buff, 0, buff.length);
         }
-        Utils.adjustVolumeMono(buff, Config.CLIENT.MICROPHONE_AMPLIFICATION.get().floatValue());
+        Utils.adjustVolumeMono(buff, Main.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
 
-        int offset = Utils.getActivationOffset(buff, Config.CLIENT.VOICE_ACTIVATION_THRESHOLD.get());
+        int offset = Utils.getActivationOffset(buff, Main.CLIENT_CONFIG.voiceActivationThreshold.get());
         if (activating) {
             if (offset < 0) {
                 if (deactivationDelay >= 2) {
@@ -119,7 +118,7 @@ public class MicThread extends Thread {
         while (mic.available() >= dataLength) { //TODO fix?
             mic.read(buff, 0, buff.length);
         }
-        Utils.adjustVolumeMono(buff, Config.CLIENT.MICROPHONE_AMPLIFICATION.get().floatValue());
+        Utils.adjustVolumeMono(buff, Main.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
         sendAudioPacket(buff);
     }
 

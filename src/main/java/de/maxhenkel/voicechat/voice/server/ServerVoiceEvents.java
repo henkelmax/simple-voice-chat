@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.voice.server;
 
-import de.maxhenkel.voicechat.Config;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.net.AuthenticationMessage;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,7 +22,7 @@ public class ServerVoiceEvents {
         }
         if (event.getServer() instanceof DedicatedServer) {
             try {
-                server = new Server(Config.SERVER.VOICE_CHAT_PORT.get(), event.getServer());
+                server = new Server(Main.SERVER_CONFIG.voiceChatPort.get(), event.getServer());
                 server.start();
             } catch (Exception e) {
                 e.printStackTrace();

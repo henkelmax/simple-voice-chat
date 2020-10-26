@@ -1,11 +1,13 @@
 package de.maxhenkel.voicechat.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Main;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.List;
@@ -36,23 +38,23 @@ public class AdjustVolumeScreen extends Screen {
     }
 
     @Override
-    protected void init() {
-        super.init();
-        this.guiLeft = (this.width - this.xSize) / 2;
-        this.guiTop = (this.height - this.ySize) / 2;
+    protected void func_231160_c_() {
+        super.func_231160_c_();
+        this.guiLeft = (field_230708_k_ - this.xSize) / 2;
+        this.guiTop = (field_230709_l_ - this.ySize) / 2;
 
-        players = minecraft.world.getPlayers().stream().map(player -> (PlayerEntity) player).filter(playerEntity -> !playerEntity.equals(minecraft.player)).collect(Collectors.toList()); //TODO all players
+        players = field_230706_i_.world.getPlayers().stream().map(player -> (PlayerEntity) player).filter(playerEntity -> !playerEntity.equals(field_230706_i_.player)).collect(Collectors.toList()); //TODO all players
 
-        previous = new Button(guiLeft + 10, guiTop + 60, 60, 20, new TranslationTextComponent("message.previous").getFormattedText(), button -> {
+        previous = new Button(guiLeft + 10, guiTop + 60, 60, 20, new TranslationTextComponent("message.previous"), button -> {
             index = (index - 1 + players.size()) % players.size();
             updatePlayer();
         });
 
-        back = new Button(guiLeft + xSize / 2 - 30, guiTop + 60, 60, 20, new TranslationTextComponent("message.back").getFormattedText(), button -> {
-            minecraft.displayGuiScreen(new VoiceChatScreen());
+        back = new Button(guiLeft + xSize / 2 - 30, guiTop + 60, 60, 20, new TranslationTextComponent("message.back"), button -> {
+            field_230706_i_.displayGuiScreen(new VoiceChatScreen());
         });
 
-        next = new Button(guiLeft + xSize - 80, guiTop + 60, 60, 20, new TranslationTextComponent("message.next").getFormattedText(), button -> {
+        next = new Button(guiLeft + xSize - 80, guiTop + 60, 60, 20, new TranslationTextComponent("message.next"), button -> {
             index = (index + 1) % players.size();
             updatePlayer();
         });
@@ -61,16 +63,15 @@ public class AdjustVolumeScreen extends Screen {
     }
 
     public void updatePlayer() {
-        buttons.clear();
-        children.clear();
-        addButton(new AdjustVolumeSlider(guiLeft + 10, guiTop + 30, xSize - 20, 20, getCurrentPlayer()));
-        addButton(previous);
-        addButton(back);
-        addButton(next);
+        field_230710_m_.clear();
+        func_230480_a_(new AdjustVolumeSlider(guiLeft + 10, guiTop + 30, xSize - 20, 20, getCurrentPlayer()));
+        func_230480_a_(previous);
+        func_230480_a_(back);
+        func_230480_a_(next);
 
         if (players.size() <= 1) {
-            next.active = false;
-            previous.active = false;
+            next.field_230694_p_ = false;
+            previous.field_230694_p_ = false;
         }
     }
 
@@ -82,27 +83,25 @@ public class AdjustVolumeScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == minecraft.gameSettings.keyBindInventory.getKey().getKeyCode() || keyCode == Main.KEY_VOICE_CHAT_SETTINGS.getKey().getKeyCode()) {
-            minecraft.displayGuiScreen(null);
+    public boolean func_231046_a_(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == field_230706_i_.gameSettings.keyBindInventory.getKey().getKeyCode() || keyCode == Main.KEY_VOICE_CHAT_SETTINGS.getKey().getKeyCode()) {
+            field_230706_i_.displayGuiScreen(null);
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.func_231046_a_(keyCode, scanCode, modifiers);
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        renderBackground();
-
+    public void func_230430_a_(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.color4f(1F, 1F, 1F, 1F);
-        minecraft.getTextureManager().bindTexture(TEXTURE);
-        blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+        field_230706_i_.getTextureManager().bindTexture(TEXTURE);
+        func_238474_b_(stack, guiLeft, guiTop, 0, 0, xSize, ySize);
 
-        super.render(mouseX, mouseY, partialTicks);
+        super.func_230430_a_(stack, mouseX, mouseY, partialTicks);
 
         // Title
-        String title = getCurrentPlayer() == null ? new TranslationTextComponent("message.no_player").getFormattedText() : new TranslationTextComponent("message.adjust_volume_player", getCurrentPlayer().getDisplayName()).getFormattedText();
-        int titleWidth = font.getStringWidth(title);
-        font.drawString(title, (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
+        ITextComponent title = getCurrentPlayer() == null ? new TranslationTextComponent("message.no_player") : new TranslationTextComponent("message.adjust_volume_player", getCurrentPlayer().getDisplayName());
+        int titleWidth = field_230712_o_.getStringWidth(title.getString());
+        field_230712_o_.func_238422_b_(stack, title.func_241878_f(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
     }
 }

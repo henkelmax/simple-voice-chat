@@ -1,7 +1,9 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.voicechat.Main;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.UUID;
@@ -21,8 +23,8 @@ public class AuthenticationMessage implements Message<AuthenticationMessage> {
     }
 
     @Override
-    public void executeServerSide(NetworkEvent.Context context) {
-
+    public Dist getExecutingSide() {
+        return Dist.CLIENT;
     }
 
     @Override

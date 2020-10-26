@@ -1,5 +1,6 @@
 modLoader="javafml"
 loaderVersion="${mod_forge_version}"
+license="All rights reserved"
 issueTrackerURL="https://minecraft.curseforge.com/projects/xxx/issues"
 displayURL="http://minecraft.curseforge.com/projects/xxx"
 # logoFile="voicechat.png"

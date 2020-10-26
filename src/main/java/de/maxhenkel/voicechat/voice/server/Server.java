@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.voice.server;
 
-import de.maxhenkel.voicechat.Config;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.Utils;
@@ -119,7 +118,7 @@ public class Server extends Thread {
                             Utils.sleep(10);
                             continue;
                         }
-                        double distance = Config.SERVER.VOICE_CHAT_DISTANCE.get();
+                        double distance = Main.SERVER_CONFIG.voiceChatDistance.get();
                         List<ClientConnection> closeConnections = player.world
                                 .getEntitiesWithinAABB(
                                         PlayerEntity.class,
