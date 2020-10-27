@@ -29,6 +29,7 @@ public class Server extends Thread {
         secrets = new HashMap<>();
         sendQueue = new ArrayList<>();
         setDaemon(true);
+        setName("VoiceChatServerThread");
         processThread = new ProcessThread();
         processThread.start();
     }
@@ -78,6 +79,7 @@ public class Server extends Thread {
         public ProcessThread() {
             this.running = true;
             setDaemon(true);
+            setName("VoiceChatPacketProcessingThread");
         }
 
         @Override

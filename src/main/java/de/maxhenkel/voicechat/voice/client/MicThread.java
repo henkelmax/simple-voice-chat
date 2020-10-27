@@ -20,6 +20,7 @@ public class MicThread extends Thread {
         this.client = client;
         this.running = true;
         setDaemon(true);
+        setName("MicrophoneThread");
         AudioFormat af = AudioChannelConfig.getMonoFormat();
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, null);
         mic = (TargetDataLine) (AudioSystem.getLine(info));

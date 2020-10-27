@@ -30,6 +30,8 @@ public class AudioChannel extends Thread {
         this.lastPacketTime = System.currentTimeMillis();
         this.stopped = false;
         this.minecraft = Minecraft.getInstance();
+        setDaemon(true);
+        setName("AudioChannelThread-" + uuid.toString());
         Main.LOGGER.debug("Creating audio channel for " + uuid);
     }
 

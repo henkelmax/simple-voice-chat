@@ -36,6 +36,7 @@ public class Client extends Thread {
         this.authThread = new AuthThread();
         this.authThread.start();
         setDaemon(true);
+        setName("VoiceChatClientThread");
     }
 
     public UUID getPlayerUUID() {
