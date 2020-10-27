@@ -21,10 +21,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderNameplateEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
+
+import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientVoiceEvents {
@@ -39,11 +40,7 @@ public class ClientVoiceEvents {
         minecraft = Minecraft.getInstance();
     }
 
-    @SubscribeEvent
-    public void joinEvent(EntityJoinWorldEvent event) {
-        if (event.getEntity() != minecraft.player) {
-            return;
-        }
+    public void authenticate(UUID playerUUID, UUID secret) {
         if (client != null) {
             return;
         }
@@ -51,13 +48,12 @@ public class ClientVoiceEvents {
         if (serverData != null) {
             try {
                 Main.LOGGER.info("Connecting to server: '" + serverData.serverIP + ":" + Main.SERVER_CONFIG.voiceChatPort.get() + "'");
-                client = new Client(serverData.serverIP, Main.SERVER_CONFIG.voiceChatPort.get());
+                client = new Client(serverData.serverIP, Main.SERVER_CONFIG.voiceChatPort.get(), playerUUID, secret);
                 client.start();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
     }
 
     @SubscribeEvent
@@ -124,8 +120,6 @@ public class ClientVoiceEvents {
                 minecraft.player.sendStatusMessage(new TranslationTextComponent("message.voice_chat_unavailable"), true);
             }
         }
-
-        // if (Main.KEY_PTT.getKey().getKeyCode() == GLFW.GLFW_KEY_CAPS_LOCK) {} //TODO caps lock disabler
     }
 
     @SubscribeEvent

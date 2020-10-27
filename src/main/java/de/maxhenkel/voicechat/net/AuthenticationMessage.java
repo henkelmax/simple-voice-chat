@@ -29,7 +29,7 @@ public class AuthenticationMessage implements Message<AuthenticationMessage> {
 
     @Override
     public void executeClientSide(NetworkEvent.Context context) {
-        Main.CLIENT_VOICE_EVENTS.getClient().authenticate(playerUUID, secret);
+        Main.CLIENT_VOICE_EVENTS.authenticate(playerUUID, secret);
     }
 
     @Override

@@ -1,54 +1,81 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Main;
-import de.maxhenkel.voicechat.voice.common.AuthenticatePacket;
-import de.maxhenkel.voicechat.voice.common.KeepAlivePacket;
-import de.maxhenkel.voicechat.voice.common.NetworkMessage;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.*;
 
-import java.io.*;
-import java.net.Socket;
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class Client extends Thread {
 
-    private Socket socket;
-    private DataInputStream fromServer;
-    private DataOutputStream toServer;
-    private List<AudioChannel> audioChannels;
+    private DatagramSocket socket;
+    private InetAddress address;
+    private int port;
+    private UUID playerUUID;
+    private UUID secret;
     private MicThread micThread;
     private boolean running;
     private TalkCache talkCache;
+    private boolean authenticated;
+    private List<AudioChannel> audioChannels;
+    private AuthThread authThread;
 
-    public Client(String serverIp, int serverPort) throws IOException {
-        this.socket = new Socket(serverIp, serverPort);
-        this.fromServer = new DataInputStream(socket.getInputStream());
-        this.toServer = new DataOutputStream(socket.getOutputStream());
-        this.audioChannels = new ArrayList<>();
+    public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret) throws IOException {
+        this.address = InetAddress.getByName(serverIp);
+        this.port = serverPort;
+        this.socket = new DatagramSocket();
+        this.playerUUID = playerUUID;
+        this.secret = secret;
         this.running = true;
         this.talkCache = new TalkCache();
+        this.audioChannels = new ArrayList<>();
+        this.authThread = new AuthThread();
+        this.authThread.start();
         setDaemon(true);
+    }
 
-        try {
-            micThread = new MicThread(toServer);
-            micThread.start();
-        } catch (Exception e) {
-            Main.LOGGER.error("Mic unavailable " + e);
-        }
+    public UUID getPlayerUUID() {
+        return playerUUID;
+    }
+
+    public UUID getSecret() {
+        return secret;
+    }
+
+    public InetAddress getAddress() {
+        return address;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public DatagramSocket getSocket() {
+        return socket;
     }
 
     @Override
     public void run() {
         try {
             while (running) {
-                if (socket.getInputStream().available() > 0) {
-                    NetworkMessage in = NetworkMessage.readPacket(fromServer);
-                    // Ignoring KeepAlive packets
-                    if (in.getPacket() instanceof KeepAlivePacket) {
-                        continue;
+                NetworkMessage in = NetworkMessage.readPacket(socket);
+                if (in.getPacket() instanceof AuthenticateAckPacket) {
+                    if (!authenticated) {
+                        Main.LOGGER.info("Server acknowledged authentication");
+                        authenticated = true;
+
+                        try {
+                            micThread = new MicThread(this);
+                            micThread.start();
+                        } catch (Exception e) {
+                            Main.LOGGER.error("Mic unavailable " + e);
+                        }
                     }
+                } else if (in.getPacket() instanceof SoundPacket) {
                     AudioChannel sendTo = audioChannels.stream().filter(audioChannel -> audioChannel.getUUID().equals(in.getPlayerUUID())).findFirst().orElse(null); //TODO to map
                     if (sendTo == null) {
                         AudioChannel ch = new AudioChannel(this, in.getPlayerUUID());
@@ -58,33 +85,26 @@ public class Client extends Thread {
                     } else {
                         sendTo.addToQueue(in);
                     }
-                } else {
+
                     audioChannels.stream().filter(AudioChannel::canKill).forEach(AudioChannel::closeAndKill);
                     audioChannels.removeIf(AudioChannel::canKill);
-                    Utils.sleep(1);
                 }
+
             }
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void authenticate(UUID playerUUID, UUID secret) {
-        try {
-            (new NetworkMessage(new AuthenticatePacket(playerUUID, secret))).send(toServer);
-        } catch (IOException e) {
-            e.printStackTrace();
+            if (running) {
+                Main.LOGGER.error("Failed to process packet from server: {}", e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
     public void close() {
         Main.LOGGER.info("Disconnecting client");
         running = false;
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        socket.close();
+        authThread.close();
+
         if (micThread != null) {
             micThread.close();
         }
@@ -101,5 +121,32 @@ public class Client extends Thread {
     public TalkCache getTalkCache() {
         return talkCache;
     }
+
+    private class AuthThread extends Thread {
+        private boolean running;
+
+        public AuthThread() {
+            this.running = true;
+            setDaemon(true);
+        }
+
+        @Override
+        public void run() {
+            while (running && !authenticated) {
+                try {
+                    Main.LOGGER.info("Trying to authenticate voice connection");
+                    new NetworkMessage(new AuthenticatePacket(playerUUID, secret), playerUUID, secret).sendToServer(socket, address, port);
+                } catch (IOException e) {
+                    Main.LOGGER.error("Failed to authenticate voice connection: {}", e.getMessage());
+                }
+                Utils.sleep(1000);
+            }
+        }
+
+        public void close() {
+            running = false;
+        }
+    }
+
 }
  

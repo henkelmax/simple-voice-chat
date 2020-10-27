@@ -6,19 +6,18 @@ import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
 import javax.sound.sampled.*;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
 public class MicThread extends Thread {
 
-    private DataOutputStream toServer;
+    private Client client;
     private TargetDataLine mic;
     private boolean running;
     private boolean microphoneLocked;
 
-    public MicThread(DataOutputStream toServer) throws LineUnavailableException {
-        this.toServer = toServer;
+    public MicThread(Client client) throws LineUnavailableException {
+        this.client = client;
         this.running = true;
         setDaemon(true);
         AudioFormat af = AudioChannelConfig.getMonoFormat();
@@ -125,7 +124,7 @@ public class MicThread extends Thread {
     private void sendStopPacket() {
         try {
             // To prevent last sound repeating when no more audio data is available
-            (new NetworkMessage(new SoundPacket(new byte[0]))).send(toServer);
+            new NetworkMessage(new SoundPacket(new byte[0]), client.getPlayerUUID(), client.getSecret()).sendToServer(client.getSocket(), client.getAddress(), client.getPort());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -133,7 +132,7 @@ public class MicThread extends Thread {
 
     private void sendAudioPacket(byte[] data) {
         try {
-            (new NetworkMessage(new SoundPacket(data))).send(toServer);
+            new NetworkMessage(new SoundPacket(data), client.getPlayerUUID(), client.getSecret()).sendToServer(client.getSocket(), client.getAddress(), client.getPort());
         } catch (IOException e) {
             e.printStackTrace();
         }
