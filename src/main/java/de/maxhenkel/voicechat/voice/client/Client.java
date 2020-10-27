@@ -129,6 +129,7 @@ public class Client extends Thread {
         public AuthThread() {
             this.running = true;
             setDaemon(true);
+            setName("VoiceChatAuthenticationThread");
         }
 
         @Override
