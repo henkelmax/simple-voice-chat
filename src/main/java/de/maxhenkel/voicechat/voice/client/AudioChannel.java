@@ -90,7 +90,7 @@ public class AudioChannel extends Thread {
                     byte[] data = new byte[AudioChannelConfig.getDataLength() * 2 * Main.CLIENT_CONFIG.outputBufferSize.get()];
                     speaker.write(data, 0, data.length);
                 }
-                PlayerEntity player = minecraft.world.getPlayerByUuid(message.getPlayerUUID());
+                PlayerEntity player = minecraft.world.getPlayerByUuid(soundPacket.getSender());
                 if (player != null) {
                     client.getTalkCache().updateTalking(player.getUniqueID());
                     float distance = player.getDistance(minecraft.player);

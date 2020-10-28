@@ -77,9 +77,10 @@ public class Client extends Thread {
                         }
                     }
                 } else if (in.getPacket() instanceof SoundPacket) {
-                    AudioChannel sendTo = audioChannels.stream().filter(audioChannel -> audioChannel.getUUID().equals(in.getPlayerUUID())).findFirst().orElse(null); //TODO to map
+                    SoundPacket packet = (SoundPacket) in.getPacket();
+                    AudioChannel sendTo = audioChannels.stream().filter(audioChannel -> audioChannel.getUUID().equals(packet.getSender())).findFirst().orElse(null); //TODO to map
                     if (sendTo == null) {
-                        AudioChannel ch = new AudioChannel(this, in.getPlayerUUID());
+                        AudioChannel ch = new AudioChannel(this, packet.getSender());
                         ch.addToQueue(in);
                         ch.start();
                         audioChannels.add(ch);
@@ -137,7 +138,7 @@ public class Client extends Thread {
             while (running && !authenticated) {
                 try {
                     Main.LOGGER.info("Trying to authenticate voice connection");
-                    new NetworkMessage(new AuthenticatePacket(playerUUID, secret), playerUUID, secret).sendToServer(Client.this);
+                    new NetworkMessage(new AuthenticatePacket(playerUUID, secret)).sendToServer(Client.this);
                 } catch (IOException e) {
                     Main.LOGGER.error("Failed to authenticate voice connection: {}", e.getMessage());
                 }

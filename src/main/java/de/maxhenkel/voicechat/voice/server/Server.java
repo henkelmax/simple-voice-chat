@@ -45,7 +45,7 @@ public class Server extends Thread {
                     NetworkMessage message = NetworkMessage.readPacket(socket);
                     packetQueue.add(message);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    e.printStackTrace(); //TODO remove in production
                 }
             }
         } catch (SocketException e) {
@@ -100,23 +100,29 @@ public class Server extends Thread {
                             UUID secret = secrets.get(packet.getPlayerUUID());
                             if (secret != null && secret.equals(packet.getSecret())) {
                                 ClientConnection connection;
-                                if (!connections.containsKey(message.getPlayerUUID())) {
-                                    connection = new ClientConnection(message.getPlayerUUID(), message.getAddress(), message.getPort());
-                                    connections.put(message.getPlayerUUID(), connection);
-                                    Main.LOGGER.info("Successfully authenticated player {}", message.getPlayerUUID());
+                                if (!connections.containsKey(packet.getPlayerUUID())) {
+                                    connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress(), message.getPort());
+                                    connections.put(packet.getPlayerUUID(), connection);
+                                    Main.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
                                 } else {
-                                    connection = connections.get(message.getPlayerUUID());
+                                    connection = connections.get(packet.getPlayerUUID());
                                 }
-                                new NetworkMessage(new AuthenticateAckPacket(), message.getPlayerUUID(), packet.getSecret()).sendTo(socket, connection);
+                                new NetworkMessage(new AuthenticateAckPacket()).sendTo(socket, connection);
                             }
                         }
 
-                        if (!isPacketAuthorized(message)) {
+                        UUID playerUUID = message.getSender(Server.this);
+                        if (playerUUID == null) {
                             continue;
                         }
 
-                        if (message.getPacket() instanceof SoundPacket) {
-                            ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(message.getPlayerUUID());
+                        if (!isPacketAuthorized(message, playerUUID)) {
+                            continue;
+                        }
+
+                        if (message.getPacket() instanceof MicPacket) {
+                            MicPacket packet = (MicPacket) message.getPacket();
+                            ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(playerUUID);
                             if (player == null) {
                                 continue;
                             }
@@ -138,9 +144,10 @@ public class Server extends Thread {
                                     .map(playerEntity -> connections.get(playerEntity.getUniqueID()))
                                     .filter(Objects::nonNull)
                                     .collect(Collectors.toList());
+                            NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(playerUUID, packet.getData()));
                             for (ClientConnection clientConnection : closeConnections) {
-                                if (!clientConnection.getPlayerUUID().equals(message.getPlayerUUID())) {
-                                    message.sendTo(socket, clientConnection);
+                                if (!clientConnection.getPlayerUUID().equals(playerUUID)) {
+                                    soundMessage.sendTo(socket, clientConnection);
                                 }
                             }
                         }
@@ -156,13 +163,16 @@ public class Server extends Thread {
         }
     }
 
-    private boolean isPacketAuthorized(NetworkMessage message) {
-        UUID secret = secrets.get(message.getPlayerUUID());
-        if (secret == null || !secret.equals(message.getSecret())) {
-            return false;
-        }
-        ClientConnection connection = connections.get(message.getPlayerUUID());
-        return connection.getAddress().equals(message.getAddress()) && connection.getPort() == message.getPort();
+    private boolean isPacketAuthorized(NetworkMessage message, UUID sender) {
+        UUID secret = secrets.get(sender);
+        return secret != null && secret.equals(message.getSecret());
     }
 
+    public Map<UUID, ClientConnection> getConnections() {
+        return connections;
+    }
+
+    public Map<UUID, UUID> getSecrets() {
+        return secrets;
+    }
 }

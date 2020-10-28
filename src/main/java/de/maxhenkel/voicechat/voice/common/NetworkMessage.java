@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.common;
 
 import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
+import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
 
@@ -16,39 +17,32 @@ import java.util.UUID;
 
 public class NetworkMessage {
 
+    private final long timestamp;
+    private final long ttl;
     private Packet<? extends Packet> packet;
-    private UUID playerUUID;
     private UUID secret;
     private InetAddress address;
     private int port;
-    private long timestamp;
-    private long ttl;
 
-    public NetworkMessage(Packet<?> packet, UUID playerUUID, UUID secret, InetAddress address, int port) {
-        this();
-        this.packet = packet;
-        this.playerUUID = playerUUID;
+    public NetworkMessage(Packet<?> packet, UUID secret) {
+        this(packet);
         this.secret = secret;
-        this.address = address;
-        this.port = port;
     }
 
-    public NetworkMessage(Packet<?> packet, UUID playerUUID, UUID secret) {
-        this(packet, playerUUID, secret, null, -1);
+    public NetworkMessage(Packet<?> packet) {
+        this();
+        this.packet = packet;
     }
 
     private NetworkMessage() {
         this.timestamp = System.currentTimeMillis();
         this.ttl = 2000L;
+        this.port = -1;
     }
 
     @Nonnull
     public Packet<? extends Packet> getPacket() {
         return packet;
-    }
-
-    public UUID getPlayerUUID() {
-        return playerUUID;
     }
 
     public UUID getSecret() {
@@ -75,9 +69,10 @@ public class NetworkMessage {
 
     static {
         packetRegistry = new HashMap<>();
-        packetRegistry.put((byte) 0, SoundPacket.class);
-        packetRegistry.put((byte) 1, AuthenticatePacket.class);
-        packetRegistry.put((byte) 2, AuthenticateAckPacket.class);
+        packetRegistry.put((byte) 0, MicPacket.class);
+        packetRegistry.put((byte) 1, SoundPacket.class);
+        packetRegistry.put((byte) 2, AuthenticatePacket.class);
+        packetRegistry.put((byte) 3, AuthenticateAckPacket.class);
     }
 
     public static NetworkMessage readPacket(DatagramSocket socket) throws IllegalAccessException, InstantiationException, IOException {
@@ -95,13 +90,18 @@ public class NetworkMessage {
         Packet<? extends Packet<?>> p = packetClass.newInstance();
 
         NetworkMessage message = new NetworkMessage();
-        message.playerUUID = buffer.readUniqueId();
-        message.secret = buffer.readUniqueId();
+        if (buffer.readBoolean()) {
+            message.secret = buffer.readUniqueId();
+        }
         message.address = packet.getAddress();
         message.port = packet.getPort();
         message.packet = p.fromBytes(buffer);
 
         return message;
+    }
+
+    public UUID getSender(Server server) {
+        return server.getConnections().values().stream().filter(connection -> connection.getAddress().equals(address) && connection.getPort() == port).map(ClientConnection::getPlayerUUID).findAny().orElse(null);
     }
 
     private static byte getPacketType(Packet<? extends Packet> packet) {
@@ -123,8 +123,10 @@ public class NetworkMessage {
         }
 
         buffer.writeByte(type);
-        buffer.writeUniqueId(playerUUID);
-        buffer.writeUniqueId(secret);
+        buffer.writeBoolean(secret != null);
+        if (secret != null) {
+            buffer.writeUniqueId(secret);
+        }
         packet.toBytes(buffer);
 
         return buffer.array();

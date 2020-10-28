@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Main;
+import de.maxhenkel.voicechat.voice.common.MicPacket;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
-import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
 import javax.sound.sampled.*;
@@ -125,7 +125,7 @@ public class MicThread extends Thread {
     private void sendStopPacket() {
         try {
             // To prevent last sound repeating when no more audio data is available
-            new NetworkMessage(new SoundPacket(new byte[0]), client.getPlayerUUID(), client.getSecret()).sendToServer(client);
+            new NetworkMessage(new MicPacket(new byte[0]), client.getSecret()).sendToServer(client);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -133,7 +133,7 @@ public class MicThread extends Thread {
 
     private void sendAudioPacket(byte[] data) {
         try {
-            new NetworkMessage(new SoundPacket(data), client.getPlayerUUID(), client.getSecret()).sendToServer(client);
+            new NetworkMessage(new MicPacket(data), client.getSecret()).sendToServer(client);
         } catch (IOException e) {
             e.printStackTrace();
         }
