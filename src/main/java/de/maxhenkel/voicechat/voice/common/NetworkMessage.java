@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
+import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
@@ -129,13 +130,14 @@ public class NetworkMessage {
         return buffer.array();
     }
 
-    public void sendToServer(DatagramSocket socket, InetAddress address, int port) throws IOException {
+    public void sendToServer(Client client) throws IOException {
         byte[] data = write();
-        socket.send(new DatagramPacket(data, data.length, address, port));
+        client.getSocket().send(new DatagramPacket(data, data.length, client.getAddress(), client.getPort()));
     }
 
     public void sendTo(DatagramSocket socket, ClientConnection connection) throws IOException {
         byte[] data = write();
         socket.send(new DatagramPacket(data, data.length, connection.getAddress(), connection.getPort()));
     }
+
 }

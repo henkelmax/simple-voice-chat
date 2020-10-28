@@ -137,7 +137,7 @@ public class Client extends Thread {
             while (running && !authenticated) {
                 try {
                     Main.LOGGER.info("Trying to authenticate voice connection");
-                    new NetworkMessage(new AuthenticatePacket(playerUUID, secret), playerUUID, secret).sendToServer(socket, address, port);
+                    new NetworkMessage(new AuthenticatePacket(playerUUID, secret), playerUUID, secret).sendToServer(Client.this);
                 } catch (IOException e) {
                     Main.LOGGER.error("Failed to authenticate voice connection: {}", e.getMessage());
                 }

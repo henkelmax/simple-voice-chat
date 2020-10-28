@@ -125,7 +125,7 @@ public class MicThread extends Thread {
     private void sendStopPacket() {
         try {
             // To prevent last sound repeating when no more audio data is available
-            new NetworkMessage(new SoundPacket(new byte[0]), client.getPlayerUUID(), client.getSecret()).sendToServer(client.getSocket(), client.getAddress(), client.getPort());
+            new NetworkMessage(new SoundPacket(new byte[0]), client.getPlayerUUID(), client.getSecret()).sendToServer(client);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -133,7 +133,7 @@ public class MicThread extends Thread {
 
     private void sendAudioPacket(byte[] data) {
         try {
-            new NetworkMessage(new SoundPacket(data), client.getPlayerUUID(), client.getSecret()).sendToServer(client.getSocket(), client.getAddress(), client.getPort());
+            new NetworkMessage(new SoundPacket(data), client.getPlayerUUID(), client.getSecret()).sendToServer(client);
         } catch (IOException e) {
             e.printStackTrace();
         }
