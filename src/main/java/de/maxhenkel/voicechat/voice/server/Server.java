@@ -20,14 +20,14 @@ public class Server extends Thread {
     private MinecraftServer server;
     private DatagramSocket socket;
     private ProcessThread processThread;
-    private List<NetworkMessage> sendQueue;
+    private List<NetworkMessage> packetQueue;
 
     public Server(int port, MinecraftServer server) {
         this.port = port;
         this.server = server;
         connections = new HashMap<>();
         secrets = new HashMap<>();
-        sendQueue = new ArrayList<>();
+        packetQueue = new ArrayList<>();
         setDaemon(true);
         setName("VoiceChatServerThread");
         processThread = new ProcessThread();
@@ -43,7 +43,7 @@ public class Server extends Thread {
             while (!socket.isClosed()) {
                 try {
                     NetworkMessage message = NetworkMessage.readPacket(socket);
-                    sendQueue.add(message);
+                    packetQueue.add(message);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -86,11 +86,11 @@ public class Server extends Thread {
         public void run() {
             while (running) {
                 try {
-                    if (sendQueue.isEmpty()) {
+                    if (packetQueue.isEmpty()) {
                         Utils.sleep(10);
                     } else {
-                        NetworkMessage message = sendQueue.get(0);
-                        sendQueue.remove(message);
+                        NetworkMessage message = packetQueue.get(0);
+                        packetQueue.remove(message);
                         if (System.currentTimeMillis() - message.getTimestamp() > message.getTTL()) {
                             continue;
                         }
@@ -109,7 +109,13 @@ public class Server extends Thread {
                                 }
                                 new NetworkMessage(new AuthenticateAckPacket(), message.getPlayerUUID(), packet.getSecret()).sendTo(socket, connection);
                             }
-                        } else if (message.getPacket() instanceof SoundPacket) {
+                        }
+
+                        if (!isPacketAuthorized(message)) {
+                            continue;
+                        }
+
+                        if (message.getPacket() instanceof SoundPacket) {
                             ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(message.getPlayerUUID());
                             if (player == null) {
                                 continue;
@@ -148,6 +154,15 @@ public class Server extends Thread {
         public void close() {
             running = false;
         }
+    }
+
+    private boolean isPacketAuthorized(NetworkMessage message) {
+        UUID secret = secrets.get(message.getPlayerUUID());
+        if (secret == null || !secret.equals(message.getSecret())) {
+            return false;
+        }
+        ClientConnection connection = connections.get(message.getPlayerUUID());
+        return connection.getAddress().equals(message.getAddress()) && connection.getPort() == message.getPort();
     }
 
 }
