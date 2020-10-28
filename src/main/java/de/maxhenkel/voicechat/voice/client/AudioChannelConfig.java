@@ -20,10 +20,6 @@ public class AudioChannelConfig {
         Main.LOGGER.info("Setting sample rate to " + sampleRate + " Hz and data length to " + dataLength + " bytes");
     }
 
-    public static void onClientConfigUpdate() {
-
-    }
-
     public static AudioFormat getMonoFormat() {
         return monoFormat;
     }
