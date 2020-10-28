@@ -121,4 +121,8 @@ public class AudioChannel extends Thread {
         }
     }
 
+    public boolean isClosed() {
+        return stopped;
+    }
+
 }

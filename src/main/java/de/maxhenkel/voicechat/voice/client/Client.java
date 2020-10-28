@@ -6,9 +6,7 @@ import de.maxhenkel.voicechat.voice.common.*;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Client extends Thread {
 
@@ -21,7 +19,7 @@ public class Client extends Thread {
     private boolean running;
     private TalkCache talkCache;
     private boolean authenticated;
-    private List<AudioChannel> audioChannels;
+    private Map<UUID, AudioChannel> audioChannels;
     private AuthThread authThread;
 
     public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret) throws IOException {
@@ -32,7 +30,7 @@ public class Client extends Thread {
         this.secret = secret;
         this.running = true;
         this.talkCache = new TalkCache();
-        this.audioChannels = new ArrayList<>();
+        this.audioChannels = new HashMap<>();
         this.authThread = new AuthThread();
         this.authThread.start();
         setDaemon(true);
@@ -78,18 +76,18 @@ public class Client extends Thread {
                     }
                 } else if (in.getPacket() instanceof SoundPacket) {
                     SoundPacket packet = (SoundPacket) in.getPacket();
-                    AudioChannel sendTo = audioChannels.stream().filter(audioChannel -> audioChannel.getUUID().equals(packet.getSender())).findFirst().orElse(null); //TODO to map
+                    AudioChannel sendTo = audioChannels.get(packet.getSender());
                     if (sendTo == null) {
                         AudioChannel ch = new AudioChannel(this, packet.getSender());
                         ch.addToQueue(in);
                         ch.start();
-                        audioChannels.add(ch);
+                        audioChannels.put(packet.getSender(), ch);
                     } else {
                         sendTo.addToQueue(in);
                     }
 
-                    audioChannels.stream().filter(AudioChannel::canKill).forEach(AudioChannel::closeAndKill);
-                    audioChannels.removeIf(AudioChannel::canKill);
+                    audioChannels.values().stream().filter(AudioChannel::canKill).forEach(AudioChannel::closeAndKill);
+                    audioChannels.entrySet().removeIf(entry -> entry.getValue().isClosed());
                 }
 
             }
