@@ -1,8 +1,8 @@
 modLoader="javafml"
 loaderVersion="${mod_forge_version}"
 license="All rights reserved"
-issueTrackerURL="https://minecraft.curseforge.com/projects/xxx/issues"
-displayURL="http://minecraft.curseforge.com/projects/xxx"
+issueTrackerURL="https://github.com/henkelmax/simple-voice-chat/issues"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat"
 # logoFile="voicechat.png"
 # credits=""
 authors="${mod_vendor}"
@@ -11,7 +11,7 @@ modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
 updateJSONURL="https://maxhenkel.de/update/voicechat.json"
-description='''This mod adds a working voice chat'''
+description='''A working voice chat in Minecraft!'''
 [[dependencies.${mod_id}]]
     modId="forge"
     mandatory=true

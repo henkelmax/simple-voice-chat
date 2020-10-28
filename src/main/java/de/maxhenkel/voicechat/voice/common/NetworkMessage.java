@@ -1,36 +1,43 @@
 package de.maxhenkel.voicechat.voice.common;
 
+import de.maxhenkel.voicechat.voice.client.Client;
+import de.maxhenkel.voicechat.voice.server.ClientConnection;
+import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
 
 import javax.annotation.Nonnull;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class NetworkMessage {
 
+    private final long timestamp;
+    private final long ttl;
     private Packet<? extends Packet> packet;
-    private UUID playerUUID;
-    private long timestamp;
-    private long ttl;
+    private UUID secret;
+    private InetAddress address;
+    private int port;
 
-    public NetworkMessage(Packet<?> packet, UUID playerUUID) {
-        this.packet = packet;
-        this.playerUUID = playerUUID;
-        this.timestamp = System.currentTimeMillis();
-        this.ttl = 2000L;
+    public NetworkMessage(Packet<?> packet, UUID secret) {
+        this(packet);
+        this.secret = secret;
     }
 
     public NetworkMessage(Packet<?> packet) {
-        this(packet, null);
+        this();
+        this.packet = packet;
     }
 
     private NetworkMessage() {
-        this(null);
+        this.timestamp = System.currentTimeMillis();
+        this.ttl = 2000L;
+        this.port = -1;
     }
 
     @Nonnull
@@ -38,8 +45,8 @@ public class NetworkMessage {
         return packet;
     }
 
-    public UUID getPlayerUUID() {
-        return playerUUID;
+    public UUID getSecret() {
+        return secret;
     }
 
     public long getTimestamp() {
@@ -50,42 +57,52 @@ public class NetworkMessage {
         return ttl;
     }
 
+    public InetAddress getAddress() {
+        return address;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
     private static final Map<Byte, Class<? extends Packet>> packetRegistry;
 
     static {
         packetRegistry = new HashMap<>();
-        packetRegistry.put((byte) 0, SoundPacket.class);
-        packetRegistry.put((byte) 1, AuthenticatePacket.class);
-        packetRegistry.put((byte) 2, KeepAlivePacket.class);
+        packetRegistry.put((byte) 0, MicPacket.class);
+        packetRegistry.put((byte) 1, SoundPacket.class);
+        packetRegistry.put((byte) 2, AuthenticatePacket.class);
+        packetRegistry.put((byte) 3, AuthenticateAckPacket.class);
     }
 
-    public static NetworkMessage readPacket(DataInputStream inputStream) throws IOException, IllegalAccessException, InstantiationException {
-        int length = Math.max(0, inputStream.readInt());
-        byte[] compressedData = new byte[length];
-        inputStream.readFully(compressedData);
-        byte[] data = Utils.gUnzip(compressedData);
+    public static NetworkMessage readPacket(DatagramSocket socket) throws IllegalAccessException, InstantiationException, IOException {
+        // 4096 is the maximum packet size a packet can have with 44100 hz
+        DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
+        socket.receive(packet);
+        byte[] data = new byte[packet.getLength()];
+        System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
+
         PacketBuffer buffer = new PacketBuffer(Unpooled.wrappedBuffer(data));
         byte packetType = buffer.readByte();
         Class<? extends Packet> packetClass = packetRegistry.get(packetType);
         if (packetClass == null) {
-            packetClass = KeepAlivePacket.class;
+            throw new InstantiationException("Could not find packet with ID " + packetType);
         }
         Packet<? extends Packet<?>> p = packetClass.newInstance();
 
         NetworkMessage message = new NetworkMessage();
         if (buffer.readBoolean()) {
-            message.playerUUID = buffer.readUniqueId();
+            message.secret = buffer.readUniqueId();
         }
-
+        message.address = packet.getAddress();
+        message.port = packet.getPort();
         message.packet = p.fromBytes(buffer);
 
         return message;
     }
 
-    public static NetworkMessage readPacket(DataInputStream inputStream, UUID playerUUID) throws IOException, IllegalAccessException, InstantiationException {
-        NetworkMessage networkMessage = readPacket(inputStream);
-        networkMessage.playerUUID = playerUUID;
-        return networkMessage;
+    public UUID getSender(Server server) {
+        return server.getConnections().values().stream().filter(connection -> connection.getAddress().equals(address) && connection.getPort() == port).map(ClientConnection::getPlayerUUID).findAny().orElse(null);
     }
 
     private static byte getPacketType(Packet<? extends Packet> packet) {
@@ -97,7 +114,7 @@ public class NetworkMessage {
         return -1;
     }
 
-    public void send(DataOutputStream outputStream) throws IOException {
+    public byte[] write() {
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
 
         byte type = getPacketType(packet);
@@ -107,20 +124,23 @@ public class NetworkMessage {
         }
 
         buffer.writeByte(type);
-
-        if (playerUUID != null) {
-            buffer.writeBoolean(true);
-            buffer.writeUniqueId(playerUUID);
-        } else {
-            buffer.writeBoolean(false);
+        buffer.writeBoolean(secret != null);
+        if (secret != null) {
+            buffer.writeUniqueId(secret);
         }
-
         packet.toBytes(buffer);
 
-        byte[] compressedData = Utils.gzip(buffer.array());
-
-        outputStream.writeInt(compressedData.length);
-        outputStream.write(compressedData);
-        outputStream.flush();
+        return buffer.array();
     }
+
+    public void sendToServer(Client client) throws IOException {
+        byte[] data = write();
+        client.getSocket().send(new DatagramPacket(data, data.length, client.getAddress(), client.getPort()));
+    }
+
+    public void sendTo(DatagramSocket socket, ClientConnection connection) throws IOException {
+        byte[] data = write();
+        socket.send(new DatagramPacket(data, data.length, connection.getAddress(), connection.getPort()));
+    }
+
 }

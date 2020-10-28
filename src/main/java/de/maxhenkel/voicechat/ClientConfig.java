@@ -10,6 +10,7 @@ public class ClientConfig extends ConfigBase {
     public final ForgeConfigSpec.DoubleValue voiceActivationThreshold;
     public final ForgeConfigSpec.DoubleValue microphoneAmplification;
     public final ForgeConfigSpec.EnumValue<MicrophoneActivationType> microphoneActivationType;
+    public final ForgeConfigSpec.IntValue outputBufferSize;
 
     public ClientConfig(ForgeConfigSpec.Builder builder) {
         super(builder);
@@ -25,5 +26,13 @@ public class ClientConfig extends ConfigBase {
         microphoneAmplification = builder
                 .comment("The voice chat microphone amplification")
                 .defineInRange("microphone_amplification", 1D, 0D, 4D);
+        outputBufferSize = builder
+                .comment(
+                        "The size of the audio output buffer in packets",
+                        "Higher values mean a higher latency, but less crackles",
+                        "Increase this value if you have an unstable internet connection"
+                )
+                .defineInRange("output_buffer_size", 6, 1, 16);
     }
+
 }

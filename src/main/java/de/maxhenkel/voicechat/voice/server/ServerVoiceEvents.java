@@ -35,12 +35,25 @@ public class ServerVoiceEvents {
         if (server == null) {
             return;
         }
-        UUID secret = UUID.randomUUID();
-        server.getSecrets().put(event.getPlayer().getUniqueID(), secret);
+
         if (event.getPlayer() instanceof ServerPlayerEntity) {
             ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+            UUID secret = server.getSecret(player.getUniqueID());
             Main.SIMPLE_CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new AuthenticationMessage(player.getUniqueID(), secret));
-            Main.LOGGER.info("Sent secret to " + player.getUniqueID());
+            Main.LOGGER.info("Sent secret to " + player.getDisplayName().getString());
+        }
+    }
+
+    @SubscribeEvent
+    public void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (server == null) {
+            return;
+        }
+
+        if (event.getPlayer() instanceof ServerPlayerEntity) {
+            ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+            server.disconnectClient(player.getUniqueID());
+            Main.LOGGER.info("Disconnecting client " + player.getDisplayName().getString());
         }
     }
 

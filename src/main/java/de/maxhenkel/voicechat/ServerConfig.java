@@ -1,7 +1,11 @@
 package de.maxhenkel.voicechat;
 
 import de.maxhenkel.corelib.config.ConfigBase;
+import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.config.ModConfig;
 
 public class ServerConfig extends ConfigBase {
 
@@ -21,11 +25,16 @@ public class ServerConfig extends ConfigBase {
                 .defineInRange("voice_chat.distance", 32D, 1D, 1_000_000D);
         voiceChatFadeDistance = builder
                 .comment("The distance to where the voice starts fading")
-                .worldRestart()
                 .defineInRange("voice_chat.fade_distance", 16D, 1D, 1_000_000D);
         voiceChatSampleRate = builder
                 .comment("The sample rate for the voice chat")
-                .worldRestart()
-                .defineInRange("voice_chat.quality.sample_rate", 22050, 1000, 44100);
+                .defineInRange("voice_chat.sample_rate", 16000, 10000, 44100);
+    }
+
+    @Override
+    public void onReload(ModConfig.ModConfigEvent event) {
+        super.onReload(event);
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> AudioChannelConfig::onServerConfigUpdate);
+
     }
 }

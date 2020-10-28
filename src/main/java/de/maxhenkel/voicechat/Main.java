@@ -2,7 +2,8 @@ package de.maxhenkel.voicechat;
 
 import de.maxhenkel.corelib.CommonRegistry;
 import de.maxhenkel.voicechat.net.AuthenticationMessage;
-import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
+import de.maxhenkel.voicechat.net.PlayerListMessage;
+import de.maxhenkel.voicechat.net.RequestPlayerListMessage;
 import de.maxhenkel.voicechat.voice.client.ClientVoiceEvents;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import net.minecraft.client.settings.KeyBinding;
@@ -49,18 +50,9 @@ public class Main {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 
-        SERVER_CONFIG = CommonRegistry.registerConfig(ModConfig.Type.SERVER, ServerConfig.class);
+        SERVER_CONFIG = CommonRegistry.registerConfig(ModConfig.Type.SERVER, ServerConfig.class, true);
         CLIENT_CONFIG = CommonRegistry.registerConfig(ModConfig.Type.CLIENT, ClientConfig.class);
         VOLUME_CONFIG = new PlayerVolumeConfig();
-    }
-
-    @SubscribeEvent
-    public void configEvent(ModConfig.ModConfigEvent event) {
-        if (event.getConfig().getType() == ModConfig.Type.SERVER) {
-            AudioChannelConfig.onServerConfigUpdate();
-        } else if (event.getConfig().getType() == ModConfig.Type.CLIENT) {
-            AudioChannelConfig.onClientConfigUpdate();
-        }
     }
 
     @SubscribeEvent
@@ -71,12 +63,12 @@ public class Main {
 
         SIMPLE_CHANNEL = CommonRegistry.registerChannel(Main.MODID, "default");
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 0, AuthenticationMessage.class);
+        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 1, RequestPlayerListMessage.class);
+        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 2, PlayerListMessage.class);
     }
 
     @SubscribeEvent
     public void clientSetup(FMLClientSetupEvent event) {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::configEvent);
-
         CLIENT_VOICE_EVENTS = new ClientVoiceEvents();
         MinecraftForge.EVENT_BUS.register(CLIENT_VOICE_EVENTS);
 

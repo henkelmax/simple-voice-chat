@@ -1,26 +1,26 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Main;
+import de.maxhenkel.voicechat.voice.common.MicPacket;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
-import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
 import javax.sound.sampled.*;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
 public class MicThread extends Thread {
 
-    private DataOutputStream toServer;
+    private Client client;
     private TargetDataLine mic;
     private boolean running;
     private boolean microphoneLocked;
 
-    public MicThread(DataOutputStream toServer) throws LineUnavailableException {
-        this.toServer = toServer;
+    public MicThread(Client client) throws LineUnavailableException {
+        this.client = client;
         this.running = true;
         setDaemon(true);
+        setName("MicrophoneThread");
         AudioFormat af = AudioChannelConfig.getMonoFormat();
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, null);
         mic = (TargetDataLine) (AudioSystem.getLine(info));
@@ -68,7 +68,6 @@ public class MicThread extends Thread {
             if (offset < 0) {
                 if (deactivationDelay >= 2) {
                     activating = false;
-                    sendStopPacket();
                     deactivationDelay = 0;
                 } else {
                     sendAudioPacket(buff);
@@ -99,7 +98,6 @@ public class MicThread extends Thread {
             if (wasPTT) {
                 mic.stop();
                 mic.flush();
-                sendStopPacket();
                 wasPTT = false;
             }
             Utils.sleep(10);
@@ -122,18 +120,9 @@ public class MicThread extends Thread {
         sendAudioPacket(buff);
     }
 
-    private void sendStopPacket() {
-        try {
-            // To prevent last sound repeating when no more audio data is available
-            (new NetworkMessage(new SoundPacket(new byte[0]))).send(toServer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void sendAudioPacket(byte[] data) {
         try {
-            (new NetworkMessage(new SoundPacket(data))).send(toServer);
+            new NetworkMessage(new MicPacket(data), client.getSecret()).sendToServer(client);
         } catch (IOException e) {
             e.printStackTrace();
         }

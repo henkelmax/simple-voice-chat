@@ -6,13 +6,8 @@ import net.minecraft.util.math.vector.Vector3d;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
 public class Utils {
+
     public static void sleep(int ms) {
         try {
             Thread.sleep(ms);
@@ -22,51 +17,6 @@ public class Utils {
 
     public static float percentageToDB(float percentage) {
         return (float) (10D * Math.log(percentage));
-    }
-
-    /**
-     * Decompresses the given data with the gzip algorithm
-     *
-     * @param data the data to decompress
-     * @return the decompressed data
-     * @throws IOException if an IO error occurs
-     */
-    public static byte[] gUnzip(byte[] data) throws IOException {
-        ByteArrayInputStream bis = new ByteArrayInputStream(data);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        GZIPInputStream gzipIS = new GZIPInputStream(bis);
-
-        byte[] buffer = new byte[128];
-        int len;
-        while ((len = gzipIS.read(buffer)) != -1) {
-            bos.write(buffer, 0, len);
-        }
-        bos.flush();
-        byte[] decompressed = bos.toByteArray();
-
-        gzipIS.close();
-        bos.close();
-        bis.close();
-        return decompressed;
-    }
-
-    /**
-     * Compresses the given bytes with the gzip algorithm
-     *
-     * @param data the data to compress
-     * @return the compressed data
-     * @throws IOException if an IO error occurs
-     */
-    public static byte[] gzip(byte[] data) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length);
-        GZIPOutputStream gzipOut = new GZIPOutputStream(bos);
-        gzipOut.write(data);
-        gzipOut.flush();
-        gzipOut.close();
-        bos.flush();
-        byte[] compressed = bos.toByteArray();
-        bos.close();
-        return compressed;
     }
 
     public static short bytesToShort(byte b1, byte b2) {

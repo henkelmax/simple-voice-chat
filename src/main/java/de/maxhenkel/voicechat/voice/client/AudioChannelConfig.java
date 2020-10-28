@@ -15,14 +15,9 @@ public class AudioChannelConfig {
         monoFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, 16, 1, 2, sampleRate, false);
         stereoFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, 16, 2, 4, sampleRate, false);
 
-        dataLength = Main.SERVER_CONFIG.voiceChatSampleRate.get() / 4;
-        dataLength = dataLength + (dataLength % 2);
+        dataLength = (Main.SERVER_CONFIG.voiceChatSampleRate.get() / 200) * 16;
 
         Main.LOGGER.info("Setting sample rate to " + sampleRate + " Hz and data length to " + dataLength + " bytes");
-    }
-
-    public static void onClientConfigUpdate() {
-
     }
 
     public static AudioFormat getMonoFormat() {
