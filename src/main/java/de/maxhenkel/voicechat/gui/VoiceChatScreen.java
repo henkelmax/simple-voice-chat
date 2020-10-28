@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.gui;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Main;
+import de.maxhenkel.voicechat.net.RequestPlayerListMessage;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -44,7 +45,7 @@ public class VoiceChatScreen extends Screen implements MicTestButton.MicListener
         func_230480_a_(voiceActivationSlider);
         func_230480_a_(new MicTestButton(guiLeft + 10, guiTop + 145, xSize - 20, 20, this));
         func_230480_a_(new Button(guiLeft + 10, guiTop + 170, xSize - 20, 20, new TranslationTextComponent("message.adjust_volumes"), button -> {
-            field_230706_i_.displayGuiScreen(new AdjustVolumeScreen());
+            Main.SIMPLE_CHANNEL.sendToServer(new RequestPlayerListMessage());
         }));
     }
 

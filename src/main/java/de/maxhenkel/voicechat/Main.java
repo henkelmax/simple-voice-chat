@@ -2,6 +2,8 @@ package de.maxhenkel.voicechat;
 
 import de.maxhenkel.corelib.CommonRegistry;
 import de.maxhenkel.voicechat.net.AuthenticationMessage;
+import de.maxhenkel.voicechat.net.PlayerListMessage;
+import de.maxhenkel.voicechat.net.RequestPlayerListMessage;
 import de.maxhenkel.voicechat.voice.client.ClientVoiceEvents;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import net.minecraft.client.settings.KeyBinding;
@@ -61,6 +63,8 @@ public class Main {
 
         SIMPLE_CHANNEL = CommonRegistry.registerChannel(Main.MODID, "default");
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 0, AuthenticationMessage.class);
+        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 1, RequestPlayerListMessage.class);
+        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 2, PlayerListMessage.class);
     }
 
     @SubscribeEvent

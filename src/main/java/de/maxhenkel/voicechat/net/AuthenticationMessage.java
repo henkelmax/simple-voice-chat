@@ -34,10 +34,9 @@ public class AuthenticationMessage implements Message<AuthenticationMessage> {
 
     @Override
     public AuthenticationMessage fromBytes(PacketBuffer buf) {
-        AuthenticationMessage message = new AuthenticationMessage();
-        message.playerUUID = buf.readUniqueId();
-        message.secret = buf.readUniqueId();
-        return message;
+        playerUUID = buf.readUniqueId();
+        secret = buf.readUniqueId();
+        return this;
     }
 
     @Override
