@@ -76,7 +76,8 @@ public class NetworkMessage {
     }
 
     public static NetworkMessage readPacket(DatagramSocket socket) throws IllegalAccessException, InstantiationException, IOException {
-        DatagramPacket packet = new DatagramPacket(new byte[10_000], 10_000); //TODO better size
+        // 4096 is the maximum packet size a packet can have with 44100 hz
+        DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
         socket.receive(packet);
         byte[] data = new byte[packet.getLength()];
         System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
