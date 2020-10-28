@@ -84,7 +84,7 @@ public class AudioChannel extends Thread {
                 // Filling the speaker with silence for one packet size
                 // to build a small buffer to compensate for network latency
                 if (speaker.getBufferSize() - speaker.available() <= 0) {
-                    byte[] data = new byte[AudioChannelConfig.getDataLength() * 2 * Main.CLIENT_CONFIG.outputBufferSize.get()];
+                    byte[] data = new byte[Math.min(AudioChannelConfig.getDataLength() * 2 * Main.CLIENT_CONFIG.outputBufferSize.get(), speaker.getBufferSize() - AudioChannelConfig.getDataLength())];
                     speaker.write(data, 0, data.length);
                 }
                 PlayerEntity player = minecraft.world.getPlayerByUuid(soundPacket.getSender());

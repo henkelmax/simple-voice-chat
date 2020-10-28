@@ -32,7 +32,7 @@ public class ClientConfig extends ConfigBase {
                         "Higher values mean a higher latency, but less crackles",
                         "Increase this value if you have an unstable internet connection"
                 )
-                .defineInRange("output_buffer_size", 2, 1, 8);
+                .defineInRange("output_buffer_size", 6, 1, 16);
     }
 
 }
