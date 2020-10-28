@@ -65,6 +65,11 @@ public class AudioChannel extends Thread {
             gainControl = (FloatControl) speaker.getControl(FloatControl.Type.MASTER_GAIN);
             while (!stopped) {
                 if (queue.isEmpty()) {
+                    // Stopping the data line when the buffer is empty
+                    // to prevent the last sound getting repeated
+                    if (speaker.getBufferSize() - speaker.available() <= 0 && speaker.isActive()) {
+                        speaker.stop();
+                    }
                     Utils.sleep(10);
                     continue;
                 }
@@ -75,14 +80,6 @@ public class AudioChannel extends Thread {
                     continue;
                 }
                 SoundPacket soundPacket = (SoundPacket) (message.getPacket());
-                if (soundPacket.getData().length == 0) {
-                    if (speaker.isActive()) {
-                        speaker.drain();
-                    }
-                    speaker.stop();
-                    speaker.flush();
-                    continue;
-                }
 
                 // Filling the speaker with silence for one packet size
                 // to build a small buffer to compensate for network latency

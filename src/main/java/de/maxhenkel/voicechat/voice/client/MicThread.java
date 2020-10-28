@@ -68,7 +68,6 @@ public class MicThread extends Thread {
             if (offset < 0) {
                 if (deactivationDelay >= 2) {
                     activating = false;
-                    sendStopPacket();
                     deactivationDelay = 0;
                 } else {
                     sendAudioPacket(buff);
@@ -99,7 +98,6 @@ public class MicThread extends Thread {
             if (wasPTT) {
                 mic.stop();
                 mic.flush();
-                sendStopPacket();
                 wasPTT = false;
             }
             Utils.sleep(10);
@@ -120,15 +118,6 @@ public class MicThread extends Thread {
         }
         Utils.adjustVolumeMono(buff, Main.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
         sendAudioPacket(buff);
-    }
-
-    private void sendStopPacket() {
-        try {
-            // To prevent last sound repeating when no more audio data is available
-            new NetworkMessage(new MicPacket(new byte[0]), client.getSecret()).sendToServer(client);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void sendAudioPacket(byte[] data) {
