@@ -34,7 +34,7 @@ public class AdjustVolumeScreen extends Screen {
     public AdjustVolumeScreen() {
         super(new TranslationTextComponent("gui.adjust_volume.title"));
         xSize = 248;
-        ySize = 84;
+        ySize = 85;
     }
 
     @Override
