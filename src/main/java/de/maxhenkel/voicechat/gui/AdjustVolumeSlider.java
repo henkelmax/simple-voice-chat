@@ -13,22 +13,22 @@ public class AdjustVolumeSlider extends AbstractSlider {
     private PlayerInfo player;
 
     protected AdjustVolumeSlider(int xIn, int yIn, int widthIn, int heightIn, PlayerInfo player) {
-        super(xIn, yIn, widthIn, heightIn, new StringTextComponent(""), (player == null ? 1D : Main.VOLUME_CONFIG.getVolume(player.getUuid(), 1D)) / MAXIMUM);
+        super(xIn, yIn, widthIn, heightIn, StringTextComponent.EMPTY, (player == null ? 1D : Main.VOLUME_CONFIG.getVolume(player.getUuid(), 1D)) / MAXIMUM);
         this.player = player;
         if (player == null) {
-            field_230694_p_ = false;
+            visible = false;
         }
         func_230979_b_();
     }
 
     @Override
     protected void func_230979_b_() {
-        long amp = Math.round(field_230683_b_ * MAXIMUM * 100F - 100F);
-        func_238482_a_(new TranslationTextComponent("message.volume_amplification", (amp > 0F ? "+" : "") + amp + "%"));
+        long amp = Math.round(sliderValue * MAXIMUM * 100F - 100F);
+        setMessage(new TranslationTextComponent("message.volume_amplification", (amp > 0F ? "+" : "") + amp + "%"));
     }
 
     @Override
     protected void func_230972_a_() {
-        Main.VOLUME_CONFIG.setVolume(player.getUuid(), field_230683_b_ * MAXIMUM);
+        Main.VOLUME_CONFIG.setVolume(player.getUuid(), sliderValue * MAXIMUM);
     }
 }

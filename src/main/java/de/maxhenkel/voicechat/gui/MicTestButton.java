@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.client.MicThread;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.widget.button.AbstractButton;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.sound.sampled.*;
@@ -18,7 +19,7 @@ public class MicTestButton extends AbstractButton {
     private MicListener micListener;
 
     public MicTestButton(int xIn, int yIn, int widthIn, int heightIn, MicListener micListener) {
-        super(xIn, yIn, widthIn, heightIn, null);
+        super(xIn, yIn, widthIn, heightIn, StringTextComponent.EMPTY);
         this.micListener = micListener;
         if (getMic() == null) {
             micActive = false;
@@ -27,20 +28,20 @@ public class MicTestButton extends AbstractButton {
     }
 
     private void updateText() {
-        if (!field_230694_p_) {
-            func_238482_a_(new TranslationTextComponent("message.mic_test_unavailable"));
+        if (!visible) {
+            setMessage(new TranslationTextComponent("message.mic_test_unavailable"));
             return;
         }
         if (micActive) {
-            func_238482_a_(new TranslationTextComponent("message.mic_test_on"));
+            setMessage(new TranslationTextComponent("message.mic_test_on"));
         } else {
-            func_238482_a_(new TranslationTextComponent("message.mic_test_off"));
+            setMessage(new TranslationTextComponent("message.mic_test_off"));
         }
     }
 
     @Override
-    public void func_230430_a_(MatrixStack matrixStack, int x, int y, float partialTicks) {
-        super.func_230430_a_(matrixStack, x, y, partialTicks);
+    public void render(MatrixStack matrixStack, int x, int y, float partialTicks) {
+        super.render(matrixStack, x, y, partialTicks);
         if (voiceThread != null) {
             voiceThread.updateLastRender();
         }
@@ -52,7 +53,7 @@ public class MicTestButton extends AbstractButton {
     }
 
     @Override
-    public void func_230930_b_() {
+    public void onPress() {
         setMicActive(!micActive);
         updateText();
         if (micActive) {

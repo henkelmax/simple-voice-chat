@@ -9,22 +9,22 @@ import net.minecraft.util.text.TranslationTextComponent;
 public class VoiceSoundSlider extends AbstractSlider {
 
     protected VoiceSoundSlider(int xIn, int yIn, int widthIn, int heightIn) {
-        super(xIn, yIn, widthIn, heightIn, new StringTextComponent(""), Main.CLIENT_CONFIG.voiceChatVolume.get().floatValue() / 2F);
+        super(xIn, yIn, widthIn, heightIn, StringTextComponent.EMPTY, Main.CLIENT_CONFIG.voiceChatVolume.get().floatValue() / 2F);
         func_230979_b_();
     }
 
     @Override
     protected void func_230979_b_() {
-        func_238482_a_(getMessage());
+        setMessage(getMsg());
     }
 
-    private ITextComponent getMessage() {
-        return new TranslationTextComponent("message.voice_chat_volume", Math.round(field_230683_b_ * 200F) + "%");
+    public ITextComponent getMsg() {
+        return new TranslationTextComponent("message.voice_chat_volume", Math.round(sliderValue * 200F) + "%");
     }
 
     @Override
     protected void func_230972_a_() {
-        Main.CLIENT_CONFIG.voiceChatVolume.set(field_230683_b_ * 2F);
+        Main.CLIENT_CONFIG.voiceChatVolume.set(sliderValue * 2F);
         Main.CLIENT_CONFIG.voiceChatVolume.save();
     }
 }
