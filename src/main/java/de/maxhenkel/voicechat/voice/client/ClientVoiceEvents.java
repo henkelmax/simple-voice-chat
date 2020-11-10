@@ -47,8 +47,9 @@ public class ClientVoiceEvents {
         ServerData serverData = minecraft.getCurrentServerData();
         if (serverData != null) {
             try {
-                Main.LOGGER.info("Connecting to server: '" + serverData.serverIP + ":" + Main.SERVER_CONFIG.voiceChatPort.get() + "'");
-                client = new Client(serverData.serverIP, Main.SERVER_CONFIG.voiceChatPort.get(), playerUUID, secret);
+                String ip = serverData.serverIP.split(":")[0];
+                Main.LOGGER.info("Connecting to server: '" + ip + ":" + Main.SERVER_CONFIG.voiceChatPort.get() + "'");
+                client = new Client(ip, Main.SERVER_CONFIG.voiceChatPort.get(), playerUUID, secret);
                 client.start();
             } catch (Exception e) {
                 e.printStackTrace();

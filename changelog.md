@@ -1,2 +1,1 @@
-- Updated to 1.16.3
-- Using UDP instead of TCP
+- Fixed voice chat not working on servers with port
