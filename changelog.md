@@ -1,1 +1,1 @@
-- Fixed potential crash when opening voice chat GUI
+- Fixed voices not fading

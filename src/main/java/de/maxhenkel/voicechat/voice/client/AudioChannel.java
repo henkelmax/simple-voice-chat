@@ -92,7 +92,7 @@ public class AudioChannel extends Thread {
                     client.getTalkCache().updateTalking(player.getUniqueID());
                     float distance = player.getDistance(minecraft.player);
                     float percentage = 1F;
-                    float fadeDistance = Main.SERVER_CONFIG.voiceChatDistance.get().floatValue();
+                    float fadeDistance = Main.SERVER_CONFIG.voiceChatFadeDistance.get().floatValue();
                     float maxDistance = Main.SERVER_CONFIG.voiceChatDistance.get().floatValue();
 
                     if (distance > fadeDistance) {
