@@ -19,10 +19,10 @@ public class MicActivationButton extends AbstractButton {
     }
 
     private void updateText() {
-        if (type.equals(MicrophoneActivationType.PTT)) {
+        if (MicrophoneActivationType.PTT.equals(type)) {
             setMessage(new TranslationTextComponent("message.activation_type", new TranslationTextComponent("message.activation_type.ptt")));
             voiceActivationSlider.visible = false;
-        } else if (type.equals(MicrophoneActivationType.VOICE)) {
+        } else if (MicrophoneActivationType.VOICE.equals(type)) {
             setMessage(new TranslationTextComponent("message.activation_type", new TranslationTextComponent("message.activation_type.voice")));
             voiceActivationSlider.visible = true;
         }

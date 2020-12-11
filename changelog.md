@@ -1,1 +1,1 @@
-- Fixed voice chat not working on servers with port
+- Fixed potential crash when opening voice chat GUI
