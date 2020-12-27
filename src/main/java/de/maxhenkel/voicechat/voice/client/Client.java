@@ -57,6 +57,10 @@ public class Client extends Thread {
         return socket;
     }
 
+    public boolean isAuthenticated() {
+        return authenticated;
+    }
+
     @Override
     public void run() {
         try {

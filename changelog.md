@@ -1,1 +1,1 @@
-- Fixed voices not fading
+- Fixed voice chat GUI opening with no connection

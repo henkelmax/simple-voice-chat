@@ -109,7 +109,7 @@ public class ClientVoiceEvents {
     @SubscribeEvent
     public void onInput(InputEvent.KeyInputEvent event) {
         if (Main.KEY_VOICE_CHAT_SETTINGS.isPressed()) {
-            if (Main.CLIENT_VOICE_EVENTS.getClient() == null) {
+            if (Main.CLIENT_VOICE_EVENTS.getClient() == null || !Main.CLIENT_VOICE_EVENTS.getClient().isAuthenticated()) {
                 minecraft.player.sendStatusMessage(new TranslationTextComponent("message.voice_chat_unavailable"), true);
             } else {
                 minecraft.displayGuiScreen(new VoiceChatScreen());
@@ -117,7 +117,7 @@ public class ClientVoiceEvents {
         }
 
         if (Main.KEY_PTT.isPressed()) {
-            if (Main.CLIENT_VOICE_EVENTS.getClient() == null) {
+            if (Main.CLIENT_VOICE_EVENTS.getClient() == null || !Main.CLIENT_VOICE_EVENTS.getClient().isAuthenticated()) {
                 minecraft.player.sendStatusMessage(new TranslationTextComponent("message.voice_chat_unavailable"), true);
             }
         }
