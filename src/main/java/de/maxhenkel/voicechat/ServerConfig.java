@@ -10,6 +10,7 @@ import net.minecraftforge.fml.config.ModConfig;
 public class ServerConfig extends ConfigBase {
 
     public final ForgeConfigSpec.IntValue voiceChatPort;
+    public final ForgeConfigSpec.ConfigValue<String> voiceChatBindAddress;
     public final ForgeConfigSpec.DoubleValue voiceChatDistance;
     public final ForgeConfigSpec.DoubleValue voiceChatFadeDistance;
     public final ForgeConfigSpec.IntValue voiceChatSampleRate;
@@ -20,6 +21,9 @@ public class ServerConfig extends ConfigBase {
         voiceChatPort = builder
                 .comment("The port of the voice chat server")
                 .defineInRange("voice_chat.port", 24454, 0, 65535);
+        voiceChatBindAddress = builder
+                .comment("The IP address to bind the voice chat server on", "Leave empty to bind to an IP address chosen by the kernel")
+                .define("voice_chat.bind_address", "");
         voiceChatDistance = builder
                 .comment("The distance to where the voice can be heard")
                 .defineInRange("voice_chat.distance", 32D, 1D, 1_000_000D);

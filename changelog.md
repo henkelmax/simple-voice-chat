@@ -1,1 +1,1 @@
-- Fixed voice chat GUI opening with no connection
+- Added IP address binding

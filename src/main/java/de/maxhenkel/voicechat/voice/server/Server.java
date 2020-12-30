@@ -7,7 +7,9 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import java.net.BindException;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,7 +39,25 @@ public class Server extends Thread {
     @Override
     public void run() {
         try {
-            socket = new DatagramSocket(port);
+            InetAddress address = null;
+            String addr = Main.SERVER_CONFIG.voiceChatBindAddress.get();
+            try {
+                if (!addr.isEmpty()) {
+                    address = InetAddress.getByName(addr);
+                }
+            } catch (Exception e) {
+                Main.LOGGER.error("Failed to parse bind IP address '" + addr + "'");
+                Main.LOGGER.info("Binding to default IP address");
+                e.printStackTrace();
+            }
+            try {
+                socket = new DatagramSocket(port, address);
+            } catch (BindException e) {
+                Main.LOGGER.error("Failed to bind to address '" + addr + "'");
+                e.printStackTrace();
+                System.exit(1);
+                return;
+            }
             Main.LOGGER.info("Server started at port " + port);
 
             while (!socket.isClosed()) {
