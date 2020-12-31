@@ -25,6 +25,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
@@ -68,6 +69,7 @@ public class ClientVoiceEvents {
         }
     }
 
+    @Nullable
     public Client getClient() {
         return client;
     }

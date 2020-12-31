@@ -11,6 +11,8 @@ public class ClientConfig extends ConfigBase {
     public final ForgeConfigSpec.DoubleValue microphoneAmplification;
     public final ForgeConfigSpec.EnumValue<MicrophoneActivationType> microphoneActivationType;
     public final ForgeConfigSpec.IntValue outputBufferSize;
+    public final ForgeConfigSpec.ConfigValue<String> microphone;
+    public final ForgeConfigSpec.ConfigValue<String> speaker;
 
     public ClientConfig(ForgeConfigSpec.Builder builder) {
         super(builder);
@@ -33,6 +35,12 @@ public class ClientConfig extends ConfigBase {
                         "Increase this value if you have an unstable internet connection"
                 )
                 .defineInRange("output_buffer_size", 6, 1, 16);
+        microphone = builder
+                .comment("The microphone used by the voice chat", "Empty for default device")
+                .define("microphone", "");
+        speaker = builder
+                .comment("The microphone used by the voice chat", "Empty for default device")
+                .define("speaker", "");
     }
 
 }

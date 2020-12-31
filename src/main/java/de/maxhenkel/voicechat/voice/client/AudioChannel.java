@@ -59,8 +59,7 @@ public class AudioChannel extends Thread {
     public void run() {
         try {
             AudioFormat af = AudioChannelConfig.getStereoFormat();
-            DataLine.Info info = new DataLine.Info(SourceDataLine.class, af);
-            speaker = (SourceDataLine) AudioSystem.getLine(info);
+            speaker = DataLines.getSpeaker();
             speaker.open(af);
             gainControl = (FloatControl) speaker.getControl(FloatControl.Type.MASTER_GAIN);
             while (!stopped) {

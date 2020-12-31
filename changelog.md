@@ -1,1 +1,1 @@
-- Added IP address binding
+- Added the ability to change microphone and speaker

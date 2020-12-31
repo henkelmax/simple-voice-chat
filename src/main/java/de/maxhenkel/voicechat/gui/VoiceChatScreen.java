@@ -29,7 +29,7 @@ public class VoiceChatScreen extends Screen implements MicTestButton.MicListener
     public VoiceChatScreen() {
         super(new TranslationTextComponent("gui.voice_chat_settings.title"));
         xSize = 248;
-        ySize = 201;
+        ySize = 226;
     }
 
     @Override
@@ -47,6 +47,12 @@ public class VoiceChatScreen extends Screen implements MicTestButton.MicListener
         addButton(new Button(guiLeft + 10, guiTop + 170, xSize - 20, 20, new TranslationTextComponent("message.adjust_volumes"), button -> {
             Main.SIMPLE_CHANNEL.sendToServer(new RequestPlayerListMessage());
         }));
+        addButton(new Button(guiLeft + 10, guiTop + 195, xSize / 2 - 15, 20, new TranslationTextComponent("message.select_microphone"), button -> {
+            minecraft.displayGuiScreen(new SelectMicrophoneScreen());
+        }));
+        addButton(new Button(guiLeft + xSize / 2 + 6, guiTop + 195, xSize / 2 - 15, 20, new TranslationTextComponent("message.select_speaker"), button -> {
+            minecraft.displayGuiScreen(new SelectSpeakerScreen());
+        }));
     }
 
     @Override
@@ -62,14 +68,14 @@ public class VoiceChatScreen extends Screen implements MicTestButton.MicListener
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.color4f(1F, 1F, 1F, 1F);
         minecraft.getTextureManager().bindTexture(TEXTURE);
-        blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+        blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
 
-        blit(matrixStack, guiLeft + 10, guiTop + 120, 0, 219, xSize - 20, 20);
-        blit(matrixStack, guiLeft + 11, guiTop + 121, 0, 201, (int) ((xSize - 18) * micValue), 18);
+        blit(matrixStack, guiLeft + 10, guiTop + 120, 0, 244, xSize - 20, 20, 512, 512);
+        blit(matrixStack, guiLeft + 11, guiTop + 121, 0, 226, (int) ((xSize - 18) * micValue), 18, 512, 512);
 
         int pos = (int) ((xSize - 20) * Utils.dbToPerc(Main.CLIENT_CONFIG.voiceActivationThreshold.get()));
 
-        blit(matrixStack, guiLeft + 10 + pos, guiTop + 120, 0, 219, 1, 20);
+        blit(matrixStack, guiLeft + 10 + pos, guiTop + 120, 0, 244, 1, 20, 512, 512);
 
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 

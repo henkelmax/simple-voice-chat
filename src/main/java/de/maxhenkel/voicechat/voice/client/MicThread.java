@@ -22,8 +22,7 @@ public class MicThread extends Thread {
         setDaemon(true);
         setName("MicrophoneThread");
         AudioFormat af = AudioChannelConfig.getMonoFormat();
-        DataLine.Info info = new DataLine.Info(TargetDataLine.class, null);
-        mic = (TargetDataLine) (AudioSystem.getLine(info));
+        mic = DataLines.getMicrophone();
         mic.open(af);
     }
 

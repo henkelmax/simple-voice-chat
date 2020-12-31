@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.common.*;
+import org.jline.utils.Log;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
@@ -61,6 +62,28 @@ public class Client extends Thread {
         return authenticated;
     }
 
+    public void reloadDataLines() {
+        Log.debug("Reloading data lines");
+        if (micThread != null) {
+            Log.debug("Restarting microphone thread");
+            micThread.close();
+            micThread = null;
+            startMicThread();
+        }
+        Log.debug("Clearing audio channels");
+        audioChannels.forEach((uuid, audioChannel) -> audioChannel.closeAndKill());
+        audioChannels.clear();
+    }
+
+    private void startMicThread() {
+        try {
+            micThread = new MicThread(this);
+            micThread.start();
+        } catch (Exception e) {
+            Main.LOGGER.error("Mic unavailable " + e);
+        }
+    }
+
     @Override
     public void run() {
         try {
@@ -70,13 +93,7 @@ public class Client extends Thread {
                     if (!authenticated) {
                         Main.LOGGER.info("Server acknowledged authentication");
                         authenticated = true;
-
-                        try {
-                            micThread = new MicThread(this);
-                            micThread.start();
-                        } catch (Exception e) {
-                            Main.LOGGER.error("Mic unavailable " + e);
-                        }
+                        startMicThread();
                     }
                 } else if (in.getPacket() instanceof SoundPacket) {
                     SoundPacket packet = (SoundPacket) in.getPacket();

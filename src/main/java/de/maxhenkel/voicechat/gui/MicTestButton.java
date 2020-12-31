@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
 import de.maxhenkel.voicechat.voice.client.Client;
+import de.maxhenkel.voicechat.voice.client.DataLines;
 import de.maxhenkel.voicechat.voice.client.MicThread;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.widget.button.AbstractButton;
@@ -115,8 +116,10 @@ public class MicTestButton extends AbstractButton {
             if (mic == null) {
                 throw new LineUnavailableException("No microphone");
             }
-            DataLine.Info sourceInfo = new DataLine.Info(SourceDataLine.class, audioFormat);
-            speaker = (SourceDataLine) AudioSystem.getLine(sourceInfo);
+            speaker = DataLines.getSpeaker();
+            if (speaker == null) {
+                throw new LineUnavailableException("No speaker");
+            }
             speaker.open(audioFormat);
             speaker.start();
 
