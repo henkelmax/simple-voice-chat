@@ -32,6 +32,7 @@ import java.util.UUID;
 public class ClientVoiceEvents {
 
     private static final ResourceLocation MICROPHONE_ICON = new ResourceLocation(Main.MODID, "textures/gui/microphone.png");
+    private static final ResourceLocation MICROPHONE_MUTED_ICON = new ResourceLocation(Main.MODID, "textures/gui/microphone_muted.png");
     private static final ResourceLocation SPEAKER_ICON = new ResourceLocation(Main.MODID, "textures/gui/speaker.png");
 
     private Client client;
@@ -84,13 +85,18 @@ public class ClientVoiceEvents {
             return;
         }
 
-        if (!client.getMicThread().isTalking()) {
-            return;
+        if (client.getMicThread().isTalking()) {
+            renderIcon(MICROPHONE_ICON);
+        } else if (client.isMuted() && Main.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE)) {
+            renderIcon(MICROPHONE_MUTED_ICON);
         }
+    }
 
+    private void renderIcon(ResourceLocation texture) {
         RenderSystem.pushMatrix();
 
-        minecraft.getTextureManager().bindTexture(MICROPHONE_ICON);
+        minecraft.getTextureManager().bindTexture(texture);
+
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
@@ -112,7 +118,7 @@ public class ClientVoiceEvents {
     public void onInput(InputEvent.KeyInputEvent event) {
         if (Main.KEY_VOICE_CHAT_SETTINGS.isPressed()) {
             if (Main.CLIENT_VOICE_EVENTS.getClient() == null || !Main.CLIENT_VOICE_EVENTS.getClient().isAuthenticated()) {
-                minecraft.player.sendStatusMessage(new TranslationTextComponent("message.voice_chat_unavailable"), true);
+                sendUnavailableMessage();
             } else {
                 minecraft.displayGuiScreen(new VoiceChatScreen());
             }
@@ -120,9 +126,22 @@ public class ClientVoiceEvents {
 
         if (Main.KEY_PTT.isPressed()) {
             if (Main.CLIENT_VOICE_EVENTS.getClient() == null || !Main.CLIENT_VOICE_EVENTS.getClient().isAuthenticated()) {
-                minecraft.player.sendStatusMessage(new TranslationTextComponent("message.voice_chat_unavailable"), true);
+                sendUnavailableMessage();
             }
         }
+
+        if (Main.KEY_MUTE.isPressed()) {
+            Client client = Main.CLIENT_VOICE_EVENTS.getClient();
+            if (client == null || !client.isAuthenticated()) {
+                sendUnavailableMessage();
+            } else {
+                client.setMuted(!client.isMuted());
+            }
+        }
+    }
+
+    public void sendUnavailableMessage() {
+        minecraft.player.sendStatusMessage(new TranslationTextComponent("message.voice_chat_unavailable"), true);
     }
 
     @SubscribeEvent

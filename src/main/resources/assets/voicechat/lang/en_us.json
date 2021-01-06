@@ -1,7 +1,8 @@
 {
   "key.push_to_talk": "Push To Talk",
+  "key.mute_microphone": "Mute Microphone",
+  "key.voice_chat_settings": "Voice Chat Settings",
   "gui.voice_chat_settings.title": "Voice Chat Settings",
-  "key.voice_chat_settings": "Voice chat settings",
   "message.voice_chat_volume": "Voice chat volume: %s",
   "message.microphone_amplification": "Microphone amplification: %s",
   "message.mic_test_on": "Disable microphone testing",

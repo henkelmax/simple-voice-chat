@@ -22,6 +22,7 @@ public class Client extends Thread {
     private boolean authenticated;
     private Map<UUID, AudioChannel> audioChannels;
     private AuthThread authThread;
+    private boolean muted;
 
     public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret) throws IOException {
         this.address = InetAddress.getByName(serverIp);
@@ -60,6 +61,14 @@ public class Client extends Thread {
 
     public boolean isAuthenticated() {
         return authenticated;
+    }
+
+    public boolean isMuted() {
+        return muted;
+    }
+
+    public void setMuted(boolean muted) {
+        this.muted = muted;
     }
 
     public void reloadDataLines() {

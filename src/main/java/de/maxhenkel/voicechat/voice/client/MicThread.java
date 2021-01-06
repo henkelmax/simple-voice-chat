@@ -48,6 +48,17 @@ public class MicThread extends Thread {
 
     private void voice() {
         wasPTT = false;
+
+        if (client.isMuted()) {
+            activating = false;
+            if (mic.isActive()) {
+                mic.stop();
+                mic.flush();
+            }
+
+            return;
+        }
+
         int dataLength = AudioChannelConfig.getDataLength();
 
         mic.start();

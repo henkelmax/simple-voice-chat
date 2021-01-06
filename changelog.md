@@ -1,1 +1,1 @@
-- Added the ability to change microphone and speaker
+- Added microphone mute button

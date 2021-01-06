@@ -44,6 +44,9 @@ public class Main {
     public static KeyBinding KEY_PTT;
 
     @OnlyIn(Dist.CLIENT)
+    public static KeyBinding KEY_MUTE;
+
+    @OnlyIn(Dist.CLIENT)
     public static KeyBinding KEY_VOICE_CHAT_SETTINGS;
 
     public Main() {
@@ -74,6 +77,9 @@ public class Main {
 
         KEY_PTT = new KeyBinding("key.push_to_talk", GLFW.GLFW_KEY_CAPS_LOCK, "key.categories.misc");
         ClientRegistry.registerKeyBinding(KEY_PTT);
+
+        KEY_MUTE = new KeyBinding("key.mute_microphone", GLFW.GLFW_KEY_M, "key.categories.misc");
+        ClientRegistry.registerKeyBinding(KEY_MUTE);
 
         KEY_VOICE_CHAT_SETTINGS = new KeyBinding("key.voice_chat_settings", GLFW.GLFW_KEY_V, "key.categories.misc");
         ClientRegistry.registerKeyBinding(KEY_VOICE_CHAT_SETTINGS);
