@@ -11,6 +11,7 @@
 This mod adds a voice chat to your Minecraft server.
 You can choose between push to talk (PTT) or voice activation.
 The default PTT key is `CAPS LOCK`, but it can be changed in the controls.
+When using voice activation, you can mute your microphone by pressing the `M` key.
 You can access the voice chat settings by pressing the `V` key.
 
 ## Features
