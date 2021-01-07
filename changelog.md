@@ -1,1 +1,1 @@
-- Added microphone mute button
+- Added Brazilian Portuguese translation
