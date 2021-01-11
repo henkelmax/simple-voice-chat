@@ -2,6 +2,7 @@
 
 ## Links
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat)
+- [Wiki](https://modrepo.de/minecraft/voicechat/wiki)
 - [ModRepo](https://modrepo.de/minecraft/voicechat/overview)
 - [GitHub](https://github.com/henkelmax/simple-voice-chat)
 - [FAQ](https://modrepo.de/minecraft/voicechat/faq)
@@ -60,6 +61,7 @@ You need to open a port on the server.
 This is port `24454/udp` by default.
 Without opening this port, the voice chat will not work.
 This port can be changed in the server config.
+More information [here](https://modrepo.de/minecraft/voicechat/wiki?t=setup).
 
 This mod does only work when connected to a dedicated server.
 You need to have this mod installed on the server and the client.
