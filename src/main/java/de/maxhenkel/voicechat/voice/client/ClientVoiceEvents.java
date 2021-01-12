@@ -152,7 +152,7 @@ public class ClientVoiceEvents {
 
         PlayerEntity playerEntity = (PlayerEntity) event.getEntity();
         if (client != null && client.getTalkCache().isTalking(playerEntity) && !minecraft.gameSettings.hideGUI) {
-            renderSpeaker(playerEntity, event.getContent().getString(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
+            renderSpeaker(playerEntity, event.getContent(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
         }
     }
 

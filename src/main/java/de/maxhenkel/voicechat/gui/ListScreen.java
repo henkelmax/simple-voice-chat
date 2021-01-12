@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Main;
 import net.minecraft.client.gui.screen.Screen;
@@ -43,16 +42,16 @@ public abstract class ListScreen<T> extends Screen {
         this.guiLeft = (width - this.xSize) / 2;
         this.guiTop = (height - this.ySize) / 2;
 
-        previous = new Button(guiLeft + 10, guiTop + 60, 60, 20, new TranslationTextComponent("message.previous"), button -> {
+        previous = new Button(guiLeft + 10, guiTop + 60, 60, 20, new TranslationTextComponent("message.previous").getString(), button -> {
             index = (index - 1 + elements.size()) % elements.size();
             updateCurrentElement();
         });
 
-        back = new Button(guiLeft + xSize / 2 - 30, guiTop + 60, 60, 20, new TranslationTextComponent("message.back"), button -> {
+        back = new Button(guiLeft + xSize / 2 - 30, guiTop + 60, 60, 20, new TranslationTextComponent("message.back").getString(), button -> {
             minecraft.displayGuiScreen(new VoiceChatScreen());
         });
 
-        next = new Button(guiLeft + xSize - 70, guiTop + 60, 60, 20, new TranslationTextComponent("message.next"), button -> {
+        next = new Button(guiLeft + xSize - 70, guiTop + 60, 60, 20, new TranslationTextComponent("message.next").getString(), button -> {
             index = (index + 1) % elements.size();
             updateCurrentElement();
         });
@@ -91,15 +90,15 @@ public abstract class ListScreen<T> extends Screen {
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         RenderSystem.color4f(1F, 1F, 1F, 1F);
         minecraft.getTextureManager().bindTexture(TEXTURE);
-        blit(stack, guiLeft, guiTop, 0, 0, xSize, ySize);
+        blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-        super.render(stack, mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
 
-        renderText(stack, getCurrentElement(), mouseX, mouseY, partialTicks);
+        renderText(getCurrentElement(), mouseX, mouseY, partialTicks);
     }
 
-    protected abstract void renderText(MatrixStack stack, @Nullable T element, int mouseX, int mouseY, float partialTicks);
+    protected abstract void renderText(@Nullable T element, int mouseX, int mouseY, float partialTicks);
 }

@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
 import de.maxhenkel.voicechat.voice.client.Client;
@@ -8,7 +7,6 @@ import de.maxhenkel.voicechat.voice.client.DataLines;
 import de.maxhenkel.voicechat.voice.client.MicThread;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.widget.button.AbstractButton;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.sound.sampled.*;
@@ -20,7 +18,7 @@ public class MicTestButton extends AbstractButton {
     private MicListener micListener;
 
     public MicTestButton(int xIn, int yIn, int widthIn, int heightIn, MicListener micListener) {
-        super(xIn, yIn, widthIn, heightIn, StringTextComponent.EMPTY);
+        super(xIn, yIn, widthIn, heightIn, "");
         this.micListener = micListener;
         if (getMic() == null) {
             micActive = false;
@@ -30,19 +28,19 @@ public class MicTestButton extends AbstractButton {
 
     private void updateText() {
         if (!visible) {
-            setMessage(new TranslationTextComponent("message.mic_test_unavailable"));
+            setMessage(new TranslationTextComponent("message.mic_test_unavailable").getString());
             return;
         }
         if (micActive) {
-            setMessage(new TranslationTextComponent("message.mic_test_on"));
+            setMessage(new TranslationTextComponent("message.mic_test_on").getString());
         } else {
-            setMessage(new TranslationTextComponent("message.mic_test_off"));
+            setMessage(new TranslationTextComponent("message.mic_test_off").getString());
         }
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int x, int y, float partialTicks) {
-        super.render(matrixStack, x, y, partialTicks);
+    public void render(int x, int y, float partialTicks) {
+        super.render(x, y, partialTicks);
         if (voiceThread != null) {
             voiceThread.updateLastRender();
         }

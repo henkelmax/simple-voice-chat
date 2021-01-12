@@ -1,1 +1,1 @@
-- Added Brazilian Portuguese translation
+- Backported to 1.15.2

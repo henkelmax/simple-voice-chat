@@ -65,7 +65,6 @@ public class Server extends Thread {
                     NetworkMessage message = NetworkMessage.readPacket(socket);
                     packetQueue.add(message);
                 } catch (Exception e) {
-                    e.printStackTrace(); //TODO remove in production
                 }
             }
         } catch (SocketException e) {

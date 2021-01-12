@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.gui;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.PlayerInfo;
 import net.minecraft.client.gui.widget.AbstractSlider;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 public class AdjustVolumeSlider extends AbstractSlider {
@@ -13,22 +12,22 @@ public class AdjustVolumeSlider extends AbstractSlider {
     private PlayerInfo player;
 
     protected AdjustVolumeSlider(int xIn, int yIn, int widthIn, int heightIn, PlayerInfo player) {
-        super(xIn, yIn, widthIn, heightIn, StringTextComponent.EMPTY, (player == null ? 1D : Main.VOLUME_CONFIG.getVolume(player.getUuid(), 1D)) / MAXIMUM);
+        super(xIn, yIn, widthIn, heightIn, (player == null ? 1D : Main.VOLUME_CONFIG.getVolume(player.getUuid(), 1D)) / MAXIMUM);
         this.player = player;
         if (player == null) {
             visible = false;
         }
-        func_230979_b_();
+        updateMessage();
     }
 
     @Override
-    protected void func_230979_b_() {
-        long amp = Math.round(sliderValue * MAXIMUM * 100F - 100F);
-        setMessage(new TranslationTextComponent("message.volume_amplification", (amp > 0F ? "+" : "") + amp + "%"));
+    protected void updateMessage() {
+        long amp = Math.round(value * MAXIMUM * 100F - 100F);
+        setMessage(new TranslationTextComponent("message.volume_amplification", (amp > 0F ? "+" : "") + amp + "%").getString());
     }
 
     @Override
-    protected void func_230972_a_() {
-        Main.VOLUME_CONFIG.setVolume(player.getUuid(), sliderValue * MAXIMUM);
+    protected void applyValue() {
+        Main.VOLUME_CONFIG.setVolume(player.getUuid(), value * MAXIMUM);
     }
 }
