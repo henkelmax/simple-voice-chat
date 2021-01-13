@@ -118,8 +118,11 @@ public class Client extends Thread {
 
                     audioChannels.values().stream().filter(AudioChannel::canKill).forEach(AudioChannel::closeAndKill);
                     audioChannels.entrySet().removeIf(entry -> entry.getValue().isClosed());
+                } else if (in.getPacket() instanceof PingPacket) {
+                    PingPacket packet = (PingPacket) in.getPacket();
+                    Main.LOGGER.debug("Received ping {}, sending pong...", packet.getId());
+                    new NetworkMessage(packet, secret).sendToServer(this);
                 }
-
             }
         } catch (Exception e) {
             if (running) {

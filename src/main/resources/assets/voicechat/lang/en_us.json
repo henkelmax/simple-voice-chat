@@ -27,5 +27,11 @@
   "message.select_speaker": "Select Speaker",
   "message.previous": "Previous",
   "message.back": "Back",
-  "message.next": "Next"
+  "message.next": "Next",
+  "message.voicechat.client_not_connected": "Client not connected",
+  "message.voicechat.failed_to_send_packet": "Failed to send packet: %s",
+  "message.voicechat.sending_packet": "Sending packet...",
+  "message.voicechat.packet_sent_waiting": "Packet sent. Waiting for response...",
+  "message.voicechat.packet_received": "Received packet in %sms",
+  "message.voicechat.packet_timed_out": "Request timed out"
 }

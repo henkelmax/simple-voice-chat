@@ -7,6 +7,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import java.io.IOException;
 import java.net.BindException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -23,6 +24,7 @@ public class Server extends Thread {
     private DatagramSocket socket;
     private ProcessThread processThread;
     private List<NetworkMessage> packetQueue;
+    private PingManager pingManager;
 
     public Server(int port, MinecraftServer server) {
         this.port = port;
@@ -30,6 +32,7 @@ public class Server extends Thread {
         connections = new HashMap<>();
         secrets = new HashMap<>();
         packetQueue = new ArrayList<>();
+        pingManager = new PingManager(this);
         setDaemon(true);
         setName("VoiceChatServerThread");
         processThread = new ProcessThread();
@@ -65,7 +68,6 @@ public class Server extends Thread {
                     NetworkMessage message = NetworkMessage.readPacket(socket);
                     packetQueue.add(message);
                 } catch (Exception e) {
-                    e.printStackTrace(); //TODO remove in production
                 }
             }
         } catch (SocketException e) {
@@ -106,71 +108,75 @@ public class Server extends Thread {
         public void run() {
             while (running) {
                 try {
+                    pingManager.checkTimeouts();
                     if (packetQueue.isEmpty()) {
                         Utils.sleep(10);
-                    } else {
-                        NetworkMessage message = packetQueue.get(0);
-                        packetQueue.remove(message);
-                        if (System.currentTimeMillis() - message.getTimestamp() > message.getTTL()) {
+                        continue;
+                    }
+
+                    NetworkMessage message = packetQueue.get(0);
+                    packetQueue.remove(message);
+                    if (System.currentTimeMillis() - message.getTimestamp() > message.getTTL()) {
+                        continue;
+                    }
+
+                    if (message.getPacket() instanceof AuthenticatePacket) {
+                        AuthenticatePacket packet = (AuthenticatePacket) message.getPacket();
+                        UUID secret = secrets.get(packet.getPlayerUUID());
+                        if (secret != null && secret.equals(packet.getSecret())) {
+                            ClientConnection connection;
+                            if (!connections.containsKey(packet.getPlayerUUID())) {
+                                connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress(), message.getPort());
+                                connections.put(packet.getPlayerUUID(), connection);
+                                Main.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
+                            } else {
+                                connection = connections.get(packet.getPlayerUUID());
+                            }
+                            sendPacket(new AuthenticateAckPacket(), connection);
+                        }
+                    }
+
+                    UUID playerUUID = message.getSender(Server.this);
+                    if (playerUUID == null) {
+                        continue;
+                    }
+
+                    if (!isPacketAuthorized(message, playerUUID)) {
+                        continue;
+                    }
+
+                    if (message.getPacket() instanceof MicPacket) {
+                        MicPacket packet = (MicPacket) message.getPacket();
+                        ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(playerUUID);
+                        if (player == null) {
                             continue;
                         }
-
-                        if (message.getPacket() instanceof AuthenticatePacket) {
-                            AuthenticatePacket packet = (AuthenticatePacket) message.getPacket();
-                            UUID secret = secrets.get(packet.getPlayerUUID());
-                            if (secret != null && secret.equals(packet.getSecret())) {
-                                ClientConnection connection;
-                                if (!connections.containsKey(packet.getPlayerUUID())) {
-                                    connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress(), message.getPort());
-                                    connections.put(packet.getPlayerUUID(), connection);
-                                    Main.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
-                                } else {
-                                    connection = connections.get(packet.getPlayerUUID());
-                                }
-                                new NetworkMessage(new AuthenticateAckPacket()).sendTo(socket, connection);
+                        double distance = Main.SERVER_CONFIG.voiceChatDistance.get();
+                        List<ClientConnection> closeConnections = player.world
+                                .getEntitiesWithinAABB(
+                                        PlayerEntity.class,
+                                        new AxisAlignedBB(
+                                                player.getPosX() - distance,
+                                                player.getPosY() - distance,
+                                                player.getPosZ() - distance,
+                                                player.getPosX() + distance,
+                                                player.getPosY() + distance,
+                                                player.getPosZ() + distance
+                                        )
+                                        , playerEntity -> !playerEntity.getUniqueID().equals(player.getUniqueID())
+                                )
+                                .stream()
+                                .map(playerEntity -> connections.get(playerEntity.getUniqueID()))
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.toList());
+                        NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(playerUUID, packet.getData()));
+                        for (ClientConnection clientConnection : closeConnections) {
+                            if (!clientConnection.getPlayerUUID().equals(playerUUID)) {
+                                soundMessage.sendTo(socket, clientConnection);
                             }
                         }
-
-                        UUID playerUUID = message.getSender(Server.this);
-                        if (playerUUID == null) {
-                            continue;
-                        }
-
-                        if (!isPacketAuthorized(message, playerUUID)) {
-                            continue;
-                        }
-
-                        if (message.getPacket() instanceof MicPacket) {
-                            MicPacket packet = (MicPacket) message.getPacket();
-                            ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(playerUUID);
-                            if (player == null) {
-                                continue;
-                            }
-                            double distance = Main.SERVER_CONFIG.voiceChatDistance.get();
-                            List<ClientConnection> closeConnections = player.world
-                                    .getEntitiesWithinAABB(
-                                            PlayerEntity.class,
-                                            new AxisAlignedBB(
-                                                    player.getPosX() - distance,
-                                                    player.getPosY() - distance,
-                                                    player.getPosZ() - distance,
-                                                    player.getPosX() + distance,
-                                                    player.getPosY() + distance,
-                                                    player.getPosZ() + distance
-                                            )
-                                            , playerEntity -> !playerEntity.getUniqueID().equals(player.getUniqueID())
-                                    )
-                                    .stream()
-                                    .map(playerEntity -> connections.get(playerEntity.getUniqueID()))
-                                    .filter(Objects::nonNull)
-                                    .collect(Collectors.toList());
-                            NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(playerUUID, packet.getData()));
-                            for (ClientConnection clientConnection : closeConnections) {
-                                if (!clientConnection.getPlayerUUID().equals(playerUUID)) {
-                                    soundMessage.sendTo(socket, clientConnection);
-                                }
-                            }
-                        }
+                    } else if (message.getPacket() instanceof PingPacket) {
+                        pingManager.onPongPacket((PingPacket) message.getPacket());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -194,5 +200,13 @@ public class Server extends Thread {
 
     public Map<UUID, UUID> getSecrets() {
         return secrets;
+    }
+
+    public void sendPacket(Packet<?> packet, ClientConnection connection) throws IOException {
+        new NetworkMessage(packet).sendTo(socket, connection);
+    }
+
+    public PingManager getPingManager() {
+        return pingManager;
     }
 }

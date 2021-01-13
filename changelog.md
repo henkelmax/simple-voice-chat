@@ -1,1 +1,1 @@
-- Added Brazilian Portuguese translation
+- Added voicechat connection test command

@@ -9,6 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class ServerVoiceEvents {
@@ -57,4 +58,8 @@ public class ServerVoiceEvents {
         }
     }
 
+    @Nullable
+    public Server getServer() {
+        return server;
+    }
 }
