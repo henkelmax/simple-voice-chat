@@ -30,13 +30,13 @@ public class MicTestButton extends AbstractButton {
 
     private void updateText() {
         if (!visible) {
-            setMessage(new TranslationTextComponent("message.mic_test_unavailable"));
+            setMessage(new TranslationTextComponent("message.voicechat.mic_test_unavailable"));
             return;
         }
         if (micActive) {
-            setMessage(new TranslationTextComponent("message.mic_test_on"));
+            setMessage(new TranslationTextComponent("message.voicechat.mic_test_on"));
         } else {
-            setMessage(new TranslationTextComponent("message.mic_test_off"));
+            setMessage(new TranslationTextComponent("message.voicechat.mic_test_off"));
         }
     }
 

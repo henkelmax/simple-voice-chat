@@ -43,16 +43,16 @@ public abstract class ListScreen<T> extends Screen {
         this.guiLeft = (width - this.xSize) / 2;
         this.guiTop = (height - this.ySize) / 2;
 
-        previous = new Button(guiLeft + 10, guiTop + 60, 60, 20, new TranslationTextComponent("message.previous"), button -> {
+        previous = new Button(guiLeft + 10, guiTop + 60, 60, 20, new TranslationTextComponent("message.voicechat.previous"), button -> {
             index = (index - 1 + elements.size()) % elements.size();
             updateCurrentElement();
         });
 
-        back = new Button(guiLeft + xSize / 2 - 30, guiTop + 60, 60, 20, new TranslationTextComponent("message.back"), button -> {
+        back = new Button(guiLeft + xSize / 2 - 30, guiTop + 60, 60, 20, new TranslationTextComponent("message.voicechat.back"), button -> {
             minecraft.displayGuiScreen(new VoiceChatScreen());
         });
 
-        next = new Button(guiLeft + xSize - 70, guiTop + 60, 60, 20, new TranslationTextComponent("message.next"), button -> {
+        next = new Button(guiLeft + xSize - 70, guiTop + 60, 60, 20, new TranslationTextComponent("message.voicechat.next"), button -> {
             index = (index + 1) % elements.size();
             updateCurrentElement();
         });

@@ -24,7 +24,7 @@ public class AdjustVolumeSlider extends AbstractSlider {
     @Override
     protected void func_230979_b_() {
         long amp = Math.round(sliderValue * MAXIMUM * 100F - 100F);
-        setMessage(new TranslationTextComponent("message.volume_amplification", (amp > 0F ? "+" : "") + amp + "%"));
+        setMessage(new TranslationTextComponent("message.voicechat.volume_amplification", (amp > 0F ? "+" : "") + amp + "%"));
     }
 
     @Override

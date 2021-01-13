@@ -19,7 +19,7 @@ public class VoiceSoundSlider extends AbstractSlider {
     }
 
     public ITextComponent getMsg() {
-        return new TranslationTextComponent("message.voice_chat_volume", Math.round(sliderValue * 200F) + "%");
+        return new TranslationTextComponent("message.voicechat.voice_chat_volume", Math.round(sliderValue * 200F) + "%");
     }
 
     @Override

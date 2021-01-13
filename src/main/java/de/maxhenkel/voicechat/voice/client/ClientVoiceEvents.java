@@ -141,7 +141,7 @@ public class ClientVoiceEvents {
     }
 
     public void sendUnavailableMessage() {
-        minecraft.player.sendStatusMessage(new TranslationTextComponent("message.voice_chat_unavailable"), true);
+        minecraft.player.sendStatusMessage(new TranslationTextComponent("message.voicechat.voice_chat_unavailable"), true);
     }
 
     @SubscribeEvent

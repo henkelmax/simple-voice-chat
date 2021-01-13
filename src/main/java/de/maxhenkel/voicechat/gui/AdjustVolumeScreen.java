@@ -11,7 +11,7 @@ import java.util.List;
 public class AdjustVolumeScreen extends ListScreen<PlayerInfo> {
 
     public AdjustVolumeScreen(List<PlayerInfo> players) {
-        super(players, new TranslationTextComponent("gui.adjust_volume.title"));
+        super(players, new TranslationTextComponent("gui.voicechat.adjust_volume.title"));
     }
 
     @Override
@@ -26,7 +26,7 @@ public class AdjustVolumeScreen extends ListScreen<PlayerInfo> {
 
     @Override
     protected void renderText(MatrixStack stack, @Nullable PlayerInfo element, int mouseX, int mouseY, float partialTicks) {
-        ITextComponent title = getCurrentElement() == null ? new TranslationTextComponent("message.no_player") : new TranslationTextComponent("message.adjust_volume_player", getCurrentElement().getName());
+        ITextComponent title = getCurrentElement() == null ? new TranslationTextComponent("message.voicechat.no_player") : new TranslationTextComponent("message.voicechat.adjust_volume_player", getCurrentElement().getName());
         int titleWidth = font.getStringPropertyWidth(title);
         font.func_238422_b_(stack, title.func_241878_f(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
     }

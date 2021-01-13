@@ -17,7 +17,7 @@ public class MicAmplificationSlider extends AbstractSlider {
     @Override
     protected void func_230979_b_() {
         long amp = Math.round(sliderValue * MAXIMUM * 100F - 100F);
-        setMessage(new TranslationTextComponent("message.microphone_amplification", (amp > 0F ? "+" : "") + amp + "%"));
+        setMessage(new TranslationTextComponent("message.voicechat.microphone_amplification", (amp > 0F ? "+" : "") + amp + "%"));
     }
 
     @Override

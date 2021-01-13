@@ -1,1 +1,1 @@
-- Added voicechat connection test command
+- Updated translation strings to avoid duplicates

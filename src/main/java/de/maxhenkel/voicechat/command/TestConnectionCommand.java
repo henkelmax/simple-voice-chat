@@ -24,7 +24,7 @@ public class TestConnectionCommand {
             ServerPlayerEntity player = EntityArgument.getPlayer(commandSource, "target");
             Server server = Main.SERVER_VOICE_EVENTS.getServer();
             if (server == null) {
-                commandSource.getSource().sendFeedback(new TranslationTextComponent("message.voice_chat_unavailable"), true);
+                commandSource.getSource().sendFeedback(new TranslationTextComponent("message.voicechat.voice_chat_unavailable"), true);
                 return 1;
             }
             ClientConnection clientConnection = server.getConnections().get(player.getUniqueID());

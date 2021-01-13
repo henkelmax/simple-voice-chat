@@ -16,7 +16,7 @@ public class VoiceActivationSlider extends AbstractSlider {
     @Override
     protected void func_230979_b_() {
         long db = Math.round(Utils.percToDb(sliderValue));
-        setMessage(new TranslationTextComponent("message.voice_activation", db));
+        setMessage(new TranslationTextComponent("message.voicechat.voice_activation", db));
     }
 
     @Override
