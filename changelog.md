@@ -1,1 +1,1 @@
-- Backported to 1.15.2
+- Added voicechat connection test command

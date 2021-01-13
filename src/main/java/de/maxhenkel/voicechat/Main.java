@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat;
 
 import de.maxhenkel.corelib.CommonRegistry;
+import de.maxhenkel.voicechat.command.TestConnectionCommand;
 import de.maxhenkel.voicechat.net.AuthenticationMessage;
 import de.maxhenkel.voicechat.net.PlayerListMessage;
 import de.maxhenkel.voicechat.net.RequestPlayerListMessage;
@@ -17,6 +18,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
@@ -88,6 +90,11 @@ public class Main {
     @SubscribeEvent
     public void serverStarting(FMLServerStartedEvent event) {
         SERVER_VOICE_EVENTS.serverStarting(event);
+    }
+
+    @SubscribeEvent
+    public void onRegisterCommands(FMLServerStartingEvent event) {
+        TestConnectionCommand.register(event.getCommandDispatcher());
     }
 
 }

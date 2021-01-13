@@ -73,6 +73,7 @@ public class NetworkMessage {
         packetRegistry.put((byte) 1, SoundPacket.class);
         packetRegistry.put((byte) 2, AuthenticatePacket.class);
         packetRegistry.put((byte) 3, AuthenticateAckPacket.class);
+        packetRegistry.put((byte) 4, PingPacket.class);
     }
 
     public static NetworkMessage readPacket(DatagramSocket socket) throws IllegalAccessException, InstantiationException, IOException {
