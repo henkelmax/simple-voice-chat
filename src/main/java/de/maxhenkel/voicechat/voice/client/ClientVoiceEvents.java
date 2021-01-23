@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -26,6 +26,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
@@ -46,13 +48,17 @@ public class ClientVoiceEvents {
         if (client != null) {
             return;
         }
-        ServerData serverData = minecraft.getCurrentServerData();
-        if (serverData != null) {
+        ClientPlayNetHandler connection = minecraft.getConnection();
+        if (connection != null) {
             try {
-                String ip = serverData.serverIP.split(":")[0];
-                Main.LOGGER.info("Connecting to server: '" + ip + ":" + Main.SERVER_CONFIG.voiceChatPort.get() + "'");
-                client = new Client(ip, Main.SERVER_CONFIG.voiceChatPort.get(), playerUUID, secret);
-                client.start();
+                SocketAddress socketAddress = connection.getNetworkManager().channel().remoteAddress();
+                if(socketAddress instanceof InetSocketAddress){
+                    InetSocketAddress address= (InetSocketAddress) socketAddress;
+                    String ip = address.getHostString();
+                    Main.LOGGER.info("Connecting to server: '" + ip + ":" + Main.SERVER_CONFIG.voiceChatPort.get() + "'");
+                    client = new Client(ip, Main.SERVER_CONFIG.voiceChatPort.get(), playerUUID, secret);
+                    client.start();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
