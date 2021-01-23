@@ -1,1 +1,1 @@
-- Updated translation strings to avoid duplicates
+- Fixed voice chat not working when connecting to server via args
