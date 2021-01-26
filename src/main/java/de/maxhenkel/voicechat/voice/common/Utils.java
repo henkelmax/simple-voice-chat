@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
+import de.maxhenkel.voicechat.Main;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
@@ -111,8 +112,8 @@ public class Utils {
         Vector3d d = soundPos.subtract(playerPos).normalize();
         Vector2f diff = new Vector2f((float) d.x, (float) d.z);
         float diffAngle = angle(diff, new Vector2f(-1F, 0F));
-
         float angle = normalizeAngle(diffAngle - (yaw % 360F));
+        float dif = (float) (Math.abs(playerPos.y - soundPos.y) / Main.SERVER_CONFIG.voiceChatDistance.get().floatValue());
 
         float rot = angle / 180F;
         float perc = rot;
@@ -121,18 +122,15 @@ public class Utils {
         } else if (rot > 0.5F) {
             perc = 0.5F - (rot - 0.5F);
         }
+        perc = perc * (1 - dif);
 
-        float left = Math.max(0.3F, perc < 0F ? Math.abs(perc * 2F) : 0F);
-        float right = Math.max(0.3F, perc >= 0F ? perc * 2F : 0F);
+        float left = perc < 0F ? Math.abs(perc * 1.4F) + 0.3F : 0.3F;
+        float right = perc >= 0F ? (perc * 1.4F) + 0.3F : 0.3F;
 
-        float fill;
-        if (left > right) {
-            fill = 1F - left;
-        } else {
-            fill = 1F - right;
-        }
+        float fill = 1F - Math.max(left, right);
         left += fill;
         right += fill;
+
         return new ImmutablePair<>(left, right);
     }
 

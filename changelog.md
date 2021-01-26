@@ -1,1 +1,1 @@
-- Fixed voice chat not working when connecting to server via args
+- Improved 3D audio
