@@ -1,30 +1,24 @@
 package de.maxhenkel.voicechat.voice.server;
 
-import java.net.InetAddress;
+import java.net.SocketAddress;
 import java.util.UUID;
 
 public class ClientConnection {
 
     private UUID playerUUID;
-    private InetAddress address;
-    private int port;
+    private SocketAddress address;
 
-    public ClientConnection(UUID playerUUID, InetAddress address, int port) {
+    public ClientConnection(UUID playerUUID, SocketAddress address) {
         this.playerUUID = playerUUID;
         this.address = address;
-        this.port = port;
     }
 
     public UUID getPlayerUUID() {
         return playerUUID;
     }
 
-    public InetAddress getAddress() {
+    public SocketAddress getAddress() {
         return address;
-    }
-
-    public int getPort() {
-        return port;
     }
 
 }

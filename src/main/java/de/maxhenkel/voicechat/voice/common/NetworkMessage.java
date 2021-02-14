@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -21,8 +21,7 @@ public class NetworkMessage {
     private final long ttl;
     private Packet<? extends Packet> packet;
     private UUID secret;
-    private InetAddress address;
-    private int port;
+    private SocketAddress address;
 
     public NetworkMessage(Packet<?> packet, UUID secret) {
         this(packet);
@@ -37,7 +36,6 @@ public class NetworkMessage {
     private NetworkMessage() {
         this.timestamp = System.currentTimeMillis();
         this.ttl = 2000L;
-        this.port = -1;
     }
 
     @Nonnull
@@ -57,12 +55,8 @@ public class NetworkMessage {
         return ttl;
     }
 
-    public InetAddress getAddress() {
+    public SocketAddress getAddress() {
         return address;
-    }
-
-    public int getPort() {
-        return port;
     }
 
     private static final Map<Byte, Class<? extends Packet>> packetRegistry;
@@ -95,15 +89,14 @@ public class NetworkMessage {
         if (buffer.readBoolean()) {
             message.secret = buffer.readUniqueId();
         }
-        message.address = packet.getAddress();
-        message.port = packet.getPort();
+        message.address = packet.getSocketAddress();
         message.packet = p.fromBytes(buffer);
 
         return message;
     }
 
     public UUID getSender(Server server) {
-        return server.getConnections().values().stream().filter(connection -> connection.getAddress().equals(address) && connection.getPort() == port).map(ClientConnection::getPlayerUUID).findAny().orElse(null);
+        return server.getConnections().values().stream().filter(connection -> connection.getAddress().equals(address)).map(ClientConnection::getPlayerUUID).findAny().orElse(null);
     }
 
     private static byte getPacketType(Packet<? extends Packet> packet) {
@@ -141,7 +134,7 @@ public class NetworkMessage {
 
     public void sendTo(DatagramSocket socket, ClientConnection connection) throws IOException {
         byte[] data = write();
-        socket.send(new DatagramPacket(data, data.length, connection.getAddress(), connection.getPort()));
+        socket.send(new DatagramPacket(data, data.length, connection.getAddress()));
     }
 
 }

@@ -55,6 +55,7 @@ public class Server extends Thread {
             }
             try {
                 socket = new DatagramSocket(port, address);
+                socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
             } catch (BindException e) {
                 Main.LOGGER.error("Failed to bind to address '" + addr + "'");
                 e.printStackTrace();
@@ -126,7 +127,7 @@ public class Server extends Thread {
                         if (secret != null && secret.equals(packet.getSecret())) {
                             ClientConnection connection;
                             if (!connections.containsKey(packet.getPlayerUUID())) {
-                                connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress(), message.getPort());
+                                connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress());
                                 connections.put(packet.getPlayerUUID(), connection);
                                 Main.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
                             } else {

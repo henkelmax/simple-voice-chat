@@ -28,6 +28,7 @@ public class Client extends Thread {
         this.address = InetAddress.getByName(serverIp);
         this.port = serverPort;
         this.socket = new DatagramSocket();
+        this.socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
         this.playerUUID = playerUUID;
         this.secret = secret;
         this.running = true;
