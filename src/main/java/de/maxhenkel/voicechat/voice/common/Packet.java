@@ -1,11 +1,11 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 public interface Packet<T extends Packet> {
 
-    T fromBytes(PacketBuffer buf);
+    T fromBytes(PacketByteBuf buf);
 
-    void toBytes(PacketBuffer buf);
+    void toBytes(PacketByteBuf buf);
 
 }

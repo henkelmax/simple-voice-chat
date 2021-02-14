@@ -4,7 +4,7 @@ import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -77,7 +77,7 @@ public class NetworkMessage {
         byte[] data = new byte[packet.getLength()];
         System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
 
-        PacketBuffer buffer = new PacketBuffer(Unpooled.wrappedBuffer(data));
+        PacketByteBuf buffer = new PacketByteBuf(Unpooled.wrappedBuffer(data));
         byte packetType = buffer.readByte();
         Class<? extends Packet> packetClass = packetRegistry.get(packetType);
         if (packetClass == null) {
@@ -87,7 +87,7 @@ public class NetworkMessage {
 
         NetworkMessage message = new NetworkMessage();
         if (buffer.readBoolean()) {
-            message.secret = buffer.readUniqueId();
+            message.secret = buffer.readUuid();
         }
         message.address = packet.getSocketAddress();
         message.packet = p.fromBytes(buffer);
@@ -109,7 +109,7 @@ public class NetworkMessage {
     }
 
     public byte[] write() {
-        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
+        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
 
         byte type = getPacketType(packet);
 
@@ -120,7 +120,7 @@ public class NetworkMessage {
         buffer.writeByte(type);
         buffer.writeBoolean(secret != null);
         if (secret != null) {
-            buffer.writeUniqueId(secret);
+            buffer.writeUuid(secret);
         }
         packet.toBytes(buffer);
 

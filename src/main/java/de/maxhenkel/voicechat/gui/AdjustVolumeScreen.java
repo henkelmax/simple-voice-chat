@@ -1,9 +1,9 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.PlayerInfo;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 public class AdjustVolumeScreen extends ListScreen<PlayerInfo> {
 
     public AdjustVolumeScreen(List<PlayerInfo> players) {
-        super(players, new TranslationTextComponent("gui.voicechat.adjust_volume.title"));
+        super(players, new TranslatableText("gui.voicechat.adjust_volume.title"));
     }
 
     @Override
@@ -26,8 +26,8 @@ public class AdjustVolumeScreen extends ListScreen<PlayerInfo> {
 
     @Override
     protected void renderText(MatrixStack stack, @Nullable PlayerInfo element, int mouseX, int mouseY, float partialTicks) {
-        ITextComponent title = getCurrentElement() == null ? new TranslationTextComponent("message.voicechat.no_player") : new TranslationTextComponent("message.voicechat.adjust_volume_player", getCurrentElement().getName());
-        int titleWidth = font.getStringPropertyWidth(title);
-        font.func_238422_b_(stack, title.func_241878_f(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
+        Text title = getCurrentElement() == null ? new TranslatableText("message.voicechat.no_player") : new TranslatableText("message.voicechat.adjust_volume_player", getCurrentElement().getName());
+        int titleWidth = textRenderer.getWidth(title);
+        textRenderer.draw(stack, title.asOrderedText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
     }
 }

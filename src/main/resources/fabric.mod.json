@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "voicechat",
+  "version": "${version}",
+  "name": "Simple Voice Chat",
+  "description": "",
+  "authors": [
+    "Max Henkel"
+  ],
+  "contact": {
+    "website": "https://modrepo.de"
+  },
+  "license": "All Rights Reserved",
+  "icon": "assets/voicechat/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "de.maxhenkel.voicechat.VoicechatClient"
+    ],
+    "main": [
+      "de.maxhenkel.voicechat.Voicechat"
+    ]
+  },
+  "mixins": [
+    "voicechat.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11.1",
+    "fabric": "*",
+    "minecraft": "1.16.5"
+  }
+}

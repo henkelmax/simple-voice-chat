@@ -1,11 +1,11 @@
 package de.maxhenkel.voicechat.voice.server;
 
-import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.common.*;
+import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.Box;
 
 import java.io.IOException;
 import java.net.BindException;
@@ -43,26 +43,26 @@ public class Server extends Thread {
     public void run() {
         try {
             InetAddress address = null;
-            String addr = Main.SERVER_CONFIG.voiceChatBindAddress.get();
+            String addr = Voicechat.SERVER_CONFIG.voiceChatBindAddress.get();
             try {
                 if (!addr.isEmpty()) {
                     address = InetAddress.getByName(addr);
                 }
             } catch (Exception e) {
-                Main.LOGGER.error("Failed to parse bind IP address '" + addr + "'");
-                Main.LOGGER.info("Binding to default IP address");
+                Voicechat.LOGGER.error("Failed to parse bind IP address '" + addr + "'");
+                Voicechat.LOGGER.info("Binding to default IP address");
                 e.printStackTrace();
             }
             try {
                 socket = new DatagramSocket(port, address);
                 socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
             } catch (BindException e) {
-                Main.LOGGER.error("Failed to bind to address '" + addr + "'");
+                Voicechat.LOGGER.error("Failed to bind to address '" + addr + "'");
                 e.printStackTrace();
                 System.exit(1);
                 return;
             }
-            Main.LOGGER.info("Server started at port " + port);
+            Voicechat.LOGGER.info("Server started at port " + port);
 
             while (!socket.isClosed()) {
                 try {
@@ -129,7 +129,7 @@ public class Server extends Thread {
                             if (!connections.containsKey(packet.getPlayerUUID())) {
                                 connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress());
                                 connections.put(packet.getPlayerUUID(), connection);
-                                Main.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
+                                Voicechat.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
                             } else {
                                 connection = connections.get(packet.getPlayerUUID());
                             }
@@ -148,26 +148,26 @@ public class Server extends Thread {
 
                     if (message.getPacket() instanceof MicPacket) {
                         MicPacket packet = (MicPacket) message.getPacket();
-                        ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(playerUUID);
+                        ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerUUID);
                         if (player == null) {
                             continue;
                         }
-                        double distance = Main.SERVER_CONFIG.voiceChatDistance.get();
+                        double distance = Voicechat.SERVER_CONFIG.voiceChatDistance.get();
                         List<ClientConnection> closeConnections = player.world
-                                .getEntitiesWithinAABB(
+                                .getEntitiesByClass(
                                         PlayerEntity.class,
-                                        new AxisAlignedBB(
-                                                player.getPosX() - distance,
-                                                player.getPosY() - distance,
-                                                player.getPosZ() - distance,
-                                                player.getPosX() + distance,
-                                                player.getPosY() + distance,
-                                                player.getPosZ() + distance
+                                        new Box(
+                                                player.getX() - distance,
+                                                player.getY() - distance,
+                                                player.getZ() - distance,
+                                                player.getX() + distance,
+                                                player.getY() + distance,
+                                                player.getZ() + distance
                                         )
-                                        , playerEntity -> !playerEntity.getUniqueID().equals(player.getUniqueID())
+                                        , playerEntity -> !playerEntity.getUuid().equals(player.getUuid())
                                 )
                                 .stream()
-                                .map(playerEntity -> connections.get(playerEntity.getUniqueID()))
+                                .map(playerEntity -> connections.get(playerEntity.getUuid()))
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.toList());
                         NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(playerUUID, packet.getData()));

@@ -33,7 +33,7 @@ public class TalkCache {
 
     public boolean isTalking(PlayerEntity playerEntity) {
         updateCache();
-        return cache.containsKey(playerEntity.getUniqueID());
+        return cache.containsKey(playerEntity.getUuid());
     }
 
 }

@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import de.maxhenkel.voicechat.Main;
+import de.maxhenkel.voicechat.VoicechatClient;
 
 import javax.annotation.Nullable;
 import javax.sound.sampled.*;
@@ -11,7 +11,7 @@ public class DataLines {
 
     @Nullable
     public static TargetDataLine getMicrophone() {
-        String micName = Main.CLIENT_CONFIG.microphone.get();
+        String micName = VoicechatClient.CLIENT_CONFIG.microphone.get();
         if (!micName.isEmpty()) {
             TargetDataLine mic = getMicrophoneByName(micName);
             if (mic != null) {
@@ -23,7 +23,7 @@ public class DataLines {
 
     @Nullable
     public static SourceDataLine getSpeaker() {
-        String speakerName = Main.CLIENT_CONFIG.speaker.get();
+        String speakerName = VoicechatClient.CLIENT_CONFIG.speaker.get();
         if (!speakerName.isEmpty()) {
             SourceDataLine speaker = getSpeakerByName(speakerName);
             if (speaker != null) {

@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 public class MicPacket implements Packet<MicPacket> {
 
@@ -19,14 +19,14 @@ public class MicPacket implements Packet<MicPacket> {
     }
 
     @Override
-    public MicPacket fromBytes(PacketBuffer buf) {
+    public MicPacket fromBytes(PacketByteBuf buf) {
         MicPacket soundPacket = new MicPacket();
         soundPacket.data = buf.readByteArray();
         return soundPacket;
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(PacketByteBuf buf) {
         buf.writeByteArray(data);
     }
 }

@@ -1,15 +1,15 @@
 package de.maxhenkel.voicechat;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import java.util.UUID;
 
 public class PlayerInfo {
 
     private final UUID uuid;
-    private final ITextComponent name;
+    private final Text name;
 
-    public PlayerInfo(UUID uuid, ITextComponent name) {
+    public PlayerInfo(UUID uuid, Text name) {
         this.uuid = uuid;
         this.name = name;
     }
@@ -18,7 +18,7 @@ public class PlayerInfo {
         return uuid;
     }
 
-    public ITextComponent getName() {
+    public Text getName() {
         return name;
     }
 

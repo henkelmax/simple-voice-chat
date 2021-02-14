@@ -1,11 +1,13 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import de.maxhenkel.voicechat.Main;
+import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.common.MicPacket;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
-import javax.sound.sampled.*;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.TargetDataLine;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -21,7 +23,7 @@ public class MicThread extends Thread {
         this.running = true;
         setDaemon(true);
         setName("MicrophoneThread");
-        AudioFormat af = AudioChannelConfig.getMonoFormat();
+        AudioFormat af = client.getAudioChannelConfig().getMonoFormat();
         mic = DataLines.getMicrophone();
         mic.open(af);
     }
@@ -32,7 +34,7 @@ public class MicThread extends Thread {
             if (microphoneLocked) {
                 Utils.sleep(10);
             } else {
-                MicrophoneActivationType type = Main.CLIENT_CONFIG.microphoneActivationType.get();
+                MicrophoneActivationType type = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get();
                 if (type.equals(MicrophoneActivationType.PTT)) {
                     ptt();
                 } else if (type.equals(MicrophoneActivationType.VOICE)) {
@@ -59,7 +61,7 @@ public class MicThread extends Thread {
             return;
         }
 
-        int dataLength = AudioChannelConfig.getDataLength();
+        int dataLength = client.getAudioChannelConfig().getDataLength();
 
         mic.start();
 
@@ -71,9 +73,9 @@ public class MicThread extends Thread {
         while (mic.available() >= dataLength) {
             mic.read(buff, 0, buff.length);
         }
-        Utils.adjustVolumeMono(buff, Main.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
+        Utils.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
 
-        int offset = Utils.getActivationOffset(buff, Main.CLIENT_CONFIG.voiceActivationThreshold.get());
+        int offset = Utils.getActivationOffset(buff, VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get());
         if (activating) {
             if (offset < 0) {
                 if (deactivationDelay >= 2) {
@@ -103,8 +105,8 @@ public class MicThread extends Thread {
 
     private void ptt() {
         activating = false;
-        int dataLength = AudioChannelConfig.getDataLength();
-        if (!Main.KEY_PTT.isKeyDown()) {
+        int dataLength = client.getAudioChannelConfig().getDataLength();
+        if (!VoicechatClient.KEY_PTT.isPressed()) {
             if (wasPTT) {
                 mic.stop();
                 mic.flush();
@@ -126,7 +128,7 @@ public class MicThread extends Thread {
         while (mic.available() >= dataLength) { //TODO fix?
             mic.read(buff, 0, buff.length);
         }
-        Utils.adjustVolumeMono(buff, Main.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
+        Utils.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
         sendAudioPacket(buff);
     }
 

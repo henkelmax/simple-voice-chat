@@ -1,30 +1,30 @@
 package de.maxhenkel.voicechat.gui;
 
-import de.maxhenkel.voicechat.Main;
-import net.minecraft.client.gui.widget.AbstractSlider;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import de.maxhenkel.voicechat.VoicechatClient;
+import net.minecraft.client.gui.widget.SliderWidget;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
-public class VoiceSoundSlider extends AbstractSlider {
+public class VoiceSoundSlider extends SliderWidget {
 
-    protected VoiceSoundSlider(int xIn, int yIn, int widthIn, int heightIn) {
-        super(xIn, yIn, widthIn, heightIn, StringTextComponent.EMPTY, Main.CLIENT_CONFIG.voiceChatVolume.get().floatValue() / 2F);
-        func_230979_b_();
+    protected VoiceSoundSlider(int x, int y, int width, int theight) {
+        super(x, y, width, theight, LiteralText.EMPTY, VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() / 2F);
+        updateMessage();
     }
 
     @Override
-    protected void func_230979_b_() {
+    protected void updateMessage() {
         setMessage(getMsg());
     }
 
-    public ITextComponent getMsg() {
-        return new TranslationTextComponent("message.voicechat.voice_chat_volume", Math.round(sliderValue * 200F) + "%");
+    public Text getMsg() {
+        return new TranslatableText("message.voicechat.voice_chat_volume", Math.round(value * 200F) + "%");
     }
 
     @Override
-    protected void func_230972_a_() {
-        Main.CLIENT_CONFIG.voiceChatVolume.set(sliderValue * 2F);
-        Main.CLIENT_CONFIG.voiceChatVolume.save();
+    protected void applyValue() {
+        VoicechatClient.CLIENT_CONFIG.voiceChatVolume.set(value * 2F);
+        VoicechatClient.CLIENT_CONFIG.voiceChatVolume.save();
     }
 }

@@ -1,42 +1,45 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import de.maxhenkel.voicechat.Main;
-import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
+import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.client.DataLines;
 import de.maxhenkel.voicechat.voice.client.MicThread;
 import de.maxhenkel.voicechat.voice.common.Utils;
-import net.minecraft.client.gui.widget.button.AbstractButton;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 
 import javax.sound.sampled.*;
 
-public class MicTestButton extends AbstractButton {
+public class MicTestButton extends AbstractPressableButtonWidget {
 
     private boolean micActive;
     private VoiceThread voiceThread;
     private MicListener micListener;
+    private Client client;
 
-    public MicTestButton(int xIn, int yIn, int widthIn, int heightIn, MicListener micListener) {
-        super(xIn, yIn, widthIn, heightIn, StringTextComponent.EMPTY);
+    public MicTestButton(int xIn, int yIn, int widthIn, int heightIn, MicListener micListener, Client client) {
+        super(xIn, yIn, widthIn, heightIn, LiteralText.EMPTY);
         this.micListener = micListener;
+        this.client = client;
         if (getMic() == null) {
             micActive = false;
         }
         updateText();
+
     }
 
     private void updateText() {
         if (!visible) {
-            setMessage(new TranslationTextComponent("message.voicechat.mic_test_unavailable"));
+            setMessage(new TranslatableText("message.voicechat.mic_test_unavailable"));
             return;
         }
         if (micActive) {
-            setMessage(new TranslationTextComponent("message.voicechat.mic_test_on"));
+            setMessage(new TranslatableText("message.voicechat.mic_test_on"));
         } else {
-            setMessage(new TranslationTextComponent("message.voicechat.mic_test_off"));
+            setMessage(new TranslatableText("message.voicechat.mic_test_off"));
         }
     }
 
@@ -76,10 +79,6 @@ public class MicTestButton extends AbstractButton {
     }
 
     private TargetDataLine getMic() {
-        Client client = Main.CLIENT_VOICE_EVENTS.getClient();
-        if (client == null) {
-            return null;
-        }
         MicThread micThread = client.getMicThread();
         if (micThread == null) {
             return null;
@@ -88,10 +87,6 @@ public class MicTestButton extends AbstractButton {
     }
 
     private void setMicLocked(boolean locked) {
-        Client client = Main.CLIENT_VOICE_EVENTS.getClient();
-        if (client == null) {
-            return;
-        }
         MicThread micThread = client.getMicThread();
         if (micThread == null) {
             return;
@@ -111,7 +106,7 @@ public class MicTestButton extends AbstractButton {
         public VoiceThread() throws LineUnavailableException {
             this.running = true;
             setDaemon(true);
-            audioFormat = AudioChannelConfig.getMonoFormat();
+            audioFormat = client.getAudioChannelConfig().getMonoFormat();
             mic = getMic();
             if (mic == null) {
                 throw new LineUnavailableException("No microphone");
@@ -137,7 +132,7 @@ public class MicTestButton extends AbstractButton {
                     return;
                 }
                 mic.start();
-                int dataLength = AudioChannelConfig.getDataLength();
+                int dataLength = client.getAudioChannelConfig().getDataLength();
                 if (mic.available() < dataLength) {
                     Utils.sleep(10);
                     continue;
@@ -146,11 +141,11 @@ public class MicTestButton extends AbstractButton {
                 while (mic.available() >= dataLength) {
                     mic.read(buff, 0, buff.length);
                 }
-                Utils.adjustVolumeMono(buff, Main.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
+                Utils.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
 
                 micListener.onMicValue(Utils.dbToPerc(Utils.getHighestAudioLevel(buff)));
 
-                gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(Main.CLIENT_CONFIG.voiceChatVolume.get().floatValue()), gainControl.getMinimum()), gainControl.getMaximum()));
+                gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue()), gainControl.getMinimum()), gainControl.getMaximum()));
 
                 speaker.write(buff, 0, buff.length);
             }
@@ -161,7 +156,7 @@ public class MicTestButton extends AbstractButton {
         }
 
         public void close() {
-            Main.LOGGER.debug("Closing mic test audio channel");
+            Voicechat.LOGGER.debug("Closing mic test audio channel");
             running = false;
             speaker.stop();
             speaker.flush();

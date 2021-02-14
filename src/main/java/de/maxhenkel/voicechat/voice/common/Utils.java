@@ -1,9 +1,8 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.Main;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -108,12 +107,12 @@ public class Utils {
         return stereo;
     }
 
-    public static Pair<Float, Float> getStereoVolume(Vector3d playerPos, float yaw, Vector3d soundPos) {
-        Vector3d d = soundPos.subtract(playerPos).normalize();
-        Vector2f diff = new Vector2f((float) d.x, (float) d.z);
-        float diffAngle = angle(diff, new Vector2f(-1F, 0F));
+    public static Pair<Float, Float> getStereoVolume(Vec3d playerPos, float yaw, Vec3d soundPos, double voiceChatDistance) {
+        Vec3d d = soundPos.subtract(playerPos).normalize();
+        Vec2f diff = new Vec2f((float) d.x, (float) d.z);
+        float diffAngle = angle(diff, new Vec2f(-1F, 0F));
         float angle = normalizeAngle(diffAngle - (yaw % 360F));
-        float dif = (float) (Math.abs(playerPos.y - soundPos.y) / Main.SERVER_CONFIG.voiceChatDistance.get().floatValue());
+        float dif = (float) (Math.abs(playerPos.y - soundPos.y) / voiceChatDistance);
 
         float rot = angle / 180F;
         float perc = rot;
@@ -130,7 +129,7 @@ public class Utils {
         float fill = 1F - Math.max(left, right);
         left += fill;
         right += fill;
-        
+
         return new ImmutablePair<>(left, right);
     }
 
@@ -144,20 +143,20 @@ public class Utils {
         return angle;
     }
 
-    private static float angle(Vector2f vec1, Vector2f vec2) {
+    private static float angle(Vec2f vec1, Vec2f vec2) {
         return (float) Math.toDegrees(Math.atan2(vec1.x * vec2.x + vec1.y * vec2.y, vec1.x * vec2.y - vec1.y * vec2.x));
     }
 
-    private static float magnitude(Vector2f vec1) {
+    private static float magnitude(Vec2f vec1) {
         return MathHelper.sqrt(Math.pow(vec1.x, 2) + Math.pow(vec1.y, 2));
     }
 
-    private static float multiply(Vector2f vec1, Vector2f vec2) {
+    private static float multiply(Vec2f vec1, Vec2f vec2) {
         return vec1.x * vec2.x + vec1.y * vec2.y;
     }
 
-    private static Vector2f rotate(Vector2f vec, float angle) {
-        return new Vector2f(vec.x * MathHelper.cos(angle) - vec.y * MathHelper.sin(angle), vec.x * MathHelper.sin(angle) + vec.y * MathHelper.cos(angle));
+    private static Vec2f rotate(Vec2f vec, float angle) {
+        return new Vec2f(vec.x * MathHelper.cos(angle) - vec.y * MathHelper.sin(angle), vec.x * MathHelper.sin(angle) + vec.y * MathHelper.cos(angle));
     }
 
     /**
