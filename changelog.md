@@ -1,2 +1,1 @@
-- Use SocketAddress instead of InetAddress and port
-- Set IPTOS_RELIABILITY traffic class
+- Fixed MTU size
