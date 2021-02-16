@@ -46,7 +46,7 @@ public class ServerVoiceEvents {
         }
 
         UUID secret = server.getSecret(player.getUuid());
-        InitPacket packet = new InitPacket(secret, Voicechat.SERVER_CONFIG.voiceChatPort.get(), Voicechat.SERVER_CONFIG.voiceChatSampleRate.get(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), Voicechat.SERVER_CONFIG.voiceChatFadeDistance.get());
+        InitPacket packet = new InitPacket(secret, Voicechat.SERVER_CONFIG.voiceChatPort.get(), Voicechat.SERVER_CONFIG.voiceChatSampleRate.get(), Voicechat.SERVER_CONFIG.voiceChatMtuSize.get(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), Voicechat.SERVER_CONFIG.voiceChatFadeDistance.get());
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
         packet.toBytes(buffer);
         ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Packets.SECRET, buffer);

@@ -18,6 +18,7 @@ public class Client extends Thread {
     private UUID playerUUID;
     private UUID secret;
     private int sampleRate;
+    private int mtuSize;
     private double voiceChatDistance;
     private double voiceChatFadeDistance;
     private MicThread micThread;
@@ -29,7 +30,7 @@ public class Client extends Thread {
     private boolean muted;
     private AudioChannelConfig audioChannelConfig;
 
-    public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret, int sampleRate, double voiceChatDistance, double voiceChatFadeDistance) throws IOException {
+    public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret, int sampleRate, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance) throws IOException {
         this.address = InetAddress.getByName(serverIp);
         this.port = serverPort;
         this.socket = new DatagramSocket();
@@ -37,6 +38,7 @@ public class Client extends Thread {
         this.playerUUID = playerUUID;
         this.secret = secret;
         this.sampleRate = sampleRate;
+        this.mtuSize = mtuSize;
         this.voiceChatDistance = voiceChatDistance;
         this.voiceChatFadeDistance = voiceChatFadeDistance;
         this.running = true;
@@ -63,6 +65,10 @@ public class Client extends Thread {
 
     public int getSampleRate() {
         return sampleRate;
+    }
+
+    public int getMtuSize() {
+        return mtuSize;
     }
 
     public double getVoiceChatDistance() {

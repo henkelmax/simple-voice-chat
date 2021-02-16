@@ -61,12 +61,12 @@ public class MicThread extends Thread {
             return;
         }
 
-        int dataLength = client.getAudioChannelConfig().getDataLength();
+        int dataLength = client.getAudioChannelConfig().getReadSize(mic);
 
         mic.start();
 
         if (mic.available() < dataLength) {
-            Utils.sleep(10);
+            Utils.sleep(1);
             return;
         }
         byte[] buff = new byte[dataLength];
@@ -105,7 +105,7 @@ public class MicThread extends Thread {
 
     private void ptt() {
         activating = false;
-        int dataLength = client.getAudioChannelConfig().getDataLength();
+        int dataLength = client.getAudioChannelConfig().getReadSize(mic);
         if (!VoicechatClient.KEY_PTT.isPressed()) {
             if (wasPTT) {
                 mic.stop();
@@ -121,11 +121,11 @@ public class MicThread extends Thread {
         mic.start();
 
         if (mic.available() < dataLength) {
-            Utils.sleep(10);
+            Utils.sleep(1);
             return;
         }
         byte[] buff = new byte[dataLength];
-        while (mic.available() >= dataLength) { //TODO fix?
+        while (mic.available() >= dataLength) {
             mic.read(buff, 0, buff.length);
         }
         Utils.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
@@ -133,10 +133,19 @@ public class MicThread extends Thread {
     }
 
     private void sendAudioPacket(byte[] data) {
-        try {
-            new NetworkMessage(new MicPacket(data), client.getSecret()).sendToServer(client);
-        } catch (IOException e) {
-            e.printStackTrace();
+        int dataLength = client.getAudioChannelConfig().getDataLength();
+        int packetAmount = (int) Math.ceil((double) data.length / (double) dataLength);
+        int bytesPerPacket = data.length / packetAmount;
+        if (bytesPerPacket % 2 == 1) {
+            bytesPerPacket--;
+        }
+        int rest = data.length - bytesPerPacket * packetAmount;
+        for (int i = 0; i < packetAmount; i++) {
+            try {
+                new NetworkMessage(new MicPacket(Arrays.copyOfRange(data, i * bytesPerPacket, (i + 1) * bytesPerPacket + ((i >= packetAmount - 1) ? rest : 0))), client.getSecret()).sendToServer(client);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

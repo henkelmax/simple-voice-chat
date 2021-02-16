@@ -35,7 +35,7 @@ public class TestConnectionCommand {
             try {
                 commandSource.getSource().sendFeedback(new TranslatableText("message.voicechat.sending_packet"), true);
                 long timestamp = System.currentTimeMillis();
-                server.getPingManager().sendPing(clientConnection, 1000, new PingManager.PingListener() {
+                server.getPingManager().sendPing(clientConnection, 5000, new PingManager.PingListener() {
                     @Override
                     public void onPong(PingPacket packet) {
                         commandSource.getSource().sendFeedback(new TranslatableText("message.voicechat.packet_received", (System.currentTimeMillis() - timestamp)), true);

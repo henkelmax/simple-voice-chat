@@ -13,6 +13,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -77,12 +79,6 @@ public class AudioChannel extends Thread {
                     continue;
                 }
                 lastPacketTime = System.currentTimeMillis();
-                NetworkMessage message = queue.get(0);
-                queue.remove(message);
-                if (!(message.getPacket() instanceof SoundPacket)) {
-                    continue;
-                }
-                SoundPacket soundPacket = (SoundPacket) (message.getPacket());
 
                 // Filling the speaker with silence for one packet size
                 // to build a small buffer to compensate for network latency
@@ -90,29 +86,34 @@ public class AudioChannel extends Thread {
                     byte[] data = new byte[Math.min(client.getAudioChannelConfig().getDataLength() * 2 * VoicechatClient.CLIENT_CONFIG.outputBufferSize.get(), speaker.getBufferSize() - client.getAudioChannelConfig().getDataLength())];
                     speaker.write(data, 0, data.length);
                 }
-                PlayerEntity player = minecraft.world.getPlayerByUuid(soundPacket.getSender());
-                if (player != null) {
-                    client.getTalkCache().updateTalking(player.getUuid());
-                    float distance = player.distanceTo(minecraft.player);
-                    float percentage = 1F;
-                    float fadeDistance = (float) client.getVoiceChatFadeDistance();
-                    float maxDistance = (float) client.getVoiceChatDistance();
-
-                    if (distance > fadeDistance) {
-                        percentage = 1F - Math.min((distance - fadeDistance) / (maxDistance - fadeDistance), 1F);
-                    }
-
-                    gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(percentage * VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * (float) VoicechatClient.VOLUME_CONFIG.getVolume(player)), gainControl.getMinimum()), gainControl.getMaximum()));
-
-                    byte[] mono = soundPacket.getData();
-
-                    Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft.player.getPos(), minecraft.player.yaw, player.getPos(), client.getVoiceChatDistance());
-
-                    byte[] stereo = Utils.convertToStereo(mono, stereoVolume.getLeft(), stereoVolume.getRight());
-                    speaker.write(stereo, 0, stereo.length);
-                    speaker.start();
+                if (minecraft.world == null || minecraft.player == null) {
+                    continue;
                 }
 
+                PlayerEntity player = minecraft.world.getPlayerByUuid(uuid);
+                if (player == null) {
+                    continue;
+                }
+
+                client.getTalkCache().updateTalking(player.getUuid());
+                float distance = player.distanceTo(minecraft.player);
+                float percentage = 1F;
+                float fadeDistance = (float) client.getVoiceChatFadeDistance();
+                float maxDistance = (float) client.getVoiceChatDistance();
+
+                if (distance > fadeDistance) {
+                    percentage = 1F - Math.min((distance - fadeDistance) / (maxDistance - fadeDistance), 1F);
+                }
+
+                gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(percentage * VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * (float) VoicechatClient.VOLUME_CONFIG.getVolume(player)), gainControl.getMinimum()), gainControl.getMaximum()));
+
+                byte[] mono = gatherPacketData();
+
+                Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft.player.getPos(), minecraft.player.yaw, player.getPos(), client.getVoiceChatDistance());
+
+                byte[] stereo = Utils.convertToStereo(mono, stereoVolume.getLeft(), stereoVolume.getRight());
+                speaker.write(stereo, 0, stereo.length);
+                speaker.start();
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -122,6 +123,24 @@ public class AudioChannel extends Thread {
                 speaker.close();
             }
         }
+    }
+
+    private byte[] gatherPacketData() {
+        ByteArrayOutputStream s = new ByteArrayOutputStream(client.getAudioChannelConfig().getDataLength() * 2);
+        while (!queue.isEmpty()) {
+            NetworkMessage message = queue.get(0);
+            queue.remove(message);
+            if (!(message.getPacket() instanceof SoundPacket)) {
+                continue;
+            }
+            SoundPacket soundPacket = (SoundPacket) (message.getPacket());
+            try {
+                s.write(soundPacket.getData());
+            } catch (IOException e) {
+                break;
+            }
+        }
+        return s.toByteArray();
     }
 
     public boolean isClosed() {
