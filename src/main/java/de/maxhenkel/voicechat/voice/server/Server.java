@@ -146,6 +146,12 @@ public class Server extends Thread {
                         continue;
                     }
 
+                    ClientConnection conn = connections.get(playerUUID);
+                    if (conn == null || message.getSequenceNumber() <= conn.getLastClientSequenceNumber()) {
+                        continue;
+                    }
+                    conn.setLastClientSequenceNumber(message.getSequenceNumber());
+
                     if (message.getPacket() instanceof MicPacket) {
                         MicPacket packet = (MicPacket) message.getPacket();
                         ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerUUID);
