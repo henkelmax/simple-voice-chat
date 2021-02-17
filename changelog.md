@@ -1,1 +1,1 @@
-- Fixed MTU size
+- Fixed robotic voice issue

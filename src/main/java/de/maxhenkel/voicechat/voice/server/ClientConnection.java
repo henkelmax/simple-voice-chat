@@ -7,10 +7,14 @@ public class ClientConnection {
 
     private UUID playerUUID;
     private SocketAddress address;
+    private long sequenceNumber;
+    private long lastClientSequenceNumber;
 
     public ClientConnection(UUID playerUUID, SocketAddress address) {
         this.playerUUID = playerUUID;
         this.address = address;
+        this.sequenceNumber = 0L;
+        this.lastClientSequenceNumber = -1L;
     }
 
     public UUID getPlayerUUID() {
@@ -21,4 +25,17 @@ public class ClientConnection {
         return address;
     }
 
+    public long getAndIncreaseSequenceNumber() {
+        long num = sequenceNumber;
+        sequenceNumber++;
+        return num;
+    }
+
+    public long getLastClientSequenceNumber() {
+        return lastClientSequenceNumber;
+    }
+
+    public void setLastClientSequenceNumber(long lastClientSequenceNumber) {
+        this.lastClientSequenceNumber = lastClientSequenceNumber;
+    }
 }

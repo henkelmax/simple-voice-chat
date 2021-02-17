@@ -23,6 +23,8 @@ public class Client extends Thread {
     private Map<UUID, AudioChannel> audioChannels;
     private AuthThread authThread;
     private boolean muted;
+    private long sequenceNumber;
+    private long lastServerSequenceNumber;
 
     public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret) throws IOException {
         this.address = InetAddress.getByName(serverIp);
@@ -31,6 +33,8 @@ public class Client extends Thread {
         this.socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
         this.playerUUID = playerUUID;
         this.secret = secret;
+        this.sequenceNumber = 0L;
+        this.lastServerSequenceNumber = -1L;
         this.running = true;
         this.talkCache = new TalkCache();
         this.audioChannels = new HashMap<>();
@@ -38,6 +42,12 @@ public class Client extends Thread {
         this.authThread.start();
         setDaemon(true);
         setName("VoiceChatClientThread");
+    }
+
+    public long getAndIncreaseSequenceNumber() {
+        long num = sequenceNumber;
+        sequenceNumber++;
+        return num;
     }
 
     public UUID getPlayerUUID() {
@@ -99,6 +109,10 @@ public class Client extends Thread {
         try {
             while (running) {
                 NetworkMessage in = NetworkMessage.readPacket(socket);
+                if (in.getSequenceNumber() <= lastServerSequenceNumber) {
+                    return;
+                }
+                lastServerSequenceNumber = in.getSequenceNumber();
                 if (in.getPacket() instanceof AuthenticateAckPacket) {
                     if (!authenticated) {
                         Main.LOGGER.info("Server acknowledged authentication");

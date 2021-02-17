@@ -22,6 +22,7 @@ public class NetworkMessage {
     private Packet<? extends Packet> packet;
     private UUID secret;
     private SocketAddress address;
+    private long sequenceNumber;
 
     public NetworkMessage(Packet<?> packet, UUID secret) {
         this(packet);
@@ -59,6 +60,10 @@ public class NetworkMessage {
         return address;
     }
 
+    public long getSequenceNumber() {
+        return sequenceNumber;
+    }
+
     private static final Map<Byte, Class<? extends Packet>> packetRegistry;
 
     static {
@@ -78,6 +83,7 @@ public class NetworkMessage {
         System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
 
         PacketBuffer buffer = new PacketBuffer(Unpooled.wrappedBuffer(data));
+        long sequenceNumber = buffer.readLong();
         byte packetType = buffer.readByte();
         Class<? extends Packet> packetClass = packetRegistry.get(packetType);
         if (packetClass == null) {
@@ -86,6 +92,7 @@ public class NetworkMessage {
         Packet<? extends Packet<?>> p = packetClass.newInstance();
 
         NetworkMessage message = new NetworkMessage();
+        message.sequenceNumber = sequenceNumber;
         if (buffer.readBoolean()) {
             message.secret = buffer.readUniqueId();
         }
@@ -108,9 +115,10 @@ public class NetworkMessage {
         return -1;
     }
 
-    public byte[] write() {
+    public byte[] write(long sequenceNumber) {
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
 
+        buffer.writeLong(sequenceNumber);
         byte type = getPacketType(packet);
 
         if (type < 0) {
@@ -128,12 +136,12 @@ public class NetworkMessage {
     }
 
     public void sendToServer(Client client) throws IOException {
-        byte[] data = write();
+        byte[] data = write(client.getAndIncreaseSequenceNumber());
         client.getSocket().send(new DatagramPacket(data, data.length, client.getAddress(), client.getPort()));
     }
 
     public void sendTo(DatagramSocket socket, ClientConnection connection) throws IOException {
-        byte[] data = write();
+        byte[] data = write(connection.getAndIncreaseSequenceNumber());
         socket.send(new DatagramPacket(data, data.length, connection.getAddress()));
     }
 
