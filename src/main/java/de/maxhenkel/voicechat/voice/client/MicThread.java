@@ -133,7 +133,7 @@ public class MicThread extends Thread {
     private void sendAudioPacket(byte[] data) {
         int dataLength = AudioChannelConfig.getDataLength();
         int packetAmount = (int) Math.ceil((double) data.length / (double) dataLength);
-        int bytesPerPacket = data.length / packetAmount;
+        int bytesPerPacket = packetAmount == 0 ? 0 : data.length / packetAmount;
         if (bytesPerPacket % 2 == 1) {
             bytesPerPacket--;
         }
