@@ -1,1 +1,1 @@
-- Added voicechat connection test command
+- Fix crash on servers
