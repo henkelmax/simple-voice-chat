@@ -137,9 +137,9 @@ public class MicTestButton extends AbstractButton {
                     return;
                 }
                 mic.start();
-                int dataLength = AudioChannelConfig.getDataLength();
+                int dataLength = AudioChannelConfig.fixAudioFormatSize(mic.getBufferSize() / 8);
                 if (mic.available() < dataLength) {
-                    Utils.sleep(10);
+                    Utils.sleep(1);
                     continue;
                 }
                 byte[] buff = new byte[dataLength];

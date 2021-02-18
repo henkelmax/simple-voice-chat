@@ -1,1 +1,2 @@
-- Fixed robotic voice issue
+- Fixed division by zero when using voice activation
+- Fixed microphone testing
