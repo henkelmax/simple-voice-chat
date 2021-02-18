@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.gui;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
 import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.client.DataLines;
 import de.maxhenkel.voicechat.voice.client.MicThread;
@@ -132,9 +133,9 @@ public class MicTestButton extends AbstractPressableButtonWidget {
                     return;
                 }
                 mic.start();
-                int dataLength = client.getAudioChannelConfig().getDataLength();
+                int dataLength = AudioChannelConfig.fixAudioFormatSize(mic.getBufferSize() / 8);
                 if (mic.available() < dataLength) {
-                    Utils.sleep(10);
+                    Utils.sleep(1);
                     continue;
                 }
                 byte[] buff = new byte[dataLength];

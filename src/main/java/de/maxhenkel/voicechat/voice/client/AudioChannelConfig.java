@@ -23,7 +23,7 @@ public class AudioChannelConfig {
         Voicechat.LOGGER.info("Setting sample rate to " + sampleRate + " Hz, mic read size to " + readSize + " and data length to " + dataLength + " bytes");
     }
 
-    public int fixAudioFormatSize(int size) {
+    public static int fixAudioFormatSize(int size) {
         return size + size % 2;
     }
 

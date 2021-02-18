@@ -89,7 +89,7 @@ public class MicThread extends Thread {
                 sendAudioPacket(buff);
             }
         } else {
-            if (offset >= 0) {
+            if (offset > 0) {
                 if (lastBuff != null) {
                     int lastPacketOffset = buff.length - offset;
                     sendAudioPacket(Arrays.copyOfRange(lastBuff, lastPacketOffset, lastBuff.length));
@@ -135,7 +135,7 @@ public class MicThread extends Thread {
     private void sendAudioPacket(byte[] data) {
         int dataLength = client.getAudioChannelConfig().getDataLength();
         int packetAmount = (int) Math.ceil((double) data.length / (double) dataLength);
-        int bytesPerPacket = data.length / packetAmount;
+        int bytesPerPacket = packetAmount == 0 ? 0 : data.length / packetAmount;
         if (bytesPerPacket % 2 == 1) {
             bytesPerPacket--;
         }
