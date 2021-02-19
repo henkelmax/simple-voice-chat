@@ -1,1 +1,1 @@
-- Fixed microphone indicator rendering
+- Backport to 1.16.4

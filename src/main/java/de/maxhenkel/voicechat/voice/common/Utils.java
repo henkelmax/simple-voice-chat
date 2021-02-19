@@ -130,7 +130,7 @@ public class Utils {
         float fill = 1F - Math.max(left, right);
         left += fill;
         right += fill;
-        
+
         return new ImmutablePair<>(left, right);
     }
 
