@@ -1,2 +1,1 @@
-- Added keep alive
-- Added auto reconnecting
+- Fixed microphone indicator rendering
