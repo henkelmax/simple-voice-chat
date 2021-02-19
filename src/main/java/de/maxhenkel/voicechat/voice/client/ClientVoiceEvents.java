@@ -1,15 +1,14 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.events.ClientWorldEvents;
+import de.maxhenkel.voicechat.events.IClientConnection;
+import de.maxhenkel.voicechat.events.RenderEvents;
+import de.maxhenkel.voicechat.gui.AdjustVolumeScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import de.maxhenkel.voicechat.net.InitPacket;
 import de.maxhenkel.voicechat.net.Packets;
-import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.events.ClientWorldEvents;
-import de.maxhenkel.voicechat.events.RenderEvents;
-import de.maxhenkel.voicechat.events.IClientConnection;
-import de.maxhenkel.voicechat.gui.AdjustVolumeScreen;
 import de.maxhenkel.voicechat.net.PlayerListPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -17,15 +16,18 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
@@ -106,32 +108,19 @@ public class ClientVoiceEvents {
         }
 
         if (client.getMicThread().isTalking()) {
-            renderIcon(MICROPHONE_ICON);
+            renderIcon(stack, MICROPHONE_ICON);
         } else if (client.isMuted() && VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE)) {
-            renderIcon(MICROPHONE_MUTED_ICON);
+            renderIcon(stack, MICROPHONE_MUTED_ICON);
         }
     }
 
-    private void renderIcon(Identifier texture) {
-        RenderSystem.pushMatrix();
-
+    private void renderIcon(MatrixStack matrixStack, Identifier texture) {
+        matrixStack.push();
         minecraft.getTextureManager().bindTexture(texture);
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
-
         //double width = minecraft.getMainWindow().getScaledWidth();
-        double height = minecraft.getWindow().getScaledHeight();
-
-        buffer.vertex(16D, height - 32D, 0D).texture(0F, 0F).next();
-        buffer.vertex(16D, height - 16D, 0D).texture(0F, 1F).next();
-        buffer.vertex(32D, height - 16D, 0D).texture(1F, 1F).next();
-        buffer.vertex(32D, height - 32D, 0D).texture(1F, 0F).next();
-
-        tessellator.draw();
-
-        RenderSystem.popMatrix();
+        int height = minecraft.getWindow().getScaledHeight();
+        Screen.drawTexture(matrixStack, 16, height - 32, 0, 0, 16, 16, 16, 16);
+        matrixStack.pop();
     }
 
     public void onClientTickEnd(MinecraftClient minecraft) {
