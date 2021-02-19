@@ -1,2 +1,2 @@
-- Fixed division by zero when using voice activation
-- Fixed microphone testing
+- Added keep alive
+- Added auto reconnecting

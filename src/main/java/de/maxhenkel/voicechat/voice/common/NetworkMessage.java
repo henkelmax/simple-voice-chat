@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
@@ -73,6 +72,7 @@ public class NetworkMessage {
         packetRegistry.put((byte) 2, AuthenticatePacket.class);
         packetRegistry.put((byte) 3, AuthenticateAckPacket.class);
         packetRegistry.put((byte) 4, PingPacket.class);
+        packetRegistry.put((byte) 5, KeepAlivePacket.class);
     }
 
     public static NetworkMessage readPacket(DatagramSocket socket) throws IllegalAccessException, InstantiationException, IOException {
@@ -133,16 +133,6 @@ public class NetworkMessage {
         packet.toBytes(buffer);
 
         return buffer.array();
-    }
-
-    public void sendToServer(Client client) throws IOException {
-        byte[] data = write(client.getAndIncreaseSequenceNumber());
-        client.getSocket().send(new DatagramPacket(data, data.length, client.getAddress(), client.getPort()));
-    }
-
-    public void sendTo(DatagramSocket socket, ClientConnection connection) throws IOException {
-        byte[] data = write(connection.getAndIncreaseSequenceNumber());
-        socket.send(new DatagramPacket(data, data.length, connection.getAddress()));
     }
 
 }

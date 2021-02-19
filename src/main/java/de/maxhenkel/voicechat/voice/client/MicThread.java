@@ -29,6 +29,8 @@ public class MicThread extends Thread {
     @Override
     public void run() {
         while (running) {
+            // Checking here for timeouts, because we don't have any other looping thread
+            client.checkTimeout();
             if (microphoneLocked) {
                 Utils.sleep(10);
             } else {
@@ -140,7 +142,7 @@ public class MicThread extends Thread {
         int rest = data.length - bytesPerPacket * packetAmount;
         for (int i = 0; i < packetAmount; i++) {
             try {
-                new NetworkMessage(new MicPacket(Arrays.copyOfRange(data, i * bytesPerPacket, (i + 1) * bytesPerPacket + ((i >= packetAmount - 1) ? rest : 0))), client.getSecret()).sendToServer(client);
+                client.sendToServer(new NetworkMessage(new MicPacket(Arrays.copyOfRange(data, i * bytesPerPacket, (i + 1) * bytesPerPacket + ((i >= packetAmount - 1) ? rest : 0))), client.getSecret()));
             } catch (IOException e) {
                 e.printStackTrace();
             }

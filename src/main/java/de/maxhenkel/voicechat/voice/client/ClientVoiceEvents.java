@@ -45,15 +45,16 @@ public class ClientVoiceEvents {
     }
 
     public void authenticate(UUID playerUUID, UUID secret) {
+        Main.LOGGER.info("Received secret");
         if (client != null) {
-            return;
+            disconnect();
         }
         ClientPlayNetHandler connection = minecraft.getConnection();
         if (connection != null) {
             try {
                 SocketAddress socketAddress = connection.getNetworkManager().channel().remoteAddress();
-                if(socketAddress instanceof InetSocketAddress){
-                    InetSocketAddress address= (InetSocketAddress) socketAddress;
+                if (socketAddress instanceof InetSocketAddress) {
+                    InetSocketAddress address = (InetSocketAddress) socketAddress;
                     String ip = address.getHostString();
                     Main.LOGGER.info("Connecting to server: '" + ip + ":" + Main.SERVER_CONFIG.voiceChatPort.get() + "'");
                     client = new Client(ip, Main.SERVER_CONFIG.voiceChatPort.get(), playerUUID, secret);
@@ -69,10 +70,14 @@ public class ClientVoiceEvents {
     public void joinEvent(WorldEvent.Unload event) {
         // Not just changing the world - Disconnecting
         if (minecraft.playerController == null) {
-            if (client != null) {
-                client.close();
-                client = null;
-            }
+            disconnect();
+        }
+    }
+
+    public void disconnect() {
+        if (client != null) {
+            client.close();
+            client = null;
         }
     }
 

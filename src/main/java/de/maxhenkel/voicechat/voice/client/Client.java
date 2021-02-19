@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.voice.common.*;
 import org.jline.utils.Log;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.*;
@@ -25,6 +26,7 @@ public class Client extends Thread {
     private boolean muted;
     private long sequenceNumber;
     private long lastServerSequenceNumber;
+    private long lastKeepAlive;
 
     public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret) throws IOException {
         this.address = InetAddress.getByName(serverIp);
@@ -35,6 +37,7 @@ public class Client extends Thread {
         this.secret = secret;
         this.sequenceNumber = 0L;
         this.lastServerSequenceNumber = -1L;
+        this.lastKeepAlive = -1L;
         this.running = true;
         this.talkCache = new TalkCache();
         this.audioChannels = new HashMap<>();
@@ -110,7 +113,7 @@ public class Client extends Thread {
             while (running) {
                 NetworkMessage in = NetworkMessage.readPacket(socket);
                 if (in.getSequenceNumber() <= lastServerSequenceNumber) {
-                    return;
+                    continue;
                 }
                 lastServerSequenceNumber = in.getSequenceNumber();
                 if (in.getPacket() instanceof AuthenticateAckPacket) {
@@ -118,6 +121,7 @@ public class Client extends Thread {
                         Main.LOGGER.info("Server acknowledged authentication");
                         authenticated = true;
                         startMicThread();
+                        lastKeepAlive = System.currentTimeMillis();
                     }
                 } else if (in.getPacket() instanceof SoundPacket) {
                     SoundPacket packet = (SoundPacket) in.getPacket();
@@ -135,8 +139,11 @@ public class Client extends Thread {
                     audioChannels.entrySet().removeIf(entry -> entry.getValue().isClosed());
                 } else if (in.getPacket() instanceof PingPacket) {
                     PingPacket packet = (PingPacket) in.getPacket();
-                    Main.LOGGER.debug("Received ping {}, sending pong...", packet.getId());
-                    new NetworkMessage(packet, secret).sendToServer(this);
+                    Main.LOGGER.info("Received ping {}, sending pong...", packet.getId());
+                    sendToServer(new NetworkMessage(packet, secret));
+                } else if (in.getPacket() instanceof KeepAlivePacket) {
+                    lastKeepAlive = System.currentTimeMillis();
+                    sendToServer(new NetworkMessage(new KeepAlivePacket(), secret));
                 }
             }
         } catch (Exception e) {
@@ -170,6 +177,19 @@ public class Client extends Thread {
         return talkCache;
     }
 
+    public void sendToServer(NetworkMessage message) throws IOException {
+        byte[] data = message.write(getAndIncreaseSequenceNumber());
+        socket.send(new DatagramPacket(data, data.length, address, port));
+    }
+
+    public void checkTimeout() {
+        if (lastKeepAlive >= 0 && System.currentTimeMillis() - lastKeepAlive > Main.SERVER_CONFIG.keepAlive.get() * 10L) {
+            Main.LOGGER.info("Connection timeout");
+            Main.CLIENT_VOICE_EVENTS.disconnect();
+        }
+    }
+
+
     private class AuthThread extends Thread {
         private boolean running;
 
@@ -184,9 +204,11 @@ public class Client extends Thread {
             while (running && !authenticated) {
                 try {
                     Main.LOGGER.info("Trying to authenticate voice connection");
-                    new NetworkMessage(new AuthenticatePacket(playerUUID, secret)).sendToServer(Client.this);
+                    sendToServer(new NetworkMessage(new AuthenticatePacket(playerUUID, secret)));
                 } catch (IOException e) {
-                    Main.LOGGER.error("Failed to authenticate voice connection: {}", e.getMessage());
+                    if (!socket.isClosed()) {
+                        Main.LOGGER.error("Failed to authenticate voice connection: {}", e.getMessage());
+                    }
                 }
                 Utils.sleep(1000);
             }
