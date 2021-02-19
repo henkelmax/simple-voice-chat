@@ -12,14 +12,16 @@ public class InitPacket {
     private int mtuSize;
     private double voiceChatDistance;
     private double voiceChatFadeDistance;
+    private int keepAlive;
 
-    public InitPacket(UUID secret, int serverPort, int sampleRate, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance) {
+    public InitPacket(UUID secret, int serverPort, int sampleRate, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive) {
         this.secret = secret;
         this.serverPort = serverPort;
         this.sampleRate = sampleRate;
         this.mtuSize = mtuSize;
         this.voiceChatDistance = voiceChatDistance;
         this.voiceChatFadeDistance = voiceChatFadeDistance;
+        this.keepAlive = keepAlive;
     }
 
     public UUID getSecret() {
@@ -46,8 +48,12 @@ public class InitPacket {
         return voiceChatFadeDistance;
     }
 
+    public int getKeepAlive() {
+        return keepAlive;
+    }
+
     public static InitPacket fromBytes(PacketByteBuf buf) {
-        return new InitPacket(buf.readUuid(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readDouble(), buf.readDouble());
+        return new InitPacket(buf.readUuid(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readDouble(), buf.readDouble(), buf.readInt());
     }
 
     public void toBytes(PacketByteBuf buf) {
@@ -57,6 +63,7 @@ public class InitPacket {
         buf.writeInt(mtuSize);
         buf.writeDouble(voiceChatDistance);
         buf.writeDouble(voiceChatFadeDistance);
+        buf.writeInt(keepAlive);
     }
 
 }

@@ -1,9 +1,11 @@
 package de.maxhenkel.voicechat.voice.client;
 
+import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.common.*;
 import de.maxhenkel.voicechat.Voicechat;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.HashMap;
@@ -21,6 +23,7 @@ public class Client extends Thread {
     private int mtuSize;
     private double voiceChatDistance;
     private double voiceChatFadeDistance;
+    private int keepAlive;
     private MicThread micThread;
     private boolean running;
     private TalkCache talkCache;
@@ -31,8 +34,9 @@ public class Client extends Thread {
     private AudioChannelConfig audioChannelConfig;
     private long sequenceNumber;
     private long lastServerSequenceNumber;
+    private long lastKeepAlive;
 
-    public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret, int sampleRate, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance) throws IOException {
+    public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret, int sampleRate, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive) throws IOException {
         this.address = InetAddress.getByName(serverIp);
         this.port = serverPort;
         this.socket = new DatagramSocket();
@@ -43,8 +47,10 @@ public class Client extends Thread {
         this.mtuSize = mtuSize;
         this.voiceChatDistance = voiceChatDistance;
         this.voiceChatFadeDistance = voiceChatFadeDistance;
+        this.keepAlive = keepAlive;
         this.sequenceNumber = 0L;
         this.lastServerSequenceNumber = -1L;
+        this.lastKeepAlive = -1;
         this.running = true;
         this.talkCache = new TalkCache();
         this.audioChannels = new HashMap<>();
@@ -141,7 +147,7 @@ public class Client extends Thread {
             while (running) {
                 NetworkMessage in = NetworkMessage.readPacket(socket);
                 if (in.getSequenceNumber() <= lastServerSequenceNumber) {
-                    return;
+                    continue;
                 }
                 lastServerSequenceNumber = in.getSequenceNumber();
                 if (in.getPacket() instanceof AuthenticateAckPacket) {
@@ -149,6 +155,7 @@ public class Client extends Thread {
                         Voicechat.LOGGER.info("Server acknowledged authentication");
                         authenticated = true;
                         startMicThread();
+                        lastKeepAlive = System.currentTimeMillis();
                     }
                 } else if (in.getPacket() instanceof SoundPacket) {
                     SoundPacket packet = (SoundPacket) in.getPacket();
@@ -166,8 +173,12 @@ public class Client extends Thread {
                     audioChannels.entrySet().removeIf(entry -> entry.getValue().isClosed());
                 } else if (in.getPacket() instanceof PingPacket) {
                     PingPacket packet = (PingPacket) in.getPacket();
-                    Voicechat.LOGGER.debug("Received ping {}, sending pong...", packet.getId());
-                    new NetworkMessage(packet, secret).sendToServer(this);
+                    Voicechat.LOGGER.info("Received ping {}, sending pong...", packet.getId());
+                    sendToServer(new NetworkMessage(packet, secret));
+                } else if (in.getPacket() instanceof KeepAlivePacket) {
+                    lastKeepAlive = System.currentTimeMillis();
+                    sendToServer(new NetworkMessage(new KeepAlivePacket(), secret));
+                    Voicechat.LOGGER.info("KeepAlive");
                 }
             }
         } catch (Exception e) {
@@ -201,6 +212,18 @@ public class Client extends Thread {
         return talkCache;
     }
 
+    public void sendToServer(NetworkMessage message) throws IOException {
+        byte[] data = message.write(getAndIncreaseSequenceNumber());
+        socket.send(new DatagramPacket(data, data.length, address, port));
+    }
+
+    public void checkTimeout() {
+        if (lastKeepAlive >= 0 && System.currentTimeMillis() - lastKeepAlive > keepAlive * 10L) {
+            Voicechat.LOGGER.info("Connection timeout");
+            VoicechatClient.CLIENT.disconnect();
+        }
+    }
+
     private class AuthThread extends Thread {
         private boolean running;
 
@@ -215,9 +238,11 @@ public class Client extends Thread {
             while (running && !authenticated) {
                 try {
                     Voicechat.LOGGER.info("Trying to authenticate voice connection");
-                    new NetworkMessage(new AuthenticatePacket(playerUUID, secret)).sendToServer(Client.this);
+                    sendToServer(new NetworkMessage(new AuthenticatePacket(playerUUID, secret)));
                 } catch (IOException e) {
-                    Voicechat.LOGGER.error("Failed to authenticate voice connection: {}", e.getMessage());
+                    if (!socket.isClosed()) {
+                        Voicechat.LOGGER.error("Failed to authenticate voice connection: {}", e.getMessage());
+                    }
                 }
                 Utils.sleep(1000);
             }

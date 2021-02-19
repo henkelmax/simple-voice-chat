@@ -67,8 +67,9 @@ public class ClientVoiceEvents {
     }
 
     public void authenticate(UUID playerUUID, InitPacket initPacket) {
+        Voicechat.LOGGER.info("Received secret");
         if (client != null) {
-            return;
+            disconnect();
         }
         ClientPlayNetworkHandler connection = minecraft.getNetworkHandler();
         if (connection != null) {
@@ -78,7 +79,7 @@ public class ClientVoiceEvents {
                     InetSocketAddress address = (InetSocketAddress) socketAddress;
                     String ip = address.getHostString();
                     Voicechat.LOGGER.info("Connecting to server: '" + ip + ":" + initPacket.getServerPort() + "'");
-                    client = new Client(ip, initPacket.getServerPort(), playerUUID, initPacket.getSecret(), initPacket.getSampleRate(), initPacket.getMtuSize(), initPacket.getVoiceChatDistance(), initPacket.getVoiceChatFadeDistance());
+                    client = new Client(ip, initPacket.getServerPort(), playerUUID, initPacket.getSecret(), initPacket.getSampleRate(), initPacket.getMtuSize(), initPacket.getVoiceChatDistance(), initPacket.getVoiceChatFadeDistance(), initPacket.getKeepAlive());
                     client.start();
                 }
             } catch (Exception e) {

@@ -21,7 +21,7 @@ public class ServerVoiceEvents {
 
     public ServerVoiceEvents() {
         ServerLifecycleEvents.SERVER_STARTED.register(this::serverStarting);
-        PlayerEvents.PLAYER_LOGGED_IN.register(this::playerLoggedIn);
+        PlayerEvents.PLAYER_LOGGED_IN.register(this::initializePlayerConnection);
         PlayerEvents.PLAYER_LOGGED_OUT.register(this::playerLoggedOut);
     }
 
@@ -40,13 +40,13 @@ public class ServerVoiceEvents {
         }
     }
 
-    public void playerLoggedIn(ServerPlayerEntity player) {
+    public void initializePlayerConnection(ServerPlayerEntity player) {
         if (server == null) {
             return;
         }
 
         UUID secret = server.getSecret(player.getUuid());
-        InitPacket packet = new InitPacket(secret, Voicechat.SERVER_CONFIG.voiceChatPort.get(), Voicechat.SERVER_CONFIG.voiceChatSampleRate.get(), Voicechat.SERVER_CONFIG.voiceChatMtuSize.get(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), Voicechat.SERVER_CONFIG.voiceChatFadeDistance.get());
+        InitPacket packet = new InitPacket(secret, Voicechat.SERVER_CONFIG.voiceChatPort.get(), Voicechat.SERVER_CONFIG.voiceChatSampleRate.get(), Voicechat.SERVER_CONFIG.voiceChatMtuSize.get(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), Voicechat.SERVER_CONFIG.voiceChatFadeDistance.get(), Voicechat.SERVER_CONFIG.keepAlive.get());
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
         packet.toBytes(buffer);
         ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Packets.SECRET, buffer);
