@@ -216,7 +216,6 @@ public class Server extends Thread {
             } else if (timestamp - connection.getLastKeepAlive() >= Voicechat.SERVER_CONFIG.keepAlive.get()) {
                 connection.setLastKeepAlive(timestamp);
                 sendPacket(keepAlive, connection);
-                Voicechat.LOGGER.info("KeepAlive " + connection.getAddress());
             }
         }
     }

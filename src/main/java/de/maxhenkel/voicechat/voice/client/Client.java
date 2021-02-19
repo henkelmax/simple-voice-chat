@@ -178,7 +178,6 @@ public class Client extends Thread {
                 } else if (in.getPacket() instanceof KeepAlivePacket) {
                     lastKeepAlive = System.currentTimeMillis();
                     sendToServer(new NetworkMessage(new KeepAlivePacket(), secret));
-                    Voicechat.LOGGER.info("KeepAlive");
                 }
             }
         } catch (Exception e) {
