@@ -58,8 +58,11 @@ curseforge {
         releaseType = curse_release_type
         addGameVersion minecraft_version
         addGameVersion "Fabric"
-        mainArtifact(jar) {
+        mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
             displayName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
+        }
+        afterEvaluate {
+            uploadTask.dependsOn(remapJar)
         }
     }
     options {
