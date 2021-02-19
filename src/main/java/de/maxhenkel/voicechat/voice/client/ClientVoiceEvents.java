@@ -1,18 +1,15 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -23,7 +20,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderNameplateEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
@@ -45,15 +41,16 @@ public class ClientVoiceEvents {
     }
 
     public void authenticate(UUID playerUUID, UUID secret) {
+        Main.LOGGER.info("Received secret");
         if (client != null) {
-            return;
+            disconnect();
         }
         ClientPlayNetHandler connection = minecraft.getConnection();
         if (connection != null) {
             try {
                 SocketAddress socketAddress = connection.getNetworkManager().channel().remoteAddress();
-                if(socketAddress instanceof InetSocketAddress){
-                    InetSocketAddress address= (InetSocketAddress) socketAddress;
+                if (socketAddress instanceof InetSocketAddress) {
+                    InetSocketAddress address = (InetSocketAddress) socketAddress;
                     String ip = address.getHostString();
                     Main.LOGGER.info("Connecting to server: '" + ip + ":" + Main.SERVER_CONFIG.voiceChatPort.get() + "'");
                     client = new Client(ip, Main.SERVER_CONFIG.voiceChatPort.get(), playerUUID, secret);
@@ -69,10 +66,14 @@ public class ClientVoiceEvents {
     public void joinEvent(WorldEvent.Unload event) {
         // Not just changing the world - Disconnecting
         if (minecraft.playerController == null) {
-            if (client != null) {
-                client.close();
-                client = null;
-            }
+            disconnect();
+        }
+    }
+
+    public void disconnect() {
+        if (client != null) {
+            client.close();
+            client = null;
         }
     }
 
@@ -92,32 +93,19 @@ public class ClientVoiceEvents {
         }
 
         if (client.getMicThread().isTalking()) {
-            renderIcon(MICROPHONE_ICON);
+            renderIcon(event.getMatrixStack(), MICROPHONE_ICON);
         } else if (client.isMuted() && Main.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE)) {
-            renderIcon(MICROPHONE_MUTED_ICON);
+            renderIcon(event.getMatrixStack(), MICROPHONE_MUTED_ICON);
         }
     }
 
-    private void renderIcon(ResourceLocation texture) {
-        RenderSystem.pushMatrix();
-
+    private void renderIcon(MatrixStack matrixStack, ResourceLocation texture) {
+        matrixStack.push();
         minecraft.getTextureManager().bindTexture(texture);
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-
         //double width = minecraft.getMainWindow().getScaledWidth();
-        double height = minecraft.getMainWindow().getScaledHeight();
-
-        buffer.pos(16D, height - 32D, 0D).tex(0F, 0F).endVertex();
-        buffer.pos(16D, height - 16D, 0D).tex(0F, 1F).endVertex();
-        buffer.pos(32D, height - 16D, 0D).tex(1F, 1F).endVertex();
-        buffer.pos(32D, height - 32D, 0D).tex(1F, 0F).endVertex();
-
-        tessellator.draw();
-
-        RenderSystem.popMatrix();
+        int height = minecraft.getMainWindow().getScaledHeight();
+        Screen.blit(matrixStack, 16, height - 32, 0, 0, 16, 16, 16, 16);
+        matrixStack.pop();
     }
 
     @SubscribeEvent

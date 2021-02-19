@@ -31,17 +31,20 @@ public class ServerVoiceEvents {
         }
     }
 
-    @SubscribeEvent
-    public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+    public void initializePlayerConnection(ServerPlayerEntity player) {
         if (server == null) {
             return;
         }
 
+        UUID secret = server.getSecret(player.getUniqueID());
+        Main.SIMPLE_CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new AuthenticationMessage(player.getUniqueID(), secret));
+        Main.LOGGER.info("Sent secret to " + player.getDisplayName().getString());
+    }
+
+    @SubscribeEvent
+    public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getPlayer() instanceof ServerPlayerEntity) {
-            ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
-            UUID secret = server.getSecret(player.getUniqueID());
-            Main.SIMPLE_CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new AuthenticationMessage(player.getUniqueID(), secret));
-            Main.LOGGER.info("Sent secret to " + player.getDisplayName().getString());
+            initializePlayerConnection((ServerPlayerEntity) event.getPlayer());
         }
     }
 

@@ -14,6 +14,8 @@ public class ServerConfig extends ConfigBase {
     public final ForgeConfigSpec.DoubleValue voiceChatDistance;
     public final ForgeConfigSpec.DoubleValue voiceChatFadeDistance;
     public final ForgeConfigSpec.IntValue voiceChatSampleRate;
+    public final ForgeConfigSpec.IntValue voiceChatMtuSize;
+    public final ForgeConfigSpec.IntValue keepAlive;
 
     public ServerConfig(ForgeConfigSpec.Builder builder) {
         super(builder);
@@ -33,6 +35,12 @@ public class ServerConfig extends ConfigBase {
         voiceChatSampleRate = builder
                 .comment("The sample rate for the voice chat")
                 .defineInRange("voice_chat.sample_rate", 16000, 10000, 44100);
+        voiceChatMtuSize = builder
+                .comment("The maximum size in bytes in a voice packet", "Set this to a lower value if your voice packets don't arrive")
+                .defineInRange("voice_chat.mtu_size", 900, 256, 10000);
+        keepAlive = builder
+                .comment("The frequency in which keep alive packets are sent", "Setting this to a higher value may result in timeouts")
+                .defineInRange("voice_chat.keep_alive", 1000, 1000, Integer.MAX_VALUE);
     }
 
     @Override

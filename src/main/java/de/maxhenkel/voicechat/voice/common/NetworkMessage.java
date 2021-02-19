@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
@@ -10,7 +9,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -21,8 +20,8 @@ public class NetworkMessage {
     private final long ttl;
     private Packet<? extends Packet> packet;
     private UUID secret;
-    private InetAddress address;
-    private int port;
+    private SocketAddress address;
+    private long sequenceNumber;
 
     public NetworkMessage(Packet<?> packet, UUID secret) {
         this(packet);
@@ -37,7 +36,6 @@ public class NetworkMessage {
     private NetworkMessage() {
         this.timestamp = System.currentTimeMillis();
         this.ttl = 2000L;
-        this.port = -1;
     }
 
     @Nonnull
@@ -57,12 +55,12 @@ public class NetworkMessage {
         return ttl;
     }
 
-    public InetAddress getAddress() {
+    public SocketAddress getAddress() {
         return address;
     }
 
-    public int getPort() {
-        return port;
+    public long getSequenceNumber() {
+        return sequenceNumber;
     }
 
     private static final Map<Byte, Class<? extends Packet>> packetRegistry;
@@ -74,6 +72,7 @@ public class NetworkMessage {
         packetRegistry.put((byte) 2, AuthenticatePacket.class);
         packetRegistry.put((byte) 3, AuthenticateAckPacket.class);
         packetRegistry.put((byte) 4, PingPacket.class);
+        packetRegistry.put((byte) 5, KeepAlivePacket.class);
     }
 
     public static NetworkMessage readPacket(DatagramSocket socket) throws IllegalAccessException, InstantiationException, IOException {
@@ -84,6 +83,7 @@ public class NetworkMessage {
         System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
 
         PacketBuffer buffer = new PacketBuffer(Unpooled.wrappedBuffer(data));
+        long sequenceNumber = buffer.readLong();
         byte packetType = buffer.readByte();
         Class<? extends Packet> packetClass = packetRegistry.get(packetType);
         if (packetClass == null) {
@@ -92,18 +92,18 @@ public class NetworkMessage {
         Packet<? extends Packet<?>> p = packetClass.newInstance();
 
         NetworkMessage message = new NetworkMessage();
+        message.sequenceNumber = sequenceNumber;
         if (buffer.readBoolean()) {
             message.secret = buffer.readUniqueId();
         }
-        message.address = packet.getAddress();
-        message.port = packet.getPort();
+        message.address = packet.getSocketAddress();
         message.packet = p.fromBytes(buffer);
 
         return message;
     }
 
     public UUID getSender(Server server) {
-        return server.getConnections().values().stream().filter(connection -> connection.getAddress().equals(address) && connection.getPort() == port).map(ClientConnection::getPlayerUUID).findAny().orElse(null);
+        return server.getConnections().values().stream().filter(connection -> connection.getAddress().equals(address)).map(ClientConnection::getPlayerUUID).findAny().orElse(null);
     }
 
     private static byte getPacketType(Packet<? extends Packet> packet) {
@@ -115,9 +115,10 @@ public class NetworkMessage {
         return -1;
     }
 
-    public byte[] write() {
+    public byte[] write(long sequenceNumber) {
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
 
+        buffer.writeLong(sequenceNumber);
         byte type = getPacketType(packet);
 
         if (type < 0) {
@@ -132,16 +133,6 @@ public class NetworkMessage {
         packet.toBytes(buffer);
 
         return buffer.array();
-    }
-
-    public void sendToServer(Client client) throws IOException {
-        byte[] data = write();
-        client.getSocket().send(new DatagramPacket(data, data.length, client.getAddress(), client.getPort()));
-    }
-
-    public void sendTo(DatagramSocket socket, ClientConnection connection) throws IOException {
-        byte[] data = write();
-        socket.send(new DatagramPacket(data, data.length, connection.getAddress(), connection.getPort()));
     }
 
 }

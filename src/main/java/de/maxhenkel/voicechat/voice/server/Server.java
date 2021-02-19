@@ -55,6 +55,7 @@ public class Server extends Thread {
             }
             try {
                 socket = new DatagramSocket(port, address);
+                socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
             } catch (BindException e) {
                 Main.LOGGER.error("Failed to bind to address '" + addr + "'");
                 e.printStackTrace();
@@ -109,6 +110,7 @@ public class Server extends Thread {
             while (running) {
                 try {
                     pingManager.checkTimeouts();
+                    keepAlive();
                     if (packetQueue.isEmpty()) {
                         Utils.sleep(10);
                         continue;
@@ -126,7 +128,7 @@ public class Server extends Thread {
                         if (secret != null && secret.equals(packet.getSecret())) {
                             ClientConnection connection;
                             if (!connections.containsKey(packet.getPlayerUUID())) {
-                                connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress(), message.getPort());
+                                connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress());
                                 connections.put(packet.getPlayerUUID(), connection);
                                 Main.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
                             } else {
@@ -144,6 +146,12 @@ public class Server extends Thread {
                     if (!isPacketAuthorized(message, playerUUID)) {
                         continue;
                     }
+
+                    ClientConnection conn = connections.get(playerUUID);
+                    if (conn == null || message.getSequenceNumber() <= conn.getLastClientSequenceNumber()) {
+                        continue;
+                    }
+                    conn.setLastClientSequenceNumber(message.getSequenceNumber());
 
                     if (message.getPacket() instanceof MicPacket) {
                         MicPacket packet = (MicPacket) message.getPacket();
@@ -172,11 +180,13 @@ public class Server extends Thread {
                         NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(playerUUID, packet.getData()));
                         for (ClientConnection clientConnection : closeConnections) {
                             if (!clientConnection.getPlayerUUID().equals(playerUUID)) {
-                                soundMessage.sendTo(socket, clientConnection);
+                                clientConnection.send(socket, soundMessage);
                             }
                         }
                     } else if (message.getPacket() instanceof PingPacket) {
                         pingManager.onPongPacket((PingPacket) message.getPacket());
+                    } else if (message.getPacket() instanceof KeepAlivePacket) {
+                        conn.setLastKeepAliveResponse(System.currentTimeMillis());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -186,6 +196,27 @@ public class Server extends Thread {
 
         public void close() {
             running = false;
+        }
+    }
+
+    private void keepAlive() throws IOException {
+        long timestamp = System.currentTimeMillis();
+        KeepAlivePacket keepAlive = new KeepAlivePacket();
+        for (ClientConnection connection : connections.values()) {
+            if (timestamp - connection.getLastKeepAliveResponse() >= Main.SERVER_CONFIG.keepAlive.get() * 10L) {
+                disconnectClient(connection.getPlayerUUID());
+                Main.LOGGER.info("Player {} timed out", connection.getPlayerUUID());
+                ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(connection.getPlayerUUID());
+                if (player != null) {
+                    Main.LOGGER.info("Reconnecting player {}", player.getDisplayName().getString());
+                    Main.SERVER_VOICE_EVENTS.initializePlayerConnection(player);
+                } else {
+                    Main.LOGGER.warn("Reconnecting player {} failed (Could not find player)", player.getDisplayName().getString());
+                }
+            } else if (timestamp - connection.getLastKeepAlive() >= Main.SERVER_CONFIG.keepAlive.get()) {
+                connection.setLastKeepAlive(timestamp);
+                sendPacket(keepAlive, connection);
+            }
         }
     }
 
@@ -203,7 +234,7 @@ public class Server extends Thread {
     }
 
     public void sendPacket(Packet<?> packet, ClientConnection connection) throws IOException {
-        new NetworkMessage(packet).sendTo(socket, connection);
+        connection.send(socket, new NetworkMessage(packet));
     }
 
     public PingManager getPingManager() {
