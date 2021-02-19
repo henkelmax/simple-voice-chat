@@ -25,8 +25,8 @@
     "voicechat.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.11.1",
+    "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": "1.16.5"
+    "minecraft": "${minecraft_version}"
   }
 }
