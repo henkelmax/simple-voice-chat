@@ -11,15 +11,16 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.sound.sampled.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class AudioChannel extends Thread {
 
     private Minecraft minecraft;
     private Client client;
     private UUID uuid;
-    private ArrayList<NetworkMessage> queue;
+    private Queue<NetworkMessage> queue;
     private long lastPacketTime;
     private SourceDataLine speaker;
     private FloatControl gainControl;
@@ -28,7 +29,7 @@ public class AudioChannel extends Thread {
     public AudioChannel(Client client, UUID uuid) {
         this.client = client;
         this.uuid = uuid;
-        this.queue = new ArrayList<>();
+        this.queue = new ConcurrentLinkedQueue<>();
         this.lastPacketTime = System.currentTimeMillis();
         this.stopped = false;
         this.minecraft = Minecraft.getInstance();
@@ -123,9 +124,8 @@ public class AudioChannel extends Thread {
 
     private byte[] gatherPacketData() {
         ByteArrayOutputStream s = new ByteArrayOutputStream(AudioChannelConfig.getDataLength() * 2);
-        while (!queue.isEmpty()) {
-            NetworkMessage message = queue.get(0);
-            queue.remove(message);
+        NetworkMessage message;
+        while ((message = queue.poll()) != null) {
             if (!(message.getPacket() instanceof SoundPacket)) {
                 continue;
             }
