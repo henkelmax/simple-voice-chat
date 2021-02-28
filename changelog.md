@@ -1,1 +1,1 @@
-- Fixed microphone indicator rendering
+- Fixed ConcurrentModificationException when client times out
