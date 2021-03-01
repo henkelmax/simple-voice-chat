@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Main;
-import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
@@ -20,7 +19,7 @@ public class AudioChannel extends Thread {
     private Minecraft minecraft;
     private Client client;
     private UUID uuid;
-    private Queue<NetworkMessage> queue;
+    private Queue<SoundPacket> queue;
     private long lastPacketTime;
     private SourceDataLine speaker;
     private FloatControl gainControl;
@@ -54,8 +53,8 @@ public class AudioChannel extends Thread {
         return uuid;
     }
 
-    public void addToQueue(NetworkMessage m) {
-        queue.add(m);
+    public void addToQueue(SoundPacket p) {
+        queue.add(p);
     }
 
     @Override
@@ -124,14 +123,10 @@ public class AudioChannel extends Thread {
 
     private byte[] gatherPacketData() {
         ByteArrayOutputStream s = new ByteArrayOutputStream(AudioChannelConfig.getDataLength() * 2);
-        NetworkMessage message;
-        while ((message = queue.poll()) != null) {
-            if (!(message.getPacket() instanceof SoundPacket)) {
-                continue;
-            }
-            SoundPacket soundPacket = (SoundPacket) (message.getPacket());
+        SoundPacket packet;
+        while ((packet = queue.poll()) != null) {
             try {
-                s.write(soundPacket.getData());
+                s.write(packet.getData());
             } catch (IOException e) {
                 break;
             }
