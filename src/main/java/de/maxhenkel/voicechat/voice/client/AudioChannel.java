@@ -10,16 +10,17 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.sound.sampled.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Queue;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class AudioChannel extends Thread {
 
     private Minecraft minecraft;
     private Client client;
     private UUID uuid;
-    private Queue<SoundPacket> queue;
+    private BlockingQueue<SoundPacket> queue;
     private long lastPacketTime;
     private SourceDataLine speaker;
     private FloatControl gainControl;
@@ -28,7 +29,7 @@ public class AudioChannel extends Thread {
     public AudioChannel(Client client, UUID uuid) {
         this.client = client;
         this.uuid = uuid;
-        this.queue = new ConcurrentLinkedQueue<>();
+        this.queue = new LinkedBlockingQueue<>();
         this.lastPacketTime = System.currentTimeMillis();
         this.stopped = false;
         this.minecraft = Minecraft.getInstance();
@@ -65,14 +66,14 @@ public class AudioChannel extends Thread {
             speaker.open(af);
             gainControl = (FloatControl) speaker.getControl(FloatControl.Type.MASTER_GAIN);
             while (!stopped) {
-                SoundPacket packet = queue.poll();
+                // Stopping the data line when the buffer is empty
+                // to prevent the last sound getting repeated
+                if (speaker.getBufferSize() - speaker.available() <= 0 && speaker.isActive()) {
+                    speaker.stop();
+                }
+
+                SoundPacket packet = queue.poll(10, TimeUnit.MILLISECONDS);
                 if (packet == null) {
-                    // Stopping the data line when the buffer is empty
-                    // to prevent the last sound getting repeated
-                    if (speaker.getBufferSize() - speaker.available() <= 0 && speaker.isActive()) {
-                        speaker.stop();
-                    }
-                    Utils.sleep(10);
                     continue;
                 }
                 lastPacketTime = System.currentTimeMillis();
