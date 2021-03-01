@@ -65,7 +65,8 @@ public class AudioChannel extends Thread {
             speaker.open(af);
             gainControl = (FloatControl) speaker.getControl(FloatControl.Type.MASTER_GAIN);
             while (!stopped) {
-                if (queue.isEmpty()) {
+                SoundPacket packet = queue.poll();
+                if (packet == null) {
                     // Stopping the data line when the buffer is empty
                     // to prevent the last sound getting repeated
                     if (speaker.getBufferSize() - speaker.available() <= 0 && speaker.isActive()) {
@@ -103,11 +104,9 @@ public class AudioChannel extends Thread {
 
                 gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(percentage * Main.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * (float) Main.VOLUME_CONFIG.getVolume(player)), gainControl.getMinimum()), gainControl.getMaximum()));
 
-                byte[] mono = gatherPacketData();
-
                 Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft.player.getPositionVec(), minecraft.player.rotationYaw, player.getPositionVec());
 
-                byte[] stereo = Utils.convertToStereo(mono, stereoVolume.getLeft(), stereoVolume.getRight());
+                byte[] stereo = Utils.convertToStereo(packet.getData(), stereoVolume.getLeft(), stereoVolume.getRight());
                 speaker.write(stereo, 0, stereo.length);
                 speaker.start();
             }
@@ -119,19 +118,6 @@ public class AudioChannel extends Thread {
                 speaker.close();
             }
         }
-    }
-
-    private byte[] gatherPacketData() {
-        ByteArrayOutputStream s = new ByteArrayOutputStream(AudioChannelConfig.getDataLength() * 2);
-        SoundPacket packet;
-        while ((packet = queue.poll()) != null) {
-            try {
-                s.write(packet.getData());
-            } catch (IOException e) {
-                break;
-            }
-        }
-        return s.toByteArray();
     }
 
     public boolean isClosed() {
