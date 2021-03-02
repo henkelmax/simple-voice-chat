@@ -202,20 +202,24 @@ public class Server extends Thread {
     private void keepAlive() throws IOException {
         long timestamp = System.currentTimeMillis();
         KeepAlivePacket keepAlive = new KeepAlivePacket();
+        List<UUID> connectionsToDrop = new ArrayList<>(connections.size());
         for (ClientConnection connection : connections.values()) {
             if (timestamp - connection.getLastKeepAliveResponse() >= Voicechat.SERVER_CONFIG.keepAlive.get() * 10L) {
-                disconnectClient(connection.getPlayerUUID());
-                Voicechat.LOGGER.info("Player {} timed out", connection.getPlayerUUID());
-                ServerPlayerEntity player = server.getPlayerManager().getPlayer(connection.getPlayerUUID());
-                if (player != null) {
-                    Voicechat.LOGGER.info("Reconnecting player {}", player.getDisplayName().getString());
-                    Voicechat.SERVER.initializePlayerConnection(player);
-                } else {
-                    Voicechat.LOGGER.warn("Reconnecting player {} failed (Could not find player)", player.getDisplayName().getString());
-                }
+                connectionsToDrop.add(connection.getPlayerUUID());
             } else if (timestamp - connection.getLastKeepAlive() >= Voicechat.SERVER_CONFIG.keepAlive.get()) {
                 connection.setLastKeepAlive(timestamp);
                 sendPacket(keepAlive, connection);
+            }
+        }
+        for (UUID uuid : connectionsToDrop) {
+            disconnectClient(uuid);
+            Voicechat.LOGGER.info("Player {} timed out", uuid);
+            ServerPlayerEntity player = server.getPlayerManager().getPlayer(uuid);
+            if (player != null) {
+                Voicechat.LOGGER.info("Reconnecting player {}", player.getDisplayName().getString());
+                Voicechat.SERVER.initializePlayerConnection(player);
+            } else {
+                Voicechat.LOGGER.warn("Reconnecting player {} failed (Could not find player)", player.getDisplayName().getString());
             }
         }
     }
