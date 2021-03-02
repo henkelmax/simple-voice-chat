@@ -1,1 +1,1 @@
-- Fixed microphone indicator not being transparent
+- Fixed ConcurrentModificationException when client times out
