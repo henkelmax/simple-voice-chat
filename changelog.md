@@ -1,1 +1,1 @@
-- Backport to 1.16.4
+- Fixed ConcurrentModificationException when client times out
