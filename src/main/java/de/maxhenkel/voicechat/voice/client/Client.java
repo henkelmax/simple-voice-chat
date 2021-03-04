@@ -162,11 +162,11 @@ public class Client extends Thread {
                     AudioChannel sendTo = audioChannels.get(packet.getSender());
                     if (sendTo == null) {
                         AudioChannel ch = new AudioChannel(this, packet.getSender());
-                        ch.addToQueue(in);
+                        ch.addToQueue(packet);
                         ch.start();
                         audioChannels.put(packet.getSender(), ch);
                     } else {
-                        sendTo.addToQueue(in);
+                        sendTo.addToQueue(packet);
                     }
 
                     audioChannels.values().stream().filter(AudioChannel::canKill).forEach(AudioChannel::closeAndKill);
@@ -253,4 +253,3 @@ public class Client extends Thread {
     }
 
 }
- 
