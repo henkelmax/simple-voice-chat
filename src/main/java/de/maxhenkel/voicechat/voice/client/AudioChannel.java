@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Main;
-import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
@@ -11,15 +10,17 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.sound.sampled.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class AudioChannel extends Thread {
 
     private Minecraft minecraft;
     private Client client;
     private UUID uuid;
-    private ArrayList<NetworkMessage> queue;
+    private BlockingQueue<SoundPacket> queue;
     private long lastPacketTime;
     private SourceDataLine speaker;
     private FloatControl gainControl;
@@ -28,7 +29,7 @@ public class AudioChannel extends Thread {
     public AudioChannel(Client client, UUID uuid) {
         this.client = client;
         this.uuid = uuid;
-        this.queue = new ArrayList<>();
+        this.queue = new LinkedBlockingQueue<>();
         this.lastPacketTime = System.currentTimeMillis();
         this.stopped = false;
         this.minecraft = Minecraft.getInstance();
@@ -53,8 +54,8 @@ public class AudioChannel extends Thread {
         return uuid;
     }
 
-    public void addToQueue(NetworkMessage m) {
-        queue.add(m);
+    public void addToQueue(SoundPacket p) {
+        queue.add(p);
     }
 
     @Override
@@ -65,13 +66,14 @@ public class AudioChannel extends Thread {
             speaker.open(af);
             gainControl = (FloatControl) speaker.getControl(FloatControl.Type.MASTER_GAIN);
             while (!stopped) {
-                if (queue.isEmpty()) {
-                    // Stopping the data line when the buffer is empty
-                    // to prevent the last sound getting repeated
-                    if (speaker.getBufferSize() - speaker.available() <= 0 && speaker.isActive()) {
-                        speaker.stop();
-                    }
-                    Utils.sleep(10);
+                // Stopping the data line when the buffer is empty
+                // to prevent the last sound getting repeated
+                if (speaker.getBufferSize() - speaker.available() <= 0 && speaker.isActive()) {
+                    speaker.stop();
+                }
+
+                SoundPacket packet = queue.poll(10, TimeUnit.MILLISECONDS);
+                if (packet == null) {
                     continue;
                 }
                 lastPacketTime = System.currentTimeMillis();
@@ -103,11 +105,9 @@ public class AudioChannel extends Thread {
 
                 gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(percentage * Main.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * (float) Main.VOLUME_CONFIG.getVolume(player)), gainControl.getMinimum()), gainControl.getMaximum()));
 
-                byte[] mono = gatherPacketData();
-
                 Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft.player.getPositionVec(), minecraft.player.rotationYaw, player.getPositionVec());
 
-                byte[] stereo = Utils.convertToStereo(mono, stereoVolume.getLeft(), stereoVolume.getRight());
+                byte[] stereo = Utils.convertToStereo(packet.getData(), stereoVolume.getLeft(), stereoVolume.getRight());
                 speaker.write(stereo, 0, stereo.length);
                 speaker.start();
             }
@@ -119,24 +119,6 @@ public class AudioChannel extends Thread {
                 speaker.close();
             }
         }
-    }
-
-    private byte[] gatherPacketData() {
-        ByteArrayOutputStream s = new ByteArrayOutputStream(AudioChannelConfig.getDataLength() * 2);
-        while (!queue.isEmpty()) {
-            NetworkMessage message = queue.get(0);
-            queue.remove(message);
-            if (!(message.getPacket() instanceof SoundPacket)) {
-                continue;
-            }
-            SoundPacket soundPacket = (SoundPacket) (message.getPacket());
-            try {
-                s.write(soundPacket.getData());
-            } catch (IOException e) {
-                break;
-            }
-        }
-        return s.toByteArray();
     }
 
     public boolean isClosed() {

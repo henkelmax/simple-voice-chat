@@ -13,6 +13,9 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class Server extends Thread {
@@ -23,7 +26,7 @@ public class Server extends Thread {
     private MinecraftServer server;
     private DatagramSocket socket;
     private ProcessThread processThread;
-    private List<NetworkMessage> packetQueue;
+    private BlockingQueue<NetworkMessage> packetQueue;
     private PingManager pingManager;
 
     public Server(int port, MinecraftServer server) {
@@ -31,7 +34,7 @@ public class Server extends Thread {
         this.server = server;
         connections = new HashMap<>();
         secrets = new HashMap<>();
-        packetQueue = new ArrayList<>();
+        packetQueue = new LinkedBlockingQueue<>();
         pingManager = new PingManager(this);
         setDaemon(true);
         setName("VoiceChatServerThread");
@@ -111,14 +114,9 @@ public class Server extends Thread {
                 try {
                     pingManager.checkTimeouts();
                     keepAlive();
-                    if (packetQueue.isEmpty()) {
-                        Utils.sleep(10);
-                        continue;
-                    }
 
-                    NetworkMessage message = packetQueue.get(0);
-                    packetQueue.remove(message);
-                    if (System.currentTimeMillis() - message.getTimestamp() > message.getTTL()) {
+                    NetworkMessage message = packetQueue.poll(10, TimeUnit.MILLISECONDS);
+                    if (message == null || System.currentTimeMillis() - message.getTimestamp() > message.getTTL()) {
                         continue;
                     }
 
