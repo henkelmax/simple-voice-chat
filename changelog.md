@@ -1,1 +1,1 @@
-- Fixed ConcurrentModificationException when client times out
+- Performance improvements
