@@ -1,1 +1,2 @@
-- Performance improvements
+- Fixed mute button not working
+- Updated networking API

@@ -6,7 +6,7 @@ import de.maxhenkel.voicechat.net.InitPacket;
 import de.maxhenkel.voicechat.net.Packets;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
@@ -49,7 +49,7 @@ public class ServerVoiceEvents {
         InitPacket packet = new InitPacket(secret, Voicechat.SERVER_CONFIG.voiceChatPort.get(), Voicechat.SERVER_CONFIG.voiceChatSampleRate.get(), Voicechat.SERVER_CONFIG.voiceChatMtuSize.get(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), Voicechat.SERVER_CONFIG.voiceChatFadeDistance.get(), Voicechat.SERVER_CONFIG.keepAlive.get());
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
         packet.toBytes(buffer);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Packets.SECRET, buffer);
+        ServerPlayNetworking.send(player, Packets.SECRET, buffer);
         Voicechat.LOGGER.info("Sent secret to " + player.getDisplayName().getString());
     }
 

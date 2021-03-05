@@ -13,8 +13,8 @@ import de.maxhenkel.voicechat.net.PlayerListPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -53,16 +53,15 @@ public class ClientVoiceEvents {
         ClientTickEvents.END_CLIENT_TICK.register(this::onClientTickEnd);
         RenderEvents.RENDER_NAMEPLATE.register(this::onRenderName);
 
-        ClientSidePacketRegistry.INSTANCE.register(Packets.SECRET, (packetContext, attachedData) -> {
-            InitPacket initPacket = InitPacket.fromBytes(attachedData);
-            packetContext.getTaskQueue().execute(() -> {
-                authenticate(packetContext.getPlayer().getUuid(), initPacket);
+        ClientPlayNetworking.registerGlobalReceiver(Packets.SECRET, (mc, handler, buf, responseSender) -> {
+            InitPacket initPacket = InitPacket.fromBytes(buf);
+            mc.execute(() -> {
+                authenticate(handler.getProfile().getId(), initPacket);
             });
         });
-
-        ClientSidePacketRegistry.INSTANCE.register(Packets.PLAYER_LIST, (packetContext, attachedData) -> {
-            PlayerListPacket list = PlayerListPacket.fromBytes(attachedData);
-            packetContext.getTaskQueue().execute(() -> {
+        ClientPlayNetworking.registerGlobalReceiver(Packets.PLAYER_LIST, (mc, handler, buf, responseSender) -> {
+            PlayerListPacket list = PlayerListPacket.fromBytes(buf);
+            mc.execute(() -> {
                 minecraft.openScreen(new AdjustVolumeScreen(list.getPlayers()));
             });
         });
@@ -138,7 +137,7 @@ public class ClientVoiceEvents {
             }
         }
 
-        if (VoicechatClient.KEY_MUTE.isPressed()) {
+        if (VoicechatClient.KEY_MUTE.wasPressed()) {
             Client client = VoicechatClient.CLIENT.getClient();
             if (client == null || !client.isAuthenticated()) {
                 sendUnavailableMessage();
