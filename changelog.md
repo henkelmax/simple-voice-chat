@@ -1,2 +1,6 @@
 - Fixed player icon rendering
 - Fixed sound coming from the wrong side when in F5
+- Added disable voicechat button
+- Added disconnect indicator
+- Fixed mute button not working
+- Updated networking API
