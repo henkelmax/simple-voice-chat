@@ -1,2 +1,2 @@
-- Fixed mute button not working
-- Updated networking API
+- Added disable voicechat button
+- Added disconnect indicator

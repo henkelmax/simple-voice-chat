@@ -17,6 +17,7 @@ public class VoicechatClient implements ClientModInitializer {
 
     public static KeyBinding KEY_PTT;
     public static KeyBinding KEY_MUTE;
+    public static KeyBinding KEY_DISABLE;
     public static KeyBinding KEY_VOICE_CHAT_SETTINGS;
 
     public static ClientVoiceEvents CLIENT;
@@ -30,6 +31,7 @@ public class VoicechatClient implements ClientModInitializer {
 
         KEY_PTT = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.push_to_talk", GLFW.GLFW_KEY_CAPS_LOCK, "key.categories.misc"));
         KEY_MUTE = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.mute_microphone", GLFW.GLFW_KEY_M, "key.categories.misc"));
+        KEY_DISABLE = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.disable_voice_chat", GLFW.GLFW_KEY_N, "key.categories.misc"));
         KEY_VOICE_CHAT_SETTINGS = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.voice_chat_settings", GLFW.GLFW_KEY_V, "key.categories.misc"));
 
         CLIENT = new ClientVoiceEvents();

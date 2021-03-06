@@ -37,7 +37,9 @@ public class MicThread extends Thread {
                 Utils.sleep(10);
             } else {
                 MicrophoneActivationType type = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get();
-                if (type.equals(MicrophoneActivationType.PTT)) {
+                if (VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
+                    Utils.sleep(10);
+                } else if (type.equals(MicrophoneActivationType.PTT)) {
                     ptt();
                 } else if (type.equals(MicrophoneActivationType.VOICE)) {
                     voice();
@@ -53,7 +55,7 @@ public class MicThread extends Thread {
     private void voice() {
         wasPTT = false;
 
-        if (client.isMuted()) {
+        if (VoicechatClient.CLIENT.getPlayerStateManager().isMuted()) {
             activating = false;
             if (mic.isActive()) {
                 mic.stop();

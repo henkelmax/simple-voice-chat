@@ -1,6 +1,7 @@
 {
   "key.push_to_talk": "Push To Talk",
   "key.mute_microphone": "Mute Microphone",
+  "key.disable_voice_chat": "Disable Voice Chat",
   "key.voice_chat_settings": "Voice Chat Settings",
   "gui.voicechat.voice_chat_settings.title": "Voice Chat Settings",
   "gui.voicechat.adjust_volume.title": "Adjust Player Volumes",

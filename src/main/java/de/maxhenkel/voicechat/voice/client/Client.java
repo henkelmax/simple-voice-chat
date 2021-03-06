@@ -1,8 +1,9 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.voice.common.*;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.events.ClientVoiceChatEvents;
+import de.maxhenkel.voicechat.voice.common.*;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -30,7 +31,6 @@ public class Client extends Thread {
     private boolean authenticated;
     private Map<UUID, AudioChannel> audioChannels;
     private AuthThread authThread;
-    private boolean muted;
     private AudioChannelConfig audioChannelConfig;
     private long sequenceNumber;
     private long lastServerSequenceNumber;
@@ -111,14 +111,6 @@ public class Client extends Thread {
         return authenticated;
     }
 
-    public boolean isMuted() {
-        return muted;
-    }
-
-    public void setMuted(boolean muted) {
-        this.muted = muted;
-    }
-
     public void reloadDataLines() {
         Voicechat.LOGGER.debug("Reloading data lines");
         if (micThread != null) {
@@ -154,19 +146,22 @@ public class Client extends Thread {
                     if (!authenticated) {
                         Voicechat.LOGGER.info("Server acknowledged authentication");
                         authenticated = true;
+                        ClientVoiceChatEvents.VOICECHAT_CONNECTED.invoker().accept(this);
                         startMicThread();
                         lastKeepAlive = System.currentTimeMillis();
                     }
                 } else if (in.getPacket() instanceof SoundPacket) {
-                    SoundPacket packet = (SoundPacket) in.getPacket();
-                    AudioChannel sendTo = audioChannels.get(packet.getSender());
-                    if (sendTo == null) {
-                        AudioChannel ch = new AudioChannel(this, packet.getSender());
-                        ch.addToQueue(packet);
-                        ch.start();
-                        audioChannels.put(packet.getSender(), ch);
-                    } else {
-                        sendTo.addToQueue(packet);
+                    if (!VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
+                        SoundPacket packet = (SoundPacket) in.getPacket();
+                        AudioChannel sendTo = audioChannels.get(packet.getSender());
+                        if (sendTo == null) {
+                            AudioChannel ch = new AudioChannel(this, packet.getSender());
+                            ch.addToQueue(packet);
+                            ch.start();
+                            audioChannels.put(packet.getSender(), ch);
+                        } else {
+                            sendTo.addToQueue(packet);
+                        }
                     }
 
                     audioChannels.values().stream().filter(AudioChannel::canKill).forEach(AudioChannel::closeAndKill);
@@ -219,7 +214,7 @@ public class Client extends Thread {
     public void checkTimeout() {
         if (lastKeepAlive >= 0 && System.currentTimeMillis() - lastKeepAlive > keepAlive * 10L) {
             Voicechat.LOGGER.info("Connection timeout");
-            VoicechatClient.CLIENT.disconnect();
+            VoicechatClient.CLIENT.onDisconnect();
         }
     }
 

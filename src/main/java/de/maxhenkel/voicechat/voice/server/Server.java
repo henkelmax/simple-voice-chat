@@ -28,6 +28,7 @@ public class Server extends Thread {
     private ProcessThread processThread;
     private BlockingQueue<NetworkMessage> packetQueue;
     private PingManager pingManager;
+    private PlayerStateManager playerStateManager;
 
     public Server(int port, MinecraftServer server) {
         this.port = port;
@@ -36,6 +37,7 @@ public class Server extends Thread {
         secrets = new HashMap<>();
         packetQueue = new LinkedBlockingQueue<>();
         pingManager = new PingManager(this);
+        playerStateManager = new PlayerStateManager();
         setDaemon(true);
         setName("VoiceChatServerThread");
         processThread = new ProcessThread();
@@ -241,5 +243,9 @@ public class Server extends Thread {
 
     public PingManager getPingManager() {
         return pingManager;
+    }
+
+    public PlayerStateManager getPlayerStateManager() {
+        return playerStateManager;
     }
 }

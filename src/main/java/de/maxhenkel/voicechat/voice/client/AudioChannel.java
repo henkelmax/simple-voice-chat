@@ -68,6 +68,14 @@ public class AudioChannel extends Thread {
             speaker.open(af);
             gainControl = (FloatControl) speaker.getControl(FloatControl.Type.MASTER_GAIN);
             while (!stopped) {
+
+                if (VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
+                    speaker.stop();
+                    queue.clear();
+                    closeAndKill();
+                    return;
+                }
+
                 // Stopping the data line when the buffer is empty
                 // to prevent the last sound getting repeated
                 if (speaker.getBufferSize() - speaker.available() <= 0 && speaker.isActive()) {

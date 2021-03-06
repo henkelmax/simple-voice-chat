@@ -25,6 +25,14 @@ public class ConfigBuilder {
         config.save();
     }
 
+    public ConfigEntry<Boolean> booleanEntry(String key, boolean def) {
+        BooleanConfigEntry entry = new BooleanConfigEntry();
+        entry.key = key;
+        entry.def = def;
+        entries.add(entry);
+        return entry;
+    }
+
     public ConfigEntry<Integer> integerEntry(String key, int def, int min, int max) {
         IntegerConfigEntry entry = new IntegerConfigEntry(min, max);
         entry.key = key;
@@ -105,6 +113,19 @@ public class ConfigBuilder {
         public abstract T deserialize(String str);
 
         public abstract String serialize(T val);
+    }
+
+    private static class BooleanConfigEntry extends ConfigEntry<Boolean> {
+        @Override
+        @Nullable
+        public Boolean deserialize(String str) {
+            return Boolean.valueOf(str);
+        }
+
+        @Override
+        public String serialize(Boolean val) {
+            return String.valueOf(val);
+        }
     }
 
     private static class IntegerConfigEntry extends ConfigEntry<Integer> {
