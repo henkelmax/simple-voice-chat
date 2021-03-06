@@ -1,5 +1,10 @@
 package de.maxhenkel.voicechat.voice.common;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.options.Perspective;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
@@ -107,11 +112,14 @@ public class Utils {
         return stereo;
     }
 
-    public static Pair<Float, Float> getStereoVolume(Vec3d playerPos, float yaw, Vec3d soundPos, double voiceChatDistance) {
+    @Environment(EnvType.CLIENT)
+    public static Pair<Float, Float> getStereoVolume(MinecraftClient minecraft, Vec3d soundPos, double voiceChatDistance) {
+        PlayerEntity player = minecraft.player;
+        Vec3d playerPos = player.getPos();
         Vec3d d = soundPos.subtract(playerPos).normalize();
         Vec2f diff = new Vec2f((float) d.x, (float) d.z);
         float diffAngle = angle(diff, new Vec2f(-1F, 0F));
-        float angle = normalizeAngle(diffAngle - (yaw % 360F));
+        float angle = normalizeAngle(diffAngle - (player.yaw % 360F));
         float dif = (float) (Math.abs(playerPos.y - soundPos.y) / voiceChatDistance);
 
         float rot = angle / 180F;
@@ -129,6 +137,10 @@ public class Utils {
         float fill = 1F - Math.max(left, right);
         left += fill;
         right += fill;
+
+        if (minecraft.options.getPerspective().equals(Perspective.THIRD_PERSON_FRONT)) {
+            return new ImmutablePair<>(right, left);
+        }
 
         return new ImmutablePair<>(left, right);
     }

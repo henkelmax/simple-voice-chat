@@ -8,5 +8,7 @@ public class Packets {
     public static final Identifier SECRET = new Identifier(Voicechat.MODID, "secret");
     public static final Identifier REQUEST_PLAYER_LIST = new Identifier(Voicechat.MODID, "request_player_list");
     public static final Identifier PLAYER_LIST = new Identifier(Voicechat.MODID, "player_list");
+    public static final Identifier PLAYER_STATES = new Identifier(Voicechat.MODID, "player_states");
+    public static final Identifier PLAYER_STATE = new Identifier(Voicechat.MODID, "player_state");
 
 }

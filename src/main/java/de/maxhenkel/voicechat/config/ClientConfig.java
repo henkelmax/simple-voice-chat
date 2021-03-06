@@ -11,6 +11,8 @@ public class ClientConfig {
     public final ConfigBuilder.ConfigEntry<Integer> outputBufferSize;
     public final ConfigBuilder.ConfigEntry<String> microphone;
     public final ConfigBuilder.ConfigEntry<String> speaker;
+    public final ConfigBuilder.ConfigEntry<Boolean> muted;
+    public final ConfigBuilder.ConfigEntry<Boolean> disabled;
 
     public ClientConfig(ConfigBuilder builder) {
         voiceChatVolume = builder.doubleEntry("voice_chat_volume", 1D, 0D, 2D);
@@ -20,6 +22,8 @@ public class ClientConfig {
         outputBufferSize = builder.integerEntry("output_buffer_size", 6, 1, 16);
         microphone = builder.stringEntry("microphone", "");
         speaker = builder.stringEntry("speaker", "");
+        muted = builder.booleanEntry("muted", false);
+        disabled = builder.booleanEntry("disabled", false);
     }
 
 }
