@@ -1,2 +1,2 @@
-- Added disable voicechat button
-- Added disconnect indicator
+- Fixed player icon rendering
+- Fixed sound coming from the wrong side when in F5

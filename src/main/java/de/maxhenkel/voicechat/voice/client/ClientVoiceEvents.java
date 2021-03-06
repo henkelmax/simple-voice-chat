@@ -171,6 +171,9 @@ public class ClientVoiceEvents {
         if (!(entity instanceof PlayerEntity)) {
             return;
         }
+        if (entity == minecraft.player) {
+            return;
+        }
 
         PlayerEntity player = (PlayerEntity) entity;
 
@@ -208,7 +211,7 @@ public class ClientVoiceEvents {
             vertex(builder, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, light);
             vertex(builder, matrixStackIn, offset, 0F, 0F, 0F, 0F, light);
 
-            VertexConsumer builderSeeThrough = buffer.getBuffer(RenderLayer.getTextSeeThrough(SPEAKER_ICON));
+            VertexConsumer builderSeeThrough = buffer.getBuffer(RenderLayer.getTextSeeThrough(texture));
             vertex(builderSeeThrough, matrixStackIn, offset, 10F, 0F, 0F, 1F, alpha, light);
             vertex(builderSeeThrough, matrixStackIn, offset + 10F, 10F, 0F, 1F, 1F, alpha, light);
             vertex(builderSeeThrough, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, alpha, light);
