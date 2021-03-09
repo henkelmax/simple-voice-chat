@@ -109,6 +109,10 @@ public class ClientVoiceEvents {
     }
 
     public void renderHUD(MatrixStack stack, float tickDelta) {
+        if (VoicechatClient.CLIENT_CONFIG.hideIcons.get()) {
+            return;
+        }
+
         if (playerStateManager.isDisconnected()) {
             renderIcon(stack, DISCONNECT_ICON);
         } else if (playerStateManager.isDisabled()) {
@@ -138,7 +142,7 @@ public class ClientVoiceEvents {
             }
         }
 
-        if (VoicechatClient.KEY_PTT.isPressed()) {
+        if (VoicechatClient.KEY_PTT.wasPressed()) {
             if (VoicechatClient.CLIENT.getClient() == null || !VoicechatClient.CLIENT.getClient().isAuthenticated()) {
                 sendUnavailableMessage();
             }
@@ -161,6 +165,18 @@ public class ClientVoiceEvents {
                 playerStateManager.setDisabled(!playerStateManager.isDisabled());
             }
         }
+
+        if (VoicechatClient.KEY_HIDE_ICONS.wasPressed()) {
+            boolean hidden = !VoicechatClient.CLIENT_CONFIG.hideIcons.get();
+            VoicechatClient.CLIENT_CONFIG.hideIcons.set(hidden);
+            VoicechatClient.CLIENT_CONFIG.hideIcons.save();
+
+            if (hidden) {
+                minecraft.player.sendMessage(new TranslatableText("message.voicechat.icons_hidden"), true);
+            } else {
+                minecraft.player.sendMessage(new TranslatableText("message.voicechat.icons_visible"), true);
+            }
+        }
     }
 
     public void sendUnavailableMessage() {
@@ -168,6 +184,9 @@ public class ClientVoiceEvents {
     }
 
     public void onRenderName(Entity entity, MatrixStack stack, VertexConsumerProvider vertexConsumers, int light) {
+        if (VoicechatClient.CLIENT_CONFIG.hideIcons.get()) {
+            return;
+        }
         if (!(entity instanceof PlayerEntity)) {
             return;
         }
@@ -177,12 +196,12 @@ public class ClientVoiceEvents {
 
         PlayerEntity player = (PlayerEntity) entity;
 
-        if (client != null && !minecraft.options.hudHidden) {
+        if (!minecraft.options.hudHidden) {
             if (playerStateManager.isPlayerDisconnected(player)) {
                 renderPlayerIcon(player, DISCONNECT_ICON, stack, vertexConsumers, light);
             } else if (playerStateManager.isPlayerDisabled(player)) {
                 renderPlayerIcon(player, SPEAKER_OFF_ICON, stack, vertexConsumers, light);
-            } else if (client.getTalkCache().isTalking(player)) {
+            } else if (client != null && client.getTalkCache().isTalking(player)) {
                 renderPlayerIcon(player, SPEAKER_ICON, stack, vertexConsumers, light);
             }
         }

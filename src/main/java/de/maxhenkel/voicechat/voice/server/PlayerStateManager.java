@@ -53,6 +53,7 @@ public class PlayerStateManager {
 
     private void removePlayer(ServerPlayerEntity player) {
         states.remove(player.getUuid());
+        broadcastState(player.server, player.getUuid(), new PlayerState(true, true));
     }
 
 }

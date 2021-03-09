@@ -1,2 +1,2 @@
-- Fixed player icon rendering
-- Fixed sound coming from the wrong side when in F5
+- Added mono sound config option
+- Added option to hide icons
