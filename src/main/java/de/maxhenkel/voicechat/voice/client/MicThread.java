@@ -4,6 +4,8 @@ import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.common.MicPacket;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.Utils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.InputMappings;
 
 import javax.sound.sampled.*;
 import java.io.IOException;
@@ -108,7 +110,7 @@ public class MicThread extends Thread {
     private void ptt() {
         activating = false;
         int dataLength = AudioChannelConfig.getReadSize(mic);
-        if (!Main.KEY_PTT.isKeyDown()) {
+        if (!InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), Main.KEY_PTT.getKey().getKeyCode())) {
             if (wasPTT) {
                 mic.stop();
                 mic.flush();
