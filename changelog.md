@@ -1,2 +1,1 @@
-- Added mono sound config option
-- Added option to hide icons
+- Fixed PTT key not working in GUIs
