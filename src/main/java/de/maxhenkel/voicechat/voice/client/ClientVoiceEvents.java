@@ -111,6 +111,10 @@ public class ClientVoiceEvents {
             return;
         }
 
+        if (Main.CLIENT_CONFIG.hideIcons.get()) {
+            return;
+        }
+
         if (playerStateManager.isDisconnected()) {
             renderIcon(event.getMatrixStack(), DISCONNECT_ICON);
         } else if (playerStateManager.isDisabled()) {
@@ -164,6 +168,18 @@ public class ClientVoiceEvents {
                 playerStateManager.setDisabled(!playerStateManager.isDisabled());
             }
         }
+
+        if (Main.KEY_HIDE_ICONS.isPressed()) {
+            boolean hidden = !Main.CLIENT_CONFIG.hideIcons.get();
+            Main.CLIENT_CONFIG.hideIcons.set(hidden);
+            Main.CLIENT_CONFIG.hideIcons.save();
+
+            if (hidden) {
+                minecraft.player.sendStatusMessage(new TranslationTextComponent("message.voicechat.icons_hidden"), true);
+            } else {
+                minecraft.player.sendStatusMessage(new TranslationTextComponent("message.voicechat.icons_visible"), true);
+            }
+        }
     }
 
     public void sendUnavailableMessage() {
@@ -172,6 +188,9 @@ public class ClientVoiceEvents {
 
     @SubscribeEvent
     public void onRenderName(RenderNameplateEvent event) {
+        if (Main.CLIENT_CONFIG.hideIcons.get()) {
+            return;
+        }
         if (!(event.getEntity() instanceof PlayerEntity)) {
             return;
         }

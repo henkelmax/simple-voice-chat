@@ -50,6 +50,9 @@ public class Main {
     public static KeyBinding KEY_DISABLE;
 
     @OnlyIn(Dist.CLIENT)
+    public static KeyBinding KEY_HIDE_ICONS;
+
+    @OnlyIn(Dist.CLIENT)
     public static KeyBinding KEY_VOICE_CHAT_SETTINGS;
 
     public Main() {
@@ -81,16 +84,19 @@ public class Main {
         CLIENT_VOICE_EVENTS = new ClientVoiceEvents();
         MinecraftForge.EVENT_BUS.register(CLIENT_VOICE_EVENTS);
 
-        KEY_PTT = new KeyBinding("key.push_to_talk", GLFW.GLFW_KEY_CAPS_LOCK, "key.categories.misc");
+        KEY_PTT = new KeyBinding("key.push_to_talk", GLFW.GLFW_KEY_CAPS_LOCK, "key.categories.voicechat");
         ClientRegistry.registerKeyBinding(KEY_PTT);
 
-        KEY_MUTE = new KeyBinding("key.mute_microphone", GLFW.GLFW_KEY_M, "key.categories.misc");
+        KEY_MUTE = new KeyBinding("key.mute_microphone", GLFW.GLFW_KEY_M, "key.categories.voicechat");
         ClientRegistry.registerKeyBinding(KEY_MUTE);
 
-        KEY_DISABLE = new KeyBinding("key.disable_voice_chat", GLFW.GLFW_KEY_N, "key.categories.misc");
+        KEY_DISABLE = new KeyBinding("key.disable_voice_chat", GLFW.GLFW_KEY_N, "key.categories.voicechat");
         ClientRegistry.registerKeyBinding(KEY_DISABLE);
 
-        KEY_VOICE_CHAT_SETTINGS = new KeyBinding("key.voice_chat_settings", GLFW.GLFW_KEY_V, "key.categories.misc");
+        KEY_HIDE_ICONS = new KeyBinding("key.hide_icons", GLFW.GLFW_KEY_H, "key.categories.voicechat");
+        ClientRegistry.registerKeyBinding(KEY_HIDE_ICONS);
+
+        KEY_VOICE_CHAT_SETTINGS = new KeyBinding("key.voice_chat_settings", GLFW.GLFW_KEY_V, "key.categories.voicechat");
         ClientRegistry.registerKeyBinding(KEY_VOICE_CHAT_SETTINGS);
     }
 

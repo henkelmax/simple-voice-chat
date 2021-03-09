@@ -1,7 +1,9 @@
 {
+  "key.categories.voicechat": "Voice Chat",
   "key.push_to_talk": "Push To Talk",
   "key.mute_microphone": "Mute Microphone",
   "key.disable_voice_chat": "Disable Voice Chat",
+  "key.hide_icons": "Hide Voice Chat Icons",
   "key.voice_chat_settings": "Voice Chat Settings",
   "gui.voicechat.voice_chat_settings.title": "Voice Chat Settings",
   "gui.voicechat.adjust_volume.title": "Adjust Player Volumes",
@@ -34,5 +36,7 @@
   "message.voicechat.sending_packet": "Sending packet...",
   "message.voicechat.packet_sent_waiting": "Packet sent. Waiting for response...",
   "message.voicechat.packet_received": "Received packet in %sms",
-  "message.voicechat.packet_timed_out": "Request timed out"
+  "message.voicechat.packet_timed_out": "Request timed out",
+  "message.voicechat.icons_hidden": "Voice chat icons hidden",
+  "message.voicechat.icons_visible": "Voice chat icons visible"
 }

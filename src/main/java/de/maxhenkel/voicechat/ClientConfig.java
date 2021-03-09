@@ -15,6 +15,8 @@ public class ClientConfig extends ConfigBase {
     public final ForgeConfigSpec.ConfigValue<String> speaker;
     public final ForgeConfigSpec.BooleanValue muted;
     public final ForgeConfigSpec.BooleanValue disabled;
+    public final ForgeConfigSpec.BooleanValue stereo;
+    public final ForgeConfigSpec.BooleanValue hideIcons;
 
     public ClientConfig(ForgeConfigSpec.Builder builder) {
         super(builder);
@@ -49,6 +51,12 @@ public class ClientConfig extends ConfigBase {
         disabled = builder
                 .comment("If the voice chat is disabled (sound and microphone off)")
                 .define("disabled", false);
+        stereo = builder
+                .comment("If the voice chat should use semi 3D stereo sound")
+                .define("stereo", true);
+        hideIcons = builder
+                .comment("If the voice chat icons should be hidden")
+                .define("hide_icons", false);
     }
 
 }
