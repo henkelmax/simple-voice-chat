@@ -7,9 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.sound.sampled.*;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.SourceDataLine;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -66,6 +66,14 @@ public class AudioChannel extends Thread {
             speaker.open(af);
             gainControl = (FloatControl) speaker.getControl(FloatControl.Type.MASTER_GAIN);
             while (!stopped) {
+
+                if (Main.CLIENT_VOICE_EVENTS.getPlayerStateManager().isDisabled()) {
+                    speaker.stop();
+                    queue.clear();
+                    closeAndKill();
+                    return;
+                }
+
                 // Stopping the data line when the buffer is empty
                 // to prevent the last sound getting repeated
                 if (speaker.getBufferSize() - speaker.available() <= 0 && speaker.isActive()) {
@@ -105,7 +113,7 @@ public class AudioChannel extends Thread {
 
                 gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(percentage * Main.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * (float) Main.VOLUME_CONFIG.getVolume(player)), gainControl.getMinimum()), gainControl.getMaximum()));
 
-                Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft.player.getPositionVec(), minecraft.player.rotationYaw, player.getPositionVec());
+                Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, player.getPositionVec());
 
                 byte[] stereo = Utils.convertToStereo(packet.getData(), stereoVolume.getLeft(), stereoVolume.getRight());
                 speaker.write(stereo, 0, stereo.length);

@@ -3,6 +3,8 @@ package de.maxhenkel.voicechat.voice.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import de.maxhenkel.voicechat.Main;
+import de.maxhenkel.voicechat.event.VoiceChatConnectedEvent;
+import de.maxhenkel.voicechat.event.VoiceChatDisconnectedEvent;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -18,6 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderNameplateEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -30,20 +33,24 @@ import java.util.UUID;
 public class ClientVoiceEvents {
 
     private static final ResourceLocation MICROPHONE_ICON = new ResourceLocation(Main.MODID, "textures/gui/microphone.png");
-    private static final ResourceLocation MICROPHONE_MUTED_ICON = new ResourceLocation(Main.MODID, "textures/gui/microphone_muted.png");
+    private static final ResourceLocation MICROPHONE_OFF_ICON = new ResourceLocation(Main.MODID, "textures/gui/microphone_off.png");
     private static final ResourceLocation SPEAKER_ICON = new ResourceLocation(Main.MODID, "textures/gui/speaker.png");
+    private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Main.MODID, "textures/gui/speaker_off.png");
+    private static final ResourceLocation DISCONNECT_ICON = new ResourceLocation(Main.MODID, "textures/gui/disconnected.png");
 
     private Client client;
+    private ClientPlayerStateManager playerStateManager;
     private Minecraft minecraft;
 
     public ClientVoiceEvents() {
+        playerStateManager = new ClientPlayerStateManager();
         minecraft = Minecraft.getInstance();
     }
 
     public void authenticate(UUID playerUUID, UUID secret) {
         Main.LOGGER.info("Received secret");
         if (client != null) {
-            disconnect();
+            onDisconnect();
         }
         ClientPlayNetHandler connection = minecraft.getConnection();
         if (connection != null) {
@@ -63,14 +70,26 @@ public class ClientVoiceEvents {
     }
 
     @SubscribeEvent
-    public void joinEvent(WorldEvent.Unload event) {
+    public void disconnectEvent(WorldEvent.Unload event) {
         // Not just changing the world - Disconnecting
         if (minecraft.playerController == null) {
-            disconnect();
+            playerStateManager.onDisconnect();
+            onDisconnect();
         }
     }
 
-    public void disconnect() {
+    @SubscribeEvent
+    public void connectedEvent(VoiceChatConnectedEvent event) {
+        playerStateManager.onVoiceChatConnected(event.getClient());
+    }
+
+    @SubscribeEvent
+    public void disconnectedEvent(VoiceChatDisconnectedEvent event) {
+        playerStateManager.onVoiceChatDisconnected();
+    }
+
+    public void onDisconnect() {
+        MinecraftForge.EVENT_BUS.post(new VoiceChatDisconnectedEvent());
         if (client != null) {
             client.close();
             client = null;
@@ -82,20 +101,24 @@ public class ClientVoiceEvents {
         return client;
     }
 
+    public ClientPlayerStateManager getPlayerStateManager() {
+        return playerStateManager;
+    }
+
     @SubscribeEvent
-    public void renderOverlay(RenderGameOverlayEvent.Pre event) {
-        if (!event.getType().equals(RenderGameOverlayEvent.ElementType.HOTBAR)) {
+    public void onRenderOverlay(RenderGameOverlayEvent.Pre event) {
+        if (!event.getType().equals(RenderGameOverlayEvent.ElementType.CHAT)) {
             return;
         }
 
-        if (client == null || !client.isConnected() || client.getMicThread() == null) {
-            return;
-        }
-
-        if (client.getMicThread().isTalking()) {
+        if (playerStateManager.isDisconnected()) {
+            renderIcon(event.getMatrixStack(), DISCONNECT_ICON);
+        } else if (playerStateManager.isDisabled()) {
+            renderIcon(event.getMatrixStack(), SPEAKER_OFF_ICON);
+        } else if (playerStateManager.isMuted() && Main.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE)) {
+            renderIcon(event.getMatrixStack(), MICROPHONE_OFF_ICON);
+        } else if (client != null && client.getMicThread() != null && client.getMicThread().isTalking()) {
             renderIcon(event.getMatrixStack(), MICROPHONE_ICON);
-        } else if (client.isMuted() && Main.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE)) {
-            renderIcon(event.getMatrixStack(), MICROPHONE_MUTED_ICON);
         }
     }
 
@@ -129,7 +152,16 @@ public class ClientVoiceEvents {
             if (client == null || !client.isAuthenticated()) {
                 sendUnavailableMessage();
             } else {
-                client.setMuted(!client.isMuted());
+                playerStateManager.setMuted(!playerStateManager.isMuted());
+            }
+        }
+
+        if (Main.KEY_DISABLE.isPressed()) {
+            Client client = Main.CLIENT_VOICE_EVENTS.getClient();
+            if (client == null || !client.isAuthenticated()) {
+                sendUnavailableMessage();
+            } else {
+                playerStateManager.setDisabled(!playerStateManager.isDisabled());
             }
         }
     }
@@ -139,28 +171,37 @@ public class ClientVoiceEvents {
     }
 
     @SubscribeEvent
-    public void renderOverlay(RenderNameplateEvent event) {
+    public void onRenderName(RenderNameplateEvent event) {
         if (!(event.getEntity() instanceof PlayerEntity)) {
             return;
         }
+        if (event.getEntity() == minecraft.player) {
+            return;
+        }
 
-        PlayerEntity playerEntity = (PlayerEntity) event.getEntity();
-        if (client != null && client.getTalkCache().isTalking(playerEntity) && !minecraft.gameSettings.hideGUI) {
-            renderSpeaker(playerEntity, event.getContent().getString(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
+        PlayerEntity player = (PlayerEntity) event.getEntity();
+
+        if (!minecraft.gameSettings.hideGUI) {
+            if (playerStateManager.isPlayerDisconnected(player)) {
+                renderPlayerIcon(player, DISCONNECT_ICON, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
+            } else if (playerStateManager.isPlayerDisabled(player)) {
+                renderPlayerIcon(player, SPEAKER_OFF_ICON, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
+            } else if (client != null && client.getTalkCache().isTalking(player)) {
+                renderPlayerIcon(player, SPEAKER_ICON, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
+            }
         }
     }
 
-    protected void renderSpeaker(PlayerEntity player, String displayNameIn, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    protected void renderPlayerIcon(PlayerEntity player, ResourceLocation texture, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.push();
         matrixStackIn.translate(0D, player.getHeight() + 0.5D, 0D);
         matrixStackIn.rotate(minecraft.getRenderManager().getCameraOrientation());
         matrixStackIn.scale(-0.025F, -0.025F, 0.025F);
         matrixStackIn.translate(0D, -1D, 0D);
 
-        float offset = (float) (minecraft.fontRenderer.getStringWidth(displayNameIn) / 2 + 2);
+        float offset = (float) (minecraft.fontRenderer.getStringPropertyWidth(player.getDisplayName()) / 2 + 2);
 
-
-        IVertexBuilder builder = bufferIn.getBuffer(RenderType.getText(SPEAKER_ICON));
+        IVertexBuilder builder = bufferIn.getBuffer(RenderType.getText(texture));
         int alpha = 32;
 
         if (player.isDiscrete()) {
@@ -174,7 +215,7 @@ public class ClientVoiceEvents {
             vertex(builder, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, packedLightIn);
             vertex(builder, matrixStackIn, offset, 0F, 0F, 0F, 0F, packedLightIn);
 
-            IVertexBuilder builderSeeThrough = bufferIn.getBuffer(RenderType.getTextSeeThrough(SPEAKER_ICON));
+            IVertexBuilder builderSeeThrough = bufferIn.getBuffer(RenderType.getTextSeeThrough(texture));
             vertex(builderSeeThrough, matrixStackIn, offset, 10F, 0F, 0F, 1F, alpha, packedLightIn);
             vertex(builderSeeThrough, matrixStackIn, offset + 10F, 10F, 0F, 1F, 1F, alpha, packedLightIn);
             vertex(builderSeeThrough, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, alpha, packedLightIn);

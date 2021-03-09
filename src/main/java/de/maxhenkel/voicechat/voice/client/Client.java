@@ -1,7 +1,9 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Main;
+import de.maxhenkel.voicechat.event.VoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.voice.common.*;
+import net.minecraftforge.common.MinecraftForge;
 import org.jline.utils.Log;
 
 import java.io.IOException;
@@ -23,7 +25,6 @@ public class Client extends Thread {
     private boolean authenticated;
     private Map<UUID, AudioChannel> audioChannels;
     private AuthThread authThread;
-    private boolean muted;
     private long sequenceNumber;
     private long lastServerSequenceNumber;
     private long lastKeepAlive;
@@ -77,14 +78,6 @@ public class Client extends Thread {
         return authenticated;
     }
 
-    public boolean isMuted() {
-        return muted;
-    }
-
-    public void setMuted(boolean muted) {
-        this.muted = muted;
-    }
-
     public void reloadDataLines() {
         Log.debug("Reloading data lines");
         if (micThread != null) {
@@ -120,19 +113,22 @@ public class Client extends Thread {
                     if (!authenticated) {
                         Main.LOGGER.info("Server acknowledged authentication");
                         authenticated = true;
+                        MinecraftForge.EVENT_BUS.post(new VoiceChatConnectedEvent(this));
                         startMicThread();
                         lastKeepAlive = System.currentTimeMillis();
                     }
                 } else if (in.getPacket() instanceof SoundPacket) {
-                    SoundPacket packet = (SoundPacket) in.getPacket();
-                    AudioChannel sendTo = audioChannels.get(packet.getSender());
-                    if (sendTo == null) {
-                        AudioChannel ch = new AudioChannel(this, packet.getSender());
-                        ch.addToQueue(packet);
-                        ch.start();
-                        audioChannels.put(packet.getSender(), ch);
-                    } else {
-                        sendTo.addToQueue(packet);
+                    if (!Main.CLIENT_VOICE_EVENTS.getPlayerStateManager().isDisabled()) {
+                        SoundPacket packet = (SoundPacket) in.getPacket();
+                        AudioChannel sendTo = audioChannels.get(packet.getSender());
+                        if (sendTo == null) {
+                            AudioChannel ch = new AudioChannel(this, packet.getSender());
+                            ch.addToQueue(packet);
+                            ch.start();
+                            audioChannels.put(packet.getSender(), ch);
+                        } else {
+                            sendTo.addToQueue(packet);
+                        }
                     }
 
                     audioChannels.values().stream().filter(AudioChannel::canKill).forEach(AudioChannel::closeAndKill);
@@ -185,7 +181,7 @@ public class Client extends Thread {
     public void checkTimeout() {
         if (lastKeepAlive >= 0 && System.currentTimeMillis() - lastKeepAlive > Main.SERVER_CONFIG.keepAlive.get() * 10L) {
             Main.LOGGER.info("Connection timeout");
-            Main.CLIENT_VOICE_EVENTS.disconnect();
+            Main.CLIENT_VOICE_EVENTS.onDisconnect();
         }
     }
 

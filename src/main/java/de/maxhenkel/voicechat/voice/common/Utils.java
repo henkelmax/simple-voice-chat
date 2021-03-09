@@ -1,6 +1,10 @@
 package de.maxhenkel.voicechat.voice.common;
 
+import com.sun.javafx.geom.Vec3d;
 import de.maxhenkel.voicechat.Main;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.PointOfView;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
@@ -108,11 +112,13 @@ public class Utils {
         return stereo;
     }
 
-    public static Pair<Float, Float> getStereoVolume(Vector3d playerPos, float yaw, Vector3d soundPos) {
+    public static Pair<Float, Float> getStereoVolume(Minecraft minecraft, Vector3d soundPos) {
+        PlayerEntity player = minecraft.player;
+        Vector3d playerPos = player.getPositionVec();
         Vector3d d = soundPos.subtract(playerPos).normalize();
         Vector2f diff = new Vector2f((float) d.x, (float) d.z);
         float diffAngle = angle(diff, new Vector2f(-1F, 0F));
-        float angle = normalizeAngle(diffAngle - (yaw % 360F));
+        float angle = normalizeAngle(diffAngle - (player.rotationYaw % 360F));
         float dif = (float) (Math.abs(playerPos.y - soundPos.y) / Main.SERVER_CONFIG.voiceChatDistance.get().floatValue());
 
         float rot = angle / 180F;
@@ -130,7 +136,11 @@ public class Utils {
         float fill = 1F - Math.max(left, right);
         left += fill;
         right += fill;
-        
+
+        if (minecraft.gameSettings.getPointOfView().equals(PointOfView.THIRD_PERSON_FRONT)) {
+            return new ImmutablePair<>(right, left);
+        }
+
         return new ImmutablePair<>(left, right);
     }
 

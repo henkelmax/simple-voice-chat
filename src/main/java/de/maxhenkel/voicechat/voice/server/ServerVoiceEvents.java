@@ -36,6 +36,8 @@ public class ServerVoiceEvents {
             return;
         }
 
+        server.getPlayerStateManager().onPlayerLoggedIn(player);
+
         UUID secret = server.getSecret(player.getUniqueID());
         Main.SIMPLE_CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new AuthenticationMessage(player.getUniqueID(), secret));
         Main.LOGGER.info("Sent secret to " + player.getDisplayName().getString());
@@ -56,6 +58,9 @@ public class ServerVoiceEvents {
 
         if (event.getPlayer() instanceof ServerPlayerEntity) {
             ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+
+            server.getPlayerStateManager().onPlayerLoggedOut(player);
+
             server.disconnectClient(player.getUniqueID());
             Main.LOGGER.info("Disconnecting client " + player.getDisplayName().getString());
         }

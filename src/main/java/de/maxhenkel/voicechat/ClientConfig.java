@@ -13,6 +13,8 @@ public class ClientConfig extends ConfigBase {
     public final ForgeConfigSpec.IntValue outputBufferSize;
     public final ForgeConfigSpec.ConfigValue<String> microphone;
     public final ForgeConfigSpec.ConfigValue<String> speaker;
+    public final ForgeConfigSpec.BooleanValue muted;
+    public final ForgeConfigSpec.BooleanValue disabled;
 
     public ClientConfig(ForgeConfigSpec.Builder builder) {
         super(builder);
@@ -41,6 +43,12 @@ public class ClientConfig extends ConfigBase {
         speaker = builder
                 .comment("The microphone used by the voice chat", "Empty for default device")
                 .define("speaker", "");
+        muted = builder
+                .comment("If the microphone is muted (only when using voice activation)")
+                .define("muted", false);
+        disabled = builder
+                .comment("If the voice chat is disabled (sound and microphone off)")
+                .define("disabled", false);
     }
 
 }

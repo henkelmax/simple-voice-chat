@@ -1,1 +1,3 @@
-- Performance improvements
+- Added disable voicechat button
+- Added disconnect indicator
+- Fixed sound coming from the wrong side when in F5

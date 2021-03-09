@@ -2,9 +2,7 @@ package de.maxhenkel.voicechat;
 
 import de.maxhenkel.corelib.CommonRegistry;
 import de.maxhenkel.voicechat.command.TestConnectionCommand;
-import de.maxhenkel.voicechat.net.AuthenticationMessage;
-import de.maxhenkel.voicechat.net.PlayerListMessage;
-import de.maxhenkel.voicechat.net.RequestPlayerListMessage;
+import de.maxhenkel.voicechat.net.*;
 import de.maxhenkel.voicechat.voice.client.ClientVoiceEvents;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import net.minecraft.client.settings.KeyBinding;
@@ -49,6 +47,9 @@ public class Main {
     public static KeyBinding KEY_MUTE;
 
     @OnlyIn(Dist.CLIENT)
+    public static KeyBinding KEY_DISABLE;
+
+    @OnlyIn(Dist.CLIENT)
     public static KeyBinding KEY_VOICE_CHAT_SETTINGS;
 
     public Main() {
@@ -70,6 +71,9 @@ public class Main {
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 0, AuthenticationMessage.class);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 1, RequestPlayerListMessage.class);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 2, PlayerListMessage.class);
+        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 3, PlayerStateMessage.class);
+        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 4, PlayerStatesMessage.class);
+        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 5, SetPlayerStateMessage.class);
     }
 
     @SubscribeEvent
@@ -82,6 +86,9 @@ public class Main {
 
         KEY_MUTE = new KeyBinding("key.mute_microphone", GLFW.GLFW_KEY_M, "key.categories.misc");
         ClientRegistry.registerKeyBinding(KEY_MUTE);
+
+        KEY_DISABLE = new KeyBinding("key.disable_voice_chat", GLFW.GLFW_KEY_N, "key.categories.misc");
+        ClientRegistry.registerKeyBinding(KEY_DISABLE);
 
         KEY_VOICE_CHAT_SETTINGS = new KeyBinding("key.voice_chat_settings", GLFW.GLFW_KEY_V, "key.categories.misc");
         ClientRegistry.registerKeyBinding(KEY_VOICE_CHAT_SETTINGS);
