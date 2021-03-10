@@ -1,1 +1,1 @@
-- Fixed PTT key not working in GUIs
+- Added italian translation
