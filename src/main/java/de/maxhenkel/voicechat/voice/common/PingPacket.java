@@ -29,14 +29,14 @@ public class PingPacket implements Packet<PingPacket> {
     @Override
     public PingPacket fromBytes(PacketBuffer buf) {
         PingPacket soundPacket = new PingPacket();
-        soundPacket.id = buf.readUniqueId();
+        soundPacket.id = buf.readUUID();
         soundPacket.timestamp = buf.readLong();
         return soundPacket;
     }
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUniqueId(id);
+        buf.writeUUID(id);
         buf.writeLong(timestamp);
     }
 }

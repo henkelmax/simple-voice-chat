@@ -22,15 +22,15 @@ public class PlayerStateManager {
     }
 
     public void onPlayerStatePacket(ServerPlayerEntity player, SetPlayerStateMessage message) {
-        states.put(player.getUniqueID(), message.getPlayerState());
+        states.put(player.getUUID(), message.getPlayerState());
 
-        broadcastState(player.server, player.getUniqueID(), message.getPlayerState());
+        broadcastState(player.server, player.getUUID(), message.getPlayerState());
     }
 
     private void broadcastState(MinecraftServer server, UUID uuid, PlayerState state) {
         PlayerStateMessage msg = new PlayerStateMessage(uuid, state);
         server.getPlayerList().getPlayers().forEach(p -> {
-            if (!p.getUniqueID().equals(uuid)) {
+            if (!p.getUUID().equals(uuid)) {
                 NetUtils.sendTo(Main.SIMPLE_CHANNEL, p, msg);
             }
         });
@@ -50,8 +50,8 @@ public class PlayerStateManager {
     }
 
     private void removePlayer(ServerPlayerEntity player) {
-        states.remove(player.getUniqueID());
-        broadcastState(player.server, player.getUniqueID(), new PlayerState(true, true));
+        states.remove(player.getUUID());
+        broadcastState(player.server, player.getUUID(), new PlayerState(true, true));
     }
 
 }

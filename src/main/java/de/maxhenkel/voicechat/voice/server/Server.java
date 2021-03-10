@@ -155,26 +155,26 @@ public class Server extends Thread {
 
                     if (message.getPacket() instanceof MicPacket) {
                         MicPacket packet = (MicPacket) message.getPacket();
-                        ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(playerUUID);
+                        ServerPlayerEntity player = server.getPlayerList().getPlayer(playerUUID);
                         if (player == null) {
                             continue;
                         }
                         double distance = Main.SERVER_CONFIG.voiceChatDistance.get();
-                        List<ClientConnection> closeConnections = player.world
-                                .getEntitiesWithinAABB(
+                        List<ClientConnection> closeConnections = player.level
+                                .getEntitiesOfClass(
                                         PlayerEntity.class,
                                         new AxisAlignedBB(
-                                                player.getPosX() - distance,
-                                                player.getPosY() - distance,
-                                                player.getPosZ() - distance,
-                                                player.getPosX() + distance,
-                                                player.getPosY() + distance,
-                                                player.getPosZ() + distance
+                                                player.getX() - distance,
+                                                player.getY() - distance,
+                                                player.getZ() - distance,
+                                                player.getX() + distance,
+                                                player.getY() + distance,
+                                                player.getZ() + distance
                                         )
-                                        , playerEntity -> !playerEntity.getUniqueID().equals(player.getUniqueID())
+                                        , playerEntity -> !playerEntity.getUUID().equals(player.getUUID())
                                 )
                                 .stream()
-                                .map(playerEntity -> connections.get(playerEntity.getUniqueID()))
+                                .map(playerEntity -> connections.get(playerEntity.getUUID()))
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.toList());
                         NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(playerUUID, packet.getData()));
@@ -214,7 +214,7 @@ public class Server extends Thread {
         for (UUID uuid : connectionsToDrop) {
             disconnectClient(uuid);
             Main.LOGGER.info("Player {} timed out", uuid);
-            ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(uuid);
+            ServerPlayerEntity player = server.getPlayerList().getPlayer(uuid);
             if (player != null) {
                 Main.LOGGER.info("Reconnecting player {}", player.getDisplayName().getString());
                 Main.SERVER_VOICE_EVENTS.initializePlayerConnection(player);

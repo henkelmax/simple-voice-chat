@@ -10,18 +10,18 @@ public class VoiceActivationSlider extends AbstractSlider {
 
     protected VoiceActivationSlider(int xIn, int yIn, int widthIn, int heightIn) {
         super(xIn, yIn, widthIn, heightIn, StringTextComponent.EMPTY, Utils.dbToPerc(Main.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
-        func_230979_b_();
+        updateMessage();
     }
 
     @Override
-    protected void func_230979_b_() {
-        long db = Math.round(Utils.percToDb(sliderValue));
+    protected void updateMessage() {
+        long db = Math.round(Utils.percToDb(value));
         setMessage(new TranslationTextComponent("message.voicechat.voice_activation", db));
     }
 
     @Override
-    protected void func_230972_a_() {
-        Main.CLIENT_CONFIG.voiceActivationThreshold.set(Utils.percToDb(sliderValue));
+    protected void applyValue() {
+        Main.CLIENT_CONFIG.voiceActivationThreshold.set(Utils.percToDb(value));
         Main.CLIENT_CONFIG.voiceActivationThreshold.save();
     }
 

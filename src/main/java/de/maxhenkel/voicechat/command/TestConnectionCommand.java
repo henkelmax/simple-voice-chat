@@ -18,37 +18,37 @@ import java.io.IOException;
 public class TestConnectionCommand {
 
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        LiteralArgumentBuilder<CommandSource> literalBuilder = Commands.literal("voicechat").requires((commandSource) -> commandSource.hasPermissionLevel(2));
+        LiteralArgumentBuilder<CommandSource> literalBuilder = Commands.literal("voicechat").requires((commandSource) -> commandSource.hasPermission(2));
 
         literalBuilder.then(Commands.literal("test").then(Commands.argument("target", EntityArgument.player()).executes((commandSource) -> {
             ServerPlayerEntity player = EntityArgument.getPlayer(commandSource, "target");
             Server server = Main.SERVER_VOICE_EVENTS.getServer();
             if (server == null) {
-                commandSource.getSource().sendFeedback(new TranslationTextComponent("message.voicechat.voice_chat_unavailable"), true);
+                commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.voice_chat_unavailable"), true);
                 return 1;
             }
-            ClientConnection clientConnection = server.getConnections().get(player.getUniqueID());
+            ClientConnection clientConnection = server.getConnections().get(player.getUUID());
             if (clientConnection == null) {
-                commandSource.getSource().sendFeedback(new TranslationTextComponent("message.voicechat.client_not_connected"), true);
+                commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.client_not_connected"), true);
                 return 1;
             }
             try {
-                commandSource.getSource().sendFeedback(new TranslationTextComponent("message.voicechat.sending_packet"), true);
+                commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.sending_packet"), true);
                 long timestamp = System.currentTimeMillis();
                 server.getPingManager().sendPing(clientConnection, 5000, new PingManager.PingListener() {
                     @Override
                     public void onPong(PingPacket packet) {
-                        commandSource.getSource().sendFeedback(new TranslationTextComponent("message.voicechat.packet_received", (System.currentTimeMillis() - timestamp)), true);
+                        commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.packet_received", (System.currentTimeMillis() - timestamp)), true);
                     }
 
                     @Override
                     public void onTimeout() {
-                        commandSource.getSource().sendFeedback(new TranslationTextComponent("message.voicechat.packet_timed_out"), true);
+                        commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.packet_timed_out"), true);
                     }
                 });
-                commandSource.getSource().sendFeedback(new TranslationTextComponent("message.voicechat.packet_sent_waiting"), true);
+                commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.packet_sent_waiting"), true);
             } catch (IOException e) {
-                commandSource.getSource().sendFeedback(new TranslationTextComponent("message.voicechat.failed_to_send_packet", e.getMessage()), true);
+                commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.failed_to_send_packet", e.getMessage()), true);
                 e.printStackTrace();
                 return 1;
             }

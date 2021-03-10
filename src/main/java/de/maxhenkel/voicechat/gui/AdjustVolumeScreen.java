@@ -27,7 +27,7 @@ public class AdjustVolumeScreen extends ListScreen<PlayerInfo> {
     @Override
     protected void renderText(MatrixStack stack, @Nullable PlayerInfo element, int mouseX, int mouseY, float partialTicks) {
         ITextComponent title = getCurrentElement() == null ? new TranslationTextComponent("message.voicechat.no_player") : new TranslationTextComponent("message.voicechat.adjust_volume_player", getCurrentElement().getName());
-        int titleWidth = font.getStringPropertyWidth(title);
-        font.func_238422_b_(stack, title.func_241878_f(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
+        int titleWidth = font.width(title);
+        font.draw(stack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
     }
 }

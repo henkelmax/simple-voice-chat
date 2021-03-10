@@ -49,7 +49,7 @@ public abstract class ListScreen<T> extends Screen {
         });
 
         back = new Button(guiLeft + xSize / 2 - 30, guiTop + 60, 60, 20, new TranslationTextComponent("message.voicechat.back"), button -> {
-            minecraft.displayGuiScreen(new VoiceChatScreen());
+            minecraft.setScreen(new VoiceChatScreen());
         });
 
         next = new Button(guiLeft + xSize - 70, guiTop + 60, 60, 20, new TranslationTextComponent("message.voicechat.next"), button -> {
@@ -83,8 +83,8 @@ public abstract class ListScreen<T> extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == minecraft.gameSettings.keyBindInventory.getKey().getKeyCode() || keyCode == Main.KEY_VOICE_CHAT_SETTINGS.getKey().getKeyCode()) {
-            minecraft.displayGuiScreen(null);
+        if (keyCode == minecraft.options.keyInventory.getKey().getValue() || keyCode == Main.KEY_VOICE_CHAT_SETTINGS.getKey().getValue()) {
+            minecraft.setScreen(null);
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -93,7 +93,7 @@ public abstract class ListScreen<T> extends Screen {
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.color4f(1F, 1F, 1F, 1F);
-        minecraft.getTextureManager().bindTexture(TEXTURE);
+        minecraft.getTextureManager().bind(TEXTURE);
         blit(stack, guiLeft, guiTop, 0, 0, xSize, ySize);
 
         super.render(stack, mouseX, mouseY, partialTicks);

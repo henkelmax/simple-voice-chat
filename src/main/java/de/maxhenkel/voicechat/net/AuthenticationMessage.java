@@ -34,14 +34,14 @@ public class AuthenticationMessage implements Message<AuthenticationMessage> {
 
     @Override
     public AuthenticationMessage fromBytes(PacketBuffer buf) {
-        playerUUID = buf.readUniqueId();
-        secret = buf.readUniqueId();
+        playerUUID = buf.readUUID();
+        secret = buf.readUUID();
         return this;
     }
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUniqueId(playerUUID);
-        buf.writeUniqueId(secret);
+        buf.writeUUID(playerUUID);
+        buf.writeUUID(secret);
     }
 }

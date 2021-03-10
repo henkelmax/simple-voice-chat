@@ -18,17 +18,17 @@ public class AdjustVolumeSlider extends AbstractSlider {
         if (player == null) {
             visible = false;
         }
-        func_230979_b_();
+        updateMessage();
     }
 
     @Override
-    protected void func_230979_b_() {
-        long amp = Math.round(sliderValue * MAXIMUM * 100F - 100F);
+    protected void updateMessage() {
+        long amp = Math.round(value * MAXIMUM * 100F - 100F);
         setMessage(new TranslationTextComponent("message.voicechat.volume_amplification", (amp > 0F ? "+" : "") + amp + "%"));
     }
 
     @Override
-    protected void func_230972_a_() {
-        Main.VOLUME_CONFIG.setVolume(player.getUuid(), sliderValue * MAXIMUM);
+    protected void applyValue() {
+        Main.VOLUME_CONFIG.setVolume(player.getUuid(), value * MAXIMUM);
     }
 }

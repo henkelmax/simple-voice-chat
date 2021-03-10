@@ -92,17 +92,17 @@ public class AudioChannel extends Thread {
                     byte[] data = new byte[Math.min(AudioChannelConfig.getDataLength() * 2 * Main.CLIENT_CONFIG.outputBufferSize.get(), speaker.getBufferSize() - AudioChannelConfig.getDataLength())];
                     speaker.write(data, 0, data.length);
                 }
-                if (minecraft.world == null || minecraft.player == null) {
+                if (minecraft.level == null || minecraft.player == null) {
                     continue;
                 }
 
-                PlayerEntity player = minecraft.world.getPlayerByUuid(uuid);
+                PlayerEntity player = minecraft.level.getPlayerByUUID(uuid);
                 if (player == null) {
                     continue;
                 }
 
-                client.getTalkCache().updateTalking(player.getUniqueID());
-                float distance = player.getDistance(minecraft.player);
+                client.getTalkCache().updateTalking(player.getUUID());
+                float distance = player.distanceTo(minecraft.player);
                 float percentage = 1F;
                 float fadeDistance = Main.SERVER_CONFIG.voiceChatFadeDistance.get().floatValue();
                 float maxDistance = Main.SERVER_CONFIG.voiceChatDistance.get().floatValue();
@@ -115,7 +115,7 @@ public class AudioChannel extends Thread {
 
                 byte[] stereo;
                 if (Main.CLIENT_CONFIG.stereo.get()) {
-                    Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, player.getPositionVec());
+                    Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, player.position());
                     stereo = Utils.convertToStereo(packet.getData(), stereoVolume.getLeft(), stereoVolume.getRight());
                 } else {
                     stereo = Utils.convertToStereo(packet.getData(), 1F, 1F);

@@ -26,8 +26,8 @@ public class RequestPlayerListMessage implements Message<RequestPlayerListMessag
                 .getPlayerList()
                 .getPlayers()
                 .stream()
-                .filter(playerEntity -> !playerEntity.getUniqueID().equals(context.getSender().getUniqueID()))
-                .map(playerEntity -> new PlayerInfo(playerEntity.getUniqueID(), playerEntity.getDisplayName()))
+                .filter(playerEntity -> !playerEntity.getUUID().equals(context.getSender().getUUID()))
+                .map(playerEntity -> new PlayerInfo(playerEntity.getUUID(), playerEntity.getDisplayName()))
                 .collect(Collectors.toList())), context);
     }
 

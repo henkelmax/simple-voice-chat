@@ -114,11 +114,11 @@ public class Utils {
 
     public static Pair<Float, Float> getStereoVolume(Minecraft minecraft, Vector3d soundPos) {
         PlayerEntity player = minecraft.player;
-        Vector3d playerPos = player.getPositionVec();
+        Vector3d playerPos = player.position();
         Vector3d d = soundPos.subtract(playerPos).normalize();
         Vector2f diff = new Vector2f((float) d.x, (float) d.z);
         float diffAngle = angle(diff, new Vector2f(-1F, 0F));
-        float angle = normalizeAngle(diffAngle - (player.rotationYaw % 360F));
+        float angle = normalizeAngle(diffAngle - (player.yRot % 360F));
         float dif = (float) (Math.abs(playerPos.y - soundPos.y) / Main.SERVER_CONFIG.voiceChatDistance.get().floatValue());
 
         float rot = angle / 180F;
@@ -137,7 +137,7 @@ public class Utils {
         left += fill;
         right += fill;
 
-        if (minecraft.gameSettings.getPointOfView().equals(PointOfView.THIRD_PERSON_FRONT)) {
+        if (minecraft.options.getCameraType().equals(PointOfView.THIRD_PERSON_FRONT)) {
             return new ImmutablePair<>(right, left);
         }
 

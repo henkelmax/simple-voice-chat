@@ -53,7 +53,7 @@ public class PlayerVolumeConfig {
     }
 
     public double getVolume(PlayerEntity playerEntity) {
-        return getVolume(playerEntity.getUniqueID(), 1D);
+        return getVolume(playerEntity.getUUID(), 1D);
     }
 
     public double setVolume(UUID uuid, double value) {

@@ -49,7 +49,7 @@ public class PlayerStateMessage implements Message<PlayerStateMessage> {
 
     @Override
     public PlayerStateMessage fromBytes(PacketBuffer buf) {
-        uuid = buf.readUniqueId();
+        uuid = buf.readUUID();
         playerState = new PlayerState(buf.readBoolean(), buf.readBoolean());
 
         return this;
@@ -57,7 +57,7 @@ public class PlayerStateMessage implements Message<PlayerStateMessage> {
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUniqueId(uuid);
+        buf.writeUUID(uuid);
         buf.writeBoolean(playerState.isDisabled());
         buf.writeBoolean(playerState.isDisconnected());
     }

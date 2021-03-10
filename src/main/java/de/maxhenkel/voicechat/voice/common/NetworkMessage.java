@@ -94,7 +94,7 @@ public class NetworkMessage {
         NetworkMessage message = new NetworkMessage();
         message.sequenceNumber = sequenceNumber;
         if (buffer.readBoolean()) {
-            message.secret = buffer.readUniqueId();
+            message.secret = buffer.readUUID();
         }
         message.address = packet.getSocketAddress();
         message.packet = p.fromBytes(buffer);
@@ -128,7 +128,7 @@ public class NetworkMessage {
         buffer.writeByte(type);
         buffer.writeBoolean(secret != null);
         if (secret != null) {
-            buffer.writeUniqueId(secret);
+            buffer.writeUUID(secret);
         }
         packet.toBytes(buffer);
 

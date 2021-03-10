@@ -1,1 +1,1 @@
-- Added italian translation
+- Updated to official mappings

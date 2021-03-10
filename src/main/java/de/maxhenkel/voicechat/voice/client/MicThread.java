@@ -110,7 +110,7 @@ public class MicThread extends Thread {
     private void ptt() {
         activating = false;
         int dataLength = AudioChannelConfig.getReadSize(mic);
-        if (!InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), Main.KEY_PTT.getKey().getKeyCode())) {
+        if (!InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), Main.KEY_PTT.getKey().getValue())) {
             if (wasPTT) {
                 mic.stop();
                 mic.flush();

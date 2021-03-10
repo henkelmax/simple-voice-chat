@@ -29,14 +29,14 @@ public class SoundPacket implements Packet<SoundPacket> {
     @Override
     public SoundPacket fromBytes(PacketBuffer buf) {
         SoundPacket soundPacket = new SoundPacket();
-        soundPacket.sender = buf.readUniqueId();
+        soundPacket.sender = buf.readUUID();
         soundPacket.data = buf.readByteArray();
         return soundPacket;
     }
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUniqueId(sender);
+        buf.writeUUID(sender);
         buf.writeByteArray(data);
     }
 }

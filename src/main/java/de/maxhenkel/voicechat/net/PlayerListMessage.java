@@ -36,7 +36,7 @@ public class PlayerListMessage implements Message<PlayerListMessage> {
 
     @OnlyIn(Dist.CLIENT)
     private void openGUI() {
-        Minecraft.getInstance().displayGuiScreen(new AdjustVolumeScreen(players));
+        Minecraft.getInstance().setScreen(new AdjustVolumeScreen(players));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class PlayerListMessage implements Message<PlayerListMessage> {
         int count = buf.readInt();
         players = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            players.add(new PlayerInfo(buf.readUniqueId(), buf.readTextComponent()));
+            players.add(new PlayerInfo(buf.readUUID(), buf.readComponent()));
         }
 
         return this;
@@ -54,8 +54,8 @@ public class PlayerListMessage implements Message<PlayerListMessage> {
     public void toBytes(PacketBuffer buf) {
         buf.writeInt(players.size());
         for (PlayerInfo info : players) {
-            buf.writeUniqueId(info.getUuid());
-            buf.writeTextComponent(info.getName());
+            buf.writeUUID(info.getUuid());
+            buf.writeComponent(info.getName());
         }
     }
 }

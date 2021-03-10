@@ -48,17 +48,17 @@ public class VoiceChatScreen extends Screen implements MicTestButton.MicListener
             Main.SIMPLE_CHANNEL.sendToServer(new RequestPlayerListMessage());
         }));
         addButton(new Button(guiLeft + 10, guiTop + 195, xSize / 2 - 15, 20, new TranslationTextComponent("message.voicechat.select_microphone"), button -> {
-            minecraft.displayGuiScreen(new SelectMicrophoneScreen());
+            minecraft.setScreen(new SelectMicrophoneScreen());
         }));
         addButton(new Button(guiLeft + xSize / 2 + 6, guiTop + 195, xSize / 2 - 15, 20, new TranslationTextComponent("message.voicechat.select_speaker"), button -> {
-            minecraft.displayGuiScreen(new SelectSpeakerScreen());
+            minecraft.setScreen(new SelectSpeakerScreen());
         }));
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == minecraft.gameSettings.keyBindInventory.getKey().getKeyCode() || keyCode == Main.KEY_VOICE_CHAT_SETTINGS.getKey().getKeyCode()) {
-            minecraft.displayGuiScreen(null);
+        if (keyCode == minecraft.options.keyInventory.getKey().getValue() || keyCode == Main.KEY_VOICE_CHAT_SETTINGS.getKey().getValue()) {
+            minecraft.setScreen(null);
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -67,7 +67,7 @@ public class VoiceChatScreen extends Screen implements MicTestButton.MicListener
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.color4f(1F, 1F, 1F, 1F);
-        minecraft.getTextureManager().bindTexture(TEXTURE);
+        minecraft.getTextureManager().bind(TEXTURE);
         blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
 
         blit(matrixStack, guiLeft + 10, guiTop + 120, 0, 244, xSize - 20, 20, 512, 512);
@@ -81,8 +81,8 @@ public class VoiceChatScreen extends Screen implements MicTestButton.MicListener
 
         // Title
         ITextComponent title = new TranslationTextComponent("gui.voicechat.voice_chat_settings.title");
-        int titleWidth = font.getStringWidth(title.getString());
-        font.func_238422_b_(matrixStack, title.func_241878_f(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
+        int titleWidth = font.width(title.getString());
+        font.draw(matrixStack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
     }
 
     @Override
