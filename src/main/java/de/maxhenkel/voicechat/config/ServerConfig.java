@@ -12,7 +12,7 @@ public class ServerConfig {
 
     public ServerConfig(ConfigBuilder builder) {
         voiceChatPort = builder.integerEntry("port", 24454, 0, 65535);
-        voiceChatBindAddress = builder.stringEntry("bind_address", "");
+        voiceChatBindAddress = builder.stringEntry("bind_address", "0.0.0.0");
         voiceChatDistance = builder.doubleEntry("voice_distance", 32D, 1D, 1_000_000D);
         voiceChatFadeDistance = builder.doubleEntry("voice_fade_distance", 16D, 1D, 1_000_000D);
         voiceChatSampleRate = builder.integerEntry("sample_rate", 16000, 10000, 44100);

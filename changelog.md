@@ -1,1 +1,1 @@
-- Added italian translation
+- Changed default bind address
