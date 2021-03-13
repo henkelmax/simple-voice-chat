@@ -24,8 +24,8 @@ public class ServerConfig extends ConfigBase {
                 .comment("The port of the voice chat server")
                 .defineInRange("voice_chat.port", 24454, 0, 65535);
         voiceChatBindAddress = builder
-                .comment("The IP address to bind the voice chat server on", "Leave empty to bind to an IP address chosen by the kernel")
-                .define("voice_chat.bind_address", "");
+                .comment("The IP address to bind the voice chat server on", "Use '0.0.0.0' to bind to an IP address chosen by the kernel")
+                .define("voice_chat.bind_address", "0.0.0.0");
         voiceChatDistance = builder
                 .comment("The distance to where the voice can be heard")
                 .defineInRange("voice_chat.distance", 32D, 1D, 1_000_000D);
