@@ -1,1 +1,1 @@
-- Changed default bind address
+- Added dutch translation
