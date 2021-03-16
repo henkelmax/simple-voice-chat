@@ -1,12 +1,9 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.events.IKeyBinding;
 import de.maxhenkel.voicechat.voice.common.MicPacket;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.Utils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.InputUtil;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
@@ -114,7 +111,7 @@ public class MicThread extends Thread {
         activating = false;
         int dataLength = client.getAudioChannelConfig().getReadSize(mic);
 
-        if (!InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), ((IKeyBinding) VoicechatClient.KEY_PTT).getBoundKey().getCode())) {
+        if (!VoicechatClient.CLIENT.getPttKeyHandler().isPTTDown()) {
             if (wasPTT) {
                 mic.stop();
                 mic.flush();
