@@ -18,6 +18,7 @@ You can access the voice chat settings by pressing the `V` key.
 ## Features
 
 - Proximity voice chat
+- [Opus Codec](https://opus-codec.org/)
 - Push to talk
 - Voice activation
 - Configurable PTT key
