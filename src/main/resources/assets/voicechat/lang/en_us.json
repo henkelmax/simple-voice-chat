@@ -38,5 +38,6 @@
   "message.voicechat.packet_received": "Received packet in %sms",
   "message.voicechat.packet_timed_out": "Request timed out",
   "message.voicechat.icons_hidden": "Voice chat icons hidden",
-  "message.voicechat.icons_visible": "Voice chat icons visible"
+  "message.voicechat.icons_visible": "Voice chat icons visible",
+  "message.voicechat.incompatible_version": "Your voice chat version is not compatible with the servers version"
 }

@@ -3,28 +3,21 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.TargetDataLine;
 
 public class AudioChannelConfig {
 
     private AudioFormat monoFormat;
     private AudioFormat stereoFormat;
-    private int dataLength;
-    private int readSize;
+    private int sampleRate;
+    private int frameSize;
 
     public AudioChannelConfig(Client client) {
-        int sampleRate = client.getSampleRate();
+        sampleRate = 48000;
+        frameSize = (sampleRate / 1000) * 2 * 20;
         monoFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, 16, 1, 2, sampleRate, false);
         stereoFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, 16, 2, 4, sampleRate, false);
 
-        dataLength = fixAudioFormatSize(client.getMtuSize());
-        readSize = fixAudioFormatSize(sampleRate / 16);
-
-        Voicechat.LOGGER.info("Setting sample rate to " + sampleRate + " Hz, mic read size to " + readSize + " and data length to " + dataLength + " bytes");
-    }
-
-    public static int fixAudioFormatSize(int size) {
-        return size + size % 2;
+        Voicechat.LOGGER.info("Setting sample rate to {} Hz, codec to {} and frame size to {} bytes", sampleRate, client.getCodec().name(), frameSize);
     }
 
     public AudioFormat getMonoFormat() {
@@ -35,11 +28,11 @@ public class AudioChannelConfig {
         return stereoFormat;
     }
 
-    public int getDataLength() {
-        return dataLength;
+    public int getSampleRate() {
+        return sampleRate;
     }
 
-    public int getReadSize(TargetDataLine line) {
-        return Math.min(readSize, fixAudioFormatSize(line.getBufferSize() / 2));
+    public int getFrameSize() {
+        return frameSize;
     }
 }

@@ -1,1 +1,5 @@
-- Fixed PTT not working
+- Added opus codec
+- Improved voice activation
+- Fixed voice crackling
+- Added configurable voice deactivation delay
+- Added codec config option

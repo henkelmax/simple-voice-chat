@@ -148,10 +148,6 @@ public class Server extends Thread {
                     }
 
                     ClientConnection conn = connections.get(playerUUID);
-                    if (conn == null || message.getSequenceNumber() <= conn.getLastClientSequenceNumber()) {
-                        continue;
-                    }
-                    conn.setLastClientSequenceNumber(message.getSequenceNumber());
 
                     if (message.getPacket() instanceof MicPacket) {
                         MicPacket packet = (MicPacket) message.getPacket();
@@ -177,7 +173,7 @@ public class Server extends Thread {
                                 .map(playerEntity -> connections.get(playerEntity.getUuid()))
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.toList());
-                        NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(playerUUID, packet.getData()));
+                        NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(playerUUID, packet.getData(), packet.getSequenceNumber()));
                         for (ClientConnection clientConnection : closeConnections) {
                             if (!clientConnection.getPlayerUUID().equals(playerUUID)) {
                                 clientConnection.send(socket, soundMessage);

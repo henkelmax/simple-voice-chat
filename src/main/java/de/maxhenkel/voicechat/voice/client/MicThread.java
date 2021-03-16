@@ -3,13 +3,12 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.common.MicPacket;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
+import de.maxhenkel.voicechat.voice.common.OpusEncoder;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
-import java.io.IOException;
-import java.util.Arrays;
 
 public class MicThread extends Thread {
 
@@ -17,10 +16,12 @@ public class MicThread extends Thread {
     private TargetDataLine mic;
     private boolean running;
     private boolean microphoneLocked;
+    private OpusEncoder encoder;
 
     public MicThread(Client client) throws LineUnavailableException {
         this.client = client;
         this.running = true;
+        this.encoder = new OpusEncoder(client.getAudioChannelConfig().getSampleRate(), client.getAudioChannelConfig().getFrameSize(), client.getMtuSize(), client.getCodec().getOpusValue());
         setDaemon(true);
         setName("MicrophoneThread");
         AudioFormat af = client.getAudioChannelConfig().getMonoFormat();
@@ -65,7 +66,7 @@ public class MicThread extends Thread {
             return;
         }
 
-        int dataLength = client.getAudioChannelConfig().getReadSize(mic);
+        int dataLength = client.getAudioChannelConfig().getFrameSize();
 
         mic.start();
 
@@ -74,15 +75,13 @@ public class MicThread extends Thread {
             return;
         }
         byte[] buff = new byte[dataLength];
-        while (mic.available() >= dataLength) {
-            mic.read(buff, 0, buff.length);
-        }
+        mic.read(buff, 0, buff.length);
         Utils.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
 
         int offset = Utils.getActivationOffset(buff, VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get());
         if (activating) {
             if (offset < 0) {
-                if (deactivationDelay >= 2) {
+                if (deactivationDelay >= VoicechatClient.CLIENT_CONFIG.deactivationDelay.get()) {
                     activating = false;
                     deactivationDelay = 0;
                 } else {
@@ -95,8 +94,7 @@ public class MicThread extends Thread {
         } else {
             if (offset > 0) {
                 if (lastBuff != null) {
-                    int lastPacketOffset = buff.length - offset;
-                    sendAudioPacket(Arrays.copyOfRange(lastBuff, lastPacketOffset, lastBuff.length));
+                    sendAudioPacket(lastBuff);
                 }
                 sendAudioPacket(buff);
                 activating = true;
@@ -109,7 +107,7 @@ public class MicThread extends Thread {
 
     private void ptt() {
         activating = false;
-        int dataLength = client.getAudioChannelConfig().getReadSize(mic);
+        int dataLength = client.getAudioChannelConfig().getFrameSize();
 
         if (!VoicechatClient.CLIENT.getPttKeyHandler().isPTTDown()) {
             if (wasPTT) {
@@ -130,27 +128,19 @@ public class MicThread extends Thread {
             return;
         }
         byte[] buff = new byte[dataLength];
-        while (mic.available() >= dataLength) {
-            mic.read(buff, 0, buff.length);
-        }
+        mic.read(buff, 0, buff.length);
         Utils.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
         sendAudioPacket(buff);
     }
 
+    private long sequenceNumber = 0L;
+
     private void sendAudioPacket(byte[] data) {
-        int dataLength = client.getAudioChannelConfig().getDataLength();
-        int packetAmount = (int) Math.ceil((double) data.length / (double) dataLength);
-        int bytesPerPacket = packetAmount == 0 ? 0 : data.length / packetAmount;
-        if (bytesPerPacket % 2 == 1) {
-            bytesPerPacket--;
-        }
-        int rest = data.length - bytesPerPacket * packetAmount;
-        for (int i = 0; i < packetAmount; i++) {
-            try {
-                client.sendToServer(new NetworkMessage(new MicPacket(Arrays.copyOfRange(data, i * bytesPerPacket, (i + 1) * bytesPerPacket + ((i >= packetAmount - 1) ? rest : 0))), client.getSecret()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            byte[] encoded = encoder.encode(data);
+            client.sendToServer(new NetworkMessage(new MicPacket(encoded, sequenceNumber++), client.getSecret()));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -175,5 +165,7 @@ public class MicThread extends Thread {
         mic.stop();
         mic.flush();
         mic.close();
+        encoder.close();
     }
+
 }

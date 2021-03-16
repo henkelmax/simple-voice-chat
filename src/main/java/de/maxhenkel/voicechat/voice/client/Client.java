@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.events.ClientVoiceChatEvents;
 import de.maxhenkel.voicechat.voice.common.*;
 
@@ -20,7 +21,7 @@ public class Client extends Thread {
     private int port;
     private UUID playerUUID;
     private UUID secret;
-    private int sampleRate;
+    private ServerConfig.Codec codec;
     private int mtuSize;
     private double voiceChatDistance;
     private double voiceChatFadeDistance;
@@ -32,24 +33,20 @@ public class Client extends Thread {
     private Map<UUID, AudioChannel> audioChannels;
     private AuthThread authThread;
     private AudioChannelConfig audioChannelConfig;
-    private long sequenceNumber;
-    private long lastServerSequenceNumber;
     private long lastKeepAlive;
 
-    public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret, int sampleRate, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive) throws IOException {
+    public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret, ServerConfig.Codec codec, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive) throws IOException {
         this.address = InetAddress.getByName(serverIp);
         this.port = serverPort;
         this.socket = new DatagramSocket();
         this.socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
         this.playerUUID = playerUUID;
         this.secret = secret;
-        this.sampleRate = sampleRate;
+        this.codec = codec;
         this.mtuSize = mtuSize;
         this.voiceChatDistance = voiceChatDistance;
         this.voiceChatFadeDistance = voiceChatFadeDistance;
         this.keepAlive = keepAlive;
-        this.sequenceNumber = 0L;
-        this.lastServerSequenceNumber = -1L;
         this.lastKeepAlive = -1;
         this.running = true;
         this.talkCache = new TalkCache();
@@ -59,12 +56,6 @@ public class Client extends Thread {
         this.audioChannelConfig = new AudioChannelConfig(this);
         setDaemon(true);
         setName("VoiceChatClientThread");
-    }
-
-    public long getAndIncreaseSequenceNumber() {
-        long num = sequenceNumber;
-        sequenceNumber++;
-        return num;
     }
 
     public AudioChannelConfig getAudioChannelConfig() {
@@ -79,8 +70,8 @@ public class Client extends Thread {
         return secret;
     }
 
-    public int getSampleRate() {
-        return sampleRate;
+    public ServerConfig.Codec getCodec() {
+        return codec;
     }
 
     public int getMtuSize() {
@@ -138,10 +129,6 @@ public class Client extends Thread {
         try {
             while (running) {
                 NetworkMessage in = NetworkMessage.readPacket(socket);
-                if (in.getSequenceNumber() <= lastServerSequenceNumber) {
-                    continue;
-                }
-                lastServerSequenceNumber = in.getSequenceNumber();
                 if (in.getPacket() instanceof AuthenticateAckPacket) {
                     if (!authenticated) {
                         Voicechat.LOGGER.info("Server acknowledged authentication");
@@ -207,7 +194,7 @@ public class Client extends Thread {
     }
 
     public void sendToServer(NetworkMessage message) throws IOException {
-        byte[] data = message.write(getAndIncreaseSequenceNumber());
+        byte[] data = message.write();
         socket.send(new DatagramPacket(data, data.length, address, port));
     }
 

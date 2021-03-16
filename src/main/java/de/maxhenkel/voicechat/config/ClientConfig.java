@@ -9,6 +9,7 @@ public class ClientConfig {
     public final ConfigBuilder.ConfigEntry<Double> microphoneAmplification;
     public final ConfigBuilder.ConfigEntry<MicrophoneActivationType> microphoneActivationType;
     public final ConfigBuilder.ConfigEntry<Integer> outputBufferSize;
+    public final ConfigBuilder.ConfigEntry<Integer> deactivationDelay;
     public final ConfigBuilder.ConfigEntry<String> microphone;
     public final ConfigBuilder.ConfigEntry<String> speaker;
     public final ConfigBuilder.ConfigEntry<Boolean> muted;
@@ -22,6 +23,7 @@ public class ClientConfig {
         microphoneAmplification = builder.doubleEntry("microphone_amplification", 1D, 0D, 4D);
         microphoneActivationType = builder.enumEntry("microphone_activation_type", MicrophoneActivationType.PTT);
         outputBufferSize = builder.integerEntry("output_buffer_size", 6, 1, 16);
+        deactivationDelay = builder.integerEntry("voice_deactivation_delay", 25, 0, 100);
         microphone = builder.stringEntry("microphone", "");
         speaker = builder.stringEntry("speaker", "");
         muted = builder.booleanEntry("muted", false);

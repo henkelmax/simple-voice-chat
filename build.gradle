@@ -1,6 +1,7 @@
 plugins {
     id 'fabric-loom' version '0.6-SNAPSHOT'
     id "com.matthewprenger.cursegradle" version "1.4.0"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -16,6 +17,9 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    implementation 'de.maxhenkel.opus4j:opus4j:1.0.0'
+    shadow 'de.maxhenkel.opus4j:opus4j:1.0.0'
 }
 
 repositories {
@@ -23,6 +27,10 @@ repositories {
     jcenter()
     mavenCentral()
     maven { url = "https://maven.fabricmc.net/" }
+    maven {
+        name = "henkelmax.public"
+        url = 'https://maven.maxhenkel.de/repository/public'
+    }
 }
 
 processResources {
@@ -38,6 +46,11 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude "fabric.mod.json"
     }
+
+    from(sourceSets.main.resources.srcDirs) {
+        include "compatibility.properties"
+        expand "mod_compatibility_version": project.mod_compatibility_version
+    }
 }
 
 tasks.withType(JavaCompile) {
@@ -45,7 +58,7 @@ tasks.withType(JavaCompile) {
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = "sources"
+    archiveClassifier.set('sources')
     from sourceSets.main.allSource
 }
 
@@ -68,4 +81,15 @@ curseforge {
     options {
         forgeGradleIntegration = false
     }
+}
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+    classifier 'shadow-dev'
+    relocate 'com.sun.jna', "com.sun.jna"
+}
+
+remapJar {
+    dependsOn shadowJar
+    input.set shadowJar.archiveFile.get()
 }
