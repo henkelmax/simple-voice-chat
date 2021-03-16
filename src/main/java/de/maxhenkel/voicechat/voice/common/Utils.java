@@ -25,7 +25,11 @@ public class Utils {
     }
 
     public static short bytesToShort(byte b1, byte b2) {
-        return (short) (((b2 & 0xff) << 8) | (b1 & 0xff));
+        return (short) (((b2 & 0xFF) << 8) | (b1 & 0xFF));
+    }
+
+    public static byte[] shortToBytes(short s) {
+        return new byte[]{(byte) (s & 0xFF), (byte) ((s >> 8) & 0xFF)};
     }
 
     /**
@@ -38,7 +42,7 @@ public class Utils {
      */
     public static byte[] adjustVolumeMono(byte[] audio, float volume) {
         for (int i = 0; i < audio.length; i += 2) {
-            short audioSample = bytesToShort(audio[i], audio[i + 1]); //(short) (((audio[i + 1] & 0xff) << 8) | (audio[i] & 0xff));
+            short audioSample = bytesToShort(audio[i], audio[i + 1]);
 
             audioSample = (short) (audioSample * volume);
 
@@ -100,7 +104,7 @@ public class Utils {
     public static byte[] convertToStereo(byte[] audio, float volumeLeft, float volumeRight) {
         byte[] stereo = new byte[audio.length * 2];
         for (int i = 0; i < audio.length; i += 2) {
-            short audioSample = bytesToShort(audio[i], audio[i + 1]);//(short) (((audio[i + 1] & 0xff) << 8) | (audio[i] & 0xff));
+            short audioSample = bytesToShort(audio[i], audio[i + 1]);
             short left = (short) (audioSample * volumeLeft);
             short right = (short) (audioSample * volumeRight);
             stereo[i * 2] = (byte) left;

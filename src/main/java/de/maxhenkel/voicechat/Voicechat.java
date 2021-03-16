@@ -10,14 +10,19 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
+import net.minecraft.text.TranslatableText;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class Voicechat implements ModInitializer {
@@ -28,11 +33,42 @@ public class Voicechat implements ModInitializer {
     @Nullable
     public static ServerConfig SERVER_CONFIG;
 
+    public static int COMPATIBILITY_VERSION = -1;
+
     @Override
     public void onInitialize() {
+        try {
+            InputStream in = getClass().getClassLoader().getResourceAsStream("compatibility.properties");
+            Properties props = new Properties();
+            props.load(in);
+            COMPATIBILITY_VERSION = Integer.parseInt(props.getProperty("compatibility_version"));
+            LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
+        } catch (Exception e) {
+            LOGGER.error("Failed to read compatibility version");
+        }
+
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             if (server instanceof MinecraftDedicatedServer) {
                 ConfigBuilder.create(server.getRunDirectory().toPath().resolve("config").resolve(MODID).resolve("voicechat-server.properties"), builder -> SERVER_CONFIG = new ServerConfig(builder));
+            }
+        });
+
+        ServerLoginConnectionEvents.QUERY_START.register((handler, server, sender, synchronizer) -> {
+            PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
+            buffer.writeInt(COMPATIBILITY_VERSION);
+            sender.sendPacket(Packets.INIT, buffer);
+        });
+        ServerLoginNetworking.registerGlobalReceiver(Packets.INIT, (server, handler, understood, buf, synchronizer, responseSender) -> {
+            if (!understood) {
+                //Let vanilla clients pass, but not incompatible voice chat clients
+                return;
+            }
+
+            int clientCompatibilityVersion = buf.readInt();
+
+            if (clientCompatibilityVersion != Voicechat.COMPATIBILITY_VERSION) {
+                Voicechat.LOGGER.warn("Client {} has incompatible voice chat version (server={}, client={})", handler.connection.getAddress(), Voicechat.COMPATIBILITY_VERSION, clientCompatibilityVersion);
+                handler.disconnect(new TranslatableText("message.voicechat.incompatible_version"));
             }
         });
 

@@ -1,12 +1,14 @@
 package de.maxhenkel.voicechat.config;
 
+import de.maxhenkel.opus4j.Opus;
+
 public class ServerConfig {
 
     public final ConfigBuilder.ConfigEntry<Integer> voiceChatPort;
     public final ConfigBuilder.ConfigEntry<String> voiceChatBindAddress;
     public final ConfigBuilder.ConfigEntry<Double> voiceChatDistance;
     public final ConfigBuilder.ConfigEntry<Double> voiceChatFadeDistance;
-    public final ConfigBuilder.ConfigEntry<Integer> voiceChatSampleRate;
+    public final ConfigBuilder.ConfigEntry<Enum<Codec>> voiceChatCodec;
     public final ConfigBuilder.ConfigEntry<Integer> voiceChatMtuSize;
     public final ConfigBuilder.ConfigEntry<Integer> keepAlive;
 
@@ -15,9 +17,23 @@ public class ServerConfig {
         voiceChatBindAddress = builder.stringEntry("bind_address", "0.0.0.0");
         voiceChatDistance = builder.doubleEntry("voice_distance", 32D, 1D, 1_000_000D);
         voiceChatFadeDistance = builder.doubleEntry("voice_fade_distance", 16D, 1D, 1_000_000D);
-        voiceChatSampleRate = builder.integerEntry("sample_rate", 16000, 10000, 44100);
-        voiceChatMtuSize = builder.integerEntry("mtu_size", 900, 256, 10000);
+        voiceChatCodec = builder.enumEntry("codec", Codec.VOIP);
+        voiceChatMtuSize = builder.integerEntry("mtu_size", 1024, 256, 10000);
         keepAlive = builder.integerEntry("keep_alive", 1000, 1000, Integer.MAX_VALUE);
+    }
+
+    public enum Codec {
+        VOIP(Opus.OPUS_APPLICATION_VOIP), AUDIO(Opus.OPUS_APPLICATION_AUDIO), RESTRICTED_LOWDELAY(Opus.OPUS_APPLICATION_RESTRICTED_LOWDELAY);
+
+        private final int value;
+
+        Codec(int value) {
+            this.value = value;
+        }
+
+        public int getOpusValue() {
+            return value;
+        }
     }
 
 }

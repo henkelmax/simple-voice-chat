@@ -12,16 +12,12 @@ public class ClientConnection {
 
     private UUID playerUUID;
     private SocketAddress address;
-    private long sequenceNumber;
-    private long lastClientSequenceNumber;
     private long lastKeepAlive;
     private long lastKeepAliveResponse;
 
     public ClientConnection(UUID playerUUID, SocketAddress address) {
         this.playerUUID = playerUUID;
         this.address = address;
-        this.sequenceNumber = 0L;
-        this.lastClientSequenceNumber = -1L;
         this.lastKeepAlive = 0L;
         this.lastKeepAliveResponse = System.currentTimeMillis();
     }
@@ -32,20 +28,6 @@ public class ClientConnection {
 
     public SocketAddress getAddress() {
         return address;
-    }
-
-    public long getAndIncreaseSequenceNumber() {
-        long num = sequenceNumber;
-        sequenceNumber++;
-        return num;
-    }
-
-    public long getLastClientSequenceNumber() {
-        return lastClientSequenceNumber;
-    }
-
-    public void setLastClientSequenceNumber(long lastClientSequenceNumber) {
-        this.lastClientSequenceNumber = lastClientSequenceNumber;
     }
 
     public long getLastKeepAlive() {
@@ -65,7 +47,7 @@ public class ClientConnection {
     }
 
     public void send(DatagramSocket socket, NetworkMessage message) throws IOException {
-        byte[] data = message.write(getAndIncreaseSequenceNumber());
+        byte[] data = message.write();
         socket.send(new DatagramPacket(data, data.length, address));
     }
 
