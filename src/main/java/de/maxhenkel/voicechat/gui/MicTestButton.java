@@ -137,15 +137,13 @@ public class MicTestButton extends AbstractButton {
                     return;
                 }
                 mic.start();
-                int dataLength = AudioChannelConfig.fixAudioFormatSize(mic.getBufferSize() / 8);
+                int dataLength = AudioChannelConfig.getFrameSize();
                 if (mic.available() < dataLength) {
                     Utils.sleep(1);
                     continue;
                 }
                 byte[] buff = new byte[dataLength];
-                while (mic.available() >= dataLength) {
-                    mic.read(buff, 0, buff.length);
-                }
+                mic.read(buff, 0, buff.length);
                 Utils.adjustVolumeMono(buff, Main.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
 
                 micListener.onMicValue(Utils.dbToPerc(Utils.getHighestAudioLevel(buff)));

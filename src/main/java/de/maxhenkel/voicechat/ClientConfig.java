@@ -11,6 +11,7 @@ public class ClientConfig extends ConfigBase {
     public final ForgeConfigSpec.DoubleValue microphoneAmplification;
     public final ForgeConfigSpec.EnumValue<MicrophoneActivationType> microphoneActivationType;
     public final ForgeConfigSpec.IntValue outputBufferSize;
+    public final ForgeConfigSpec.IntValue deactivationDelay;
     public final ForgeConfigSpec.ConfigValue<String> microphone;
     public final ForgeConfigSpec.ConfigValue<String> speaker;
     public final ForgeConfigSpec.BooleanValue muted;
@@ -39,6 +40,12 @@ public class ClientConfig extends ConfigBase {
                         "Increase this value if you have an unstable internet connection"
                 )
                 .defineInRange("output_buffer_size", 6, 1, 16);
+        deactivationDelay = builder
+                .comment(
+                        "The time it takes for the microphone to deactivate when using voice activation",
+                        "A value of 1 means 20 milliseconds, 2=40 ms, 3=60 ms, ..."
+                )
+                .defineInRange("voice_deactivation_delay", 25, 0, 100);
         microphone = builder
                 .comment("The microphone used by the voice chat", "Empty for default device")
                 .define("microphone", "");

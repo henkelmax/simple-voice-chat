@@ -8,10 +8,12 @@ public class SoundPacket implements Packet<SoundPacket> {
 
     private UUID sender;
     private byte[] data;
+    private long sequenceNumber;
 
-    public SoundPacket(UUID sender, byte[] data) {
+    public SoundPacket(UUID sender, byte[] data, long sequenceNumber) {
         this.sender = sender;
         this.data = data;
+        this.sequenceNumber = sequenceNumber;
     }
 
     public SoundPacket() {
@@ -26,11 +28,16 @@ public class SoundPacket implements Packet<SoundPacket> {
         return sender;
     }
 
+    public long getSequenceNumber() {
+        return sequenceNumber;
+    }
+
     @Override
     public SoundPacket fromBytes(PacketBuffer buf) {
         SoundPacket soundPacket = new SoundPacket();
         soundPacket.sender = buf.readUUID();
         soundPacket.data = buf.readByteArray();
+        soundPacket.sequenceNumber = buf.readLong();
         return soundPacket;
     }
 
@@ -38,5 +45,6 @@ public class SoundPacket implements Packet<SoundPacket> {
     public void toBytes(PacketBuffer buf) {
         buf.writeUUID(sender);
         buf.writeByteArray(data);
+        buf.writeLong(sequenceNumber);
     }
 }

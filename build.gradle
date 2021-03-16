@@ -8,18 +8,17 @@ buildscript {
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
         classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.2'
-        classpath group: 'com.github.jengelman.gradle.plugins', name: 'shadow', version: '4.0.4'
     }
 }
 
 plugins {
     // https://github.com/matthewprenger/CurseGradle
     id "com.matthewprenger.cursegradle" version "1.4.0"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'forge-update'
-apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'idea'
 
 version = mod_version
@@ -76,6 +75,9 @@ dependencies {
     shadow fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:api")
     runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}")
     runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:javadoc")
+
+    runtimeOnly 'de.maxhenkel.opus4j:opus4j:1.0.0-jna-4.4.0'
+    shadow 'de.maxhenkel.opus4j:opus4j:1.0.0-jna-4.4.0'
 }
 
 jar {
@@ -96,8 +98,12 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         include '**/*.toml'
 
-        expand 'mod_id': mod_id, 'mod_version': mod_version, 'mod_vendor': mod_vendor, 'mod_name': mod_name,
-                'mod_forge_version': mod_forge_version, 'mod_minecraft_version': mod_minecraft_version
+        expand 'mod_id': mod_id,
+                'mod_version': mod_version,
+                'mod_vendor': mod_vendor,
+                'mod_name': mod_name,
+                'mod_forge_version': mod_forge_version,
+                'mod_minecraft_version': mod_minecraft_version
     }
     from(sourceSets.main.resources.srcDirs) {
         exclude '**/*.toml'
@@ -182,10 +188,13 @@ artifacts {
 jar.finalizedBy('reobfJar')
 
 shadowJar {
-    project.configurations.shadow.setTransitive(true);
     configurations = [project.configurations.shadow]
-    classifier = ""
+    classifier ''
     relocate 'de.maxhenkel.corelib', "de.maxhenkel.${mod_id}.corelib"
+    relocate 'de.maxhenkel.opus4j', "de.maxhenkel.${mod_id}.opus4j"
+    dependencies {
+        exclude(dependency('net.java.dev.jna:jna:4.4.0'))
+    }
 }
 
 reobf {

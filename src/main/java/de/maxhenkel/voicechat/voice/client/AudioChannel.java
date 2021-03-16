@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Main;
+import de.maxhenkel.voicechat.voice.common.OpusDecoder;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
@@ -25,6 +26,8 @@ public class AudioChannel extends Thread {
     private SourceDataLine speaker;
     private FloatControl gainControl;
     private boolean stopped;
+    private OpusDecoder decoder;
+    private long lastSequenceNumber;
 
     public AudioChannel(Client client, UUID uuid) {
         this.client = client;
@@ -32,6 +35,8 @@ public class AudioChannel extends Thread {
         this.queue = new LinkedBlockingQueue<>();
         this.lastPacketTime = System.currentTimeMillis();
         this.stopped = false;
+        this.decoder = new OpusDecoder(AudioChannelConfig.getSampleRate(), AudioChannelConfig.getFrameSize(), Main.SERVER_CONFIG.voiceChatMtuSize.get());
+        this.lastSequenceNumber = -1L;
         this.minecraft = Minecraft.getInstance();
         setDaemon(true);
         setName("AudioChannelThread-" + uuid.toString());
@@ -48,6 +53,7 @@ public class AudioChannel extends Thread {
             speaker.close();
         }
         stopped = true;
+        decoder.close();
     }
 
     public UUID getUUID() {
@@ -78,6 +84,7 @@ public class AudioChannel extends Thread {
                 // to prevent the last sound getting repeated
                 if (speaker.getBufferSize() - speaker.available() <= 0 && speaker.isActive()) {
                     speaker.stop();
+                    lastSequenceNumber = -1L;
                 }
 
                 SoundPacket packet = queue.poll(10, TimeUnit.MILLISECONDS);
@@ -86,10 +93,14 @@ public class AudioChannel extends Thread {
                 }
                 lastPacketTime = System.currentTimeMillis();
 
+                if (lastSequenceNumber >= 0 && packet.getSequenceNumber() <= lastSequenceNumber) {
+                    continue;
+                }
+
                 // Filling the speaker with silence for one packet size
                 // to build a small buffer to compensate for network latency
                 if (speaker.getBufferSize() - speaker.available() <= 0) {
-                    byte[] data = new byte[Math.min(AudioChannelConfig.getDataLength() * 2 * Main.CLIENT_CONFIG.outputBufferSize.get(), speaker.getBufferSize() - AudioChannelConfig.getDataLength())];
+                    byte[] data = new byte[Math.min(AudioChannelConfig.getFrameSize() * Main.CLIENT_CONFIG.outputBufferSize.get(), speaker.getBufferSize() - AudioChannelConfig.getFrameSize())];
                     speaker.write(data, 0, data.length);
                 }
                 if (minecraft.level == null || minecraft.player == null) {
@@ -113,16 +124,22 @@ public class AudioChannel extends Thread {
 
                 gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(percentage * Main.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * (float) Main.VOLUME_CONFIG.getVolume(player)), gainControl.getMinimum()), gainControl.getMaximum()));
 
-                byte[] stereo;
-                if (Main.CLIENT_CONFIG.stereo.get()) {
-                    Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, player.position());
-                    stereo = Utils.convertToStereo(packet.getData(), stereoVolume.getLeft(), stereoVolume.getRight());
-                } else {
-                    stereo = Utils.convertToStereo(packet.getData(), 1F, 1F);
+                if (lastSequenceNumber >= 0) {
+                    int packetsToCompensate = (int) (packet.getSequenceNumber() - (lastSequenceNumber + 1));
+                    for (int i = 0; i < packetsToCompensate; i++) {
+                        if (speaker.available() < AudioChannelConfig.getFrameSize()) {
+                            Main.LOGGER.debug("Could not compensate more than " + i + " audio packets");
+                            break;
+                        }
+                        writeToSpeaker(decoder.decode(null), player);
+                    }
                 }
 
-                speaker.write(stereo, 0, stereo.length);
-                speaker.start();
+                lastSequenceNumber = packet.getSequenceNumber();
+
+                byte[] decodedAudio = decoder.decode(packet.getData());
+
+                writeToSpeaker(decodedAudio, player);
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -132,6 +149,19 @@ public class AudioChannel extends Thread {
                 speaker.close();
             }
         }
+    }
+
+    private void writeToSpeaker(byte[] monoData, PlayerEntity player) {
+        byte[] stereo;
+        if (Main.CLIENT_CONFIG.stereo.get()) {
+            Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, player.position());
+            stereo = Utils.convertToStereo(monoData, stereoVolume.getLeft(), stereoVolume.getRight());
+        } else {
+            stereo = Utils.convertToStereo(monoData, 1F, 1F);
+        }
+
+        speaker.write(stereo, 0, stereo.length);
+        speaker.start();
     }
 
     public boolean isClosed() {

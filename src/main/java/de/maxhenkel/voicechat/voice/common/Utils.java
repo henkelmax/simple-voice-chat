@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import com.sun.javafx.geom.Vec3d;
 import de.maxhenkel.voicechat.Main;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.PointOfView;
@@ -25,7 +24,11 @@ public class Utils {
     }
 
     public static short bytesToShort(byte b1, byte b2) {
-        return (short) (((b2 & 0xff) << 8) | (b1 & 0xff));
+        return (short) (((b2 & 0xFF) << 8) | (b1 & 0xFF));
+    }
+
+    public static byte[] shortToBytes(short s) {
+        return new byte[]{(byte) (s & 0xFF), (byte) ((s >> 8) & 0xFF)};
     }
 
     /**
@@ -38,7 +41,7 @@ public class Utils {
      */
     public static byte[] adjustVolumeMono(byte[] audio, float volume) {
         for (int i = 0; i < audio.length; i += 2) {
-            short audioSample = bytesToShort(audio[i], audio[i + 1]); //(short) (((audio[i + 1] & 0xff) << 8) | (audio[i] & 0xff));
+            short audioSample = bytesToShort(audio[i], audio[i + 1]);
 
             audioSample = (short) (audioSample * volume);
 
@@ -60,7 +63,7 @@ public class Utils {
      */
     public static byte[] adjustVolumeStereo(byte[] audio, float volumeLeft, float volumeRight) {
         for (int i = 0; i < audio.length; i += 2) {
-            short audioSample = bytesToShort(audio[i], audio[i + 1]); //(short) (((audio[i + 1] & 0xff) << 8) | (audio[i] & 0xff));
+            short audioSample = bytesToShort(audio[i], audio[i + 1]);
 
             audioSample = (short) (audioSample * (i % 4 == 0 ? volumeLeft : volumeRight));
 

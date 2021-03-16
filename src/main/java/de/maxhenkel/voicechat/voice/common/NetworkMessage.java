@@ -21,7 +21,6 @@ public class NetworkMessage {
     private Packet<? extends Packet> packet;
     private UUID secret;
     private SocketAddress address;
-    private long sequenceNumber;
 
     public NetworkMessage(Packet<?> packet, UUID secret) {
         this(packet);
@@ -59,10 +58,6 @@ public class NetworkMessage {
         return address;
     }
 
-    public long getSequenceNumber() {
-        return sequenceNumber;
-    }
-
     private static final Map<Byte, Class<? extends Packet>> packetRegistry;
 
     static {
@@ -76,14 +71,12 @@ public class NetworkMessage {
     }
 
     public static NetworkMessage readPacket(DatagramSocket socket) throws IllegalAccessException, InstantiationException, IOException {
-        // 4096 is the maximum packet size a packet can have with 44100 hz
         DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
         socket.receive(packet);
         byte[] data = new byte[packet.getLength()];
         System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
 
         PacketBuffer buffer = new PacketBuffer(Unpooled.wrappedBuffer(data));
-        long sequenceNumber = buffer.readLong();
         byte packetType = buffer.readByte();
         Class<? extends Packet> packetClass = packetRegistry.get(packetType);
         if (packetClass == null) {
@@ -92,7 +85,6 @@ public class NetworkMessage {
         Packet<? extends Packet<?>> p = packetClass.newInstance();
 
         NetworkMessage message = new NetworkMessage();
-        message.sequenceNumber = sequenceNumber;
         if (buffer.readBoolean()) {
             message.secret = buffer.readUUID();
         }
@@ -115,10 +107,9 @@ public class NetworkMessage {
         return -1;
     }
 
-    public byte[] write(long sequenceNumber) {
+    public byte[] write() {
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
 
-        buffer.writeLong(sequenceNumber);
         byte type = getPacketType(packet);
 
         if (type < 0) {
