@@ -10,8 +10,8 @@
     "ClientConnectionMixin",
     "EntityRendererMixin",
     "MinecraftMixin",
-    "KeyBindingMixin",
-    "KeyboardMixin"
+    "KeyboardMixin",
+    "MouseMixin"
   ],
   "injectors": {
     "defaultRequire": 1

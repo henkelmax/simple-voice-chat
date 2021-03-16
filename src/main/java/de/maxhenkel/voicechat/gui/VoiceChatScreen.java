@@ -3,11 +3,11 @@ package de.maxhenkel.voicechat.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.events.IKeyBinding;
 import de.maxhenkel.voicechat.net.Packets;
 import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -66,7 +66,7 @@ public class VoiceChatScreen extends Screen implements MicTestButton.MicListener
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == ((IKeyBinding) client.options.keyInventory).getBoundKey().getCode() || keyCode == ((IKeyBinding) VoicechatClient.KEY_VOICE_CHAT_SETTINGS).getBoundKey().getCode()) {
+        if (keyCode == KeyBindingHelper.getBoundKeyOf(client.options.keyInventory).getCode() || keyCode == KeyBindingHelper.getBoundKeyOf(VoicechatClient.KEY_VOICE_CHAT_SETTINGS).getCode()) {
             client.openScreen(null);
             return true;
         }
