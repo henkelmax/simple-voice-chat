@@ -1,1 +1,1 @@
-- Added dutch translation
+- Fixed PTT not working

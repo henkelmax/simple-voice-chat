@@ -40,11 +40,15 @@ public class ClientVoiceEvents {
 
     private Client client;
     private ClientPlayerStateManager playerStateManager;
+    private PTTKeyHandler pttKeyHandler;
     private Minecraft minecraft;
 
     public ClientVoiceEvents() {
         playerStateManager = new ClientPlayerStateManager();
+        pttKeyHandler = new PTTKeyHandler();
         minecraft = Minecraft.getInstance();
+
+        MinecraftForge.EVENT_BUS.register(pttKeyHandler);
     }
 
     public void authenticate(UUID playerUUID, UUID secret) {
@@ -103,6 +107,10 @@ public class ClientVoiceEvents {
 
     public ClientPlayerStateManager getPlayerStateManager() {
         return playerStateManager;
+    }
+
+    public PTTKeyHandler getPttKeyHandler() {
+        return pttKeyHandler;
     }
 
     @SubscribeEvent
