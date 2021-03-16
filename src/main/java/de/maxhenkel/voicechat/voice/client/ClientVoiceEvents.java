@@ -43,10 +43,12 @@ public class ClientVoiceEvents {
 
     private Client client;
     private ClientPlayerStateManager playerStateManager;
+    private PTTKeyHandler pttKeyHandler;
     private MinecraftClient minecraft;
 
     public ClientVoiceEvents() {
         playerStateManager = new ClientPlayerStateManager();
+        pttKeyHandler = new PTTKeyHandler();
         minecraft = MinecraftClient.getInstance();
 
         ClientWorldEvents.DISCONNECT.register(this::onDisconnect);
@@ -106,6 +108,10 @@ public class ClientVoiceEvents {
 
     public ClientPlayerStateManager getPlayerStateManager() {
         return playerStateManager;
+    }
+
+    public PTTKeyHandler getPttKeyHandler() {
+        return pttKeyHandler;
     }
 
     public void renderHUD(MatrixStack stack, float tickDelta) {
