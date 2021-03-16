@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.mixin;
 
-import de.maxhenkel.voicechat.events.KeyboardEvents;
+import de.maxhenkel.voicechat.events.KeyEvents;
 import net.minecraft.client.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,7 +12,7 @@ public class KeyboardMixin {
 
     @Inject(at = @At("HEAD"), method = "onKey")
     private void onKey(long window, int key, int scancode, int i, int j, CallbackInfo info) {
-        KeyboardEvents.KEY.invoker().onKeyEvent(window, key, scancode);
+        KeyEvents.KEYBOARD_KEY.invoker().onKeyboardEvent(window, key, scancode);
     }
 
 }

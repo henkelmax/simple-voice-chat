@@ -2,8 +2,8 @@ package de.maxhenkel.voicechat.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.events.IKeyBinding;
 import de.maxhenkel.voicechat.Voicechat;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -85,7 +85,7 @@ public abstract class ListScreen<T> extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == ((IKeyBinding) client.options.keyInventory).getBoundKey().getCode() || keyCode == ((IKeyBinding) VoicechatClient.KEY_VOICE_CHAT_SETTINGS).getBoundKey().getCode()) {
+        if (keyCode == KeyBindingHelper.getBoundKeyOf(client.options.keyInventory).getCode() || keyCode == KeyBindingHelper.getBoundKeyOf(VoicechatClient.KEY_VOICE_CHAT_SETTINGS).getCode()) {
             client.openScreen(null);
             return true;
         }
