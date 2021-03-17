@@ -3,14 +3,11 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.events.ClientVoiceChatEvents;
 import de.maxhenkel.voicechat.events.ClientWorldEvents;
-import de.maxhenkel.voicechat.net.Packets;
+import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.net.PlayerStatesPacket;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,17 +23,11 @@ public class ClientPlayerStateManager {
         muted = VoicechatClient.CLIENT_CONFIG.muted.get();
         state = new PlayerState(VoicechatClient.CLIENT_CONFIG.disabled.get(), true);
         states = new HashMap<>();
-        ClientPlayNetworking.registerGlobalReceiver(Packets.PLAYER_STATE, (mc, handler, buf, responseSender) -> {
-            PlayerStatePacket packet = PlayerStatePacket.fromBytes(buf);
-            mc.execute(() -> {
-                states.put(packet.getUuid(), packet.getPlayerState());
-            });
+        NetManager.registerClientReceiver(PlayerStatePacket.class, (client, handler, responseSender, packet) -> {
+            states.put(packet.getUuid(), packet.getPlayerState());
         });
-        ClientPlayNetworking.registerGlobalReceiver(Packets.PLAYER_STATES, (mc, handler, buf, responseSender) -> {
-            PlayerStatesPacket packet = PlayerStatesPacket.fromBytes(buf);
-            mc.execute(() -> {
-                states = packet.getPlayerStates();
-            });
+        NetManager.registerClientReceiver(PlayerStatesPacket.class, (client, handler, responseSender, packet) -> {
+            states = packet.getPlayerStates();
         });
         ClientVoiceChatEvents.VOICECHAT_CONNECTED.register(this::onVoiceChatConnected);
         ClientVoiceChatEvents.VOICECHAT_DISCONNECTED.register(this::onVoiceChatDisconnected);
@@ -83,9 +74,7 @@ public class ClientPlayerStateManager {
     }
 
     public void syncOwnState() {
-        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        new PlayerStatePacket(new UUID(0L, 0L), state).toBytes(buf);
-        ClientPlayNetworking.send(Packets.PLAYER_STATE, buf);
+        NetManager.sendToServer(new PlayerStatePacket(new UUID(0L, 0L), state));
     }
 
     public boolean isDisabled() {

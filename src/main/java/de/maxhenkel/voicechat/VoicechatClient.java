@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat;
 import de.maxhenkel.voicechat.config.ClientConfig;
 import de.maxhenkel.voicechat.config.ConfigBuilder;
 import de.maxhenkel.voicechat.config.PlayerVolumeConfig;
-import de.maxhenkel.voicechat.net.Packets;
 import de.maxhenkel.voicechat.voice.client.ClientVoiceEvents;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ClientModInitializer;
@@ -33,7 +32,7 @@ public class VoicechatClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ClientLoginNetworking.registerGlobalReceiver(Packets.INIT, (client, handler, buf, listenerAdder) -> {
+        ClientLoginNetworking.registerGlobalReceiver(Voicechat.INIT, (client, handler, buf, listenerAdder) -> {
             int serverCompatibilityVersion = buf.readInt();
 
             if (serverCompatibilityVersion != Voicechat.COMPATIBILITY_VERSION) {

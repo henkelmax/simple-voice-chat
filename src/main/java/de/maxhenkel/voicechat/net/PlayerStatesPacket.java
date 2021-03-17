@@ -1,15 +1,23 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class PlayerStatesPacket {
+public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
 
     private Map<UUID, PlayerState> playerStates;
+
+    public static final Identifier PLAYER_STATES = new Identifier(Voicechat.MODID, "player_states");
+
+    public PlayerStatesPacket() {
+
+    }
 
     public PlayerStatesPacket(Map<UUID, PlayerState> playerStates) {
         this.playerStates = playerStates;
@@ -19,16 +27,23 @@ public class PlayerStatesPacket {
         return playerStates;
     }
 
-    public static PlayerStatesPacket fromBytes(PacketByteBuf buf) {
+    @Override
+    public Identifier getID() {
+        return PLAYER_STATES;
+    }
+
+    @Override
+    public PlayerStatesPacket fromBytes(PacketByteBuf buf) {
+        playerStates = new HashMap<>();
         int count = buf.readInt();
-        Map<UUID, PlayerState> playerStates = new HashMap<>();
         for (int i = 0; i < count; i++) {
             playerStates.put(buf.readUuid(), new PlayerState(buf.readBoolean(), buf.readBoolean()));
         }
 
-        return new PlayerStatesPacket(playerStates);
+        return this;
     }
 
+    @Override
     public void toBytes(PacketByteBuf buf) {
         buf.writeInt(playerStates.size());
         for (Map.Entry<UUID, PlayerState> entry : playerStates.entrySet()) {
