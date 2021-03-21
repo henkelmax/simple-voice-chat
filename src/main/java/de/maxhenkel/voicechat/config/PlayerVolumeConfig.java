@@ -1,7 +1,5 @@
 package de.maxhenkel.voicechat.config;
 
-import net.minecraft.entity.player.PlayerEntity;
-
 import java.nio.file.Path;
 import java.util.UUID;
 
@@ -23,8 +21,8 @@ public class PlayerVolumeConfig extends Config {
         }
     }
 
-    public double getVolume(PlayerEntity playerEntity) {
-        return getVolume(playerEntity.getUuid(), 1D);
+    public double getVolume(UUID playerID) {
+        return getVolume(playerID, 1D);
     }
 
     public double setVolume(UUID uuid, double value) {

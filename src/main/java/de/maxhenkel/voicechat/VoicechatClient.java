@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.PacketByteBuf;
 import org.lwjgl.glfw.GLFW;
 
@@ -24,7 +25,9 @@ public class VoicechatClient implements ClientModInitializer {
     public static KeyBinding KEY_MUTE;
     public static KeyBinding KEY_DISABLE;
     public static KeyBinding KEY_HIDE_ICONS;
+    public static KeyBinding KEY_VOICE_CHAT;
     public static KeyBinding KEY_VOICE_CHAT_SETTINGS;
+    public static KeyBinding KEY_GROUP;
 
     public static ClientVoiceEvents CLIENT;
     public static ClientConfig CLIENT_CONFIG;
@@ -51,7 +54,9 @@ public class VoicechatClient implements ClientModInitializer {
         KEY_MUTE = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.mute_microphone", GLFW.GLFW_KEY_M, "key.categories.voicechat"));
         KEY_DISABLE = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.disable_voice_chat", GLFW.GLFW_KEY_N, "key.categories.voicechat"));
         KEY_HIDE_ICONS = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.hide_icons", GLFW.GLFW_KEY_H, "key.categories.voicechat"));
-        KEY_VOICE_CHAT_SETTINGS = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.voice_chat_settings", GLFW.GLFW_KEY_V, "key.categories.voicechat"));
+        KEY_VOICE_CHAT = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.voice_chat", GLFW.GLFW_KEY_V, "key.categories.voicechat"));
+        KEY_VOICE_CHAT_SETTINGS = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.voice_chat_settings", InputUtil.UNKNOWN_KEY.getCode(), "key.categories.voicechat"));
+        KEY_GROUP = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.voice_chat_group", InputUtil.UNKNOWN_KEY.getCode(), "key.categories.voicechat"));
 
         CLIENT = new ClientVoiceEvents();
     }

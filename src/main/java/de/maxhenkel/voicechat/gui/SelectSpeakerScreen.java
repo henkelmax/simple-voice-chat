@@ -1,8 +1,10 @@
 package de.maxhenkel.voicechat.gui;
 
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.gui.widgets.ListScreen;
 import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.client.DataLines;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -17,8 +19,8 @@ public class SelectSpeakerScreen extends ListScreen<String> {
 
     protected int selected;
 
-    public SelectSpeakerScreen() {
-        super(DataLines.getSpeakerNames(), new TranslatableText("gui.voicechat.select_speaker.title"));
+    public SelectSpeakerScreen(Screen parent) {
+        super(parent, DataLines.getSpeakerNames(), new TranslatableText("gui.voicechat.select_speaker.title"));
         for (int i = 0; i < elements.size(); i++) {
             String element = elements.get(i);
             if (element.equals(VoicechatClient.CLIENT_CONFIG.speaker.get())) {

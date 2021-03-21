@@ -1,4 +1,4 @@
-package de.maxhenkel.voicechat.gui;
+package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.VoicechatClient;
 import net.minecraft.client.gui.widget.SliderWidget;
@@ -8,7 +8,7 @@ import net.minecraft.text.TranslatableText;
 
 public class VoiceSoundSlider extends SliderWidget {
 
-    protected VoiceSoundSlider(int x, int y, int width, int theight) {
+    public VoiceSoundSlider(int x, int y, int width, int theight) {
         super(x, y, width, theight, LiteralText.EMPTY, VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() / 2F);
         updateMessage();
     }
