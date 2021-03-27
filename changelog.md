@@ -1,1 +1,1 @@
-- Cleaned up netcode
+- Fixed increased CPU usage when muted
