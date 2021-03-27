@@ -8,11 +8,12 @@ import de.maxhenkel.voicechat.events.IClientConnection;
 import de.maxhenkel.voicechat.events.RenderEvents;
 import de.maxhenkel.voicechat.gui.AdjustVolumeScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
-import de.maxhenkel.voicechat.net.*;
+import de.maxhenkel.voicechat.net.InitPacket;
+import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.net.PlayerListPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -57,17 +58,11 @@ public class ClientVoiceEvents {
         ClientTickEvents.END_CLIENT_TICK.register(this::onClientTickEnd);
         RenderEvents.RENDER_NAMEPLATE.register(this::onRenderName);
 
-        ClientPlayNetworking.registerGlobalReceiver(Packets.SECRET, (mc, handler, buf, responseSender) -> {
-            InitPacket initPacket = InitPacket.fromBytes(buf);
-            mc.execute(() -> {
-                authenticate(handler.getProfile().getId(), initPacket);
-            });
+        NetManager.registerClientReceiver(InitPacket.class, (client, handler, responseSender, packet) -> {
+            authenticate(handler.getProfile().getId(), packet);
         });
-        ClientPlayNetworking.registerGlobalReceiver(Packets.PLAYER_LIST, (mc, handler, buf, responseSender) -> {
-            PlayerListPacket list = PlayerListPacket.fromBytes(buf);
-            mc.execute(() -> {
-                minecraft.openScreen(new AdjustVolumeScreen(list.getPlayers()));
-            });
+        NetManager.registerClientReceiver(PlayerListPacket.class, (client, handler, responseSender, packet) -> {
+            minecraft.openScreen(new AdjustVolumeScreen(packet.getPlayers()));
         });
     }
 

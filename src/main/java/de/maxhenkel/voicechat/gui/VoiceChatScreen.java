@@ -3,16 +3,14 @@ package de.maxhenkel.voicechat.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.net.Packets;
+import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.net.RequestPlayerListPacket;
 import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.common.Utils;
-import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -54,7 +52,7 @@ public class VoiceChatScreen extends Screen implements MicTestButton.MicListener
             addButton(new MicTestButton(guiLeft + 10, guiTop + 145, xSize - 20, 20, this, c));
         }
         addButton(new ButtonWidget(guiLeft + 10, guiTop + 170, xSize - 20, 20, new TranslatableText("message.voicechat.adjust_volumes"), button -> {
-            ClientPlayNetworking.send(Packets.REQUEST_PLAYER_LIST, new PacketByteBuf(Unpooled.buffer()));
+            NetManager.sendToServer(new RequestPlayerListPacket());
         }));
         addButton(new ButtonWidget(guiLeft + 10, guiTop + 195, xSize / 2 - 15, 20, new TranslatableText("message.voicechat.select_microphone"), button -> {
             client.openScreen(new SelectMicrophoneScreen());

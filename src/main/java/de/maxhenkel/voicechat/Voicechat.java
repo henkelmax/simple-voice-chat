@@ -3,8 +3,9 @@ package de.maxhenkel.voicechat;
 import de.maxhenkel.voicechat.command.TestConnectionCommand;
 import de.maxhenkel.voicechat.config.ConfigBuilder;
 import de.maxhenkel.voicechat.config.ServerConfig;
-import de.maxhenkel.voicechat.net.Packets;
+import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerListPacket;
+import de.maxhenkel.voicechat.net.RequestPlayerListPacket;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
@@ -12,10 +13,10 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +34,9 @@ public class Voicechat implements ModInitializer {
     @Nullable
     public static ServerConfig SERVER_CONFIG;
 
+    public static final Identifier INIT = new Identifier(Voicechat.MODID, "init");
     public static int COMPATIBILITY_VERSION = -1;
+
 
     @Override
     public void onInitialize() {
@@ -56,9 +59,9 @@ public class Voicechat implements ModInitializer {
         ServerLoginConnectionEvents.QUERY_START.register((handler, server, sender, synchronizer) -> {
             PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
             buffer.writeInt(COMPATIBILITY_VERSION);
-            sender.sendPacket(Packets.INIT, buffer);
+            sender.sendPacket(INIT, buffer);
         });
-        ServerLoginNetworking.registerGlobalReceiver(Packets.INIT, (server, handler, understood, buf, synchronizer, responseSender) -> {
+        ServerLoginNetworking.registerGlobalReceiver(INIT, (server, handler, understood, buf, synchronizer, responseSender) -> {
             if (!understood) {
                 //Let vanilla clients pass, but not incompatible voice chat clients
                 return;
@@ -76,7 +79,7 @@ public class Voicechat implements ModInitializer {
 
         CommandRegistrationCallback.EVENT.register(TestConnectionCommand::register);
 
-        ServerPlayNetworking.registerGlobalReceiver(Packets.REQUEST_PLAYER_LIST, (server, player, handler, buf, responseSender) -> {
+        NetManager.registerServerReceiver(RequestPlayerListPacket.class, (server, player, handler, responseSender, packet) -> {
             List<PlayerInfo> players = player
                     .getServer()
                     .getPlayerManager()
@@ -85,9 +88,7 @@ public class Voicechat implements ModInitializer {
                     .filter(p -> !p.getUuid().equals(player.getUuid()))
                     .map(playerEntity -> new PlayerInfo(playerEntity.getUuid(), playerEntity.getDisplayName()))
                     .collect(Collectors.toList());
-            PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
-            new PlayerListPacket(players).toBytes(buffer);
-            ServerPlayNetworking.send(player, Packets.PLAYER_LIST, buffer);
+            NetManager.sendToClient(player, new PlayerListPacket(players));
         });
     }
 }

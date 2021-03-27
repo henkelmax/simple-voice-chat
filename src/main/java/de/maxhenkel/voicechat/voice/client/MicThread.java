@@ -62,7 +62,7 @@ public class MicThread extends Thread {
                 mic.stop();
                 mic.flush();
             }
-
+            Utils.sleep(10);
             return;
         }
 

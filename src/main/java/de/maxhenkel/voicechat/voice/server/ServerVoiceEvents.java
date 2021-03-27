@@ -4,11 +4,8 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.events.PlayerEvents;
 import de.maxhenkel.voicechat.net.InitPacket;
-import de.maxhenkel.voicechat.net.Packets;
-import io.netty.buffer.Unpooled;
+import de.maxhenkel.voicechat.net.NetManager;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -47,10 +44,7 @@ public class ServerVoiceEvents {
         }
 
         UUID secret = server.getSecret(player.getUuid());
-        InitPacket packet = new InitPacket(secret, Voicechat.SERVER_CONFIG.voiceChatPort.get(), (ServerConfig.Codec) Voicechat.SERVER_CONFIG.voiceChatCodec.get(), Voicechat.SERVER_CONFIG.voiceChatMtuSize.get(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), Voicechat.SERVER_CONFIG.voiceChatFadeDistance.get(), Voicechat.SERVER_CONFIG.keepAlive.get());
-        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
-        packet.toBytes(buffer);
-        ServerPlayNetworking.send(player, Packets.SECRET, buffer);
+        NetManager.sendToClient(player, new InitPacket(secret, Voicechat.SERVER_CONFIG.voiceChatPort.get(), (ServerConfig.Codec) Voicechat.SERVER_CONFIG.voiceChatCodec.get(), Voicechat.SERVER_CONFIG.voiceChatMtuSize.get(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), Voicechat.SERVER_CONFIG.voiceChatFadeDistance.get(), Voicechat.SERVER_CONFIG.keepAlive.get()));
         Voicechat.LOGGER.info("Sent secret to " + player.getDisplayName().getString());
     }
 

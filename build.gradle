@@ -16,7 +16,8 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    implementation 'com.google.code.findbugs:findbugs:3.0.1'
 
     implementation 'de.maxhenkel.opus4j:opus4j:1.0.0'
     shadow 'de.maxhenkel.opus4j:opus4j:1.0.0'

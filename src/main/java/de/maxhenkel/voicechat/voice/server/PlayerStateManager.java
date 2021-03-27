@@ -1,13 +1,10 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.events.PlayerEvents;
-import de.maxhenkel.voicechat.net.Packets;
+import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.net.PlayerStatesPacket;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -24,30 +21,24 @@ public class PlayerStateManager {
         PlayerEvents.PLAYER_LOGGED_OUT.register(this::removePlayer);
         PlayerEvents.PLAYER_LOGGED_IN.register(this::notifyPlayer);
 
-        ServerPlayNetworking.registerGlobalReceiver(Packets.PLAYER_STATE, (server, player, handler, buf, responseSender) -> {
-            PlayerStatePacket statePacket = PlayerStatePacket.fromBytes(buf);
-            states.put(player.getUuid(), statePacket.getPlayerState());
-
-            broadcastState(server, player.getUuid(), statePacket.getPlayerState());
+        NetManager.registerServerReceiver(PlayerStatePacket.class, (server, player, handler, responseSender, packet) -> {
+            states.put(player.getUuid(), packet.getPlayerState());
+            broadcastState(server, player.getUuid(), packet.getPlayerState());
         });
     }
 
     private void broadcastState(MinecraftServer server, UUID uuid, PlayerState state) {
-        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
-        PlayerStatePacket broadcastPacket = new PlayerStatePacket(uuid, state);
-        broadcastPacket.toBytes(buffer);
+        PlayerStatePacket packet = new PlayerStatePacket(uuid, state);
         server.getPlayerManager().getPlayerList().forEach(p -> {
             if (!p.getUuid().equals(uuid)) {
-                ServerPlayNetworking.send(p, Packets.PLAYER_STATE, buffer);
+                NetManager.sendToClient(p, packet);
             }
         });
     }
 
     private void notifyPlayer(ServerPlayerEntity player) {
-        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
         PlayerStatesPacket packet = new PlayerStatesPacket(states);
-        packet.toBytes(buffer);
-        ServerPlayNetworking.send(player, Packets.PLAYER_STATES, buffer);
+        NetManager.sendToClient(player, packet);
         broadcastState(player.server, player.getUuid(), new PlayerState(false, true));
     }
 

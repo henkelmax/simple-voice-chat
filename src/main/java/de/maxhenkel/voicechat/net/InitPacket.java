@@ -1,11 +1,15 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 
 import java.util.UUID;
 
-public class InitPacket {
+public class InitPacket implements Packet<InitPacket> {
+
+    public static final Identifier SECRET = new Identifier(Voicechat.MODID, "secret");
 
     private UUID secret;
     private int serverPort;
@@ -14,6 +18,10 @@ public class InitPacket {
     private double voiceChatDistance;
     private double voiceChatFadeDistance;
     private int keepAlive;
+
+    public InitPacket() {
+
+    }
 
     public InitPacket(UUID secret, int serverPort, ServerConfig.Codec codec, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive) {
         this.secret = secret;
@@ -53,10 +61,24 @@ public class InitPacket {
         return keepAlive;
     }
 
-    public static InitPacket fromBytes(PacketByteBuf buf) {
-        return new InitPacket(buf.readUuid(), buf.readInt(), ServerConfig.Codec.values()[buf.readByte()], buf.readInt(), buf.readDouble(), buf.readDouble(), buf.readInt());
+    @Override
+    public Identifier getID() {
+        return SECRET;
     }
 
+    @Override
+    public InitPacket fromBytes(PacketByteBuf buf) {
+        secret = buf.readUuid();
+        serverPort = buf.readInt();
+        codec = ServerConfig.Codec.values()[buf.readByte()];
+        mtuSize = buf.readInt();
+        voiceChatDistance = buf.readDouble();
+        voiceChatFadeDistance = buf.readDouble();
+        keepAlive = buf.readInt();
+        return this;
+    }
+
+    @Override
     public void toBytes(PacketByteBuf buf) {
         buf.writeUuid(secret);
         buf.writeInt(serverPort);
