@@ -1,1 +1,1 @@
-- Fixed increased CPU usage when muted
+- Added chinese translation
