@@ -78,6 +78,8 @@ dependencies {
 
     runtimeOnly 'de.maxhenkel.opus4j:opus4j:1.0.0-jna-4.4.0'
     shadow 'de.maxhenkel.opus4j:opus4j:1.0.0-jna-4.4.0'
+
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
 jar {
