@@ -7,8 +7,8 @@ import de.maxhenkel.voicechat.gui.widgets.GroupList;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
+import de.maxhenkel.voicechat.voice.client.GroupChatManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
-import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -16,9 +16,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class GroupScreen extends VoiceChatScreenBase {
 
@@ -26,10 +24,12 @@ public class GroupScreen extends VoiceChatScreenBase {
     private static final Identifier LEAVE = new Identifier(Voicechat.MODID, "textures/gui/leave.png");
     private static final Identifier MICROPHONE = new Identifier(Voicechat.MODID, "textures/gui/micrphone_button.png");
     private static final Identifier SPEAKER = new Identifier(Voicechat.MODID, "textures/gui/speaker_button.png");
+    private static final Identifier GROUP_HUD = new Identifier(Voicechat.MODID, "textures/gui/group_hud_button.png");
 
     private GroupList playerList;
     private ToggleImageButton mute;
     private ToggleImageButton disable;
+    private ToggleImageButton showHUD;
     private ImageButton leave;
 
     public GroupScreen() {
@@ -45,7 +45,7 @@ public class GroupScreen extends VoiceChatScreenBase {
 
         ClientPlayerStateManager stateManager = VoicechatClient.CLIENT.getPlayerStateManager();
 
-        playerList = new GroupList(this, 9, 16, 160, 176, this::getGroupMembers);
+        playerList = new GroupList(this, 9, 16, 160, 176, GroupChatManager::getGroupMembers);
 
         mute = new ToggleImageButton(guiLeft + 8, guiTop + 196, MICROPHONE, stateManager::isMuted, button -> {
             stateManager.setMuted(!stateManager.isMuted());
@@ -60,6 +60,14 @@ public class GroupScreen extends VoiceChatScreenBase {
             renderOrderedTooltip(matrices, Collections.singletonList(new TranslatableText("message.voicechat.disable_voice_chat").asOrderedText()), mouseX, mouseY);
         });
         addButton(disable);
+
+        showHUD = new ToggleImageButton(guiLeft + 54, guiTop + 196, GROUP_HUD, VoicechatClient.CLIENT_CONFIG.showGroupHUD::get, button -> {
+            VoicechatClient.CLIENT_CONFIG.showGroupHUD.set(!VoicechatClient.CLIENT_CONFIG.showGroupHUD.get());
+            VoicechatClient.CLIENT_CONFIG.showGroupHUD.save();
+        }, (button, matrices, mouseX, mouseY) -> {
+            renderOrderedTooltip(matrices, Collections.singletonList(new TranslatableText("message.voicechat.show_group_hud").asOrderedText()), mouseX, mouseY);
+        });
+        addButton(showHUD);
 
         leave = new ImageButton(guiLeft + 168, guiTop + 196, LEAVE, button -> {
             VoicechatClient.CLIENT.getPlayerStateManager().setGroup(null);
@@ -80,27 +88,7 @@ public class GroupScreen extends VoiceChatScreenBase {
 
     private void checkButtons() {
         mute.active = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE);
-    }
-
-    public List<PlayerState> getGroupMembers() {
-        List<PlayerState> entries = new ArrayList<>();
-        String group = getGroup();
-
-        for (PlayerState state : VoicechatClient.CLIENT.getPlayerStateManager().getPlayerStates()) {
-            if (state.getGroup() != null && state.getGroup().equals(group)) {
-                entries.add(state);
-            }
-        }
-
-        return entries;
-    }
-
-    public String getGroup() {
-        String group = VoicechatClient.CLIENT.getPlayerStateManager().getGroup();
-        if (group == null) {
-            return "";
-        }
-        return group;
+        showHUD.active = !VoicechatClient.CLIENT_CONFIG.hideIcons.get();
     }
 
     @Override
@@ -113,7 +101,7 @@ public class GroupScreen extends VoiceChatScreenBase {
 
         playerList.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
 
-        textRenderer.draw(matrixStack, new LiteralText(getGroup()), guiLeft + 8, guiTop + 5, FONT_COLOR);
+        textRenderer.draw(matrixStack, new LiteralText(GroupChatManager.getGroup()), guiLeft + 8, guiTop + 5, FONT_COLOR);
 
         for (AbstractButtonWidget widget : buttons) {
             widget.render(matrixStack, mouseX, mouseY, delta);

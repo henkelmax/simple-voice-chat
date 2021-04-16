@@ -52,5 +52,6 @@
   "message.voicechat.mute_microphone": "Mute microphone",
   "message.voicechat.disable_voice_chat": "Disable voice chat",
   "message.voicechat.leave_group": "Leave group",
-  "message.voicechat.hide_icons": "Hide icons"
+  "message.voicechat.hide_icons": "Hide icons",
+  "message.voicechat.show_group_hud": "Show group HUD"
 }

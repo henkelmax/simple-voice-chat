@@ -16,6 +16,7 @@ public class ClientConfig {
     public final ConfigBuilder.ConfigEntry<Boolean> disabled;
     public final ConfigBuilder.ConfigEntry<Boolean> stereo;
     public final ConfigBuilder.ConfigEntry<Boolean> hideIcons;
+    public final ConfigBuilder.ConfigEntry<Boolean> showGroupHUD;
 
     public ClientConfig(ConfigBuilder builder) {
         voiceChatVolume = builder.doubleEntry("voice_chat_volume", 1D, 0D, 2D);
@@ -30,6 +31,7 @@ public class ClientConfig {
         disabled = builder.booleanEntry("disabled", false);
         stereo = builder.booleanEntry("stereo", true);
         hideIcons = builder.booleanEntry("hide_icons", false);
+        showGroupHUD = builder.booleanEntry("show_group_hud", true);
     }
 
 }

@@ -122,6 +122,10 @@ public class ClientVoiceEvents {
         } else if (client != null && client.getMicThread() != null && client.getMicThread().isTalking()) {
             renderIcon(stack, MICROPHONE_ICON);
         }
+
+        if (playerStateManager.isInGroup() && VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()) {
+            GroupChatManager.renderIcons(stack);
+        }
     }
 
     private void renderIcon(MatrixStack matrixStack, Identifier texture) {
