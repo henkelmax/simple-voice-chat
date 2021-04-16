@@ -37,7 +37,8 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
         playerStates = new HashMap<>();
         int count = buf.readInt();
         for (int i = 0; i < count; i++) {
-            playerStates.put(buf.readUuid(), new PlayerState(buf.readBoolean(), buf.readBoolean()));
+            PlayerState playerState = PlayerState.fromBytes(buf);
+            playerStates.put(playerState.getGameProfile().getId(), playerState);
         }
 
         return this;
@@ -47,9 +48,7 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
     public void toBytes(PacketByteBuf buf) {
         buf.writeInt(playerStates.size());
         for (Map.Entry<UUID, PlayerState> entry : playerStates.entrySet()) {
-            buf.writeUuid(entry.getKey());
-            buf.writeBoolean(entry.getValue().isDisabled());
-            buf.writeBoolean(entry.getValue().isDisconnected());
+            entry.getValue().toBytes(buf);
         }
     }
 

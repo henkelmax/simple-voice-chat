@@ -3,9 +3,6 @@ package de.maxhenkel.voicechat;
 import de.maxhenkel.voicechat.command.TestConnectionCommand;
 import de.maxhenkel.voicechat.config.ConfigBuilder;
 import de.maxhenkel.voicechat.config.ServerConfig;
-import de.maxhenkel.voicechat.net.NetManager;
-import de.maxhenkel.voicechat.net.PlayerListPacket;
-import de.maxhenkel.voicechat.net.RequestPlayerListPacket;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
@@ -22,9 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 public class Voicechat implements ModInitializer {
 
@@ -78,17 +73,5 @@ public class Voicechat implements ModInitializer {
         SERVER = new ServerVoiceEvents();
 
         CommandRegistrationCallback.EVENT.register(TestConnectionCommand::register);
-
-        NetManager.registerServerReceiver(RequestPlayerListPacket.class, (server, player, handler, responseSender, packet) -> {
-            List<PlayerInfo> players = player
-                    .getServer()
-                    .getPlayerManager()
-                    .getPlayerList()
-                    .stream()
-                    .filter(p -> !p.getUuid().equals(player.getUuid()))
-                    .map(playerEntity -> new PlayerInfo(playerEntity.getUuid(), playerEntity.getDisplayName()))
-                    .collect(Collectors.toList());
-            NetManager.sendToClient(player, new PlayerListPacket(players));
-        });
     }
 }

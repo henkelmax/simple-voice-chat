@@ -1,5 +1,7 @@
 package de.maxhenkel.voicechat.voice.client;
 
+import de.maxhenkel.voicechat.VoicechatClient;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.*;
@@ -31,9 +33,19 @@ public class TalkCache {
         }
     }
 
-    public boolean isTalking(PlayerEntity playerEntity) {
+    public boolean isTalking(PlayerEntity player) {
+        return isTalking(player.getUuid());
+    }
+
+    public boolean isTalking(UUID player) {
+        if (player.equals(MinecraftClient.getInstance().player.getUuid())) {
+            Client client = VoicechatClient.CLIENT.getClient();
+            if (client != null) {
+                return client.getMicThread().isTalking();
+            }
+        }
         updateCache();
-        return cache.containsKey(playerEntity.getUuid());
+        return cache.containsKey(player);
     }
 
 }

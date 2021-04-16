@@ -1,4 +1,4 @@
-package de.maxhenkel.voicechat.gui;
+package de.maxhenkel.voicechat.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.VoicechatClient;
@@ -32,8 +32,11 @@ public abstract class ListScreen<T> extends Screen {
     protected ButtonWidget back;
     protected ButtonWidget next;
 
-    public ListScreen(List<T> elements, Text title) {
+    protected Screen parent;
+
+    public ListScreen(Screen parent, List<T> elements, Text title) {
         super(title);
+        this.parent = parent;
         this.elements = elements;
         xSize = 248;
         ySize = 85;
@@ -51,7 +54,7 @@ public abstract class ListScreen<T> extends Screen {
         });
 
         back = new ButtonWidget(guiLeft + xSize / 2 - 30, guiTop + 60, 60, 20, new TranslatableText("message.voicechat.back"), button -> {
-            client.openScreen(new VoiceChatScreen());
+            client.openScreen(parent);
         });
 
         next = new ButtonWidget(guiLeft + xSize - 70, guiTop + 60, 60, 20, new TranslatableText("message.voicechat.next"), button -> {
@@ -70,8 +73,8 @@ public abstract class ListScreen<T> extends Screen {
         addButton(next);
 
         if (elements.size() <= 1) {
-            next.active = false;
-            previous.active = false;
+            next.visible = false;
+            previous.visible = false;
         }
     }
 
@@ -85,7 +88,7 @@ public abstract class ListScreen<T> extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == KeyBindingHelper.getBoundKeyOf(client.options.keyInventory).getCode() || keyCode == KeyBindingHelper.getBoundKeyOf(VoicechatClient.KEY_VOICE_CHAT_SETTINGS).getCode()) {
+        if (keyCode == KeyBindingHelper.getBoundKeyOf(client.options.keyInventory).getCode() || keyCode == KeyBindingHelper.getBoundKeyOf(VoicechatClient.KEY_VOICE_CHAT).getCode()) {
             client.openScreen(null);
             return true;
         }

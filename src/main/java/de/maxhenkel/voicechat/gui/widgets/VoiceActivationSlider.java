@@ -1,4 +1,4 @@
-package de.maxhenkel.voicechat.gui;
+package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.common.Utils;
@@ -8,7 +8,7 @@ import net.minecraft.text.TranslatableText;
 
 public class VoiceActivationSlider extends SliderWidget {
 
-    protected VoiceActivationSlider(int x, int y, int width, int height) {
+    public VoiceActivationSlider(int x, int y, int width, int height) {
         super(x, y, width, height, LiteralText.EMPTY, Utils.dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
         updateMessage();
     }
