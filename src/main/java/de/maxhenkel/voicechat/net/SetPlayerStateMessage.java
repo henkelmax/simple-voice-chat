@@ -39,13 +39,12 @@ public class SetPlayerStateMessage implements Message<SetPlayerStateMessage> {
 
     @Override
     public SetPlayerStateMessage fromBytes(PacketBuffer buf) {
-        playerState = new PlayerState(buf.readBoolean(), buf.readBoolean());
+        playerState = PlayerState.fromBytes(buf);
         return this;
     }
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeBoolean(playerState.isDisabled());
-        buf.writeBoolean(playerState.isDisconnected());
+        playerState.toBytes(buf);
     }
 }

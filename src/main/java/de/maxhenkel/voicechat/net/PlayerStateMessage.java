@@ -12,20 +12,14 @@ import java.util.UUID;
 
 public class PlayerStateMessage implements Message<PlayerStateMessage> {
 
-    private UUID uuid;
     private PlayerState playerState;
 
-    public PlayerStateMessage(UUID uuid, PlayerState playerState) {
-        this.uuid = uuid;
+    public PlayerStateMessage(PlayerState playerState) {
         this.playerState = playerState;
     }
 
     public PlayerStateMessage() {
 
-    }
-
-    public UUID getUuid() {
-        return uuid;
     }
 
     public PlayerState getPlayerState() {
@@ -49,16 +43,13 @@ public class PlayerStateMessage implements Message<PlayerStateMessage> {
 
     @Override
     public PlayerStateMessage fromBytes(PacketBuffer buf) {
-        uuid = buf.readUUID();
-        playerState = new PlayerState(buf.readBoolean(), buf.readBoolean());
+        playerState = PlayerState.fromBytes(buf);
 
         return this;
     }
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUUID(uuid);
-        buf.writeBoolean(playerState.isDisabled());
-        buf.writeBoolean(playerState.isDisconnected());
+        playerState.toBytes(buf);
     }
 }

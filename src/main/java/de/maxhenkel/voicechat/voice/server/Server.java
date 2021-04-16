@@ -155,29 +155,11 @@ public class Server extends Thread {
                         if (player == null) {
                             continue;
                         }
-                        double distance = Main.SERVER_CONFIG.voiceChatDistance.get();
-                        List<ClientConnection> closeConnections = player.level
-                                .getEntitiesOfClass(
-                                        PlayerEntity.class,
-                                        new AxisAlignedBB(
-                                                player.getX() - distance,
-                                                player.getY() - distance,
-                                                player.getZ() - distance,
-                                                player.getX() + distance,
-                                                player.getY() + distance,
-                                                player.getZ() + distance
-                                        )
-                                        , playerEntity -> !playerEntity.getUUID().equals(player.getUUID())
-                                )
-                                .stream()
-                                .map(playerEntity -> connections.get(playerEntity.getUUID()))
-                                .filter(Objects::nonNull)
-                                .collect(Collectors.toList());
-                        NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(playerUUID, packet.getData(), packet.getSequenceNumber()));
-                        for (ClientConnection clientConnection : closeConnections) {
-                            if (!clientConnection.getPlayerUUID().equals(playerUUID)) {
-                                clientConnection.send(socket, soundMessage);
-                            }
+                        PlayerState state = playerStateManager.getState(playerUUID);
+                        if (state == null || !state.hasGroup()) {
+                            processProximityPacket(player, packet);
+                        } else {
+                            processGroupPacket(state, packet);
                         }
                     } else if (message.getPacket() instanceof PingPacket) {
                         pingManager.onPongPacket((PingPacket) message.getPacket());
@@ -194,6 +176,51 @@ public class Server extends Thread {
             running = false;
         }
     }
+
+    private void processGroupPacket(PlayerState player, MicPacket packet) throws IOException {
+        String group = player.getGroup();
+        NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(player.getGameProfile().getId(), packet.getData(), packet.getSequenceNumber()));
+        for (PlayerState state : playerStateManager.getStates()) {
+            if (!group.equals(state.getGroup())) {
+                continue;
+            }
+            if (player.getGameProfile().getId().equals(state.getGameProfile().getId())) {
+                continue;
+            }
+            ClientConnection connection = connections.get(state.getGameProfile().getId());
+            if (connection != null) {
+                connection.send(socket, soundMessage);
+            }
+        }
+    }
+
+    private void processProximityPacket(PlayerEntity player, MicPacket packet) throws IOException {
+        double distance = Main.SERVER_CONFIG.voiceChatDistance.get();
+        List<ClientConnection> closeConnections = player.level
+                .getEntitiesOfClass(
+                        PlayerEntity.class,
+                        new AxisAlignedBB(
+                                player.getX() - distance,
+                                player.getY() - distance,
+                                player.getZ() - distance,
+                                player.getX() + distance,
+                                player.getY() + distance,
+                                player.getZ() + distance
+                        )
+                        , playerEntity -> !playerEntity.getUUID().equals(player.getUUID())
+                )
+                .stream()
+                .map(playerEntity -> connections.get(playerEntity.getUUID()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(player.getUUID(), packet.getData(), packet.getSequenceNumber()));
+        for (ClientConnection clientConnection : closeConnections) {
+            if (!clientConnection.getPlayerUUID().equals(player.getUUID())) {
+                clientConnection.send(socket, soundMessage);
+            }
+        }
+    }
+
 
     private void keepAlive() throws IOException {
         long timestamp = System.currentTimeMillis();

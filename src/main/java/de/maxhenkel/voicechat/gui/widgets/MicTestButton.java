@@ -1,4 +1,4 @@
-package de.maxhenkel.voicechat.gui;
+package de.maxhenkel.voicechat.gui.widgets;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Main;

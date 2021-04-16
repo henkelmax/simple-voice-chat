@@ -1,16 +1,15 @@
 package de.maxhenkel.voicechat.voice.client;
 
-
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.net.PlayerStateMessage;
 import de.maxhenkel.voicechat.net.PlayerStatesMessage;
 import de.maxhenkel.voicechat.net.SetPlayerStateMessage;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import javax.annotation.Nullable;
+import java.util.*;
 
 public class ClientPlayerStateManager {
 
@@ -20,12 +19,12 @@ public class ClientPlayerStateManager {
 
     public ClientPlayerStateManager() {
         muted = Main.CLIENT_CONFIG.muted.get();
-        state = new PlayerState(Main.CLIENT_CONFIG.disabled.get(), true);
+        state = new PlayerState(Main.CLIENT_CONFIG.disabled.get(), true, Minecraft.getInstance().getUser().getGameProfile());
         states = new HashMap<>();
     }
 
     public void onPlayerStatePacket(PlayerStateMessage packet) {
-        states.put(packet.getUuid(), packet.getPlayerState());
+        states.put(packet.getPlayerState().getGameProfile().getId(), packet.getPlayerState());
     }
 
     public void onPlayerStatesPacket(PlayerStatesMessage packet) {
@@ -97,6 +96,46 @@ public class ClientPlayerStateManager {
         this.muted = muted;
         Main.CLIENT_CONFIG.muted.set(muted);
         Main.CLIENT_CONFIG.muted.save();
+    }
+
+    public boolean isInGroup() {
+        return getGroup() != null;
+    }
+
+    public boolean isInGroup(PlayerEntity player) {
+        PlayerState state = states.get(player.getUUID());
+        if (state == null) {
+            return false;
+        }
+        return state.hasGroup();
+    }
+
+    @Nullable
+    public String getGroup(PlayerEntity player) {
+        PlayerState state = states.get(player.getUUID());
+        if (state == null) {
+            return null;
+        }
+        return state.getGroup();
+    }
+
+    @Nullable
+    public String getGroup() {
+        return state.getGroup();
+    }
+
+    public void setGroup(@Nullable String group) {
+        state.setGroup(group);
+        syncOwnState();
+    }
+
+    public List<PlayerState> getPlayerStates() {
+        return new ArrayList<>(states.values());
+    }
+
+    @Nullable
+    public PlayerState getState(UUID player) {
+        return states.get(player);
     }
 
     public void clearStates() {

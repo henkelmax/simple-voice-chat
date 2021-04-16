@@ -1,1 +1,1 @@
-- Added catalan translation
+- Add group chats

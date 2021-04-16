@@ -1,4 +1,4 @@
-package de.maxhenkel.voicechat.gui;
+package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;

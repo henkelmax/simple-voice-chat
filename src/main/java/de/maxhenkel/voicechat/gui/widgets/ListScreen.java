@@ -1,4 +1,4 @@
-package de.maxhenkel.voicechat.gui;
+package de.maxhenkel.voicechat.gui.widgets;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -30,8 +30,11 @@ public abstract class ListScreen<T> extends Screen {
     protected Button back;
     protected Button next;
 
-    public ListScreen(List<T> elements, ITextComponent title) {
+    protected Screen parent;
+
+    public ListScreen(Screen parent, List<T> elements, ITextComponent title) {
         super(title);
+        this.parent = parent;
         this.elements = elements;
         xSize = 248;
         ySize = 85;
@@ -49,7 +52,7 @@ public abstract class ListScreen<T> extends Screen {
         });
 
         back = new Button(guiLeft + xSize / 2 - 30, guiTop + 60, 60, 20, new TranslationTextComponent("message.voicechat.back"), button -> {
-            minecraft.setScreen(new VoiceChatScreen());
+            minecraft.setScreen(parent);
         });
 
         next = new Button(guiLeft + xSize - 70, guiTop + 60, 60, 20, new TranslationTextComponent("message.voicechat.next"), button -> {
@@ -68,8 +71,8 @@ public abstract class ListScreen<T> extends Screen {
         addButton(next);
 
         if (elements.size() <= 1) {
-            next.active = false;
-            previous.active = false;
+            next.visible = false;
+            previous.visible = false;
         }
     }
 
@@ -83,7 +86,7 @@ public abstract class ListScreen<T> extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == minecraft.options.keyInventory.getKey().getValue() || keyCode == Main.KEY_VOICE_CHAT_SETTINGS.getKey().getValue()) {
+        if (keyCode == minecraft.options.keyInventory.getKey().getValue() || keyCode == Main.KEY_VOICE_CHAT.getKey().getValue()) {
             minecraft.setScreen(null);
             return true;
         }

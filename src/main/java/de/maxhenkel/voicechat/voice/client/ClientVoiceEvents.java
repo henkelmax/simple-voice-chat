@@ -5,7 +5,10 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.event.VoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.event.VoiceChatDisconnectedEvent;
+import de.maxhenkel.voicechat.gui.CreateGroupScreen;
+import de.maxhenkel.voicechat.gui.GroupScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
+import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
@@ -37,6 +40,7 @@ public class ClientVoiceEvents {
     private static final ResourceLocation SPEAKER_ICON = new ResourceLocation(Main.MODID, "textures/gui/speaker.png");
     private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Main.MODID, "textures/gui/speaker_off.png");
     private static final ResourceLocation DISCONNECT_ICON = new ResourceLocation(Main.MODID, "textures/gui/disconnected.png");
+    private static final ResourceLocation GROUP_ICON = new ResourceLocation(Main.MODID, "textures/gui/group.png");
 
     private Client client;
     private ClientPlayerStateManager playerStateManager;
@@ -132,6 +136,10 @@ public class ClientVoiceEvents {
         } else if (client != null && client.getMicThread() != null && client.getMicThread().isTalking()) {
             renderIcon(event.getMatrixStack(), MICROPHONE_ICON);
         }
+
+        if (playerStateManager.isInGroup() && Main.CLIENT_CONFIG.showGroupHUD.get()) {
+            GroupChatManager.renderIcons(event.getMatrixStack());
+        }
     }
 
     private void renderIcon(MatrixStack matrixStack, ResourceLocation texture) {
@@ -145,36 +153,32 @@ public class ClientVoiceEvents {
 
     @SubscribeEvent
     public void onInput(InputEvent.KeyInputEvent event) {
-        if (Main.KEY_VOICE_CHAT_SETTINGS.consumeClick()) {
-            if (Main.CLIENT_VOICE_EVENTS.getClient() == null || !Main.CLIENT_VOICE_EVENTS.getClient().isAuthenticated()) {
-                sendUnavailableMessage();
+        if (Main.KEY_VOICE_CHAT.consumeClick() && checkConnected()) {
+            minecraft.setScreen(new VoiceChatScreen());
+        }
+
+        if (Main.KEY_GROUP.consumeClick() && checkConnected()) {
+            if (playerStateManager.isInGroup()) {
+                minecraft.setScreen(new GroupScreen());
             } else {
-                minecraft.setScreen(new VoiceChatScreen());
+                minecraft.setScreen(new CreateGroupScreen());
             }
+        }
+
+        if (Main.KEY_VOICE_CHAT_SETTINGS.consumeClick() && checkConnected()) {
+            minecraft.setScreen(new VoiceChatSettingsScreen());
         }
 
         if (Main.KEY_PTT.consumeClick()) {
-            if (Main.CLIENT_VOICE_EVENTS.getClient() == null || !Main.CLIENT_VOICE_EVENTS.getClient().isAuthenticated()) {
-                sendUnavailableMessage();
-            }
+            checkConnected();
         }
 
-        if (Main.KEY_MUTE.consumeClick()) {
-            Client client = Main.CLIENT_VOICE_EVENTS.getClient();
-            if (client == null || !client.isAuthenticated()) {
-                sendUnavailableMessage();
-            } else {
-                playerStateManager.setMuted(!playerStateManager.isMuted());
-            }
+        if (Main.KEY_MUTE.consumeClick() && checkConnected()) {
+            playerStateManager.setMuted(!playerStateManager.isMuted());
         }
 
-        if (Main.KEY_DISABLE.consumeClick()) {
-            Client client = Main.CLIENT_VOICE_EVENTS.getClient();
-            if (client == null || !client.isAuthenticated()) {
-                sendUnavailableMessage();
-            } else {
-                playerStateManager.setDisabled(!playerStateManager.isDisabled());
-            }
+        if (Main.KEY_DISABLE.consumeClick() && checkConnected()) {
+            playerStateManager.setDisabled(!playerStateManager.isDisabled());
         }
 
         if (Main.KEY_HIDE_ICONS.consumeClick()) {
@@ -188,6 +192,14 @@ public class ClientVoiceEvents {
                 minecraft.player.displayClientMessage(new TranslationTextComponent("message.voicechat.icons_visible"), true);
             }
         }
+    }
+
+    public boolean checkConnected() {
+        if (Main.CLIENT_VOICE_EVENTS.getClient() == null || !Main.CLIENT_VOICE_EVENTS.getClient().isAuthenticated()) {
+            sendUnavailableMessage();
+            return false;
+        }
+        return true;
     }
 
     public void sendUnavailableMessage() {
@@ -209,8 +221,12 @@ public class ClientVoiceEvents {
         PlayerEntity player = (PlayerEntity) event.getEntity();
 
         if (!minecraft.options.hideGui) {
+            String group = playerStateManager.getGroup(player);
+
             if (playerStateManager.isPlayerDisconnected(player)) {
                 renderPlayerIcon(player, DISCONNECT_ICON, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
+            } else if (group != null && !group.equals(playerStateManager.getGroup())) {
+                renderPlayerIcon(player, GROUP_ICON, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
             } else if (playerStateManager.isPlayerDisabled(player)) {
                 renderPlayerIcon(player, SPEAKER_OFF_ICON, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
             } else if (client != null && client.getTalkCache().isTalking(player)) {

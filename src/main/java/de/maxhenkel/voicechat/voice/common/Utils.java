@@ -1,12 +1,13 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.Main;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -115,14 +116,15 @@ public class Utils {
         return stereo;
     }
 
-    public static Pair<Float, Float> getStereoVolume(Minecraft minecraft, Vector3d soundPos) {
+    @OnlyIn(Dist.CLIENT)
+    public static Pair<Float, Float> getStereoVolume(Minecraft minecraft, Vector3d soundPos, double voiceChatDistance) {
         PlayerEntity player = minecraft.player;
         Vector3d playerPos = player.position();
         Vector3d d = soundPos.subtract(playerPos).normalize();
         Vector2f diff = new Vector2f((float) d.x, (float) d.z);
         float diffAngle = angle(diff, new Vector2f(-1F, 0F));
         float angle = normalizeAngle(diffAngle - (player.yRot % 360F));
-        float dif = (float) (Math.abs(playerPos.y - soundPos.y) / Main.SERVER_CONFIG.voiceChatDistance.get().floatValue());
+        float dif = (float) (Math.abs(playerPos.y - soundPos.y) / voiceChatDistance);
 
         float rot = angle / 180F;
         float perc = rot;

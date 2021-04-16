@@ -1,7 +1,7 @@
-package de.maxhenkel.voicechat.gui;
+package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.Main;
-import de.maxhenkel.voicechat.PlayerInfo;
+import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.gui.widget.AbstractSlider;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -10,10 +10,10 @@ public class AdjustVolumeSlider extends AbstractSlider {
 
     private static final float MAXIMUM = 4F;
 
-    private PlayerInfo player;
+    private PlayerState player;
 
-    protected AdjustVolumeSlider(int xIn, int yIn, int widthIn, int heightIn, PlayerInfo player) {
-        super(xIn, yIn, widthIn, heightIn, StringTextComponent.EMPTY, (player == null ? 1D : Main.VOLUME_CONFIG.getVolume(player.getUuid(), 1D)) / MAXIMUM);
+    public AdjustVolumeSlider(int xIn, int yIn, int widthIn, int heightIn, PlayerState player) {
+        super(xIn, yIn, widthIn, heightIn, StringTextComponent.EMPTY, (player == null ? 1D : Main.VOLUME_CONFIG.getVolume(player.getGameProfile().getId(), 1D)) / MAXIMUM);
         this.player = player;
         if (player == null) {
             visible = false;
@@ -29,6 +29,6 @@ public class AdjustVolumeSlider extends AbstractSlider {
 
     @Override
     protected void applyValue() {
-        Main.VOLUME_CONFIG.setVolume(player.getUuid(), value * MAXIMUM);
+        Main.VOLUME_CONFIG.setVolume(player.getGameProfile().getId(), value * MAXIMUM);
     }
 }

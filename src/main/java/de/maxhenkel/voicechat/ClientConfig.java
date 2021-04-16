@@ -18,6 +18,7 @@ public class ClientConfig extends ConfigBase {
     public final ForgeConfigSpec.BooleanValue disabled;
     public final ForgeConfigSpec.BooleanValue stereo;
     public final ForgeConfigSpec.BooleanValue hideIcons;
+    public final ForgeConfigSpec.BooleanValue showGroupHUD;
 
     public ClientConfig(ForgeConfigSpec.Builder builder) {
         super(builder);
@@ -64,6 +65,9 @@ public class ClientConfig extends ConfigBase {
         hideIcons = builder
                 .comment("If the voice chat icons should be hidden")
                 .define("hide_icons", false);
+        showGroupHUD = builder
+                .comment("If the group HUD should be visible")
+                .define("show_group_hud", true);
     }
 
 }

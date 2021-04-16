@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.net.*;
 import de.maxhenkel.voicechat.voice.client.ClientVoiceEvents;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -50,10 +51,16 @@ public class Main {
     public static KeyBinding KEY_DISABLE;
 
     @OnlyIn(Dist.CLIENT)
+    public static KeyBinding KEY_VOICE_CHAT;
+
+    @OnlyIn(Dist.CLIENT)
     public static KeyBinding KEY_HIDE_ICONS;
 
     @OnlyIn(Dist.CLIENT)
     public static KeyBinding KEY_VOICE_CHAT_SETTINGS;
+
+    @OnlyIn(Dist.CLIENT)
+    public static KeyBinding KEY_GROUP;
 
     public Main() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
@@ -72,11 +79,9 @@ public class Main {
 
         SIMPLE_CHANNEL = CommonRegistry.registerChannel(Main.MODID, "default");
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 0, AuthenticationMessage.class);
-        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 1, RequestPlayerListMessage.class);
-        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 2, PlayerListMessage.class);
-        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 3, PlayerStateMessage.class);
-        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 4, PlayerStatesMessage.class);
-        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 5, SetPlayerStateMessage.class);
+        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 1, PlayerStateMessage.class);
+        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 2, PlayerStatesMessage.class);
+        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 3, SetPlayerStateMessage.class);
     }
 
     @SubscribeEvent
@@ -96,8 +101,14 @@ public class Main {
         KEY_HIDE_ICONS = new KeyBinding("key.hide_icons", GLFW.GLFW_KEY_H, "key.categories.voicechat");
         ClientRegistry.registerKeyBinding(KEY_HIDE_ICONS);
 
-        KEY_VOICE_CHAT_SETTINGS = new KeyBinding("key.voice_chat_settings", GLFW.GLFW_KEY_V, "key.categories.voicechat");
+        KEY_VOICE_CHAT = new KeyBinding("key.voice_chat", GLFW.GLFW_KEY_V, "key.categories.voicechat");
+        ClientRegistry.registerKeyBinding(KEY_VOICE_CHAT);
+
+        KEY_VOICE_CHAT_SETTINGS = new KeyBinding("key.voice_chat_settings", InputMappings.UNKNOWN.getValue(), "key.categories.voicechat");
         ClientRegistry.registerKeyBinding(KEY_VOICE_CHAT_SETTINGS);
+
+        KEY_GROUP = new KeyBinding("key.voice_chat_group", GLFW.GLFW_KEY_G, "key.categories.voicechat");
+        ClientRegistry.registerKeyBinding(KEY_GROUP);
     }
 
     @SubscribeEvent

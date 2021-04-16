@@ -48,7 +48,8 @@ public class PlayerStatesMessage implements Message<PlayerStatesMessage> {
         int count = buf.readInt();
         this.playerStates = new HashMap<>();
         for (int i = 0; i < count; i++) {
-            playerStates.put(buf.readUUID(), new PlayerState(buf.readBoolean(), buf.readBoolean()));
+            PlayerState playerState = PlayerState.fromBytes(buf);
+            playerStates.put(playerState.getGameProfile().getId(), playerState);
         }
 
         return this;
@@ -58,9 +59,7 @@ public class PlayerStatesMessage implements Message<PlayerStatesMessage> {
     public void toBytes(PacketBuffer buf) {
         buf.writeInt(playerStates.size());
         for (Map.Entry<UUID, PlayerState> entry : playerStates.entrySet()) {
-            buf.writeUUID(entry.getKey());
-            buf.writeBoolean(entry.getValue().isDisabled());
-            buf.writeBoolean(entry.getValue().isDisconnected());
+            entry.getValue().toBytes(buf);
         }
     }
 }
