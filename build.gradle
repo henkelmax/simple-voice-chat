@@ -74,6 +74,9 @@ curseforge {
         addGameVersion "Fabric"
         mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
             displayName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
+            relations {
+                requiredDependency 'fabric-api'
+            }
         }
         afterEvaluate {
             uploadTask.dependsOn(remapJar)
