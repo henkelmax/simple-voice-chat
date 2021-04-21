@@ -159,13 +159,13 @@ public class AudioChannel extends Thread {
 
             if (Main.CLIENT_CONFIG.stereo.get()) {
                 Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, player.position(), maxDistance);
-                stereo = Utils.convertToStereo(monoData, stereoVolume.getLeft(), stereoVolume.getRight());
+                stereo = Utils.convertToStereo(monoData, percentage * stereoVolume.getLeft(), percentage * stereoVolume.getRight());
             } else {
-                stereo = Utils.convertToStereo(monoData, 1F, 1F);
+                stereo = Utils.convertToStereo(monoData, percentage, percentage);
             }
         }
 
-        gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(percentage * Main.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * (float) Main.VOLUME_CONFIG.getVolume(uuid)), gainControl.getMinimum()), gainControl.getMaximum()));
+        gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(Main.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * (float) Main.VOLUME_CONFIG.getVolume(uuid)), gainControl.getMinimum()), gainControl.getMaximum()));
 
         speaker.write(stereo, 0, stereo.length);
         speaker.start();
