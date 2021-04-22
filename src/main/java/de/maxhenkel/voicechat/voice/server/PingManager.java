@@ -1,9 +1,8 @@
 package de.maxhenkel.voicechat.voice.server;
 
-import de.maxhenkel.voicechat.voice.common.PingPacket;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.voice.common.PingPacket;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,7 @@ public class PingManager {
         }
     }
 
-    public void sendPing(ClientConnection connection, long timeout, PingListener listener) throws IOException {
+    public void sendPing(ClientConnection connection, long timeout, PingListener listener) throws Exception {
         UUID id = UUID.randomUUID();
         long timestamp = System.currentTimeMillis();
         server.sendPacket(new PingPacket(id, timestamp), connection);

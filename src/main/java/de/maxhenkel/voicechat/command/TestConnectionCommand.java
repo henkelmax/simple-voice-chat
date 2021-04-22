@@ -13,8 +13,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.TranslatableText;
 
-import java.io.IOException;
-
 public class TestConnectionCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
@@ -47,7 +45,7 @@ public class TestConnectionCommand {
                     }
                 });
                 commandSource.getSource().sendFeedback(new TranslatableText("message.voicechat.packet_sent_waiting"), true);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 commandSource.getSource().sendFeedback(new TranslatableText("message.voicechat.failed_to_send_packet", e.getMessage()), true);
                 e.printStackTrace();
                 return 1;
