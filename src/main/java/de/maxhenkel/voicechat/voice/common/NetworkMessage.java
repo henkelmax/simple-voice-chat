@@ -1,15 +1,22 @@
 package de.maxhenkel.voicechat.voice.common;
 
+import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 
 import javax.annotation.Nonnull;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -19,13 +26,7 @@ public class NetworkMessage {
     private final long timestamp;
     private final long ttl;
     private Packet<? extends Packet> packet;
-    private UUID secret;
     private SocketAddress address;
-
-    public NetworkMessage(Packet<?> packet, UUID secret) {
-        this(packet);
-        this.secret = secret;
-    }
 
     public NetworkMessage(Packet<?> packet) {
         this();
@@ -40,10 +41,6 @@ public class NetworkMessage {
     @Nonnull
     public Packet<? extends Packet> getPacket() {
         return packet;
-    }
-
-    public UUID getSecret() {
-        return secret;
     }
 
     public long getTimestamp() {
@@ -70,14 +67,33 @@ public class NetworkMessage {
         packetRegistry.put((byte) 5, KeepAlivePacket.class);
     }
 
-    public static NetworkMessage readPacket(DatagramSocket socket) throws IllegalAccessException, InstantiationException, IOException {
-        // 4096 is the maximum packet size a packet can have with 44100 hz
+    public static NetworkMessage readPacketClient(DatagramSocket socket, Client client) throws IllegalAccessException, InstantiationException, IOException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
         socket.receive(packet);
         byte[] data = new byte[packet.getLength()];
         System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
+        return readFromBytes(packet.getSocketAddress(), client.getSecret(), data);
+    }
 
-        PacketByteBuf buffer = new PacketByteBuf(Unpooled.wrappedBuffer(data));
+    public static NetworkMessage readPacketServer(DatagramSocket socket, Server server) throws IllegalAccessException, InstantiationException, IOException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
+        socket.receive(packet);
+        byte[] data = new byte[packet.getLength()];
+        System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
+        PacketByteBuf b = new PacketByteBuf(Unpooled.wrappedBuffer(data));
+        UUID playerID = b.readUuid();
+        return readFromBytes(packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray());
+    }
+
+    private static NetworkMessage readFromBytes(SocketAddress socketAddress, UUID secret, byte[] encryptedPayload) throws InstantiationException, IllegalAccessException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        byte[] decrypt = AES.decrypt(secret, encryptedPayload);
+        PacketByteBuf buffer = new PacketByteBuf(Unpooled.wrappedBuffer(decrypt));
+        UUID readSecret = buffer.readUuid();
+
+        if (!secret.equals(readSecret)) {
+            throw new InvalidKeyException("Secrets do not match");
+        }
+
         byte packetType = buffer.readByte();
         Class<? extends Packet> packetClass = packetRegistry.get(packetType);
         if (packetClass == null) {
@@ -86,10 +102,7 @@ public class NetworkMessage {
         Packet<? extends Packet<?>> p = packetClass.newInstance();
 
         NetworkMessage message = new NetworkMessage();
-        if (buffer.readBoolean()) {
-            message.secret = buffer.readUuid();
-        }
-        message.address = packet.getSocketAddress();
+        message.address = socketAddress;
         message.packet = p.fromBytes(buffer);
 
         return message;
@@ -108,23 +121,27 @@ public class NetworkMessage {
         return -1;
     }
 
-    public byte[] write() {
+    public byte[] writeClient(Client client) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        byte[] payload = write(client.getSecret());
+        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer(payload.length + 32));
+        buffer.writeUuid(client.getPlayerUUID());
+        buffer.writeByteArray(payload);
+        return buffer.array();
+    }
+
+    public byte[] write(UUID secret) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
+        buffer.writeUuid(secret);
 
         byte type = getPacketType(packet);
-
         if (type < 0) {
             throw new IllegalArgumentException("Packet type not found");
         }
 
         buffer.writeByte(type);
-        buffer.writeBoolean(secret != null);
-        if (secret != null) {
-            buffer.writeUuid(secret);
-        }
         packet.toBytes(buffer);
 
-        return buffer.array();
+        return AES.encrypt(secret, buffer.array());
     }
 
 }

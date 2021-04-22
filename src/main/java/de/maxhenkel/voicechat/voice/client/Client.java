@@ -128,7 +128,7 @@ public class Client extends Thread {
     public void run() {
         try {
             while (running) {
-                NetworkMessage in = NetworkMessage.readPacket(socket);
+                NetworkMessage in = NetworkMessage.readPacketClient(socket, this);
                 if (in.getPacket() instanceof AuthenticateAckPacket) {
                     if (!authenticated) {
                         Voicechat.LOGGER.info("Server acknowledged authentication");
@@ -156,10 +156,10 @@ public class Client extends Thread {
                 } else if (in.getPacket() instanceof PingPacket) {
                     PingPacket packet = (PingPacket) in.getPacket();
                     Voicechat.LOGGER.info("Received ping {}, sending pong...", packet.getId());
-                    sendToServer(new NetworkMessage(packet, secret));
+                    sendToServer(new NetworkMessage(packet));
                 } else if (in.getPacket() instanceof KeepAlivePacket) {
                     lastKeepAlive = System.currentTimeMillis();
-                    sendToServer(new NetworkMessage(new KeepAlivePacket(), secret));
+                    sendToServer(new NetworkMessage(new KeepAlivePacket()));
                 }
             }
         } catch (Exception e) {
@@ -193,8 +193,8 @@ public class Client extends Thread {
         return talkCache;
     }
 
-    public void sendToServer(NetworkMessage message) throws IOException {
-        byte[] data = message.write();
+    public void sendToServer(NetworkMessage message) throws Exception {
+        byte[] data = message.writeClient(this);
         socket.send(new DatagramPacket(data, data.length, address, port));
     }
 
@@ -220,7 +220,7 @@ public class Client extends Thread {
                 try {
                     Voicechat.LOGGER.info("Trying to authenticate voice connection");
                     sendToServer(new NetworkMessage(new AuthenticatePacket(playerUUID, secret)));
-                } catch (IOException e) {
+                } catch (Exception e) {
                     if (!socket.isClosed()) {
                         Voicechat.LOGGER.error("Failed to authenticate voice connection: {}", e.getMessage());
                     }
