@@ -7,7 +7,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.AxisAlignedBB;
 
-import java.io.IOException;
 import java.net.BindException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -71,7 +70,7 @@ public class Server extends Thread {
 
             while (!socket.isClosed()) {
                 try {
-                    NetworkMessage message = NetworkMessage.readPacket(socket);
+                    NetworkMessage message = NetworkMessage.readPacketServer(socket, this);
                     packetQueue.add(message);
                 } catch (Exception e) {
                 }
@@ -143,10 +142,6 @@ public class Server extends Thread {
                         continue;
                     }
 
-                    if (!isPacketAuthorized(message, playerUUID)) {
-                        continue;
-                    }
-
                     ClientConnection conn = connections.get(playerUUID);
 
                     if (message.getPacket() instanceof MicPacket) {
@@ -177,7 +172,7 @@ public class Server extends Thread {
         }
     }
 
-    private void processGroupPacket(PlayerState player, MicPacket packet) throws IOException {
+    private void processGroupPacket(PlayerState player, MicPacket packet) throws Exception {
         String group = player.getGroup();
         NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(player.getGameProfile().getId(), packet.getData(), packet.getSequenceNumber()));
         for (PlayerState state : playerStateManager.getStates()) {
@@ -189,12 +184,12 @@ public class Server extends Thread {
             }
             ClientConnection connection = connections.get(state.getGameProfile().getId());
             if (connection != null) {
-                connection.send(socket, soundMessage);
+                connection.send(this, soundMessage);
             }
         }
     }
 
-    private void processProximityPacket(PlayerEntity player, MicPacket packet) throws IOException {
+    private void processProximityPacket(PlayerEntity player, MicPacket packet) throws Exception {
         double distance = Main.SERVER_CONFIG.voiceChatDistance.get();
         List<ClientConnection> closeConnections = player.level
                 .getEntitiesOfClass(
@@ -216,13 +211,13 @@ public class Server extends Thread {
         NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(player.getUUID(), packet.getData(), packet.getSequenceNumber()));
         for (ClientConnection clientConnection : closeConnections) {
             if (!clientConnection.getPlayerUUID().equals(player.getUUID())) {
-                clientConnection.send(socket, soundMessage);
+                clientConnection.send(this, soundMessage);
             }
         }
     }
 
 
-    private void keepAlive() throws IOException {
+    private void keepAlive() throws Exception {
         long timestamp = System.currentTimeMillis();
         KeepAlivePacket keepAlive = new KeepAlivePacket();
         List<UUID> connectionsToDrop = new ArrayList<>(connections.size());
@@ -247,21 +242,16 @@ public class Server extends Thread {
         }
     }
 
-    private boolean isPacketAuthorized(NetworkMessage message, UUID sender) {
-        UUID secret = secrets.get(sender);
-        return secret != null && secret.equals(message.getSecret());
-    }
-
     public Map<UUID, ClientConnection> getConnections() {
         return connections;
     }
 
-    public Map<UUID, UUID> getSecrets() {
-        return secrets;
+    public DatagramSocket getSocket() {
+        return socket;
     }
 
-    public void sendPacket(Packet<?> packet, ClientConnection connection) throws IOException {
-        connection.send(socket, new NetworkMessage(packet));
+    public void sendPacket(Packet<?> packet, ClientConnection connection) throws Exception {
+        connection.send(this, new NetworkMessage(packet));
     }
 
     public PingManager getPingManager() {

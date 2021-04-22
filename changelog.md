@@ -1,1 +1,1 @@
-- Improved positional audio
+- Added AES encryption
