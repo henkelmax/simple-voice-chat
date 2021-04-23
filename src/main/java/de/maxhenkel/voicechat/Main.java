@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat;
 
 import de.maxhenkel.corelib.CommonRegistry;
-import de.maxhenkel.voicechat.command.TestConnectionCommand;
+import de.maxhenkel.voicechat.command.VoicechatCommands;
 import de.maxhenkel.voicechat.net.*;
 import de.maxhenkel.voicechat.voice.client.ClientVoiceEvents;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
@@ -23,6 +23,8 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.regex.Pattern;
 
 @Mod(Main.MODID)
 public class Main {
@@ -62,6 +64,8 @@ public class Main {
     @OnlyIn(Dist.CLIENT)
     public static KeyBinding KEY_GROUP;
 
+    public static final Pattern GROUP_REGEX = Pattern.compile("^[a-zA-Z0-9-_]{1,16}$");
+
     public Main() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
@@ -82,6 +86,7 @@ public class Main {
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 1, PlayerStateMessage.class);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 2, PlayerStatesMessage.class);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 3, SetPlayerStateMessage.class);
+        CommonRegistry.registerMessage(SIMPLE_CHANNEL, 4, SetGroupMessage.class);
     }
 
     @SubscribeEvent
@@ -118,7 +123,7 @@ public class Main {
 
     @SubscribeEvent
     public void onRegisterCommands(RegisterCommandsEvent event) {
-        TestConnectionCommand.register(event.getDispatcher());
+        VoicechatCommands.register(event.getDispatcher());
     }
 
 }

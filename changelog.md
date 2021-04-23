@@ -1,1 +1,1 @@
-- Added AES encryption
+- Added group invite commands

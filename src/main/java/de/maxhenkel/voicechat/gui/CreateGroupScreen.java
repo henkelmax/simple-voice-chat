@@ -13,13 +13,9 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.regex.Pattern;
-
 public class CreateGroupScreen extends VoiceChatScreenBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Main.MODID, "textures/gui/gui_create_group.png");
-
-    public static final Pattern groupRegex = Pattern.compile("^[a-zA-Z0-9-_]*$");
 
     private CreateGroupList playerList;
     private TextFieldWidget groupName;
@@ -42,7 +38,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         groupName = new TextFieldWidget(font, guiLeft + 78, guiTop + 20, 88, 10, StringTextComponent.EMPTY);
 
         groupName.setMaxLength(16);
-        groupName.setResponder(s -> groupRegex.matcher(s).matches());
+        groupName.setResponder(s -> Main.GROUP_REGEX.matcher(s).matches());
 
         addButton(groupName);
 
