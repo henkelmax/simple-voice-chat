@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat;
 
-import de.maxhenkel.voicechat.command.TestConnectionCommand;
+import de.maxhenkel.voicechat.command.VoicechatCommands;
 import de.maxhenkel.voicechat.config.ConfigBuilder;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 public class Voicechat implements ModInitializer {
 
@@ -32,6 +33,7 @@ public class Voicechat implements ModInitializer {
     public static final Identifier INIT = new Identifier(Voicechat.MODID, "init");
     public static int COMPATIBILITY_VERSION = -1;
 
+    public static final Pattern GROUP_REGEX = Pattern.compile("^[a-zA-Z0-9-_]{1,16}$");
 
     @Override
     public void onInitialize() {
@@ -72,6 +74,6 @@ public class Voicechat implements ModInitializer {
 
         SERVER = new ServerVoiceEvents();
 
-        CommandRegistrationCallback.EVENT.register(TestConnectionCommand::register);
+        CommandRegistrationCallback.EVENT.register(VoicechatCommands::register);
     }
 }

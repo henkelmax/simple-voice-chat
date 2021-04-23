@@ -12,6 +12,7 @@ import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
 import de.maxhenkel.voicechat.net.InitPacket;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.net.SetGroupPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -62,6 +63,11 @@ public class ClientVoiceEvents {
 
         NetManager.registerClientReceiver(InitPacket.class, (client, handler, responseSender, packet) -> {
             authenticate(handler.getProfile().getId(), packet);
+        });
+
+        NetManager.registerClientReceiver(SetGroupPacket.class, (client, handler, responseSender, packet) -> {
+            playerStateManager.setGroup(packet.getGroup());
+            minecraft.openScreen(null);
         });
     }
 
