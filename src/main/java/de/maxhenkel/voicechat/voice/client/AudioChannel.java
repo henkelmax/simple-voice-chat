@@ -6,8 +6,8 @@ import de.maxhenkel.voicechat.voice.common.OpusDecoder;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.common.Utils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.sound.sampled.AudioFormat;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 public class AudioChannel extends Thread {
 
-    private MinecraftClient minecraft;
+    private Minecraft minecraft;
     private Client client;
     private UUID uuid;
     private BlockingQueue<SoundPacket> queue;
@@ -39,7 +39,7 @@ public class AudioChannel extends Thread {
         this.stopped = false;
         this.decoder = new OpusDecoder(client.getAudioChannelConfig().getSampleRate(), client.getAudioChannelConfig().getFrameSize(), client.getMtuSize());
         this.lastSequenceNumber = -1L;
-        this.minecraft = MinecraftClient.getInstance();
+        this.minecraft = Minecraft.getInstance();
         setDaemon(true);
         setName("AudioChannelThread-" + uuid.toString());
         Voicechat.LOGGER.debug("Creating audio channel for " + uuid);
@@ -105,7 +105,7 @@ public class AudioChannel extends Thread {
                     byte[] data = new byte[Math.min(client.getAudioChannelConfig().getFrameSize() * VoicechatClient.CLIENT_CONFIG.outputBufferSize.get(), speaker.getBufferSize() - client.getAudioChannelConfig().getFrameSize())];
                     speaker.write(data, 0, data.length);
                 }
-                if (minecraft.world == null || minecraft.player == null) {
+                if (minecraft.level == null || minecraft.player == null) {
                     continue;
                 }
 
@@ -146,7 +146,7 @@ public class AudioChannel extends Thread {
         if (state != null && state.hasGroup()) {
             stereo = Utils.convertToStereo(monoData, 1F, 1F);
         } else {
-            PlayerEntity player = minecraft.world.getPlayerByUuid(uuid);
+            Player player = minecraft.level.getPlayerByUUID(uuid);
             if (player == null) {
                 return;
             }
@@ -159,7 +159,7 @@ public class AudioChannel extends Thread {
             }
 
             if (VoicechatClient.CLIENT_CONFIG.stereo.get()) {
-                Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, player.getPos(), client.getVoiceChatDistance());
+                Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, player.position(), client.getVoiceChatDistance());
                 stereo = Utils.convertToStereo(monoData, percentage * stereoVolume.getLeft(), percentage * stereoVolume.getRight());
             } else {
                 stereo = Utils.convertToStereo(monoData, percentage, percentage);

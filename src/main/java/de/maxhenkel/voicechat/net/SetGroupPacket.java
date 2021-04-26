@@ -1,12 +1,12 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 public class SetGroupPacket implements Packet<SetGroupPacket> {
 
-    public static final Identifier SET_GROUP = new Identifier(Voicechat.MODID, "set_group");
+    public static final ResourceLocation SET_GROUP = new ResourceLocation(Voicechat.MODID, "set_group");
 
     private String group;
 
@@ -23,19 +23,19 @@ public class SetGroupPacket implements Packet<SetGroupPacket> {
     }
 
     @Override
-    public Identifier getID() {
+    public ResourceLocation getID() {
         return SET_GROUP;
     }
 
     @Override
-    public SetGroupPacket fromBytes(PacketByteBuf buf) {
-        group = buf.readString(16);
+    public SetGroupPacket fromBytes(FriendlyByteBuf buf) {
+        group = buf.readUtf(16);
         return this;
     }
 
     @Override
-    public void toBytes(PacketByteBuf buf) {
-        buf.writeString(group, 16);
+    public void toBytes(FriendlyByteBuf buf) {
+        buf.writeUtf(group, 16);
     }
 
 }

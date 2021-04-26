@@ -2,12 +2,12 @@ package de.maxhenkel.voicechat.voice.common;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.Perspective;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -117,13 +117,13 @@ public class Utils {
     }
 
     @Environment(EnvType.CLIENT)
-    public static Pair<Float, Float> getStereoVolume(MinecraftClient minecraft, Vec3d soundPos, double voiceChatDistance) {
-        PlayerEntity player = minecraft.player;
-        Vec3d playerPos = player.getPos();
-        Vec3d d = soundPos.subtract(playerPos).normalize();
-        Vec2f diff = new Vec2f((float) d.x, (float) d.z);
-        float diffAngle = angle(diff, new Vec2f(-1F, 0F));
-        float angle = normalizeAngle(diffAngle - (player.yaw % 360F));
+    public static Pair<Float, Float> getStereoVolume(Minecraft minecraft, Vec3 soundPos, double voiceChatDistance) {
+        Player player = minecraft.player;
+        Vec3 playerPos = player.position();
+        Vec3 d = soundPos.subtract(playerPos).normalize();
+        Vec2 diff = new Vec2((float) d.x, (float) d.z);
+        float diffAngle = angle(diff, new Vec2(-1F, 0F));
+        float angle = normalizeAngle(diffAngle - (player.yRot % 360F));
         float dif = (float) (Math.abs(playerPos.y - soundPos.y) / voiceChatDistance);
 
         float rot = angle / 180F;
@@ -142,7 +142,7 @@ public class Utils {
         left += fill;
         right += fill;
 
-        if (minecraft.options.getPerspective().equals(Perspective.THIRD_PERSON_FRONT)) {
+        if (minecraft.options.getCameraType().equals(CameraType.THIRD_PERSON_FRONT)) {
             return new ImmutablePair<>(right, left);
         }
 
@@ -159,20 +159,20 @@ public class Utils {
         return angle;
     }
 
-    private static float angle(Vec2f vec1, Vec2f vec2) {
+    private static float angle(Vec2 vec1, Vec2 vec2) {
         return (float) Math.toDegrees(Math.atan2(vec1.x * vec2.x + vec1.y * vec2.y, vec1.x * vec2.y - vec1.y * vec2.x));
     }
 
-    private static float magnitude(Vec2f vec1) {
-        return MathHelper.sqrt(Math.pow(vec1.x, 2) + Math.pow(vec1.y, 2));
+    private static float magnitude(Vec2 vec1) {
+        return Mth.sqrt(Math.pow(vec1.x, 2) + Math.pow(vec1.y, 2));
     }
 
-    private static float multiply(Vec2f vec1, Vec2f vec2) {
+    private static float multiply(Vec2 vec1, Vec2 vec2) {
         return vec1.x * vec2.x + vec1.y * vec2.y;
     }
 
-    private static Vec2f rotate(Vec2f vec, float angle) {
-        return new Vec2f(vec.x * MathHelper.cos(angle) - vec.y * MathHelper.sin(angle), vec.x * MathHelper.sin(angle) + vec.y * MathHelper.cos(angle));
+    private static Vec2 rotate(Vec2 vec, float angle) {
+        return new Vec2(vec.x * Mth.cos(angle) - vec.y * Mth.sin(angle), vec.x * Mth.sin(angle) + vec.y * Mth.cos(angle));
     }
 
     /**

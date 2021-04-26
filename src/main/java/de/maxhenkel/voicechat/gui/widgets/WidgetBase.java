@@ -1,19 +1,19 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractWidget;
 
 public abstract class WidgetBase {
 
     protected VoiceChatScreenBase screen;
-    protected MinecraftClient mc;
+    protected Minecraft mc;
     protected int posX, posY, width, height, guiLeft, guiTop, xSize, ySize;
 
     public WidgetBase(VoiceChatScreenBase screen, int posX, int posY, int xSize, int ySize) {
         this.screen = screen;
-        mc = MinecraftClient.getInstance();
+        mc = Minecraft.getInstance();
         this.posX = posX;
         this.posY = posY;
         this.xSize = xSize;
@@ -29,11 +29,11 @@ public abstract class WidgetBase {
 
     }
 
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(PoseStack matrixStack, int mouseX, int mouseY) {
 
     }
 
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 
     }
 
@@ -49,7 +49,7 @@ public abstract class WidgetBase {
         return false;
     }
 
-    protected void addWidget(AbstractButtonWidget widget) {
+    protected void addWidget(AbstractWidget widget) {
         screen.addButton(widget);
     }
 

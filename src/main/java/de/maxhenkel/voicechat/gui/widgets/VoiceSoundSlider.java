@@ -1,15 +1,15 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.VoicechatClient;
-import net.minecraft.client.gui.widget.SliderWidget;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
-public class VoiceSoundSlider extends SliderWidget {
+public class VoiceSoundSlider extends AbstractSliderButton {
 
     public VoiceSoundSlider(int x, int y, int width, int theight) {
-        super(x, y, width, theight, LiteralText.EMPTY, VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() / 2F);
+        super(x, y, width, theight, TextComponent.EMPTY, VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() / 2F);
         updateMessage();
     }
 
@@ -18,8 +18,8 @@ public class VoiceSoundSlider extends SliderWidget {
         setMessage(getMsg());
     }
 
-    public Text getMsg() {
-        return new TranslatableText("message.voicechat.voice_chat_volume", Math.round(value * 200F) + "%");
+    public Component getMsg() {
+        return new TranslatableComponent("message.voicechat.voice_chat_volume", Math.round(value * 200F) + "%");
     }
 
     @Override

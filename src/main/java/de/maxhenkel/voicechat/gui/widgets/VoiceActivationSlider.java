@@ -2,21 +2,21 @@ package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.common.Utils;
-import net.minecraft.client.gui.widget.SliderWidget;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
-public class VoiceActivationSlider extends SliderWidget {
+public class VoiceActivationSlider extends AbstractSliderButton {
 
     public VoiceActivationSlider(int x, int y, int width, int height) {
-        super(x, y, width, height, LiteralText.EMPTY, Utils.dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
+        super(x, y, width, height, TextComponent.EMPTY, Utils.dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
         updateMessage();
     }
 
     @Override
     protected void updateMessage() {
         long db = Math.round(Utils.percToDb(value));
-        setMessage(new TranslatableText("message.voicechat.voice_activation", db));
+        setMessage(new TranslatableComponent("message.voicechat.voice_activation", db));
     }
 
     @Override

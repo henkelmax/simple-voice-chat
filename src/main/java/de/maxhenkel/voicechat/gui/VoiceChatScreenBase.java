@@ -1,12 +1,12 @@
 package de.maxhenkel.voicechat.gui;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.VoicechatClient;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class VoiceChatScreenBase extends Screen {
     protected int xSize;
     protected int ySize;
 
-    protected VoiceChatScreenBase(Text title, int xSize, int ySize) {
+    protected VoiceChatScreenBase(Component title, int xSize, int ySize) {
         super(title);
         this.xSize = xSize;
         this.ySize = ySize;
@@ -47,22 +47,22 @@ public class VoiceChatScreenBase extends Screen {
     }
 
     @Override
-    public <T extends AbstractButtonWidget> T addButton(T button) {
+    public <T extends AbstractWidget> T addButton(T button) {
         return super.addButton(button);
     }
 
-    public void drawHoverAreas(MatrixStack matrixStack, int mouseX, int mouseY) {
+    public void drawHoverAreas(PoseStack matrixStack, int mouseX, int mouseY) {
         for (HoverArea hoverArea : hoverAreas) {
             if (hoverArea.tooltip != null && hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
-                renderOrderedTooltip(matrixStack, hoverArea.tooltip.get(), mouseX - guiLeft, mouseY - guiTop);
+                renderTooltip(matrixStack, hoverArea.tooltip.get(), mouseX - guiLeft, mouseY - guiTop);
             }
         }
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == KeyBindingHelper.getBoundKeyOf(client.options.keyInventory).getCode() || keyCode == KeyBindingHelper.getBoundKeyOf(VoicechatClient.KEY_VOICE_CHAT).getCode()) {
-            client.openScreen(null);
+        if (keyCode == KeyBindingHelper.getBoundKeyOf(minecraft.options.keyInventory).getValue() || keyCode == KeyBindingHelper.getBoundKeyOf(VoicechatClient.KEY_VOICE_CHAT).getValue()) {
+            minecraft.setScreen(null);
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -72,13 +72,13 @@ public class VoiceChatScreenBase extends Screen {
         private final int posX, posY;
         private final int width, height;
         @Nullable
-        private final Supplier<List<OrderedText>> tooltip;
+        private final Supplier<List<FormattedCharSequence>> tooltip;
 
         public HoverArea(int posX, int posY, int width, int height) {
             this(posX, posY, width, height, null);
         }
 
-        public HoverArea(int posX, int posY, int width, int height, Supplier<List<OrderedText>> tooltip) {
+        public HoverArea(int posX, int posY, int width, int height, Supplier<List<FormattedCharSequence>> tooltip) {
             this.posX = posX;
             this.posY = posY;
             this.width = width;
@@ -103,7 +103,7 @@ public class VoiceChatScreenBase extends Screen {
         }
 
         @Nullable
-        public Supplier<List<OrderedText>> getTooltip() {
+        public Supplier<List<FormattedCharSequence>> getTooltip() {
             return tooltip;
         }
 

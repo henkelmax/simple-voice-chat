@@ -2,8 +2,8 @@ package de.maxhenkel.voicechat.voice.common;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtHelper;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.FriendlyByteBuf;
 
 import javax.annotation.Nullable;
 
@@ -61,23 +61,23 @@ public class PlayerState {
         return group != null;
     }
 
-    public static PlayerState fromBytes(PacketByteBuf buf) {
-        PlayerState state = new PlayerState(buf.readBoolean(), buf.readBoolean(), NbtHelper.toGameProfile(buf.readCompoundTag()));
+    public static PlayerState fromBytes(FriendlyByteBuf buf) {
+        PlayerState state = new PlayerState(buf.readBoolean(), buf.readBoolean(), NbtUtils.readGameProfile(buf.readNbt()));
 
         if (buf.readBoolean()) {
-            state.setGroup(buf.readString(16));
+            state.setGroup(buf.readUtf(16));
         }
 
         return state;
     }
 
-    public void toBytes(PacketByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeBoolean(disabled);
         buf.writeBoolean(disconnected);
-        buf.writeCompoundTag(NbtHelper.fromGameProfile(new CompoundTag(), gameProfile));
+        buf.writeNbt(NbtUtils.writeGameProfile(new CompoundTag(), gameProfile));
         buf.writeBoolean(hasGroup());
         if (hasGroup()) {
-            buf.writeString(group, 16);
+            buf.writeUtf(group, 16);
         }
     }
 

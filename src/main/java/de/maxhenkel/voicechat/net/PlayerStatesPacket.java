@@ -2,8 +2,8 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
 
     private Map<UUID, PlayerState> playerStates;
 
-    public static final Identifier PLAYER_STATES = new Identifier(Voicechat.MODID, "player_states");
+    public static final ResourceLocation PLAYER_STATES = new ResourceLocation(Voicechat.MODID, "player_states");
 
     public PlayerStatesPacket() {
 
@@ -28,12 +28,12 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
     }
 
     @Override
-    public Identifier getID() {
+    public ResourceLocation getID() {
         return PLAYER_STATES;
     }
 
     @Override
-    public PlayerStatesPacket fromBytes(PacketByteBuf buf) {
+    public PlayerStatesPacket fromBytes(FriendlyByteBuf buf) {
         playerStates = new HashMap<>();
         int count = buf.readInt();
         for (int i = 0; i < count; i++) {
@@ -45,7 +45,7 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
     }
 
     @Override
-    public void toBytes(PacketByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(playerStates.size());
         for (Map.Entry<UUID, PlayerState> entry : playerStates.entrySet()) {
             entry.getValue().toBytes(buf);
