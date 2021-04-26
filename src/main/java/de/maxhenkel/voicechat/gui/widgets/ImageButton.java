@@ -1,21 +1,21 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 
-public class ImageButton extends AbstractPressableButtonWidget {
+public class ImageButton extends AbstractButton {
 
-    protected MinecraftClient mc;
-    protected Identifier texture;
+    protected Minecraft mc;
+    protected ResourceLocation texture;
     protected PressAction onPress;
     protected TooltipSupplier tooltipSupplier;
 
-    public ImageButton(int x, int y, Identifier texture, PressAction onPress, TooltipSupplier tooltipSupplier) {
-        super(x, y, 20, 20, LiteralText.EMPTY);
-        mc = MinecraftClient.getInstance();
+    public ImageButton(int x, int y, ResourceLocation texture, PressAction onPress, TooltipSupplier tooltipSupplier) {
+        super(x, y, 20, 20, TextComponent.EMPTY);
+        mc = Minecraft.getInstance();
         this.texture = texture;
         this.onPress = onPress;
         this.tooltipSupplier = tooltipSupplier;
@@ -26,13 +26,13 @@ public class ImageButton extends AbstractPressableButtonWidget {
         this.onPress.onPress(this);
     }
 
-    protected void renderImage(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        mc.getTextureManager().bindTexture(texture);
-        drawTexture(matrices, x + 2, y + 2, 0, 0, 16, 16, 16, 16);
+    protected void renderImage(PoseStack matrices, int mouseX, int mouseY, float delta) {
+        mc.getTextureManager().bind(texture);
+        blit(matrices, x + 2, y + 2, 0, 0, 16, 16, 16, 16);
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
         super.renderButton(matrices, mouseX, mouseY, delta);
         renderImage(matrices, mouseX, mouseY, delta);
 
@@ -41,12 +41,12 @@ public class ImageButton extends AbstractPressableButtonWidget {
         }
     }
 
-    public void renderToolTip(MatrixStack matrices, int mouseX, int mouseY) {
+    public void renderToolTip(PoseStack matrices, int mouseX, int mouseY) {
         this.tooltipSupplier.onTooltip(this, matrices, mouseX, mouseY);
     }
 
     public interface TooltipSupplier {
-        void onTooltip(ImageButton button, MatrixStack matrices, int mouseX, int mouseY);
+        void onTooltip(ImageButton button, PoseStack matrices, int mouseX, int mouseY);
     }
 
     public interface PressAction {

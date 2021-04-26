@@ -4,12 +4,12 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 public class NetManager {
 
@@ -31,7 +31,7 @@ public class NetManager {
     }
 
     public static void sendToServer(Packet<?> packet) {
-        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         packet.toBytes(buffer);
         ClientPlayNetworking.send(packet.getID(), buffer);
     }
@@ -53,18 +53,18 @@ public class NetManager {
         }
     }
 
-    public static void sendToClient(ServerPlayerEntity player, Packet<?> packet) {
-        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
+    public static void sendToClient(ServerPlayer player, Packet<?> packet) {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         packet.toBytes(buffer);
         ServerPlayNetworking.send(player, packet.getID(), buffer);
     }
 
     public static interface ServerReceiver<T extends Packet<T>> {
-        void onPacket(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketSender responseSender, T packet);
+        void onPacket(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, PacketSender responseSender, T packet);
     }
 
     public static interface ClientReceiver<T extends Packet<T>> {
-        void onPacket(MinecraftClient client, ClientPlayNetworkHandler handler, PacketSender responseSender, T packet);
+        void onPacket(Minecraft client, ClientPacketListener handler, PacketSender responseSender, T packet);
     }
 
 }

@@ -1,10 +1,10 @@
 package de.maxhenkel.voicechat.events;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.world.entity.Entity;
 
 public class RenderEvents {
 
@@ -15,7 +15,7 @@ public class RenderEvents {
     });
 
     public static interface RenderNameplate {
-        void render(Entity entity, MatrixStack stack, VertexConsumerProvider vertexConsumers, int light);
+        void render(Entity entity, PoseStack stack, MultiBufferSource bufferSource, int light);
     }
 
 }

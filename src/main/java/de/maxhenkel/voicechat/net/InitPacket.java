@@ -2,14 +2,14 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.UUID;
 
 public class InitPacket implements Packet<InitPacket> {
 
-    public static final Identifier SECRET = new Identifier(Voicechat.MODID, "secret");
+    public static final ResourceLocation SECRET = new ResourceLocation(Voicechat.MODID, "secret");
 
     private UUID secret;
     private int serverPort;
@@ -62,13 +62,13 @@ public class InitPacket implements Packet<InitPacket> {
     }
 
     @Override
-    public Identifier getID() {
+    public ResourceLocation getID() {
         return SECRET;
     }
 
     @Override
-    public InitPacket fromBytes(PacketByteBuf buf) {
-        secret = buf.readUuid();
+    public InitPacket fromBytes(FriendlyByteBuf buf) {
+        secret = buf.readUUID();
         serverPort = buf.readInt();
         codec = ServerConfig.Codec.values()[buf.readByte()];
         mtuSize = buf.readInt();
@@ -79,8 +79,8 @@ public class InitPacket implements Packet<InitPacket> {
     }
 
     @Override
-    public void toBytes(PacketByteBuf buf) {
-        buf.writeUuid(secret);
+    public void toBytes(FriendlyByteBuf buf) {
+        buf.writeUUID(secret);
         buf.writeInt(serverPort);
         buf.writeByte(codec.ordinal());
         buf.writeInt(mtuSize);

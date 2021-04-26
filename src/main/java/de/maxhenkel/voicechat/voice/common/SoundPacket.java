@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.UUID;
 
@@ -33,17 +33,17 @@ public class SoundPacket implements Packet<SoundPacket> {
     }
 
     @Override
-    public SoundPacket fromBytes(PacketByteBuf buf) {
+    public SoundPacket fromBytes(FriendlyByteBuf buf) {
         SoundPacket soundPacket = new SoundPacket();
-        soundPacket.sender = buf.readUuid();
+        soundPacket.sender = buf.readUUID();
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
         return soundPacket;
     }
 
     @Override
-    public void toBytes(PacketByteBuf buf) {
-        buf.writeUuid(sender);
+    public void toBytes(FriendlyByteBuf buf) {
+        buf.writeUUID(sender);
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);
     }

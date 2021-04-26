@@ -2,10 +2,10 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.*;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.Box;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 
 import java.net.BindException;
 import java.net.DatagramSocket;
@@ -146,7 +146,7 @@ public class Server extends Thread {
 
                     if (message.getPacket() instanceof MicPacket) {
                         MicPacket packet = (MicPacket) message.getPacket();
-                        ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerUUID);
+                        ServerPlayer player = server.getPlayerList().getPlayer(playerUUID);
                         if (player == null) {
                             continue;
                         }
@@ -189,12 +189,12 @@ public class Server extends Thread {
         }
     }
 
-    private void processProximityPacket(PlayerEntity player, MicPacket packet) throws Exception {
+    private void processProximityPacket(Player player, MicPacket packet) throws Exception {
         double distance = Voicechat.SERVER_CONFIG.voiceChatDistance.get();
-        List<ClientConnection> closeConnections = player.world
-                .getEntitiesByClass(
-                        PlayerEntity.class,
-                        new Box(
+        List<ClientConnection> closeConnections = player.level
+                .getEntitiesOfClass(
+                        Player.class,
+                        new AABB(
                                 player.getX() - distance,
                                 player.getY() - distance,
                                 player.getZ() - distance,
@@ -202,15 +202,15 @@ public class Server extends Thread {
                                 player.getY() + distance,
                                 player.getZ() + distance
                         )
-                        , playerEntity -> !playerEntity.getUuid().equals(player.getUuid())
+                        , playerEntity -> !playerEntity.getUUID().equals(player.getUUID())
                 )
                 .stream()
-                .map(playerEntity -> connections.get(playerEntity.getUuid()))
+                .map(playerEntity -> connections.get(playerEntity.getUUID()))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-        NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(player.getUuid(), packet.getData(), packet.getSequenceNumber()));
+        NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(player.getUUID(), packet.getData(), packet.getSequenceNumber()));
         for (ClientConnection clientConnection : closeConnections) {
-            if (!clientConnection.getPlayerUUID().equals(player.getUuid())) {
+            if (!clientConnection.getPlayerUUID().equals(player.getUUID())) {
                 clientConnection.send(this, soundMessage);
             }
         }
@@ -231,7 +231,7 @@ public class Server extends Thread {
         for (UUID uuid : connectionsToDrop) {
             disconnectClient(uuid);
             Voicechat.LOGGER.info("Player {} timed out", uuid);
-            ServerPlayerEntity player = server.getPlayerManager().getPlayer(uuid);
+            ServerPlayer player = server.getPlayerList().getPlayer(uuid);
             if (player != null) {
                 Voicechat.LOGGER.info("Reconnecting player {}", player.getDisplayName().getString());
                 Voicechat.SERVER.initializePlayerConnection(player);

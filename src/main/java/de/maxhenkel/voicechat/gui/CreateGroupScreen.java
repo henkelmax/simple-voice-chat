@@ -1,29 +1,29 @@
 package de.maxhenkel.voicechat.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.CreateGroupList;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
 public class CreateGroupScreen extends VoiceChatScreenBase {
 
-    private static final Identifier TEXTURE = new Identifier(Voicechat.MODID, "textures/gui/gui_create_group.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_create_group.png");
 
     private CreateGroupList playerList;
-    private TextFieldWidget groupName;
-    private ButtonWidget createGroup;
+    private EditBox groupName;
+    private Button createGroup;
 
     public CreateGroupScreen() {
-        super(new TranslatableText("gui.voicechat.join_create_group.title"), 195, 146);
+        super(new TranslatableComponent("gui.voicechat.join_create_group.title"), 195, 146);
     }
 
     @Override
@@ -32,20 +32,20 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         hoverAreas.clear();
         buttons.clear();
         children.clear();
-        client.keyboard.setRepeatEvents(true);
+        minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
         playerList = new CreateGroupList(this, 9, 49, 160, 88, () -> VoicechatClient.CLIENT.getPlayerStateManager().getPlayerStates());
 
-        groupName = new TextFieldWidget(textRenderer, guiLeft + 78, guiTop + 20, 88, 10, LiteralText.EMPTY);
+        groupName = new EditBox(font, guiLeft + 78, guiTop + 20, 88, 10, TextComponent.EMPTY);
 
         groupName.setMaxLength(16);
-        groupName.setTextPredicate(s -> Voicechat.GROUP_REGEX.matcher(s).matches());
+        groupName.setResponder(s -> Voicechat.GROUP_REGEX.matcher(s).matches());
 
         addButton(groupName);
 
-        createGroup = new ButtonWidget(guiLeft + 169, guiTop + 15, 20, 20, new LiteralText("+"), button -> {
-            VoicechatClient.CLIENT.getPlayerStateManager().setGroup(groupName.getText());
-            client.openScreen(new GroupScreen());
+        createGroup = new Button(guiLeft + 169, guiTop + 15, 20, 20, new TextComponent("+"), button -> {
+            VoicechatClient.CLIENT.getPlayerStateManager().setGroup(groupName.getValue());
+            minecraft.setScreen(new GroupScreen());
         });
         addButton(createGroup);
     }
@@ -54,43 +54,43 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
     public void tick() {
         super.tick();
         groupName.tick();
-        createGroup.active = !groupName.getText().isEmpty();
+        createGroup.active = !groupName.getValue().isEmpty();
     }
 
     @Override
     public void onClose() {
         super.onClose();
-        client.keyboard.setRepeatEvents(false);
+        minecraft.keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float delta) {
         RenderSystem.color4f(1F, 1F, 1F, 1F);
-        client.getTextureManager().bindTexture(TEXTURE);
-        drawTexture(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
+        minecraft.getTextureManager().bind(TEXTURE);
+        blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
 
         playerList.drawGuiContainerBackgroundLayer(matrixStack, delta, mouseX, mouseY);
 
         playerList.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
 
-        for (AbstractButtonWidget widget : buttons) {
+        for (AbstractWidget widget : buttons) {
             widget.render(matrixStack, mouseX, mouseY, delta);
         }
 
-        textRenderer.draw(matrixStack, new TranslatableText("message.voicechat.join_create_group"), guiLeft + 8, guiTop + 5, FONT_COLOR);
-        textRenderer.draw(matrixStack, new TranslatableText("message.voicechat.group_name"), guiLeft + 8, guiTop + 21, FONT_COLOR);
-        textRenderer.draw(matrixStack, new TranslatableText("message.voicechat.join_group"), guiLeft + 8, guiTop + 38, FONT_COLOR);
+        font.draw(matrixStack, new TranslatableComponent("message.voicechat.join_create_group"), guiLeft + 8, guiTop + 5, FONT_COLOR);
+        font.draw(matrixStack, new TranslatableComponent("message.voicechat.group_name"), guiLeft + 8, guiTop + 21, FONT_COLOR);
+        font.draw(matrixStack, new TranslatableComponent("message.voicechat.join_group"), guiLeft + 8, guiTop + 38, FONT_COLOR);
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            client.player.closeScreen();
+            minecraft.setScreen(null);
             return true;
         }
 
         return groupName.keyPressed(keyCode, scanCode, modifiers)
-                || groupName.isActive()
+                || groupName.isVisible()
                 || super.keyPressed(keyCode, scanCode, modifiers);
     }
 
@@ -119,10 +119,10 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void resize(MinecraftClient client, int width, int height) {
-        String groupNameText = groupName.getText();
+    public void resize(Minecraft client, int width, int height) {
+        String groupNameText = groupName.getValue();
         init(client, width, height);
-        groupName.setText(groupNameText);
+        groupName.setValue(groupNameText);
     }
 
 }

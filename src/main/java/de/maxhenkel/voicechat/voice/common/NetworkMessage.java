@@ -4,7 +4,7 @@ import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 import javax.annotation.Nonnull;
 import javax.crypto.BadPaddingException;
@@ -80,15 +80,15 @@ public class NetworkMessage {
         socket.receive(packet);
         byte[] data = new byte[packet.getLength()];
         System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
-        PacketByteBuf b = new PacketByteBuf(Unpooled.wrappedBuffer(data));
-        UUID playerID = b.readUuid();
+        FriendlyByteBuf b = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
+        UUID playerID = b.readUUID();
         return readFromBytes(packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray());
     }
 
     private static NetworkMessage readFromBytes(SocketAddress socketAddress, UUID secret, byte[] encryptedPayload) throws InstantiationException, IllegalAccessException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         byte[] decrypt = AES.decrypt(secret, encryptedPayload);
-        PacketByteBuf buffer = new PacketByteBuf(Unpooled.wrappedBuffer(decrypt));
-        UUID readSecret = buffer.readUuid();
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(decrypt));
+        UUID readSecret = buffer.readUUID();
 
         if (!secret.equals(readSecret)) {
             throw new InvalidKeyException("Secrets do not match");
@@ -123,15 +123,15 @@ public class NetworkMessage {
 
     public byte[] writeClient(Client client) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         byte[] payload = write(client.getSecret());
-        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer(payload.length + 32));
-        buffer.writeUuid(client.getPlayerUUID());
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer(payload.length + 32));
+        buffer.writeUUID(client.getPlayerUUID());
         buffer.writeByteArray(payload);
         return buffer.array();
     }
 
     public byte[] write(UUID secret) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
-        buffer.writeUuid(secret);
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        buffer.writeUUID(secret);
 
         byte type = getPacketType(packet);
         if (type < 0) {

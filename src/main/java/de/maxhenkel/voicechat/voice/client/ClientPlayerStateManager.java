@@ -7,8 +7,8 @@ import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.net.PlayerStatesPacket;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -21,7 +21,7 @@ public class ClientPlayerStateManager {
 
     public ClientPlayerStateManager() {
         muted = VoicechatClient.CLIENT_CONFIG.muted.get();
-        state = new PlayerState(VoicechatClient.CLIENT_CONFIG.disabled.get(), true, MinecraftClient.getInstance().getSession().getProfile());
+        state = new PlayerState(VoicechatClient.CLIENT_CONFIG.disabled.get(), true, Minecraft.getInstance().getUser().getGameProfile());
         states = new HashMap<>();
         NetManager.registerClientReceiver(PlayerStatePacket.class, (client, handler, responseSender, packet) -> {
             states.put(packet.getPlayerState().getGameProfile().getId(), packet.getPlayerState());
@@ -55,8 +55,8 @@ public class ClientPlayerStateManager {
         clearStates();
     }
 
-    public boolean isPlayerDisabled(PlayerEntity player) {
-        PlayerState playerState = states.get(player.getUuid());
+    public boolean isPlayerDisabled(Player player) {
+        PlayerState playerState = states.get(player.getUUID());
         if (playerState == null) {
             return false;
         }
@@ -64,8 +64,8 @@ public class ClientPlayerStateManager {
         return playerState.isDisabled();
     }
 
-    public boolean isPlayerDisconnected(PlayerEntity player) {
-        PlayerState playerState = states.get(player.getUuid());
+    public boolean isPlayerDisconnected(Player player) {
+        PlayerState playerState = states.get(player.getUUID());
         if (playerState == null) {
             return true;
         }
@@ -106,8 +106,8 @@ public class ClientPlayerStateManager {
         return getGroup() != null;
     }
 
-    public boolean isInGroup(PlayerEntity player) {
-        PlayerState state = states.get(player.getUuid());
+    public boolean isInGroup(Player player) {
+        PlayerState state = states.get(player.getUUID());
         if (state == null) {
             return false;
         }
@@ -115,8 +115,8 @@ public class ClientPlayerStateManager {
     }
 
     @Nullable
-    public String getGroup(PlayerEntity player) {
-        PlayerState state = states.get(player.getUuid());
+    public String getGroup(Player player) {
+        PlayerState state = states.get(player.getUUID());
         if (state == null) {
             return null;
         }

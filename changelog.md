@@ -1,1 +1,1 @@
-- Added group invite commands
+- Updated to official mappings

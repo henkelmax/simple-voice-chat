@@ -11,105 +11,105 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.PingManager;
 import de.maxhenkel.voicechat.voice.server.Server;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.*;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Util;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.*;
+import net.minecraft.server.level.ServerPlayer;
 
 public class VoicechatCommands {
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
-        LiteralArgumentBuilder<ServerCommandSource> literalBuilder = CommandManager.literal("voicechat");
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, boolean dedicated) {
+        LiteralArgumentBuilder<CommandSourceStack> literalBuilder = Commands.literal("voicechat");
 
-        literalBuilder.then(CommandManager.literal("test").requires((commandSource) -> commandSource.hasPermissionLevel(2)).then(CommandManager.argument("target", EntityArgumentType.player()).executes((commandSource) -> {
-            ServerPlayerEntity player = EntityArgumentType.getPlayer(commandSource, "target");
+        literalBuilder.then(Commands.literal("test").requires((commandSource) -> commandSource.hasPermission(2)).then(Commands.argument("target", EntityArgument.player()).executes((commandSource) -> {
+            ServerPlayer player = EntityArgument.getPlayer(commandSource, "target");
             Server server = Voicechat.SERVER.getServer();
             if (server == null) {
-                commandSource.getSource().sendFeedback(new TranslatableText("message.voicechat.voice_chat_unavailable"), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), true);
                 return 1;
             }
-            ClientConnection clientConnection = server.getConnections().get(player.getUuid());
+            ClientConnection clientConnection = server.getConnections().get(player.getUUID());
             if (clientConnection == null) {
-                commandSource.getSource().sendFeedback(new TranslatableText("message.voicechat.client_not_connected"), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.client_not_connected"), true);
                 return 1;
             }
             try {
-                commandSource.getSource().sendFeedback(new TranslatableText("message.voicechat.sending_packet"), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.sending_packet"), true);
                 long timestamp = System.currentTimeMillis();
                 server.getPingManager().sendPing(clientConnection, 5000, new PingManager.PingListener() {
                     @Override
                     public void onPong(PingPacket packet) {
-                        commandSource.getSource().sendFeedback(new TranslatableText("message.voicechat.packet_received", (System.currentTimeMillis() - timestamp)), true);
+                        commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.packet_received", (System.currentTimeMillis() - timestamp)), true);
                     }
 
                     @Override
                     public void onTimeout() {
-                        commandSource.getSource().sendFeedback(new TranslatableText("message.voicechat.packet_timed_out"), true);
+                        commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.packet_timed_out"), true);
                     }
                 });
-                commandSource.getSource().sendFeedback(new TranslatableText("message.voicechat.packet_sent_waiting"), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.packet_sent_waiting"), true);
             } catch (Exception e) {
-                commandSource.getSource().sendFeedback(new TranslatableText("message.voicechat.failed_to_send_packet", e.getMessage()), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.failed_to_send_packet", e.getMessage()), true);
                 e.printStackTrace();
                 return 1;
             }
             return 1;
         })));
 
-        literalBuilder.then(CommandManager.literal("invite").then(CommandManager.argument("target", EntityArgumentType.player()).executes((commandSource) -> {
-            ServerPlayerEntity source = commandSource.getSource().getPlayer();
+        literalBuilder.then(Commands.literal("invite").then(Commands.argument("target", EntityArgument.player()).executes((commandSource) -> {
+            ServerPlayer source = commandSource.getSource().getPlayerOrException();
 
             Server server = Voicechat.SERVER.getServer();
             if (server == null) {
-                commandSource.getSource().sendFeedback(new TranslatableText("message.voicechat.voice_chat_unavailable"), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), true);
                 return 1;
             }
 
-            PlayerState state = server.getPlayerStateManager().getState(source.getUuid());
+            PlayerState state = server.getPlayerStateManager().getState(source.getUUID());
 
             if (state == null || !state.hasGroup()) {
-                commandSource.getSource().sendFeedback(new TranslatableText("message.voicechat.not_in_group"), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.not_in_group"), true);
                 return 1;
             }
 
-            ServerPlayerEntity player = EntityArgumentType.getPlayer(commandSource, "target");
+            ServerPlayer player = EntityArgument.getPlayer(commandSource, "target");
 
-            player.sendSystemMessage(new TranslatableText("message.voicechat.invite",
+            player.sendMessage(new TranslatableComponent("message.voicechat.invite",
                     source.getDisplayName(),
-                    new LiteralText(state.getGroup()).formatted(Formatting.GRAY),
-                    Texts.bracketed(new TranslatableText("message.voicechat.accept_invite").styled(style -> style
+                    new TextComponent(state.getGroup()).withStyle(ChatFormatting.GRAY),
+                    ComponentUtils.wrapInSquareBrackets(new TranslatableComponent("message.voicechat.accept_invite").withStyle(style -> style
                             .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/voicechat join " + state.getGroup()))
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableText("message.voicechat.accept_invite.hover")))))
-                            .formatted(Formatting.GREEN)
+                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.voicechat.accept_invite.hover")))))
+                            .withStyle(ChatFormatting.GREEN)
             ), Util.NIL_UUID);
 
             return 1;
         })));
 
-        literalBuilder.then(CommandManager.literal("join").then(CommandManager.argument("group", StringArgumentType.string()).executes((commandSource) -> {
+        literalBuilder.then(Commands.literal("join").then(Commands.argument("group", StringArgumentType.string()).executes((commandSource) -> {
             Server server = Voicechat.SERVER.getServer();
             if (server == null) {
-                commandSource.getSource().sendFeedback(new TranslatableText("message.voicechat.voice_chat_unavailable"), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), true);
                 return 1;
             }
-            ServerPlayerEntity source = commandSource.getSource().getPlayer();
+            ServerPlayer source = commandSource.getSource().getPlayerOrException();
             String groupName = StringArgumentType.getString(commandSource, "group");
 
             if (groupName.length() > 16) {
-                commandSource.getSource().sendError(new TranslatableText("message.voicechat.group_name_too_long"));
+                commandSource.getSource().sendFailure(new TranslatableComponent("message.voicechat.group_name_too_long"));
                 return 1;
             }
 
             if (!Voicechat.GROUP_REGEX.matcher(groupName).matches()) {
-                commandSource.getSource().sendError(new TranslatableText("message.voicechat.invalid_group_name"));
+                commandSource.getSource().sendFailure(new TranslatableComponent("message.voicechat.invalid_group_name"));
                 return 1;
             }
 
             NetManager.sendToClient(source, new SetGroupPacket(groupName));
-            commandSource.getSource().sendFeedback(new TranslatableText("message.voicechat.join_successful", new LiteralText(groupName).formatted(Formatting.GRAY)), true);
+            commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.join_successful", new TextComponent(groupName).withStyle(ChatFormatting.GRAY)), true);
             return 1;
         })));
 
