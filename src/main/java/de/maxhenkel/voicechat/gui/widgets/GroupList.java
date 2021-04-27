@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.gui.SkinUtils;
 import de.maxhenkel.voicechat.Voicechat;
@@ -9,6 +10,7 @@ import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -78,7 +80,9 @@ public class GroupList extends WidgetBase {
         List<PlayerState> entries = playerStates.get();
         for (int i = getOffset(); i < entries.size() && i < getOffset() + columnCount; i++) {
             PlayerState state = entries.get(i);
-            mc.getTextureManager().bind(TEXTURE);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            RenderSystem.setShaderTexture(0, TEXTURE);
             int pos = i - getOffset();
             VoiceChatScreenBase.HoverArea hoverArea = hoverAreas[pos];
             boolean hovered = hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY) && !state.getGameProfile().getId().equals(mc.player.getUUID());
@@ -91,7 +95,9 @@ public class GroupList extends WidgetBase {
             }
 
             matrixStack.pushPose();
-            mc.getTextureManager().bind(SkinUtils.getSkin(state.getGameProfile()));
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getGameProfile()));
             matrixStack.translate(guiLeft + 3, startY + 3, 0);
             matrixStack.scale(2F, 2F, 1F);
             Screen.blit(matrixStack, 0, 0, 8, 8, 8, 8, 64, 64);
@@ -106,14 +112,18 @@ public class GroupList extends WidgetBase {
                 drawIcon(matrixStack, startY, SPEAKER);
             }
 
-            mc.getTextureManager().bind(CHANGE_VOLUME);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            RenderSystem.setShaderTexture(0, CHANGE_VOLUME);
 
             if (hovered) {
                 Screen.blit(matrixStack, guiLeft + xSize - 3 - 16, startY + 3, 0, 0, 16, 16, 16, 16);
             }
         }
 
-        mc.getTextureManager().bind(TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
 
         if (entries.size() > columnCount) {
             float h = ySize - 17;
@@ -127,7 +137,9 @@ public class GroupList extends WidgetBase {
 
     private void drawIcon(PoseStack matrixStack, int startY, ResourceLocation texture) {
         matrixStack.pushPose();
-        mc.getTextureManager().bind(texture);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, texture);
         matrixStack.translate(guiLeft + 3 + 16 + 1, startY + 3 + 8, 0);
         matrixStack.scale(0.5F, 0.5F, 1F);
         Screen.blit(matrixStack, 0, 0, 0, 0, 16, 16, 16, 16);

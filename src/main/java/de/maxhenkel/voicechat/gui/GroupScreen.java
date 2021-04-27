@@ -11,6 +11,7 @@ import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.GroupChatManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -93,8 +94,9 @@ public class GroupScreen extends VoiceChatScreenBase {
 
     @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float delta) {
-        RenderSystem.color4f(1F, 1F, 1F, 1F);
-        minecraft.getTextureManager().bind(TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
         blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
 
         playerList.drawGuiContainerBackgroundLayer(matrixStack, delta, mouseX, mouseY);

@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -97,8 +98,9 @@ public abstract class ListScreen<T> extends Screen {
 
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.color4f(1F, 1F, 1F, 1F);
-        minecraft.getTextureManager().bind(TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
         blit(stack, guiLeft, guiTop, 0, 0, xSize, ySize);
 
         super.render(stack, mouseX, mouseY, partialTicks);

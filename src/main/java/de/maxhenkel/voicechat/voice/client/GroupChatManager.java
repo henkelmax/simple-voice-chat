@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.voice.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
@@ -7,6 +8,7 @@ import de.maxhenkel.voicechat.gui.SkinUtils;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -36,10 +38,14 @@ public class GroupChatManager {
             matrixStack.pushPose();
             matrixStack.translate(0, i * 11, 0);
             if (client.getTalkCache().isTalking(state.getGameProfile().getId())) {
-                minecraft.getTextureManager().bind(TALK_OUTLINE);
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+                RenderSystem.setShaderTexture(0, TALK_OUTLINE);
                 Screen.blit(matrixStack, 0, 0, 0, 0, 10, 10, 16, 16);
             }
-            minecraft.getTextureManager().bind(SkinUtils.getSkin(state.getGameProfile()));
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getGameProfile()));
             Screen.blit(matrixStack, 1, 1, 8, 8, 8, 8, 64, 64);
             Screen.blit(matrixStack, 1, 1, 40, 8, 8, 8, 64, 64);
 
@@ -47,7 +53,9 @@ public class GroupChatManager {
                 matrixStack.pushPose();
                 matrixStack.translate(10, 5, 0);
                 matrixStack.scale(0.25F, 0.25F, 1F);
-                minecraft.getTextureManager().bind(SPEAKER_OFF_ICON);
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+                RenderSystem.setShaderTexture(0, SPEAKER_OFF_ICON);
                 Screen.blit(matrixStack, 0, 0, 0, 0, 16, 16, 16, 16);
                 matrixStack.popPose();
             }

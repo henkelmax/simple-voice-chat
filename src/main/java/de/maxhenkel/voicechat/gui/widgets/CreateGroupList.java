@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.gui.SkinUtils;
 import de.maxhenkel.voicechat.Voicechat;
@@ -9,6 +10,7 @@ import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -87,7 +89,9 @@ public class CreateGroupList extends WidgetBase {
                 int headPosY = startY + 2 + 10 - 10 * headYIndex;
 
                 matrixStack.pushPose();
-                mc.getTextureManager().bind(SkinUtils.getSkin(state.getGameProfile()));
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+                RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getGameProfile()));
                 matrixStack.translate(headPosX, headPosY, 0);
                 Screen.blit(matrixStack, 0, 0, 8, 8, 8, 8, 64, 64);
                 Screen.blit(matrixStack, 0, 0, 40, 8, 8, 8, 64, 64);
@@ -111,7 +115,9 @@ public class CreateGroupList extends WidgetBase {
 
         List<Group> entries = getGroups();
         for (int i = getOffset(); i < entries.size() && i < getOffset() + columnCount; i++) {
-            mc.getTextureManager().bind(TEXTURE);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            RenderSystem.setShaderTexture(0, TEXTURE);
             int pos = i - getOffset();
             VoiceChatScreenBase.HoverArea hoverArea = hoverAreas[pos];
             boolean hovered = hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY);
@@ -125,7 +131,9 @@ public class CreateGroupList extends WidgetBase {
             }
         }
 
-        mc.getTextureManager().bind(TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
 
         if (entries.size() > columnCount) {
             float h = ySize - 17;

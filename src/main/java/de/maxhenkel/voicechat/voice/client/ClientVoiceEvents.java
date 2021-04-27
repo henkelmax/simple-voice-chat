@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.voice.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.maxhenkel.voicechat.Voicechat;
@@ -22,6 +23,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -136,7 +138,9 @@ public class ClientVoiceEvents {
 
     private void renderIcon(PoseStack matrixStack, ResourceLocation texture) {
         matrixStack.pushPose();
-        minecraft.getTextureManager().bind(texture);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, texture);
         //double width = minecraft.getMainWindow().getScaledWidth();
         int height = minecraft.getWindow().getGuiScaledHeight();
         Screen.blit(matrixStack, 16, height - 32, 0, 0, 16, 16, 16, 16);

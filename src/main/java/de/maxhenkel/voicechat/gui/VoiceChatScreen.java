@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -85,8 +86,9 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
 
     @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.color4f(1F, 1F, 1F, 1F);
-        minecraft.getTextureManager().bind(TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
         blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
 
         super.render(matrixStack, mouseX, mouseY, partialTicks);
