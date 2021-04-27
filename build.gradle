@@ -70,7 +70,7 @@ curseforge {
         changelogType = 'markdown'
         changelog = file('changelog.md')
         releaseType = curse_release_type
-        addGameVersion minecraft_version
+        addGameVersion curseforge_minecraft_version
         addGameVersion "Fabric"
         mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
             displayName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
