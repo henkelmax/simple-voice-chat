@@ -1,1 +1,1 @@
-- Added group invite commands
+- Added polish translation
