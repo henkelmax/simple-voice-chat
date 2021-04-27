@@ -1,1 +1,1 @@
-- Updated to 21w16a
+- Added polish translation
