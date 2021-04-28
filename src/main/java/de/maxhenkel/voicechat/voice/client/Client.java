@@ -26,6 +26,7 @@ public class Client extends Thread {
     private double voiceChatDistance;
     private double voiceChatFadeDistance;
     private int keepAlive;
+    private boolean groupsEnabled;
     private MicThread micThread;
     private boolean running;
     private TalkCache talkCache;
@@ -35,7 +36,7 @@ public class Client extends Thread {
     private AudioChannelConfig audioChannelConfig;
     private long lastKeepAlive;
 
-    public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret, ServerConfig.Codec codec, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive) throws IOException {
+    public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret, ServerConfig.Codec codec, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive, boolean groupsEnabled) throws IOException {
         this.address = InetAddress.getByName(serverIp);
         this.port = serverPort;
         this.socket = new DatagramSocket();
@@ -47,6 +48,7 @@ public class Client extends Thread {
         this.voiceChatDistance = voiceChatDistance;
         this.voiceChatFadeDistance = voiceChatFadeDistance;
         this.keepAlive = keepAlive;
+        this.groupsEnabled = groupsEnabled;
         this.lastKeepAlive = -1;
         this.running = true;
         this.talkCache = new TalkCache();
@@ -76,6 +78,10 @@ public class Client extends Thread {
 
     public int getMtuSize() {
         return mtuSize;
+    }
+
+    public boolean groupsEnabled() {
+        return groupsEnabled;
     }
 
     public double getVoiceChatDistance() {

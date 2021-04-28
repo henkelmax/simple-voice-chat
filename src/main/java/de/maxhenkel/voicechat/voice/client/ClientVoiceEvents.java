@@ -84,7 +84,7 @@ public class ClientVoiceEvents {
                     InetSocketAddress address = (InetSocketAddress) socketAddress;
                     String ip = address.getHostString();
                     Voicechat.LOGGER.info("Connecting to server: '" + ip + ":" + initPacket.getServerPort() + "'");
-                    client = new Client(ip, initPacket.getServerPort(), playerUUID, initPacket.getSecret(), initPacket.getCodec(), initPacket.getMtuSize(), initPacket.getVoiceChatDistance(), initPacket.getVoiceChatFadeDistance(), initPacket.getKeepAlive());
+                    client = new Client(ip, initPacket.getServerPort(), playerUUID, initPacket.getSecret(), initPacket.getCodec(), initPacket.getMtuSize(), initPacket.getVoiceChatDistance(), initPacket.getVoiceChatFadeDistance(), initPacket.getKeepAlive(), initPacket.groupsEnabled());
                     client.start();
                 }
             } catch (Exception e) {
@@ -149,10 +149,14 @@ public class ClientVoiceEvents {
         }
 
         if (VoicechatClient.KEY_GROUP.consumeClick() && checkConnected()) {
-            if (playerStateManager.isInGroup()) {
-                minecraft.setScreen(new GroupScreen());
+            if (client.groupsEnabled()) {
+                if (playerStateManager.isInGroup()) {
+                    minecraft.setScreen(new GroupScreen());
+                } else {
+                    minecraft.setScreen(new CreateGroupScreen());
+                }
             } else {
-                minecraft.setScreen(new CreateGroupScreen());
+                minecraft.player.displayClientMessage(new TranslatableComponent("message.voicechat.groups_disabled"), true);
             }
         }
 
