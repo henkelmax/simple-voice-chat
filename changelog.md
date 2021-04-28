@@ -1,1 +1,1 @@
-- Added polish translation
+- Added disable group option

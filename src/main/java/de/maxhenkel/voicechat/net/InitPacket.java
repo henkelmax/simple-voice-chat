@@ -18,12 +18,13 @@ public class InitPacket implements Packet<InitPacket> {
     private double voiceChatDistance;
     private double voiceChatFadeDistance;
     private int keepAlive;
+    private boolean groupsEnabled;
 
     public InitPacket() {
 
     }
 
-    public InitPacket(UUID secret, int serverPort, ServerConfig.Codec codec, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive) {
+    public InitPacket(UUID secret, int serverPort, ServerConfig.Codec codec, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive, boolean groupsEnabled) {
         this.secret = secret;
         this.serverPort = serverPort;
         this.codec = codec;
@@ -31,6 +32,7 @@ public class InitPacket implements Packet<InitPacket> {
         this.voiceChatDistance = voiceChatDistance;
         this.voiceChatFadeDistance = voiceChatFadeDistance;
         this.keepAlive = keepAlive;
+        this.groupsEnabled = groupsEnabled;
     }
 
     public UUID getSecret() {
@@ -61,6 +63,10 @@ public class InitPacket implements Packet<InitPacket> {
         return keepAlive;
     }
 
+    public boolean groupsEnabled() {
+        return groupsEnabled;
+    }
+
     @Override
     public ResourceLocation getID() {
         return SECRET;
@@ -75,6 +81,7 @@ public class InitPacket implements Packet<InitPacket> {
         voiceChatDistance = buf.readDouble();
         voiceChatFadeDistance = buf.readDouble();
         keepAlive = buf.readInt();
+        groupsEnabled = buf.readBoolean();
         return this;
     }
 
@@ -87,6 +94,7 @@ public class InitPacket implements Packet<InitPacket> {
         buf.writeDouble(voiceChatDistance);
         buf.writeDouble(voiceChatFadeDistance);
         buf.writeInt(keepAlive);
+        buf.writeBoolean(groupsEnabled);
     }
 
 }

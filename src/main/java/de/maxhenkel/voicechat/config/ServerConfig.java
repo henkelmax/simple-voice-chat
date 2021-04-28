@@ -11,6 +11,7 @@ public class ServerConfig {
     public final ConfigBuilder.ConfigEntry<Enum<Codec>> voiceChatCodec;
     public final ConfigBuilder.ConfigEntry<Integer> voiceChatMtuSize;
     public final ConfigBuilder.ConfigEntry<Integer> keepAlive;
+    public final ConfigBuilder.ConfigEntry<Boolean> groupsEnabled;
 
     public ServerConfig(ConfigBuilder builder) {
         voiceChatPort = builder.integerEntry("port", 24454, 0, 65535);
@@ -20,6 +21,7 @@ public class ServerConfig {
         voiceChatCodec = builder.enumEntry("codec", Codec.VOIP);
         voiceChatMtuSize = builder.integerEntry("mtu_size", 1024, 256, 10000);
         keepAlive = builder.integerEntry("keep_alive", 1000, 1000, Integer.MAX_VALUE);
+        groupsEnabled = builder.booleanEntry("enable_groups", true);
     }
 
     public enum Codec {

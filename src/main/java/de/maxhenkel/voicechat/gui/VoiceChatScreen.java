@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
+import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraft.client.gui.components.Button;
@@ -70,6 +71,8 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
             }
         });
         addButton(group);
+        Client client = VoicechatClient.CLIENT.getClient();
+        group.active = client != null && client.groupsEnabled();
 
         checkButtons();
     }
