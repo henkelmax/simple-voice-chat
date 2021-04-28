@@ -94,6 +94,11 @@ public class VoicechatCommands {
         })));
 
         literalBuilder.then(Commands.literal("join").then(Commands.argument("group", StringArgumentType.string()).executes((commandSource) -> {
+            if (!Main.SERVER_CONFIG.groupsEnabled.get()) {
+                commandSource.getSource().sendFailure(new TranslationTextComponent("message.voicechat.groups_disabled"));
+                return 1;
+            }
+
             Server server = Main.SERVER_VOICE_EVENTS.getServer();
             if (server == null) {
                 commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.voice_chat_unavailable"), true);

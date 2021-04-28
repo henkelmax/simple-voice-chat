@@ -70,6 +70,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
             }
         });
         addButton(group);
+        group.active = Main.SERVER_CONFIG.groupsEnabled.get();
 
         checkButtons();
     }

@@ -158,10 +158,14 @@ public class ClientVoiceEvents {
         }
 
         if (Main.KEY_GROUP.consumeClick() && checkConnected()) {
-            if (playerStateManager.isInGroup()) {
-                minecraft.setScreen(new GroupScreen());
+            if (Main.SERVER_CONFIG.groupsEnabled.get()) {
+                if (playerStateManager.isInGroup()) {
+                    minecraft.setScreen(new GroupScreen());
+                } else {
+                    minecraft.setScreen(new CreateGroupScreen());
+                }
             } else {
-                minecraft.setScreen(new CreateGroupScreen());
+                minecraft.player.displayClientMessage(new TranslationTextComponent("message.voicechat.groups_disabled"), true);
             }
         }
 
