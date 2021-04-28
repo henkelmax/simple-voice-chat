@@ -59,5 +59,6 @@
   "message.voicechat.invite": "%s zaprosił cię do grupy %s. %s",
   "message.voicechat.accept_invite": "ZAAKCEPTUJ",
   "message.voicechat.accept_invite.hover": "Kliknij, aby zaakceptować zaproszenie",
-  "message.voicechat.join_successful": "Pomyślnie dołączono do %s"
+  "message.voicechat.join_successful": "Pomyślnie dołączono do %s",
+  "message.voicechat.groups_disabled": "Grupy są wyłączone na tym serwerze"
 }
