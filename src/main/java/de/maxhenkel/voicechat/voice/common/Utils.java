@@ -123,7 +123,7 @@ public class Utils {
         Vec3 d = soundPos.subtract(playerPos).normalize();
         Vec2 diff = new Vec2((float) d.x, (float) d.z);
         float diffAngle = angle(diff, new Vec2(-1F, 0F));
-        float angle = normalizeAngle(diffAngle - (player.yRot % 360F));
+        float angle = normalizeAngle(diffAngle - (player.yHeadRot % 360F));
         float dif = (float) (Math.abs(playerPos.y - soundPos.y) / voiceChatDistance);
 
         float rot = angle / 180F;
