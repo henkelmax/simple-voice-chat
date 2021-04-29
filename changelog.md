@@ -1,1 +1,1 @@
-- Added disable group option
+- Fixed crash

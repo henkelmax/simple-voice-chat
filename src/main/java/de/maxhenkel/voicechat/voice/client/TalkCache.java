@@ -20,19 +20,6 @@ public class TalkCache {
         cache.put(player, System.currentTimeMillis());
     }
 
-    public void updateCache() {
-        long time = System.currentTimeMillis();
-        List<UUID> toRemove = new ArrayList<>();
-        for (Map.Entry<UUID, Long> entry : cache.entrySet()) {
-            if (time - entry.getValue() > TIMEOUT) {
-                toRemove.add(entry.getKey());
-            }
-        }
-        for (UUID uuid : toRemove) {
-            cache.remove(uuid);
-        }
-    }
-
     public boolean isTalking(PlayerEntity player) {
         return isTalking(player.getUUID());
     }
@@ -44,8 +31,9 @@ public class TalkCache {
                 return client.getMicThread().isTalking();
             }
         }
-        updateCache();
-        return cache.containsKey(player);
+
+        Long lastTalk = cache.getOrDefault(player, 0L);
+        return System.currentTimeMillis() - lastTalk < TIMEOUT;
     }
 
 }
