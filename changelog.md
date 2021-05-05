@@ -1,1 +1,1 @@
-- Fixed command feedback
+- Fixed player icon rendering issues
