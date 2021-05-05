@@ -28,31 +28,31 @@ public class VoicechatCommands {
             ServerPlayer player = EntityArgument.getPlayer(commandSource, "target");
             Server server = Voicechat.SERVER.getServer();
             if (server == null) {
-                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), false);
                 return 1;
             }
             ClientConnection clientConnection = server.getConnections().get(player.getUUID());
             if (clientConnection == null) {
-                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.client_not_connected"), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.client_not_connected"), false);
                 return 1;
             }
             try {
-                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.sending_packet"), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.sending_packet"), false);
                 long timestamp = System.currentTimeMillis();
                 server.getPingManager().sendPing(clientConnection, 5000, new PingManager.PingListener() {
                     @Override
                     public void onPong(PingPacket packet) {
-                        commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.packet_received", (System.currentTimeMillis() - timestamp)), true);
+                        commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.packet_received", (System.currentTimeMillis() - timestamp)), false);
                     }
 
                     @Override
                     public void onTimeout() {
-                        commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.packet_timed_out"), true);
+                        commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.packet_timed_out"), false);
                     }
                 });
-                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.packet_sent_waiting"), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.packet_sent_waiting"), false);
             } catch (Exception e) {
-                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.failed_to_send_packet", e.getMessage()), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.failed_to_send_packet", e.getMessage()), false);
                 e.printStackTrace();
                 return 1;
             }
@@ -64,14 +64,14 @@ public class VoicechatCommands {
 
             Server server = Voicechat.SERVER.getServer();
             if (server == null) {
-                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), false);
                 return 1;
             }
 
             PlayerState state = server.getPlayerStateManager().getState(source.getUUID());
 
             if (state == null || !state.hasGroup()) {
-                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.not_in_group"), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.not_in_group"), false);
                 return 1;
             }
 
@@ -86,6 +86,8 @@ public class VoicechatCommands {
                             .withStyle(ChatFormatting.GREEN)
             ), Util.NIL_UUID);
 
+            commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.invite_successful", player.getDisplayName()), false);
+
             return 1;
         })));
 
@@ -97,7 +99,7 @@ public class VoicechatCommands {
 
             Server server = Voicechat.SERVER.getServer();
             if (server == null) {
-                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), true);
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), false);
                 return 1;
             }
             ServerPlayer source = commandSource.getSource().getPlayerOrException();
@@ -114,7 +116,7 @@ public class VoicechatCommands {
             }
 
             NetManager.sendToClient(source, new SetGroupPacket(groupName));
-            commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.join_successful", new TextComponent(groupName).withStyle(ChatFormatting.GRAY)), true);
+            commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.join_successful", new TextComponent(groupName).withStyle(ChatFormatting.GRAY)), false);
             return 1;
         })));
 
