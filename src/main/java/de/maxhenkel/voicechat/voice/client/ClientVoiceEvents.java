@@ -25,6 +25,7 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -115,6 +116,9 @@ public class ClientVoiceEvents {
     }
 
     public void renderHUD(PoseStack stack, float tickDelta) {
+        if (!isMultiplayerServer()) {
+            return;
+        }
         if (VoicechatClient.CLIENT_CONFIG.hideIcons.get()) {
             return;
         }
@@ -201,7 +205,14 @@ public class ClientVoiceEvents {
         minecraft.player.displayClientMessage(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), true);
     }
 
-    public void onRenderName(Entity entity, PoseStack stack, MultiBufferSource vertexConsumers, int light) {
+    public boolean isMultiplayerServer() {
+        return minecraft.getCurrentServer() != null && !minecraft.getCurrentServer().isLan();
+    }
+
+    public void onRenderName(Entity entity, Component component, PoseStack stack, MultiBufferSource vertexConsumers, int light) {
+        if (!isMultiplayerServer()) {
+            return;
+        }
         if (VoicechatClient.CLIENT_CONFIG.hideIcons.get()) {
             return;
         }
@@ -218,25 +229,25 @@ public class ClientVoiceEvents {
             String group = playerStateManager.getGroup(player);
 
             if (playerStateManager.isPlayerDisconnected(player)) {
-                renderPlayerIcon(player, DISCONNECT_ICON, stack, vertexConsumers, light);
+                renderPlayerIcon(player, component, DISCONNECT_ICON, stack, vertexConsumers, light);
             } else if (group != null && !group.equals(playerStateManager.getGroup())) {
-                renderPlayerIcon(player, GROUP_ICON, stack, vertexConsumers, light);
+                renderPlayerIcon(player, component, GROUP_ICON, stack, vertexConsumers, light);
             } else if (playerStateManager.isPlayerDisabled(player)) {
-                renderPlayerIcon(player, SPEAKER_OFF_ICON, stack, vertexConsumers, light);
+                renderPlayerIcon(player, component, SPEAKER_OFF_ICON, stack, vertexConsumers, light);
             } else if (client != null && client.getTalkCache().isTalking(player)) {
-                renderPlayerIcon(player, SPEAKER_ICON, stack, vertexConsumers, light);
+                renderPlayerIcon(player, component, SPEAKER_ICON, stack, vertexConsumers, light);
             }
         }
     }
 
-    protected void renderPlayerIcon(Player player, ResourceLocation texture, PoseStack matrixStackIn, MultiBufferSource buffer, int light) {
+    protected void renderPlayerIcon(Player player, Component component, ResourceLocation texture, PoseStack matrixStackIn, MultiBufferSource buffer, int light) {
         matrixStackIn.pushPose();
         matrixStackIn.translate(0D, player.getBbHeight() + 0.5D, 0D);
         matrixStackIn.mulPose(minecraft.getEntityRenderDispatcher().cameraOrientation());
         matrixStackIn.scale(-0.025F, -0.025F, 0.025F);
         matrixStackIn.translate(0D, -1D, 0D);
 
-        float offset = (float) (minecraft.font.width(player.getDisplayName()) / 2 + 2);
+        float offset = (float) (minecraft.font.width(component) / 2 + 2);
 
         VertexConsumer builder = buffer.getBuffer(RenderType.text(texture));
         int alpha = 32;
