@@ -1,1 +1,3 @@
-- Fixed player icon rendering issues
+- Fixed plug icon shown above players in ReplayMod renders
+- Fixed icons showing in ReplayMod
+- Fixed icons rendering multiple times above the player
