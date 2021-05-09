@@ -119,10 +119,12 @@ public class ClientVoiceEvents {
 
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent.Pre event) {
+        if (!isMultiplayerServer()) {
+            return;
+        }
         if (!event.getType().equals(RenderGameOverlayEvent.ElementType.CHAT)) {
             return;
         }
-
         if (Main.CLIENT_CONFIG.hideIcons.get()) {
             return;
         }
@@ -210,8 +212,15 @@ public class ClientVoiceEvents {
         minecraft.player.displayClientMessage(new TranslationTextComponent("message.voicechat.voice_chat_unavailable"), true);
     }
 
+    public boolean isMultiplayerServer() {
+        return minecraft.getCurrentServer() != null && !minecraft.getCurrentServer().isLan();
+    }
+
     @SubscribeEvent
     public void onRenderName(RenderNameplateEvent event) {
+        if (!isMultiplayerServer()) {
+            return;
+        }
         if (Main.CLIENT_CONFIG.hideIcons.get()) {
             return;
         }

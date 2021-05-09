@@ -1,1 +1,1 @@
-- Fixed command feedback
+- Fixed disconnection icon in singleplayer
