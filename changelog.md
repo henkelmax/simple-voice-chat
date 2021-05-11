@@ -1,3 +1,1 @@
-- Fixed plug icon shown above players in ReplayMod renders
-- Fixed icons showing in ReplayMod
-- Fixed icons rendering multiple times above the player
+- Fixed icons fading when a potion runs out
