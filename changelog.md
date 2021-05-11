@@ -1,1 +1,1 @@
-- Fixed disconnection icon in singleplayer
+- Fixed icons fading when a potion runs out
