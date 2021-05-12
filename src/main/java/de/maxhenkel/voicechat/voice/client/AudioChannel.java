@@ -51,11 +51,7 @@ public class AudioChannel extends Thread {
 
     public void closeAndKill() {
         Voicechat.LOGGER.debug("Closing audio channel for " + uuid);
-        if (speaker != null) {
-            speaker.close();
-        }
         stopped = true;
-        decoder.close();
     }
 
     public UUID getUUID() {
@@ -130,11 +126,14 @@ public class AudioChannel extends Thread {
             }
         } catch (Throwable e) {
             e.printStackTrace();
+        } finally {
             if (speaker != null) {
                 speaker.stop();
                 speaker.flush();
                 speaker.close();
             }
+            decoder.close();
+            Voicechat.LOGGER.debug("Closed audio channel for " + uuid);
         }
     }
 
