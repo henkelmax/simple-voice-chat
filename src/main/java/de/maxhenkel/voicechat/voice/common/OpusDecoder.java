@@ -14,6 +14,7 @@ public class OpusDecoder {
     protected int sampleRate;
     protected int frameSize;
     protected int maxPayloadSize;
+    protected boolean closed;
 
     public OpusDecoder(int sampleRate, int frameSize, int maxPayloadSize) {
         this.sampleRate = sampleRate;
@@ -28,6 +29,9 @@ public class OpusDecoder {
     }
 
     public byte[] decode(@Nullable byte[] data) {
+        if (closed) {
+            throw new IllegalStateException("Trying to decode with a closed decoder");
+        }
         int result;
         ShortBuffer decoded = ShortBuffer.allocate(4096);
         if (data == null || data.length == 0) {
@@ -53,7 +57,12 @@ public class OpusDecoder {
         return outData;
     }
 
+    public boolean isClosed() {
+        return closed;
+    }
+
     public void close() {
+        closed = true;
         Opus.INSTANCE.opus_decoder_destroy(opusDecoder);
     }
 

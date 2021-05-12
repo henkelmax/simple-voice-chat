@@ -1,1 +1,1 @@
-- Fixed icons fading when a potion runs out
+- Fixed opus decoder crash
