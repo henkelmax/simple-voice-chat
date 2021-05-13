@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.voice.common;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -142,7 +141,7 @@ public class Utils {
         left += fill;
         right += fill;
 
-        if (minecraft.options.getCameraType().equals(CameraType.THIRD_PERSON_FRONT)) {
+        if (minecraft.options.thirdPersonView == 2) {
             return new ImmutablePair<>(right, left);
         }
 

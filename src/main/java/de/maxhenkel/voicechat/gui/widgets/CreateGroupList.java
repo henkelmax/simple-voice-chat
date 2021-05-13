@@ -1,10 +1,10 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.maxhenkel.voicechat.gui.SkinUtils;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.GroupScreen;
+import de.maxhenkel.voicechat.gui.SkinUtils;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
@@ -14,7 +14,6 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.FormattedCharSequence;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -59,18 +58,17 @@ public class CreateGroupList extends WidgetBase {
     }
 
     @Override
-    public void drawGuiContainerForegroundLayer(PoseStack matrixStack, int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
+    public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         List<Group> entries = getGroups();
         for (int i = getOffset(); i < entries.size() && i < getOffset() + columnCount; i++) {
             int pos = i - getOffset();
             VoiceChatScreenBase.HoverArea hoverArea = hoverAreas[pos];
             int startY = guiTop + pos * columnHeight;
             Group group = entries.get(i);
-            TextComponent groupName = new TextComponent(group.name);
-            mc.font.draw(matrixStack, groupName, guiLeft + 3, startY + 7, 0);
+            mc.font.draw(group.name, guiLeft + 3, startY + 7, 0);
 
-            int textWidth = mc.font.width(groupName);
+            int textWidth = mc.font.width(group.name);
 
             int headsPerRow = (xSize - (3 + textWidth + 3 + 3)) / (8 + 1);
 
@@ -86,28 +84,25 @@ public class CreateGroupList extends WidgetBase {
                 int headPosX = guiLeft + xSize - 8 - 2 - headXIndex * 9;
                 int headPosY = startY + 2 + 10 - 10 * headYIndex;
 
-                matrixStack.pushPose();
                 mc.getTextureManager().bind(SkinUtils.getSkin(state.getGameProfile()));
-                matrixStack.translate(headPosX, headPosY, 0);
-                Screen.blit(matrixStack, 0, 0, 8, 8, 8, 8, 64, 64);
-                Screen.blit(matrixStack, 0, 0, 40, 8, 8, 8, 64, 64);
-                matrixStack.popPose();
+                Screen.blit(headPosX, headPosY, 8, 8, 8, 8, 64, 64);
+                Screen.blit(headPosX, headPosY, 40, 8, 8, 8, 64, 64);
             }
 
             if (hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
-                List<FormattedCharSequence> tooltip = new ArrayList<>();
-                tooltip.add(new TranslatableComponent("message.voicechat.group_members").withStyle(ChatFormatting.WHITE).getVisualOrderText());
+                List<String> tooltip = new ArrayList<>();
+                tooltip.add(new TranslatableComponent("message.voicechat.group_members").withStyle(ChatFormatting.WHITE).getColoredString());
                 for (PlayerState state : group.members) {
-                    tooltip.add(new TextComponent("- " + state.getGameProfile().getName()).withStyle(ChatFormatting.GRAY).getVisualOrderText());
+                    tooltip.add(new TextComponent("- " + state.getGameProfile().getName()).withStyle(ChatFormatting.GRAY).getColoredString());
                 }
-                screen.renderTooltip(matrixStack, tooltip, mouseX, mouseY);
+                screen.renderTooltip(tooltip, mouseX, mouseY);
             }
         }
     }
 
     @Override
-    public void drawGuiContainerBackgroundLayer(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
+    public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 
         List<Group> entries = getGroups();
         for (int i = getOffset(); i < entries.size() && i < getOffset() + columnCount; i++) {
@@ -119,9 +114,9 @@ public class CreateGroupList extends WidgetBase {
             Group group = entries.get(i);
 
             if (hovered) {
-                Screen.blit(matrixStack, guiLeft, startY, 195, 39, 160, columnHeight, 512, 512);
+                Screen.blit(guiLeft, startY, 195, 39, 160, columnHeight, 512, 512);
             } else {
-                Screen.blit(matrixStack, guiLeft, startY, 195, 17, 160, columnHeight, 512, 512);
+                Screen.blit(guiLeft, startY, 195, 17, 160, columnHeight, 512, 512);
             }
         }
 
@@ -131,9 +126,9 @@ public class CreateGroupList extends WidgetBase {
             float h = ySize - 17;
             float perc = (float) getOffset() / (float) (entries.size() - columnCount);
             int posY = guiTop + (int) (h * perc);
-            Screen.blit(matrixStack, guiLeft + xSize + 6, posY, 195, 0, 12, 17, 512, 512);
+            Screen.blit(guiLeft + xSize + 6, posY, 195, 0, 12, 17, 512, 512);
         } else {
-            Screen.blit(matrixStack, guiLeft + xSize + 6, guiTop, 207, 0, 12, 17, 512, 512);
+            Screen.blit(guiLeft + xSize + 6, guiTop, 207, 0, 12, 17, 512, 512);
         }
     }
 

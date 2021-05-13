@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
 public class RenderEvents {
@@ -16,7 +15,7 @@ public class RenderEvents {
     });
 
     public static interface RenderNameplate {
-        void render(Entity entity, Component component, PoseStack stack, MultiBufferSource bufferSource, int light);
+        void render(Entity entity, String name, PoseStack stack, MultiBufferSource bufferSource, int light);
     }
 
 }

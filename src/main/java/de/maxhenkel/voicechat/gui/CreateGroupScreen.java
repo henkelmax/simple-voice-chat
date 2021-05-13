@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.CreateGroupList;
@@ -9,7 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
@@ -36,14 +34,14 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
 
         playerList = new CreateGroupList(this, 9, 49, 160, 88, () -> VoicechatClient.CLIENT.getPlayerStateManager().getPlayerStates());
 
-        groupName = new EditBox(font, guiLeft + 78, guiTop + 20, 88, 10, TextComponent.EMPTY);
+        groupName = new EditBox(font, guiLeft + 78, guiTop + 20, 88, 10, "");
 
         groupName.setMaxLength(16);
         groupName.setResponder(s -> Voicechat.GROUP_REGEX.matcher(s).matches());
 
         addButton(groupName);
 
-        createGroup = new Button(guiLeft + 169, guiTop + 15, 20, 20, new TextComponent("+"), button -> {
+        createGroup = new Button(guiLeft + 169, guiTop + 15, 20, 20, "+", button -> {
             VoicechatClient.CLIENT.getPlayerStateManager().setGroup(groupName.getValue());
             minecraft.setScreen(new GroupScreen());
         });
@@ -64,22 +62,22 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float delta) {
+    public void render(int mouseX, int mouseY, float delta) {
         RenderSystem.color4f(1F, 1F, 1F, 1F);
         minecraft.getTextureManager().bind(TEXTURE);
-        blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
+        blit(guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
+//        minecraft.gameRenderer.
+        playerList.drawGuiContainerBackgroundLayer(delta, mouseX, mouseY);
 
-        playerList.drawGuiContainerBackgroundLayer(matrixStack, delta, mouseX, mouseY);
-
-        playerList.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
+        playerList.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
         for (AbstractWidget widget : buttons) {
-            widget.render(matrixStack, mouseX, mouseY, delta);
+            widget.render(mouseX, mouseY, delta);
         }
 
-        font.draw(matrixStack, new TranslatableComponent("message.voicechat.join_create_group"), guiLeft + 8, guiTop + 5, FONT_COLOR);
-        font.draw(matrixStack, new TranslatableComponent("message.voicechat.group_name"), guiLeft + 8, guiTop + 21, FONT_COLOR);
-        font.draw(matrixStack, new TranslatableComponent("message.voicechat.join_group"), guiLeft + 8, guiTop + 38, FONT_COLOR);
+        font.draw(new TranslatableComponent("message.voicechat.join_create_group").getColoredString(), guiLeft + 8, guiTop + 5, FONT_COLOR);
+        font.draw(new TranslatableComponent("message.voicechat.group_name").getColoredString(), guiLeft + 8, guiTop + 21, FONT_COLOR);
+        font.draw(new TranslatableComponent("message.voicechat.join_group").getColoredString(), guiLeft + 8, guiTop + 38, FONT_COLOR);
     }
 
     @Override

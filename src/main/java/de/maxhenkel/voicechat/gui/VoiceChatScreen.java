@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
@@ -38,14 +37,14 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         mute = new ToggleImageButton(guiLeft + 6, guiTop + ySize - 6 - 20, MICROPHONE, stateManager::isMuted, button -> {
             stateManager.setMuted(!stateManager.isMuted());
         }, (button, matrices, mouseX, mouseY) -> {
-            renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.mute_microphone").getVisualOrderText()), mouseX, mouseY);
+            renderTooltip(Collections.singletonList(new TranslatableComponent("message.voicechat.mute_microphone").getColoredString()), mouseX, mouseY);
         });
         addButton(mute);
 
         ToggleImageButton disable = new ToggleImageButton(guiLeft + 6 + 20 + 2, guiTop + ySize - 6 - 20, SPEAKER, stateManager::isDisabled, button -> {
             stateManager.setDisabled(!stateManager.isDisabled());
         }, (button, matrices, mouseX, mouseY) -> {
-            renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.disable_voice_chat").getVisualOrderText()), mouseX, mouseY);
+            renderTooltip(Collections.singletonList(new TranslatableComponent("message.voicechat.disable_voice_chat").getColoredString()), mouseX, mouseY);
         });
         addButton(disable);
 
@@ -53,16 +52,16 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
             VoicechatClient.CLIENT_CONFIG.hideIcons.set(!VoicechatClient.CLIENT_CONFIG.hideIcons.get());
             VoicechatClient.CLIENT_CONFIG.hideIcons.save();
         }, (button, matrices, mouseX, mouseY) -> {
-            renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.hide_icons").getVisualOrderText()), mouseX, mouseY);
+            renderTooltip(Collections.singletonList(new TranslatableComponent("message.voicechat.hide_icons").getColoredString()), mouseX, mouseY);
         });
         addButton(hide);
 
-        Button settings = new Button(guiLeft + 6, guiTop + 6 + 15, 75, 20, new TextComponent("Settings"), button -> {
+        Button settings = new Button(guiLeft + 6, guiTop + 6 + 15, 75, 20, new TextComponent("Settings").getColoredString(), button -> {
             minecraft.setScreen(new VoiceChatSettingsScreen());
         });
         addButton(settings);
 
-        Button group = new Button(guiLeft + xSize - 6 - 75 + 1, guiTop + 6 + 15, 75, 20, new TextComponent("Group"), button -> {
+        Button group = new Button(guiLeft + xSize - 6 - 75 + 1, guiTop + 6 + 15, 75, 20, new TextComponent("Group").getColoredString(), button -> {
             if (stateManager.isInGroup()) {
                 minecraft.setScreen(new GroupScreen());
             } else {
@@ -87,16 +86,16 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         RenderSystem.color4f(1F, 1F, 1F, 1F);
         minecraft.getTextureManager().bind(TEXTURE);
-        blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+        blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
 
         Component title = new TranslatableComponent("gui.voicechat.voice_chat.title");
-        int titleWidth = font.width(title);
-        font.draw(matrixStack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
+        int titleWidth = font.width(title.getColoredString());
+        font.draw(title.getColoredString(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
     }
 
 }

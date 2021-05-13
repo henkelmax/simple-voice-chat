@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ListScreen;
 import de.maxhenkel.voicechat.voice.client.Client;
@@ -9,7 +8,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
@@ -39,7 +37,7 @@ public class SelectSpeakerScreen extends ListScreen<String> {
             return;
         }
         int bw = 60;
-        Button b = addButton(new Button(width / 2 - bw / 2, guiTop + 35, bw, 20, new TranslatableComponent("message.voicechat.select"), button -> {
+        Button b = addButton(new Button(width / 2 - bw / 2, guiTop + 35, bw, 20, new TranslatableComponent("message.voicechat.select").getColoredString(), button -> {
             VoicechatClient.CLIENT_CONFIG.speaker.set(currentElement);
             VoicechatClient.CLIENT_CONFIG.speaker.save();
             button.active = false;
@@ -53,13 +51,13 @@ public class SelectSpeakerScreen extends ListScreen<String> {
     }
 
     @Override
-    protected void renderText(PoseStack stack, @Nullable String element, int mouseX, int mouseY, float partialTicks) {
+    protected void renderText(@Nullable String element, int mouseX, int mouseY, float partialTicks) {
         Component title = getTitle();
-        int titleWidth = font.width(title);
-        font.draw(stack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
+        int titleWidth = font.width(title.getColoredString());
+        font.draw(title.getColoredString(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
 
-        MutableComponent name = getCurrentElement() == null ? new TranslatableComponent("message.voicechat.no_speaker") : new TextComponent(getCurrentElement());
-        int nameWidth = font.width(name);
-        font.draw(stack, name.withStyle(ChatFormatting.WHITE).getVisualOrderText(), (float) (guiLeft + (xSize - nameWidth) / 2), guiTop + 7 + font.lineHeight + 7, 0);
+        Component name = getCurrentElement() == null ? new TranslatableComponent("message.voicechat.no_speaker") : new TextComponent(getCurrentElement());
+        int nameWidth = font.width(name.getColoredString());
+        font.draw(name.withStyle(ChatFormatting.WHITE).getColoredString(), (float) (guiLeft + (xSize - nameWidth) / 2), guiTop + 7 + font.lineHeight + 7, 0);
     }
 }

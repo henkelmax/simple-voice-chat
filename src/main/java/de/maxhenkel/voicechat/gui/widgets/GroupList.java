@@ -1,10 +1,10 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import de.maxhenkel.voicechat.gui.SkinUtils;
+import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.AdjustVolumeScreen;
+import de.maxhenkel.voicechat.gui.SkinUtils;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
@@ -60,20 +60,20 @@ public class GroupList extends WidgetBase {
     }
 
     @Override
-    public void drawGuiContainerForegroundLayer(PoseStack matrixStack, int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
+    public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         List<PlayerState> entries = playerStates.get();
         for (int i = getOffset(); i < entries.size() && i < getOffset() + columnCount; i++) {
             int pos = i - getOffset();
             int startY = guiTop + pos * columnHeight;
             PlayerState state = entries.get(i);
-            mc.font.draw(matrixStack, new TextComponent(state.getGameProfile().getName()), guiLeft + 3 + 16 + 1 + 8 + 3, startY + 7, 0);
+            mc.font.draw(new TextComponent(state.getGameProfile().getName()).getColoredString(), guiLeft + 3 + 16 + 1 + 8 + 3, startY + 7, 0);
         }
     }
 
     @Override
-    public void drawGuiContainerBackgroundLayer(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
+    public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 
         List<PlayerState> entries = playerStates.get();
         for (int i = getOffset(); i < entries.size() && i < getOffset() + columnCount; i++) {
@@ -85,31 +85,31 @@ public class GroupList extends WidgetBase {
             int startY = guiTop + pos * columnHeight;
 
             if (hovered) {
-                Screen.blit(matrixStack, guiLeft, startY, 195, 39, 160, columnHeight, 512, 512);
+                Screen.blit(guiLeft, startY, 195, 39, 160, columnHeight, 512, 512);
             } else {
-                Screen.blit(matrixStack, guiLeft, startY, 195, 17, 160, columnHeight, 512, 512);
+                Screen.blit(guiLeft, startY, 195, 17, 160, columnHeight, 512, 512);
             }
 
-            matrixStack.pushPose();
+            RenderSystem.pushMatrix();
             mc.getTextureManager().bind(SkinUtils.getSkin(state.getGameProfile()));
-            matrixStack.translate(guiLeft + 3, startY + 3, 0);
-            matrixStack.scale(2F, 2F, 1F);
-            Screen.blit(matrixStack, 0, 0, 8, 8, 8, 8, 64, 64);
-            Screen.blit(matrixStack, 0, 0, 40, 8, 8, 8, 64, 64);
-            matrixStack.popPose();
+            RenderSystem.translatef(guiLeft + 3, startY + 3, 0);
+            RenderSystem.scaled(2F, 2F, 1F);
+            Screen.blit( 0, 0, 8, 8, 8, 8, 64, 64);
+            Screen.blit(0, 0, 40, 8, 8, 8, 64, 64);
+            RenderSystem.popMatrix();
 
             if (state.isDisconnected()) {
-                drawIcon(matrixStack, startY, DISCONNECT);
+                drawIcon(startY, DISCONNECT);
             } else if (state.isDisabled()) {
-                drawIcon(matrixStack, startY, SPEAKER_OFF);
+                drawIcon(startY, SPEAKER_OFF);
             } else if (voiceChatClient.getTalkCache().isTalking(state.getGameProfile().getId())) {
-                drawIcon(matrixStack, startY, SPEAKER);
+                drawIcon(startY, SPEAKER);
             }
 
             mc.getTextureManager().bind(CHANGE_VOLUME);
 
             if (hovered) {
-                Screen.blit(matrixStack, guiLeft + xSize - 3 - 16, startY + 3, 0, 0, 16, 16, 16, 16);
+                Screen.blit(guiLeft + xSize - 3 - 16, startY + 3, 0, 0, 16, 16, 16, 16);
             }
         }
 
@@ -119,19 +119,19 @@ public class GroupList extends WidgetBase {
             float h = ySize - 17;
             float perc = (float) getOffset() / (float) (entries.size() - columnCount);
             int posY = guiTop + (int) (h * perc);
-            Screen.blit(matrixStack, guiLeft + xSize + 6, posY, 195, 0, 12, 17, 512, 512);
+            Screen.blit(guiLeft + xSize + 6, posY, 195, 0, 12, 17, 512, 512);
         } else {
-            Screen.blit(matrixStack, guiLeft + xSize + 6, guiTop, 207, 0, 12, 17, 512, 512);
+            Screen.blit(guiLeft + xSize + 6, guiTop, 207, 0, 12, 17, 512, 512);
         }
     }
 
-    private void drawIcon(PoseStack matrixStack, int startY, ResourceLocation texture) {
-        matrixStack.pushPose();
+    private void drawIcon(int startY, ResourceLocation texture) {
+        RenderSystem.pushMatrix();
         mc.getTextureManager().bind(texture);
-        matrixStack.translate(guiLeft + 3 + 16 + 1, startY + 3 + 8, 0);
-        matrixStack.scale(0.5F, 0.5F, 1F);
-        Screen.blit(matrixStack, 0, 0, 0, 0, 16, 16, 16, 16);
-        matrixStack.popPose();
+        RenderSystem.translatef(guiLeft + 3 + 16 + 1, startY + 3 + 8, 0);
+        RenderSystem.scalef(0.5F, 0.5F, 1F);
+        Screen.blit(0, 0, 0, 0, 16, 16, 16, 16);
+        RenderSystem.popMatrix();
     }
 
     public int getOffset() {

@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.gui.widgets;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraft.client.gui.components.AbstractButton;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
 public class MicActivationButton extends AbstractButton {
@@ -12,7 +11,7 @@ public class MicActivationButton extends AbstractButton {
     private VoiceActivationSlider voiceActivationSlider;
 
     public MicActivationButton(int xIn, int yIn, int widthIn, int heightIn, VoiceActivationSlider voiceActivationSlider) {
-        super(xIn, yIn, widthIn, heightIn, TextComponent.EMPTY);
+        super(xIn, yIn, widthIn, heightIn, "");
         this.voiceActivationSlider = voiceActivationSlider;
         type = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get();
         updateText();
@@ -20,10 +19,10 @@ public class MicActivationButton extends AbstractButton {
 
     private void updateText() {
         if (MicrophoneActivationType.PTT.equals(type)) {
-            setMessage(new TranslatableComponent("message.voicechat.activation_type", new TranslatableComponent("message.voicechat.activation_type.ptt")));
+            setMessage(new TranslatableComponent("message.voicechat.activation_type", new TranslatableComponent("message.voicechat.activation_type.ptt")).getColoredString());
             voiceActivationSlider.visible = false;
         } else if (MicrophoneActivationType.VOICE.equals(type)) {
-            setMessage(new TranslatableComponent("message.voicechat.activation_type", new TranslatableComponent("message.voicechat.activation_type.voice")));
+            setMessage(new TranslatableComponent("message.voicechat.activation_type", new TranslatableComponent("message.voicechat.activation_type.voice")).getColoredString());
             voiceActivationSlider.visible = true;
         }
     }

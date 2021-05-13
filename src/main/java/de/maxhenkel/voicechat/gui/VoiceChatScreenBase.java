@@ -1,12 +1,10 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.VoicechatClient;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.FormattedCharSequence;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -51,10 +49,10 @@ public class VoiceChatScreenBase extends Screen {
         return super.addButton(button);
     }
 
-    public void drawHoverAreas(PoseStack matrixStack, int mouseX, int mouseY) {
+    public void drawHoverAreas(int mouseX, int mouseY) {
         for (HoverArea hoverArea : hoverAreas) {
             if (hoverArea.tooltip != null && hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
-                renderTooltip(matrixStack, hoverArea.tooltip.get(), mouseX - guiLeft, mouseY - guiTop);
+                renderTooltip(hoverArea.tooltip.get(), mouseX - guiLeft, mouseY - guiTop);
             }
         }
     }
@@ -72,13 +70,13 @@ public class VoiceChatScreenBase extends Screen {
         private final int posX, posY;
         private final int width, height;
         @Nullable
-        private final Supplier<List<FormattedCharSequence>> tooltip;
+        private final Supplier<List<String>> tooltip;
 
         public HoverArea(int posX, int posY, int width, int height) {
             this(posX, posY, width, height, null);
         }
 
-        public HoverArea(int posX, int posY, int width, int height, Supplier<List<FormattedCharSequence>> tooltip) {
+        public HoverArea(int posX, int posY, int width, int height, Supplier<List<String>> tooltip) {
             this.posX = posX;
             this.posY = posY;
             this.width = width;
@@ -103,7 +101,7 @@ public class VoiceChatScreenBase extends Screen {
         }
 
         @Nullable
-        public Supplier<List<FormattedCharSequence>> getTooltip() {
+        public Supplier<List<String>> getTooltip() {
             return tooltip;
         }
 

@@ -26,7 +26,6 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -116,7 +115,7 @@ public class ClientVoiceEvents {
         return pttKeyHandler;
     }
 
-    public void renderHUD(PoseStack stack, float tickDelta) {
+    public void renderHUD(float tickDelta) {
         if (!isMultiplayerServer()) {
             return;
         }
@@ -125,28 +124,26 @@ public class ClientVoiceEvents {
         }
 
         if (playerStateManager.isDisconnected()) {
-            renderIcon(stack, DISCONNECT_ICON);
+            renderIcon(DISCONNECT_ICON);
         } else if (playerStateManager.isDisabled()) {
-            renderIcon(stack, SPEAKER_OFF_ICON);
+            renderIcon(SPEAKER_OFF_ICON);
         } else if (playerStateManager.isMuted() && VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE)) {
-            renderIcon(stack, MICROPHONE_OFF_ICON);
+            renderIcon(MICROPHONE_OFF_ICON);
         } else if (client != null && client.getMicThread() != null && client.getMicThread().isTalking()) {
-            renderIcon(stack, MICROPHONE_ICON);
+            renderIcon(MICROPHONE_ICON);
         }
 
         if (playerStateManager.isInGroup() && VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()) {
-            GroupChatManager.renderIcons(stack);
+            GroupChatManager.renderIcons();
         }
     }
 
-    private void renderIcon(PoseStack matrixStack, ResourceLocation texture) {
-        matrixStack.pushPose();
+    private void renderIcon(ResourceLocation texture) {
         RenderSystem.color4f(1F, 1F, 1F, 1F);
         minecraft.getTextureManager().bind(texture);
         //double width = minecraft.getMainWindow().getScaledWidth();
         int height = minecraft.getWindow().getGuiScaledHeight();
-        Screen.blit(matrixStack, 16, height - 32, 0, 0, 16, 16, 16, 16);
-        matrixStack.popPose();
+        Screen.blit(16, height - 32, 0, 0, 16, 16, 16, 16);
     }
 
     public void onClientTickEnd(Minecraft minecraft) {
@@ -211,7 +208,7 @@ public class ClientVoiceEvents {
         return minecraft.getCurrentServer() != null && !minecraft.getCurrentServer().isLan();
     }
 
-    public void onRenderName(Entity entity, Component component, PoseStack stack, MultiBufferSource vertexConsumers, int light) {
+    public void onRenderName(Entity entity, String name, PoseStack stack, MultiBufferSource vertexConsumers, int light) {
         if (!isMultiplayerServer()) {
             return;
         }
@@ -231,18 +228,18 @@ public class ClientVoiceEvents {
             String group = playerStateManager.getGroup(player);
 
             if (playerStateManager.isPlayerDisconnected(player)) {
-                renderPlayerIcon(player, component, DISCONNECT_ICON, stack, vertexConsumers, light);
+                renderPlayerIcon(player, name, DISCONNECT_ICON, stack, vertexConsumers, light);
             } else if (group != null && !group.equals(playerStateManager.getGroup())) {
-                renderPlayerIcon(player, component, GROUP_ICON, stack, vertexConsumers, light);
+                renderPlayerIcon(player, name, GROUP_ICON, stack, vertexConsumers, light);
             } else if (playerStateManager.isPlayerDisabled(player)) {
-                renderPlayerIcon(player, component, SPEAKER_OFF_ICON, stack, vertexConsumers, light);
+                renderPlayerIcon(player, name, SPEAKER_OFF_ICON, stack, vertexConsumers, light);
             } else if (client != null && client.getTalkCache().isTalking(player)) {
-                renderPlayerIcon(player, component, SPEAKER_ICON, stack, vertexConsumers, light);
+                renderPlayerIcon(player, name, SPEAKER_ICON, stack, vertexConsumers, light);
             }
         }
     }
 
-    protected void renderPlayerIcon(Player player, Component component, ResourceLocation texture, PoseStack matrixStackIn, MultiBufferSource buffer, int light) {
+    protected void renderPlayerIcon(Player player, String name, ResourceLocation texture, PoseStack matrixStackIn, MultiBufferSource buffer, int light) {
         matrixStackIn.pushPose();
         RenderSystem.color4f(1F, 1F, 1F, 1F);
         matrixStackIn.translate(0D, player.getBbHeight() + 0.5D, 0D);
@@ -250,7 +247,7 @@ public class ClientVoiceEvents {
         matrixStackIn.scale(-0.025F, -0.025F, 0.025F);
         matrixStackIn.translate(0D, -1D, 0D);
 
-        float offset = (float) (minecraft.font.width(component) / 2 + 2);
+        float offset = (float) (minecraft.font.width(name) / 2 + 2);
 
         VertexConsumer builder = buffer.getBuffer(RenderType.text(texture));
         int alpha = 32;

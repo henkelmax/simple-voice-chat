@@ -1,1 +1,1 @@
-- Fixed opus decoder crash
+- Ported to 1.15.2

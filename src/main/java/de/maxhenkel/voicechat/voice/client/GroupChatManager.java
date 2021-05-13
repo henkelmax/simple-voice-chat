@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.SkinUtils;
@@ -18,7 +18,7 @@ public class GroupChatManager {
     private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_off.png");
     private static final Minecraft minecraft = Minecraft.getInstance();
 
-    public static void renderIcons(PoseStack matrixStack) {
+    public static void renderIcons() {
         Client client = VoicechatClient.CLIENT.getClient();
 
         if (client == null) {
@@ -27,35 +27,35 @@ public class GroupChatManager {
 
         List<PlayerState> groupMembers = getGroupMembers(false);
 
-        matrixStack.pushPose();
-        matrixStack.translate(8, 8, 0);
-        matrixStack.scale(2F, 2F, 1F);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(8, 8, 0);
+        RenderSystem.scalef(2F, 2F, 1F);
 
         for (int i = 0; i < groupMembers.size(); i++) {
             PlayerState state = groupMembers.get(i);
-            matrixStack.pushPose();
-            matrixStack.translate(0, i * 11, 0);
+            RenderSystem.pushMatrix();
+            RenderSystem.translatef(0, i * 11, 0);
             if (client.getTalkCache().isTalking(state.getGameProfile().getId())) {
                 minecraft.getTextureManager().bind(TALK_OUTLINE);
-                Screen.blit(matrixStack, 0, 0, 0, 0, 10, 10, 16, 16);
+                Screen.blit(0, 0, 0, 0, 10, 10, 16, 16);
             }
             minecraft.getTextureManager().bind(SkinUtils.getSkin(state.getGameProfile()));
-            Screen.blit(matrixStack, 1, 1, 8, 8, 8, 8, 64, 64);
-            Screen.blit(matrixStack, 1, 1, 40, 8, 8, 8, 64, 64);
+            Screen.blit(1, 1, 8, 8, 8, 8, 64, 64);
+            Screen.blit(1, 1, 40, 8, 8, 8, 64, 64);
 
             if (state.isDisabled()) {
-                matrixStack.pushPose();
-                matrixStack.translate(10, 5, 0);
-                matrixStack.scale(0.25F, 0.25F, 1F);
+                RenderSystem.pushMatrix();
+                RenderSystem.translatef(10, 5, 0);
+                RenderSystem.scalef(0.25F, 0.25F, 1F);
                 minecraft.getTextureManager().bind(SPEAKER_OFF_ICON);
-                Screen.blit(matrixStack, 0, 0, 0, 0, 16, 16, 16, 16);
-                matrixStack.popPose();
+                Screen.blit(0, 0, 0, 0, 16, 16, 16, 16);
+                RenderSystem.popMatrix();
             }
 
-            matrixStack.popPose();
+            RenderSystem.popMatrix();
         }
 
-        matrixStack.popPose();
+        RenderSystem.popMatrix();
     }
 
     public static List<PlayerState> getGroupMembers() {

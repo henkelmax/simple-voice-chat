@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.gui.widgets.AdjustVolumeSlider;
 import de.maxhenkel.voicechat.gui.widgets.ListScreen;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
@@ -28,9 +27,9 @@ public class AdjustVolumeScreen extends ListScreen<PlayerState> {
     }
 
     @Override
-    protected void renderText(PoseStack stack, @Nullable PlayerState element, int mouseX, int mouseY, float partialTicks) {
+    protected void renderText(@Nullable PlayerState element, int mouseX, int mouseY, float partialTicks) {
         Component title = getCurrentElement() == null ? new TranslatableComponent("message.voicechat.no_player") : new TranslatableComponent("message.voicechat.adjust_volume_player", getCurrentElement().getGameProfile().getName());
-        int titleWidth = font.width(title);
-        font.draw(stack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
+        int titleWidth = font.width(title.getColoredString());
+        font.draw(title.getColoredString(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
     }
 }
