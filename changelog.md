@@ -1,1 +1,1 @@
-- Fixed opus decoder crash
+- Updated to 21w19a
