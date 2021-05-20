@@ -39,7 +39,7 @@ public class SelectSpeakerScreen extends ListScreen<String> {
             return;
         }
         int bw = 60;
-        Button b = addButton(new Button(width / 2 - bw / 2, guiTop + 35, bw, 20, new TranslatableComponent("message.voicechat.select"), button -> {
+        Button b = addRenderableWidget(new Button(width / 2 - bw / 2, guiTop + 35, bw, 20, new TranslatableComponent("message.voicechat.select"), button -> {
             VoicechatClient.CLIENT_CONFIG.speaker.set(currentElement);
             VoicechatClient.CLIENT_CONFIG.speaker.save();
             button.active = false;

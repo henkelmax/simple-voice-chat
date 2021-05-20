@@ -21,6 +21,10 @@ repositories {
     }
 }
 
+minecraft {
+    accessWidener =  file("src/main/resources/voicechat.accesswidener")
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings minecraft.officialMojangMappings()

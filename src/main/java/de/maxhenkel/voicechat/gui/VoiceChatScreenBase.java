@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.gui;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.VoicechatClient;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -44,11 +43,6 @@ public class VoiceChatScreenBase extends Screen {
 
     public int getGuiTop() {
         return guiTop;
-    }
-
-    @Override
-    public <T extends AbstractWidget> T addButton(T button) {
-        return super.addButton(button);
     }
 
     public void drawHoverAreas(PoseStack matrixStack, int mouseX, int mouseY) {

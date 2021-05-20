@@ -30,21 +30,21 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
         super.init();
 
         voiceActivationSlider = new VoiceActivationSlider(guiLeft + 10, guiTop + 95, xSize - 20, 20);
-        addButton(new VoiceSoundSlider(guiLeft + 10, guiTop + 20, xSize - 20, 20));
-        addButton(new MicAmplificationSlider(guiLeft + 10, guiTop + 45, xSize - 20, 20));
-        addButton(new MicActivationButton(guiLeft + 10, guiTop + 70, xSize - 20, 20, voiceActivationSlider));
-        addButton(voiceActivationSlider);
+        addRenderableWidget(new VoiceSoundSlider(guiLeft + 10, guiTop + 20, xSize - 20, 20));
+        addRenderableWidget(new MicAmplificationSlider(guiLeft + 10, guiTop + 45, xSize - 20, 20));
+        addRenderableWidget(new MicActivationButton(guiLeft + 10, guiTop + 70, xSize - 20, 20, voiceActivationSlider));
+        addRenderableWidget(voiceActivationSlider);
         Client c = VoicechatClient.CLIENT.getClient();
         if (c != null) {
-            addButton(new MicTestButton(guiLeft + 10, guiTop + 145, xSize - 20, 20, this, c));
+            addRenderableWidget(new MicTestButton(guiLeft + 10, guiTop + 145, xSize - 20, 20, this, c));
         }
-        addButton(new Button(guiLeft + 10, guiTop + 170, xSize - 20, 20, new TranslatableComponent("message.voicechat.adjust_volumes"), button -> {
+        addRenderableWidget(new Button(guiLeft + 10, guiTop + 170, xSize - 20, 20, new TranslatableComponent("message.voicechat.adjust_volumes"), button -> {
             minecraft.setScreen(new AdjustVolumeScreen(this, VoicechatClient.CLIENT.getPlayerStateManager().getPlayerStates()));
         }));
-        addButton(new Button(guiLeft + 10, guiTop + 195, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_microphone"), button -> {
+        addRenderableWidget(new Button(guiLeft + 10, guiTop + 195, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_microphone"), button -> {
             minecraft.setScreen(new SelectMicrophoneScreen(this));
         }));
-        addButton(new Button(guiLeft + xSize / 2 + 6, guiTop + 195, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_speaker"), button -> {
+        addRenderableWidget(new Button(guiLeft + xSize / 2 + 6, guiTop + 195, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_speaker"), button -> {
             minecraft.setScreen(new SelectSpeakerScreen(this));
         }));
     }

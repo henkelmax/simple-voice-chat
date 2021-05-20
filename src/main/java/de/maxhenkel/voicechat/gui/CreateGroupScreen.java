@@ -6,9 +6,9 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.CreateGroupList;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -31,8 +31,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
     protected void init() {
         super.init();
         hoverAreas.clear();
-        buttons.clear();
-        children.clear();
+        clearWidgets();
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
         playerList = new CreateGroupList(this, 9, 49, 160, 88, () -> VoicechatClient.CLIENT.getPlayerStateManager().getPlayerStates());
@@ -42,13 +41,13 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         groupName.setMaxLength(16);
         groupName.setResponder(s -> Voicechat.GROUP_REGEX.matcher(s).matches());
 
-        addButton(groupName);
+        addRenderableWidget(groupName);
 
         createGroup = new Button(guiLeft + 169, guiTop + 15, 20, 20, new TextComponent("+"), button -> {
             VoicechatClient.CLIENT.getPlayerStateManager().setGroup(groupName.getValue());
             minecraft.setScreen(new GroupScreen());
         });
-        addButton(createGroup);
+        addRenderableWidget(createGroup);
     }
 
     @Override
@@ -75,7 +74,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
 
         playerList.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
 
-        for (AbstractWidget widget : buttons) {
+        for (Widget widget : renderables) {
             widget.render(matrixStack, mouseX, mouseY, delta);
         }
 

@@ -41,14 +41,14 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         }, (button, matrices, mouseX, mouseY) -> {
             renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.mute_microphone").getVisualOrderText()), mouseX, mouseY);
         });
-        addButton(mute);
+        addRenderableWidget(mute);
 
         ToggleImageButton disable = new ToggleImageButton(guiLeft + 6 + 20 + 2, guiTop + ySize - 6 - 20, SPEAKER, stateManager::isDisabled, button -> {
             stateManager.setDisabled(!stateManager.isDisabled());
         }, (button, matrices, mouseX, mouseY) -> {
             renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.disable_voice_chat").getVisualOrderText()), mouseX, mouseY);
         });
-        addButton(disable);
+        addRenderableWidget(disable);
 
         ToggleImageButton hide = new ToggleImageButton(guiLeft + xSize - 6 - 20, guiTop + ySize - 6 - 20, HIDE, VoicechatClient.CLIENT_CONFIG.hideIcons::get, button -> {
             VoicechatClient.CLIENT_CONFIG.hideIcons.set(!VoicechatClient.CLIENT_CONFIG.hideIcons.get());
@@ -56,12 +56,12 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         }, (button, matrices, mouseX, mouseY) -> {
             renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.hide_icons").getVisualOrderText()), mouseX, mouseY);
         });
-        addButton(hide);
+        addRenderableWidget(hide);
 
         Button settings = new Button(guiLeft + 6, guiTop + 6 + 15, 75, 20, new TextComponent("Settings"), button -> {
             minecraft.setScreen(new VoiceChatSettingsScreen());
         });
-        addButton(settings);
+        addRenderableWidget(settings);
 
         Button group = new Button(guiLeft + xSize - 6 - 75 + 1, guiTop + 6 + 15, 75, 20, new TextComponent("Group"), button -> {
             if (stateManager.isInGroup()) {
@@ -70,7 +70,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
                 minecraft.setScreen(new CreateGroupScreen());
             }
         });
-        addButton(group);
+        addRenderableWidget(group);
         Client client = VoicechatClient.CLIENT.getClient();
         group.active = client != null && client.groupsEnabled();
 

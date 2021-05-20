@@ -67,11 +67,10 @@ public abstract class ListScreen<T> extends Screen {
     }
 
     public void updateCurrentElement() {
-        buttons.clear();
-        children.clear();
-        addButton(previous);
-        addButton(back);
-        addButton(next);
+        clearWidgets();
+        addRenderableWidget(previous);
+        addRenderableWidget(back);
+        addRenderableWidget(next);
 
         if (elements.size() <= 1) {
             next.visible = false;

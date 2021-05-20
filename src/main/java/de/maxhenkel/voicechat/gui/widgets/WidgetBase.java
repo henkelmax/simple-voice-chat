@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.gui.widgets;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractWidget;
 
 public abstract class WidgetBase {
 
@@ -47,10 +46,6 @@ public abstract class WidgetBase {
 
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         return false;
-    }
-
-    protected void addWidget(AbstractWidget widget) {
-        screen.addButton(widget);
     }
 
 }

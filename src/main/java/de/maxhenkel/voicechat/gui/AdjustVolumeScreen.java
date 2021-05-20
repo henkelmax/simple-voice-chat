@@ -24,7 +24,7 @@ public class AdjustVolumeScreen extends ListScreen<PlayerState> {
         if (currentElement == null) {
             return;
         }
-        addButton(new AdjustVolumeSlider(guiLeft + 10, guiTop + 30, xSize - 20, 20, currentElement));
+        addRenderableWidget(new AdjustVolumeSlider(guiLeft + 10, guiTop + 30, xSize - 20, 20, currentElement));
     }
 
     @Override
