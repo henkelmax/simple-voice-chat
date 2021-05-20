@@ -13,6 +13,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.stream.Collectors;
+
+import java.util.stream.Collectors;
+
 public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicTestButton.MicListener {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_voicechat_settings.png");
@@ -39,7 +43,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
             addRenderableWidget(new MicTestButton(guiLeft + 10, guiTop + 145, xSize - 20, 20, this, c));
         }
         addRenderableWidget(new Button(guiLeft + 10, guiTop + 170, xSize - 20, 20, new TranslatableComponent("message.voicechat.adjust_volumes"), button -> {
-            minecraft.setScreen(new AdjustVolumeScreen(this, VoicechatClient.CLIENT.getPlayerStateManager().getPlayerStates()));
+            minecraft.setScreen(new AdjustVolumeScreen(this, VoicechatClient.CLIENT.getPlayerStateManager().getPlayerStates().stream().filter(state -> !state.getGameProfile().getId().equals(minecraft.player.getUUID())).collect(Collectors.toList())));
         }));
         addRenderableWidget(new Button(guiLeft + 10, guiTop + 195, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_microphone"), button -> {
             minecraft.setScreen(new SelectMicrophoneScreen(this));
