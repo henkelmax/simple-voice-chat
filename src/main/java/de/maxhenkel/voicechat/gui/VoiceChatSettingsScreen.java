@@ -15,8 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.stream.Collectors;
 
-import java.util.stream.Collectors;
-
 public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicTestButton.MicListener {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_voicechat_settings.png");
