@@ -1,1 +1,1 @@
-- Fixed opus decoder crash
+- Fixed volume adjusting screen
