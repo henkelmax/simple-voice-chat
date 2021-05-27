@@ -163,8 +163,8 @@ public class Utils {
         return (float) Math.toDegrees(Math.atan2(vec1.x * vec2.x + vec1.y * vec2.y, vec1.x * vec2.y - vec1.y * vec2.x));
     }
 
-    private static float magnitude(Vec2 vec1) {
-        return Mth.sqrt(Math.pow(vec1.x, 2) + Math.pow(vec1.y, 2));
+    private static double magnitude(Vec2 vec1) {
+        return Math.sqrt(Math.pow(vec1.x, 2) + Math.pow(vec1.y, 2));
     }
 
     private static float multiply(Vec2 vec1, Vec2 vec2) {
