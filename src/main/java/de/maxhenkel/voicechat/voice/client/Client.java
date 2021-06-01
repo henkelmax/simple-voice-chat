@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraftforge.common.MinecraftForge;
 import org.jline.utils.Log;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -147,6 +148,7 @@ public class Client extends Thread {
         }
     }
 
+    @Nullable
     public MicThread getMicThread() {
         return micThread;
     }

@@ -27,7 +27,7 @@ public class TalkCache {
     public boolean isTalking(UUID player) {
         if (player.equals(Minecraft.getInstance().player.getUUID())) {
             Client client = Main.CLIENT_VOICE_EVENTS.getClient();
-            if (client != null) {
+            if (client != null && client.getMicThread() != null) {
                 return client.getMicThread().isTalking();
             }
         }
