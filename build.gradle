@@ -41,7 +41,8 @@ processResources {
         include "fabric.mod.json"
         expand "version": project.version,
                 "minecraft_version": project.minecraft_version,
-                "loader_version": project.loader_version
+                "loader_version": project.loader_version,
+                "fabric_version": project.fabric_version
     }
 
     from(sourceSets.main.resources.srcDirs) {

@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.events.ClientVoiceChatEvents;
 import de.maxhenkel.voicechat.voice.common.*;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -187,6 +188,7 @@ public class Client extends Thread {
         }
     }
 
+    @Nullable
     public MicThread getMicThread() {
         return micThread;
     }

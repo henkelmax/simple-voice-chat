@@ -1,1 +1,1 @@
-- Fixed volume adjusting screen
+- Fixed crash when the player is talking
