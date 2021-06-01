@@ -27,7 +27,7 @@
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": ">=${fabric_version}",
-    "minecraft": "${minecraft_dependency}",
+    "minecraft": "${minecraft_version}",
     "java": ">=16"
   },
   "accessWidener" : "voicechat.accesswidener"

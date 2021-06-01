@@ -1,1 +1,1 @@
-- Updated to 1.17-pre2
+- Fixed crash when the player is talking
