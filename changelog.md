@@ -1,1 +1,1 @@
-- Updated to 1.17-pre4
+- Added HUD icon location config option

@@ -145,9 +145,20 @@ public class ClientVoiceEvents {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, texture);
-        //double width = minecraft.getMainWindow().getScaledWidth();
+        int width = minecraft.getWindow().getGuiScaledWidth();
         int height = minecraft.getWindow().getGuiScaledHeight();
-        Screen.blit(matrixStack, 16, height - 32, 0, 0, 16, 16, 16, 16);
+        HUDIconLocation location = VoicechatClient.CLIENT_CONFIG.hudIconLocation.get();
+        if (location.equals(HUDIconLocation.RIGHT)) {
+            Screen.blit(matrixStack, width - 32, height - 32, 0, 0, 16, 16, 16, 16);
+        } else if (location.equals(HUDIconLocation.CENTER)) {
+            if (minecraft.gameMode != null && minecraft.gameMode.hasExperience()) {
+                Screen.blit(matrixStack, width / 2 - 8, height - 16 - 35 - 2, 0, 0, 16, 16, 16, 16);
+            } else {
+                Screen.blit(matrixStack, width / 2 - 8, height - 35 - 4, 0, 0, 16, 16, 16, 16);
+            }
+        } else {
+            Screen.blit(matrixStack, 16, height - 32, 0, 0, 16, 16, 16, 16);
+        }
         matrixStack.popPose();
     }
 
