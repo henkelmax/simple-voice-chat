@@ -1,1 +1,1 @@
-- Fixed crash when the player is talking
+- Added HUD icon location config option

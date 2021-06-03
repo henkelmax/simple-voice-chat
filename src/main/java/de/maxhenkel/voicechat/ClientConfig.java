@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat;
 
 import de.maxhenkel.corelib.config.ConfigBase;
+import de.maxhenkel.voicechat.voice.client.HUDIconLocation;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraftforge.common.ForgeConfigSpec;
 
@@ -19,6 +20,7 @@ public class ClientConfig extends ConfigBase {
     public final ForgeConfigSpec.BooleanValue stereo;
     public final ForgeConfigSpec.BooleanValue hideIcons;
     public final ForgeConfigSpec.BooleanValue showGroupHUD;
+    public final ForgeConfigSpec.EnumValue<HUDIconLocation> hudIconLocation;
 
     public ClientConfig(ForgeConfigSpec.Builder builder) {
         super(builder);
@@ -68,6 +70,9 @@ public class ClientConfig extends ConfigBase {
         showGroupHUD = builder
                 .comment("If the group HUD should be visible")
                 .define("show_group_hud", true);
+        hudIconLocation = builder
+                .comment("The location of the HUD icons")
+                .defineEnum("hud_icon_location", HUDIconLocation.LEFT);
     }
 
 }
