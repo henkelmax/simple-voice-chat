@@ -3,10 +3,15 @@ package de.maxhenkel.voicechat;
 import de.maxhenkel.corelib.CommonRegistry;
 import de.maxhenkel.voicechat.command.VoicechatCommands;
 import de.maxhenkel.voicechat.net.*;
+import de.maxhenkel.voicechat.resourcepacks.VoiceChatResourcePack;
 import de.maxhenkel.voicechat.voice.client.ClientVoiceEvents;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.resources.IPackNameDecorator;
+import net.minecraft.resources.ResourcePackInfo;
+import net.minecraft.resources.ResourcePackList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,6 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 @Mod(Main.MODID)
@@ -65,6 +71,10 @@ public class Main {
     public static KeyBinding KEY_GROUP;
 
     public static final Pattern GROUP_REGEX = Pattern.compile("^[a-zA-Z0-9-_]{1,16}$");
+
+    public static VoiceChatResourcePack CLASSIC_ICONS;
+    public static VoiceChatResourcePack WHITE_ICONS;
+    public static VoiceChatResourcePack BLACK_ICONS;
 
     public Main() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
@@ -114,6 +124,18 @@ public class Main {
 
         KEY_GROUP = new KeyBinding("key.voice_chat_group", GLFW.GLFW_KEY_G, "key.categories.voicechat");
         ClientRegistry.registerKeyBinding(KEY_GROUP);
+
+        CLASSIC_ICONS = new VoiceChatResourcePack("Classic Icons", "classic_icons");
+        WHITE_ICONS = new VoiceChatResourcePack("White Icons", "white_icons");
+        BLACK_ICONS = new VoiceChatResourcePack("Black Icons", "black_icons");
+
+        ResourcePackList repository = Minecraft.getInstance().getResourcePackRepository();
+        repository.addPackFinder((Consumer<ResourcePackInfo> consumer, ResourcePackInfo.IFactory packConstructor) -> {
+                    consumer.accept(ResourcePackInfo.create(CLASSIC_ICONS.getName(), false, () -> CLASSIC_ICONS, packConstructor, ResourcePackInfo.Priority.TOP, IPackNameDecorator.BUILT_IN));
+                    consumer.accept(ResourcePackInfo.create(WHITE_ICONS.getName(), false, () -> WHITE_ICONS, packConstructor, ResourcePackInfo.Priority.TOP, IPackNameDecorator.BUILT_IN));
+                    consumer.accept(ResourcePackInfo.create(BLACK_ICONS.getName(), false, () -> BLACK_ICONS, packConstructor, ResourcePackInfo.Priority.TOP, IPackNameDecorator.BUILT_IN));
+                }
+        );
     }
 
     @SubscribeEvent
