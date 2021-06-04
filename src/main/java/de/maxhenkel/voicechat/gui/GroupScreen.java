@@ -22,7 +22,7 @@ public class GroupScreen extends VoiceChatScreenBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_group.png");
     private static final ResourceLocation LEAVE = new ResourceLocation(Voicechat.MODID, "textures/gui/leave.png");
-    private static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/gui/micrphone_button.png");
+    private static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/gui/microphone_button.png");
     private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_button.png");
     private static final ResourceLocation GROUP_HUD = new ResourceLocation(Voicechat.MODID, "textures/gui/group_hud_button.png");
 

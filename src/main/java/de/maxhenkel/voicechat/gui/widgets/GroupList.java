@@ -21,10 +21,9 @@ import java.util.function.Supplier;
 public class GroupList extends WidgetBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_group.png");
-    private static final ResourceLocation SPEAKER_OFF = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_off.png");
-    private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker.png");
+    private static final ResourceLocation SPEAKER_OFF = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_small_off.png");
+    private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_small.png");
     private static final ResourceLocation CHANGE_VOLUME = new ResourceLocation(Voicechat.MODID, "textures/gui/change_volume.png");
-    private static final ResourceLocation DISCONNECT = new ResourceLocation(Voicechat.MODID, "textures/gui/disconnected.png");
 
     protected Supplier<List<PlayerState>> playerStates;
     protected int offset;
@@ -67,7 +66,7 @@ public class GroupList extends WidgetBase {
             int pos = i - getOffset();
             int startY = guiTop + pos * columnHeight;
             PlayerState state = entries.get(i);
-            mc.font.draw(matrixStack, new TextComponent(state.getGameProfile().getName()), guiLeft + 3 + 16 + 1 + 8 + 3, startY + 7, 0);
+            mc.font.draw(matrixStack, new TextComponent(state.getGameProfile().getName()), guiLeft + 3 + 16 + 1 + 16 + 3, startY + 7, 0);
         }
     }
 
@@ -98,9 +97,7 @@ public class GroupList extends WidgetBase {
             Screen.blit(matrixStack, 0, 0, 40, 8, 8, 8, 64, 64);
             matrixStack.popPose();
 
-            if (state.isDisconnected()) {
-                drawIcon(matrixStack, startY, DISCONNECT);
-            } else if (state.isDisabled()) {
+            if (state.isDisabled()) {
                 drawIcon(matrixStack, startY, SPEAKER_OFF);
             } else if (voiceChatClient.getTalkCache().isTalking(state.getGameProfile().getId())) {
                 drawIcon(matrixStack, startY, SPEAKER);
@@ -128,8 +125,7 @@ public class GroupList extends WidgetBase {
     private void drawIcon(PoseStack matrixStack, int startY, ResourceLocation texture) {
         matrixStack.pushPose();
         mc.getTextureManager().bind(texture);
-        matrixStack.translate(guiLeft + 3 + 16 + 1, startY + 3 + 8, 0);
-        matrixStack.scale(0.5F, 0.5F, 1F);
+        matrixStack.translate(guiLeft + 3 + 16 + 1, startY + 3, 0);
         Screen.blit(matrixStack, 0, 0, 0, 0, 16, 16, 16, 16);
         matrixStack.popPose();
     }

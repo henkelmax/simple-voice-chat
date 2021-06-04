@@ -4,6 +4,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 import de.maxhenkel.voicechat.config.ClientConfig;
 import de.maxhenkel.voicechat.config.ConfigBuilder;
 import de.maxhenkel.voicechat.config.PlayerVolumeConfig;
+import de.maxhenkel.voicechat.resourcepacks.IPackRepository;
+import de.maxhenkel.voicechat.resourcepacks.VoiceChatResourcePack;
 import de.maxhenkel.voicechat.voice.client.ClientVoiceEvents;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ClientModInitializer;
@@ -14,9 +16,12 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 @Environment(EnvType.CLIENT)
 public class VoicechatClient implements ClientModInitializer {
@@ -32,6 +37,10 @@ public class VoicechatClient implements ClientModInitializer {
     public static ClientVoiceEvents CLIENT;
     public static ClientConfig CLIENT_CONFIG;
     public static PlayerVolumeConfig VOLUME_CONFIG;
+
+    public static VoiceChatResourcePack CLASSIC_ICONS;
+    public static VoiceChatResourcePack WHITE_ICONS;
+    public static VoiceChatResourcePack BLACK_ICONS;
 
     @Override
     public void onInitializeClient() {
@@ -59,5 +68,17 @@ public class VoicechatClient implements ClientModInitializer {
         KEY_GROUP = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.voice_chat_group", InputConstants.UNKNOWN.getValue(), "key.categories.voicechat"));
 
         CLIENT = new ClientVoiceEvents();
+
+        CLASSIC_ICONS = new VoiceChatResourcePack("Classic Icons", "classic_icons");
+        WHITE_ICONS = new VoiceChatResourcePack("White Icons", "white_icons");
+        BLACK_ICONS = new VoiceChatResourcePack("Black Icons", "black_icons");
+
+        IPackRepository repository = (IPackRepository) Minecraft.getInstance().getResourcePackRepository();
+        repository.addSource((Consumer<Pack> consumer, Pack.PackConstructor packConstructor) -> {
+                    consumer.accept(Pack.create(CLASSIC_ICONS.getName(), false, () -> CLASSIC_ICONS, packConstructor, Pack.Position.TOP, PackSource.BUILT_IN));
+                    consumer.accept(Pack.create(WHITE_ICONS.getName(), false, () -> WHITE_ICONS, packConstructor, Pack.Position.TOP, PackSource.BUILT_IN));
+                    consumer.accept(Pack.create(BLACK_ICONS.getName(), false, () -> BLACK_ICONS, packConstructor, Pack.Position.TOP, PackSource.BUILT_IN));
+                }
+        );
     }
 }

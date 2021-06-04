@@ -1,1 +1,1 @@
-- Added HUD icon location config option
+- Updated all icons
