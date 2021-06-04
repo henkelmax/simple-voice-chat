@@ -1,1 +1,1 @@
-- Updated to 1.17-pre5
+- Updated all icons

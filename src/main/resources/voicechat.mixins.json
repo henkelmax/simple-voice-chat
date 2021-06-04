@@ -11,7 +11,8 @@
     "EntityRendererMixin",
     "MinecraftMixin",
     "KeyboardMixin",
-    "MouseMixin"
+    "MouseMixin",
+    "PackRepositoryMixin"
   ],
   "injectors": {
     "defaultRequire": 1
