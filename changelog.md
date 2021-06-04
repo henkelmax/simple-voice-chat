@@ -1,1 +1,1 @@
-- Updated all icons
+- Updated to 1.17-rc1
