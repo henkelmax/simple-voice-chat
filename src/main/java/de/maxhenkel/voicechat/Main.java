@@ -41,6 +41,8 @@ public class Main {
 
     public static SimpleChannel SIMPLE_CHANNEL;
 
+    public static int PROTOCOL_VERSION = 0;
+
     public static ServerConfig SERVER_CONFIG;
     public static ClientConfig CLIENT_CONFIG;
     public static PlayerVolumeConfig VOLUME_CONFIG;
@@ -91,7 +93,7 @@ public class Main {
         SERVER_VOICE_EVENTS = new ServerVoiceEvents();
         MinecraftForge.EVENT_BUS.register(SERVER_VOICE_EVENTS);
 
-        SIMPLE_CHANNEL = CommonRegistry.registerChannel(Main.MODID, "default");
+        SIMPLE_CHANNEL = CommonRegistry.registerChannel(Main.MODID, "default", PROTOCOL_VERSION);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 0, AuthenticationMessage.class);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 1, PlayerStateMessage.class);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 2, PlayerStatesMessage.class);
