@@ -3,12 +3,14 @@
   "id": "voicechat",
   "version": "${version}",
   "name": "Simple Voice Chat",
-  "description": "",
+  "description": "A working voice chat in Minecraft!",
   "authors": [
     "Max Henkel"
   ],
   "contact": {
-    "website": "https://modrepo.de"
+    "website": "https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat",
+    "issues": "https://github.com/henkelmax/simple-voice-chat/issues",
+    "sources": "https://github.com/henkelmax/simple-voice-chat"
   },
   "license": "All Rights Reserved",
   "icon": "assets/voicechat/icon.png",

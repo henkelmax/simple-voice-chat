@@ -1,1 +1,2 @@
-- Updated to 1.17
+- Updated mod icon
+- Updated fabric.mod.json
