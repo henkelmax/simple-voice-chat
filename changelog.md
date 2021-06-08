@@ -1,1 +1,2 @@
-- Updated all icons
+- Updated mod icon
+- Updated fabric.mod.json
