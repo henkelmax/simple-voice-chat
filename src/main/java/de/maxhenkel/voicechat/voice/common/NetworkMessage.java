@@ -24,7 +24,6 @@ import java.util.UUID;
 public class NetworkMessage {
 
     private final long timestamp;
-    private final long ttl;
     private Packet<? extends Packet> packet;
     private SocketAddress address;
 
@@ -35,7 +34,6 @@ public class NetworkMessage {
 
     private NetworkMessage() {
         this.timestamp = System.currentTimeMillis();
-        this.ttl = 2000L;
     }
 
     @Nonnull
@@ -48,7 +46,7 @@ public class NetworkMessage {
     }
 
     public long getTTL() {
-        return ttl;
+        return packet.getTTL();
     }
 
     public SocketAddress getAddress() {

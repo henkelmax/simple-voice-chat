@@ -1,2 +1,1 @@
-- Updated mod icon
-- Updated fabric.mod.json
+- Added warning message when the voice chat server is overloaded
