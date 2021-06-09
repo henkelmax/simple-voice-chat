@@ -11,13 +11,14 @@ import net.minecraft.server.MinecraftServer;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerStateManager {
 
-    private Map<UUID, PlayerState> states;
+    private ConcurrentHashMap<UUID, PlayerState> states;
 
     public PlayerStateManager() {
-        states = new HashMap<>();
+        states = new ConcurrentHashMap<>();
     }
 
     public void onPlayerStatePacket(ServerPlayerEntity player, SetPlayerStateMessage message) {

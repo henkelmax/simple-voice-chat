@@ -1,1 +1,1 @@
-- Updated all icons
+- Added warning message when the voice chat server is overloaded

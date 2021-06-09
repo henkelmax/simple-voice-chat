@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Main;
+import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -117,7 +118,14 @@ public class Server extends Thread {
                     keepAlive();
 
                     NetworkMessage message = packetQueue.poll(10, TimeUnit.MILLISECONDS);
-                    if (message == null || System.currentTimeMillis() - message.getTimestamp() > message.getTTL()) {
+                    if (message == null) {
+                        continue;
+                    }
+                    if (System.currentTimeMillis() - message.getTimestamp() > message.getTTL()) {
+                        CooldownTimer.run("ttl", () -> {
+                            Main.LOGGER.warn("Dropping voice chat packets! Your Server might be overloaded!");
+                            Main.LOGGER.warn("Packet queue has {} packets", packetQueue.size());
+                        });
                         continue;
                     }
 
