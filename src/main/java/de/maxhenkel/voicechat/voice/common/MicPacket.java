@@ -16,6 +16,11 @@ public class MicPacket implements Packet<MicPacket> {
 
     }
 
+    @Override
+    public long getTTL() {
+        return 2_000L;
+    }
+
     public byte[] getData() {
         return data;
     }

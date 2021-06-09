@@ -8,4 +8,8 @@ public interface Packet<T extends Packet> {
 
     void toBytes(FriendlyByteBuf buf);
 
+    default long getTTL() {
+        return 10_000L;
+    }
+
 }
