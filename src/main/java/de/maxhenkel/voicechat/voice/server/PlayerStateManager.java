@@ -10,13 +10,14 @@ import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerStateManager {
 
-    private Map<UUID, PlayerState> states;
+    private ConcurrentHashMap<UUID, PlayerState> states;
 
     public PlayerStateManager() {
-        states = new HashMap<>();
+        states = new ConcurrentHashMap<>();
         PlayerEvents.PLAYER_LOGGED_OUT.register(this::removePlayer);
         PlayerEvents.PLAYER_LOGGED_IN.register(this::notifyPlayer);
 
