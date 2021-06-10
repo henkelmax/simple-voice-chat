@@ -31,6 +31,9 @@ public class PingManager {
     }
 
     public void checkTimeouts() {
+        if (listeners.isEmpty()) {
+            return;
+        }
         List<Map.Entry<UUID, Ping>> timedOut = listeners.entrySet().stream().filter(uuidPingEntry -> uuidPingEntry.getValue().isTimedOut()).collect(Collectors.toList());
         for (Map.Entry<UUID, Ping> ping : timedOut) {
             ping.getValue().listener.onTimeout();

@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Main;
+import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.voice.common.OpusDecoder;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
@@ -79,8 +80,18 @@ public class AudioChannel extends Thread {
 
                 // Stopping the data line when the buffer is empty
                 // to prevent the last sound getting repeated
-                if (speaker.getBufferSize() - speaker.available() <= 0 && speaker.isActive()) {
+                if (speaker.isActive() && speaker.getBufferSize() - speaker.available() <= 0) {
                     speaker.stop();
+                    lastSequenceNumber = -1L;
+                }
+
+                // Flush the speaker if the buffer is too full to avoid too big delays
+                if (speaker.isActive() && speaker.getBufferSize() - speaker.available() > AudioChannelConfig.maxSpeakerBufferSize()) {
+                    CooldownTimer.run("clear_audio_buffer", () -> {
+                        Main.LOGGER.warn("Clearing buffers to avoid audio delay");
+                    });
+                    speaker.stop();
+                    speaker.flush();
                     lastSequenceNumber = -1L;
                 }
 

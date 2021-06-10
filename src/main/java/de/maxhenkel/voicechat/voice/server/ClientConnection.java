@@ -10,13 +10,11 @@ public class ClientConnection {
 
     private UUID playerUUID;
     private SocketAddress address;
-    private long lastKeepAlive;
     private long lastKeepAliveResponse;
 
     public ClientConnection(UUID playerUUID, SocketAddress address) {
         this.playerUUID = playerUUID;
         this.address = address;
-        this.lastKeepAlive = 0L;
         this.lastKeepAliveResponse = System.currentTimeMillis();
     }
 
@@ -26,14 +24,6 @@ public class ClientConnection {
 
     public SocketAddress getAddress() {
         return address;
-    }
-
-    public long getLastKeepAlive() {
-        return lastKeepAlive;
-    }
-
-    public void setLastKeepAlive(long lastKeepAlive) {
-        this.lastKeepAlive = lastKeepAlive;
     }
 
     public long getLastKeepAliveResponse() {

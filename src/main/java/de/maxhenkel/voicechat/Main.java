@@ -47,7 +47,7 @@ public class Main {
     public static ClientConfig CLIENT_CONFIG;
     public static PlayerVolumeConfig VOLUME_CONFIG;
 
-    public static ServerVoiceEvents SERVER_VOICE_EVENTS;
+    public static ServerVoiceEvents SERVER;
     @OnlyIn(Dist.CLIENT)
     public static ClientVoiceEvents CLIENT_VOICE_EVENTS;
 
@@ -90,8 +90,8 @@ public class Main {
     @SubscribeEvent
     public void commonSetup(FMLCommonSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
-        SERVER_VOICE_EVENTS = new ServerVoiceEvents();
-        MinecraftForge.EVENT_BUS.register(SERVER_VOICE_EVENTS);
+        SERVER = new ServerVoiceEvents();
+        MinecraftForge.EVENT_BUS.register(SERVER);
 
         SIMPLE_CHANNEL = CommonRegistry.registerChannel(Main.MODID, "default", PROTOCOL_VERSION);
         CommonRegistry.registerMessage(SIMPLE_CHANNEL, 0, AuthenticationMessage.class);
@@ -142,7 +142,7 @@ public class Main {
 
     @SubscribeEvent
     public void serverStarting(FMLServerStartedEvent event) {
-        SERVER_VOICE_EVENTS.serverStarting(event);
+        SERVER.serverStarting(event);
     }
 
     @SubscribeEvent

@@ -1,1 +1,1 @@
-- Added warning message when the voice chat server is overloaded
+- Fixed audio delay when the server is lagging

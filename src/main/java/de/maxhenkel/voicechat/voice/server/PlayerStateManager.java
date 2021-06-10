@@ -57,8 +57,8 @@ public class PlayerStateManager {
         return states.get(playerUUID);
     }
 
-    public List<PlayerState> getStates() {
-        return new ArrayList<>(states.values());
+    public Collection<PlayerState> getStates() {
+        return states.values();
     }
 
 }

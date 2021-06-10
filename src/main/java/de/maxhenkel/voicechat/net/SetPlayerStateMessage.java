@@ -27,7 +27,7 @@ public class SetPlayerStateMessage implements Message<SetPlayerStateMessage> {
 
     @Override
     public void executeServerSide(NetworkEvent.Context context) {
-        Server server = Main.SERVER_VOICE_EVENTS.getServer();
+        Server server = Main.SERVER.getServer();
         if (server != null) {
             server.getPlayerStateManager().onPlayerStatePacket(context.getSender(), this);
         }

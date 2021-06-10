@@ -35,4 +35,8 @@ public class AudioChannelConfig {
     public static int getFrameSize() {
         return frameSize;
     }
+
+    public static int maxSpeakerBufferSize() {
+        return frameSize * (20 + Main.CLIENT_CONFIG.outputBufferSize.get());
+    }
 }

@@ -30,7 +30,7 @@ public class VoicechatCommands {
 
         literalBuilder.then(Commands.literal("test").requires((commandSource) -> commandSource.hasPermission(2)).then(Commands.argument("target", EntityArgument.player()).executes((commandSource) -> {
             ServerPlayerEntity player = EntityArgument.getPlayer(commandSource, "target");
-            Server server = Main.SERVER_VOICE_EVENTS.getServer();
+            Server server = Main.SERVER.getServer();
             if (server == null) {
                 commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.voice_chat_unavailable"), false);
                 return 1;
@@ -66,7 +66,7 @@ public class VoicechatCommands {
         literalBuilder.then(Commands.literal("invite").then(Commands.argument("target", EntityArgument.player()).executes((commandSource) -> {
             ServerPlayerEntity source = commandSource.getSource().getPlayerOrException();
 
-            Server server = Main.SERVER_VOICE_EVENTS.getServer();
+            Server server = Main.SERVER.getServer();
             if (server == null) {
                 commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.voice_chat_unavailable"), false);
                 return 1;
@@ -101,7 +101,7 @@ public class VoicechatCommands {
                 return 1;
             }
 
-            Server server = Main.SERVER_VOICE_EVENTS.getServer();
+            Server server = Main.SERVER.getServer();
             if (server == null) {
                 commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.voice_chat_unavailable"), false);
                 return 1;
