@@ -5,18 +5,12 @@ import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.AABB;
 
-import java.net.BindException;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class Server extends Thread {
 
@@ -26,7 +20,7 @@ public class Server extends Thread {
     private MinecraftServer server;
     private DatagramSocket socket;
     private ProcessThread processThread;
-    private BlockingQueue<NetworkMessage> packetQueue;
+    private BlockingQueue<NetworkMessage.UnprocessedNetworkMessage> packetQueue;
     private PingManager pingManager;
     private PlayerStateManager playerStateManager;
 
@@ -71,8 +65,7 @@ public class Server extends Thread {
 
             while (!socket.isClosed()) {
                 try {
-                    NetworkMessage message = NetworkMessage.readPacketServer(socket, this);
-                    packetQueue.add(message);
+                    packetQueue.add(NetworkMessage.readPacket(socket));
                 } catch (Exception e) {
                 }
             }
@@ -103,9 +96,11 @@ public class Server extends Thread {
 
     private class ProcessThread extends Thread {
         private boolean running;
+        private long lastKeepAlive;
 
         public ProcessThread() {
-            this.running = true;
+            running = true;
+            lastKeepAlive = 0L;
             setDaemon(true);
             setName("VoiceChatPacketProcessingThread");
         }
@@ -115,12 +110,19 @@ public class Server extends Thread {
             while (running) {
                 try {
                     pingManager.checkTimeouts();
-                    keepAlive();
+                    long keepAliveTime = System.currentTimeMillis();
+                    if (keepAliveTime - lastKeepAlive > Voicechat.SERVER_CONFIG.keepAlive.get()) {
+                        sendKeepAlives();
+                        lastKeepAlive = keepAliveTime;
+                    }
 
-                    NetworkMessage message = packetQueue.poll(10, TimeUnit.MILLISECONDS);
-                    if (message == null) {
+                    NetworkMessage.UnprocessedNetworkMessage msg = packetQueue.poll(10, TimeUnit.MILLISECONDS);
+                    if (msg == null) {
                         continue;
                     }
+
+                    NetworkMessage message = NetworkMessage.readPacketServer(msg, Server.this);
+
                     if (System.currentTimeMillis() - message.getTimestamp() > message.getTTL()) {
                         CooldownTimer.run("ttl", () -> {
                             Voicechat.LOGGER.warn("Dropping voice chat packets! Your Server might be overloaded!");
@@ -197,56 +199,48 @@ public class Server extends Thread {
         }
     }
 
-    private void processProximityPacket(Player player, MicPacket packet) throws Exception {
+    private void processProximityPacket(ServerPlayer player, MicPacket packet) {
         double distance = Voicechat.SERVER_CONFIG.voiceChatDistance.get();
-        List<ClientConnection> closeConnections = player.level
-                .getEntitiesOfClass(
-                        Player.class,
-                        new AABB(
-                                player.getX() - distance,
-                                player.getY() - distance,
-                                player.getZ() - distance,
-                                player.getX() + distance,
-                                player.getY() + distance,
-                                player.getZ() + distance
-                        )
-                        , playerEntity -> !playerEntity.getUUID().equals(player.getUUID())
-                )
-                .stream()
-                .map(playerEntity -> connections.get(playerEntity.getUUID()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+
         NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(player.getUUID(), packet.getData(), packet.getSequenceNumber()));
-        for (ClientConnection clientConnection : closeConnections) {
-            if (!clientConnection.getPlayerUUID().equals(player.getUUID())) {
-                clientConnection.send(this, soundMessage);
-            }
-        }
+
+        ServerWorldUtils.getPlayersInRange(player.getLevel(), player.position(), distance, p -> !p.getUUID().equals(player.getUUID()))
+                .stream()
+                .map(p -> connections.get(p.getUUID()))
+                .filter(Objects::nonNull)
+                .forEach(clientConnection -> {
+                    try {
+                        clientConnection.send(this, soundMessage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
-    private void keepAlive() throws Exception {
+    private void sendKeepAlives() throws Exception {
         long timestamp = System.currentTimeMillis();
-        KeepAlivePacket keepAlive = new KeepAlivePacket();
-        List<UUID> connectionsToDrop = new ArrayList<>(connections.size());
-        for (ClientConnection connection : connections.values()) {
+
+        connections.values().removeIf(connection -> {
             if (timestamp - connection.getLastKeepAliveResponse() >= Voicechat.SERVER_CONFIG.keepAlive.get() * 10L) {
-                connectionsToDrop.add(connection.getPlayerUUID());
-            } else if (timestamp - connection.getLastKeepAlive() >= Voicechat.SERVER_CONFIG.keepAlive.get()) {
-                connection.setLastKeepAlive(timestamp);
-                sendPacket(keepAlive, connection);
+                // Don't call disconnectClient here!
+                secrets.remove(connection.getPlayerUUID());
+                Voicechat.LOGGER.info("Player {} timed out", connection.getPlayerUUID());
+                ServerPlayer player = server.getPlayerList().getPlayer(connection.getPlayerUUID());
+                if (player != null) {
+                    Voicechat.LOGGER.info("Reconnecting player {}", player.getDisplayName().getString());
+                    Voicechat.SERVER.initializePlayerConnection(player);
+                } else {
+                    Voicechat.LOGGER.warn("Reconnecting player {} failed (Could not find player)", connection.getPlayerUUID());
+                }
+                return true;
             }
+            return false;
+        });
+
+        for (ClientConnection connection : connections.values()) {
+            sendPacket(new KeepAlivePacket(), connection);
         }
-        for (UUID uuid : connectionsToDrop) {
-            disconnectClient(uuid);
-            Voicechat.LOGGER.info("Player {} timed out", uuid);
-            ServerPlayer player = server.getPlayerList().getPlayer(uuid);
-            if (player != null) {
-                Voicechat.LOGGER.info("Reconnecting player {}", player.getDisplayName().getString());
-                Voicechat.SERVER.initializePlayerConnection(player);
-            } else {
-                Voicechat.LOGGER.warn("Reconnecting player {} failed (Could not find player)", player.getDisplayName().getString());
-            }
-        }
+
     }
 
     public Map<UUID, ClientConnection> getConnections() {
