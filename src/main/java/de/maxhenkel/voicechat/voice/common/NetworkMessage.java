@@ -27,13 +27,18 @@ public class NetworkMessage {
     private Packet<? extends Packet> packet;
     private SocketAddress address;
 
-    public NetworkMessage(Packet<?> packet) {
-        this();
+    public NetworkMessage(long timestamp, Packet<?> packet) {
+        this(timestamp);
         this.packet = packet;
     }
 
-    private NetworkMessage() {
-        this.timestamp = System.currentTimeMillis();
+    public NetworkMessage(Packet<?> packet) {
+        this(System.currentTimeMillis());
+        this.packet = packet;
+    }
+
+    private NetworkMessage(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Nonnull
@@ -65,25 +70,29 @@ public class NetworkMessage {
         packetRegistry.put((byte) 5, KeepAlivePacket.class);
     }
 
+    public static UnprocessedNetworkMessage readPacket(DatagramSocket socket) throws IOException {
+        DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
+        socket.receive(packet);
+        return new UnprocessedNetworkMessage(packet, System.currentTimeMillis());
+    }
+
     public static NetworkMessage readPacketClient(DatagramSocket socket, Client client) throws IllegalAccessException, InstantiationException, IOException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
         socket.receive(packet);
         byte[] data = new byte[packet.getLength()];
         System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
-        return readFromBytes(packet.getSocketAddress(), client.getSecret(), data);
+        return readFromBytes(packet.getSocketAddress(), client.getSecret(), data, System.currentTimeMillis());
     }
 
-    public static NetworkMessage readPacketServer(DatagramSocket socket, Server server) throws IllegalAccessException, InstantiationException, IOException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
-        socket.receive(packet);
-        byte[] data = new byte[packet.getLength()];
-        System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
+    public static NetworkMessage readPacketServer(UnprocessedNetworkMessage msg, Server server) throws IllegalAccessException, InstantiationException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        byte[] data = new byte[msg.packet.getLength()];
+        System.arraycopy(msg.packet.getData(), msg.packet.getOffset(), data, 0, msg.packet.getLength());
         FriendlyByteBuf b = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
         UUID playerID = b.readUUID();
-        return readFromBytes(packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray());
+        return readFromBytes(msg.packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray(), msg.timestamp);
     }
 
-    private static NetworkMessage readFromBytes(SocketAddress socketAddress, UUID secret, byte[] encryptedPayload) throws InstantiationException, IllegalAccessException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    private static NetworkMessage readFromBytes(SocketAddress socketAddress, UUID secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         byte[] decrypt = AES.decrypt(secret, encryptedPayload);
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(decrypt));
         UUID readSecret = buffer.readUUID();
@@ -99,7 +108,7 @@ public class NetworkMessage {
         }
         Packet<? extends Packet<?>> p = packetClass.newInstance();
 
-        NetworkMessage message = new NetworkMessage();
+        NetworkMessage message = new NetworkMessage(timestamp);
         message.address = socketAddress;
         message.packet = p.fromBytes(buffer);
 
@@ -140,6 +149,25 @@ public class NetworkMessage {
         packet.toBytes(buffer);
 
         return AES.encrypt(secret, buffer.array());
+    }
+
+    public static class UnprocessedNetworkMessage {
+
+        private DatagramPacket packet;
+        private long timestamp;
+
+        public UnprocessedNetworkMessage(DatagramPacket packet, long timestamp) {
+            this.packet = packet;
+            this.timestamp = timestamp;
+        }
+
+        public DatagramPacket getPacket() {
+            return packet;
+        }
+
+        public long getTimestamp() {
+            return timestamp;
+        }
     }
 
 }
