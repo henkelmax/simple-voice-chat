@@ -1,1 +1,1 @@
-- Fixed audio delay when the server is lagging
+- Fixed audio lagging
