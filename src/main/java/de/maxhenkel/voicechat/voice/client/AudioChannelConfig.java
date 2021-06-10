@@ -38,6 +38,6 @@ public class AudioChannelConfig {
     }
 
     public int maxSpeakerBufferSize() {
-        return frameSize * (20 + VoicechatClient.CLIENT_CONFIG.outputBufferSize.get());
+        return frameSize * (32 + VoicechatClient.CLIENT_CONFIG.outputBufferSize.get());
     }
 }
