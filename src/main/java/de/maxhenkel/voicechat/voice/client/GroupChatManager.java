@@ -16,6 +16,7 @@ public class GroupChatManager {
 
     private static final ResourceLocation TALK_OUTLINE = new ResourceLocation(Voicechat.MODID, "textures/gui/talk_outline.png");
     private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_off.png");
+    private static final Minecraft minecraft = Minecraft.getInstance();
 
     public static void renderIcons(PoseStack matrixStack) {
         Client client = VoicechatClient.CLIENT.getClient();
