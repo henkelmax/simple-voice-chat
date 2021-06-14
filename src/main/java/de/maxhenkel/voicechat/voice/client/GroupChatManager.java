@@ -16,7 +16,6 @@ public class GroupChatManager {
 
     private static final ResourceLocation TALK_OUTLINE = new ResourceLocation(Voicechat.MODID, "textures/gui/talk_outline.png");
     private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_off.png");
-    private static final Minecraft minecraft = Minecraft.getInstance();
 
     public static void renderIcons(PoseStack matrixStack) {
         Client client = VoicechatClient.CLIENT.getClient();
@@ -34,7 +33,12 @@ public class GroupChatManager {
         for (int i = 0; i < groupMembers.size(); i++) {
             PlayerState state = groupMembers.get(i);
             matrixStack.pushPose();
-            matrixStack.translate(0, i * 11, 0);
+            if (VoicechatClient.CLIENT_CONFIG.groupPlayerIconOrientation.get().equals(GroupPlayerIconOrientation.VERTICAL)) {
+                matrixStack.translate(0, i * 11, 0);
+            } else {
+                matrixStack.translate(i * 11, 0, 0);
+            }
+
             if (client.getTalkCache().isTalking(state.getGameProfile().getId())) {
                 minecraft.getTextureManager().bind(TALK_OUTLINE);
                 Screen.blit(matrixStack, 0, 0, 0, 0, 10, 10, 16, 16);
