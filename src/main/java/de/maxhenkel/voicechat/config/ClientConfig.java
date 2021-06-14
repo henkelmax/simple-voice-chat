@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.config;
 
+import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import de.maxhenkel.voicechat.voice.client.HUDIconLocation;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 
@@ -19,6 +20,7 @@ public class ClientConfig {
     public final ConfigBuilder.ConfigEntry<Boolean> hideIcons;
     public final ConfigBuilder.ConfigEntry<Boolean> showGroupHUD;
     public final ConfigBuilder.ConfigEntry<HUDIconLocation> hudIconLocation;
+    public final ConfigBuilder.ConfigEntry<GroupPlayerIconOrientation> groupPlayerIconOrientation;
 
     public ClientConfig(ConfigBuilder builder) {
         voiceChatVolume = builder.doubleEntry("voice_chat_volume", 1D, 0D, 2D);
@@ -35,6 +37,7 @@ public class ClientConfig {
         hideIcons = builder.booleanEntry("hide_icons", false);
         showGroupHUD = builder.booleanEntry("show_group_hud", true);
         hudIconLocation = builder.enumEntry("hud_icon_location", HUDIconLocation.LEFT);
+        groupPlayerIconOrientation = builder.enumEntry("group_player_icon_orientation", GroupPlayerIconOrientation.VERTICAL);
     }
 
 }
