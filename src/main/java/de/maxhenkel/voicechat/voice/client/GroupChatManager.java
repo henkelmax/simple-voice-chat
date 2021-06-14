@@ -33,7 +33,13 @@ public class GroupChatManager {
         for (int i = 0; i < groupMembers.size(); i++) {
             PlayerState state = groupMembers.get(i);
             matrixStack.pushPose();
-            matrixStack.translate(0, i * 11, 0);
+
+            if (Main.CLIENT_CONFIG.groupPlayerIconOrientation.get().equals(GroupPlayerIconOrientation.VERTICAL)) {
+                matrixStack.translate(0, i * 11, 0);
+            } else {
+                matrixStack.translate(i * 11, 0, 0);
+            }
+
             if (client.getTalkCache().isTalking(state.getGameProfile().getId())) {
                 minecraft.getTextureManager().bind(TALK_OUTLINE);
                 Screen.blit(matrixStack, 0, 0, 0, 0, 10, 10, 16, 16);

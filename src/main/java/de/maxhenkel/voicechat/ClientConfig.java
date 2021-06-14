@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat;
 
 import de.maxhenkel.corelib.config.ConfigBase;
+import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import de.maxhenkel.voicechat.voice.client.HUDIconLocation;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -21,6 +22,7 @@ public class ClientConfig extends ConfigBase {
     public final ForgeConfigSpec.BooleanValue hideIcons;
     public final ForgeConfigSpec.BooleanValue showGroupHUD;
     public final ForgeConfigSpec.EnumValue<HUDIconLocation> hudIconLocation;
+    public final ForgeConfigSpec.EnumValue<GroupPlayerIconOrientation> groupPlayerIconOrientation;
 
     public ClientConfig(ForgeConfigSpec.Builder builder) {
         super(builder);
@@ -73,6 +75,9 @@ public class ClientConfig extends ConfigBase {
         hudIconLocation = builder
                 .comment("The location of the HUD icons")
                 .defineEnum("hud_icon_location", HUDIconLocation.LEFT);
+        groupPlayerIconOrientation = builder
+                .comment("The orientation of the player icons in the group HUD")
+                .defineEnum("group_player_icon_orientation", GroupPlayerIconOrientation.VERTICAL);
     }
 
 }

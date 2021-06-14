@@ -1,1 +1,1 @@
-- Fixed audio lagging
+- Added group player icon orientation config option
