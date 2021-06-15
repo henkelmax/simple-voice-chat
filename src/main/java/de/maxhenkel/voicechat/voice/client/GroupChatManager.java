@@ -15,7 +15,7 @@ import java.util.List;
 public class GroupChatManager {
 
     private static final ResourceLocation TALK_OUTLINE = new ResourceLocation(Voicechat.MODID, "textures/gui/talk_outline.png");
-    private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_off.png");
+    private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_group_hud_small_off.png");
     private static final Minecraft minecraft = Minecraft.getInstance();
 
     public static void renderIcons(PoseStack matrixStack) {
@@ -50,8 +50,8 @@ public class GroupChatManager {
 
             if (state.isDisabled()) {
                 matrixStack.pushPose();
-                matrixStack.translate(10, 5, 0);
-                matrixStack.scale(0.25F, 0.25F, 1F);
+                matrixStack.translate(10, 1, 0);
+                matrixStack.scale(0.5F, 0.5F, 1F);
                 minecraft.getTextureManager().bind(SPEAKER_OFF_ICON);
                 Screen.blit(matrixStack, 0, 0, 0, 0, 16, 16, 16, 16);
                 matrixStack.popPose();
