@@ -1,2 +1,1 @@
-- Fixed crash when using special characters as group names
-- Fixed group invitations not working with spaces in the group name
+- Fixed group hud icons
