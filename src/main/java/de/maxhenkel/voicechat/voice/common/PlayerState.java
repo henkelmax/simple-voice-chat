@@ -65,7 +65,7 @@ public class PlayerState {
         PlayerState state = new PlayerState(buf.readBoolean(), buf.readBoolean(), NBTUtil.readGameProfile(buf.readNbt()));
 
         if (buf.readBoolean()) {
-            state.setGroup(buf.readUtf(16));
+            state.setGroup(buf.readUtf(512));
         }
 
         return state;
@@ -77,7 +77,7 @@ public class PlayerState {
         buf.writeNbt(NBTUtil.writeGameProfile(new CompoundNBT(), gameProfile));
         buf.writeBoolean(hasGroup());
         if (hasGroup()) {
-            buf.writeUtf(group, 16);
+            buf.writeUtf(group, 512);
         }
     }
 }

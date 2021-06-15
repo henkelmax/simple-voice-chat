@@ -1,3 +1,2 @@
-- Added open group config option
-- Optimized network traffic
-- Optimized server performance
+- Fixed crash when using special characters as group names
+- Fixed group invitations not working with spaces in the group name

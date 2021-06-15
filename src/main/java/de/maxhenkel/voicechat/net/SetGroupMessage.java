@@ -42,12 +42,12 @@ public class SetGroupMessage implements Message<SetGroupMessage> {
 
     @Override
     public SetGroupMessage fromBytes(PacketBuffer buf) {
-        group = buf.readUtf(16);
+        group = buf.readUtf(512);
         return this;
     }
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUtf(group, 16);
+        buf.writeUtf(group, 512);
     }
 }

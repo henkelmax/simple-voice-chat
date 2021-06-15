@@ -85,7 +85,7 @@ public class VoicechatCommands {
                     source.getDisplayName(),
                     new StringTextComponent(state.getGroup()).withStyle(TextFormatting.GRAY),
                     TextComponentUtils.wrapInSquareBrackets(new TranslationTextComponent("message.voicechat.accept_invite").withStyle(style -> style
-                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/voicechat join " + state.getGroup()))
+                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/voicechat join \"" + state.getGroup() + "\""))
                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("message.voicechat.accept_invite.hover")))))
                             .withStyle(TextFormatting.GREEN)
             ), Util.NIL_UUID);

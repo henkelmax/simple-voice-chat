@@ -72,7 +72,7 @@ public class Main {
     @OnlyIn(Dist.CLIENT)
     public static KeyBinding KEY_GROUP;
 
-    public static final Pattern GROUP_REGEX = Pattern.compile("^[a-zA-Z0-9-_]{1,16}$");
+    public static final Pattern GROUP_REGEX = Pattern.compile("^\\S[^\"\\n\\r\\t]{0,15}$");
 
     public static VoiceChatResourcePack CLASSIC_ICONS;
     public static VoiceChatResourcePack WHITE_ICONS;

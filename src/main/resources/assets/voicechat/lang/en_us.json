@@ -54,7 +54,7 @@
   "message.voicechat.hide_icons": "Hide icons",
   "message.voicechat.show_group_hud": "Show group HUD",
   "message.voicechat.not_in_group": "You are not in a group",
-  "message.voicechat.invalid_group_name": "Invalid group name (Only A-Z, 0-9, - and _ are allowed)",
+  "message.voicechat.invalid_group_name": "Invalid group name",
   "message.voicechat.group_name_too_long": "Group name too long (Max. 16 characters)",
   "message.voicechat.invite": "%s invited you to the group %s. %s",
   "message.voicechat.accept_invite": "ACCEPT",
