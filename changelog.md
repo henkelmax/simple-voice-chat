@@ -1,1 +1,3 @@
-- Added group player icon orientation config option
+- Added open group config option
+- Optimized network traffic
+- Optimized server performance
