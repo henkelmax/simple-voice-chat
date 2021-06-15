@@ -29,13 +29,13 @@ public class SetGroupPacket implements Packet<SetGroupPacket> {
 
     @Override
     public SetGroupPacket fromBytes(FriendlyByteBuf buf) {
-        group = buf.readUtf(16);
+        group = buf.readUtf(512);
         return this;
     }
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeUtf(group, 16);
+        buf.writeUtf(group, 512);
     }
 
 }
