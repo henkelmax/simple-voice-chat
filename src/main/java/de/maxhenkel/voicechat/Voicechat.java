@@ -33,7 +33,7 @@ public class Voicechat implements ModInitializer {
     public static final ResourceLocation INIT = new ResourceLocation(Voicechat.MODID, "init");
     public static int COMPATIBILITY_VERSION = -1;
 
-    public static final Pattern GROUP_REGEX = Pattern.compile("^[a-zA-Z0-9-_]{1,16}$");
+    public static final Pattern GROUP_REGEX = Pattern.compile("^\\S[^\"\\n\\r\\t]{0,15}$");
 
     @Override
     public void onInitialize() {
