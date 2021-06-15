@@ -161,10 +161,15 @@ public class Server extends Thread {
                             continue;
                         }
                         PlayerState state = playerStateManager.getState(playerUUID);
-                        if (state == null || !state.hasGroup()) {
-                            processProximityPacket(player, packet);
-                        } else {
-                            processGroupPacket(state, packet);
+                        if (state != null) {
+                            if (state.hasGroup()) {
+                                processGroupPacket(state, packet);
+                                if (Main.SERVER_CONFIG.openGroups.get()) {
+                                    processProximityPacket(state, player, packet);
+                                }
+                            } else {
+                                processProximityPacket(state, player, packet);
+                            }
                         }
                     } else if (message.getPacket() instanceof PingPacket) {
                         pingManager.onPongPacket((PingPacket) message.getPacket());
@@ -199,14 +204,19 @@ public class Server extends Thread {
         }
     }
 
-    private void processProximityPacket(ServerPlayerEntity player, MicPacket packet) {
+    private void processProximityPacket(PlayerState state, ServerPlayerEntity player, MicPacket packet) {
         double distance = Main.SERVER_CONFIG.voiceChatDistance.get();
+        String group = state.getGroup();
 
         NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(player.getUUID(), packet.getData(), packet.getSequenceNumber()));
 
         ServerWorldUtils.getPlayersInRange(player.getLevel(), player.position(), distance, p -> !p.getUUID().equals(player.getUUID()))
-                .stream()
-                .map(p -> connections.get(p.getUUID()))
+                .parallelStream()
+                .map(p -> playerStateManager.getState(p.getUUID()))
+                .filter(Objects::nonNull)
+                .filter(s -> !s.isDisabled() && !s.isDisconnected()) // Filter out players that disabled the voice chat
+                .filter(s -> !(s.hasGroup() && s.getGroup().equals(group))) // Filter out players that are in the same group
+                .map(p -> connections.get(p.getGameProfile().getId()))
                 .filter(Objects::nonNull)
                 .forEach(clientConnection -> {
                     try {

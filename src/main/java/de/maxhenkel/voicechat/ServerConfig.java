@@ -18,6 +18,7 @@ public class ServerConfig extends ConfigBase {
     public final ForgeConfigSpec.IntValue voiceChatMtuSize;
     public final ForgeConfigSpec.IntValue keepAlive;
     public final ForgeConfigSpec.BooleanValue groupsEnabled;
+    public final ForgeConfigSpec.BooleanValue openGroups;
 
     public ServerConfig(ForgeConfigSpec.Builder builder) {
         super(builder);
@@ -43,7 +44,12 @@ public class ServerConfig extends ConfigBase {
         keepAlive = builder
                 .comment("The frequency in which keep alive packets are sent", "Setting this to a higher value may result in timeouts")
                 .defineInRange("voice_chat.keep_alive", 1000, 1000, Integer.MAX_VALUE);
-        groupsEnabled = builder.define("voice_chat.enable_groups", true);
+        groupsEnabled = builder
+                .comment("If group chats are allowed")
+                .define("voice_chat.enable_groups", true);
+        openGroups = builder
+                .comment("If players in group chats can be heard locally")
+                .define("voice_chat.open_groups", false);
     }
 
     @Override

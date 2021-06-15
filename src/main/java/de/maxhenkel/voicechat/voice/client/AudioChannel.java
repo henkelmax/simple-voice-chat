@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class AudioChannel extends Thread {
 
     private Minecraft minecraft;
+    private ClientPlayerStateManager playerStateManager;
     private Client client;
     private UUID uuid;
     private BlockingQueue<SoundPacket> queue;
@@ -40,6 +41,7 @@ public class AudioChannel extends Thread {
         this.decoder = new OpusDecoder(AudioChannelConfig.getSampleRate(), AudioChannelConfig.getFrameSize(), Main.SERVER_CONFIG.voiceChatMtuSize.get());
         this.lastSequenceNumber = -1L;
         this.minecraft = Minecraft.getInstance();
+        this.playerStateManager = Main.CLIENT_VOICE_EVENTS.getPlayerStateManager();
         setDaemon(true);
         setName("AudioChannelThread-" + uuid.toString());
         Main.LOGGER.debug("Creating audio channel for " + uuid);
@@ -148,11 +150,10 @@ public class AudioChannel extends Thread {
     }
 
     private void writeToSpeaker(byte[] monoData) {
-        PlayerState state = Main.CLIENT_VOICE_EVENTS.getPlayerStateManager().getState(uuid);
+        PlayerState state = playerStateManager.getState(uuid);
         byte[] stereo;
-        float percentage = 1F;
 
-        if (state != null && state.hasGroup()) {
+        if (state != null && state.hasGroup() && state.getGroup().equals(playerStateManager.getGroup())) {
             stereo = Utils.convertToStereo(monoData, 1F, 1F);
         } else {
             PlayerEntity player = minecraft.level.getPlayerByUUID(uuid);
@@ -163,6 +164,7 @@ public class AudioChannel extends Thread {
             float fadeDistance = Main.SERVER_CONFIG.voiceChatFadeDistance.get().floatValue();
             float maxDistance = Main.SERVER_CONFIG.voiceChatDistance.get().floatValue();
 
+            float percentage = 1F;
             if (distance > fadeDistance) {
                 percentage = 1F - Math.min((distance - fadeDistance) / (maxDistance - fadeDistance), 1F);
             }
