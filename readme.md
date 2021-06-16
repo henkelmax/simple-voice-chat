@@ -1,4 +1,6 @@
-# Simple Voice Chat ![](http://cf.way2muchnoise.eu/full_416089_downloads.svg) ![](http://cf.way2muchnoise.eu/versions/416089.svg)
+![](http://cf.way2muchnoise.eu/full_416089_downloads.svg) ![](http://cf.way2muchnoise.eu/versions/416089.svg) ![](https://img.shields.io/discord/854659575324344340?label=Discord&style=flat&logo=discord&labelColor=2d2d2d)
+
+# Simple Voice Chat
 
 ## Links
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat)
