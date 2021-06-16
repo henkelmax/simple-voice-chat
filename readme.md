@@ -2,12 +2,19 @@
 
 ## Links
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat)
+- [Discord](https://discord.gg/4dH2zwTmyX)
 - [Wiki](https://modrepo.de/minecraft/voicechat/wiki)
 - [ModRepo](https://modrepo.de/minecraft/voicechat/overview)
 - [GitHub](https://github.com/henkelmax/simple-voice-chat)
 - [FAQ](https://modrepo.de/minecraft/voicechat/faq)
 
 ---
+
+<p align="center">
+    <a href="https://discord.gg/4dH2zwTmyX">
+        <img src="https://discord.com/assets/fc0b01fe10a0b8c602fb0106d8189d9b.png" width="300">
+    </a>
+</p>
 
 This mod adds a proximity voice chat to your Minecraft server.
 You can choose between push to talk (PTT) or voice activation.
