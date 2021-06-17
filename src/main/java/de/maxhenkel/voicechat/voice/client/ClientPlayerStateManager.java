@@ -21,7 +21,7 @@ public class ClientPlayerStateManager {
 
     public ClientPlayerStateManager() {
         muted = VoicechatClient.CLIENT_CONFIG.muted.get();
-        state = new PlayerState(VoicechatClient.CLIENT_CONFIG.disabled.get(), true, Minecraft.getInstance().getUser().getGameProfile());
+        state = getDefaultState();
         states = new HashMap<>();
         NetManager.registerClientReceiver(PlayerStatePacket.class, (client, handler, responseSender, packet) -> {
             states.put(packet.getPlayerState().getGameProfile().getId(), packet.getPlayerState());
@@ -32,6 +32,10 @@ public class ClientPlayerStateManager {
         ClientVoiceChatEvents.VOICECHAT_CONNECTED.register(this::onVoiceChatConnected);
         ClientVoiceChatEvents.VOICECHAT_DISCONNECTED.register(this::onVoiceChatDisconnected);
         ClientWorldEvents.DISCONNECT.register(this::onDisconnect);
+    }
+
+    private PlayerState getDefaultState() {
+        return new PlayerState(VoicechatClient.CLIENT_CONFIG.disabled.get(), true, Minecraft.getInstance().getUser().getGameProfile());
     }
 
     /**
@@ -53,6 +57,7 @@ public class ClientPlayerStateManager {
 
     private void onDisconnect() {
         clearStates();
+        state = getDefaultState();
     }
 
     public boolean isPlayerDisabled(Player player) {
