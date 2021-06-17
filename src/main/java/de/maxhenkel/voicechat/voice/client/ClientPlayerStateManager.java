@@ -19,8 +19,12 @@ public class ClientPlayerStateManager {
 
     public ClientPlayerStateManager() {
         muted = Main.CLIENT_CONFIG.muted.get();
-        state = new PlayerState(Main.CLIENT_CONFIG.disabled.get(), true, Minecraft.getInstance().getUser().getGameProfile());
+        state = getDefaultState();
         states = new HashMap<>();
+    }
+
+    private PlayerState getDefaultState() {
+        return new PlayerState(Main.CLIENT_CONFIG.disabled.get(), true, Minecraft.getInstance().getUser().getGameProfile());
     }
 
     public void onPlayerStatePacket(PlayerStateMessage packet) {
@@ -49,6 +53,7 @@ public class ClientPlayerStateManager {
 
     public void onDisconnect() {
         clearStates();
+        state = getDefaultState();
     }
 
     public boolean isPlayerDisabled(PlayerEntity player) {
