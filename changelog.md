@@ -1,1 +1,1 @@
-- Fixed group hud icons
+- Fixed player states not reset after disconnecting
