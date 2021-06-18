@@ -1,1 +1,1 @@
-- Added group HUD scale config option
+- Updated to 1.17.1-pre1
