@@ -1,8 +1,20 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.maxhenkel.de/repository/public' }
+        mavenLocal()
+    }
+    dependencies {
+        classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.4'
+    }
+}
+
 plugins {
-    id 'fabric-loom' version '0.6-SNAPSHOT'
+    id "fabric-loom" version "0.6-SNAPSHOT"
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "com.github.johnrengelman.shadow" version "5.2.0"
 }
+
+apply plugin: 'forge-update'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -86,6 +98,25 @@ curseforge {
     options {
         forgeGradleIntegration = false
     }
+}
+
+forgeUpdate {
+    def messages = []
+    file('changelog.md').eachLine { String line ->
+        if (line.trim().startsWith('-')) {
+            messages.add(line.replaceFirst('-', '').trim())
+        }
+    }
+
+    serverURL = 'https://update.maxhenkel.de/'
+    apiKey = System.env.FORGE_UPDATE_API_KEY != null ? System.env.FORGE_UPDATE_API_KEY : file('forge_update_api_key.txt').text
+    modID = archives_base_name
+    gameVersion = minecraft_version
+    modLoader = "fabric"
+    modVersion = mod_version
+    updateMessages = messages
+    releaseType = curse_release_type
+    tags = recommended == 'true' ? ['recommended'] : []
 }
 
 shadowJar {
