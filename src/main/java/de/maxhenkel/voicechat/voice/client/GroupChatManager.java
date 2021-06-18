@@ -27,8 +27,9 @@ public class GroupChatManager {
         List<PlayerState> groupMembers = getGroupMembers(false);
 
         matrixStack.pushPose();
-        matrixStack.translate(8, 8, 0);
-        matrixStack.scale(2F, 2F, 1F);
+        float scale = Main.CLIENT_CONFIG.groupHudIconScale.get().floatValue();
+        matrixStack.scale(scale, scale, 1F);
+        matrixStack.translate(4, 4, 0);
 
         for (int i = 0; i < groupMembers.size(); i++) {
             PlayerState state = groupMembers.get(i);
