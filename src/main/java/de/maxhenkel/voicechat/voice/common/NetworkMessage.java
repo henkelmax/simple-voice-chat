@@ -11,6 +11,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
@@ -76,7 +77,7 @@ public class NetworkMessage {
         return new UnprocessedNetworkMessage(packet, System.currentTimeMillis());
     }
 
-    public static NetworkMessage readPacketClient(DatagramSocket socket, Client client) throws IllegalAccessException, InstantiationException, IOException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public static NetworkMessage readPacketClient(DatagramSocket socket, Client client) throws IllegalAccessException, InstantiationException, IOException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvocationTargetException, NoSuchMethodException {
         DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
         socket.receive(packet);
         byte[] data = new byte[packet.getLength()];
@@ -84,7 +85,7 @@ public class NetworkMessage {
         return readFromBytes(packet.getSocketAddress(), client.getSecret(), data, System.currentTimeMillis());
     }
 
-    public static NetworkMessage readPacketServer(UnprocessedNetworkMessage msg, Server server) throws IllegalAccessException, InstantiationException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public static NetworkMessage readPacketServer(UnprocessedNetworkMessage msg, Server server) throws IllegalAccessException, InstantiationException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvocationTargetException, NoSuchMethodException {
         byte[] data = new byte[msg.packet.getLength()];
         System.arraycopy(msg.packet.getData(), msg.packet.getOffset(), data, 0, msg.packet.getLength());
         FriendlyByteBuf b = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
@@ -92,7 +93,7 @@ public class NetworkMessage {
         return readFromBytes(msg.packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray(), msg.timestamp);
     }
 
-    private static NetworkMessage readFromBytes(SocketAddress socketAddress, UUID secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    private static NetworkMessage readFromBytes(SocketAddress socketAddress, UUID secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, NoSuchMethodException, InvocationTargetException {
         byte[] decrypt = AES.decrypt(secret, encryptedPayload);
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(decrypt));
         UUID readSecret = buffer.readUUID();
@@ -106,7 +107,7 @@ public class NetworkMessage {
         if (packetClass == null) {
             throw new InstantiationException("Could not find packet with ID " + packetType);
         }
-        Packet<? extends Packet<?>> p = packetClass.newInstance();
+        Packet<? extends Packet<?>> p = packetClass.getDeclaredConstructor().newInstance();
 
         NetworkMessage message = new NetworkMessage(timestamp);
         message.address = socketAddress;
