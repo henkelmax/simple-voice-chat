@@ -1,1 +1,2 @@
-- Fixed player states not reset after disconnecting
+- Changed default MTU size to 1024, to make it consistent with the fabric version
+- Fixed typo in the config

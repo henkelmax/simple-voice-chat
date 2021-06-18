@@ -40,7 +40,7 @@ public class ServerConfig extends ConfigBase {
                 .defineEnum("voice_chat.codec", Codec.VOIP);
         voiceChatMtuSize = builder
                 .comment("The maximum size in bytes in a voice packet", "Set this to a lower value if your voice packets don't arrive")
-                .defineInRange("voice_chat.mtu_size", 900, 256, 10000);
+                .defineInRange("voice_chat.mtu_size", 1024, 256, 10000);
         keepAlive = builder
                 .comment("The frequency in which keep alive packets are sent", "Setting this to a higher value may result in timeouts")
                 .defineInRange("voice_chat.keep_alive", 1000, 1000, Integer.MAX_VALUE);

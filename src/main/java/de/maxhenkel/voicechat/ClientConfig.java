@@ -55,7 +55,7 @@ public class ClientConfig extends ConfigBase {
                 .comment("The microphone used by the voice chat", "Empty for default device")
                 .define("microphone", "");
         speaker = builder
-                .comment("The microphone used by the voice chat", "Empty for default device")
+                .comment("The speaker used by the voice chat", "Empty for default device")
                 .define("speaker", "");
         muted = builder
                 .comment("If the microphone is muted (only when using voice activation)")
