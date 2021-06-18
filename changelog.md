@@ -1,1 +1,1 @@
-- Fixed player states not reset after disconnecting
+- Added group HUD scale config option
