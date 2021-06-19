@@ -1,1 +1,1 @@
-- Added group HUD scale config option
+- Fixed last character of group name text field not deletable

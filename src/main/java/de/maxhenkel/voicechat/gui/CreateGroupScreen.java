@@ -38,7 +38,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         groupName = new TextFieldWidget(font, guiLeft + 78, guiTop + 20, 88, 10, StringTextComponent.EMPTY);
 
         groupName.setMaxLength(16);
-        groupName.setFilter(s -> Main.GROUP_REGEX.matcher(s).matches());
+        groupName.setFilter(s -> s.isEmpty() || Main.GROUP_REGEX.matcher(s).matches());
 
         addButton(groupName);
 
