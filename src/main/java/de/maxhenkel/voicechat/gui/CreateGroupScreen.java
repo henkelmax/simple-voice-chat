@@ -39,7 +39,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         groupName = new EditBox(font, guiLeft + 78, guiTop + 20, 88, 10, TextComponent.EMPTY);
 
         groupName.setMaxLength(16);
-        groupName.setFilter(s -> Voicechat.GROUP_REGEX.matcher(s).matches());
+        groupName.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
 
         addRenderableWidget(groupName);
 

@@ -1,1 +1,1 @@
-- Updated to 1.17.1-pre1
+- Fixed last character of group name text field not deletable
