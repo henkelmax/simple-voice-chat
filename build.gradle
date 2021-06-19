@@ -34,7 +34,11 @@ repositories {
 }
 
 minecraft {
-    accessWidener =  file("src/main/resources/voicechat.accesswidener")
+    accessWidener = file("src/main/resources/voicechat.accesswidener")
+}
+
+runClient.doFirst {
+    args = ['--username', "henkelmax${new Random().nextInt(1000)}"]
 }
 
 dependencies {

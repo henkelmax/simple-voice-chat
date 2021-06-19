@@ -17,6 +17,9 @@
         <img src="https://discord.com/assets/fc0b01fe10a0b8c602fb0106d8189d9b.png" width="300">
     </a>
 </p>
+<p align="center">
+    <i>Please join the Discord if you have questions!</i>
+</p>
 
 This mod adds a proximity voice chat to your Minecraft server.
 You can choose between push to talk (PTT) or voice activation.
@@ -48,29 +51,29 @@ You can access the voice chat settings by pressing the `V` key.
 
 When other players talk in the voice chat, you see a little speaker icon next to their name.
 
-![](https://i.imgur.com/5V3uYsc.png)
+![](https://i.imgur.com/tDmw2vz.png)
 
 When you are talking (Either PTT or voice activation),
 you see a little microphone icon in the bottom left corner of your screen.
 
-![](https://i.imgur.com/c6DqeUj.png)
+![](https://i.imgur.com/7ov5D6S.png)
 
 If a player deactivated their voice chat, you see a striked out icon next to their name.
 
-![](https://i.imgur.com/PDehuc0.png)
+![](https://i.imgur.com/bo9bJZk.png)
 
 You are seeing the same icon in the bottom left corner of your screen if you deactivate the voice chat yourself.
 
-![](https://i.imgur.com/T9S3yhq.png)
+![](https://i.imgur.com/NTzjYcf.png)
 
 If you mute your microphone (Voice activation only), you will also see an indicator icon on your screen.
 
-![](https://i.imgur.com/kSTfK3D.png)
+![](https://i.imgur.com/2qUSJTe.png)
 
 If you or another player loses the connection to the voice chat they will have an icon indicating that.
 You will also see this icon if a player does not have this mod installed.
 
-![](https://i.imgur.com/J13ncwN.png)
+![](https://i.imgur.com/PIgilvR.png)
 
 ## Key Bindings
 
@@ -89,7 +92,7 @@ Hide Voice Chat Icons | `H` | This button hides all icons related to the voice c
 You can open the voice chat GUI by pressing the `V` key.
 This allows you to open the settings, group chats, mute yourself, disable the voice chat and hide all icons.
 
-![](https://i.imgur.com/Dd55iSi.png)
+![](https://i.imgur.com/I0u3tx2.png)
 
 ### Group Chats
 
@@ -98,18 +101,18 @@ To open the group chat interface, either press the group button in the voice cha
 
 To create a new group, just type a name in the text field and press the button next to it.
 
-![](https://i.imgur.com/5A6R7oP.png)
+![](https://i.imgur.com/OD1kRk8.png)
 
 To join an already existing group, click the group in the list below the text field.
 
-![](https://i.imgur.com/u5JOwUs.png)
+![](https://i.imgur.com/OygMT1S.png)
 
 Creating or joining a group will bring you into the group chat interface.
 You will also see the heads of the group members in the top left corner of your screen.
 Talking players will be outlined.
 You can disable these icons by pressing the third button from the left.
 
-![](https://i.imgur.com/Tm3i2rN.png)
+![](https://i.imgur.com/XT9AiPQ.png)
 
 Players that are not in a group will see a group icon next to your head, indicating that they can't talk to you.
 
@@ -125,12 +128,12 @@ In addition, there is the possibility to specify the recording and playback devi
 By clicking the 'Enable microphone testing' button,
 you can hear your own voice and adjust the activation level of the voice activation.
 
-![](https://i.imgur.com/td2e5ep.png)
+![](https://i.imgur.com/aMHIVjY.png)
 
 By pressing the 'Adjust player volumes' in the voice chat settings,
 you can adjust the individual volumes of each player.
 
-![](https://i.imgur.com/JFQn5Pf.png)
+![](https://i.imgur.com/S8Iwatm.png)
 
 ## Important Notes
 
