@@ -46,6 +46,10 @@ repositories {
     }
 }
 
+runClient.doFirst {
+    args = ['--username', "henkelmax${new Random().nextInt(1000)}"]
+}
+
 processResources {
     inputs.property "version", project.version
 
