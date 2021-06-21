@@ -1,1 +1,1 @@
-- Added config option to clear full audio buffers
+- Fixed group icon priority when using open groups option
