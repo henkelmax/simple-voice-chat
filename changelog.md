@@ -1,1 +1,1 @@
-- Fixed incompatibility with KubeJS
+- Added config option to clear full audio buffers
