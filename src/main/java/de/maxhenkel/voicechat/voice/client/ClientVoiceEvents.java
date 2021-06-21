@@ -249,14 +249,14 @@ public class ClientVoiceEvents {
         if (!minecraft.options.hideGui) {
             String group = playerStateManager.getGroup(player);
 
-            if (playerStateManager.isPlayerDisconnected(player)) {
+            if (client != null && client.getTalkCache().isTalking(player)) {
+                renderPlayerIcon(player, SPEAKER_ICON, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
+            } else if (playerStateManager.isPlayerDisconnected(player)) {
                 renderPlayerIcon(player, DISCONNECT_ICON, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
             } else if (group != null && !group.equals(playerStateManager.getGroup())) {
                 renderPlayerIcon(player, GROUP_ICON, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
             } else if (playerStateManager.isPlayerDisabled(player)) {
                 renderPlayerIcon(player, SPEAKER_OFF_ICON, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
-            } else if (client != null && client.getTalkCache().isTalking(player)) {
-                renderPlayerIcon(player, SPEAKER_ICON, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight());
             }
         }
     }
