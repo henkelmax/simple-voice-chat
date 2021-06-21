@@ -13,6 +13,7 @@ public class ClientConfig extends ConfigBase {
     public final ForgeConfigSpec.DoubleValue microphoneAmplification;
     public final ForgeConfigSpec.EnumValue<MicrophoneActivationType> microphoneActivationType;
     public final ForgeConfigSpec.IntValue outputBufferSize;
+    public final ForgeConfigSpec.BooleanValue clearFullAudioBuffer;
     public final ForgeConfigSpec.IntValue deactivationDelay;
     public final ForgeConfigSpec.ConfigValue<String> microphone;
     public final ForgeConfigSpec.ConfigValue<String> speaker;
@@ -46,6 +47,13 @@ public class ClientConfig extends ConfigBase {
                         "Increase this value if you have an unstable internet connection"
                 )
                 .defineInRange("output_buffer_size", 6, 1, 16);
+        clearFullAudioBuffer = builder
+                .comment(
+                        "If full audio buffers should get cleared",
+                        "This potentially reduces audio latency on laggy servers",
+                        "This does currently not work on Linux"
+                )
+                .define("clear_full_audio_buffer", false);
         deactivationDelay = builder
                 .comment(
                         "The time it takes for the microphone to deactivate when using voice activation",

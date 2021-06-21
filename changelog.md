@@ -1,1 +1,1 @@
-- Fixed last character of group name text field not deletable
+- Added config option to clear full audio buffers

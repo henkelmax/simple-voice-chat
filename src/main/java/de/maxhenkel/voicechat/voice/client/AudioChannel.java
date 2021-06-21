@@ -88,7 +88,7 @@ public class AudioChannel extends Thread {
                 }
 
                 // Flush the speaker if the buffer is too full to avoid too big delays
-                if (speaker.isActive() && speaker.getBufferSize() - speaker.available() > AudioChannelConfig.maxSpeakerBufferSize()) {
+                if (Main.CLIENT_CONFIG.clearFullAudioBuffer.get() && speaker.isActive() && speaker.getBufferSize() - speaker.available() > AudioChannelConfig.maxSpeakerBufferSize()) {
                     CooldownTimer.run("clear_audio_buffer", () -> {
                         Main.LOGGER.warn("Clearing buffers to avoid audio delay");
                     });
