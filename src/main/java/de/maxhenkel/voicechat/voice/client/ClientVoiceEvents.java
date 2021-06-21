@@ -241,14 +241,14 @@ public class ClientVoiceEvents {
         if (!minecraft.options.hideGui) {
             String group = playerStateManager.getGroup(player);
 
-            if (playerStateManager.isPlayerDisconnected(player)) {
+            if (client != null && client.getTalkCache().isTalking(player)) {
+                renderPlayerIcon(player, component, SPEAKER_ICON, stack, vertexConsumers, light);
+            } else if (playerStateManager.isPlayerDisconnected(player)) {
                 renderPlayerIcon(player, component, DISCONNECT_ICON, stack, vertexConsumers, light);
             } else if (group != null && !group.equals(playerStateManager.getGroup())) {
                 renderPlayerIcon(player, component, GROUP_ICON, stack, vertexConsumers, light);
             } else if (playerStateManager.isPlayerDisabled(player)) {
                 renderPlayerIcon(player, component, SPEAKER_OFF_ICON, stack, vertexConsumers, light);
-            } else if (client != null && client.getTalkCache().isTalking(player)) {
-                renderPlayerIcon(player, component, SPEAKER_ICON, stack, vertexConsumers, light);
             }
         }
     }
