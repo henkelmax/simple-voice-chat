@@ -89,7 +89,7 @@ public class AudioChannel extends Thread {
                 }
 
                 // Flush the speaker if the buffer is too full to avoid too big delays
-                if (speaker.isActive() && speaker.getBufferSize() - speaker.available() > client.getAudioChannelConfig().maxSpeakerBufferSize()) {
+                if (VoicechatClient.CLIENT_CONFIG.clearFullAudioBuffer.get() && speaker.isActive() && speaker.getBufferSize() - speaker.available() > client.getAudioChannelConfig().maxSpeakerBufferSize()) {
                     CooldownTimer.run("clear_audio_buffer", () -> {
                         Voicechat.LOGGER.warn("Clearing buffers to avoid audio delay");
                     });
