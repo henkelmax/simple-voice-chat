@@ -5,7 +5,6 @@ import de.maxhenkel.voicechat.config.ServerConfig;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class InitPacket implements Packet<InitPacket> {
@@ -71,7 +70,9 @@ public class InitPacket implements Packet<InitPacket> {
         return groupsEnabled;
     }
 
-    public String getVoiceHost() { return voiceHost; }
+    public String getVoiceHost() {
+        return voiceHost;
+    }
 
     @Override
     public ResourceLocation getID() {
