@@ -1,1 +1,1 @@
-- Fixed group icon priority when using open groups option
+- Added spanish translation
