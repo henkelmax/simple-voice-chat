@@ -82,10 +82,15 @@ public class ClientVoiceEvents {
         ClientPacketListener connection = minecraft.getConnection();
         if (connection != null) {
             try {
+                String ip;
                 SocketAddress socketAddress = ((IClientConnection) connection.getConnection()).getChannel().remoteAddress();
                 if (socketAddress instanceof InetSocketAddress) {
                     InetSocketAddress address = (InetSocketAddress) socketAddress;
-                    String ip = address.getHostString();
+                    ip = address.getHostString();
+                    String _initIP = initPacket.getVoiceHost();
+                    if (_initIP != "") {
+                        ip = _initIP;
+                    }
                     Voicechat.LOGGER.info("Connecting to server: '" + ip + ":" + initPacket.getServerPort() + "'");
                     client = new Client(ip, initPacket.getServerPort(), playerUUID, initPacket.getSecret(), initPacket.getCodec(), initPacket.getMtuSize(), initPacket.getVoiceChatDistance(), initPacket.getVoiceChatFadeDistance(), initPacket.getKeepAlive(), initPacket.groupsEnabled());
                     client.start();
