@@ -1,1 +1,1 @@
-- Added spanish translation
+- Added voice_host config option
