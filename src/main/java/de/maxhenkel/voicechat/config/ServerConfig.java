@@ -13,6 +13,7 @@ public class ServerConfig {
     public final ConfigBuilder.ConfigEntry<Integer> keepAlive;
     public final ConfigBuilder.ConfigEntry<Boolean> groupsEnabled;
     public final ConfigBuilder.ConfigEntry<Boolean> openGroups;
+    public final ConfigBuilder.ConfigEntry<String> voiceHost;
 
     public ServerConfig(ConfigBuilder builder) {
         voiceChatPort = builder.integerEntry("port", 24454, 0, 65535);
@@ -24,6 +25,7 @@ public class ServerConfig {
         keepAlive = builder.integerEntry("keep_alive", 1000, 1000, Integer.MAX_VALUE);
         groupsEnabled = builder.booleanEntry("enable_groups", true);
         openGroups = builder.booleanEntry("open_groups", false);
+        voiceHost = builder.stringEntry("voice_host", "");
     }
 
     public enum Codec {
