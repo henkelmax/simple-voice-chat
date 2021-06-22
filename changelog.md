@@ -1,1 +1,1 @@
-- Added voice_host config option
+- Fixed microphone not working

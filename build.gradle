@@ -51,28 +51,21 @@ runClient.doFirst {
 }
 
 processResources {
-    inputs.property "version", project.version
-
-    from(sourceSets.main.resources.srcDirs) {
-        include "fabric.mod.json"
+    filesMatching("fabric.mod.json") {
         expand "version": project.version,
                 "minecraft_version": project.minecraft_version,
                 "loader_version": project.loader_version,
                 "fabric_version": project.fabric_version
     }
 
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "fabric.mod.json"
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        include "compatibility.properties"
+    filesMatching("compatibility.properties") {
         expand "mod_compatibility_version": project.mod_compatibility_version
     }
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    it.options.release = 8
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
