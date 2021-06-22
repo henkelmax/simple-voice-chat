@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.config.ServerConfig;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class InitPacket implements Packet<InitPacket> {
@@ -19,12 +20,14 @@ public class InitPacket implements Packet<InitPacket> {
     private double voiceChatFadeDistance;
     private int keepAlive;
     private boolean groupsEnabled;
+    private String voiceHost;
+
 
     public InitPacket() {
 
     }
 
-    public InitPacket(UUID secret, int serverPort, ServerConfig.Codec codec, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive, boolean groupsEnabled) {
+    public InitPacket(UUID secret, int serverPort, ServerConfig.Codec codec, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive, boolean groupsEnabled, String voiceHost) {
         this.secret = secret;
         this.serverPort = serverPort;
         this.codec = codec;
@@ -33,6 +36,7 @@ public class InitPacket implements Packet<InitPacket> {
         this.voiceChatFadeDistance = voiceChatFadeDistance;
         this.keepAlive = keepAlive;
         this.groupsEnabled = groupsEnabled;
+        this.voiceHost = voiceHost;
     }
 
     public UUID getSecret() {
@@ -67,6 +71,8 @@ public class InitPacket implements Packet<InitPacket> {
         return groupsEnabled;
     }
 
+    public String getVoiceHost() { return voiceHost; }
+
     @Override
     public ResourceLocation getID() {
         return SECRET;
@@ -82,6 +88,7 @@ public class InitPacket implements Packet<InitPacket> {
         voiceChatFadeDistance = buf.readDouble();
         keepAlive = buf.readInt();
         groupsEnabled = buf.readBoolean();
+        voiceHost = buf.readUtf();
         return this;
     }
 
@@ -95,6 +102,7 @@ public class InitPacket implements Packet<InitPacket> {
         buf.writeDouble(voiceChatFadeDistance);
         buf.writeInt(keepAlive);
         buf.writeBoolean(groupsEnabled);
+        buf.writeUtf(voiceHost);
     }
 
 }
