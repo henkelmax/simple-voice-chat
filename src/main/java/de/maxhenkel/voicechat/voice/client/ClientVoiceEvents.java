@@ -87,9 +87,9 @@ public class ClientVoiceEvents {
                 if (socketAddress instanceof InetSocketAddress) {
                     InetSocketAddress address = (InetSocketAddress) socketAddress;
                     ip = address.getHostString();
-                    String _initIP = initPacket.getVoiceHost();
-                    if (_initIP != "") {
-                        ip = _initIP;
+                    String initIP = initPacket.getVoiceHost();
+                    if (!initIP.isEmpty()) {
+                        ip = initIP;
                     }
                     Voicechat.LOGGER.info("Connecting to server: '" + ip + ":" + initPacket.getServerPort() + "'");
                     client = new Client(ip, initPacket.getServerPort(), playerUUID, initPacket.getSecret(), initPacket.getCodec(), initPacket.getMtuSize(), initPacket.getVoiceChatDistance(), initPacket.getVoiceChatFadeDistance(), initPacket.getKeepAlive(), initPacket.groupsEnabled());
