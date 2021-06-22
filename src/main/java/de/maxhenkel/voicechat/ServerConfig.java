@@ -19,6 +19,7 @@ public class ServerConfig extends ConfigBase {
     public final ForgeConfigSpec.IntValue keepAlive;
     public final ForgeConfigSpec.BooleanValue groupsEnabled;
     public final ForgeConfigSpec.BooleanValue openGroups;
+    public final ForgeConfigSpec.ConfigValue<String> voiceHost;
 
     public ServerConfig(ForgeConfigSpec.Builder builder) {
         super(builder);
@@ -50,6 +51,9 @@ public class ServerConfig extends ConfigBase {
         openGroups = builder
                 .comment("If players in group chats can be heard locally")
                 .define("voice_chat.open_groups", false);
+        voiceHost = builder
+                .comment("The host name that clients should use to connect to the voice chat", "Don't change this value if you don't know what you are doing")
+                .define("voice_chat.voice_host", "");
     }
 
     @Override
