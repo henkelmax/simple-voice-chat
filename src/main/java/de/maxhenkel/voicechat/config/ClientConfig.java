@@ -20,6 +20,7 @@ public class ClientConfig {
     public final ConfigBuilder.ConfigEntry<Boolean> stereo;
     public final ConfigBuilder.ConfigEntry<Boolean> hideIcons;
     public final ConfigBuilder.ConfigEntry<Boolean> showGroupHUD;
+    public final ConfigBuilder.ConfigEntry<Boolean> showOwnGroupIcon;
     public final ConfigBuilder.ConfigEntry<Double> groupHudIconScale;
     public final ConfigBuilder.ConfigEntry<HUDIconLocation> hudIconLocation;
     public final ConfigBuilder.ConfigEntry<GroupPlayerIconOrientation> groupPlayerIconOrientation;
@@ -39,6 +40,7 @@ public class ClientConfig {
         stereo = builder.booleanEntry("stereo", true);
         hideIcons = builder.booleanEntry("hide_icons", false);
         showGroupHUD = builder.booleanEntry("show_group_hud", true);
+        showOwnGroupIcon = builder.booleanEntry("show_own_group_icon", true);
         groupHudIconScale = builder.doubleEntry("group_hud_icon_scale", 2D, 0.01D, 10D);
         hudIconLocation = builder.enumEntry("hud_icon_location", HUDIconLocation.LEFT);
         groupPlayerIconOrientation = builder.enumEntry("group_player_icon_orientation", GroupPlayerIconOrientation.VERTICAL);
