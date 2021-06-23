@@ -22,6 +22,7 @@ public class ClientConfig extends ConfigBase {
     public final ForgeConfigSpec.BooleanValue stereo;
     public final ForgeConfigSpec.BooleanValue hideIcons;
     public final ForgeConfigSpec.BooleanValue showGroupHUD;
+    public final ForgeConfigSpec.BooleanValue showOwnGroupIcon;
     public final ForgeConfigSpec.DoubleValue groupHudIconScale;
     public final ForgeConfigSpec.EnumValue<HUDIconLocation> hudIconLocation;
     public final ForgeConfigSpec.EnumValue<GroupPlayerIconOrientation> groupPlayerIconOrientation;
@@ -81,6 +82,9 @@ public class ClientConfig extends ConfigBase {
         showGroupHUD = builder
                 .comment("If the group HUD should be visible")
                 .define("show_group_hud", true);
+        showOwnGroupIcon = builder
+                .comment("If the own icon should be shown when in a group")
+                .define("show_own_group_icon", true);
         groupHudIconScale = builder
                 .comment("The scale of the group HUD")
                 .defineInRange("group_hud_icon_scale", 2D, 0.01D, 10D);

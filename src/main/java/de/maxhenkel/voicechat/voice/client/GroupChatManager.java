@@ -24,7 +24,7 @@ public class GroupChatManager {
             return;
         }
 
-        List<PlayerState> groupMembers = getGroupMembers(false);
+        List<PlayerState> groupMembers = getGroupMembers(Main.CLIENT_CONFIG.showOwnGroupIcon.get());
 
         matrixStack.pushPose();
         float scale = Main.CLIENT_CONFIG.groupHudIconScale.get().floatValue();
