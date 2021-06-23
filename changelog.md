@@ -1,1 +1,1 @@
-- Added voice_host config option
+- Added config option to show own group icon
