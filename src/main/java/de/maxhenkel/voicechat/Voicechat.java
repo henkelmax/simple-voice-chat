@@ -10,7 +10,11 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -68,7 +72,9 @@ public class Voicechat implements ModInitializer {
 
             if (clientCompatibilityVersion != Voicechat.COMPATIBILITY_VERSION) {
                 Voicechat.LOGGER.warn("Client {} has incompatible voice chat version (server={}, client={})", handler.connection.getRemoteAddress(), Voicechat.COMPATIBILITY_VERSION, clientCompatibilityVersion);
-                handler.disconnect(new TranslatableComponent("message.voicechat.incompatible_version"));
+                handler.disconnect(new TranslatableComponent("message.voicechat.incompatible_version",
+                        new TextComponent(getModVersion()).withStyle(ChatFormatting.BOLD),
+                        new TextComponent(getModName()).withStyle(ChatFormatting.BOLD)));
             }
         });
 
@@ -76,4 +82,21 @@ public class Voicechat implements ModInitializer {
 
         CommandRegistrationCallback.EVENT.register(VoicechatCommands::register);
     }
+
+    public String getModVersion() {
+        ModContainer modContainer = FabricLoader.getInstance().getModContainer(MODID).orElse(null);
+        if (modContainer == null) {
+            return "N/A";
+        }
+        return modContainer.getMetadata().getVersion().getFriendlyString();
+    }
+
+    public String getModName() {
+        ModContainer modContainer = FabricLoader.getInstance().getModContainer(MODID).orElse(null);
+        if (modContainer == null) {
+            return MODID;
+        }
+        return modContainer.getMetadata().getName();
+    }
+
 }
