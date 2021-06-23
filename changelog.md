@@ -1,1 +1,1 @@
-- Fixed microphone not working
+- Added config option to show own group icon
