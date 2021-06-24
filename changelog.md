@@ -1,1 +1,1 @@
-- Added more accurate compatibility message
+- Updated chinese translation
