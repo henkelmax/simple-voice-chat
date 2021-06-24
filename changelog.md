@@ -1,1 +1,1 @@
-- Added config option to show own group icon
+- Updated chinese translation
