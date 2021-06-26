@@ -4,12 +4,15 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
+import de.maxhenkel.voicechat.voice.client.AudioRecorder;
+import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Collections;
@@ -22,8 +25,10 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     private static final ResourceLocation MICROPHONE = new ResourceLocation(Main.MODID, "textures/gui/microphone_button.png");
     private static final ResourceLocation HIDE = new ResourceLocation(Main.MODID, "textures/gui/hide_button.png");
     private static final ResourceLocation SPEAKER = new ResourceLocation(Main.MODID, "textures/gui/speaker_button.png");
+    private static final ResourceLocation RECORD = new ResourceLocation(Main.MODID, "textures/gui/record_button.png");
 
     private ToggleImageButton mute;
+    private HoverArea recordingHoverArea;
 
     public VoiceChatScreen() {
         super(new TranslationTextComponent("gui.voicechat.voice_chat.title"), 195, 76);
@@ -49,6 +54,17 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         });
         addButton(disable);
 
+        ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> Main.CLIENT_VOICE_EVENTS.getClient() != null && Main.CLIENT_VOICE_EVENTS.getClient().getRecorder() != null, button -> {
+            Client client = Main.CLIENT_VOICE_EVENTS.getClient();
+            if (client == null) {
+                return;
+            }
+            client.toggleRecording();
+        }, (button, matrices, mouseX, mouseY) -> {
+            renderTooltip(matrices, Collections.singletonList(new TranslationTextComponent("message.voicechat.toggle_recording").getVisualOrderText()), mouseX, mouseY);
+        });
+        addButton(record);
+
         ToggleImageButton hide = new ToggleImageButton(guiLeft + xSize - 6 - 20, guiTop + ySize - 6 - 20, HIDE, Main.CLIENT_CONFIG.hideIcons::get, button -> {
             Main.CLIENT_CONFIG.hideIcons.set(!Main.CLIENT_CONFIG.hideIcons.get());
             Main.CLIENT_CONFIG.hideIcons.save();
@@ -71,6 +87,8 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         });
         addButton(group);
         group.active = Main.SERVER_CONFIG.groupsEnabled.get();
+
+        recordingHoverArea = new HoverArea(6 + 20 + 2 + 20 + 2, ySize - 6 - 20, xSize - (6 + 20 + 2 + 20 + 2) * 2, 20);
 
         checkButtons();
     }
@@ -95,6 +113,17 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         ITextComponent title = new TranslationTextComponent("gui.voicechat.voice_chat.title");
         int titleWidth = font.width(title.getString());
         font.draw(matrixStack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
+
+        Client client = Main.CLIENT_VOICE_EVENTS.getClient();
+        if (client != null && client.getRecorder() != null) {
+            AudioRecorder recorder = client.getRecorder();
+            StringTextComponent time = new StringTextComponent(recorder.getDuration());
+            font.draw(matrixStack, time.withStyle(TextFormatting.DARK_RED), (float) (guiLeft + (xSize - font.width(time)) / 2), guiTop + ySize - font.lineHeight - 7, 0);
+
+            if (recordingHoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
+                renderTooltip(matrixStack, new TranslationTextComponent("message.voicechat.storage_size", recorder.getStorage()), mouseX, mouseY);
+            }
+        }
     }
 
 }

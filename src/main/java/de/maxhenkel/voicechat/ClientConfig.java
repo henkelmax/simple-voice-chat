@@ -26,6 +26,7 @@ public class ClientConfig extends ConfigBase {
     public final ForgeConfigSpec.DoubleValue groupHudIconScale;
     public final ForgeConfigSpec.EnumValue<HUDIconLocation> hudIconLocation;
     public final ForgeConfigSpec.EnumValue<GroupPlayerIconOrientation> groupPlayerIconOrientation;
+    public final ForgeConfigSpec.ConfigValue<String> recordingDestination;
 
     public ClientConfig(ForgeConfigSpec.Builder builder) {
         super(builder);
@@ -94,6 +95,9 @@ public class ClientConfig extends ConfigBase {
         groupPlayerIconOrientation = builder
                 .comment("The orientation of the player icons in the group HUD")
                 .defineEnum("group_player_icon_orientation", GroupPlayerIconOrientation.VERTICAL);
+        recordingDestination = builder
+                .comment("The location where recordings should be saved", "Leave empty for default location")
+                .define("recording_destination", "");
     }
 
 }

@@ -3,6 +3,10 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.event.VoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.voice.common.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import org.jline.utils.Log;
 
@@ -27,6 +31,8 @@ public class Client extends Thread {
     private Map<UUID, AudioChannel> audioChannels;
     private AuthThread authThread;
     private long lastKeepAlive;
+    @Nullable
+    private AudioRecorder recorder;
 
     public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret) throws IOException {
         this.address = InetAddress.getByName(serverIp);
@@ -146,6 +152,12 @@ public class Client extends Thread {
         if (micThread != null) {
             micThread.close();
         }
+
+        if (recorder != null) {
+            AudioRecorder rec = recorder;
+            recorder = null;
+            rec.close();
+        }
     }
 
     @Nullable
@@ -159,6 +171,35 @@ public class Client extends Thread {
 
     public TalkCache getTalkCache() {
         return talkCache;
+    }
+
+    @Nullable
+    public AudioRecorder getRecorder() {
+        return recorder;
+    }
+
+    public void toggleRecording() {
+        setRecording(recorder == null);
+    }
+
+    public void setRecording(boolean recording) {
+        if (recording == (recorder != null)) {
+            return;
+        }
+        ClientPlayerEntity player = Minecraft.getInstance().player;
+        if (recording) {
+            recorder = new AudioRecorder(this);
+            if (player != null) {
+                player.displayClientMessage(new TranslationTextComponent("message.voicechat.recording_started").withStyle(TextFormatting.DARK_RED), true);
+            }
+        } else {
+            AudioRecorder rec = recorder;
+            recorder = null;
+            if (player != null) {
+                player.displayClientMessage(new TranslationTextComponent("message.voicechat.recording_stopped").withStyle(TextFormatting.DARK_RED), true);
+            }
+            rec.save();
+        }
     }
 
     public void sendToServer(NetworkMessage message) throws Exception {

@@ -200,6 +200,10 @@ public class ClientVoiceEvents {
             playerStateManager.setDisabled(!playerStateManager.isDisabled());
         }
 
+        if (Main.KEY_TOGGLE_RECORDING.consumeClick() && checkConnected()) {
+            client.toggleRecording();
+        }
+
         if (Main.KEY_HIDE_ICONS.consumeClick()) {
             boolean hidden = !Main.CLIENT_CONFIG.hideIcons.get();
             Main.CLIENT_CONFIG.hideIcons.set(hidden);

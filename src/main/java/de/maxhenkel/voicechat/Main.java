@@ -72,6 +72,9 @@ public class Main {
     @OnlyIn(Dist.CLIENT)
     public static KeyBinding KEY_GROUP;
 
+    @OnlyIn(Dist.CLIENT)
+    public static KeyBinding KEY_TOGGLE_RECORDING;
+
     public static final Pattern GROUP_REGEX = Pattern.compile("^\\S[^\"\\n\\r\\t]{0,15}$");
 
     public static VoiceChatResourcePack CLASSIC_ICONS;
@@ -126,6 +129,9 @@ public class Main {
 
         KEY_GROUP = new KeyBinding("key.voice_chat_group", GLFW.GLFW_KEY_G, "key.categories.voicechat");
         ClientRegistry.registerKeyBinding(KEY_GROUP);
+
+        KEY_TOGGLE_RECORDING = new KeyBinding("key.voice_chat_toggle_recording", InputMappings.UNKNOWN.getValue(), "key.categories.voicechat");
+        ClientRegistry.registerKeyBinding(KEY_TOGGLE_RECORDING);
 
         CLASSIC_ICONS = new VoiceChatResourcePack("Classic Icons", "classic_icons");
         WHITE_ICONS = new VoiceChatResourcePack("White Icons", "white_icons");

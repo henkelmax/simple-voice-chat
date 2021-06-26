@@ -5,10 +5,12 @@ import de.maxhenkel.voicechat.voice.common.MicPacket;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.OpusEncoder;
 import de.maxhenkel.voicechat.voice.common.Utils;
+import net.minecraft.client.Minecraft;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
+import java.io.IOException;
 
 public class MicThread extends Thread {
 
@@ -62,6 +64,7 @@ public class MicThread extends Thread {
                 mic.stop();
                 mic.flush();
             }
+            flushRecording();
             Utils.sleep(10);
             return;
         }
@@ -84,6 +87,7 @@ public class MicThread extends Thread {
                 if (deactivationDelay >= Main.CLIENT_CONFIG.deactivationDelay.get()) {
                     activating = false;
                     deactivationDelay = 0;
+                    flushRecording();
                 } else {
                     sendAudioPacket(buff);
                     deactivationDelay++;
@@ -113,6 +117,7 @@ public class MicThread extends Thread {
                 mic.stop();
                 mic.flush();
                 wasPTT = false;
+                flushRecording();
             }
             Utils.sleep(10);
             return;
@@ -141,6 +146,21 @@ public class MicThread extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try {
+            if (client.getRecorder() != null) {
+                client.getRecorder().appendChunk(Minecraft.getInstance().getUser().getGameProfile(), System.currentTimeMillis(), Utils.convertToStereo(data));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void flushRecording() {
+        AudioRecorder recorder = client.getRecorder();
+        if (recorder == null) {
+            return;
+        }
+        recorder.writeChunkThreaded(Minecraft.getInstance().getUser().getGameProfile().getId());
     }
 
     public TargetDataLine getMic() {
@@ -165,5 +185,6 @@ public class MicThread extends Thread {
         mic.flush();
         mic.close();
         encoder.close();
+        flushRecording();
     }
 }
