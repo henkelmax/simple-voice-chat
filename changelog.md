@@ -1,1 +1,1 @@
-- Updated chinese translation
+- Added voice chat recording

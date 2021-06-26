@@ -5,6 +5,10 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.events.ClientVoiceChatEvents;
 import de.maxhenkel.voicechat.voice.common.*;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -36,6 +40,8 @@ public class Client extends Thread {
     private AuthThread authThread;
     private AudioChannelConfig audioChannelConfig;
     private long lastKeepAlive;
+    @Nullable
+    private AudioRecorder recorder;
 
     public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret, ServerConfig.Codec codec, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive, boolean groupsEnabled) throws IOException {
         this.address = InetAddress.getByName(serverIp);
@@ -186,6 +192,12 @@ public class Client extends Thread {
         if (micThread != null) {
             micThread.close();
         }
+
+        if (recorder != null) {
+            AudioRecorder rec = recorder;
+            recorder = null;
+            rec.close();
+        }
     }
 
     @Nullable
@@ -199,6 +211,35 @@ public class Client extends Thread {
 
     public TalkCache getTalkCache() {
         return talkCache;
+    }
+
+    @Nullable
+    public AudioRecorder getRecorder() {
+        return recorder;
+    }
+
+    public void toggleRecording() {
+        setRecording(recorder == null);
+    }
+
+    public void setRecording(boolean recording) {
+        if (recording == (recorder != null)) {
+            return;
+        }
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (recording) {
+            recorder = new AudioRecorder(this);
+            if (player != null) {
+                player.displayClientMessage(new TranslatableComponent("message.voicechat.recording_started").withStyle(ChatFormatting.DARK_RED), true);
+            }
+        } else {
+            AudioRecorder rec = recorder;
+            recorder = null;
+            if (player != null) {
+                player.displayClientMessage(new TranslatableComponent("message.voicechat.recording_stopped").withStyle(ChatFormatting.DARK_RED), true);
+            }
+            rec.save();
+        }
     }
 
     public void sendToServer(NetworkMessage message) throws Exception {

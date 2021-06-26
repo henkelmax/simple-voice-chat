@@ -33,6 +33,7 @@ public class VoicechatClient implements ClientModInitializer {
     public static KeyMapping KEY_VOICE_CHAT;
     public static KeyMapping KEY_VOICE_CHAT_SETTINGS;
     public static KeyMapping KEY_GROUP;
+    public static KeyMapping KEY_TOGGLE_RECORDING;
 
     public static ClientVoiceEvents CLIENT;
     public static ClientConfig CLIENT_CONFIG;
@@ -66,6 +67,7 @@ public class VoicechatClient implements ClientModInitializer {
         KEY_VOICE_CHAT = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.voice_chat", GLFW.GLFW_KEY_V, "key.categories.voicechat"));
         KEY_VOICE_CHAT_SETTINGS = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.voice_chat_settings", InputConstants.UNKNOWN.getValue(), "key.categories.voicechat"));
         KEY_GROUP = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.voice_chat_group", InputConstants.UNKNOWN.getValue(), "key.categories.voicechat"));
+        KEY_TOGGLE_RECORDING = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.voice_chat_toggle_recording", InputConstants.UNKNOWN.getValue(), "key.categories.voicechat"));
 
         CLIENT = new ClientVoiceEvents();
 
