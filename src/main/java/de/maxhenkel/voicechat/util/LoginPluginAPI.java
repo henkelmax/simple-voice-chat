@@ -16,7 +16,7 @@ public class LoginPluginAPI {
     private Class packetDataSerializer;
     private Random random;
 
-    public LoginPluginAPI() {
+    private LoginPluginAPI() {
         this.random = new Random();
 
         PacketContainer packet = new PacketContainer(PacketType.Login.Server.CUSTOM_PAYLOAD);
@@ -54,6 +54,33 @@ public class LoginPluginAPI {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Nullable
+    public FriendlyByteBuf readPluginResponse(PacketContainer packet)
+    {
+        Object pluginResponsePacket = packet.getHandle();
+        ByteBuf pluginResponseBytes = null;
+        for (Field d: pluginResponsePacket.getClass().getDeclaredFields()) {
+            d.setAccessible(true);
+            try {
+                Object o = d.get(pluginResponsePacket);
+                if (o instanceof ByteBuf) {
+                    pluginResponseBytes = ((ByteBuf) o).copy();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        if (pluginResponseBytes == null) {
+            return null;
+        }
+        pluginResponseBytes.resetReaderIndex();
+        byte[] bytes = new byte[pluginResponseBytes.readableBytes()];
+        pluginResponseBytes.getBytes(0,bytes);
+
+        return new FriendlyByteBuf(pluginResponseBytes);
     }
 
     private static LoginPluginAPI instance;
