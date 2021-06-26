@@ -1,0 +1,72 @@
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
+
+archivesBaseName = project.archives_base_name
+version = project.mod_version
+group = project.maven_group
+
+processResources {
+    filesMatching("plugin.yml") {
+        expand "version": project.version,
+                "paper_api_version": project.paper_api_version
+    }
+
+    filesMatching("compatibility.properties") {
+        expand "mod_compatibility_version": project.mod_compatibility_version
+    }
+}
+
+dependencies {
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation "io.papermc.paper:paper:${paper_version}"
+    implementation "com.comphenix.protocol:ProtocolLib:${protocollib_version}"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://papermc.io/repo/repository/maven-public/" }
+    maven {
+        name = "henkelmax.public"
+        url = 'https://maven.maxhenkel.de/repository/public'
+    }
+    maven { url "https://repo.dmulloy2.net/repository/public/" }
+}
+
+task copyJarToServer {
+    copy {
+        from "${project.buildDir}/libs/${archivesBaseName}-${version}.jar"
+        into "${project.projectDir}/run/plugins"
+    }
+}
+
+build.finalizedBy(copyJarToServer)
+
+task runServer {
+    doLast {
+        javaexec {
+            debug = true
+            workingDir = "${project.projectDir}/run"
+            main = "-jar";
+            args = [
+                    "${project.projectDir}/run/paper.jar",
+                    "nogui"
+            ]
+        }
+    }
+}
+
+runServer.dependsOn(copyJarToServer)
+
+sourceSets {
+    main {
+        java {
+            exclude 'de/maxhenkel/voicechat/voice/**'
+            exclude 'de/maxhenkel/voicechat/net/**'
+        }
+    }
+}
