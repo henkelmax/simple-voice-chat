@@ -24,6 +24,7 @@ public class ClientConfig {
     public final ConfigBuilder.ConfigEntry<Double> groupHudIconScale;
     public final ConfigBuilder.ConfigEntry<HUDIconLocation> hudIconLocation;
     public final ConfigBuilder.ConfigEntry<GroupPlayerIconOrientation> groupPlayerIconOrientation;
+    public final ConfigBuilder.ConfigEntry<String> recordingDestination;
 
     public ClientConfig(ConfigBuilder builder) {
         voiceChatVolume = builder.doubleEntry("voice_chat_volume", 1D, 0D, 2D);
@@ -44,6 +45,7 @@ public class ClientConfig {
         groupHudIconScale = builder.doubleEntry("group_hud_icon_scale", 2D, 0.01D, 10D);
         hudIconLocation = builder.enumEntry("hud_icon_location", HUDIconLocation.LEFT);
         groupPlayerIconOrientation = builder.enumEntry("group_player_icon_orientation", GroupPlayerIconOrientation.VERTICAL);
+        recordingDestination = builder.stringEntry("recording_destination", "");
     }
 
 }

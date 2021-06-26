@@ -5,9 +5,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
+import de.maxhenkel.voicechat.voice.client.AudioRecorder;
 import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -23,8 +25,10 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     private static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/gui/microphone_button.png");
     private static final ResourceLocation HIDE = new ResourceLocation(Voicechat.MODID, "textures/gui/hide_button.png");
     private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_button.png");
+    private static final ResourceLocation RECORD = new ResourceLocation(Voicechat.MODID, "textures/gui/record_button.png");
 
     private ToggleImageButton mute;
+    private HoverArea recordingHoverArea;
 
     public VoiceChatScreen() {
         super(new TranslatableComponent("gui.voicechat.voice_chat.title"), 195, 76);
@@ -50,6 +54,17 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         });
         addRenderableWidget(disable);
 
+        ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> VoicechatClient.CLIENT.getClient() != null && VoicechatClient.CLIENT.getClient().getRecorder() != null, button -> {
+            Client client = VoicechatClient.CLIENT.getClient();
+            if (client == null) {
+                return;
+            }
+            client.toggleRecording();
+        }, (button, matrices, mouseX, mouseY) -> {
+            renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.toggle_recording").getVisualOrderText()), mouseX, mouseY);
+        });
+        addRenderableWidget(record);
+
         ToggleImageButton hide = new ToggleImageButton(guiLeft + xSize - 6 - 20, guiTop + ySize - 6 - 20, HIDE, VoicechatClient.CLIENT_CONFIG.hideIcons::get, button -> {
             VoicechatClient.CLIENT_CONFIG.hideIcons.set(!VoicechatClient.CLIENT_CONFIG.hideIcons.get());
             VoicechatClient.CLIENT_CONFIG.hideIcons.save();
@@ -73,6 +88,8 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         addRenderableWidget(group);
         Client client = VoicechatClient.CLIENT.getClient();
         group.active = client != null && client.groupsEnabled();
+
+        recordingHoverArea = new HoverArea(6 + 20 + 2 + 20 + 2, ySize - 6 - 20, xSize - (6 + 20 + 2 + 20 + 2) * 2, 20);
 
         checkButtons();
     }
@@ -99,6 +116,17 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         Component title = new TranslatableComponent("gui.voicechat.voice_chat.title");
         int titleWidth = font.width(title);
         font.draw(matrixStack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
+
+        Client client = VoicechatClient.CLIENT.getClient();
+        if (client != null && client.getRecorder() != null) {
+            AudioRecorder recorder = client.getRecorder();
+            TextComponent time = new TextComponent(recorder.getDuration());
+            font.draw(matrixStack, time.withStyle(ChatFormatting.DARK_RED), (float) (guiLeft + (xSize - font.width(time)) / 2), guiTop + ySize - font.lineHeight - 7, 0);
+
+            if (recordingHoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
+                renderTooltip(matrixStack, new TranslatableComponent("message.voicechat.storage_size", recorder.getStorage()), mouseX, mouseY);
+            }
+        }
     }
 
 }
