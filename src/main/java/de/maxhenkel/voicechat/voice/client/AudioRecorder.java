@@ -11,6 +11,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.*;
 import net.minecraft.util.Tuple;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nullable;
 import javax.sound.sampled.*;
@@ -257,7 +258,7 @@ public class AudioRecorder {
             }
 
             int ts = (int) (snippet.getB() - timestamp);
-            audio.insertAt(audioInputStream.readAllBytes(), ts);
+            audio.insertAt(IOUtils.toByteArray(audioInputStream), ts);
             audioInputStream.close();
             progress.accept(((float) i + 1F) / (float) audioSnippets.size());
         }
