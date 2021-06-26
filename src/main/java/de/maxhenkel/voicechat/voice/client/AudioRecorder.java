@@ -15,10 +15,7 @@ import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nullable;
 import javax.sound.sampled.*;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -249,7 +246,11 @@ public class AudioRecorder {
         RandomAccessAudio audio = null;
         for (int i = 0; i < audioSnippets.size(); i++) {
             Tuple<File, Long> snippet = audioSnippets.get(i);
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(snippet.getA());
+
+            FileInputStream fis = new FileInputStream(snippet.getA());
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(bis);
+
             if (audio == null) {
                 audio = new RandomAccessAudio(audioInputStream.getFormat());
             } else if (!audioInputStream.getFormat().matches(audio.getAudioFormat())) {
@@ -260,6 +261,8 @@ public class AudioRecorder {
             int ts = (int) (snippet.getB() - timestamp);
             audio.insertAt(IOUtils.toByteArray(audioInputStream), ts);
             audioInputStream.close();
+            bis.close();
+            fis.close();
             progress.accept(((float) i + 1F) / (float) audioSnippets.size());
         }
 
