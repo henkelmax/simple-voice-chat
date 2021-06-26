@@ -14,6 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
+import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -78,6 +79,7 @@ public class AudioChannel extends Thread {
                     speaker.stop();
                     queue.clear();
                     closeAndKill();
+                    flushRecording();
                     return;
                 }
 
@@ -86,6 +88,7 @@ public class AudioChannel extends Thread {
                 if (speaker.isActive() && speaker.getBufferSize() - speaker.available() <= 0) {
                     speaker.stop();
                     lastSequenceNumber = -1L;
+                    flushRecording();
                 }
 
                 // Flush the speaker if the buffer is too full to avoid too big delays
@@ -96,6 +99,7 @@ public class AudioChannel extends Thread {
                     speaker.stop();
                     speaker.flush();
                     lastSequenceNumber = -1L;
+                    flushRecording();
                 }
 
                 SoundPacket packet = queue.poll(10, TimeUnit.MILLISECONDS);
@@ -146,15 +150,32 @@ public class AudioChannel extends Thread {
                 speaker.close();
             }
             decoder.close();
+            flushRecording();
             Voicechat.LOGGER.debug("Closed audio channel for " + uuid);
         }
     }
 
+    private void flushRecording() {
+        AudioRecorder recorder = client.getRecorder();
+        if (recorder == null) {
+            return;
+        }
+        recorder.writeChunkThreaded(uuid);
+    }
+
     private void writeToSpeaker(byte[] monoData) {
         PlayerState state = playerStateManager.getState(uuid);
+
+        if (state == null) {
+            CooldownTimer.run("write_no_state", () -> {
+                Voicechat.LOGGER.warn("Received audio from player without state ({})", uuid);
+            });
+            return;
+        }
+
         byte[] stereo;
 
-        if (state != null && state.hasGroup() && state.getGroup().equals(playerStateManager.getGroup())) {
+        if (state.hasGroup() && state.getGroup().equals(playerStateManager.getGroup())) {
             stereo = Utils.convertToStereo(monoData, 1F, 1F);
         } else {
             Player player = minecraft.level.getPlayerByUUID(uuid);
@@ -179,7 +200,13 @@ public class AudioChannel extends Thread {
         }
 
         gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * (float) VoicechatClient.VOLUME_CONFIG.getVolume(uuid)), gainControl.getMinimum()), gainControl.getMaximum()));
-
+        if (client.getRecorder() != null) {
+            try {
+                client.getRecorder().appendChunk(state.getGameProfile(), System.currentTimeMillis(), stereo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         speaker.write(stereo, 0, stereo.length);
         speaker.start();
     }
