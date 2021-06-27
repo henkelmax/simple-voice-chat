@@ -89,7 +89,7 @@ public class InitPacket implements Packet<InitPacket> {
         voiceChatFadeDistance = buf.readDouble();
         keepAlive = buf.readInt();
         groupsEnabled = buf.readBoolean();
-        voiceHost = buf.readUtf();
+        voiceHost = buf.readUtf(32767);
         return this;
     }
 
