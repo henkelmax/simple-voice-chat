@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.net;
 
-
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
@@ -10,14 +9,16 @@ import com.comphenix.protocol.wrappers.MinecraftKey;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
+import de.maxhenkel.voicechat.util.LoginPluginAPI;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minecraft.network.PacketDataSerializer;
 import net.minecraft.network.protocol.game.PacketPlayInCustomPayload;
-import net.minecraft.network.protocol.login.PacketLoginInCustomPayload;
 import org.bukkit.entity.Player;
+
+import java.nio.ByteBuffer;
 
 public class NetManager {
 
@@ -30,10 +31,9 @@ public class NetManager {
                 Player player = event.getPlayer();
                 if (event.getPacketType() == PacketType.Login.Client.START) {
                     try {
-                        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-                        buf.writeInt(Voicechat.COMPATIBILITY_VERSION);
-                        PacketContainer packet = createPacket(PacketType.Login.Server.CUSTOM_PAYLOAD, Voicechat.INIT, buf);
-                        Voicechat.PROTOCOL_MANAGER.sendServerPacket(player, packet);
+                        byte[] payload = ByteBuffer.allocate(4).putInt(Voicechat.COMPATIBILITY_VERSION).array();
+                        PacketContainer p = LoginPluginAPI.instance().generatePluginRequest(Voicechat.INIT, payload);
+                        Voicechat.PROTOCOL_MANAGER.sendServerPacket(player, p);
                     } catch (Exception e) {
                         Voicechat.LOGGER.error("Failed to send packet: {}", e.getMessage());
                     }
@@ -53,18 +53,13 @@ public class NetManager {
 
     private static void onLoginCustomPayload(PacketEvent event) {
         Player player = event.getPlayer();
-        PacketLoginInCustomPayload customPayload = (PacketLoginInCustomPayload) event.getPacket().getHandle();
-        ByteBuf buf = customPayload.c();
+        FriendlyByteBuf buf = LoginPluginAPI.instance().readPluginResponse(event);
 
         if (buf == null) {
-            // Do nothing vor vanilla clients
-            event.setCancelled(true);
             return;
         }
 
-        FriendlyByteBuf payload = new FriendlyByteBuf(buf);
-
-        int clientCompatibilityVersion = payload.readInt();
+        int clientCompatibilityVersion = buf.readInt();
 
         if (clientCompatibilityVersion != Voicechat.COMPATIBILITY_VERSION) {
             Voicechat.LOGGER.warn("Client {} has incompatible voice chat version (server={}, client={})", player.getName(), Voicechat.COMPATIBILITY_VERSION, clientCompatibilityVersion); //TODO check if player name is available at that point
@@ -76,7 +71,6 @@ public class NetManager {
                 disconnect(player, Component.translatable("message.voicechat.incompatible"));
             }
         }
-        event.setCancelled(true);
     }
 
     private static void onPlayCustomPayload(PacketEvent event) {
