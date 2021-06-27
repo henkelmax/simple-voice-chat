@@ -62,7 +62,7 @@ public class PlayerState {
     }
 
     public static PlayerState fromBytes(FriendlyByteBuf buf) {
-        PlayerState state = new PlayerState(buf.readBoolean(), buf.readBoolean(), NbtUtils.readGameProfile(buf.readNbt()));
+        PlayerState state = new PlayerState(buf.readBoolean(), buf.readBoolean(), new GameProfile(buf.readUUID(), buf.readUtf()));
 
         if (buf.readBoolean()) {
             state.setGroup(buf.readUtf(512));
@@ -74,7 +74,8 @@ public class PlayerState {
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeBoolean(disabled);
         buf.writeBoolean(disconnected);
-        buf.writeNbt(NbtUtils.writeGameProfile(new CompoundTag(), gameProfile));
+        buf.writeUUID(gameProfile.getId());
+        buf.writeUtf(gameProfile.getName());
         buf.writeBoolean(hasGroup());
         if (hasGroup()) {
             buf.writeUtf(group, 512);
