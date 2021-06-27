@@ -1,1 +1,1 @@
-- Added voice chat recording
+- Changed packet serialization
