@@ -62,7 +62,7 @@ public class PlayerState {
     }
 
     public static PlayerState fromBytes(FriendlyByteBuf buf) {
-        PlayerState state = new PlayerState(buf.readBoolean(), buf.readBoolean(), new GameProfile(buf.readUUID(), buf.readUtf()));
+        PlayerState state = new PlayerState(buf.readBoolean(), buf.readBoolean(), new GameProfile(buf.readUUID(), buf.readUtf(32767)));
 
         if (buf.readBoolean()) {
             state.setGroup(buf.readUtf(512));
