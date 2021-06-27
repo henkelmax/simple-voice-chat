@@ -32,7 +32,7 @@ public class NetManager {
                 if (event.getPacketType() == PacketType.Login.Client.START) {
                     try {
                         byte[] payload = ByteBuffer.allocate(4).putInt(Voicechat.COMPATIBILITY_VERSION).array();
-                        PacketContainer p = LoginPluginAPI.instance().generatePluginRequest(Voicechat.INIT, payload);
+                        PacketContainer p = LoginPluginAPI.generatePluginRequest(Voicechat.INIT, payload);
                         Voicechat.PROTOCOL_MANAGER.sendServerPacket(player, p);
                     } catch (Exception e) {
                         Voicechat.LOGGER.error("Failed to send packet: {}", e.getMessage());
@@ -53,7 +53,7 @@ public class NetManager {
 
     private static void onLoginCustomPayload(PacketEvent event) {
         Player player = event.getPlayer();
-        FriendlyByteBuf buf = LoginPluginAPI.instance().readPluginResponse(event);
+        FriendlyByteBuf buf = LoginPluginAPI.readPluginResponse(event);
 
         if (buf == null) {
             return;

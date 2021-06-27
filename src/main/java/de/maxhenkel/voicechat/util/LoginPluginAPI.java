@@ -3,52 +3,25 @@ package de.maxhenkel.voicechat.util;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.MinecraftKey;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import net.minecraft.network.PacketDataSerializer;
+import net.minecraft.network.protocol.login.PacketLoginInCustomPayload;
+import net.minecraft.network.protocol.login.PacketLoginOutCustomPayload;
+import net.minecraft.resources.MinecraftKey;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
 
 public class LoginPluginAPI {
-    private Class packetLoginOutCustomPayload;
-    private Class packetDataSerializer;
-
-    private static LoginPluginAPI INSTANCE = null;
     private static final int PACKET_ID = 8712712;
 
-    private LoginPluginAPI() {
-
-        PacketContainer packet = new PacketContainer(PacketType.Login.Server.CUSTOM_PAYLOAD);
-
-        Object rawPacket = packet.getHandle();
-
-        for (Field d : rawPacket.getClass().getDeclaredFields()) {
-            d.setAccessible(true);
-            try {
-                Object o = d.get(rawPacket);
-                if (o instanceof ByteBuf) {
-                    packetDataSerializer = o.getClass();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-        }
-
-        packetLoginOutCustomPayload = rawPacket.getClass();
-    }
-
     @Nullable
-    public PacketContainer generatePluginRequest(MinecraftKey channel, byte[] data) {
-        FriendlyByteBuf tempBuffer = new FriendlyByteBuf(Unpooled.buffer());
-        tempBuffer.writeVarInt(PACKET_ID);
-        tempBuffer.writeUtf(channel.getFullKey());
+    public static PacketContainer generatePluginRequest(com.comphenix.protocol.wrappers.MinecraftKey channel, byte[] data) {
+        MinecraftKey channelID = new MinecraftKey(channel.getPrefix(), channel.getKey());
+        PacketDataSerializer tempBuffer = new PacketDataSerializer(Unpooled.buffer());
         tempBuffer.writeBytes(data);
-
         try {
-            Object serializer = packetDataSerializer.getDeclaredConstructor(ByteBuf.class).newInstance(tempBuffer.getUnderlyingByteBuf());
-            Object rawPacketHandle = packetLoginOutCustomPayload.getDeclaredConstructor(this.packetDataSerializer).newInstance(serializer);
+            PacketLoginOutCustomPayload rawPacketHandle = new PacketLoginOutCustomPayload(PACKET_ID, channelID, tempBuffer);
+
             return new PacketContainer(PacketType.Login.Server.CUSTOM_PAYLOAD, rawPacketHandle);
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,46 +30,19 @@ public class LoginPluginAPI {
     }
 
     @Nullable
-    public FriendlyByteBuf readPluginResponse(PacketEvent event) {
-        Object pluginResponsePacket = event.getPacket().getHandle();
-        ByteBuf pluginResponseBytes = null;
-        int pluginResponseID = -1;
-
-        for (Field d : pluginResponsePacket.getClass().getDeclaredFields()) {
-            d.setAccessible(true);
-            try {
-                Object o = d.get(pluginResponsePacket);
-                if (o instanceof ByteBuf) {
-                    pluginResponseBytes = ((ByteBuf) o).copy();
-                } else if (o instanceof Integer) {
-                    if (!java.lang.reflect.Modifier.isStatic(d.getModifiers())) {
-                        pluginResponseID = (Integer) o;
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-        if (pluginResponseBytes == null && pluginResponseID == PACKET_ID) {
-            // Do nothing for vanilla clients
+    public static FriendlyByteBuf readPluginResponse(PacketEvent event) {
+        PacketLoginInCustomPayload pluginResponsePacket = (PacketLoginInCustomPayload) event.getPacket().getHandle();
+        int id = pluginResponsePacket.b();
+        PacketDataSerializer buf = pluginResponsePacket.c();
+        if (buf == null && id == PACKET_ID) {
             event.setCancelled(true);
             return null;
         }
-        if (pluginResponseID == PACKET_ID) {
-            pluginResponseBytes.resetReaderIndex();
-            byte[] bytes = new byte[pluginResponseBytes.readableBytes()];
-            pluginResponseBytes.getBytes(0, bytes);
+        if (id == PACKET_ID) {
             event.setCancelled(true);
-            return new FriendlyByteBuf(pluginResponseBytes);
+            return new FriendlyByteBuf(buf);
         }
         return null;
     }
 
-    public static LoginPluginAPI instance() {
-        if (INSTANCE == null) {
-            INSTANCE = new LoginPluginAPI();
-        }
-        return INSTANCE;
-    }
 }
