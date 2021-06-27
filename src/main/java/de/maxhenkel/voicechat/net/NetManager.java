@@ -15,10 +15,10 @@ public class NetManager {
 
     public static <T extends Packet<T>> void registerServerReceiver(Class<T> packetType, ServerReceiver<T> packetReceiver) {
         try {
-            T dummyPacket = packetType.newInstance();
+            T dummyPacket = packetType.getDeclaredConstructor().newInstance();
             ServerPlayNetworking.registerGlobalReceiver(dummyPacket.getID(), (server, player, handler, buf, responseSender) -> {
                 try {
-                    T packet = packetType.newInstance();
+                    T packet = packetType.getDeclaredConstructor().newInstance();
                     packet.fromBytes(buf);
                     packetReceiver.onPacket(server, player, handler, responseSender, packet);
                 } catch (Exception e) {
@@ -38,10 +38,10 @@ public class NetManager {
 
     public static <T extends Packet<T>> void registerClientReceiver(Class<T> packetType, ClientReceiver<T> packetReceiver) {
         try {
-            T dummyPacket = packetType.newInstance();
+            T dummyPacket = packetType.getDeclaredConstructor().newInstance();
             ClientPlayNetworking.registerGlobalReceiver(dummyPacket.getID(), (client, handler, buf, responseSender) -> {
                 try {
-                    T packet = packetType.newInstance();
+                    T packet = packetType.getDeclaredConstructor().newInstance();
                     packet.fromBytes(buf);
                     client.execute(() -> packetReceiver.onPacket(client, handler, responseSender, packet));
                 } catch (Exception e) {
