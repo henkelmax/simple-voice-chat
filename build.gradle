@@ -2,8 +2,8 @@ plugins {
     id 'java'
 }
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -22,7 +22,7 @@ processResources {
 
 dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    implementation "io.papermc.paper:paper:${paper_version}"
+    implementation "com.destroystokyo.paper:paper:${paper_version}"
     implementation "com.comphenix.protocol:ProtocolLib:${protocollib_version}"
 }
 
@@ -66,3 +66,8 @@ task runServer {
 }
 
 runServer.dependsOn(copyJarToServer)
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    it.options.release = 8
+}

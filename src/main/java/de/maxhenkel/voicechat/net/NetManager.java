@@ -14,8 +14,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.minecraft.network.PacketDataSerializer;
-import net.minecraft.network.protocol.game.PacketPlayInCustomPayload;
+import net.minecraft.server.v1_16_R3.PacketDataSerializer;
+import net.minecraft.server.v1_16_R3.PacketPlayInCustomPayload;
 import org.bukkit.entity.Player;
 
 import java.nio.ByteBuffer;
@@ -32,7 +32,7 @@ public class NetManager {
                 if (event.getPacketType() == PacketType.Login.Client.START) {
                     try {
                         byte[] payload = ByteBuffer.allocate(4).putInt(Voicechat.COMPATIBILITY_VERSION).array();
-                        PacketContainer p = LoginPluginAPI.instance().generatePluginRequest(Voicechat.INIT, payload);
+                        PacketContainer p = LoginPluginAPI.generatePluginRequest(Voicechat.INIT, payload);
                         Voicechat.PROTOCOL_MANAGER.sendServerPacket(player, p);
                     } catch (Exception e) {
                         Voicechat.LOGGER.error("Failed to send packet: {}", e.getMessage());
@@ -53,7 +53,7 @@ public class NetManager {
 
     private static void onLoginCustomPayload(PacketEvent event) {
         Player player = event.getPlayer();
-        FriendlyByteBuf buf = LoginPluginAPI.instance().readPluginResponse(event);
+        FriendlyByteBuf buf = LoginPluginAPI.readPluginResponse(event);
 
         if (buf == null) {
             return;
@@ -76,7 +76,7 @@ public class NetManager {
     private static void onPlayCustomPayload(PacketEvent event) {
         Player player = event.getPlayer();
         PacketPlayInCustomPayload customPayload = (PacketPlayInCustomPayload) event.getPacket().getHandle();
-        MinecraftKey id = new MinecraftKey(customPayload.b().getNamespace(), customPayload.b().getKey());
+        MinecraftKey id = new MinecraftKey(customPayload.tag.getNamespace(), customPayload.tag.getKey());
         if (id.getFullKey().equals(PlayerStatePacket.PLAYER_STATE.getFullKey())) {
             ByteBuf buf = (ByteBuf) event.getPacket().getModifier().withType(PacketDataSerializer.class).read(0);
             FriendlyByteBuf payload = new FriendlyByteBuf(buf);
