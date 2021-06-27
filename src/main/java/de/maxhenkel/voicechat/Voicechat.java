@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.wrappers.MinecraftKey;
+import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.config.ConfigBuilder;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.net.NetManager;
@@ -14,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 public final class Voicechat extends JavaPlugin {
 
@@ -29,6 +31,8 @@ public final class Voicechat extends JavaPlugin {
     public static ProtocolManager PROTOCOL_MANAGER;
 
     public static ServerVoiceEvents SERVER;
+
+    public static final Pattern GROUP_REGEX = Pattern.compile("^\\S[^\"\\n\\r\\t]{0,15}$");
 
     @Override
     public void onEnable() {
@@ -50,6 +54,8 @@ public final class Voicechat extends JavaPlugin {
         NetManager.onEnable();
         Bukkit.getPluginManager().registerEvents(SERVER, this);
         Bukkit.getPluginManager().registerEvents(SERVER.getServer().getPlayerStateManager(), this);
+
+        this.getCommand("voicechat").setExecutor(new VoiceChatCommands());
     }
 
     @Override

@@ -65,4 +65,4 @@ task runServer {
     }
 }
 
-runServer.dependsOn(copyJarToServer)
+runServer.dependsOn(build)
