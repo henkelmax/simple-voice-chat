@@ -4,7 +4,6 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.voice.common.*;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.net.BindException;
@@ -169,7 +168,7 @@ public class Server extends Thread {
                         }
                         if (!player.hasPermission(VoiceChatCommands.SPEAK_PERMISSION)) {
                             CooldownTimer.run("muted-" + playerUUID, () -> {
-                                player.sendMessage(Component.text("You do not have permission to speak")); //TODO translate
+                                player.sendMessage("You do not have permission to speak"); //TODO translate
                             });
                             continue;
                         }
