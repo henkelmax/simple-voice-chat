@@ -38,9 +38,14 @@ repositories {
 }
 
 task copyJarToServer {
-    copy {
-        from "${project.buildDir}/libs/${archivesBaseName}-${version}.jar"
-        into "${project.projectDir}/run/plugins"
+    doLast {
+        delete {
+            delete "${project.projectDir}/run/plugins/${archivesBaseName}-${version}.jar"
+        }
+        copy {
+            from "${project.buildDir}/libs/${archivesBaseName}-${version}.jar"
+            into "${project.projectDir}/run/plugins"
+        }
     }
 }
 

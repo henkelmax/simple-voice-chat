@@ -57,11 +57,10 @@ public class LoginPluginAPI {
     }
 
     @Nullable
-    public FriendlyByteBuf readPluginResponse(PacketContainer packet)
-    {
+    public FriendlyByteBuf readPluginResponse(PacketContainer packet) {
         Object pluginResponsePacket = packet.getHandle();
         ByteBuf pluginResponseBytes = null;
-        for (Field d: pluginResponsePacket.getClass().getDeclaredFields()) {
+        for (Field d : pluginResponsePacket.getClass().getDeclaredFields()) {
             d.setAccessible(true);
             try {
                 Object o = d.get(pluginResponsePacket);
@@ -78,7 +77,7 @@ public class LoginPluginAPI {
         }
         pluginResponseBytes.resetReaderIndex();
         byte[] bytes = new byte[pluginResponseBytes.readableBytes()];
-        pluginResponseBytes.getBytes(0,bytes);
+        pluginResponseBytes.getBytes(0, bytes);
 
         return new FriendlyByteBuf(pluginResponseBytes);
     }
