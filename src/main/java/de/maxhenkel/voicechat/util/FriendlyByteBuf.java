@@ -118,6 +118,14 @@ public class FriendlyByteBuf extends ByteBuf {
         }
     }
 
+    public String readUtf() {
+        return readUtf(32767);
+    }
+
+    public FriendlyByteBuf writeUtf(String string) {
+        return writeUtf(string, 32767);
+    }
+
     @Override
     public int capacity() {
         return buf.capacity();

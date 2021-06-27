@@ -27,7 +27,7 @@ public class ServerConfig {
     }
 
     public enum Codec {
-        VOIP, AUDIO, RESTRICTED_LOWDELAY; //TODO
+        VOIP, AUDIO, RESTRICTED_LOWDELAY;
     }
 
 }

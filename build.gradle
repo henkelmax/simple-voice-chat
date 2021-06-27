@@ -66,12 +66,3 @@ task runServer {
 }
 
 runServer.dependsOn(copyJarToServer)
-
-sourceSets {
-    main {
-        java {
-            exclude 'de/maxhenkel/voicechat/voice/**'
-            exclude 'de/maxhenkel/voicechat/net/**'
-        }
-    }
-}
