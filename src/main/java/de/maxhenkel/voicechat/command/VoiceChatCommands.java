@@ -15,20 +15,31 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.Arrays;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 
 public class VoiceChatCommands implements CommandExecutor {
+
+    public static Permission CONNECT_PERMISSION = new Permission("voicechat.connect", PermissionDefault.TRUE);
+    public static Permission SPEAK_PERMISSION = new Permission("voicechat.speak", PermissionDefault.TRUE);
+    public static Permission GROUPS_PERMISSION = new Permission("voicechat.groups", PermissionDefault.TRUE);
+    public static Permission ADMIN_PERMISSION = new Permission("voicechat.admin", PermissionDefault.OP);
+
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        System.out.println(Arrays.toString(args));
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("test")) {
-                return testCommand(commandSender, command, label, args);
+                if (commandSender.hasPermission(ADMIN_PERMISSION)) {
+                    return testCommand(commandSender, command, label, args);
+                }
             } else if (args[0].equalsIgnoreCase("invite")) {
-                return inviteCommand(commandSender, command, label, args);
+                if (commandSender.hasPermission(GROUPS_PERMISSION)) {
+                    return inviteCommand(commandSender, command, label, args);
+                }
             } else if (args[0].equalsIgnoreCase("join")) {
-                return joinCommand(commandSender, command, label, args);
+                if (commandSender.hasPermission(GROUPS_PERMISSION)) {
+                    return joinCommand(commandSender, command, label, args);
+                }
             }
         }
         return false;
@@ -146,18 +157,16 @@ public class VoiceChatCommands implements CommandExecutor {
             return true;
         }
 
-        String groupName = args[1];
-
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i < args.length; i++) {
+            sb.append(args[i]);
+            sb.append(" ");
+        }
+        String groupName = sb.toString().trim();
         if (groupName.startsWith("\"")) {
-            groupName = groupName.replaceFirst("\"", "");
-            for (int i = 2; i < args.length; i++) {
-                String str = args[i];
-                if (str.contains("\"")) {
-                    groupName += " " + str.split("\"")[0];
-                    break;
-                } else {
-                    groupName += " " + str;
-                }
+            String[] split = groupName.split("\"");
+            if (split.length > 1) {
+                groupName = split[1];
             }
         }
 

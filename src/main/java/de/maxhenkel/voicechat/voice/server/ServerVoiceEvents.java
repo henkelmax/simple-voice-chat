@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.net.InitPacket;
 import de.maxhenkel.voicechat.net.NetManager;
@@ -31,9 +32,15 @@ public class ServerVoiceEvents implements Listener {
             return;
         }
 
+        if (!player.hasPermission(VoiceChatCommands.CONNECT_PERMISSION)) {
+            return;
+        }
+
         UUID secret = server.getSecret(player.getUniqueId());
 
-        NetManager.sendToClient(player, new InitPacket(secret, Voicechat.SERVER_CONFIG.voiceChatPort.get(), (ServerConfig.Codec) Voicechat.SERVER_CONFIG.voiceChatCodec.get(), Voicechat.SERVER_CONFIG.voiceChatMtuSize.get(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), Voicechat.SERVER_CONFIG.voiceChatFadeDistance.get(), Voicechat.SERVER_CONFIG.keepAlive.get(), Voicechat.SERVER_CONFIG.groupsEnabled.get(), Voicechat.SERVER_CONFIG.voiceHost.get()));
+        boolean hasGroupPermission = player.hasPermission(VoiceChatCommands.GROUPS_PERMISSION);
+
+        NetManager.sendToClient(player, new InitPacket(secret, Voicechat.SERVER_CONFIG.voiceChatPort.get(), (ServerConfig.Codec) Voicechat.SERVER_CONFIG.voiceChatCodec.get(), Voicechat.SERVER_CONFIG.voiceChatMtuSize.get(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), Voicechat.SERVER_CONFIG.voiceChatFadeDistance.get(), Voicechat.SERVER_CONFIG.keepAlive.get(), Voicechat.SERVER_CONFIG.groupsEnabled.get() && hasGroupPermission, Voicechat.SERVER_CONFIG.voiceHost.get()));
         Voicechat.LOGGER.info("Sent secret to " + player.getName());
     }
 

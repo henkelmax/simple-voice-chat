@@ -1,8 +1,10 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.voice.common.*;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.net.BindException;
@@ -163,6 +165,12 @@ public class Server extends Thread {
                         MicPacket packet = (MicPacket) message.getPacket();
                         Player player = server.getPlayer(playerUUID);
                         if (player == null) {
+                            continue;
+                        }
+                        if (!player.hasPermission(VoiceChatCommands.SPEAK_PERMISSION)) {
+                            CooldownTimer.run("muted-" + playerUUID, () -> {
+                                player.sendMessage(Component.text("You do not have permission to speak")); //TODO translate
+                            });
                             continue;
                         }
                         PlayerState state = playerStateManager.getState(playerUUID);
