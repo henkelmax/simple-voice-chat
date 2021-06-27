@@ -5,6 +5,7 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.MinecraftKey;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import de.maxhenkel.voicechat.Voicechat;
@@ -18,7 +19,9 @@ import net.minecraft.server.v1_16_R3.PacketDataSerializer;
 import net.minecraft.server.v1_16_R3.PacketPlayInCustomPayload;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
+import java.util.UUID;
 
 public class NetManager {
 
@@ -103,6 +106,18 @@ public class NetManager {
             Voicechat.PROTOCOL_MANAGER.sendServerPacket(player, createPacket(PacketType.Play.Server.CUSTOM_PAYLOAD, p.getID(), buf));
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public static void sendMessage(Player player, Component component) {
+        PacketContainer packet = Voicechat.PROTOCOL_MANAGER.createPacket(PacketType.Play.Server.CHAT);
+        packet.getChatComponents().write(0, WrappedChatComponent.fromJson(GsonComponentSerializer.gson().serialize(component)));
+        packet.getChatTypes().write(0, EnumWrappers.ChatType.CHAT);
+        packet.getUUIDs().write(0, new UUID(0L, 0L));
+        try {
+            Voicechat.PROTOCOL_MANAGER.sendServerPacket(player, packet);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
     }
 

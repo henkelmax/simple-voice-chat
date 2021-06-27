@@ -1,7 +1,7 @@
 name: voicechat
 version: ${version}
 main: de.maxhenkel.voicechat.Voicechat
-api-version: ${paper_api_version}
+api-version: ${bukkit_api_version}
 prefix: voicechat
 authors: [ "Max Henkel", "Matthew Wells" ]
 description: A working voice chat in Minecraft

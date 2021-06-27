@@ -1,11 +1,11 @@
 package de.maxhenkel.voicechat.voice.server;
 
-import com.destroystokyo.paper.profile.CraftPlayerProfile;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.net.PlayerStatesPacket;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,7 +27,7 @@ public class PlayerStateManager implements Listener {
 
     public void onPlayerStatePacket(Player player, PlayerStatePacket packet) {
         PlayerState state = packet.getPlayerState();
-        state.setGameProfile(((CraftPlayerProfile) player.getPlayerProfile()).getGameProfile());
+        state.setGameProfile(((CraftPlayer) player).getProfile());
         states.put(player.getUniqueId(), state);
         broadcastState(state);
     }
@@ -50,12 +50,12 @@ public class PlayerStateManager implements Listener {
     private void notifyPlayer(Player player) {
         PlayerStatesPacket packet = new PlayerStatesPacket(states);
         NetManager.sendToClient(player, packet);
-        broadcastState(new PlayerState(false, true, ((CraftPlayerProfile) player.getPlayerProfile()).getGameProfile()));
+        broadcastState(new PlayerState(false, true, ((CraftPlayer) player).getProfile()));
     }
 
     private void removePlayer(Player player) {
         states.remove(player.getUniqueId());
-        broadcastState(new PlayerState(true, true, ((CraftPlayerProfile) player.getPlayerProfile()).getGameProfile())); //TODO maybe remove
+        broadcastState(new PlayerState(true, true, ((CraftPlayer) player).getProfile())); //TODO maybe remove
     }
 
     @Nullable
