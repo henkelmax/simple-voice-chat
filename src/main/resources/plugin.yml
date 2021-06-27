@@ -7,6 +7,8 @@ authors: [ "Max Henkel", "Matthew Wells" ]
 description: A working voice chat in Minecraft
 website: https://modrepo.de
 depend: [ProtocolLib]
-#commands:
-#  flagrate:
-#    [optional command attributes]
+commands:
+  voicechat:
+    description: Manage voice chat
+    permission: voicechat
+    usage: Invalid command syntax
