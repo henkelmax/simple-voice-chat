@@ -46,6 +46,7 @@ You can access the voice chat settings by pressing the `V` key.
 - AES encryption
 - Configurable voice quality
 - Configurable network port
+- Audio recording
 
 ## Icons
 
@@ -86,6 +87,7 @@ Push To Talk | `CAPS LOCK` | The push to talk key (Only when using activation ty
 Mute Microphone | `M` | The mute button (Only when using voice activation type `Voice`).
 Disable Voice Chat | `N` | This button disables the voice chat. Other people can't hear you and you can't hear them.
 Hide Voice Chat Icons | `H` | This button hides all icons related to the voice chat. This does not affect any other functionalities.
+Toggle Recording | *Not bound by default* | Toggles voice chat audio recording.
 
 ## The GUI
 
