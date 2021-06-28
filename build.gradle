@@ -3,8 +3,8 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -63,7 +63,7 @@ task runServer {
             workingDir = "${project.projectDir}/run"
             main = "-jar";
             args = [
-                    "${project.projectDir}/run/paper.jar",
+                    "${project.projectDir}/run/bukkit.jar",
                     "nogui"
             ]
         }
@@ -71,6 +71,7 @@ task runServer {
 }
 
 build.dependsOn(shadowJar)
+
 runServer.dependsOn(build)
 
 shadowJar {
