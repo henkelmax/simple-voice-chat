@@ -8,8 +8,8 @@ import net.minecraft.network.chat.TranslatableComponent;
 
 public class VoiceSoundSlider extends AbstractSliderButton {
 
-    public VoiceSoundSlider(int x, int y, int width, int theight) {
-        super(x, y, width, theight, TextComponent.EMPTY, VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() / 2F);
+    public VoiceSoundSlider(int x, int y, int width, int height) {
+        super(x, y, width, height, TextComponent.EMPTY, VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() / 2F);
         updateMessage();
     }
 
