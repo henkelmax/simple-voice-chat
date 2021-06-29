@@ -21,9 +21,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'forge-update'
 apply plugin: 'idea'
 
+archivesBaseName = project.archives_base_name
 version = mod_version
 group = mod_packagename
-archivesBaseName = mod_id
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
