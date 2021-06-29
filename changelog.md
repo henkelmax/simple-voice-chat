@@ -1,1 +1,1 @@
-- Updated russian translation
+- Fixed player icons not working
