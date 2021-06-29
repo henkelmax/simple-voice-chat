@@ -14,6 +14,7 @@ import de.maxhenkel.voicechat.util.LoginPluginAPI;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minecraft.network.PacketDataSerializer;
 import net.minecraft.network.protocol.game.PacketPlayInCustomPayload;
@@ -68,10 +69,19 @@ public class NetManager {
             Voicechat.LOGGER.warn("Client {} has incompatible voice chat version (server={}, client={})", player.getName(), Voicechat.COMPATIBILITY_VERSION, clientCompatibilityVersion); //TODO check if player name is available at that point
             if (clientCompatibilityVersion <= 6) {
                 // Send a literal string, as we don't know if the translations exist on these versions
-                disconnect(player, Component.text("Your voice chat version is not compatible with the servers version."));
+                disconnect(player,
+                        Component.text("Your voice chat version is not compatible with the servers version.\nPlease install version ")
+                                .append(Component.text(Voicechat.INSTANCE.getDescription().getVersion()).toBuilder().decorate(TextDecoration.BOLD).build())
+                                .append(Component.text(" of "))
+                                .append(Component.text("Simple Voice Chat").toBuilder().decorate(TextDecoration.BOLD).build())
+                                .append(Component.text("."))
+                );
             } else {
                 // This translation key is only available for compatibility version 7+
-                disconnect(player, Component.translatable("message.voicechat.incompatible"));
+                disconnect(player, Component.translatable("message.voicechat.incompatible_version",
+                        Component.text(Voicechat.INSTANCE.getDescription().getVersion()).toBuilder().decorate(TextDecoration.BOLD).build(),
+                        Component.text("Simple Voice Chat").toBuilder().decorate(TextDecoration.BOLD).build()
+                ));
             }
         }
     }
