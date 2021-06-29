@@ -1,1 +1,1 @@
-- Added voice chat recording
+- Updated russian translation
