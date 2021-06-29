@@ -87,7 +87,7 @@ public class CreateGroupList extends WidgetBase {
                 int headPosY = startY + 2 + 10 - 10 * headYIndex;
 
                 matrixStack.pushPose();
-                mc.getTextureManager().bind(SkinUtils.getSkin(state.getGameProfile()));
+                mc.getTextureManager().bind(SkinUtils.getSkin(state.getGameProfile().getId()));
                 matrixStack.translate(headPosX, headPosY, 0);
                 Screen.blit(matrixStack, 0, 0, 8, 8, 8, 8, 64, 64);
                 Screen.blit(matrixStack, 0, 0, 40, 8, 8, 8, 64, 64);

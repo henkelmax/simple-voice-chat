@@ -45,7 +45,7 @@ public class GroupChatManager {
                 minecraft.getTextureManager().bind(TALK_OUTLINE);
                 Screen.blit(matrixStack, 0, 0, 0, 0, 10, 10, 16, 16);
             }
-            minecraft.getTextureManager().bind(SkinUtils.getSkin(state.getGameProfile()));
+            minecraft.getTextureManager().bind(SkinUtils.getSkin(state.getGameProfile().getId()));
             Screen.blit(matrixStack, 1, 1, 8, 8, 8, 8, 64, 64);
             Screen.blit(matrixStack, 1, 1, 40, 8, 8, 8, 64, 64);
 
