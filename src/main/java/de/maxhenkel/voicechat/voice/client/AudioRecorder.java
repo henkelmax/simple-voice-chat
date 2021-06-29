@@ -46,7 +46,7 @@ public class AudioRecorder {
         if (recordingDestination.trim().isEmpty()) {
             location = FabricLoader.getInstance().getGameDir().resolve("voicechat_recordings").resolve(FORMAT.format(cal.getTime()));
         } else {
-            location = Paths.get(recordingDestination);
+            location = Paths.get(recordingDestination).resolve(FORMAT.format(cal.getTime()));
         }
 
         location.toFile().mkdirs();
