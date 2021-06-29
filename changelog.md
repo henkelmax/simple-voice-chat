@@ -1,1 +1,1 @@
-- Fixed player icons not working
+- Updated to 1.17.1-pre2
