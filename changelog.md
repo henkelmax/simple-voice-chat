@@ -1,1 +1,1 @@
-- Fixed audio recording destination issue
+- Updated russian translation
