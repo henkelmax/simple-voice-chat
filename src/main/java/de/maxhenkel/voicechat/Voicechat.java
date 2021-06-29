@@ -42,8 +42,8 @@ public final class Voicechat extends JavaPlugin {
     public void onEnable() {
         INSTANCE = this;
 
-        if (!checkProtocolLib(4, 7, 0)) {
-            LOGGER.fatal("This plugin requires ProtocolLib 4.7.0 or later");
+        if (!checkProtocolLib(4, 6, 0)) {
+            LOGGER.fatal("This plugin requires ProtocolLib 4.6.0 or later");
             getServer().shutdown();
             return;
         }
