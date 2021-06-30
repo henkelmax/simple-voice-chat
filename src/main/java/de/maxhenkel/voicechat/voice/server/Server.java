@@ -59,7 +59,7 @@ public class Server extends Thread {
                     if (address == null || addr.equals("0.0.0.0")) {
                         throw e;
                     }
-                    Voicechat.LOGGER.fatal("Failed to bind to address '" + addr + "', binding to '0.0.0.0' instead");
+                    Main.LOGGER.fatal("Failed to bind to address '" + addr + "', binding to '0.0.0.0' instead");
                     socket = new DatagramSocket(port);
                 }
                 socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
