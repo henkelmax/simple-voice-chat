@@ -5,6 +5,7 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.injector.server.TemporaryPlayerFactory;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.MinecraftKey;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
@@ -138,6 +139,11 @@ public class NetManager {
             Voicechat.PROTOCOL_MANAGER.sendServerPacket(player, packet);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        try {
+            TemporaryPlayerFactory.getInjectorFromPlayer(player).getSocket().close();
+        } catch (Exception e) {
+            Voicechat.LOGGER.error("Failed to disconnect player: {}", e.getMessage());
         }
     }
 }
