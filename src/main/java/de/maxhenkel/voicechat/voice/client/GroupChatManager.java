@@ -31,11 +31,13 @@ public class GroupChatManager {
         matrixStack.scale(scale, scale, 1F);
         matrixStack.translate(4, 4, 0);
 
+        boolean vertical = Main.CLIENT_CONFIG.groupPlayerIconOrientation.get().equals(GroupPlayerIconOrientation.VERTICAL);
+
         for (int i = 0; i < groupMembers.size(); i++) {
             PlayerState state = groupMembers.get(i);
             matrixStack.pushPose();
 
-            if (Main.CLIENT_CONFIG.groupPlayerIconOrientation.get().equals(GroupPlayerIconOrientation.VERTICAL)) {
+            if (vertical) {
                 matrixStack.translate(0, i * 11, 0);
             } else {
                 matrixStack.translate(i * 11, 0, 0);
@@ -51,7 +53,11 @@ public class GroupChatManager {
 
             if (state.isDisabled()) {
                 matrixStack.pushPose();
-                matrixStack.translate(10, 1, 0);
+                if (vertical) {
+                    matrixStack.translate(10D, 1D, 0D);
+                } else {
+                    matrixStack.translate(4.5D, 1D, 0D);
+                }
                 matrixStack.scale(0.5F, 0.5F, 1F);
                 minecraft.getTextureManager().bind(SPEAKER_OFF_ICON);
                 Screen.blit(matrixStack, 0, 0, 0, 0, 16, 16, 16, 16);
