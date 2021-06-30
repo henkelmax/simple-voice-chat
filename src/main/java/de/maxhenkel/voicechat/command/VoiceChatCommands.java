@@ -65,7 +65,7 @@ public class VoiceChatCommands implements CommandExecutor {
         }
 
         try {
-            commandSender.sendMessage("Client not connected to voice chat");
+            commandSender.sendMessage("Sending packet...");
             long timestamp = System.currentTimeMillis();
             Voicechat.SERVER.getServer().getPingManager().sendPing(clientConnection, 5000, new PingManager.PingListener() {
                 @Override
