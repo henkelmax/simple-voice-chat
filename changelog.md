@@ -1,1 +1,1 @@
-- Fixed player icons not working
+- Added bind address fallback
