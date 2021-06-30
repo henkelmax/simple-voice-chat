@@ -53,7 +53,15 @@ public class Server extends Thread {
                 e.printStackTrace();
             }
             try {
-                socket = new DatagramSocket(port, address);
+                try {
+                    socket = new DatagramSocket(port, address);
+                } catch (BindException e) {
+                    if (address == null || addr.equals("0.0.0.0")) {
+                        throw e;
+                    }
+                    Voicechat.LOGGER.fatal("Failed to bind to address '" + addr + "', binding to '0.0.0.0' instead");
+                    socket = new DatagramSocket(port);
+                }
                 socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
             } catch (BindException e) {
                 Main.LOGGER.error("Failed to bind to address '" + addr + "'");

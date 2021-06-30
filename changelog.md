@@ -1,1 +1,1 @@
-- Updated russian translation
+- Added bind address fallback
