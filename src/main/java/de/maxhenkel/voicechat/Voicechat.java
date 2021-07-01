@@ -14,6 +14,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -72,9 +73,7 @@ public class Voicechat implements ModInitializer {
 
             if (clientCompatibilityVersion != Voicechat.COMPATIBILITY_VERSION) {
                 Voicechat.LOGGER.warn("Client {} has incompatible voice chat version (server={}, client={})", handler.connection.getRemoteAddress(), Voicechat.COMPATIBILITY_VERSION, clientCompatibilityVersion);
-                handler.disconnect(new TranslatableComponent("message.voicechat.incompatible_version",
-                        new TextComponent(getModVersion()).withStyle(ChatFormatting.BOLD),
-                        new TextComponent(getModName()).withStyle(ChatFormatting.BOLD)));
+                handler.disconnect(getIncompatibleMessage(clientCompatibilityVersion));
             }
         });
 
@@ -83,7 +82,21 @@ public class Voicechat implements ModInitializer {
         CommandRegistrationCallback.EVENT.register(VoicechatCommands::register);
     }
 
-    public String getModVersion() {
+    public static Component getIncompatibleMessage(int clientCompatibilityVersion) {
+        if (clientCompatibilityVersion <= 6) {
+            return new TextComponent("Your voice chat version is not compatible with the servers version.\nPlease install version ")
+                    .append(new TextComponent(getModVersion()).withStyle(ChatFormatting.BOLD))
+                    .append(" of ")
+                    .append(new TextComponent(getModName()).withStyle(ChatFormatting.BOLD))
+                    .append(".");
+        } else {
+            return new TranslatableComponent("message.voicechat.incompatible_version",
+                    new TextComponent(getModVersion()).withStyle(ChatFormatting.BOLD),
+                    new TextComponent(getModName()).withStyle(ChatFormatting.BOLD));
+        }
+    }
+
+    public static String getModVersion() {
         ModContainer modContainer = FabricLoader.getInstance().getModContainer(MODID).orElse(null);
         if (modContainer == null) {
             return "N/A";
@@ -91,7 +104,7 @@ public class Voicechat implements ModInitializer {
         return modContainer.getMetadata().getVersion().getFriendlyString();
     }
 
-    public String getModName() {
+    public static String getModName() {
         ModContainer modContainer = FabricLoader.getInstance().getModContainer(MODID).orElse(null);
         if (modContainer == null) {
             return MODID;

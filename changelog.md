@@ -1,1 +1,1 @@
-- Fixed horizontal group layout
+- Updated protocol for better compatibility checks
