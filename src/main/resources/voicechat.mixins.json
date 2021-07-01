@@ -12,7 +12,8 @@
     "MinecraftMixin",
     "KeyboardMixin",
     "MouseMixin",
-    "PackRepositoryMixin"
+    "PackRepositoryMixin",
+    "ClientPacketListenerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

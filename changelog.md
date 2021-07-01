@@ -1,1 +1,1 @@
-- Updated to 1.17.1-rc1
+- Updated protocol for better compatibility checks

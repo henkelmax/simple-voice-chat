@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.UUID;
 
-public class InitPacket implements Packet<InitPacket> {
+public class SecretPacket implements Packet<SecretPacket> {
 
     public static final ResourceLocation SECRET = new ResourceLocation(Voicechat.MODID, "secret");
 
@@ -22,11 +22,11 @@ public class InitPacket implements Packet<InitPacket> {
     private String voiceHost;
 
 
-    public InitPacket() {
+    public SecretPacket() {
 
     }
 
-    public InitPacket(UUID secret, int serverPort, ServerConfig.Codec codec, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive, boolean groupsEnabled, String voiceHost) {
+    public SecretPacket(UUID secret, int serverPort, ServerConfig.Codec codec, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive, boolean groupsEnabled, String voiceHost) {
         this.secret = secret;
         this.serverPort = serverPort;
         this.codec = codec;
@@ -80,7 +80,7 @@ public class InitPacket implements Packet<InitPacket> {
     }
 
     @Override
-    public InitPacket fromBytes(FriendlyByteBuf buf) {
+    public SecretPacket fromBytes(FriendlyByteBuf buf) {
         secret = buf.readUUID();
         serverPort = buf.readInt();
         codec = ServerConfig.Codec.values()[buf.readByte()];
