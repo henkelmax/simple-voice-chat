@@ -3,12 +3,11 @@ package de.maxhenkel.voicechat.voice.server;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.config.ServerConfig;
-import de.maxhenkel.voicechat.net.InitPacket;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.net.SecretPacket;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.UUID;
@@ -20,11 +19,6 @@ public class ServerVoiceEvents implements Listener {
     public ServerVoiceEvents(org.bukkit.Server mcServer) {
         server = new Server(Voicechat.SERVER_CONFIG.voiceChatPort.get(), mcServer);
         server.start();
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        initializePlayerConnection(event.getPlayer());
     }
 
     public void initializePlayerConnection(Player player) {
@@ -40,7 +34,7 @@ public class ServerVoiceEvents implements Listener {
 
         boolean hasGroupPermission = player.hasPermission(VoiceChatCommands.GROUPS_PERMISSION);
 
-        NetManager.sendToClient(player, new InitPacket(secret, Voicechat.SERVER_CONFIG.voiceChatPort.get(), (ServerConfig.Codec) Voicechat.SERVER_CONFIG.voiceChatCodec.get(), Voicechat.SERVER_CONFIG.voiceChatMtuSize.get(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), Voicechat.SERVER_CONFIG.voiceChatFadeDistance.get(), Voicechat.SERVER_CONFIG.keepAlive.get(), Voicechat.SERVER_CONFIG.groupsEnabled.get() && hasGroupPermission, Voicechat.SERVER_CONFIG.voiceHost.get()));
+        NetManager.sendToClient(player, new SecretPacket(secret, Voicechat.SERVER_CONFIG.voiceChatPort.get(), (ServerConfig.Codec) Voicechat.SERVER_CONFIG.voiceChatCodec.get(), Voicechat.SERVER_CONFIG.voiceChatMtuSize.get(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), Voicechat.SERVER_CONFIG.voiceChatFadeDistance.get(), Voicechat.SERVER_CONFIG.keepAlive.get(), Voicechat.SERVER_CONFIG.groupsEnabled.get() && hasGroupPermission, Voicechat.SERVER_CONFIG.voiceHost.get()));
         Voicechat.LOGGER.info("Sent secret to " + player.getName());
     }
 
