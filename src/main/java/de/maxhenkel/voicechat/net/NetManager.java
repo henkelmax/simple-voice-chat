@@ -68,22 +68,23 @@ public class NetManager {
 
         if (clientCompatibilityVersion != Voicechat.COMPATIBILITY_VERSION) {
             Voicechat.LOGGER.warn("Client {} has incompatible voice chat version (server={}, client={})", player.getName(), Voicechat.COMPATIBILITY_VERSION, clientCompatibilityVersion); //TODO check if player name is available at that point
-            if (clientCompatibilityVersion <= 6) {
-                // Send a literal string, as we don't know if the translations exist on these versions
-                disconnect(player,
-                        Component.text("Your voice chat version is not compatible with the servers version.\nPlease install version ")
-                                .append(Component.text(Voicechat.INSTANCE.getDescription().getVersion()).toBuilder().decorate(TextDecoration.BOLD).build())
-                                .append(Component.text(" of "))
-                                .append(Component.text("Simple Voice Chat").toBuilder().decorate(TextDecoration.BOLD).build())
-                                .append(Component.text("."))
-                );
-            } else {
-                // This translation key is only available for compatibility version 7+
-                disconnect(player, Component.translatable("message.voicechat.incompatible_version",
-                        Component.text(Voicechat.INSTANCE.getDescription().getVersion()).toBuilder().decorate(TextDecoration.BOLD).build(),
-                        Component.text("Simple Voice Chat").toBuilder().decorate(TextDecoration.BOLD).build()
-                ));
-            }
+            disconnect(player, getIncompatibleMessage(clientCompatibilityVersion));
+        }
+    }
+
+    public static Component getIncompatibleMessage(int clientCompatibilityVersion) {
+        if (clientCompatibilityVersion <= 6) {
+            // Send a literal string, as we don't know if the translations exist on these versions
+            return Component.text("Your voice chat version is not compatible with the servers version.\nPlease install version ")
+                    .append(Component.text(Voicechat.INSTANCE.getDescription().getVersion()).toBuilder().decorate(TextDecoration.BOLD).build())
+                    .append(Component.text(" of "))
+                    .append(Component.text("Simple Voice Chat").toBuilder().decorate(TextDecoration.BOLD).build())
+                    .append(Component.text("."));
+        } else {
+            // This translation key is only available for compatibility version 7+
+            return Component.translatable("message.voicechat.incompatible_version",
+                    Component.text(Voicechat.INSTANCE.getDescription().getVersion()).toBuilder().decorate(TextDecoration.BOLD).build(),
+                    Component.text("Simple Voice Chat").toBuilder().decorate(TextDecoration.BOLD).build());
         }
     }
 
@@ -98,7 +99,23 @@ public class NetManager {
             packet.fromBytes(payload);
             Voicechat.SERVER.getServer().getPlayerStateManager().onPlayerStatePacket(player, packet);
             event.setCancelled(true);
+        } else if (id.getFullKey().equals(RequestSecretPacket.REQUEST_SECRET.getFullKey())) {
+            ByteBuf buf = (ByteBuf) event.getPacket().getModifier().withType(PacketDataSerializer.class).read(0);
+            FriendlyByteBuf payload = new FriendlyByteBuf(buf);
+            RequestSecretPacket packet = new RequestSecretPacket();
+            packet.fromBytes(payload);
+            onRequestSecretPacket(player, packet);
+            event.setCancelled(true);
         }
+    }
+
+    public static void onRequestSecretPacket(Player player, RequestSecretPacket packet) {
+        if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
+            Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
+            disconnect(player, getIncompatibleMessage(packet.getCompatibilityVersion()));
+            return;
+        }
+        Voicechat.SERVER.initializePlayerConnection(player);
     }
 
     public static PacketContainer createPacket(PacketType type, MinecraftKey id, FriendlyByteBuf buf) {
