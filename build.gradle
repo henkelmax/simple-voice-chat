@@ -74,7 +74,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 }
 
 curseforge {
-    apiKey = System.env.CURSEFORGE_API_KEY != null ? System.env.CURSEFORGE_API_KEY : file('curseforge_api_key.txt').text
+    apiKey = file('curseforge_api_key.txt').exists() ? file('curseforge_api_key.txt').text : ''
     project {
         id = curse_id
         changelogType = 'markdown'

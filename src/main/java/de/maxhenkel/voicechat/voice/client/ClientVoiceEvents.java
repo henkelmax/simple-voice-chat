@@ -13,8 +13,9 @@ import de.maxhenkel.voicechat.gui.CreateGroupScreen;
 import de.maxhenkel.voicechat.gui.GroupScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
-import de.maxhenkel.voicechat.net.InitPacket;
+import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SetGroupPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -57,13 +58,14 @@ public class ClientVoiceEvents {
         pttKeyHandler = new PTTKeyHandler();
         minecraft = Minecraft.getInstance();
 
+        ClientWorldEvents.JOIN_SERVER.register(this::onJoinServer);
         ClientWorldEvents.DISCONNECT.register(this::onDisconnect);
 
         HudRenderCallback.EVENT.register(this::renderHUD);
         ClientTickEvents.END_CLIENT_TICK.register(this::onClientTickEnd);
         RenderEvents.RENDER_NAMEPLATE.register(this::onRenderName);
 
-        NetManager.registerClientReceiver(InitPacket.class, (client, handler, responseSender, packet) -> {
+        NetManager.registerClientReceiver(SecretPacket.class, (client, handler, responseSender, packet) -> {
             authenticate(handler.getLocalGameProfile().getId(), packet);
         });
 
@@ -73,7 +75,7 @@ public class ClientVoiceEvents {
         });
     }
 
-    public void authenticate(UUID playerUUID, InitPacket initPacket) {
+    public void authenticate(UUID playerUUID, SecretPacket initPacket) {
         Voicechat.LOGGER.info("Received secret");
         if (client != null) {
             onDisconnect();
@@ -93,6 +95,10 @@ public class ClientVoiceEvents {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void onJoinServer() {
+        NetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
     }
 
     public void onDisconnect() {
