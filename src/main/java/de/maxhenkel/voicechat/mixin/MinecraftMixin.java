@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MinecraftMixin {
 
     @Shadow
-    private ClientLevel level;
+    public ClientLevel level;
 
     @Inject(at = @At("HEAD"), method = "clearLevel(Lnet/minecraft/client/gui/screens/Screen;)V")
     private void disconnect(Screen screen, CallbackInfo info) {

@@ -3,8 +3,9 @@ package de.maxhenkel.voicechat.voice.server;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.events.PlayerEvents;
-import de.maxhenkel.voicechat.net.InitPacket;
+import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -19,8 +20,16 @@ public class ServerVoiceEvents {
 
     public ServerVoiceEvents() {
         ServerLifecycleEvents.SERVER_STARTED.register(this::serverStarting);
-        PlayerEvents.PLAYER_LOGGED_IN.register(this::initializePlayerConnection);
         PlayerEvents.PLAYER_LOGGED_OUT.register(this::playerLoggedOut);
+
+        NetManager.registerServerReceiver(RequestSecretPacket.class, (server, player, handler, responseSender, packet) -> {
+            if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
+                Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName().getString(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
+                handler.disconnect(Voicechat.getIncompatibleMessage(packet.getCompatibilityVersion()));
+                return;
+            }
+            initializePlayerConnection(player);
+        });
     }
 
     public void serverStarting(MinecraftServer mcServer) {
@@ -44,7 +53,7 @@ public class ServerVoiceEvents {
         }
 
         UUID secret = server.getSecret(player.getUUID());
-        NetManager.sendToClient(player, new InitPacket(secret, Voicechat.SERVER_CONFIG.voiceChatPort.get(), (ServerConfig.Codec) Voicechat.SERVER_CONFIG.voiceChatCodec.get(), Voicechat.SERVER_CONFIG.voiceChatMtuSize.get(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), Voicechat.SERVER_CONFIG.voiceChatFadeDistance.get(), Voicechat.SERVER_CONFIG.keepAlive.get(), Voicechat.SERVER_CONFIG.groupsEnabled.get(), Voicechat.SERVER_CONFIG.voiceHost.get()));
+        NetManager.sendToClient(player, new SecretPacket(secret, Voicechat.SERVER_CONFIG.voiceChatPort.get(), (ServerConfig.Codec) Voicechat.SERVER_CONFIG.voiceChatCodec.get(), Voicechat.SERVER_CONFIG.voiceChatMtuSize.get(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), Voicechat.SERVER_CONFIG.voiceChatFadeDistance.get(), Voicechat.SERVER_CONFIG.keepAlive.get(), Voicechat.SERVER_CONFIG.groupsEnabled.get(), Voicechat.SERVER_CONFIG.voiceHost.get()));
         Voicechat.LOGGER.info("Sent secret to " + player.getDisplayName().getString());
     }
 
