@@ -1,1 +1,1 @@
-- Updated protocol for better compatibility checks
+- Added german translation
