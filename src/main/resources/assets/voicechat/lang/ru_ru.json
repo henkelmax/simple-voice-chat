@@ -45,8 +45,6 @@
   "message.voicechat.packet_timed_out": "Время ожидания запроса истекло",
   "message.voicechat.icons_hidden": "Иконки голосового чата скрыты",
   "message.voicechat.icons_visible": "Иконки голосового чата видимы",
-  "message.voicechat.incompatible_version": "Твоя версия Voice chat несовместима с версией сервера.\nПожалуйста, установи версию %s от %s",
-  "message.voicechat.incompatible": "Твоя версия Voice chat несовместима с версией сервера.",
   "message.voicechat.group_members": "Участники группы",
   "message.voicechat.join_create_group": "Присоединиться или Создать группу",
   "message.voicechat.group_name": "Название группы",

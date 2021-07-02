@@ -1,1 +1,1 @@
-- Fixed horizontal group layout
+- Added german translation
