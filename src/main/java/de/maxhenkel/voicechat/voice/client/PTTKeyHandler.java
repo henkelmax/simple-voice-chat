@@ -17,7 +17,7 @@ public class PTTKeyHandler {
     @SubscribeEvent
     public void onKey(InputEvent.KeyInputEvent event) {
         InputMappings.Input boundKey = Main.KEY_PTT.getKey();
-        if (boundKey.getType().equals(InputMappings.Type.MOUSE)) {
+        if (boundKey.getValue() == -1 || boundKey.getType().equals(InputMappings.Type.MOUSE)) {
             return;
         }
         pttKeyDown = InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), boundKey.getValue());
@@ -26,7 +26,7 @@ public class PTTKeyHandler {
     @SubscribeEvent
     public void onMouse(InputEvent.RawMouseEvent event) {
         InputMappings.Input boundKey = Main.KEY_PTT.getKey();
-        if (!boundKey.getType().equals(InputMappings.Type.MOUSE)) {
+        if (boundKey.getValue() == -1 || !boundKey.getType().equals(InputMappings.Type.MOUSE)) {
             return;
         }
         if (boundKey.getValue() != event.getButton()) {

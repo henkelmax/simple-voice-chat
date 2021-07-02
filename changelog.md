@@ -1,1 +1,1 @@
-- Added german translation
+- Fixed unbinding PTT key error
