@@ -17,7 +17,7 @@ public class PTTKeyHandler implements KeyEvents.KeyboardEvent, KeyEvents.MouseEv
     @Override
     public void onKeyboardEvent(long window, int key, int scancode) {
         InputConstants.Key boundKey = KeyBindingHelper.getBoundKeyOf(VoicechatClient.KEY_PTT);
-        if (boundKey.getType().equals(InputConstants.Type.MOUSE)) {
+        if (boundKey.getValue() == -1 || boundKey.getType().equals(InputConstants.Type.MOUSE)) {
             return;
         }
         pttKeyDown = InputConstants.isKeyDown(window, boundKey.getValue());
@@ -26,7 +26,7 @@ public class PTTKeyHandler implements KeyEvents.KeyboardEvent, KeyEvents.MouseEv
     @Override
     public void onMouseEvent(long window, int button, int action, int mods) {
         InputConstants.Key boundKey = KeyBindingHelper.getBoundKeyOf(VoicechatClient.KEY_PTT);
-        if (!boundKey.getType().equals(InputConstants.Type.MOUSE)) {
+        if (boundKey.getValue() == -1 || !boundKey.getType().equals(InputConstants.Type.MOUSE)) {
             return;
         }
         if (boundKey.getValue() != button) {
