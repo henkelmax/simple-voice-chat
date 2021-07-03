@@ -200,20 +200,7 @@ public class DebugReport {
         addLine("Java");
         addLine("");
         addLine("Version: " + System.getProperty("java.version"));
-
-        try {
-            ProcessHandle current = ProcessHandle.current();
-            current.info().commandLine().ifPresent(s -> {
-                addLine("Command line: " + s);
-            });
-            current.parent().ifPresent(processHandle -> {
-                addLine("Parent process: " + processHandle.info().commandLine().orElse("UNKNOWN"));
-            });
-
-            addLine("");
-        } catch (Exception e) {
-            addLine("Process: ERROR (" + e.getMessage() + ")");
-        }
+        addLine("");
     }
 
     private void appendServer() {
