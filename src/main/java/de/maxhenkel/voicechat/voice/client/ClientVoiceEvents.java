@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import de.maxhenkel.voicechat.Main;
+import de.maxhenkel.voicechat.debug.DebugReport;
 import de.maxhenkel.voicechat.event.VoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.event.VoiceChatDisconnectedEvent;
 import de.maxhenkel.voicechat.gui.CreateGroupScreen;
@@ -16,6 +17,7 @@ import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -27,6 +29,7 @@ import net.minecraftforge.client.event.RenderNameplateEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
@@ -169,7 +172,7 @@ public class ClientVoiceEvents {
     @SubscribeEvent
     public void onInput(InputEvent.KeyInputEvent event) {
         if (Main.KEY_VOICE_CHAT.consumeClick()) {
-            if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_F3)) {
+            if (InputMappings.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_F3)) {
                 DebugReport.generateReport(minecraft.player);
             } else if (checkConnected()) {
                 minecraft.setScreen(new VoiceChatScreen());

@@ -66,4 +66,8 @@ public class PlayerVolumeConfig {
         }).start();
         return value;
     }
+
+    public Properties getProperties() {
+        return properties;
+    }
 }
