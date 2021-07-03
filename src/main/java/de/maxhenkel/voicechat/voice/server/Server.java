@@ -176,7 +176,7 @@ public class Server extends Thread {
                         }
                         if (!player.hasPermission(VoiceChatCommands.SPEAK_PERMISSION)) {
                             CooldownTimer.run("muted-" + playerUUID, () -> {
-                                player.sendMessage("You do not have permission to speak"); //TODO translate
+                                player.sendMessage(Voicechat.translate("no_speak_permission"));
                             });
                             continue;
                         }

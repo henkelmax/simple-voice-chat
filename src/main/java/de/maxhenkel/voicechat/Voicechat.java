@@ -11,10 +11,14 @@ import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,6 +34,7 @@ public final class Voicechat extends JavaPlugin {
     public static MinecraftKey INIT = new MinecraftKey(MODID, "init");
 
     public static ServerConfig SERVER_CONFIG;
+    private static FileConfiguration TRANSLATIONS;
     public static ProtocolManager PROTOCOL_MANAGER;
 
     public static ServerVoiceEvents SERVER;
@@ -58,6 +63,21 @@ public final class Voicechat extends JavaPlugin {
             LOGGER.error("Failed to read compatibility version");
         }
 
+        try {
+            LOGGER.info("Loading translations");
+            File file = new File(getDataFolder(), "translations.yml");
+            if (!file.exists()) {
+                TRANSLATIONS = YamlConfiguration.loadConfiguration(new InputStreamReader(getResource("translations.yml")));
+                saveResource("translations.yml", false);
+            }
+            TRANSLATIONS = YamlConfiguration.loadConfiguration(file);
+        } catch (Exception e) {
+            LOGGER.fatal("Failed to load translations");
+            e.printStackTrace();
+            getServer().shutdown();
+            return;
+        }
+
         ConfigBuilder.create(getDataFolder().toPath().resolve("voicechat-server.properties"), builder -> SERVER_CONFIG = new ServerConfig(builder));
         PROTOCOL_MANAGER = ProtocolLibrary.getProtocolManager();
 
@@ -75,6 +95,10 @@ public final class Voicechat extends JavaPlugin {
             NetManager.onDisable();
             SERVER.getServer().close();
         }
+    }
+
+    public static String translate(String key) {
+        return (String) TRANSLATIONS.get(key);
     }
 
     private boolean checkProtocolLib(int minMajor, int minMinor, int minPatch) {
