@@ -168,8 +168,12 @@ public class ClientVoiceEvents {
 
     @SubscribeEvent
     public void onInput(InputEvent.KeyInputEvent event) {
-        if (Main.KEY_VOICE_CHAT.consumeClick() && checkConnected()) {
-            minecraft.setScreen(new VoiceChatScreen());
+        if (Main.KEY_VOICE_CHAT.consumeClick()) {
+            if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_F3)) {
+                DebugReport.generateReport(minecraft.player);
+            } else if (checkConnected()) {
+                minecraft.setScreen(new VoiceChatScreen());
+            }
         }
 
         if (Main.KEY_GROUP.consumeClick() && checkConnected()) {

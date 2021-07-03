@@ -1,1 +1,1 @@
-- Fixed unbinding PTT key error
+- Added client debug report
