@@ -53,34 +53,34 @@ public class VoiceChatCommands implements CommandExecutor {
         Player player = commandSender.getServer().getPlayer(args[1]);
 
         if (player == null) {
-            commandSender.sendMessage("Player not found");
+            commandSender.sendMessage(Voicechat.translate("player_not_found"));
             return true;
         }
 
         ClientConnection clientConnection = Voicechat.SERVER.getServer().getConnections().get(player.getUniqueId());
 
         if (clientConnection == null) {
-            commandSender.sendMessage("Client not connected to voice chat");
+            commandSender.sendMessage(Voicechat.translate("client_not_connected"));
             return true;
         }
 
         try {
-            commandSender.sendMessage("Sending packet...");
+            commandSender.sendMessage(Voicechat.translate("sending_packet"));
             long timestamp = System.currentTimeMillis();
             Voicechat.SERVER.getServer().getPingManager().sendPing(clientConnection, 5000, new PingManager.PingListener() {
                 @Override
                 public void onPong(PingPacket packet) {
-                    commandSender.sendMessage("Received packet in " + (System.currentTimeMillis() - timestamp) + "ms");
+                    commandSender.sendMessage(String.format(Voicechat.translate("received_packet"), (System.currentTimeMillis() - timestamp)));
                 }
 
                 @Override
                 public void onTimeout() {
-                    commandSender.sendMessage("Request timed out");
+                    commandSender.sendMessage(Voicechat.translate("request_timed_out"));
                 }
             });
-            commandSender.sendMessage("Packet sent. Waiting for response...");
+            commandSender.sendMessage(Voicechat.translate("packet_sent"));
         } catch (Exception e) {
-            commandSender.sendMessage("Failed to send packet: " + e.getMessage());
+            commandSender.sendMessage(String.format(Voicechat.translate("failed_to_send_packet"), e.getMessage()));
             e.printStackTrace();
         }
         return true;
@@ -100,7 +100,7 @@ public class VoiceChatCommands implements CommandExecutor {
         Player otherPlayer = commandSender.getServer().getPlayer(args[1]);
 
         if (otherPlayer == null) {
-            commandSender.sendMessage("Player not found");
+            commandSender.sendMessage(Voicechat.translate("player_not_found"));
             return true;
         }
 
@@ -108,11 +108,11 @@ public class VoiceChatCommands implements CommandExecutor {
         PlayerState otherState = Voicechat.SERVER.getServer().getPlayerStateManager().getState(otherPlayer.getUniqueId());
 
         if (otherState == null) {
-            commandSender.sendMessage("Player not connected to voice chat");
+            commandSender.sendMessage(Voicechat.translate("player_not_connected"));
             return true;
         }
         if (state == null) {
-            commandSender.sendMessage("You are not connected to the voice chat");
+            commandSender.sendMessage(Voicechat.translate("not_connected"));
         }
         if (!state.hasGroup()) {
             NetManager.sendMessage(player, Component.translatable("message.voicechat.not_in_group"));
@@ -148,7 +148,7 @@ public class VoiceChatCommands implements CommandExecutor {
         PlayerState state = Voicechat.SERVER.getServer().getPlayerStateManager().getState(player.getUniqueId());
 
         if (state == null) {
-            commandSender.sendMessage("You are not connected to the voice chat");
+            commandSender.sendMessage(Voicechat.translate("not_connected"));
             return true;
         }
 

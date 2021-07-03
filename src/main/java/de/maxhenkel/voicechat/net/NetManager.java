@@ -75,11 +75,7 @@ public class NetManager {
     public static Component getIncompatibleMessage(int clientCompatibilityVersion) {
         if (clientCompatibilityVersion <= 6) {
             // Send a literal string, as we don't know if the translations exist on these versions
-            return Component.text("Your voice chat version is not compatible with the servers version.\nPlease install version ")
-                    .append(Component.text(Voicechat.INSTANCE.getDescription().getVersion()).toBuilder().decorate(TextDecoration.BOLD).build())
-                    .append(Component.text(" of "))
-                    .append(Component.text("Simple Voice Chat").toBuilder().decorate(TextDecoration.BOLD).build())
-                    .append(Component.text("."));
+            return Component.text(String.format(Voicechat.translate("not_compatible"), Voicechat.INSTANCE.getDescription().getVersion(), "Simple Voice Chat"));
         } else {
             // This translation key is only available for compatibility version 7+
             return Component.translatable("message.voicechat.incompatible_version",
