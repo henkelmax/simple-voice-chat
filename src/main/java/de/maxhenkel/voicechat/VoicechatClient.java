@@ -66,7 +66,7 @@ public class VoicechatClient implements ClientModInitializer {
         KEY_HIDE_ICONS = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.hide_icons", GLFW.GLFW_KEY_H, "key.categories.voicechat"));
         KEY_VOICE_CHAT = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.voice_chat", GLFW.GLFW_KEY_V, "key.categories.voicechat"));
         KEY_VOICE_CHAT_SETTINGS = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.voice_chat_settings", InputConstants.UNKNOWN.getValue(), "key.categories.voicechat"));
-        KEY_GROUP = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.voice_chat_group", InputConstants.UNKNOWN.getValue(), "key.categories.voicechat"));
+        KEY_GROUP = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.voice_chat_group", GLFW.GLFW_KEY_G, "key.categories.voicechat"));
         KEY_TOGGLE_RECORDING = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.voice_chat_toggle_recording", InputConstants.UNKNOWN.getValue(), "key.categories.voicechat"));
 
         CLIENT = new ClientVoiceEvents();
