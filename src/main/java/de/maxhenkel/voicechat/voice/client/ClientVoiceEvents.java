@@ -1,10 +1,12 @@
 package de.maxhenkel.voicechat.voice.client;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.debug.DebugReport;
 import de.maxhenkel.voicechat.events.ClientVoiceChatEvents;
 import de.maxhenkel.voicechat.events.ClientWorldEvents;
 import de.maxhenkel.voicechat.events.IClientConnection;
@@ -13,9 +15,9 @@ import de.maxhenkel.voicechat.gui.CreateGroupScreen;
 import de.maxhenkel.voicechat.gui.GroupScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
-import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
+import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.net.SetGroupPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -32,6 +34,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
@@ -167,8 +170,12 @@ public class ClientVoiceEvents {
     }
 
     public void onClientTickEnd(Minecraft minecraft) {
-        if (VoicechatClient.KEY_VOICE_CHAT.consumeClick() && checkConnected()) {
-            minecraft.setScreen(new VoiceChatScreen());
+        if (VoicechatClient.KEY_VOICE_CHAT.consumeClick()) {
+            if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_F3)) {
+                DebugReport.generateReport(minecraft.player);
+            } else if (checkConnected()) {
+                minecraft.setScreen(new VoiceChatScreen());
+            }
         }
 
         if (VoicechatClient.KEY_GROUP.consumeClick() && checkConnected()) {

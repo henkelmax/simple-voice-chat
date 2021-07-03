@@ -109,6 +109,10 @@ public class ConfigBuilder {
             config.save();
         }
 
+        public Config getConfig() {
+            return config;
+        }
+
         @Nullable
         public abstract T deserialize(String str);
 
