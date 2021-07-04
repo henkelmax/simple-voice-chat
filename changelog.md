@@ -1,1 +1,1 @@
-- Added client debug report
+- Added swedish translation
