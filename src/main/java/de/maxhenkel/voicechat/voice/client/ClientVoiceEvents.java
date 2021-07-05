@@ -74,7 +74,7 @@ public class ClientVoiceEvents {
         });
 
         NetManager.registerClientReceiver(SetGroupPacket.class, (client, handler, responseSender, packet) -> {
-            playerStateManager.setGroup(packet.getGroup());
+            playerStateManager.setGroup(packet.getGroup().isEmpty() ? null : packet.getGroup());
             minecraft.setScreen(null);
         });
     }

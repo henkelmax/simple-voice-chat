@@ -1,8 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 
 import javax.annotation.Nullable;
@@ -51,10 +49,16 @@ public class PlayerState {
     }
 
     /**
+     * Empty strings will be treated as null
+     *
      * @param group the group name (Max 16 characters)
      */
     public void setGroup(@Nullable String group) {
-        this.group = group;
+        if (group == null || group.isEmpty()) {
+            this.group = null;
+        } else {
+            this.group = group;
+        }
     }
 
     public boolean hasGroup() {
