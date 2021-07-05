@@ -124,6 +124,30 @@ public class VoicechatCommands {
             return 1;
         })));
 
+        literalBuilder.then(Commands.literal("leave").executes((commandSource) -> {
+            if (!Main.SERVER_CONFIG.groupsEnabled.get()) {
+                commandSource.getSource().sendFailure(new TranslationTextComponent("message.voicechat.groups_disabled"));
+                return 1;
+            }
+
+            Server server = Main.SERVER.getServer();
+            if (server == null) {
+                commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.voice_chat_unavailable"), false);
+                return 1;
+            }
+            ServerPlayerEntity source = commandSource.getSource().getPlayerOrException();
+
+            PlayerState state = server.getPlayerStateManager().getState(source.getUUID());
+            if (state == null || !state.hasGroup()) {
+                commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.not_in_group"), false);
+                return 1;
+            }
+
+            NetUtils.sendTo(Main.SIMPLE_CHANNEL, source, new SetGroupMessage(""));
+            commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.leave_successful"), false);
+            return 1;
+        }));
+
         dispatcher.register(literalBuilder);
     }
 

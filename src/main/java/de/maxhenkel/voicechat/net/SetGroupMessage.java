@@ -36,7 +36,7 @@ public class SetGroupMessage implements Message<SetGroupMessage> {
 
     @OnlyIn(Dist.CLIENT)
     private void exec() {
-        Main.CLIENT_VOICE_EVENTS.getPlayerStateManager().setGroup(group);
+        Main.CLIENT_VOICE_EVENTS.getPlayerStateManager().setGroup(group.isEmpty() ? null : group);
         Minecraft.getInstance().setScreen(null);
     }
 

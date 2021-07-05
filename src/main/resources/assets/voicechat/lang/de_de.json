@@ -61,6 +61,7 @@
   "message.voicechat.accept_invite": "AKZEPTIEREN",
   "message.voicechat.accept_invite.hover": "Klicken um die Einladung anzunehmen",
   "message.voicechat.join_successful": "Erfolgreich %s beigetreten",
+  "message.voicechat.leave_successful": "Gruppe erfolgreich verlassen",
   "message.voicechat.groups_disabled": "Gruppen sind auf diesem Server deaktiviert",
   "message.voicechat.invite_successful": "Erfolgrech %s eingeladen",
   "message.voicechat.toggle_recording": "Aufzeichnung umschalten",
