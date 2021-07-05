@@ -1,1 +1,1 @@
-- Added leave group command
+- Fixed debug report

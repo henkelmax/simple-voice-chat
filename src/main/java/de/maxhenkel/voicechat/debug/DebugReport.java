@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.debug;
 
+import com.electronwill.nightconfig.core.UnmodifiableConfig;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
 import de.maxhenkel.voicechat.voice.client.Client;
@@ -13,6 +14,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.forgespi.language.IModInfo;
@@ -21,12 +23,14 @@ import org.apache.commons.io.FileUtils;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.SocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class DebugReport {
@@ -88,8 +92,8 @@ public class DebugReport {
         divider();
         appendServer();
         divider();
-        // appendConfig();
-        // divider();
+        appendConfig();
+        divider();
         appendPlayerVolumes();
     }
 
@@ -222,15 +226,21 @@ public class DebugReport {
         }
     }
 
-    // TODO add config values
-    /*private void appendConfig() {
+    private void appendConfig() {
         addLine("Client Configuration");
         addLine("");
         for (UnmodifiableConfig.Entry o : Main.CLIENT_CONFIG.getConfigSpec().entrySet()) {
-            addLine(o.getKey() + ": " + o.getValue());
+
+            try {
+                ForgeConfigSpec.ValueSpec value = o.getValue();
+                Field supplier = value.getClass().getDeclaredField("supplier");
+                supplier.setAccessible(true);
+                addLine(o.getKey() + ": " + ((Supplier<?>) supplier.get(value)).get());
+            } catch (Exception e) {
+            }
         }
         addLine("");
-    }*/
+    }
 
     private void appendPlayerVolumes() {
         addLine("Player volumes");
