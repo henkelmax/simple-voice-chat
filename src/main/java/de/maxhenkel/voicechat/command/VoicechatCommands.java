@@ -120,6 +120,30 @@ public class VoicechatCommands {
             return 1;
         })));
 
+        literalBuilder.then(Commands.literal("leave").executes((commandSource) -> {
+            if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
+                commandSource.getSource().sendFailure(new TranslatableComponent("message.voicechat.groups_disabled"));
+                return 1;
+            }
+
+            Server server = Voicechat.SERVER.getServer();
+            if (server == null) {
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), false);
+                return 1;
+            }
+            ServerPlayer source = commandSource.getSource().getPlayerOrException();
+
+            PlayerState state = server.getPlayerStateManager().getState(source.getUUID());
+            if (state == null || !state.hasGroup()) {
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.not_in_group"), false);
+                return 1;
+            }
+
+            NetManager.sendToClient(source, new SetGroupPacket(""));
+            commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.leave_successful"), false);
+            return 1;
+        }));
+
         dispatcher.register(literalBuilder);
     }
 
