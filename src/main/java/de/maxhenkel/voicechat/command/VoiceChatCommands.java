@@ -40,6 +40,10 @@ public class VoiceChatCommands implements CommandExecutor {
                 if (commandSender.hasPermission(GROUPS_PERMISSION)) {
                     return joinCommand(commandSender, command, label, args);
                 }
+            } else if (args[0].equalsIgnoreCase("leave")) {
+                if (commandSender.hasPermission(GROUPS_PERMISSION)) {
+                    return leaveCommand(commandSender, command, label, args);
+                }
             }
         }
         return false;
@@ -182,6 +186,34 @@ public class VoiceChatCommands implements CommandExecutor {
 
         NetManager.sendToClient(player, new SetGroupPacket(groupName));
         NetManager.sendMessage(player, Component.translatable("message.voicechat.join_successful", Component.text(groupName).toBuilder().color(NamedTextColor.GREEN).asComponent()));
+        return true;
+    }
+
+    private boolean leaveCommand(CommandSender commandSender, Command command, String label, String[] args) {
+        if (!(commandSender instanceof Player)) {
+            return false;
+        }
+
+        Player player = (Player) commandSender;
+        PlayerState state = Voicechat.SERVER.getServer().getPlayerStateManager().getState(player.getUniqueId());
+
+        if (state == null) {
+            commandSender.sendMessage(Voicechat.translate("not_connected"));
+            return true;
+        }
+
+        if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
+            NetManager.sendMessage(player, Component.translatable("message.voicechat.groups_disabled"));
+            return true;
+        }
+
+        if (!state.hasGroup()) {
+            NetManager.sendMessage(player, Component.translatable("message.voicechat.not_in_group"));
+            return true;
+        }
+
+        NetManager.sendToClient(player, new SetGroupPacket(""));
+        NetManager.sendMessage(player, Component.translatable("message.voicechat.leave_successful"));
         return true;
     }
 }
