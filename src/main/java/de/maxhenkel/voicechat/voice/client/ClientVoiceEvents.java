@@ -172,6 +172,7 @@ public class ClientVoiceEvents {
     public void onClientTickEnd(Minecraft minecraft) {
         if (VoicechatClient.KEY_VOICE_CHAT.consumeClick()) {
             if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_F3)) {
+                minecraft.options.renderDebug = true;
                 DebugReport.generateReport(minecraft.player);
             } else if (checkConnected()) {
                 minecraft.setScreen(new VoiceChatScreen());
