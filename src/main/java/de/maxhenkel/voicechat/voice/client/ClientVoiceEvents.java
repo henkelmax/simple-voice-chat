@@ -101,6 +101,7 @@ public class ClientVoiceEvents {
     }
 
     public void onJoinServer() {
+        Voicechat.LOGGER.info("Sending secret request to the server");
         NetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
     }
 

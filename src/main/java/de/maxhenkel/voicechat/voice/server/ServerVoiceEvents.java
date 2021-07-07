@@ -23,6 +23,7 @@ public class ServerVoiceEvents {
         PlayerEvents.PLAYER_LOGGED_OUT.register(this::playerLoggedOut);
 
         NetManager.registerServerReceiver(RequestSecretPacket.class, (server, player, handler, responseSender, packet) -> {
+            Voicechat.LOGGER.info("Received secret request of {}", player.getDisplayName().getString());
             if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
                 Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName().getString(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
                 handler.disconnect(Voicechat.getIncompatibleMessage(packet.getCompatibilityVersion()));
