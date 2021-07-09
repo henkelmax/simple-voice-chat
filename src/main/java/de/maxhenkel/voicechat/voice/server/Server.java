@@ -6,7 +6,11 @@ import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.net.*;
+import java.security.InvalidKeyException;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -129,7 +133,15 @@ public class Server extends Thread {
                         continue;
                     }
 
-                    NetworkMessage message = NetworkMessage.readPacketServer(msg, Server.this);
+                    NetworkMessage message;
+                    try {
+                        message = NetworkMessage.readPacketServer(msg, Server.this);
+                    } catch (IndexOutOfBoundsException | BadPaddingException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException e) {
+                        CooldownTimer.run("failed_reading_packet", () -> {
+                            Main.LOGGER.warn("Failed to read packet from {}", msg.getPacket().getSocketAddress());
+                        });
+                        continue;
+                    }
 
                     if (System.currentTimeMillis() - message.getTimestamp() > message.getTTL()) {
                         CooldownTimer.run("ttl", () -> {

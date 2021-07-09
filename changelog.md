@@ -1,1 +1,1 @@
-- Fixed debug report
+- Reduced errors when failing to read packets
