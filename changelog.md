@@ -1,1 +1,1 @@
-- Updated to 1.17.1
+- Reduced errors when failing to read packets
