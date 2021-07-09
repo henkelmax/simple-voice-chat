@@ -1,1 +1,1 @@
-- Added leave group command
+- Reduced errors when failing to read packets
