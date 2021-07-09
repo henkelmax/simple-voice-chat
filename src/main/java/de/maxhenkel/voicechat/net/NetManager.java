@@ -106,6 +106,7 @@ public class NetManager {
     }
 
     public static void onRequestSecretPacket(Player player, RequestSecretPacket packet) {
+        Voicechat.LOGGER.info("Received secret request of {}", player.getName());
         if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
             Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
             disconnect(player, getIncompatibleMessage(packet.getCompatibilityVersion()));

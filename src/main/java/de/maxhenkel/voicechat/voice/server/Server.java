@@ -6,10 +6,14 @@ import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.voice.common.*;
 import org.bukkit.entity.Player;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.net.BindException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.security.InvalidKeyException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -135,7 +139,15 @@ public class Server extends Thread {
                         continue;
                     }
 
-                    NetworkMessage message = NetworkMessage.readPacketServer(msg, Server.this);
+                    NetworkMessage message;
+                    try {
+                        message = NetworkMessage.readPacketServer(msg, Server.this);
+                    } catch (IndexOutOfBoundsException | BadPaddingException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException e) {
+                        CooldownTimer.run("failed_reading_packet", () -> {
+                            Voicechat.LOGGER.warn("Failed to read packet from {}", msg.getPacket().getSocketAddress());
+                        });
+                        continue;
+                    }
 
                     if (System.currentTimeMillis() - message.getTimestamp() > message.getTTL()) {
                         CooldownTimer.run("ttl", () -> {
