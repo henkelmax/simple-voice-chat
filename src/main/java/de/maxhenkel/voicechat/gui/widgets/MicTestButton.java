@@ -160,7 +160,7 @@ public class MicTestButton extends AbstractButton {
         }
 
         public void close() {
-            Voicechat.LOGGER.debug("Closing mic test audio channel");
+            Voicechat.LOGGER.info("Closing mic test audio channel");
             running = false;
             speaker.stop();
             speaker.flush();

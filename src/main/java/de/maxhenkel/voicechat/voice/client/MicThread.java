@@ -33,7 +33,7 @@ public class MicThread extends Thread {
 
     @Override
     public void run() {
-        while (running) {
+        while (running && client.isConnected()) {
             // Checking here for timeouts, because we don't have any other looping thread
             client.checkTimeout();
             if (microphoneLocked) {

@@ -116,14 +116,14 @@ public class Client extends Thread {
     }
 
     public void reloadDataLines() {
-        Voicechat.LOGGER.debug("Reloading data lines");
+        Voicechat.LOGGER.info("Reloading data lines");
         if (micThread != null) {
-            Voicechat.LOGGER.debug("Restarting microphone thread");
+            Voicechat.LOGGER.info("Restarting microphone thread");
             micThread.close();
             micThread = null;
             startMicThread();
         }
-        Voicechat.LOGGER.debug("Clearing audio channels");
+        Voicechat.LOGGER.info("Clearing audio channels");
         audioChannels.forEach((uuid, audioChannel) -> audioChannel.closeAndKill());
         audioChannels.clear();
     }
