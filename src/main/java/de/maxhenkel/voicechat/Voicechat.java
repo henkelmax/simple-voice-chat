@@ -23,8 +23,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
-import java.io.InputStream;
-import java.util.Properties;
 import java.util.regex.Pattern;
 
 public class Voicechat implements ModInitializer {
@@ -43,10 +41,7 @@ public class Voicechat implements ModInitializer {
     @Override
     public void onInitialize() {
         try {
-            InputStream in = getClass().getClassLoader().getResourceAsStream("compatibility.properties");
-            Properties props = new Properties();
-            props.load(in);
-            COMPATIBILITY_VERSION = Integer.parseInt(props.getProperty("compatibility_version"));
+            COMPATIBILITY_VERSION = readCompatibilityVersion();
             LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
         } catch (Exception e) {
             LOGGER.error("Failed to read compatibility version");
@@ -96,7 +91,7 @@ public class Voicechat implements ModInitializer {
         }
     }
 
-    public static String getModVersion() {
+    private static String getModVersion() {
         ModContainer modContainer = FabricLoader.getInstance().getModContainer(MODID).orElse(null);
         if (modContainer == null) {
             return "N/A";
@@ -104,12 +99,20 @@ public class Voicechat implements ModInitializer {
         return modContainer.getMetadata().getVersion().getFriendlyString();
     }
 
-    public static String getModName() {
+    private static String getModName() {
         ModContainer modContainer = FabricLoader.getInstance().getModContainer(MODID).orElse(null);
         if (modContainer == null) {
             return MODID;
         }
         return modContainer.getMetadata().getName();
+    }
+
+    private static int readCompatibilityVersion() {
+        ModContainer modContainer = FabricLoader.getInstance().getModContainer(MODID).orElse(null);
+        if (modContainer == null) {
+            return -1;
+        }
+        return modContainer.getMetadata().getCustomValue(MODID).getAsObject().get("compatibilityVersion").getAsNumber().intValue();
     }
 
 }
