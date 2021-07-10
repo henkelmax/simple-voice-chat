@@ -1,1 +1,1 @@
-- Reduced errors when failing to read packets
+- Moved compatibility version to fabric.mod.json

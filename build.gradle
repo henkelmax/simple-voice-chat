@@ -55,11 +55,8 @@ processResources {
         expand "version": project.version,
                 "minecraft_version": project.minecraft_version,
                 "loader_version": project.loader_version,
-                "fabric_version": project.fabric_version
-    }
-
-    filesMatching("compatibility.properties") {
-        expand "mod_compatibility_version": project.mod_compatibility_version
+                "fabric_version": project.fabric_version,
+                "compatibility_version": project.mod_compatibility_version
     }
 }
 

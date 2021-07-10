@@ -30,5 +30,10 @@
     "fabricloader": ">=${loader_version}",
     "fabric": ">=${fabric_version}",
     "minecraft": "${minecraft_version}"
+  },
+  "custom": {
+    "voicechat": {
+      "compatibilityVersion": ${compatibility_version}
+    }
   }
 }
