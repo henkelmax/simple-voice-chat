@@ -21,7 +21,7 @@ public class PingManager {
     }
 
     public void onPongPacket(PingPacket packet) {
-        Main.LOGGER.debug("Received pong {}", packet.getId());
+        Main.LOGGER.info("Received pong {}", packet.getId());
         Ping ping = listeners.get(packet.getId());
         if (ping == null) {
             return;
@@ -45,7 +45,7 @@ public class PingManager {
         UUID id = UUID.randomUUID();
         long timestamp = System.currentTimeMillis();
         server.sendPacket(new PingPacket(id, timestamp), connection);
-        Main.LOGGER.debug("Sent ping {}", id);
+        Main.LOGGER.info("Sent ping {}", id);
         listeners.put(id, new Ping(listener, timestamp, timeout));
     }
 

@@ -159,7 +159,7 @@ public class MicTestButton extends AbstractButton {
         }
 
         public void close() {
-            Main.LOGGER.debug("Closing mic test audio channel");
+            Main.LOGGER.info("Closing mic test audio channel");
             running = false;
             speaker.stop();
             speaker.flush();

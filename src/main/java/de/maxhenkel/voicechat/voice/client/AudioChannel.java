@@ -45,7 +45,7 @@ public class AudioChannel extends Thread {
         this.playerStateManager = Main.CLIENT_VOICE_EVENTS.getPlayerStateManager();
         setDaemon(true);
         setName("AudioChannelThread-" + uuid.toString());
-        Main.LOGGER.debug("Creating audio channel for " + uuid);
+        Main.LOGGER.info("Creating audio channel for " + uuid);
     }
 
     public boolean canKill() {
@@ -53,7 +53,7 @@ public class AudioChannel extends Thread {
     }
 
     public void closeAndKill() {
-        Main.LOGGER.debug("Closing audio channel for " + uuid);
+        Main.LOGGER.info("Closing audio channel for " + uuid);
         stopped = true;
     }
 
@@ -127,7 +127,7 @@ public class AudioChannel extends Thread {
                     int packetsToCompensate = (int) (packet.getSequenceNumber() - (lastSequenceNumber + 1));
                     for (int i = 0; i < packetsToCompensate; i++) {
                         if (speaker.available() < AudioChannelConfig.getFrameSize()) {
-                            Main.LOGGER.debug("Could not compensate more than " + i + " audio packets");
+                            Main.LOGGER.warn("Could not compensate more than " + i + " audio packets");
                             break;
                         }
                         writeToSpeaker(decoder.decode(null));
@@ -150,7 +150,7 @@ public class AudioChannel extends Thread {
             }
             decoder.close();
             flushRecording();
-            Main.LOGGER.debug("Closed audio channel for " + uuid);
+            Main.LOGGER.info("Closed audio channel for " + uuid);
         }
     }
 
