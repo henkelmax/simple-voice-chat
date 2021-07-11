@@ -52,6 +52,8 @@ public class GroupChatManager {
             }
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
             RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getGameProfile().getId()));
             Screen.blit(matrixStack, 1, 1, 8, 8, 8, 8, 64, 64);
             Screen.blit(matrixStack, 1, 1, 40, 8, 8, 8, 64, 64);
