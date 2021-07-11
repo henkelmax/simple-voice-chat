@@ -1,1 +1,1 @@
-- Moved compatibility version to fabric.mod.json
+- Fixed transparent skin rendering in group list
