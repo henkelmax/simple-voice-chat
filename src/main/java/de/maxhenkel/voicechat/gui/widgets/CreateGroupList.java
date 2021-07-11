@@ -91,6 +91,8 @@ public class CreateGroupList extends WidgetBase {
                 matrixStack.pushPose();
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
                 RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getGameProfile().getId()));
                 matrixStack.translate(headPosX, headPosY, 0);
                 Screen.blit(matrixStack, 0, 0, 8, 8, 8, 8, 64, 64);
