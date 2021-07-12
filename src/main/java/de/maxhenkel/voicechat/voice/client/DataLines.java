@@ -10,42 +10,42 @@ import java.util.List;
 public class DataLines {
 
     @Nullable
-    public static TargetDataLine getMicrophone() {
+    public static TargetDataLine getMicrophone(AudioFormat format) {
         String micName = VoicechatClient.CLIENT_CONFIG.microphone.get();
         if (!micName.isEmpty()) {
-            TargetDataLine mic = getMicrophoneByName(micName);
+            TargetDataLine mic = getMicrophoneByName(format, micName);
             if (mic != null) {
                 return mic;
             }
         }
-        return getDefaultMicrophone();
+        return getDefaultMicrophone(format);
     }
 
     @Nullable
-    public static SourceDataLine getSpeaker() {
+    public static SourceDataLine getSpeaker(AudioFormat format) {
         String speakerName = VoicechatClient.CLIENT_CONFIG.speaker.get();
         if (!speakerName.isEmpty()) {
-            SourceDataLine speaker = getSpeakerByName(speakerName);
+            SourceDataLine speaker = getSpeakerByName(format, speakerName);
             if (speaker != null) {
                 return speaker;
             }
         }
-        return getDefaultSpeaker();
+        return getDefaultSpeaker(format);
     }
 
     @Nullable
-    public static TargetDataLine getDefaultMicrophone() {
-        return getDefaultDevice(TargetDataLine.class);
+    public static TargetDataLine getDefaultMicrophone(AudioFormat format) {
+        return getDefaultDevice(TargetDataLine.class, format);
     }
 
     @Nullable
-    public static SourceDataLine getDefaultSpeaker() {
-        return getDefaultDevice(SourceDataLine.class);
+    public static SourceDataLine getDefaultSpeaker(AudioFormat format) {
+        return getDefaultDevice(SourceDataLine.class, format);
     }
 
     @Nullable
-    public static <T> T getDefaultDevice(Class<T> lineClass) {
-        DataLine.Info info = new DataLine.Info(lineClass, null);
+    public static <T> T getDefaultDevice(Class<T> lineClass, AudioFormat format) {
+        DataLine.Info info = new DataLine.Info(lineClass, format);
         try {
             return lineClass.cast(AudioSystem.getLine(info));
         } catch (Exception e) {
@@ -54,21 +54,21 @@ public class DataLines {
     }
 
     @Nullable
-    public static TargetDataLine getMicrophoneByName(String name) {
-        return getDeviceByName(TargetDataLine.class, name);
+    public static TargetDataLine getMicrophoneByName(AudioFormat format, String name) {
+        return getDeviceByName(TargetDataLine.class, format, name);
     }
 
     @Nullable
-    public static SourceDataLine getSpeakerByName(String name) {
-        return getDeviceByName(SourceDataLine.class, name);
+    public static SourceDataLine getSpeakerByName(AudioFormat format, String name) {
+        return getDeviceByName(SourceDataLine.class, format, name);
     }
 
     @Nullable
-    public static <T> T getDeviceByName(Class<T> lineClass, String name) {
+    public static <T> T getDeviceByName(Class<T> lineClass, AudioFormat format, String name) {
         Mixer.Info[] mixers = AudioSystem.getMixerInfo();
         for (Mixer.Info mixerInfo : mixers) {
             Mixer mixer = AudioSystem.getMixer(mixerInfo);
-            Line.Info lineInfo = new Line.Info(lineClass);
+            DataLine.Info lineInfo = new DataLine.Info(lineClass, format);
             if (mixer.isLineSupported(lineInfo)) {
                 if (mixerInfo.getName().equals(name)) {
                     try {
@@ -81,20 +81,20 @@ public class DataLines {
         return null;
     }
 
-    public static List<String> getMicrophoneNames() {
-        return getDeviceNames(TargetDataLine.class);
+    public static List<String> getMicrophoneNames(AudioFormat format) {
+        return getDeviceNames(TargetDataLine.class, format);
     }
 
-    public static List<String> getSpeakerNames() {
-        return getDeviceNames(SourceDataLine.class);
+    public static List<String> getSpeakerNames(AudioFormat format) {
+        return getDeviceNames(SourceDataLine.class, format);
     }
 
-    public static List<String> getDeviceNames(Class<?> lineClass) {
+    public static List<String> getDeviceNames(Class<?> lineClass, AudioFormat format) {
         List<String> names = new ArrayList<>();
         Mixer.Info[] mixers = AudioSystem.getMixerInfo();
         for (Mixer.Info mixerInfo : mixers) {
             Mixer mixer = AudioSystem.getMixer(mixerInfo);
-            Line.Info lineInfo = new Line.Info(lineClass);
+            DataLine.Info lineInfo = new DataLine.Info(lineClass, format);
             if (mixer.isLineSupported(lineInfo)) {
                 names.add(mixerInfo.getName());
             }
