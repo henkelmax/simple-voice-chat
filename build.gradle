@@ -124,7 +124,10 @@ forgeUpdate {
 shadowJar {
     configurations = [project.configurations.shadow]
     classifier 'shadow-dev'
-    relocate 'com.sun.jna', "com.sun.jna"
+    relocate 'de.maxhenkel.opus4j', "de.maxhenkel.${mod_id}.opus4j"
+    dependencies {
+        exclude(dependency('net.java.dev.jna:jna'))
+    }
 }
 
 remapJar {
