@@ -70,7 +70,7 @@ public class AudioChannel extends Thread {
     public void run() {
         try {
             AudioFormat af = client.getAudioChannelConfig().getStereoFormat();
-            speaker = DataLines.getSpeaker();
+            speaker = DataLines.getSpeaker(af);
             speaker.open(af);
             gainControl = (FloatControl) speaker.getControl(FloatControl.Type.MASTER_GAIN);
             while (!stopped) {

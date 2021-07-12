@@ -39,16 +39,16 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
         Client c = VoicechatClient.CLIENT.getClient();
         if (c != null) {
             addRenderableWidget(new MicTestButton(guiLeft + 10, guiTop + 145, xSize - 20, 20, this, c));
+            addRenderableWidget(new Button(guiLeft + 10, guiTop + 170, xSize - 20, 20, new TranslatableComponent("message.voicechat.adjust_volumes"), button -> {
+                minecraft.setScreen(new AdjustVolumeScreen(this, VoicechatClient.CLIENT.getPlayerStateManager().getPlayerStates().stream().filter(state -> !state.getGameProfile().getId().equals(minecraft.player.getUUID())).collect(Collectors.toList())));
+            }));
+            addRenderableWidget(new Button(guiLeft + 10, guiTop + 195, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_microphone"), button -> {
+                minecraft.setScreen(new SelectMicrophoneScreen(c, this));
+            }));
+            addRenderableWidget(new Button(guiLeft + xSize / 2 + 6, guiTop + 195, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_speaker"), button -> {
+                minecraft.setScreen(new SelectSpeakerScreen(c, this));
+            }));
         }
-        addRenderableWidget(new Button(guiLeft + 10, guiTop + 170, xSize - 20, 20, new TranslatableComponent("message.voicechat.adjust_volumes"), button -> {
-            minecraft.setScreen(new AdjustVolumeScreen(this, VoicechatClient.CLIENT.getPlayerStateManager().getPlayerStates().stream().filter(state -> !state.getGameProfile().getId().equals(minecraft.player.getUUID())).collect(Collectors.toList())));
-        }));
-        addRenderableWidget(new Button(guiLeft + 10, guiTop + 195, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_microphone"), button -> {
-            minecraft.setScreen(new SelectMicrophoneScreen(this));
-        }));
-        addRenderableWidget(new Button(guiLeft + xSize / 2 + 6, guiTop + 195, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_speaker"), button -> {
-            minecraft.setScreen(new SelectSpeakerScreen(this));
-        }));
     }
 
     @Override

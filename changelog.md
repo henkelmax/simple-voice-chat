@@ -1,1 +1,1 @@
-- Excluded JNA
+- Fixed showing incompatible audio devices
