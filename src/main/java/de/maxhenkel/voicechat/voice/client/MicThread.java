@@ -27,7 +27,10 @@ public class MicThread extends Thread {
         setDaemon(true);
         setName("MicrophoneThread");
         AudioFormat af = AudioChannelConfig.getMonoFormat();
-        mic = DataLines.getMicrophone();
+        mic = DataLines.getMicrophone(af);
+        if (mic == null) {
+            throw new LineUnavailableException("Could not find any microphone with the specified audio format");
+        }
         mic.open(af);
     }
 

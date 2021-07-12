@@ -1,1 +1,1 @@
-- Reduced errors when failing to read packets
+- Fixed showing incompatible audio devices

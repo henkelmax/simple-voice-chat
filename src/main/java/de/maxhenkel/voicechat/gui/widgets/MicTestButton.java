@@ -116,7 +116,7 @@ public class MicTestButton extends AbstractButton {
             if (mic == null) {
                 throw new LineUnavailableException("No microphone");
             }
-            speaker = DataLines.getSpeaker();
+            speaker = DataLines.getSpeaker(audioFormat);
             if (speaker == null) {
                 throw new LineUnavailableException("No speaker");
             }
