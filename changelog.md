@@ -1,1 +1,1 @@
-- Fixed showing incompatible audio devices
+- Added audio packet threshold config option
