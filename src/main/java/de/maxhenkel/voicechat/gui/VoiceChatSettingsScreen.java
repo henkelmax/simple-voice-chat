@@ -38,16 +38,16 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
         Client c = VoicechatClient.CLIENT.getClient();
         if (c != null) {
             addButton(new MicTestButton(guiLeft + 10, guiTop + 145, xSize - 20, 20, this, c));
+            addButton(new Button(guiLeft + 10, guiTop + 170, xSize - 20, 20, new TranslatableComponent("message.voicechat.adjust_volumes"), button -> {
+                minecraft.setScreen(new AdjustVolumeScreen(this, VoicechatClient.CLIENT.getPlayerStateManager().getPlayerStates().stream().filter(state -> !state.getGameProfile().getId().equals(minecraft.player.getUUID())).collect(Collectors.toList())));
+            }));
+            addButton(new Button(guiLeft + 10, guiTop + 195, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_microphone"), button -> {
+                minecraft.setScreen(new SelectMicrophoneScreen(c, this));
+            }));
+            addButton(new Button(guiLeft + xSize / 2 + 6, guiTop + 195, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_speaker"), button -> {
+                minecraft.setScreen(new SelectSpeakerScreen(c, this));
+            }));
         }
-        addButton(new Button(guiLeft + 10, guiTop + 170, xSize - 20, 20, new TranslatableComponent("message.voicechat.adjust_volumes"), button -> {
-            minecraft.setScreen(new AdjustVolumeScreen(this, VoicechatClient.CLIENT.getPlayerStateManager().getPlayerStates().stream().filter(state -> !state.getGameProfile().getId().equals(minecraft.player.getUUID())).collect(Collectors.toList())));
-        }));
-        addButton(new Button(guiLeft + 10, guiTop + 195, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_microphone"), button -> {
-            minecraft.setScreen(new SelectMicrophoneScreen(this));
-        }));
-        addButton(new Button(guiLeft + xSize / 2 + 6, guiTop + 195, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_speaker"), button -> {
-            minecraft.setScreen(new SelectSpeakerScreen(this));
-        }));
     }
 
     @Override

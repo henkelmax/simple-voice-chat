@@ -1,1 +1,1 @@
-- Moved compatibility version to fabric.mod.json
+- Fixed showing incompatible audio devices
