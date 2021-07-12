@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 public class AudioChannel extends Thread {
 
@@ -26,6 +25,7 @@ public class AudioChannel extends Thread {
     private Client client;
     private UUID uuid;
     private BlockingQueue<SoundPacket> queue;
+    private AudioPacketBuffer packetBuffer;
     private long lastPacketTime;
     private SourceDataLine speaker;
     private FloatControl gainControl;
@@ -37,6 +37,7 @@ public class AudioChannel extends Thread {
         this.client = client;
         this.uuid = uuid;
         this.queue = new LinkedBlockingQueue<>();
+        this.packetBuffer = new AudioPacketBuffer(Main.CLIENT_CONFIG.audioPacketThreshold.get());
         this.lastPacketTime = System.currentTimeMillis();
         this.stopped = false;
         this.decoder = new OpusDecoder(AudioChannelConfig.getSampleRate(), AudioChannelConfig.getFrameSize(), Main.SERVER_CONFIG.voiceChatMtuSize.get());
@@ -101,7 +102,7 @@ public class AudioChannel extends Thread {
                     flushRecording();
                 }
 
-                SoundPacket packet = queue.poll(10, TimeUnit.MILLISECONDS);
+                SoundPacket packet = packetBuffer.poll(queue);
                 if (packet == null) {
                     continue;
                 }

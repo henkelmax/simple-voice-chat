@@ -13,6 +13,7 @@ public class ClientConfig extends ConfigBase {
     public final ForgeConfigSpec.DoubleValue microphoneAmplification;
     public final ForgeConfigSpec.EnumValue<MicrophoneActivationType> microphoneActivationType;
     public final ForgeConfigSpec.IntValue outputBufferSize;
+    public final ForgeConfigSpec.IntValue audioPacketThreshold;
     public final ForgeConfigSpec.BooleanValue clearFullAudioBuffer;
     public final ForgeConfigSpec.IntValue deactivationDelay;
     public final ForgeConfigSpec.ConfigValue<String> microphone;
@@ -48,7 +49,14 @@ public class ClientConfig extends ConfigBase {
                         "Higher values mean a higher latency, but less crackles",
                         "Increase this value if you have an unstable internet connection"
                 )
-                .defineInRange("output_buffer_size", 6, 1, 16);
+                .defineInRange("output_buffer_size", 5, 1, 16);
+        audioPacketThreshold = builder
+                .comment(
+                        "The maximum amount of audio packets that are held back, if a packet arrives out of order or gets dropped",
+                        "This prevents discarding audio packets that are slightly out of order",
+                        "Set this to 0 to disable"
+                )
+                .defineInRange("audio_packet_threshold", 3, 0, 16);
         clearFullAudioBuffer = builder
                 .comment(
                         "If full audio buffers should get cleared",
