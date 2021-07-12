@@ -1,1 +1,1 @@
-- Fixed transparent skin rendering in group list
+- Excluded JNA
