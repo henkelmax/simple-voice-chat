@@ -19,8 +19,8 @@ public class SelectSpeakerScreen extends ListScreen<String> {
 
     protected int selected;
 
-    public SelectSpeakerScreen(Screen parent) {
-        super(parent, DataLines.getSpeakerNames(), new TranslatableComponent("gui.voicechat.select_speaker.title"));
+    public SelectSpeakerScreen(Client client, Screen parent) {
+        super(parent, DataLines.getSpeakerNames(client.getAudioChannelConfig().getStereoFormat()), new TranslatableComponent("gui.voicechat.select_speaker.title"));
         for (int i = 0; i < elements.size(); i++) {
             String element = elements.get(i);
             if (element.equals(VoicechatClient.CLIENT_CONFIG.speaker.get())) {

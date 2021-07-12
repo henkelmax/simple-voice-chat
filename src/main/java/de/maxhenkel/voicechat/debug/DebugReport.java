@@ -141,8 +141,8 @@ public class DebugReport {
     private void appendMics() {
         addLine("Input Devices");
         addLine("");
-        for (String mic : DataLines.getMicrophoneNames()) {
-            TargetDataLine microphone = DataLines.getMicrophoneByName(mic);
+        for (String mic : DataLines.getMicrophoneNames(null)) {
+            TargetDataLine microphone = DataLines.getMicrophoneByName(null, mic);
             if (microphone == null) {
                 addLine(mic + ": Not found");
                 continue;
@@ -166,8 +166,8 @@ public class DebugReport {
     private void appendSpeakers() {
         addLine("Output Devices");
         addLine("");
-        for (String name : DataLines.getSpeakerNames()) {
-            SourceDataLine speaker = DataLines.getSpeakerByName(name);
+        for (String name : DataLines.getSpeakerNames(null)) {
+            SourceDataLine speaker = DataLines.getSpeakerByName(null, name);
             if (speaker == null) {
                 addLine(name + ": Not found");
                 continue;

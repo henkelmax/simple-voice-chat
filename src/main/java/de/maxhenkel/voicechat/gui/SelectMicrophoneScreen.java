@@ -19,8 +19,8 @@ public class SelectMicrophoneScreen extends ListScreen<String> {
 
     protected int selected;
 
-    public SelectMicrophoneScreen(Screen parent) {
-        super(parent, DataLines.getMicrophoneNames(), new TranslatableComponent("gui.voicechat.select_microphone.title"));
+    public SelectMicrophoneScreen(Client client, Screen parent) {
+        super(parent, DataLines.getMicrophoneNames(client.getAudioChannelConfig().getMonoFormat()), new TranslatableComponent("gui.voicechat.select_microphone.title"));
         for (int i = 0; i < elements.size(); i++) {
             String element = elements.get(i);
             if (element.equals(VoicechatClient.CLIENT_CONFIG.microphone.get())) {
