@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.config;
 
-
 import de.maxhenkel.voicechat.Voicechat;
 
 import java.io.File;
@@ -57,7 +56,7 @@ public class Config {
 
     public void save() {
         new Thread(() -> {
-            synchronized (this) {
+            synchronized (Config.this) {
                 saveUnthreaded();
             }
         }).start();
