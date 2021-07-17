@@ -1,1 +1,1 @@
-- Added audio packet threshold config option
+- Fixed keybinds not working when binding to mouse key

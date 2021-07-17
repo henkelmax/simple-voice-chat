@@ -23,10 +23,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderNameplateEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.glfw.GLFW;
@@ -170,7 +170,7 @@ public class ClientVoiceEvents {
     }
 
     @SubscribeEvent
-    public void onInput(InputEvent.KeyInputEvent event) {
+    public void onInput(TickEvent.ClientTickEvent event) {
         if (Main.KEY_VOICE_CHAT.consumeClick()) {
             if (InputMappings.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_F3)) {
                 minecraft.options.renderDebug = true;
