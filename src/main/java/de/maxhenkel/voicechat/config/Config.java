@@ -56,7 +56,7 @@ public class Config {
 
     public void save() {
         new Thread(() -> {
-            synchronized (this) {
+            synchronized (Config.this) {
                 saveUnthreaded();
             }
         }).start();
