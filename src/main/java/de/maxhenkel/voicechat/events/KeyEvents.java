@@ -17,6 +17,12 @@ public class KeyEvents {
         }
     });
 
+    public static final Event<Runnable> HANDLE_KEYBINDS = EventFactory.createArrayBacked(Runnable.class, (listeners) -> () -> {
+        for (Runnable event : listeners) {
+            event.run();
+        }
+    });
+
     public interface KeyboardEvent {
         void onKeyboardEvent(long window, int key, int scancode);
     }
