@@ -7,10 +7,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.debug.DebugReport;
-import de.maxhenkel.voicechat.events.ClientVoiceChatEvents;
-import de.maxhenkel.voicechat.events.ClientWorldEvents;
-import de.maxhenkel.voicechat.events.IClientConnection;
-import de.maxhenkel.voicechat.events.RenderEvents;
+import de.maxhenkel.voicechat.events.*;
 import de.maxhenkel.voicechat.gui.CreateGroupScreen;
 import de.maxhenkel.voicechat.gui.GroupScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
@@ -21,7 +18,6 @@ import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.net.SetGroupPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -66,7 +62,7 @@ public class ClientVoiceEvents {
         ClientWorldEvents.DISCONNECT.register(this::onDisconnect);
 
         HudRenderCallback.EVENT.register(this::renderHUD);
-        ClientTickEvents.END_CLIENT_TICK.register(this::onClientTickEnd);
+        KeyEvents.HANDLE_KEYBINDS.register(this::handleKeybinds);
         RenderEvents.RENDER_NAMEPLATE.register(this::onRenderName);
 
         NetManager.registerClientReceiver(SecretPacket.class, (client, handler, responseSender, packet) -> {
@@ -172,7 +168,8 @@ public class ClientVoiceEvents {
         matrixStack.popPose();
     }
 
-    public void onClientTickEnd(Minecraft minecraft) {
+    public void handleKeybinds() {
+        Minecraft minecraft = Minecraft.getInstance();
         if (VoicechatClient.KEY_VOICE_CHAT.consumeClick()) {
             if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_F3)) {
                 minecraft.options.renderDebug = true;
