@@ -192,7 +192,7 @@ public class AudioChannel extends Thread {
             }
 
             if (Main.CLIENT_CONFIG.stereo.get()) {
-                Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, player.position(), maxDistance);
+                Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, player.position().add(0D, player.getEyeHeight(), 0D), maxDistance); //TODO use getEyePosition in 1.17
                 stereo = Utils.convertToStereo(monoData, percentage * stereoVolume.getLeft(), percentage * stereoVolume.getRight());
             } else {
                 stereo = Utils.convertToStereo(monoData, percentage, percentage);

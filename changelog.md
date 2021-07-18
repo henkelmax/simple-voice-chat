@@ -1,1 +1,1 @@
-- Fixed keybinds not working when binding to mouse key
+- Fixed sound actually played in relation to the players camera, not the player
