@@ -2,10 +2,9 @@ package de.maxhenkel.voicechat.voice.common;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.CameraType;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -118,13 +117,13 @@ public class Utils {
 
     @Environment(EnvType.CLIENT)
     public static Pair<Float, Float> getStereoVolume(Minecraft minecraft, Vec3 soundPos, double voiceChatDistance) {
-        Player player = minecraft.player;
-        Vec3 playerPos = player.position();
-        Vec3 d = soundPos.subtract(playerPos).normalize();
+        Camera mainCamera = minecraft.gameRenderer.getMainCamera();
+        Vec3 cameraPos = mainCamera.getPosition();
+        Vec3 d = soundPos.subtract(cameraPos).normalize();
         Vec2 diff = new Vec2((float) d.x, (float) d.z);
         float diffAngle = angle(diff, new Vec2(-1F, 0F));
-        float angle = normalizeAngle(diffAngle - (player.yRot % 360F));
-        float dif = (float) (Math.abs(playerPos.y - soundPos.y) / voiceChatDistance);
+        float angle = normalizeAngle(diffAngle - (mainCamera.getYRot() % 360F));
+        float dif = (float) (Math.abs(cameraPos.y - soundPos.y) / voiceChatDistance);
 
         float rot = angle / 180F;
         float perc = rot;
@@ -141,10 +140,6 @@ public class Utils {
         float fill = 1F - Math.max(left, right);
         left += fill;
         right += fill;
-
-        if (minecraft.options.getCameraType().equals(CameraType.THIRD_PERSON_FRONT)) {
-            return new ImmutablePair<>(right, left);
-        }
 
         return new ImmutablePair<>(left, right);
     }

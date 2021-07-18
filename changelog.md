@@ -1,1 +1,1 @@
-- Added audio packet threshold config option
+- Fixed sound actually played in relation to the players camera, not the player
