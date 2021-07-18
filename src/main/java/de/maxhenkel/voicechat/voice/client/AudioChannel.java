@@ -193,7 +193,7 @@ public class AudioChannel extends Thread {
             }
 
             if (VoicechatClient.CLIENT_CONFIG.stereo.get()) {
-                Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, player.position(), client.getVoiceChatDistance());
+                Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, player.getEyePosition(), client.getVoiceChatDistance());
                 stereo = Utils.convertToStereo(monoData, percentage * stereoVolume.getLeft(), percentage * stereoVolume.getRight());
             } else {
                 stereo = Utils.convertToStereo(monoData, percentage, percentage);
