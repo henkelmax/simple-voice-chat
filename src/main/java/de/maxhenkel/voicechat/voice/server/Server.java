@@ -136,7 +136,7 @@ public class Server extends Thread {
                     NetworkMessage message;
                     try {
                         message = NetworkMessage.readPacketServer(msg, Server.this);
-                    } catch (IndexOutOfBoundsException | BadPaddingException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException e) {
+                    } catch (Exception e) {
                         CooldownTimer.run("failed_reading_packet", () -> {
                             Main.LOGGER.warn("Failed to read packet from {}", msg.getPacket().getSocketAddress());
                         });
