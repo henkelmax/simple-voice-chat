@@ -32,7 +32,8 @@ public class VoiceChatScreenBase extends Screen {
 
     @Override
     protected void init() {
-        clearWidgets();
+        children.clear();
+        buttons.clear();
         super.init();
 
         this.guiLeft = (width - this.xSize) / 2;
