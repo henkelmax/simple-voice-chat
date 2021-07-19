@@ -25,10 +25,9 @@ public class MicTestButton extends AbstractButton {
         this.micListener = micListener;
         this.client = client;
         if (getMic() == null) {
-            micActive = false;
+            active = false;
         }
         updateText();
-
     }
 
     private void updateText() {
@@ -69,6 +68,7 @@ public class MicTestButton extends AbstractButton {
                 voiceThread.start();
             } catch (LineUnavailableException e) {
                 setMicActive(false);
+                active = false;
                 e.printStackTrace();
             }
         } else {
