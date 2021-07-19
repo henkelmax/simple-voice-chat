@@ -1,1 +1,1 @@
-- Fixed sound actually played in relation to the players camera, not the player
+- Disable microphone testing button when no mic is available
