@@ -1,1 +1,1 @@
-- Disable microphone testing button when no mic is available
+- Updated microphone testing bar texture
