@@ -66,7 +66,7 @@ public class MicTestButton extends AbstractButton {
             try {
                 voiceThread = new VoiceThread();
                 voiceThread.start();
-            } catch (LineUnavailableException e) {
+            } catch (Exception e) {
                 setMicActive(false);
                 active = false;
                 e.printStackTrace();
