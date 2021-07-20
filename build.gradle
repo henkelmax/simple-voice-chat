@@ -103,7 +103,7 @@ forgeUpdate {
     }
 
     serverURL = 'https://update.maxhenkel.de/'
-    apiKey = System.env.FORGE_UPDATE_API_KEY != null ? System.env.FORGE_UPDATE_API_KEY : file('forge_update_api_key.txt').text
+    apiKey = file('forge_update_api_key.txt').exists() ? file('forge_update_api_key.txt').text : ''
     modID = mod_id
     gameVersion = minecraft_version
     modLoader = "fabric"
