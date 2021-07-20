@@ -1,1 +1,1 @@
-- Updated microphone testing bar texture
+- Fixed issues with newer macOS versions
