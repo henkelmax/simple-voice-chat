@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.command.VoiceChatCommands;
-import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import org.bukkit.entity.Player;
@@ -34,7 +33,7 @@ public class ServerVoiceEvents implements Listener {
 
         boolean hasGroupPermission = player.hasPermission(VoiceChatCommands.GROUPS_PERMISSION);
 
-        NetManager.sendToClient(player, new SecretPacket(secret, Voicechat.SERVER_CONFIG.voiceChatPort.get(), (ServerConfig.Codec) Voicechat.SERVER_CONFIG.voiceChatCodec.get(), Voicechat.SERVER_CONFIG.voiceChatMtuSize.get(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), Voicechat.SERVER_CONFIG.voiceChatFadeDistance.get(), Voicechat.SERVER_CONFIG.keepAlive.get(), Voicechat.SERVER_CONFIG.groupsEnabled.get() && hasGroupPermission, Voicechat.SERVER_CONFIG.voiceHost.get()));
+        NetManager.sendToClient(player, new SecretPacket(secret, hasGroupPermission, Voicechat.SERVER_CONFIG));
         Voicechat.LOGGER.info("Sent secret to " + player.getName());
     }
 
