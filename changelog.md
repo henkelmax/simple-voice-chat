@@ -1,1 +1,1 @@
-- Fixed issues with newer macOS versions
+- Added allow recording config option
