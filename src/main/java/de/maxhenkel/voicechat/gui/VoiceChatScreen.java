@@ -54,16 +54,18 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         });
         addButton(disable);
 
-        ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> Main.CLIENT_VOICE_EVENTS.getClient() != null && Main.CLIENT_VOICE_EVENTS.getClient().getRecorder() != null, button -> {
-            Client client = Main.CLIENT_VOICE_EVENTS.getClient();
-            if (client == null) {
-                return;
-            }
-            client.toggleRecording();
-        }, (button, matrices, mouseX, mouseY) -> {
-            renderTooltip(matrices, Collections.singletonList(new TranslationTextComponent("message.voicechat.toggle_recording").getVisualOrderText()), mouseX, mouseY);
-        });
-        addButton(record);
+        if (Main.SERVER_CONFIG.allowRecording.get()) {
+            ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> Main.CLIENT_VOICE_EVENTS.getClient() != null && Main.CLIENT_VOICE_EVENTS.getClient().getRecorder() != null, button -> {
+                Client client = Main.CLIENT_VOICE_EVENTS.getClient();
+                if (client == null) {
+                    return;
+                }
+                client.toggleRecording();
+            }, (button, matrices, mouseX, mouseY) -> {
+                renderTooltip(matrices, Collections.singletonList(new TranslationTextComponent("message.voicechat.toggle_recording").getVisualOrderText()), mouseX, mouseY);
+            });
+            addButton(record);
+        }
 
         ToggleImageButton hide = new ToggleImageButton(guiLeft + xSize - 6 - 20, guiTop + ySize - 6 - 20, HIDE, Main.CLIENT_CONFIG.hideIcons::get, button -> {
             Main.CLIENT_CONFIG.hideIcons.set(!Main.CLIENT_CONFIG.hideIcons.get());

@@ -20,6 +20,7 @@ public class ServerConfig extends ConfigBase {
     public final ForgeConfigSpec.BooleanValue groupsEnabled;
     public final ForgeConfigSpec.BooleanValue openGroups;
     public final ForgeConfigSpec.ConfigValue<String> voiceHost;
+    public final ForgeConfigSpec.BooleanValue allowRecording;
 
     public ServerConfig(ForgeConfigSpec.Builder builder) {
         super(builder);
@@ -54,6 +55,9 @@ public class ServerConfig extends ConfigBase {
         voiceHost = builder
                 .comment("The host name that clients should use to connect to the voice chat", "Don't change this value if you don't know what you are doing")
                 .define("voice_chat.voice_host", "");
+        allowRecording = builder
+                .comment("If players are allowed to record the voice chat")
+                .define("voice_chat.allow_recording", true);
     }
 
     @Override
