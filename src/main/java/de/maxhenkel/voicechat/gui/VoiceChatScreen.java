@@ -16,6 +16,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 
 public class VoiceChatScreen extends VoiceChatScreenBase {
@@ -38,6 +39,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         super.init();
 
         ClientPlayerStateManager stateManager = VoicechatClient.CLIENT.getPlayerStateManager();
+        @Nullable Client client = VoicechatClient.CLIENT.getClient();
 
         mute = new ToggleImageButton(guiLeft + 6, guiTop + ySize - 6 - 20, MICROPHONE, stateManager::isMuted, button -> {
             stateManager.setMuted(!stateManager.isMuted());
@@ -53,16 +55,18 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         });
         addButton(disable);
 
-        ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> VoicechatClient.CLIENT.getClient() != null && VoicechatClient.CLIENT.getClient().getRecorder() != null, button -> {
-            Client client = VoicechatClient.CLIENT.getClient();
-            if (client == null) {
-                return;
-            }
-            client.toggleRecording();
-        }, (button, matrices, mouseX, mouseY) -> {
-            renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.toggle_recording").getVisualOrderText()), mouseX, mouseY);
-        });
-        addButton(record);
+        if (client != null && client.allowRecording()) {
+            ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> VoicechatClient.CLIENT.getClient() != null && VoicechatClient.CLIENT.getClient().getRecorder() != null, button -> {
+                Client c = VoicechatClient.CLIENT.getClient();
+                if (c == null) {
+                    return;
+                }
+                c.toggleRecording();
+            }, (button, matrices, mouseX, mouseY) -> {
+                renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.toggle_recording").getVisualOrderText()), mouseX, mouseY);
+            });
+            addButton(record);
+        }
 
         ToggleImageButton hide = new ToggleImageButton(guiLeft + xSize - 6 - 20, guiTop + ySize - 6 - 20, HIDE, VoicechatClient.CLIENT_CONFIG.hideIcons::get, button -> {
             VoicechatClient.CLIENT_CONFIG.hideIcons.set(!VoicechatClient.CLIENT_CONFIG.hideIcons.get());
@@ -85,9 +89,8 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
             }
         });
         addButton(group);
-        Client client = VoicechatClient.CLIENT.getClient();
-        group.active = client != null && client.groupsEnabled();
 
+        group.active = client != null && client.groupsEnabled();
         recordingHoverArea = new HoverArea(6 + 20 + 2 + 20 + 2, ySize - 6 - 20, xSize - (6 + 20 + 2 + 20 + 2) * 2, 20);
 
         checkButtons();

@@ -74,7 +74,7 @@ public class ClientVoiceEvents {
         });
     }
 
-    public void authenticate(UUID playerUUID, SecretPacket initPacket) {
+    public void authenticate(UUID playerUUID, SecretPacket secretPacket) {
         Voicechat.LOGGER.info("Received secret");
         if (client != null) {
             onDisconnect();
@@ -85,9 +85,9 @@ public class ClientVoiceEvents {
                 SocketAddress socketAddress = ((IClientConnection) connection.getConnection()).getChannel().remoteAddress();
                 if (socketAddress instanceof InetSocketAddress) {
                     InetSocketAddress address = (InetSocketAddress) socketAddress;
-                    String ip = initPacket.getVoiceHost().isEmpty() ? address.getHostString() : initPacket.getVoiceHost();
-                    Voicechat.LOGGER.info("Connecting to server: '" + ip + ":" + initPacket.getServerPort() + "'");
-                    client = new Client(ip, initPacket.getServerPort(), playerUUID, initPacket.getSecret(), initPacket.getCodec(), initPacket.getMtuSize(), initPacket.getVoiceChatDistance(), initPacket.getVoiceChatFadeDistance(), initPacket.getKeepAlive(), initPacket.groupsEnabled());
+                    String ip = secretPacket.getVoiceHost().isEmpty() ? address.getHostString() : secretPacket.getVoiceHost();
+                    Voicechat.LOGGER.info("Connecting to server: '" + ip + ":" + secretPacket.getServerPort() + "'");
+                    client = new Client(new InitializationData(ip, playerUUID, secretPacket));
                     client.start();
                 }
             } catch (Exception e) {
