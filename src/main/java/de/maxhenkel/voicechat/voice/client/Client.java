@@ -42,20 +42,22 @@ public class Client extends Thread {
     private long lastKeepAlive;
     @Nullable
     private AudioRecorder recorder;
+    private boolean allowRecording;
 
-    public Client(String serverIp, int serverPort, UUID playerUUID, UUID secret, ServerConfig.Codec codec, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive, boolean groupsEnabled) throws IOException {
-        this.address = InetAddress.getByName(serverIp);
-        this.port = serverPort;
+    public Client(InitializationData data) throws IOException {
+        this.address = InetAddress.getByName(data.getServerIP());
+        this.port = data.getServerPort();
         this.socket = new DatagramSocket();
         this.socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
-        this.playerUUID = playerUUID;
-        this.secret = secret;
-        this.codec = codec;
-        this.mtuSize = mtuSize;
-        this.voiceChatDistance = voiceChatDistance;
-        this.voiceChatFadeDistance = voiceChatFadeDistance;
-        this.keepAlive = keepAlive;
-        this.groupsEnabled = groupsEnabled;
+        this.playerUUID = data.getPlayerUUID();
+        this.secret = data.getSecret();
+        this.codec = data.getCodec();
+        this.mtuSize = data.getMtuSize();
+        this.voiceChatDistance = data.getVoiceChatDistance();
+        this.voiceChatFadeDistance = data.getVoiceChatFadeDistance();
+        this.keepAlive = data.getKeepAlive();
+        this.groupsEnabled = data.groupsEnabled();
+        this.allowRecording = data.allowRecording();
         this.lastKeepAlive = -1;
         this.running = true;
         this.talkCache = new TalkCache();
@@ -89,6 +91,10 @@ public class Client extends Thread {
 
     public boolean groupsEnabled() {
         return groupsEnabled;
+    }
+
+    public boolean allowRecording() {
+        return allowRecording;
     }
 
     public double getVoiceChatDistance() {
