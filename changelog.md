@@ -1,1 +1,1 @@
-- Added allow recording config option
+- Added support for ARM based macs

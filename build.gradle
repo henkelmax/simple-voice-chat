@@ -76,8 +76,8 @@ dependencies {
     runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}")
     runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:javadoc")
 
-    runtimeOnly 'de.maxhenkel.opus4j:opus4j:1.0.1-jna-4.4.0'
-    shadow 'de.maxhenkel.opus4j:opus4j:1.0.1-jna-4.4.0'
+    runtimeOnly 'de.maxhenkel.opus4j:opus4j:1.0.2-jna-4.4.0'
+    shadow 'de.maxhenkel.opus4j:opus4j:1.0.2-jna-4.4.0'
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
