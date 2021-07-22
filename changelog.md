@@ -1,1 +1,1 @@
-- Added support for ARM based macs
+- Added ukrainian translation
