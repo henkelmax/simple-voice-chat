@@ -1,9 +1,8 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.Widget;
 
 public abstract class WidgetBase {
 
@@ -29,11 +28,11 @@ public abstract class WidgetBase {
 
     }
 
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(PoseStack matrixStack, int mouseX, int mouseY) {
 
     }
 
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 
     }
 
@@ -47,10 +46,6 @@ public abstract class WidgetBase {
 
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         return false;
-    }
-
-    protected void addWidget(Widget widget) {
-        screen.addButton(widget);
     }
 
 }

@@ -2,16 +2,12 @@ package de.maxhenkel.voicechat.voice.client;
 
 import com.mojang.authlib.GameProfile;
 import de.maxhenkel.voicechat.Main;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.*;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -164,36 +160,36 @@ public class AudioRecorder {
 
     public void save() {
         new Thread(() -> {
-            send(new TranslationTextComponent("message.voicechat.processing_recording_session"));
+            send(new TranslatableComponent("message.voicechat.processing_recording_session"));
             try {
                 flush();
                 AtomicLong time = new AtomicLong();
                 convert(progress -> {
                     if (progress >= 1F || System.currentTimeMillis() - time.get() > 1000L) {
-                        send(new TranslationTextComponent("message.voicechat.processing_progress",
-                                new StringTextComponent(String.valueOf((int) (progress * 100F)))
-                                        .withStyle(TextFormatting.GRAY))
+                        send(new TranslatableComponent("message.voicechat.processing_progress",
+                                new TextComponent(String.valueOf((int) (progress * 100F)))
+                                        .withStyle(ChatFormatting.GRAY))
                         );
                         time.set(System.currentTimeMillis());
                     }
                 });
-                send(new TranslationTextComponent("message.voicechat.save_session",
-                        new StringTextComponent(location.normalize().toString())
-                                .withStyle(TextFormatting.GRAY)
+                send(new TranslatableComponent("message.voicechat.save_session",
+                        new TextComponent(location.normalize().toString())
+                                .withStyle(ChatFormatting.GRAY)
                                 .withStyle(style -> style
-                                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("message.voicechat.open_folder")))
+                                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.voicechat.open_folder")))
                                         .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, location.normalize().toString()))))
                 );
             } catch (Exception e) {
                 e.printStackTrace();
-                send(new TranslationTextComponent("message.voicechat.save_session_failed", e.getMessage()));
+                send(new TranslatableComponent("message.voicechat.save_session_failed", e.getMessage()));
             }
         }).start();
     }
 
-    private void send(ITextComponent msg) {
+    private void send(Component msg) {
         Minecraft mc = Minecraft.getInstance();
-        ClientPlayerEntity player = mc.player;
+        LocalPlayer player = mc.player;
         if (player != null && mc.level != null) {
             player.sendMessage(msg, Util.NIL_UUID);
         } else {

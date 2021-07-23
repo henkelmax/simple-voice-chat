@@ -6,8 +6,8 @@ import de.maxhenkel.voicechat.net.PlayerStateMessage;
 import de.maxhenkel.voicechat.net.PlayerStatesMessage;
 import de.maxhenkel.voicechat.net.SetPlayerStateMessage;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -21,7 +21,7 @@ public class PlayerStateManager {
         states = new ConcurrentHashMap<>();
     }
 
-    public void onPlayerStatePacket(ServerPlayerEntity player, SetPlayerStateMessage message) {
+    public void onPlayerStatePacket(ServerPlayer player, SetPlayerStateMessage message) {
         PlayerState state = message.getPlayerState();
         state.setGameProfile(player.getGameProfile());
         states.put(player.getUUID(), state);
@@ -33,21 +33,21 @@ public class PlayerStateManager {
         server.getPlayerList().getPlayers().forEach(p -> NetUtils.sendTo(Main.SIMPLE_CHANNEL, p, packet));
     }
 
-    public void onPlayerLoggedIn(ServerPlayerEntity player) {
+    public void onPlayerLoggedIn(ServerPlayer player) {
         notifyPlayer(player);
     }
 
-    public void onPlayerLoggedOut(ServerPlayerEntity player) {
+    public void onPlayerLoggedOut(ServerPlayer player) {
         removePlayer(player);
     }
 
-    private void notifyPlayer(ServerPlayerEntity player) {
+    private void notifyPlayer(ServerPlayer player) {
         PlayerStatesMessage msg = new PlayerStatesMessage(states);
         NetUtils.sendTo(Main.SIMPLE_CHANNEL, player, msg);
         broadcastState(player.server, new PlayerState(false, true, player.getGameProfile()));
     }
 
-    private void removePlayer(ServerPlayerEntity player) {
+    private void removePlayer(ServerPlayer player) {
         states.remove(player.getUUID());
         broadcastState(player.server, new PlayerState(true, true, player.getGameProfile())); //TODO maybe remove
     }

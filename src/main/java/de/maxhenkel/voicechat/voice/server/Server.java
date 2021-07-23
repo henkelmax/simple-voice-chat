@@ -3,14 +3,10 @@ package de.maxhenkel.voicechat.voice.server;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.voice.common.*;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.net.*;
-import java.security.InvalidKeyException;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -176,7 +172,7 @@ public class Server extends Thread {
 
                     if (message.getPacket() instanceof MicPacket) {
                         MicPacket packet = (MicPacket) message.getPacket();
-                        ServerPlayerEntity player = server.getPlayerList().getPlayer(playerUUID);
+                        ServerPlayer player = server.getPlayerList().getPlayer(playerUUID);
                         if (player == null) {
                             continue;
                         }
@@ -224,7 +220,7 @@ public class Server extends Thread {
         }
     }
 
-    private void processProximityPacket(PlayerState state, ServerPlayerEntity player, MicPacket packet) {
+    private void processProximityPacket(PlayerState state, ServerPlayer player, MicPacket packet) {
         double distance = Main.SERVER_CONFIG.voiceChatDistance.get();
         String group = state.getGroup();
 
@@ -255,7 +251,7 @@ public class Server extends Thread {
                 // Don't call disconnectClient here!
                 secrets.remove(connection.getPlayerUUID());
                 Main.LOGGER.info("Player {} timed out", connection.getPlayerUUID());
-                ServerPlayerEntity player = server.getPlayerList().getPlayer(connection.getPlayerUUID());
+                ServerPlayer player = server.getPlayerList().getPlayer(connection.getPlayerUUID());
                 if (player != null) {
                     Main.LOGGER.info("Reconnecting player {}", player.getDisplayName().getString());
                     Main.SERVER.initializePlayerConnection(player);

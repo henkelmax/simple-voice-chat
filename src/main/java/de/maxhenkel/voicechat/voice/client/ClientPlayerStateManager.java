@@ -6,7 +6,7 @@ import de.maxhenkel.voicechat.net.PlayerStatesMessage;
 import de.maxhenkel.voicechat.net.SetPlayerStateMessage;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -56,7 +56,7 @@ public class ClientPlayerStateManager {
         state = getDefaultState();
     }
 
-    public boolean isPlayerDisabled(PlayerEntity player) {
+    public boolean isPlayerDisabled(Player player) {
         PlayerState playerState = states.get(player.getUUID());
         if (playerState == null) {
             return false;
@@ -65,7 +65,7 @@ public class ClientPlayerStateManager {
         return playerState.isDisabled();
     }
 
-    public boolean isPlayerDisconnected(PlayerEntity player) {
+    public boolean isPlayerDisconnected(Player player) {
         PlayerState playerState = states.get(player.getUUID());
         if (playerState == null) {
             return true;
@@ -107,7 +107,7 @@ public class ClientPlayerStateManager {
         return getGroup() != null;
     }
 
-    public boolean isInGroup(PlayerEntity player) {
+    public boolean isInGroup(Player player) {
         PlayerState state = states.get(player.getUUID());
         if (state == null) {
             return false;
@@ -116,7 +116,7 @@ public class ClientPlayerStateManager {
     }
 
     @Nullable
-    public String getGroup(PlayerEntity player) {
+    public String getGroup(Player player) {
         PlayerState state = states.get(player.getUUID());
         if (state == null) {
             return null;

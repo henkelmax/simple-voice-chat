@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Main;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
 
@@ -20,7 +20,7 @@ public class TalkCache {
         cache.put(player, System.currentTimeMillis());
     }
 
-    public boolean isTalking(PlayerEntity player) {
+    public boolean isTalking(Player player) {
         return isTalking(player.getUUID());
     }
 

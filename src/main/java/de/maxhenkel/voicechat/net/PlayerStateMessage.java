@@ -3,10 +3,10 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.UUID;
 
@@ -42,14 +42,14 @@ public class PlayerStateMessage implements Message<PlayerStateMessage> {
     }
 
     @Override
-    public PlayerStateMessage fromBytes(PacketBuffer buf) {
+    public PlayerStateMessage fromBytes(FriendlyByteBuf buf) {
         playerState = PlayerState.fromBytes(buf);
 
         return this;
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         playerState.toBytes(buf);
     }
 }

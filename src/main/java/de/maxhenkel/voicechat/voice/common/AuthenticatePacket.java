@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.UUID;
 
@@ -27,7 +27,7 @@ public class AuthenticatePacket implements Packet<AuthenticatePacket> {
     }
 
     @Override
-    public AuthenticatePacket fromBytes(PacketBuffer buf) {
+    public AuthenticatePacket fromBytes(FriendlyByteBuf buf) {
         AuthenticatePacket packet = new AuthenticatePacket();
         packet.playerUUID = buf.readUUID();
         packet.secret = buf.readUUID();
@@ -35,7 +35,7 @@ public class AuthenticatePacket implements Packet<AuthenticatePacket> {
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeUUID(playerUUID);
         buf.writeUUID(secret);
     }

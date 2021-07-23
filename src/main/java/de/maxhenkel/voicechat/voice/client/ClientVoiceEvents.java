@@ -1,8 +1,9 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.debug.DebugReport;
 import de.maxhenkel.voicechat.event.VoiceChatConnectedEvent;
@@ -12,15 +13,15 @@ import de.maxhenkel.voicechat.gui.GroupScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.network.play.ClientPlayNetHandler;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -64,7 +65,7 @@ public class ClientVoiceEvents {
         if (client != null) {
             onDisconnect();
         }
-        ClientPlayNetHandler connection = minecraft.getConnection();
+        ClientPacketListener connection = minecraft.getConnection();
         if (connection != null) {
             try {
                 SocketAddress socketAddress = connection.getConnection().channel().remoteAddress();
@@ -148,10 +149,11 @@ public class ClientVoiceEvents {
         }
     }
 
-    private void renderIcon(MatrixStack matrixStack, ResourceLocation texture) {
+    private void renderIcon(PoseStack matrixStack, ResourceLocation texture) {
         matrixStack.pushPose();
-        RenderSystem.color4f(1F, 1F, 1F, 1F);
-        minecraft.getTextureManager().bind(texture);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, texture);
         int width = minecraft.getWindow().getGuiScaledWidth();
         int height = minecraft.getWindow().getGuiScaledHeight();
         HUDIconLocation location = Main.CLIENT_CONFIG.hudIconLocation.get();
@@ -172,7 +174,7 @@ public class ClientVoiceEvents {
     @SubscribeEvent
     public void onInput(TickEvent.ClientTickEvent event) {
         if (Main.KEY_VOICE_CHAT.consumeClick()) {
-            if (InputMappings.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_F3)) {
+            if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_F3)) {
                 minecraft.options.renderDebug = true;
                 DebugReport.generateReport(minecraft.player);
             } else if (checkConnected()) {
@@ -188,7 +190,7 @@ public class ClientVoiceEvents {
                     minecraft.setScreen(new CreateGroupScreen());
                 }
             } else {
-                minecraft.player.displayClientMessage(new TranslationTextComponent("message.voicechat.groups_disabled"), true);
+                minecraft.player.displayClientMessage(new TranslatableComponent("message.voicechat.groups_disabled"), true);
             }
         }
 
@@ -218,9 +220,9 @@ public class ClientVoiceEvents {
             Main.CLIENT_CONFIG.hideIcons.save();
 
             if (hidden) {
-                minecraft.player.displayClientMessage(new TranslationTextComponent("message.voicechat.icons_hidden"), true);
+                minecraft.player.displayClientMessage(new TranslatableComponent("message.voicechat.icons_hidden"), true);
             } else {
-                minecraft.player.displayClientMessage(new TranslationTextComponent("message.voicechat.icons_visible"), true);
+                minecraft.player.displayClientMessage(new TranslatableComponent("message.voicechat.icons_visible"), true);
             }
         }
     }
@@ -234,7 +236,7 @@ public class ClientVoiceEvents {
     }
 
     public void sendUnavailableMessage() {
-        minecraft.player.displayClientMessage(new TranslationTextComponent("message.voicechat.voice_chat_unavailable"), true);
+        minecraft.player.displayClientMessage(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), true);
     }
 
     public boolean isMultiplayerServer() {
@@ -249,14 +251,14 @@ public class ClientVoiceEvents {
         if (Main.CLIENT_CONFIG.hideIcons.get()) {
             return;
         }
-        if (!(event.getEntity() instanceof PlayerEntity)) {
+        if (!(event.getEntity() instanceof Player)) {
             return;
         }
         if (event.getEntity() == minecraft.player) {
             return;
         }
 
-        PlayerEntity player = (PlayerEntity) event.getEntity();
+        Player player = (Player) event.getEntity();
 
         if (!minecraft.options.hideGui) {
             String group = playerStateManager.getGroup(player);
@@ -273,9 +275,8 @@ public class ClientVoiceEvents {
         }
     }
 
-    protected void renderPlayerIcon(PlayerEntity player, ResourceLocation texture, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    protected void renderPlayerIcon(Player player, ResourceLocation texture, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
-        RenderSystem.color4f(1F, 1F, 1F, 1F);
         matrixStackIn.translate(0D, player.getBbHeight() + 0.5D, 0D);
         matrixStackIn.mulPose(minecraft.getEntityRenderDispatcher().cameraOrientation());
         matrixStackIn.scale(-0.025F, -0.025F, 0.025F);
@@ -283,7 +284,7 @@ public class ClientVoiceEvents {
 
         float offset = (float) (minecraft.font.width(player.getDisplayName()) / 2 + 2);
 
-        IVertexBuilder builder = bufferIn.getBuffer(RenderType.text(texture));
+        VertexConsumer builder = bufferIn.getBuffer(RenderType.text(texture));
         int alpha = 32;
 
         if (player.isDiscrete()) {
@@ -297,7 +298,7 @@ public class ClientVoiceEvents {
             vertex(builder, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, packedLightIn);
             vertex(builder, matrixStackIn, offset, 0F, 0F, 0F, 0F, packedLightIn);
 
-            IVertexBuilder builderSeeThrough = bufferIn.getBuffer(RenderType.textSeeThrough(texture));
+            VertexConsumer builderSeeThrough = bufferIn.getBuffer(RenderType.textSeeThrough(texture));
             vertex(builderSeeThrough, matrixStackIn, offset, 10F, 0F, 0F, 1F, alpha, packedLightIn);
             vertex(builderSeeThrough, matrixStackIn, offset + 10F, 10F, 0F, 1F, 1F, alpha, packedLightIn);
             vertex(builderSeeThrough, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, alpha, packedLightIn);
@@ -307,12 +308,12 @@ public class ClientVoiceEvents {
         matrixStackIn.popPose();
     }
 
-    private static void vertex(IVertexBuilder builder, MatrixStack matrixStack, float x, float y, float z, float u, float v, int light) {
+    private static void vertex(VertexConsumer builder, PoseStack matrixStack, float x, float y, float z, float u, float v, int light) {
         vertex(builder, matrixStack, x, y, z, u, v, 255, light);
     }
 
-    private static void vertex(IVertexBuilder builder, MatrixStack matrixStack, float x, float y, float z, float u, float v, int alpha, int light) {
-        MatrixStack.Entry entry = matrixStack.last();
+    private static void vertex(VertexConsumer builder, PoseStack matrixStack, float x, float y, float z, float u, float v, int alpha, int light) {
+        PoseStack.Pose entry = matrixStack.last();
         builder.vertex(entry.pose(), x, y, z)
                 .color(255, 255, 255, alpha)
                 .uv(u, v)

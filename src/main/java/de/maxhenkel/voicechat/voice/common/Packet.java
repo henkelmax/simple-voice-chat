@@ -1,12 +1,12 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public interface Packet<T extends Packet> {
 
-    T fromBytes(PacketBuffer buf);
+    T fromBytes(FriendlyByteBuf buf);
 
-    void toBytes(PacketBuffer buf);
+    void toBytes(FriendlyByteBuf buf);
 
     default long getTTL() {
         return 10_000L;

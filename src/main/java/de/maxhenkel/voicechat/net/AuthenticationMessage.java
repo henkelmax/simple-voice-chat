@@ -2,9 +2,9 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.voicechat.Main;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.UUID;
 
@@ -33,14 +33,14 @@ public class AuthenticationMessage implements Message<AuthenticationMessage> {
     }
 
     @Override
-    public AuthenticationMessage fromBytes(PacketBuffer buf) {
+    public AuthenticationMessage fromBytes(FriendlyByteBuf buf) {
         playerUUID = buf.readUUID();
         secret = buf.readUUID();
         return this;
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeUUID(playerUUID);
         buf.writeUUID(secret);
     }

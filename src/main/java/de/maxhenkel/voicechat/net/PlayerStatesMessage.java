@@ -3,10 +3,10 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +44,7 @@ public class PlayerStatesMessage implements Message<PlayerStatesMessage> {
     }
 
     @Override
-    public PlayerStatesMessage fromBytes(PacketBuffer buf) {
+    public PlayerStatesMessage fromBytes(FriendlyByteBuf buf) {
         int count = buf.readInt();
         this.playerStates = new HashMap<>();
         for (int i = 0; i < count; i++) {
@@ -56,7 +56,7 @@ public class PlayerStatesMessage implements Message<PlayerStatesMessage> {
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(playerStates.size());
         for (Map.Entry<UUID, PlayerState> entry : playerStates.entrySet()) {
             entry.getValue().toBytes(buf);

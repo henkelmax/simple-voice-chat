@@ -1,9 +1,9 @@
 package de.maxhenkel.voicechat.voice.common;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.FriendlyByteBuf;
 
 import javax.annotation.Nullable;
 
@@ -67,8 +67,8 @@ public class PlayerState {
         return group != null;
     }
 
-    public static PlayerState fromBytes(PacketBuffer buf) {
-        PlayerState state = new PlayerState(buf.readBoolean(), buf.readBoolean(), NBTUtil.readGameProfile(buf.readNbt()));
+    public static PlayerState fromBytes(FriendlyByteBuf buf) {
+        PlayerState state = new PlayerState(buf.readBoolean(), buf.readBoolean(), NbtUtils.readGameProfile(buf.readNbt()));
 
         if (buf.readBoolean()) {
             state.setGroup(buf.readUtf(512));
@@ -77,10 +77,10 @@ public class PlayerState {
         return state;
     }
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeBoolean(disabled);
         buf.writeBoolean(disconnected);
-        buf.writeNbt(NBTUtil.writeGameProfile(new CompoundNBT(), gameProfile));
+        buf.writeNbt(NbtUtils.writeGameProfile(new CompoundTag(), gameProfile));
         buf.writeBoolean(hasGroup());
         if (hasGroup()) {
             buf.writeUtf(group, 512);

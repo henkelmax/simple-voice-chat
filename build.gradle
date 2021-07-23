@@ -1,12 +1,11 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://maven.maxhenkel.de/repository/public' }
-        jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.2'
     }
 }
@@ -14,7 +13,7 @@ buildscript {
 plugins {
     // https://github.com/matthewprenger/CurseGradle
     id "com.matthewprenger.cursegradle" version "1.4.0"
-    id "com.github.johnrengelman.shadow" version "5.2.0"
+    id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
@@ -25,7 +24,7 @@ archivesBaseName = project.archives_base_name
 version = mod_version
 group = mod_packagename
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 minecraft {
     mappings channel: 'official', version: mod_minecraft_version
@@ -72,12 +71,12 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
     minecraft "net.minecraftforge:forge:${mod_minecraft_version}-${forge_version}"
 
-    shadow fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:api")
-    runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}")
-    runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:javadoc")
+//    shadow fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:api")
+//    runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}")
+//    runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:javadoc")
 
-    runtimeOnly 'de.maxhenkel.opus4j:opus4j:1.0.2-jna-4.4.0'
-    shadow 'de.maxhenkel.opus4j:opus4j:1.0.2-jna-4.4.0'
+    runtimeOnly 'de.maxhenkel.opus4j:opus4j:1.0.2'
+    shadow 'de.maxhenkel.opus4j:opus4j:1.0.2'
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
@@ -95,20 +94,13 @@ jar {
 }
 
 processResources {
-    inputs.property "version", project.version
-
-    from(sourceSets.main.resources.srcDirs) {
-        include '**/*.toml'
-
+    filesMatching("**/*.toml") {
         expand 'mod_id': mod_id,
                 'mod_version': mod_version,
                 'mod_vendor': mod_vendor,
                 'mod_name': mod_name,
                 'mod_forge_version': mod_forge_version,
                 'mod_minecraft_version': mod_minecraft_version
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude '**/*.toml'
     }
 }
 
@@ -145,11 +137,11 @@ forgeUpdate {
 }
 
 repositories {
+    mavenLocal()
     maven {
         name = "henkelmax.public"
         url = 'https://maven.maxhenkel.de/repository/public'
     }
-    mavenLocal()
 }
 
 javadoc {
@@ -157,7 +149,7 @@ javadoc {
 }
 
 task deobfJar(type: Jar) {
-    classifier = 'deobf'
+    classifier 'deobf'
     from sourceSets.main.output
     manifest {
         attributes(["Specification-Title"     : mod_name,
@@ -171,12 +163,12 @@ task deobfJar(type: Jar) {
 }
 
 task sourcesJar(type: Jar) {
-    classifier = 'sources'
+    classifier 'sources'
     from sourceSets.main.allJava
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
+    classifier 'javadoc'
     from javadoc.getDestinationDir()
 }
 
@@ -195,7 +187,7 @@ shadowJar {
     relocate 'de.maxhenkel.corelib', "de.maxhenkel.${mod_id}.corelib"
     relocate 'de.maxhenkel.opus4j', "de.maxhenkel.${mod_id}.opus4j"
     dependencies {
-        exclude(dependency('net.java.dev.jna:jna:4.4.0'))
+        exclude(dependency('net.java.dev.jna:jna'))
     }
 }
 

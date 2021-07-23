@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class KeepAlivePacket implements Packet<KeepAlivePacket> {
 
@@ -9,12 +9,12 @@ public class KeepAlivePacket implements Packet<KeepAlivePacket> {
     }
 
     @Override
-    public KeepAlivePacket fromBytes(PacketBuffer buf) {
+    public KeepAlivePacket fromBytes(FriendlyByteBuf buf) {
         return new KeepAlivePacket();
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
 
     }
 }

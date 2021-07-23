@@ -7,7 +7,7 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.sound.sampled.AudioFormat;
@@ -178,7 +178,7 @@ public class AudioChannel extends Thread {
         if (state.hasGroup() && state.getGroup().equals(playerStateManager.getGroup())) {
             stereo = Utils.convertToStereo(monoData, 1F, 1F);
         } else {
-            PlayerEntity player = minecraft.level.getPlayerByUUID(uuid);
+            Player player = minecraft.level.getPlayerByUUID(uuid);
             if (player == null) {
                 return;
             }
@@ -192,7 +192,7 @@ public class AudioChannel extends Thread {
             }
 
             if (Main.CLIENT_CONFIG.stereo.get()) {
-                Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, player.position().add(0D, player.getEyeHeight(), 0D), maxDistance); //TODO use getEyePosition in 1.17
+                Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, player.getEyePosition(), maxDistance);
                 stereo = Utils.convertToStereo(monoData, percentage * stereoVolume.getLeft(), percentage * stereoVolume.getRight());
             } else {
                 stereo = Utils.convertToStereo(monoData, percentage, percentage);

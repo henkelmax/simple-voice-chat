@@ -1,11 +1,10 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Main;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ public class VoiceChatScreenBase extends Screen {
     protected int xSize;
     protected int ySize;
 
-    protected VoiceChatScreenBase(ITextComponent title, int xSize, int ySize) {
+    protected VoiceChatScreenBase(Component title, int xSize, int ySize) {
         super(title);
         this.xSize = xSize;
         this.ySize = ySize;
@@ -31,8 +30,7 @@ public class VoiceChatScreenBase extends Screen {
 
     @Override
     protected void init() {
-        children.clear(); // TODO use clearWidgets in 1.17
-        buttons.clear();
+        clearWidgets();
         super.init();
 
         this.guiLeft = (width - this.xSize) / 2;
@@ -47,12 +45,7 @@ public class VoiceChatScreenBase extends Screen {
         return guiTop;
     }
 
-    @Override
-    public <T extends Widget> T addButton(T button) {
-        return super.addButton(button);
-    }
-
-    public void drawHoverAreas(MatrixStack matrixStack, int mouseX, int mouseY) {
+    public void drawHoverAreas(PoseStack matrixStack, int mouseX, int mouseY) {
         for (HoverArea hoverArea : hoverAreas) {
             if (hoverArea.tooltip != null && hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
                 renderTooltip(matrixStack, hoverArea.tooltip.get(), mouseX - guiLeft, mouseY - guiTop);
@@ -73,13 +66,13 @@ public class VoiceChatScreenBase extends Screen {
         private final int posX, posY;
         private final int width, height;
         @Nullable
-        private final Supplier<List<IReorderingProcessor>> tooltip;
+        private final Supplier<List<FormattedCharSequence>> tooltip;
 
         public HoverArea(int posX, int posY, int width, int height) {
             this(posX, posY, width, height, null);
         }
 
-        public HoverArea(int posX, int posY, int width, int height, Supplier<List<IReorderingProcessor>> tooltip) {
+        public HoverArea(int posX, int posY, int width, int height, Supplier<List<FormattedCharSequence>> tooltip) {
             this.posX = posX;
             this.posY = posY;
             this.width = width;
@@ -104,7 +97,7 @@ public class VoiceChatScreenBase extends Screen {
         }
 
         @Nullable
-        public Supplier<List<IReorderingProcessor>> getTooltip() {
+        public Supplier<List<FormattedCharSequence>> getTooltip() {
             return tooltip;
         }
 

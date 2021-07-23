@@ -2,12 +2,12 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.net.AuthenticationMessage;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -31,7 +31,7 @@ public class ServerVoiceEvents {
         }
     }
 
-    public void initializePlayerConnection(ServerPlayerEntity player) {
+    public void initializePlayerConnection(ServerPlayer player) {
         if (server == null) {
             return;
         }
@@ -45,8 +45,8 @@ public class ServerVoiceEvents {
 
     @SubscribeEvent
     public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getPlayer() instanceof ServerPlayerEntity) {
-            initializePlayerConnection((ServerPlayerEntity) event.getPlayer());
+        if (event.getPlayer() instanceof ServerPlayer) {
+            initializePlayerConnection((ServerPlayer) event.getPlayer());
         }
     }
 
@@ -56,8 +56,8 @@ public class ServerVoiceEvents {
             return;
         }
 
-        if (event.getPlayer() instanceof ServerPlayerEntity) {
-            ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+        if (event.getPlayer() instanceof ServerPlayer) {
+            ServerPlayer player = (ServerPlayer) event.getPlayer();
 
             server.getPlayerStateManager().onPlayerLoggedOut(player);
 

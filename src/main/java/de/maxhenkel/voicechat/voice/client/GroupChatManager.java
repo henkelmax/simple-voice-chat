@@ -1,12 +1,13 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import de.maxhenkel.corelib.client.PlayerSkins;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +16,8 @@ public class GroupChatManager {
 
     private static final ResourceLocation TALK_OUTLINE = new ResourceLocation(Main.MODID, "textures/gui/talk_outline.png");
     private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Main.MODID, "textures/gui/speaker_group_hud_small_off.png");
-    private static final Minecraft minecraft = Minecraft.getInstance();
 
-    public static void renderIcons(MatrixStack matrixStack) {
+    public static void renderIcons(PoseStack matrixStack) {
         Client client = Main.CLIENT_VOICE_EVENTS.getClient();
 
         if (client == null) {
@@ -44,10 +44,15 @@ public class GroupChatManager {
             }
 
             if (client.getTalkCache().isTalking(state.getGameProfile().getId())) {
-                minecraft.getTextureManager().bind(TALK_OUTLINE);
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+                RenderSystem.setShaderTexture(0, TALK_OUTLINE);
                 Screen.blit(matrixStack, 0, 0, 0, 0, 10, 10, 16, 16);
             }
-            minecraft.getTextureManager().bind(PlayerSkins.getSkin(state.getGameProfile()));
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
             Screen.blit(matrixStack, 1, 1, 8, 8, 8, 8, 64, 64);
             Screen.blit(matrixStack, 1, 1, 40, 8, 8, 8, 64, 64);
 
@@ -59,7 +64,9 @@ public class GroupChatManager {
                     matrixStack.translate(4.5D, 1D, 0D);
                 }
                 matrixStack.scale(0.5F, 0.5F, 1F);
-                minecraft.getTextureManager().bind(SPEAKER_OFF_ICON);
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+                RenderSystem.setShaderTexture(0, SPEAKER_OFF_ICON);
                 Screen.blit(matrixStack, 0, 0, 0, 0, 16, 16, 16, 16);
                 matrixStack.popPose();
             }

@@ -1,13 +1,14 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Main;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -32,7 +33,7 @@ public abstract class ListScreen<T> extends Screen {
 
     protected Screen parent;
 
-    public ListScreen(Screen parent, List<T> elements, ITextComponent title) {
+    public ListScreen(Screen parent, List<T> elements, Component title) {
         super(title);
         this.parent = parent;
         this.elements = elements;
@@ -46,16 +47,16 @@ public abstract class ListScreen<T> extends Screen {
         this.guiLeft = (width - this.xSize) / 2;
         this.guiTop = (height - this.ySize) / 2;
 
-        previous = new Button(guiLeft + 10, guiTop + 60, 60, 20, new TranslationTextComponent("message.voicechat.previous"), button -> {
+        previous = new Button(guiLeft + 10, guiTop + 60, 60, 20, new TranslatableComponent("message.voicechat.previous"), button -> {
             index = (index - 1 + elements.size()) % elements.size();
             updateCurrentElement();
         });
 
-        back = new Button(guiLeft + xSize / 2 - 30, guiTop + 60, 60, 20, new TranslationTextComponent("message.voicechat.back"), button -> {
+        back = new Button(guiLeft + xSize / 2 - 30, guiTop + 60, 60, 20, new TranslatableComponent("message.voicechat.back"), button -> {
             minecraft.setScreen(parent);
         });
 
-        next = new Button(guiLeft + xSize - 70, guiTop + 60, 60, 20, new TranslationTextComponent("message.voicechat.next"), button -> {
+        next = new Button(guiLeft + xSize - 70, guiTop + 60, 60, 20, new TranslatableComponent("message.voicechat.next"), button -> {
             index = (index + 1) % elements.size();
             updateCurrentElement();
         });
@@ -64,11 +65,10 @@ public abstract class ListScreen<T> extends Screen {
     }
 
     public void updateCurrentElement() {
-        buttons.clear();
-        children.clear();
-        addButton(previous);
-        addButton(back);
-        addButton(next);
+        clearWidgets();
+        addRenderableWidget(previous);
+        addRenderableWidget(back);
+        addRenderableWidget(next);
 
         if (elements.size() <= 1) {
             next.visible = false;
@@ -94,9 +94,10 @@ public abstract class ListScreen<T> extends Screen {
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.color4f(1F, 1F, 1F, 1F);
-        minecraft.getTextureManager().bind(TEXTURE);
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
         blit(stack, guiLeft, guiTop, 0, 0, xSize, ySize);
 
         super.render(stack, mouseX, mouseY, partialTicks);
@@ -104,5 +105,5 @@ public abstract class ListScreen<T> extends Screen {
         renderText(stack, getCurrentElement(), mouseX, mouseY, partialTicks);
     }
 
-    protected abstract void renderText(MatrixStack stack, @Nullable T element, int mouseX, int mouseY, float partialTicks);
+    protected abstract void renderText(PoseStack stack, @Nullable T element, int mouseX, int mouseY, float partialTicks);
 }

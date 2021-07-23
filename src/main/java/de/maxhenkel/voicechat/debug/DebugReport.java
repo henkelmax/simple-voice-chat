@@ -5,18 +5,17 @@ import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
 import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.client.DataLines;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.forgespi.language.IModInfo;
 import org.apache.commons.io.FileUtils;
 
@@ -44,18 +43,18 @@ public class DebugReport {
         builder = new StringBuilder();
     }
 
-    public static void generateReport(PlayerEntity player) {
+    public static void generateReport(Player player) {
         try {
             Path path = generateReport();
-            player.sendMessage(new TranslationTextComponent("message.voicechat.saved_debug_report",
-                    new StringTextComponent(path.normalize().toString())
-                            .withStyle(TextFormatting.GRAY)
+            player.sendMessage(new TranslatableComponent("message.voicechat.saved_debug_report",
+                    new TextComponent(path.normalize().toString())
+                            .withStyle(ChatFormatting.GRAY)
                             .withStyle(style -> style
-                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("message.voicechat.open")))
+                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.voicechat.open")))
                                     .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, path.normalize().toString())))
             ), Util.NIL_UUID);
         } catch (IOException e) {
-            player.sendMessage(new TranslationTextComponent("message.voicechat.saved_debug_report_failed", e.getMessage()), Util.NIL_UUID);
+            player.sendMessage(new TranslatableComponent("message.voicechat.saved_debug_report_failed", e.getMessage()), Util.NIL_UUID);
             e.printStackTrace();
         }
     }
@@ -107,7 +106,7 @@ public class DebugReport {
         addLine("Loaded mods");
         addLine("");
 
-        for (ModInfo mod : ModList.get().getMods()) {
+        for (IModInfo mod : ModList.get().getMods()) {
             addLine("Mod ID: " + mod.getModId());
             addLine("Name: " + mod.getDisplayName());
             addLine("Version: " + mod.getVersion().getQualifier());
@@ -119,7 +118,7 @@ public class DebugReport {
     private void appendKeyBinds() {
         addLine("Keybinds");
         addLine("");
-        for (KeyBinding mapping : Minecraft.getInstance().options.keyMappings) {
+        for (KeyMapping mapping : Minecraft.getInstance().options.keyMappings) {
             addLine(mapping.getName() + "(" + mapping.getCategory() + "): " + mapping.getKey().getName() + " (" + mapping.getDefaultKey().getName() + ")");
         }
         addLine("");

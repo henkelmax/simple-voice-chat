@@ -3,10 +3,10 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.voicechat.Main;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class SetGroupMessage implements Message<SetGroupMessage> {
 
@@ -41,13 +41,13 @@ public class SetGroupMessage implements Message<SetGroupMessage> {
     }
 
     @Override
-    public SetGroupMessage fromBytes(PacketBuffer buf) {
+    public SetGroupMessage fromBytes(FriendlyByteBuf buf) {
         group = buf.readUtf(512);
         return this;
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeUtf(group, 512);
     }
 }
