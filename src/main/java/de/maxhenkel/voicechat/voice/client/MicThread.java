@@ -48,9 +48,7 @@ public class MicThread extends Thread {
                 Utils.sleep(10);
             } else {
                 MicrophoneActivationType type = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get();
-                if (VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
-                    Utils.sleep(10);
-                } else if (type.equals(MicrophoneActivationType.PTT)) {
+                if (type.equals(MicrophoneActivationType.PTT)) {
                     ptt();
                 } else if (type.equals(MicrophoneActivationType.VOICE)) {
                     voice();
@@ -66,7 +64,7 @@ public class MicThread extends Thread {
     private void voice() {
         wasPTT = false;
 
-        if (VoicechatClient.CLIENT.getPlayerStateManager().isMuted()) {
+        if (VoicechatClient.CLIENT.getPlayerStateManager().isMuted() || VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
             activating = false;
             if (mic.isActive()) {
                 mic.stop();
@@ -121,7 +119,7 @@ public class MicThread extends Thread {
         activating = false;
         int dataLength = client.getAudioChannelConfig().getFrameSize();
 
-        if (!VoicechatClient.CLIENT.getPttKeyHandler().isPTTDown()) {
+        if (!VoicechatClient.CLIENT.getPttKeyHandler().isPTTDown() || VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
             if (wasPTT) {
                 mic.stop();
                 mic.flush();
