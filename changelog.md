@@ -1,1 +1,1 @@
-- Added ukrainian translation
+- Fixed mic audio delay on some Linux machines
