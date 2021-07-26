@@ -43,9 +43,7 @@ public class MicThread extends Thread {
                 Utils.sleep(10);
             } else {
                 MicrophoneActivationType type = Main.CLIENT_CONFIG.microphoneActivationType.get();
-                if (Main.CLIENT_VOICE_EVENTS.getPlayerStateManager().isDisabled()) {
-                    Utils.sleep(10);
-                } else if (type.equals(MicrophoneActivationType.PTT)) {
+                if (type.equals(MicrophoneActivationType.PTT)) {
                     ptt();
                 } else if (type.equals(MicrophoneActivationType.VOICE)) {
                     voice();
@@ -61,7 +59,7 @@ public class MicThread extends Thread {
     private void voice() {
         wasPTT = false;
 
-        if (Main.CLIENT_VOICE_EVENTS.getPlayerStateManager().isMuted()) {
+        if (Main.CLIENT_VOICE_EVENTS.getPlayerStateManager().isMuted() || Main.CLIENT_VOICE_EVENTS.getPlayerStateManager().isDisabled()) {
             activating = false;
             if (mic.isActive()) {
                 mic.stop();
@@ -115,7 +113,7 @@ public class MicThread extends Thread {
     private void ptt() {
         activating = false;
         int dataLength = AudioChannelConfig.getFrameSize();
-        if (!Main.CLIENT_VOICE_EVENTS.getPttKeyHandler().isPTTDown()) {
+        if (!Main.CLIENT_VOICE_EVENTS.getPttKeyHandler().isPTTDown() || Main.CLIENT_VOICE_EVENTS.getPlayerStateManager().isDisabled()) {
             if (wasPTT) {
                 mic.stop();
                 mic.flush();
