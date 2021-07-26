@@ -1,1 +1,1 @@
-- Updated to 1.17.1
+- Fixed mic audio delay on some Linux machines
