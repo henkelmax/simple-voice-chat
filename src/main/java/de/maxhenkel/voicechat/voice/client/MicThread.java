@@ -32,6 +32,11 @@ public class MicThread extends Thread {
             throw new LineUnavailableException("Could not find any microphone with the specified audio format");
         }
         mic.open(af);
+
+        // This fixes the accumulating audio issue on some Linux systems
+        mic.start();
+        mic.stop();
+        mic.flush();
     }
 
     @Override
