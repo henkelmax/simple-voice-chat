@@ -144,6 +144,8 @@ curseforge {
         changelog = file('changelog.md')
         releaseType = curse_release_type
         addGameVersion mod_minecraft_version
+        addGameVersion 'Forge'
+        addGameVersion 'Java 16'
         mainArtifact(jar) {
             displayName = "[FORGE][${mod_minecraft_version}] ${mod_name} ${mod_version}"
         }
