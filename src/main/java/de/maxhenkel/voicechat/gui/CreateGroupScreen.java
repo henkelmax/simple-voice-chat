@@ -64,22 +64,25 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float delta) {
+    public void renderBackground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         RenderSystem.color4f(1F, 1F, 1F, 1F);
         minecraft.getTextureManager().bind(TEXTURE);
-        blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
+        blit(poseStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
+    }
 
-        playerList.drawGuiContainerBackgroundLayer(matrixStack, delta, mouseX, mouseY);
+    @Override
+    public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+        playerList.drawGuiContainerBackgroundLayer(poseStack, delta, mouseX, mouseY);
 
-        playerList.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
+        playerList.drawGuiContainerForegroundLayer(poseStack, mouseX, mouseY);
 
         for (AbstractWidget widget : buttons) {
             widget.render(matrixStack, mouseX, mouseY, delta);
         }
 
-        font.draw(matrixStack, new TranslatableComponent("message.voicechat.join_create_group"), guiLeft + 8, guiTop + 5, FONT_COLOR);
-        font.draw(matrixStack, new TranslatableComponent("message.voicechat.group_name"), guiLeft + 8, guiTop + 21, FONT_COLOR);
-        font.draw(matrixStack, new TranslatableComponent("message.voicechat.join_group"), guiLeft + 8, guiTop + 38, FONT_COLOR);
+        font.draw(poseStack, new TranslatableComponent("message.voicechat.join_create_group"), guiLeft + 8, guiTop + 5, FONT_COLOR);
+        font.draw(poseStack, new TranslatableComponent("message.voicechat.group_name"), guiLeft + 8, guiTop + 21, FONT_COLOR);
+        font.draw(poseStack, new TranslatableComponent("message.voicechat.join_group"), guiLeft + 8, guiTop + 38, FONT_COLOR);
     }
 
     @Override
@@ -88,7 +91,6 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
             minecraft.setScreen(null);
             return true;
         }
-
         return groupName.keyPressed(keyCode, scanCode, modifiers)
                 || groupName.isVisible()
                 || super.keyPressed(keyCode, scanCode, modifiers);
