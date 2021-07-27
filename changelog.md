@@ -1,1 +1,2 @@
 - Fixed GUI backgrounds
+- Fixed group icons

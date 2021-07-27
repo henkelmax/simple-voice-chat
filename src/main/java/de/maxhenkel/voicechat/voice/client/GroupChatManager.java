@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import de.maxhenkel.corelib.client.PlayerSkins;
 import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
@@ -53,6 +54,7 @@ public class GroupChatManager {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
+            RenderSystem.setShaderTexture(0, PlayerSkins.getSkin(state.getGameProfile()));
             Screen.blit(matrixStack, 1, 1, 8, 8, 8, 8, 64, 64);
             Screen.blit(matrixStack, 1, 1, 40, 8, 8, 8, 64, 64);
 
