@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.Collections;
 
@@ -92,31 +91,24 @@ public class GroupScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float delta) {
+    public void renderBackground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, TEXTURE);
-        blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
-
-        playerList.drawGuiContainerBackgroundLayer(matrixStack, delta, mouseX, mouseY);
-
-        playerList.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
-
-        font.draw(matrixStack, new TextComponent(GroupChatManager.getGroup()), guiLeft + 8, guiTop + 5, FONT_COLOR);
-
-        for (Widget widget : renderables) {
-            widget.render(matrixStack, mouseX, mouseY, delta);
-        }
+        blit(poseStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            minecraft.setScreen(null);
-            return true;
-        }
+    public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+        playerList.drawGuiContainerBackgroundLayer(poseStack, delta, mouseX, mouseY);
 
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        playerList.drawGuiContainerForegroundLayer(poseStack, mouseX, mouseY);
+
+        font.draw(poseStack, new TextComponent(GroupChatManager.getGroup()), guiLeft + 8, guiTop + 5, FONT_COLOR);
+
+        for (Widget widget : renderables) {
+            widget.render(poseStack, mouseX, mouseY, delta);
+        }
     }
 
     @Override
