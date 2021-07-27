@@ -13,16 +13,9 @@ import net.minecraft.resources.ResourceLocation;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class ListScreen<T> extends Screen {
-
-    protected static final int FONT_COLOR = 4210752;
+public abstract class ListScreen<T> extends VoiceChatScreenBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Main.MODID, "textures/gui/gui_generic_small.png");
-
-    protected int guiLeft;
-    protected int guiTop;
-    protected int xSize;
-    protected int ySize;
 
     protected List<T> elements;
     protected int index;
@@ -34,18 +27,14 @@ public abstract class ListScreen<T> extends Screen {
     protected Screen parent;
 
     public ListScreen(Screen parent, List<T> elements, Component title) {
-        super(title);
+        super(title, 248, 85);
         this.parent = parent;
         this.elements = elements;
-        xSize = 248;
-        ySize = 85;
     }
 
     @Override
     protected void init() {
         super.init();
-        this.guiLeft = (width - this.xSize) / 2;
-        this.guiTop = (height - this.ySize) / 2;
 
         previous = new Button(guiLeft + 10, guiTop + 60, 60, 20, new TranslatableComponent("message.voicechat.previous"), button -> {
             index = (index - 1 + elements.size()) % elements.size();
@@ -94,15 +83,16 @@ public abstract class ListScreen<T> extends Screen {
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+    public void renderBackground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, TEXTURE);
-        blit(stack, guiLeft, guiTop, 0, 0, xSize, ySize);
+        blit(poseStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+    }
 
-        super.render(stack, mouseX, mouseY, partialTicks);
-
-        renderText(stack, getCurrentElement(), mouseX, mouseY, partialTicks);
+    @Override
+    public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+        renderText(poseStack, getCurrentElement(), mouseX, mouseY, delta);
     }
 
     protected abstract void renderText(PoseStack stack, @Nullable T element, int mouseX, int mouseY, float partialTicks);

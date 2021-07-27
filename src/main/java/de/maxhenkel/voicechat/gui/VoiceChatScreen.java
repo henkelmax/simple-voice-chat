@@ -20,8 +20,6 @@ import java.util.Collections;
 
 public class VoiceChatScreen extends VoiceChatScreenBase {
 
-    protected static final int FONT_COLOR = 4210752;
-
     private static final ResourceLocation TEXTURE = new ResourceLocation(Main.MODID, "textures/gui/gui_voicechat.png");
     private static final ResourceLocation MICROPHONE = new ResourceLocation(Main.MODID, "textures/gui/microphone_button.png");
     private static final ResourceLocation HIDE = new ResourceLocation(Main.MODID, "textures/gui/hide_button.png");
@@ -96,6 +94,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         checkButtons();
     }
 
+    @Override
     public void tick() {
         super.tick();
         checkButtons();
@@ -106,26 +105,36 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == Main.KEY_VOICE_CHAT.getKey().getValue()) {
+            minecraft.setScreen(null);
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public void renderBackground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, TEXTURE);
-        blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+        blit(poseStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+    }
 
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-
+    @Override
+    public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         Component title = new TranslatableComponent("gui.voicechat.voice_chat.title");
-        int titleWidth = font.width(title.getString());
-        font.draw(matrixStack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
+        int titleWidth = font.width(title);
+        font.draw(poseStack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
 
         Client client = Main.CLIENT_VOICE_EVENTS.getClient();
         if (client != null && client.getRecorder() != null) {
             AudioRecorder recorder = client.getRecorder();
             TextComponent time = new TextComponent(recorder.getDuration());
-            font.draw(matrixStack, time.withStyle(ChatFormatting.DARK_RED), (float) (guiLeft + (xSize - font.width(time)) / 2), guiTop + ySize - font.lineHeight - 7, 0);
+            font.draw(poseStack, time.withStyle(ChatFormatting.DARK_RED), (float) (guiLeft + (xSize - font.width(time)) / 2), guiTop + ySize - font.lineHeight - 7, 0);
 
             if (recordingHoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
-                renderTooltip(matrixStack, new TranslatableComponent("message.voicechat.storage_size", recorder.getStorage()), mouseX, mouseY);
+                renderTooltip(poseStack, new TranslatableComponent("message.voicechat.storage_size", recorder.getStorage()), mouseX, mouseY);
             }
         }
     }

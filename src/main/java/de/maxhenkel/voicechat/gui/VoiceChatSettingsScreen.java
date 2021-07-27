@@ -51,24 +51,25 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderBackground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, TEXTURE);
-        blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
+        blit(poseStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
 
-        blit(matrixStack, guiLeft + 10, guiTop + 120, 0, 244, xSize - 20, 20, 512, 512);
-        blit(matrixStack, guiLeft + 11, guiTop + 121, 0, 226, (int) ((xSize - 18) * micValue), 18, 512, 512);
+        blit(poseStack, guiLeft + 10, guiTop + 120, 0, 244, xSize - 20, 20, 512, 512);
+        blit(poseStack, guiLeft + 11, guiTop + 121, 0, 226, (int) ((xSize - 18) * micValue), 18, 512, 512);
 
         int pos = (int) ((xSize - 20) * Utils.dbToPerc(Main.CLIENT_CONFIG.voiceActivationThreshold.get()));
 
-        blit(matrixStack, guiLeft + 10 + pos, guiTop + 120, 0, 244, 1, 20, 512, 512);
+        blit(poseStack, guiLeft + 10 + pos, guiTop + 120, 0, 244, 1, 20, 512, 512);
+    }
 
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-
+    @Override
+    public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         Component title = new TranslatableComponent("gui.voicechat.voice_chat_settings.title");
         int titleWidth = font.width(title);
-        font.draw(matrixStack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
+        font.draw(poseStack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
     }
 
     @Override
