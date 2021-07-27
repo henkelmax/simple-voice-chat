@@ -77,7 +77,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         playerList.drawGuiContainerForegroundLayer(poseStack, mouseX, mouseY);
 
         for (AbstractWidget widget : buttons) {
-            widget.render(matrixStack, mouseX, mouseY, delta);
+            widget.render(poseStack, mouseX, mouseY, delta);
         }
 
         font.draw(poseStack, new TranslatableComponent("message.voicechat.join_create_group"), guiLeft + 8, guiTop + 5, FONT_COLOR);

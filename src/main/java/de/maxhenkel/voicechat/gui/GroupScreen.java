@@ -106,7 +106,7 @@ public class GroupScreen extends VoiceChatScreenBase {
         font.draw(poseStack, new TextComponent(GroupChatManager.getGroup()), guiLeft + 8, guiTop + 5, FONT_COLOR);
 
         for (AbstractWidget widget : buttons) {
-            widget.render(matrixStack, mouseX, mouseY, delta);
+            widget.render(poseStack, mouseX, mouseY, delta);
         }
     }
 
