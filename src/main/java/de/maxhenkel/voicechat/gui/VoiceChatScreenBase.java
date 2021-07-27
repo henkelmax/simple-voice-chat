@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class VoiceChatScreenBase extends Screen {
+public abstract class VoiceChatScreenBase extends Screen {
 
     protected static final int FONT_COLOR = 4210752;
 
@@ -38,6 +38,22 @@ public class VoiceChatScreenBase extends Screen {
         this.guiTop = (height - this.ySize) / 2;
     }
 
+    @Override
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+        renderBackground(poseStack);
+        renderBackground(poseStack, mouseX, mouseY, delta);
+        super.render(poseStack, mouseX, mouseY, delta);
+        renderForeground(poseStack, mouseX, mouseY, delta);
+    }
+
+    public void renderBackground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+
+    }
+
+    public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+
+    }
+
     public int getGuiLeft() {
         return guiLeft;
     }
@@ -52,15 +68,6 @@ public class VoiceChatScreenBase extends Screen {
                 renderTooltip(matrixStack, hoverArea.tooltip.get(), mouseX - guiLeft, mouseY - guiTop);
             }
         }
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == KeyBindingHelper.getBoundKeyOf(minecraft.options.keyInventory).getValue() || keyCode == KeyBindingHelper.getBoundKeyOf(VoicechatClient.KEY_VOICE_CHAT).getValue()) {
-            minecraft.setScreen(null);
-            return true;
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     public static class HoverArea {
