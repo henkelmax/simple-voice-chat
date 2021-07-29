@@ -26,6 +26,7 @@ public class ServerVoiceEvents implements Listener {
         }
 
         if (!player.hasPermission(VoiceChatCommands.CONNECT_PERMISSION)) {
+            Voicechat.LOGGER.info("Player {} has no permission to connect to the voice chat", player.getName());
             return;
         }
 
@@ -34,7 +35,7 @@ public class ServerVoiceEvents implements Listener {
         boolean hasGroupPermission = player.hasPermission(VoiceChatCommands.GROUPS_PERMISSION);
 
         NetManager.sendToClient(player, new SecretPacket(secret, hasGroupPermission, Voicechat.SERVER_CONFIG));
-        Voicechat.LOGGER.info("Sent secret to " + player.getName());
+        Voicechat.LOGGER.info("Sent secret to {}", player.getName());
     }
 
     @EventHandler
