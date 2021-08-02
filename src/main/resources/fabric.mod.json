@@ -32,10 +32,15 @@
     "minecraft": "${minecraft_dependency}",
     "java": ">=16"
   },
-  "accessWidener" : "voicechat.accesswidener",
+  "accessWidener": "voicechat.accesswidener",
   "custom": {
     "voicechat": {
       "compatibilityVersion": ${compatibility_version}
+    },
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/4dH2zwTmyX"
+      }
     }
   }
 }
