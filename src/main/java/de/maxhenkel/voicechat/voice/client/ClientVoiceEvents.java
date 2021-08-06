@@ -8,10 +8,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.debug.DebugReport;
 import de.maxhenkel.voicechat.events.*;
-import de.maxhenkel.voicechat.gui.CreateGroupScreen;
-import de.maxhenkel.voicechat.gui.GroupScreen;
-import de.maxhenkel.voicechat.gui.VoiceChatScreen;
-import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
+import de.maxhenkel.voicechat.gui.*;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
@@ -69,8 +66,17 @@ public class ClientVoiceEvents {
         });
 
         NetManager.registerClientReceiver(SetGroupPacket.class, (client, handler, responseSender, packet) -> {
-            playerStateManager.setGroup(packet.getGroup().isEmpty() ? null : packet.getGroup());
-            minecraft.setScreen(null);
+            String newGroup = packet.getGroup().isEmpty() ? null : packet.getGroup();
+            if (newGroup == null && playerStateManager.getGroup() == null) {
+                return;
+            }
+            if (newGroup != null && newGroup.equals(playerStateManager.getGroup())) {
+                return;
+            }
+            playerStateManager.setGroup(newGroup);
+            if (minecraft.screen instanceof GroupScreen || minecraft.screen instanceof CreateGroupScreen) {
+                minecraft.setScreen(null);
+            }
         });
     }
 
