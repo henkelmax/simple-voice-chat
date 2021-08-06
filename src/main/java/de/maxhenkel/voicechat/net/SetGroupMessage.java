@@ -2,6 +2,9 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.corelib.net.Message;
 import de.maxhenkel.voicechat.Main;
+import de.maxhenkel.voicechat.gui.CreateGroupScreen;
+import de.maxhenkel.voicechat.gui.GroupScreen;
+import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,8 +39,18 @@ public class SetGroupMessage implements Message<SetGroupMessage> {
 
     @OnlyIn(Dist.CLIENT)
     private void exec() {
-        Main.CLIENT_VOICE_EVENTS.getPlayerStateManager().setGroup(group.isEmpty() ? null : group);
-        Minecraft.getInstance().setScreen(null);
+        ClientPlayerStateManager playerStateManager = Main.CLIENT_VOICE_EVENTS.getPlayerStateManager();
+        String newGroup = group.isEmpty() ? null : group;
+        if (newGroup == null && playerStateManager.getGroup() == null) {
+            return;
+        }
+        if (newGroup != null && newGroup.equals(playerStateManager.getGroup())) {
+            return;
+        }
+        playerStateManager.setGroup(newGroup);
+        if (Minecraft.getInstance().screen instanceof GroupScreen || Minecraft.getInstance().screen instanceof CreateGroupScreen) {
+            Minecraft.getInstance().setScreen(null);
+        }
     }
 
     @Override

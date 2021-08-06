@@ -1,1 +1,1 @@
-- Fixed mic audio delay on some Linux machines
+- Fixed GUI closing when using the join command
