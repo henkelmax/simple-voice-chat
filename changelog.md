@@ -1,1 +1,1 @@
-- Fixed GUI backgrounds
+- Fixed GUI closing when using the join command
