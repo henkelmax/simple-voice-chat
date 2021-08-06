@@ -1,2 +1,1 @@
-- Fixed GUI backgrounds
-- Fixed group icons
+- Fixed GUI closing when using the join command
