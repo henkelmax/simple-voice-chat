@@ -1,1 +1,1 @@
-- Fixed GUI closing when using the join command
+- Fixed crash with nonexistent accesswidener
