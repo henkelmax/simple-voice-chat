@@ -1,1 +1,1 @@
-- Fixed GUI closing when using the join command
+- Removed unnecessary render calls
