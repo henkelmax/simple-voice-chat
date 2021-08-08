@@ -32,7 +32,6 @@
     "minecraft": "${minecraft_dependency}",
     "java": ">=16"
   },
-  "accessWidener": "voicechat.accesswidener",
   "custom": {
     "voicechat": {
       "compatibilityVersion": ${compatibility_version}
