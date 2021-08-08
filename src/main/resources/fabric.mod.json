@@ -31,7 +31,6 @@
     "fabric": ">=${fabric_version}",
     "minecraft": "${minecraft_version}"
   },
-  "accessWidener": "voicechat.accesswidener",
   "custom": {
     "voicechat": {
       "compatibilityVersion": ${compatibility_version}

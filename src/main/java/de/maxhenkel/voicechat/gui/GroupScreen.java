@@ -10,7 +10,6 @@ import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.GroupChatManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -104,10 +103,6 @@ public class GroupScreen extends VoiceChatScreenBase {
         playerList.drawGuiContainerForegroundLayer(poseStack, mouseX, mouseY);
 
         font.draw(poseStack, new TextComponent(GroupChatManager.getGroup()), guiLeft + 8, guiTop + 5, FONT_COLOR);
-
-        for (AbstractWidget widget : buttons) {
-            widget.render(poseStack, mouseX, mouseY, delta);
-        }
     }
 
     @Override
