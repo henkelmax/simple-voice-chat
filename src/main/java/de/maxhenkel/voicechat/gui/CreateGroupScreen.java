@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.Main;
 import de.maxhenkel.voicechat.gui.widgets.CreateGroupList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
@@ -70,6 +71,10 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         playerList.drawGuiContainerBackgroundLayer(matrixStack, delta, mouseX, mouseY);
 
         playerList.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
+
+        for (Widget widget : buttons) {
+            widget.render(matrixStack, mouseX, mouseY, delta);
+        }
 
         font.draw(matrixStack, new TranslationTextComponent("message.voicechat.join_create_group"), guiLeft + 8, guiTop + 5, FONT_COLOR);
         font.draw(matrixStack, new TranslationTextComponent("message.voicechat.group_name"), guiLeft + 8, guiTop + 21, FONT_COLOR);

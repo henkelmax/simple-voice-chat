@@ -1,1 +1,1 @@
-- Removed unnecessary render calls
+- Fixed group screen not rendering correctly
