@@ -5,8 +5,12 @@ import de.maxhenkel.voicechat.event.VoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponentUtils;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.jline.utils.Log;
 
@@ -102,16 +106,16 @@ public class Client extends Thread {
     }
 
     public void sendPlayerError(String translationKey, Exception e) {
-        LocalPlayer player = Minecraft.getInstance().player;
+        ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
         player.sendMessage(
-                ComponentUtils.wrapInSquareBrackets(new TextComponent("Simple Voice Chat"))
-                        .withStyle(ChatFormatting.GREEN)
+                TextComponentUtils.wrapInSquareBrackets(new StringTextComponent("Simple Voice Chat"))
+                        .withStyle(TextFormatting.GREEN)
                         .append(" ")
-                        .append(new TranslatableComponent(translationKey).withStyle(ChatFormatting.RED))
-                        .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED))))
+                        .append(new TranslationTextComponent(translationKey).withStyle(TextFormatting.RED))
+                        .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(e.getMessage()).withStyle(TextFormatting.RED))))
                 , Util.NIL_UUID);
     }
 
