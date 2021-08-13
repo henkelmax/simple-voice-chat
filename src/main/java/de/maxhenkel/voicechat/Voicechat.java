@@ -91,7 +91,7 @@ public class Voicechat implements ModInitializer {
         }
     }
 
-    private static String getModVersion() {
+    public static String getModVersion() {
         ModContainer modContainer = FabricLoader.getInstance().getModContainer(MODID).orElse(null);
         if (modContainer == null) {
             return "N/A";
@@ -99,7 +99,7 @@ public class Voicechat implements ModInitializer {
         return modContainer.getMetadata().getVersion().getFriendlyString();
     }
 
-    private static String getModName() {
+    public static String getModName() {
         ModContainer modContainer = FabricLoader.getInstance().getModContainer(MODID).orElse(null);
         if (modContainer == null) {
             return MODID;
@@ -107,7 +107,7 @@ public class Voicechat implements ModInitializer {
         return modContainer.getMetadata().getName();
     }
 
-    private static int readCompatibilityVersion() {
+    public static int readCompatibilityVersion() {
         ModContainer modContainer = FabricLoader.getInstance().getModContainer(MODID).orElse(null);
         if (modContainer == null) {
             return -1;
