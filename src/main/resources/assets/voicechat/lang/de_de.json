@@ -74,5 +74,6 @@
   "message.voicechat.recording_started": "Aufzeichnung gestartet",
   "message.voicechat.recording_stopped": "Aufzeichnung gestoppt",
   "message.voicechat.open_folder": "Ordner öffnen",
-  "message.voicechat.storage_size": "Erwartete Speichergröße %s"
+  "message.voicechat.storage_size": "Erwartete Speichergröße %s",
+  "messsage.voicechat.microphone_unavailable": "Mikrofon nicht verfügbar: Versuchen Sie den Computer neu zu starten"
 }
