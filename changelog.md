@@ -1,1 +1,1 @@
-- Fixed crash with nonexistent accesswidener
+- Added microphone error message
