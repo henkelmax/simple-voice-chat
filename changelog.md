@@ -1,1 +1,1 @@
-- Removed unnecessary render calls
+- Added microphone error message
