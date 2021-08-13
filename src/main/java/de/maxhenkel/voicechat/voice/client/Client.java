@@ -89,12 +89,30 @@ public class Client extends Thread {
     }
 
     private void startMicThread() {
+        if (micThread != null) {
+            micThread.close();
+        }
         try {
             micThread = new MicThread(this);
             micThread.start();
         } catch (Exception e) {
-            Main.LOGGER.error("Mic unavailable " + e);
+            Main.LOGGER.error("Microphone unavailable: {}", e.getMessage());
+            sendPlayerError("messsage.voicechat.microphone_unavailable", e);
         }
+    }
+
+    public void sendPlayerError(String translationKey, Exception e) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
+        player.sendMessage(
+                ComponentUtils.wrapInSquareBrackets(new TextComponent("Simple Voice Chat"))
+                        .withStyle(ChatFormatting.GREEN)
+                        .append(" ")
+                        .append(new TranslatableComponent(translationKey).withStyle(ChatFormatting.RED))
+                        .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED))))
+                , Util.NIL_UUID);
     }
 
     @Override

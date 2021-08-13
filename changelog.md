@@ -1,1 +1,1 @@
-- Fixed group screen not rendering correctly
+- Added microphone error message
