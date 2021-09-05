@@ -20,6 +20,10 @@ import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import org.lwjgl.glfw.GLFW;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -58,7 +62,9 @@ public class VoicechatClient implements ClientModInitializer {
         });
 
         ConfigBuilder.create(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-client.properties"), builder -> CLIENT_CONFIG = new ClientConfig(builder));
-        VOLUME_CONFIG = new PlayerVolumeConfig(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve("voicechat-volumes.properties"));
+
+        fixVolumeConfig();
+        VOLUME_CONFIG = new PlayerVolumeConfig(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-volumes.properties"));
 
         KEY_PTT = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.push_to_talk", GLFW.GLFW_KEY_CAPS_LOCK, "key.categories.voicechat"));
         KEY_MUTE = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.mute_microphone", GLFW.GLFW_KEY_M, "key.categories.voicechat"));
@@ -82,5 +88,17 @@ public class VoicechatClient implements ClientModInitializer {
                     consumer.accept(Pack.create(BLACK_ICONS.getName(), false, () -> BLACK_ICONS, packConstructor, Pack.Position.TOP, PackSource.BUILT_IN));
                 }
         );
+    }
+
+    private void fixVolumeConfig() {
+        Path oldLocation = Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve("voicechat-volumes.properties");
+        Path newLocation = Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-volumes.properties");
+        if (!newLocation.toFile().exists() && oldLocation.toFile().exists()) {
+            try {
+                Files.move(oldLocation, newLocation, StandardCopyOption.ATOMIC_MOVE);
+            } catch (IOException e) {
+                Voicechat.LOGGER.error("Failed to move volumes config: {}", e.getMessage());
+            }
+        }
     }
 }
