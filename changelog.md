@@ -1,1 +1,1 @@
-- Added microphone error message
+- Added japanese translation
