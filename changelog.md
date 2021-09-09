@@ -1,1 +1,1 @@
-- Moved player volumes config
+- Added japanese translation
