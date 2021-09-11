@@ -19,34 +19,58 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
     private static final ResourceLocation TEXTURE = new ResourceLocation(Main.MODID, "textures/gui/gui_voicechat_settings.png");
 
     private double micValue;
-
     private VoiceActivationSlider voiceActivationSlider;
+    private int thresholdY;
 
     public VoiceChatSettingsScreen() {
-        super(new TranslatableComponent("gui.voicechat.voice_chat_settings.title"), 248, 226);
+        super(new TranslatableComponent("gui.voicechat.voice_chat_settings.title"), 248, 219);
     }
 
     @Override
     protected void init() {
         super.init();
 
-        voiceActivationSlider = new VoiceActivationSlider(guiLeft + 10, guiTop + 95, xSize - 20, 20);
-        addRenderableWidget(new VoiceSoundSlider(guiLeft + 10, guiTop + 20, xSize - 20, 20));
-        addRenderableWidget(new MicAmplificationSlider(guiLeft + 10, guiTop + 45, xSize - 20, 20));
-        addRenderableWidget(new MicActivationButton(guiLeft + 10, guiTop + 70, xSize - 20, 20, voiceActivationSlider));
-        addRenderableWidget(voiceActivationSlider);
-        Client c = Main.CLIENT_VOICE_EVENTS.getClient();
-        if (c != null) {
-            addRenderableWidget(new MicTestButton(guiLeft + 10, guiTop + 145, xSize - 20, 20, this));
+        Client c = VoicechatClient.CLIENT.getClient();
+
+        if (c == null) {
+            return;
         }
-        addRenderableWidget(new Button(guiLeft + 10, guiTop + 170, xSize - 20, 20, new TranslatableComponent("message.voicechat.adjust_volumes"), button -> {
-            minecraft.setScreen(new AdjustVolumeScreen(this, Main.CLIENT_VOICE_EVENTS.getPlayerStateManager().getPlayerStates().stream().filter(state -> !state.getGameProfile().getId().equals(minecraft.player.getUUID())).collect(Collectors.toList())));
+
+        int y = guiTop + 20;
+
+        addRenderableWidget(new VoiceSoundSlider(guiLeft + 10, y, xSize - 20, 20));
+        y += 21;
+        addRenderableWidget(new MicAmplificationSlider(guiLeft + 10, y, xSize - 20, 20));
+        y += 21;
+        if (c.getMicThread() != null && c.getMicThread().getDenoiser() != null) {
+            addRenderableWidget(new BooleanConfigButton(guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.denoiser, enabled -> {
+                return new TranslatableComponent("message.voicechat.denoiser",
+                        enabled ? new TranslatableComponent("message.voicechat.enabled") : new TranslatableComponent("message.voicechat.disabled")
+                );
+            }));
+        }
+        y += 21;
+
+        voiceActivationSlider = new VoiceActivationSlider(guiLeft + 10, y + 21, xSize - 20, 20);
+
+        addRenderableWidget(new MicActivationButton(guiLeft + 10, y, xSize - 20, 20, voiceActivationSlider));
+        y += 42;
+        thresholdY = y;
+
+        addRenderableWidget(voiceActivationSlider);
+        y += 21;
+
+        addRenderableWidget(new MicTestButton(guiLeft + 10, y, xSize - 20, 20, this, c));
+        y += 21;
+        addRenderableWidget(new Button(guiLeft + 10, y, xSize - 20, 20, new TranslatableComponent("message.voicechat.adjust_volumes"), button -> {
+            minecraft.setScreen(new AdjustVolumeScreen(this, VoicechatClient.CLIENT.getPlayerStateManager().getPlayerStates().stream().filter(state -> !state.getGameProfile().getId().equals(minecraft.player.getUUID())).collect(Collectors.toList())));
         }));
-        addRenderableWidget(new Button(guiLeft + 10, guiTop + 195, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_microphone"), button -> {
-            minecraft.setScreen(new SelectMicrophoneScreen(this));
+        y += 21;
+        addRenderableWidget(new Button(guiLeft + 10, y, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_microphone"), button -> {
+            minecraft.setScreen(new SelectMicrophoneScreen(c, this));
         }));
-        addRenderableWidget(new Button(guiLeft + xSize / 2 + 6, guiTop + 195, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_speaker"), button -> {
-            minecraft.setScreen(new SelectSpeakerScreen(this));
+        addRenderableWidget(new Button(guiLeft + xSize / 2 + 6, y, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_speaker"), button -> {
+            minecraft.setScreen(new SelectSpeakerScreen(c, this));
         }));
     }
 
@@ -57,12 +81,12 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
         RenderSystem.setShaderTexture(0, TEXTURE);
         blit(poseStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
 
-        blit(poseStack, guiLeft + 10, guiTop + 120, 0, 244, xSize - 20, 20, 512, 512);
-        blit(poseStack, guiLeft + 11, guiTop + 121, 0, 226, (int) ((xSize - 18) * micValue), 18, 512, 512);
+        blit(poseStack, guiLeft + 10, thresholdY, 0, 237, xSize - 20, 20, 512, 512);
+        blit(poseStack, guiLeft + 11, thresholdY + 1, 0, 219, (int) ((xSize - 18) * micValue), 18, 512, 512);
 
         int pos = (int) ((xSize - 20) * Utils.dbToPerc(Main.CLIENT_CONFIG.voiceActivationThreshold.get()));
 
-        blit(poseStack, guiLeft + 10 + pos, guiTop + 120, 0, 244, 1, 20, 512, 512);
+        blit(poseStack, guiLeft + 10 + pos, thresholdY, 0, 237, 1, 20, 512, 512);
     }
 
     @Override

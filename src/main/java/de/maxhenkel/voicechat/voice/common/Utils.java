@@ -31,6 +31,28 @@ public class Utils {
         return new byte[]{(byte) (s & 0xFF), (byte) ((s >> 8) & 0xFF)};
     }
 
+    public static byte[] floatToBytes(float[] floats) {
+        byte[] bytes = new byte[floats.length * 2];
+        for (int i = 0; i < floats.length; i++) {
+            short x = ((Float) floats[i]).shortValue();
+            bytes[i * 2] = (byte) (x & 0x00FF);
+            bytes[i * 2 + 1] = (byte) ((x & 0xFF00) >> 8);
+        }
+        return bytes;
+    }
+
+    public static float[] bytesToFloat(byte[] bytes) {
+        float[] floats = new float[bytes.length / 2];
+        for (int i = 0; i < bytes.length / 2; i++) {
+            if ((bytes[i * 2 + 1] & 0x80) != 0) {
+                floats[i] = Short.MIN_VALUE + ((bytes[i * 2 + 1] & 0x7F) << 8) | (bytes[i * 2] & 0xFF);
+            } else {
+                floats[i] = ((bytes[i * 2 + 1] << 8) & 0xFF00) | (bytes[i * 2] & 0xFF);
+            }
+        }
+        return floats;
+    }
+
     /**
      * Changes the volume of 16 bit audio
      * Note that this modifies the input array
