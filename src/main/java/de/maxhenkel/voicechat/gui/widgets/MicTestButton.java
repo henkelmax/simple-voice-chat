@@ -133,7 +133,7 @@ public class MicTestButton extends AbstractButton {
             }
             speaker.open(audioFormat);
             speaker.start();
-            speaker.write(new byte[client.getAudioChannelConfig().getFrameSize() * 10], 0, client.getAudioChannelConfig().getFrameSize() * 10);
+            speaker.write(new byte[AudioChannelConfig.getFrameSize() * 10], 0, AudioChannelConfig.getFrameSize() * 10);
 
             gainControl = (FloatControl) speaker.getControl(FloatControl.Type.MASTER_GAIN);
 
@@ -160,7 +160,7 @@ public class MicTestButton extends AbstractButton {
                 mic.read(buff, 0, buff.length);
                 Utils.adjustVolumeMono(buff, Main.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
 
-                if (denoiser != null && VoicechatClient.CLIENT_CONFIG.denoiser.get()) {
+                if (denoiser != null && Main.CLIENT_CONFIG.denoiser.get()) {
                     buff = denoiser.denoise(buff);
                 }
 
