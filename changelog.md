@@ -1,1 +1,1 @@
-- Added japanese translation
+- Added noise suppression
