@@ -31,7 +31,8 @@ You can access the voice chat settings by pressing the `V` key.
 
 - Proximity voice chat
 - Group chats
-- [Opus Codec](https://opus-codec.org/)
+- [Opus codec](https://opus-codec.org/)
+- [RNNoise](https://jmvalin.ca/demo/rnnoise/) recurrent neural network noise suppression
 - Push to talk
 - Voice activation
 - Configurable PTT key
