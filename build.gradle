@@ -34,8 +34,8 @@ dependencies {
     implementation 'de.maxhenkel.opus4j:opus4j:1.0.2'
     shadow 'de.maxhenkel.opus4j:opus4j:1.0.2'
 
-    implementation 'de.maxhenkel.rnnoise4j:rnnoise4j:1.0.0'
-    shadow 'de.maxhenkel.rnnoise4j:rnnoise4j:1.0.0'
+    implementation 'de.maxhenkel.rnnoise4j:rnnoise4j:1.0.1'
+    shadow 'de.maxhenkel.rnnoise4j:rnnoise4j:1.0.1'
 }
 
 repositories {
