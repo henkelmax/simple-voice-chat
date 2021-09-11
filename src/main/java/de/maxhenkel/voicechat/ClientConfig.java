@@ -28,6 +28,7 @@ public class ClientConfig extends ConfigBase {
     public final ForgeConfigSpec.EnumValue<HUDIconLocation> hudIconLocation;
     public final ForgeConfigSpec.EnumValue<GroupPlayerIconOrientation> groupPlayerIconOrientation;
     public final ForgeConfigSpec.ConfigValue<String> recordingDestination;
+    public final ForgeConfigSpec.BooleanValue denoiser;
 
     public ClientConfig(ForgeConfigSpec.Builder builder) {
         super(builder);
@@ -106,6 +107,9 @@ public class ClientConfig extends ConfigBase {
         recordingDestination = builder
                 .comment("The location where recordings should be saved", "Leave empty for default location")
                 .define("recording_destination", "");
+        denoiser = builder
+                .comment("Enables noise cancellation")
+                .define("denoiser", false);
     }
 
 }

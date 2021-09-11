@@ -1,10 +1,7 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Main;
-import de.maxhenkel.voicechat.voice.common.MicPacket;
-import de.maxhenkel.voicechat.voice.common.NetworkMessage;
-import de.maxhenkel.voicechat.voice.common.OpusEncoder;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.client.Minecraft;
 
 import javax.annotation.Nullable;
@@ -30,7 +27,7 @@ public class MicThread extends Thread {
 
         this.denoiser = Denoiser.createDenoiser();
         if (denoiser == null) {
-            Voicechat.LOGGER.warn("Denoiser not available");
+            Main.LOGGER.warn("Denoiser not available");
         }
 
         setDaemon(true);
@@ -173,7 +170,7 @@ public class MicThread extends Thread {
     }
 
     public byte[] denoiseIfEnabled(byte[] audio) {
-        if (denoiser != null && VoicechatClient.CLIENT_CONFIG.denoiser.get()) {
+        if (denoiser != null && Main.CLIENT_CONFIG.denoiser.get()) {
             return denoiser.denoise(audio);
         }
         return audio;

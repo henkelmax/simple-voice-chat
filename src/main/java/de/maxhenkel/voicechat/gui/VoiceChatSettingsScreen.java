@@ -59,7 +59,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
         addButton(voiceActivationSlider);
         y += 21;
 
-        addButton(new MicTestButton(guiLeft + 10, y, xSize - 20, 20, this, c));
+        addButton(new MicTestButton(guiLeft + 10, y, xSize - 20, 20, this));
         y += 21;
         addButton(new Button(guiLeft + 10, y, xSize - 20, 20, new TranslationTextComponent("message.voicechat.adjust_volumes"), button -> {
             minecraft.setScreen(new AdjustVolumeScreen(this, Main.CLIENT_VOICE_EVENTS.getPlayerStateManager().getPlayerStates().stream().filter(state -> !state.getGameProfile().getId().equals(minecraft.player.getUUID())).collect(Collectors.toList())));
