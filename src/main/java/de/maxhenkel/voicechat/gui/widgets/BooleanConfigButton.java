@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.config.ConfigBuilder;
 import net.minecraft.client.gui.components.AbstractButton;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 
@@ -29,10 +28,5 @@ public class BooleanConfigButton extends AbstractButton {
         entry.set(!entry.get());
         entry.save();
         updateText();
-    }
-
-    @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
-        defaultButtonNarrationText(narrationElementOutput);
     }
 }
