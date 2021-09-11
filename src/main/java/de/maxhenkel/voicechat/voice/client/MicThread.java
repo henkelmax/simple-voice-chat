@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.voice.common.OpusEncoder;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
 
+import javax.annotation.Nullable;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
@@ -19,11 +20,19 @@ public class MicThread extends Thread {
     private boolean running;
     private boolean microphoneLocked;
     private OpusEncoder encoder;
+    @Nullable
+    private Denoiser denoiser;
 
     public MicThread(Client client) throws LineUnavailableException {
         this.client = client;
         this.running = true;
         this.encoder = new OpusEncoder(AudioChannelConfig.getSampleRate(), AudioChannelConfig.getFrameSize(), Main.SERVER_CONFIG.voiceChatMtuSize.get(), Main.SERVER_CONFIG.voiceChatCodec.get().getOpusValue());
+
+        this.denoiser = Denoiser.createDenoiser();
+        if (denoiser == null) {
+            Voicechat.LOGGER.warn("Denoiser not available");
+        }
+
         setDaemon(true);
         setName("MicrophoneThread");
         AudioFormat af = AudioChannelConfig.getMonoFormat();
@@ -86,6 +95,7 @@ public class MicThread extends Thread {
         byte[] buff = new byte[dataLength];
         mic.read(buff, 0, buff.length);
         Utils.adjustVolumeMono(buff, Main.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
+        buff = denoiseIfEnabled(buff);
 
         int offset = Utils.getActivationOffset(buff, Main.CLIENT_CONFIG.voiceActivationThreshold.get());
         if (activating) {
@@ -140,6 +150,7 @@ public class MicThread extends Thread {
         byte[] buff = new byte[dataLength];
         mic.read(buff, 0, buff.length);
         Utils.adjustVolumeMono(buff, Main.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
+        buff = denoiseIfEnabled(buff);
         sendAudioPacket(buff);
     }
 
@@ -159,6 +170,13 @@ public class MicThread extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public byte[] denoiseIfEnabled(byte[] audio) {
+        if (denoiser != null && VoicechatClient.CLIENT_CONFIG.denoiser.get()) {
+            return denoiser.denoise(audio);
+        }
+        return audio;
     }
 
     private void flushRecording() {
@@ -185,12 +203,20 @@ public class MicThread extends Thread {
         lastBuff = null;
     }
 
+    @Nullable
+    public Denoiser getDenoiser() {
+        return denoiser;
+    }
+
     public void close() {
         running = false;
         mic.stop();
         mic.flush();
         mic.close();
         encoder.close();
+        if (denoiser != null) {
+            denoiser.close();
+        }
         flushRecording();
     }
 }

@@ -6,11 +6,13 @@ import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
 import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.client.DataLines;
 import de.maxhenkel.voicechat.voice.client.MicThread;
+import de.maxhenkel.voicechat.voice.common.Denoiser;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.widget.button.AbstractButton;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
+import javax.annotation.Nullable;
 import javax.sound.sampled.*;
 
 public class MicTestButton extends AbstractButton {
@@ -108,6 +110,8 @@ public class MicTestButton extends AbstractButton {
         private final FloatControl gainControl;
         private boolean running;
         private long lastRender;
+        @Nullable
+        private Denoiser denoiser;
 
         public VoiceThread() throws LineUnavailableException {
             this.running = true;
@@ -123,8 +127,11 @@ public class MicTestButton extends AbstractButton {
             }
             speaker.open(audioFormat);
             speaker.start();
+            speaker.write(new byte[client.getAudioChannelConfig().getFrameSize() * 10], 0, client.getAudioChannelConfig().getFrameSize() * 10);
 
             gainControl = (FloatControl) speaker.getControl(FloatControl.Type.MASTER_GAIN);
+
+            denoiser = Denoiser.createDenoiser();
 
             updateLastRender();
             setMicLocked(true);
@@ -146,6 +153,10 @@ public class MicTestButton extends AbstractButton {
                 byte[] buff = new byte[dataLength];
                 mic.read(buff, 0, buff.length);
                 Utils.adjustVolumeMono(buff, Main.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
+
+                if (denoiser != null && VoicechatClient.CLIENT_CONFIG.denoiser.get()) {
+                    buff = denoiser.denoise(buff);
+                }
 
                 micListener.onMicValue(Utils.dbToPerc(Utils.getHighestAudioLevel(buff)));
 
@@ -169,6 +180,10 @@ public class MicTestButton extends AbstractButton {
             mic.flush();
             setMicLocked(false);
             micListener.onMicValue(0D);
+            if (denoiser != null) {
+                denoiser.close();
+                denoiser = null;
+            }
         }
 
     }
