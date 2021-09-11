@@ -47,6 +47,9 @@ dependencies {
 
     implementation 'de.maxhenkel.opus4j:opus4j:1.0.2'
     shadow 'de.maxhenkel.opus4j:opus4j:1.0.2'
+
+    implementation 'de.maxhenkel.rnnoise4j:rnnoise4j:1.0.0'
+    shadow 'de.maxhenkel.rnnoise4j:rnnoise4j:1.0.0'
 }
 
 processResources {
@@ -121,6 +124,7 @@ shadowJar {
     configurations = [project.configurations.shadow]
     classifier 'shadow-dev'
     relocate 'de.maxhenkel.opus4j', "de.maxhenkel.${mod_id}.opus4j"
+    relocate 'de.maxhenkel.rnnoise4j', "de.maxhenkel.${mod_id}.rnnoise4j"
     dependencies {
         exclude(dependency('net.java.dev.jna:jna'))
     }
