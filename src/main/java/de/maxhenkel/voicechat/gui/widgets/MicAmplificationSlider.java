@@ -22,7 +22,6 @@ public class MicAmplificationSlider extends AbstractSliderButton {
 
     @Override
     protected void applyValue() {
-        VoicechatClient.CLIENT_CONFIG.microphoneAmplification.set(value * MAXIMUM);
-        VoicechatClient.CLIENT_CONFIG.microphoneAmplification.save();
+        VoicechatClient.CLIENT_CONFIG.microphoneAmplification.set(value * MAXIMUM).save();
     }
 }

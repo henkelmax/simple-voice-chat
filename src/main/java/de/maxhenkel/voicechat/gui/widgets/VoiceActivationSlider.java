@@ -21,8 +21,7 @@ public class VoiceActivationSlider extends AbstractSliderButton {
 
     @Override
     protected void applyValue() {
-        VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.set(Utils.percToDb(value));
-        VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.save();
+        VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.set(Utils.percToDb(value)).save();
     }
 
 }

@@ -60,8 +60,7 @@ public class GroupScreen extends VoiceChatScreenBase {
         addRenderableWidget(disable);
 
         showHUD = new ToggleImageButton(guiLeft + 54, guiTop + 196, GROUP_HUD, VoicechatClient.CLIENT_CONFIG.showGroupHUD::get, button -> {
-            VoicechatClient.CLIENT_CONFIG.showGroupHUD.set(!VoicechatClient.CLIENT_CONFIG.showGroupHUD.get());
-            VoicechatClient.CLIENT_CONFIG.showGroupHUD.save();
+            VoicechatClient.CLIENT_CONFIG.showGroupHUD.set(!VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()).save();
         }, (button, matrices, mouseX, mouseY) -> {
             renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.show_group_hud").getVisualOrderText()), mouseX, mouseY);
         });
