@@ -40,8 +40,7 @@ public class SelectSpeakerScreen extends ListScreen<String> {
         }
         int bw = 60;
         Button b = addRenderableWidget(new Button(width / 2 - bw / 2, guiTop + 35, bw, 20, new TranslatableComponent("message.voicechat.select"), button -> {
-            VoicechatClient.CLIENT_CONFIG.speaker.set(currentElement);
-            VoicechatClient.CLIENT_CONFIG.speaker.save();
+            VoicechatClient.CLIENT_CONFIG.speaker.set(currentElement).save();
             button.active = false;
             Client client = VoicechatClient.CLIENT.getClient();
             if (client != null) {
