@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.config;
 
+import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.opus4j.Opus;
 
 public class ServerConfig {

@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.config;
 
+import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import de.maxhenkel.voicechat.voice.client.HUDIconLocation;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;

@@ -1,5 +1,7 @@
 package de.maxhenkel.voicechat.config;
 
+import de.maxhenkel.configbuilder.Config;
+
 import java.nio.file.Path;
 import java.util.UUID;
 
