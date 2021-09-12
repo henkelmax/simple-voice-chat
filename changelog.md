@@ -1,1 +1,1 @@
-- Updated translations
+- Fixed noise suppression not working
