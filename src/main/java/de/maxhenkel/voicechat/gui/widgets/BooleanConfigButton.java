@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import de.maxhenkel.voicechat.config.ConfigBuilder;
+import de.maxhenkel.configbuilder.ConfigBuilder;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
