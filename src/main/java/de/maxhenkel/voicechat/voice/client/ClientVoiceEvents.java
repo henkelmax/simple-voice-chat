@@ -217,8 +217,7 @@ public class ClientVoiceEvents {
 
         if (VoicechatClient.KEY_HIDE_ICONS.consumeClick()) {
             boolean hidden = !VoicechatClient.CLIENT_CONFIG.hideIcons.get();
-            VoicechatClient.CLIENT_CONFIG.hideIcons.set(hidden);
-            VoicechatClient.CLIENT_CONFIG.hideIcons.save();
+            VoicechatClient.CLIENT_CONFIG.hideIcons.set(hidden).save();
 
             if (hidden) {
                 minecraft.player.displayClientMessage(new TranslatableComponent("message.voicechat.icons_hidden"), true);

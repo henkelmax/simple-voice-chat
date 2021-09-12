@@ -24,7 +24,6 @@ public class VoiceSoundSlider extends AbstractSliderButton {
 
     @Override
     protected void applyValue() {
-        VoicechatClient.CLIENT_CONFIG.voiceChatVolume.set(value * 2F);
-        VoicechatClient.CLIENT_CONFIG.voiceChatVolume.save();
+        VoicechatClient.CLIENT_CONFIG.voiceChatVolume.set(value * 2F).save();
     }
 }

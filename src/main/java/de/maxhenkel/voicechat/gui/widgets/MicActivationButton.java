@@ -31,8 +31,7 @@ public class MicActivationButton extends AbstractButton {
     @Override
     public void onPress() {
         type = MicrophoneActivationType.values()[(type.ordinal() + 1) % MicrophoneActivationType.values().length];
-        VoicechatClient.CLIENT_CONFIG.microphoneActivationType.set(type);
-        VoicechatClient.CLIENT_CONFIG.microphoneActivationType.save();
+        VoicechatClient.CLIENT_CONFIG.microphoneActivationType.set(type).save();
         updateText();
     }
 }

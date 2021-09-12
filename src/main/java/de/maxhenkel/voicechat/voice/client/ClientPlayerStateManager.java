@@ -92,8 +92,7 @@ public class ClientPlayerStateManager {
 
     public void setDisabled(boolean disabled) {
         state.setDisabled(disabled);
-        VoicechatClient.CLIENT_CONFIG.disabled.set(disabled);
-        VoicechatClient.CLIENT_CONFIG.disabled.save();
+        VoicechatClient.CLIENT_CONFIG.disabled.set(disabled).save();
         syncOwnState();
     }
 
@@ -103,8 +102,7 @@ public class ClientPlayerStateManager {
 
     public void setMuted(boolean muted) {
         this.muted = muted;
-        VoicechatClient.CLIENT_CONFIG.muted.set(muted);
-        VoicechatClient.CLIENT_CONFIG.muted.save();
+        VoicechatClient.CLIENT_CONFIG.muted.set(muted).save();
     }
 
     public boolean isInGroup() {
