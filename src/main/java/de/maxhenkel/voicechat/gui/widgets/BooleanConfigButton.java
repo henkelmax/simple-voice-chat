@@ -25,8 +25,7 @@ public class BooleanConfigButton extends AbstractButton {
 
     @Override
     public void onPress() {
-        entry.set(!entry.get());
-        entry.save();
+        entry.set(!entry.get()).save();
         updateText();
     }
 }
