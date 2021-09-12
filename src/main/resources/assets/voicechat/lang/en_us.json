@@ -77,7 +77,7 @@
   "message.voicechat.open": "Open",
   "message.voicechat.saved_debug_report_failed": "Failed to save voice chat debug report: %s",
   "messsage.voicechat.microphone_unavailable": "Microphone unavailable: Try restarting your computer",
-  "message.voicechat.denoiser": "Noise Suppression: %s",
+  "message.voicechat.denoiser": "Noise suppression: %s",
   "message.voicechat.enabled": "Enabled",
   "message.voicechat.disabled": "Disabled"
 }
