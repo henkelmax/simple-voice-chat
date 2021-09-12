@@ -1,5 +1,7 @@
 package de.maxhenkel.voicechat.config;
 
+import de.maxhenkel.configbuilder.ConfigBuilder;
+
 public class ServerConfig {
 
     public final ConfigBuilder.ConfigEntry<Integer> voiceChatPort;
