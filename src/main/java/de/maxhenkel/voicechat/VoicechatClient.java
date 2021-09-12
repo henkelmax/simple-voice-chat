@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.ClientConfig;
-import de.maxhenkel.voicechat.config.ConfigBuilder;
 import de.maxhenkel.voicechat.config.PlayerVolumeConfig;
 import de.maxhenkel.voicechat.resourcepacks.IPackRepository;
 import de.maxhenkel.voicechat.resourcepacks.VoiceChatResourcePack;
