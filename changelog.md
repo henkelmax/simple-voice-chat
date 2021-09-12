@@ -1,1 +1,1 @@
-- Added noise suppression
+- Updated translations
