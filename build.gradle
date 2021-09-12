@@ -45,6 +45,9 @@ dependencies {
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
+    implementation 'de.maxhenkel.configbuilder:configbuilder:1.0.0'
+    shadow 'de.maxhenkel.configbuilder:configbuilder:1.0.0'
+
     implementation 'de.maxhenkel.opus4j:opus4j:1.0.2'
     shadow 'de.maxhenkel.opus4j:opus4j:1.0.2'
 
@@ -123,6 +126,7 @@ forgeUpdate {
 shadowJar {
     configurations = [project.configurations.shadow]
     classifier 'shadow-dev'
+    relocate 'de.maxhenkel.configbuilder', "de.maxhenkel.${mod_id}.configbuilder"
     relocate 'de.maxhenkel.opus4j', "de.maxhenkel.${mod_id}.opus4j"
     relocate 'de.maxhenkel.rnnoise4j', "de.maxhenkel.${mod_id}.rnnoise4j"
     dependencies {

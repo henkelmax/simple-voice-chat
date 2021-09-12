@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat;
 
+import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.command.VoicechatCommands;
-import de.maxhenkel.voicechat.config.ConfigBuilder;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import io.netty.buffer.Unpooled;
