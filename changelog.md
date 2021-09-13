@@ -1,1 +1,1 @@
-- Updated translations
+- Fixed issues with older fabric loader versions
