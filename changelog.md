@@ -1,1 +1,1 @@
-- Updated translations
+- Updated japanese translation
