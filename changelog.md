@@ -1,1 +1,1 @@
-- Fixed noise suppression not working
+- Updated japanese translation
