@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
+import javax.annotation.Nullable;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -147,8 +148,7 @@ public class Server extends Thread {
                         continue;
                     }
 
-                    if (message.getPacket() instanceof AuthenticatePacket) {
-                        AuthenticatePacket packet = (AuthenticatePacket) message.getPacket();
+                    if (message.getPacket() instanceof AuthenticatePacket packet) {
                         UUID secret = secrets.get(packet.getPlayerUUID());
                         if (secret != null && secret.equals(packet.getSecret())) {
                             ClientConnection connection;
@@ -170,25 +170,14 @@ public class Server extends Thread {
 
                     ClientConnection conn = connections.get(playerUUID);
 
-                    if (message.getPacket() instanceof MicPacket) {
-                        MicPacket packet = (MicPacket) message.getPacket();
+                    if (message.getPacket() instanceof MicPacket packet) {
                         ServerPlayer player = server.getPlayerList().getPlayer(playerUUID);
                         if (player == null) {
                             continue;
                         }
-                        PlayerState state = playerStateManager.getState(playerUUID);
-                        if (state != null) {
-                            if (state.hasGroup()) {
-                                processGroupPacket(state, packet);
-                                if (Main.SERVER_CONFIG.openGroups.get()) {
-                                    processProximityPacket(state, player, packet);
-                                }
-                            } else {
-                                processProximityPacket(state, player, packet);
-                            }
-                        }
-                    } else if (message.getPacket() instanceof PingPacket) {
-                        pingManager.onPongPacket((PingPacket) message.getPacket());
+                        processMicPacket(player, packet);
+                    } else if (message.getPacket() instanceof PingPacket packet) {
+                        pingManager.onPongPacket(packet);
                     } else if (message.getPacket() instanceof KeepAlivePacket) {
                         conn.setLastKeepAliveResponse(System.currentTimeMillis());
                     }
@@ -203,9 +192,23 @@ public class Server extends Thread {
         }
     }
 
+    private void processMicPacket(ServerPlayer player, MicPacket packet) throws Exception {
+        PlayerState state = playerStateManager.getState(player.getUUID());
+        if (state == null) {
+            return;
+        }
+        if (state.hasGroup()) {
+            processGroupPacket(state, packet);
+            if (Main.SERVER_CONFIG.openGroups.get()) {
+                processProximityPacket(state, player, packet);
+            }
+        }
+        processProximityPacket(state, player, packet);
+    }
+
     private void processGroupPacket(PlayerState player, MicPacket packet) throws Exception {
         String group = player.getGroup();
-        NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(player.getGameProfile().getId(), packet.getData(), packet.getSequenceNumber()));
+        NetworkMessage soundMessage = new NetworkMessage(new GroupSoundPacket(player.getGameProfile().getId(), packet.getData(), packet.getSequenceNumber()));
         for (PlayerState state : playerStateManager.getStates()) {
             if (!group.equals(state.getGroup())) {
                 continue;
@@ -222,9 +225,20 @@ public class Server extends Thread {
 
     private void processProximityPacket(PlayerState state, ServerPlayer player, MicPacket packet) {
         double distance = Main.SERVER_CONFIG.voiceChatDistance.get();
-        String group = state.getGroup();
+        @Nullable String group = state.getGroup();
 
-        NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(player.getUUID(), packet.getData(), packet.getSequenceNumber()));
+        SoundPacket<?> soundPacket;
+        if (player.isSpectator()) {
+            if (Main.SERVER_CONFIG.spectatorInteraction.get()) {
+                soundPacket = new LocationSoundPacket(player.getUUID(), player.getEyePosition(), packet.getData(), packet.getSequenceNumber());
+            } else {
+                return;
+            }
+        } else {
+            soundPacket = new PlayerSoundPacket(player.getUUID(), packet.getData(), packet.getSequenceNumber());
+        }
+
+        NetworkMessage soundMessage = new NetworkMessage(soundPacket);
 
         ServerWorldUtils.getPlayersInRange(player.getLevel(), player.position(), distance, p -> !p.getUUID().equals(player.getUUID()))
                 .parallelStream()

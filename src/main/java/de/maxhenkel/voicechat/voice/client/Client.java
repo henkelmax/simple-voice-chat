@@ -132,9 +132,8 @@ public class Client extends Thread {
                         startMicThread();
                         lastKeepAlive = System.currentTimeMillis();
                     }
-                } else if (in.getPacket() instanceof SoundPacket) {
+                } else if (in.getPacket() instanceof SoundPacket packet) {
                     if (!Main.CLIENT_VOICE_EVENTS.getPlayerStateManager().isDisabled()) {
-                        SoundPacket packet = (SoundPacket) in.getPacket();
                         AudioChannel sendTo = audioChannels.get(packet.getSender());
                         if (sendTo == null) {
                             AudioChannel ch = new AudioChannel(this, packet.getSender());
@@ -148,8 +147,7 @@ public class Client extends Thread {
 
                     audioChannels.values().stream().filter(AudioChannel::canKill).forEach(AudioChannel::closeAndKill);
                     audioChannels.entrySet().removeIf(entry -> entry.getValue().isClosed());
-                } else if (in.getPacket() instanceof PingPacket) {
-                    PingPacket packet = (PingPacket) in.getPacket();
+                } else if (in.getPacket() instanceof PingPacket packet) {
                     Main.LOGGER.info("Received ping {}, sending pong...", packet.getId());
                     sendToServer(new NetworkMessage(packet));
                 } else if (in.getPacket() instanceof KeepAlivePacket) {

@@ -108,7 +108,7 @@ public class ClientConfig extends ConfigBase {
                 .comment("The location where recordings should be saved", "Leave empty for default location")
                 .define("recording_destination", "");
         denoiser = builder
-                .comment("Enables noise cancellation")
+                .comment("If noise cancellation should be enabled")
                 .define("denoiser", false);
     }
 

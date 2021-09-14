@@ -41,7 +41,7 @@ public class Main {
 
     public static SimpleChannel SIMPLE_CHANNEL;
 
-    public static int PROTOCOL_VERSION = 3;
+    public static int PROTOCOL_VERSION = 4;
 
     public static ServerConfig SERVER_CONFIG;
     public static ClientConfig CLIENT_CONFIG;
