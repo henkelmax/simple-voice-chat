@@ -16,6 +16,7 @@ public class ServerConfig {
     public final ConfigBuilder.ConfigEntry<Boolean> openGroups;
     public final ConfigBuilder.ConfigEntry<String> voiceHost;
     public final ConfigBuilder.ConfigEntry<Boolean> allowRecording;
+    public final ConfigBuilder.ConfigEntry<Boolean> spectatorInteraction;
 
     public ServerConfig(ConfigBuilder builder) {
         voiceChatPort = builder.integerEntry("port", 24454, 0, 65535);
@@ -29,6 +30,7 @@ public class ServerConfig {
         openGroups = builder.booleanEntry("open_groups", false);
         voiceHost = builder.stringEntry("voice_host", "");
         allowRecording = builder.booleanEntry("allow_recording", true);
+        spectatorInteraction = builder.booleanEntry("spectator_interaction", false);
     }
 
     public enum Codec {
