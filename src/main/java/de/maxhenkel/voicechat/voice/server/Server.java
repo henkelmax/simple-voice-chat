@@ -6,14 +6,11 @@ import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+import javax.annotation.Nullable;
 import java.net.BindException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.security.InvalidKeyException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -186,17 +183,7 @@ public class Server extends Thread {
                         if (player == null) {
                             continue;
                         }
-                        PlayerState state = playerStateManager.getState(playerUUID);
-                        if (state != null) {
-                            if (state.hasGroup()) {
-                                processGroupPacket(state, packet);
-                                if (Voicechat.SERVER_CONFIG.openGroups.get()) {
-                                    processProximityPacket(state, player, packet);
-                                }
-                            } else {
-                                processProximityPacket(state, player, packet);
-                            }
-                        }
+                        processMicPacket(player, packet);
                     } else if (message.getPacket() instanceof PingPacket) {
                         pingManager.onPongPacket((PingPacket) message.getPacket());
                     } else if (message.getPacket() instanceof KeepAlivePacket) {
@@ -213,9 +200,23 @@ public class Server extends Thread {
         }
     }
 
+    private void processMicPacket(ServerPlayer player, MicPacket packet) throws Exception {
+        PlayerState state = playerStateManager.getState(player.getUUID());
+        if (state == null) {
+            return;
+        }
+        if (state.hasGroup()) {
+            processGroupPacket(state, packet);
+            if (Voicechat.SERVER_CONFIG.openGroups.get()) {
+                processProximityPacket(state, player, packet);
+            }
+        }
+        processProximityPacket(state, player, packet);
+    }
+
     private void processGroupPacket(PlayerState player, MicPacket packet) throws Exception {
         String group = player.getGroup();
-        NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(player.getGameProfile().getId(), packet.getData(), packet.getSequenceNumber()));
+        NetworkMessage soundMessage = new NetworkMessage(new GroupSoundPacket(player.getGameProfile().getId(), packet.getData(), packet.getSequenceNumber()));
         for (PlayerState state : playerStateManager.getStates()) {
             if (!group.equals(state.getGroup())) {
                 continue;
@@ -232,9 +233,20 @@ public class Server extends Thread {
 
     private void processProximityPacket(PlayerState state, ServerPlayer player, MicPacket packet) {
         double distance = Voicechat.SERVER_CONFIG.voiceChatDistance.get();
-        String group = state.getGroup();
+        @Nullable String group = state.getGroup();
 
-        NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(player.getUUID(), packet.getData(), packet.getSequenceNumber()));
+        SoundPacket<?> soundPacket;
+        if (player.isSpectator()) {
+            if (Voicechat.SERVER_CONFIG.spectatorInteraction.get()) {
+                soundPacket = new LocationSoundPacket(player.getUUID(), player.position().add(0D, player.getEyeHeight(), 0D), packet.getData(), packet.getSequenceNumber());
+            } else {
+                return;
+            }
+        } else {
+            soundPacket = new PlayerSoundPacket(player.getUUID(), packet.getData(), packet.getSequenceNumber());
+        }
+
+        NetworkMessage soundMessage = new NetworkMessage(soundPacket);
 
         ServerWorldUtils.getPlayersInRange(player.getLevel(), player.position(), distance, p -> !p.getUUID().equals(player.getUUID()))
                 .parallelStream()

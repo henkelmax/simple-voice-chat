@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 public class AudioRecorder {
 
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
+    private static final GameProfile SYSTEM = new GameProfile(new UUID(0L, 0L), "system");
 
     private final long timestamp;
     private final Path location;
@@ -94,9 +95,10 @@ public class AudioRecorder {
         return location.resolve(playerUUID.toString()).resolve(timestamp + ".wav");
     }
 
-    public void appendChunk(GameProfile profile, long timestamp, byte[] data) throws IOException {
-        gameProfileLookup.putIfAbsent(profile.getId(), profile);
-        getChunk(profile.getId(), timestamp).add(data);
+    public void appendChunk(@Nullable GameProfile profile, long timestamp, byte[] data) throws IOException {
+        GameProfile p = profile != null ? profile : SYSTEM;
+        gameProfileLookup.putIfAbsent(p.getId(), p);
+        getChunk(p.getId(), timestamp).add(data);
     }
 
     private void writeChunk(UUID playerUUID, AudioChunk chunk) throws IOException {
