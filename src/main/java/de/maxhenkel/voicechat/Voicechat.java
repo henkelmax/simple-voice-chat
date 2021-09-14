@@ -22,7 +22,6 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nullable;
 import java.util.regex.Pattern;
 
 public class Voicechat implements ModInitializer {
@@ -30,7 +29,6 @@ public class Voicechat implements ModInitializer {
     public static final String MODID = "voicechat";
     public static final Logger LOGGER = LogManager.getLogger(MODID);
     public static ServerVoiceEvents SERVER;
-    @Nullable
     public static ServerConfig SERVER_CONFIG;
 
     public static final ResourceLocation INIT = new ResourceLocation(Voicechat.MODID, "init");
