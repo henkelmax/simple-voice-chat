@@ -1,1 +1,1 @@
-- Updated japanese translation
+- Added spectator interaction config option

@@ -64,11 +64,13 @@ public class NetworkMessage {
     static {
         packetRegistry = new HashMap<>();
         packetRegistry.put((byte) 0, MicPacket.class);
-        packetRegistry.put((byte) 1, SoundPacket.class);
-        packetRegistry.put((byte) 2, AuthenticatePacket.class);
-        packetRegistry.put((byte) 3, AuthenticateAckPacket.class);
-        packetRegistry.put((byte) 4, PingPacket.class);
-        packetRegistry.put((byte) 5, KeepAlivePacket.class);
+        packetRegistry.put((byte) 1, PlayerSoundPacket.class);
+        packetRegistry.put((byte) 2, GroupSoundPacket.class);
+        packetRegistry.put((byte) 3, LocationSoundPacket.class);
+        packetRegistry.put((byte) 4, AuthenticatePacket.class);
+        packetRegistry.put((byte) 5, AuthenticateAckPacket.class);
+        packetRegistry.put((byte) 6, PingPacket.class);
+        packetRegistry.put((byte) 7, KeepAlivePacket.class);
     }
 
     public static UnprocessedNetworkMessage readPacket(DatagramSocket socket) throws IOException {
