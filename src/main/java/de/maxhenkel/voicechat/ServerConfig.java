@@ -21,6 +21,7 @@ public class ServerConfig extends ConfigBase {
     public final ForgeConfigSpec.BooleanValue openGroups;
     public final ForgeConfigSpec.ConfigValue<String> voiceHost;
     public final ForgeConfigSpec.BooleanValue allowRecording;
+    public final ForgeConfigSpec.BooleanValue spectatorInteraction;
 
     public ServerConfig(ForgeConfigSpec.Builder builder) {
         super(builder);
@@ -58,6 +59,9 @@ public class ServerConfig extends ConfigBase {
         allowRecording = builder
                 .comment("If players are allowed to record the voice chat")
                 .define("voice_chat.allow_recording", true);
+        spectatorInteraction = builder
+                .comment("If spectators are allowed to talk to other players")
+                .define("voice_chat.spectator_interaction", false);
     }
 
     @Override
