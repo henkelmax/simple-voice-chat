@@ -4,8 +4,10 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.voice.common.*;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nullable;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -192,17 +194,7 @@ public class Server extends Thread {
                             });
                             continue;
                         }
-                        PlayerState state = playerStateManager.getState(playerUUID);
-                        if (state != null) {
-                            if (state.hasGroup()) {
-                                processGroupPacket(state, packet);
-                                if (Voicechat.SERVER_CONFIG.openGroups.get()) {
-                                    processProximityPacket(state, player, packet);
-                                }
-                            } else {
-                                processProximityPacket(state, player, packet);
-                            }
-                        }
+                        processMicPacket(player, packet);
                     } else if (message.getPacket() instanceof PingPacket) {
                         pingManager.onPongPacket((PingPacket) message.getPacket());
                     } else if (message.getPacket() instanceof KeepAlivePacket) {
@@ -219,9 +211,23 @@ public class Server extends Thread {
         }
     }
 
+    private void processMicPacket(Player player, MicPacket packet) throws Exception {
+        PlayerState state = playerStateManager.getState(player.getUniqueId());
+        if (state == null) {
+            return;
+        }
+        if (state.hasGroup()) {
+            processGroupPacket(state, packet);
+            if (Voicechat.SERVER_CONFIG.openGroups.get()) {
+                processProximityPacket(state, player, packet);
+            }
+        }
+        processProximityPacket(state, player, packet);
+    }
+
     private void processGroupPacket(PlayerState player, MicPacket packet) throws Exception {
         String group = player.getGroup();
-        NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(player.getGameProfile().getId(), packet.getData(), packet.getSequenceNumber()));
+        NetworkMessage soundMessage = new NetworkMessage(new GroupSoundPacket(player.getGameProfile().getId(), packet.getData(), packet.getSequenceNumber()));
         for (PlayerState state : playerStateManager.getStates()) {
             if (!group.equals(state.getGroup())) {
                 continue;
@@ -238,9 +244,20 @@ public class Server extends Thread {
 
     private void processProximityPacket(PlayerState state, Player player, MicPacket packet) {
         double distance = Voicechat.SERVER_CONFIG.voiceChatDistance.get();
-        String group = state.getGroup();
+        @Nullable String group = state.getGroup();
 
-        NetworkMessage soundMessage = new NetworkMessage(new SoundPacket(player.getUniqueId(), packet.getData(), packet.getSequenceNumber()));
+        SoundPacket<?> soundPacket;
+        if (player.getGameMode().equals(GameMode.SPECTATOR)) {
+            if (Voicechat.SERVER_CONFIG.spectatorInteraction.get()) {
+                soundPacket = new LocationSoundPacket(player.getUniqueId(), player.getEyeLocation(), packet.getData(), packet.getSequenceNumber());
+            } else {
+                return;
+            }
+        } else {
+            soundPacket = new PlayerSoundPacket(player.getUniqueId(), packet.getData(), packet.getSequenceNumber());
+        }
+
+        NetworkMessage soundMessage = new NetworkMessage(soundPacket);
 
         ServerWorldUtils.getPlayersInRange(player.getWorld(), player.getLocation(), distance, p -> !p.getUniqueId().equals(player.getUniqueId()))
                 .parallelStream()
