@@ -159,8 +159,7 @@ public class Server extends Thread {
                         continue;
                     }
 
-                    if (message.getPacket() instanceof AuthenticatePacket) {
-                        AuthenticatePacket packet = (AuthenticatePacket) message.getPacket();
+                    if (message.getPacket() instanceof AuthenticatePacket packet) {
                         UUID secret = secrets.get(packet.getPlayerUUID());
                         if (secret != null && secret.equals(packet.getSecret())) {
                             ClientConnection connection;
@@ -182,8 +181,7 @@ public class Server extends Thread {
 
                     ClientConnection conn = connections.get(playerUUID);
 
-                    if (message.getPacket() instanceof MicPacket) {
-                        MicPacket packet = (MicPacket) message.getPacket();
+                    if (message.getPacket() instanceof MicPacket packet) {
                         Player player = server.getPlayer(playerUUID);
                         if (player == null) {
                             continue;
@@ -195,8 +193,8 @@ public class Server extends Thread {
                             continue;
                         }
                         processMicPacket(player, packet);
-                    } else if (message.getPacket() instanceof PingPacket) {
-                        pingManager.onPongPacket((PingPacket) message.getPacket());
+                    } else if (message.getPacket() instanceof PingPacket packet) {
+                        pingManager.onPongPacket(packet);
                     } else if (message.getPacket() instanceof KeepAlivePacket) {
                         conn.setLastKeepAliveResponse(System.currentTimeMillis());
                     }
