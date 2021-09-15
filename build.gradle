@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.14', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.4'
     }
 }
@@ -75,7 +75,7 @@ dependencies {
     runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}")
     runtimeOnly fg.deobf("de.maxhenkel.corelib:corelib:${mod_minecraft_version}-${corelib_version}:javadoc")
 
-    runtimeOnly 'de.maxhenkel.opus4j:opus4j:1.0.2'
+    implementation 'de.maxhenkel.opus4j:opus4j:1.0.2'
     shadow 'de.maxhenkel.opus4j:opus4j:1.0.2'
 
     implementation 'de.maxhenkel.rnnoise4j:rnnoise4j:1.0.1'
