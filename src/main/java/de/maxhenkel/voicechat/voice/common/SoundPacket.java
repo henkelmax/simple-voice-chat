@@ -1,14 +1,12 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-
 import java.util.UUID;
 
-public class SoundPacket implements Packet<SoundPacket> {
+public abstract class SoundPacket<T extends SoundPacket> implements Packet<T> {
 
-    private UUID sender;
-    private byte[] data;
-    private long sequenceNumber;
+    protected UUID sender;
+    protected byte[] data;
+    protected long sequenceNumber;
 
     public SoundPacket(UUID sender, byte[] data, long sequenceNumber) {
         this.sender = sender;
@@ -32,19 +30,4 @@ public class SoundPacket implements Packet<SoundPacket> {
         return sequenceNumber;
     }
 
-    @Override
-    public SoundPacket fromBytes(FriendlyByteBuf buf) {
-        SoundPacket soundPacket = new SoundPacket();
-        soundPacket.sender = buf.readUUID();
-        soundPacket.data = buf.readByteArray();
-        soundPacket.sequenceNumber = buf.readLong();
-        return soundPacket;
-    }
-
-    @Override
-    public void toBytes(FriendlyByteBuf buf) {
-        buf.writeUUID(sender);
-        buf.writeByteArray(data);
-        buf.writeLong(sequenceNumber);
-    }
 }
