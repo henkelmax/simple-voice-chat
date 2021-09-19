@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.gui.widgets;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.voice.client.ALMicrophone;
 import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.client.DataLines;
 import de.maxhenkel.voicechat.voice.client.MicThread;
@@ -81,7 +82,7 @@ public class MicTestButton extends AbstractButton {
         }
     }
 
-    private TargetDataLine getMic() {
+    private ALMicrophone getMic() {
         MicThread micThread = client.getMicThread();
         if (micThread == null) {
             return null;
@@ -105,7 +106,7 @@ public class MicTestButton extends AbstractButton {
     private class VoiceThread extends Thread {
 
         private final AudioFormat audioFormat;
-        private final TargetDataLine mic;
+        private final ALMicrophone mic;
         private final SourceDataLine speaker;
         private final FloatControl gainControl;
         private boolean running;
@@ -151,7 +152,7 @@ public class MicTestButton extends AbstractButton {
                     continue;
                 }
                 byte[] buff = new byte[dataLength];
-                mic.read(buff, 0, buff.length);
+                mic.read(buff);
                 Utils.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
 
                 if (denoiser != null && VoicechatClient.CLIENT_CONFIG.denoiser.get()) {
@@ -177,7 +178,6 @@ public class MicTestButton extends AbstractButton {
             speaker.flush();
             speaker.close();
             mic.stop();
-            mic.flush();
             setMicLocked(false);
             micListener.onMicValue(0D);
             if (denoiser != null) {

@@ -6,22 +6,19 @@ import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.client.Minecraft;
 
 import javax.annotation.Nullable;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.TargetDataLine;
 import java.io.IOException;
 
 public class MicThread extends Thread {
 
     private Client client;
-    private TargetDataLine mic;
+    private ALMicrophone mic;
     private boolean running;
     private boolean microphoneLocked;
     private OpusEncoder encoder;
     @Nullable
     private Denoiser denoiser;
 
-    public MicThread(Client client) throws LineUnavailableException {
+    public MicThread(Client client) throws MicrophoneException {
         this.client = client;
         this.running = true;
         this.encoder = new OpusEncoder(client.getAudioChannelConfig().getSampleRate(), client.getAudioChannelConfig().getFrameSize(), client.getMtuSize(), client.getCodec().getOpusValue());
@@ -33,17 +30,8 @@ public class MicThread extends Thread {
 
         setDaemon(true);
         setName("MicrophoneThread");
-        AudioFormat af = client.getAudioChannelConfig().getMonoFormat();
-        mic = DataLines.getMicrophone(af);
-        if (mic == null) {
-            throw new LineUnavailableException("Could not find any microphone with the specified audio format");
-        }
-        mic.open(af);
-
-        // This fixes the accumulating audio issue on some Linux systems
-        mic.start();
-        mic.stop();
-        mic.flush();
+        mic = new ALMicrophone(client.getAudioChannelConfig().getSampleRate(), client.getAudioChannelConfig().getFrameSize(), VoicechatClient.CLIENT_CONFIG.microphone.get());
+        mic.open();
     }
 
     @Override
@@ -73,10 +61,7 @@ public class MicThread extends Thread {
 
         if (VoicechatClient.CLIENT.getPlayerStateManager().isMuted() || VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
             activating = false;
-            if (mic.isActive()) {
-                mic.stop();
-                mic.flush();
-            }
+            mic.stop();
             flushRecording();
             Utils.sleep(10);
             return;
@@ -91,7 +76,7 @@ public class MicThread extends Thread {
             return;
         }
         byte[] buff = new byte[dataLength];
-        mic.read(buff, 0, buff.length);
+        mic.read(buff);
         Utils.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
         buff = denoiseIfEnabled(buff);
 
@@ -130,7 +115,6 @@ public class MicThread extends Thread {
         if (!VoicechatClient.CLIENT.getPttKeyHandler().isPTTDown() || VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
             if (wasPTT) {
                 mic.stop();
-                mic.flush();
                 wasPTT = false;
                 flushRecording();
             }
@@ -147,7 +131,7 @@ public class MicThread extends Thread {
             return;
         }
         byte[] buff = new byte[dataLength];
-        mic.read(buff, 0, buff.length);
+        mic.read(buff);
         Utils.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
         buff = denoiseIfEnabled(buff);
         sendAudioPacket(buff);
@@ -186,7 +170,7 @@ public class MicThread extends Thread {
         recorder.writeChunkThreaded(Minecraft.getInstance().getUser().getGameProfile().getId());
     }
 
-    public TargetDataLine getMic() {
+    public ALMicrophone getMic() {
         return mic;
     }
 
@@ -210,7 +194,6 @@ public class MicThread extends Thread {
     public void close() {
         running = false;
         mic.stop();
-        mic.flush();
         mic.close();
         encoder.close();
         if (denoiser != null) {

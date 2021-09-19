@@ -3,8 +3,8 @@ package de.maxhenkel.voicechat.gui;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ListScreen;
+import de.maxhenkel.voicechat.voice.client.ALMicrophone;
 import de.maxhenkel.voicechat.voice.client.Client;
-import de.maxhenkel.voicechat.voice.client.DataLines;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -20,7 +20,7 @@ public class SelectMicrophoneScreen extends ListScreen<String> {
     protected int selected;
 
     public SelectMicrophoneScreen(Client client, Screen parent) {
-        super(parent, DataLines.getMicrophoneNames(client.getAudioChannelConfig().getMonoFormat()), new TranslatableComponent("gui.voicechat.select_microphone.title"));
+        super(parent, ALMicrophone.getAllMicrophones(), new TranslatableComponent("gui.voicechat.select_microphone.title"));
         for (int i = 0; i < elements.size(); i++) {
             String element = elements.get(i);
             if (element.equals(VoicechatClient.CLIENT_CONFIG.microphone.get())) {
@@ -57,7 +57,7 @@ public class SelectMicrophoneScreen extends ListScreen<String> {
         int titleWidth = font.width(title);
         font.draw(stack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
 
-        MutableComponent name = getCurrentElement() == null ? new TranslatableComponent("message.voicechat.no_microphone") : new TextComponent(getCurrentElement());
+        MutableComponent name = getCurrentElement() == null ? new TranslatableComponent("message.voicechat.no_microphone") : new TextComponent(ALMicrophone.cleanDeviceName(getCurrentElement()));
         int nameWidth = font.width(name);
         font.draw(stack, name.withStyle(ChatFormatting.WHITE).getVisualOrderText(), (float) (guiLeft + (xSize - nameWidth) / 2), guiTop + 7 + font.lineHeight + 7, 0);
     }

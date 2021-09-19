@@ -125,6 +125,9 @@ public class AudioRecorder {
 
     public void writeChunkThreaded(UUID playerUUID) {
         AudioChunk chunk = getAndRemoveChunk(playerUUID);
+        if (chunk == null) {
+            return;
+        }
         //TODO Thread pooling
         new Thread(() -> {
             try {
