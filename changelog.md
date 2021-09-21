@@ -1,1 +1,1 @@
-- Added spectator interaction config option
+- Updated to 21w37a
