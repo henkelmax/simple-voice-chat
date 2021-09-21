@@ -1,1 +1,2 @@
-- Updated to 21w37a
+- Updated Fabric API
+- Only require Fabric API modules that are used

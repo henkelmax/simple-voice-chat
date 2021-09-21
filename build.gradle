@@ -41,7 +41,19 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings minecraft.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    Set<String> apiModules = [
+            "fabric-command-api-v1",
+            "fabric-lifecycle-events-v1",
+            "fabric-networking-api-v1",
+            "fabric-key-binding-api-v1",
+            "fabric-rendering-v1",
+            "fabric-resource-loader-v0"
+    ]
+
+    apiModules.forEach {
+        include(modImplementation(fabricApi.module(it, project.fabric_version)))
+    }
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
@@ -89,6 +101,7 @@ curseforge {
         releaseType = curse_release_type
         addGameVersion curseforge_minecraft_version
         addGameVersion "Fabric"
+        addGameVersion 'Java 16'
         mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
             displayName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
             relations {
