@@ -28,12 +28,7 @@
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",
-    "fabric-command-api-v1": ">=${fabric_version}",
-    "fabric-lifecycle-events-v1": ">=${fabric_version}",
-    "fabric-networking-api-v1": ">=${fabric_version}",
-    "fabric-key-binding-api-v1": ">=${fabric_version}",
-    "fabric-rendering-v1": ">=${fabric_version}",
-    "fabric-resource-loader-v0": ">=${fabric_version}",
+    "fabric": ">=${fabric_version}",
     "minecraft": "${minecraft_dependency}",
     "java": ">=16"
   },
