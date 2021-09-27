@@ -1,1 +1,4 @@
-- Added spectator interaction config option
+- Switched to OpenAL sound capturing and playback
+- Improved 3D audio
+- Fixed delayed audio when going out of hearing distance
+- Fixed audio device names on Linux

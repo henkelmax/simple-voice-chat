@@ -43,12 +43,13 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
         y += 21;
         addRenderableWidget(new MicAmplificationSlider(guiLeft + 10, y, xSize - 20, 20));
         y += 21;
-        if (c.getMicThread() != null && c.getMicThread().getDenoiser() != null) {
-            addRenderableWidget(new BooleanConfigButton(guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.denoiser, enabled -> {
-                return new TranslatableComponent("message.voicechat.denoiser",
-                        enabled ? new TranslatableComponent("message.voicechat.enabled") : new TranslatableComponent("message.voicechat.disabled")
-                );
-            }));
+        BooleanConfigButton denoiser = addRenderableWidget(new BooleanConfigButton(guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.denoiser, enabled -> {
+            return new TranslatableComponent("message.voicechat.denoiser",
+                    enabled ? new TranslatableComponent("message.voicechat.enabled") : new TranslatableComponent("message.voicechat.disabled")
+            );
+        }));
+        if (c.getMicThread() == null || c.getMicThread().getDenoiser() == null) {
+            denoiser.active = false;
         }
         y += 21;
 
