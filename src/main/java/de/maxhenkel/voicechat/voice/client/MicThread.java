@@ -18,10 +18,13 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
     @Nullable
     private Denoiser denoiser;
 
-    public MicThread(Client client) throws MicrophoneException {
+    public MicThread(Client client) throws MicrophoneException, NativeDependencyException {
         this.client = client;
         this.running = true;
-        this.encoder = new OpusEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, client.getMtuSize(), client.getCodec().getOpusValue());
+        this.encoder = OpusEncoder.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, client.getMtuSize(), client.getCodec().getOpusValue());
+        if (encoder == null) {
+            throw new NativeDependencyException("Failed to load Opus encoder");
+        }
 
         this.denoiser = Denoiser.createDenoiser();
         if (denoiser == null) {

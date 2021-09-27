@@ -78,7 +78,7 @@
   "message.voicechat.saved_debug_report": "デバッグレポートを%s\nに保存しました",
   "message.voicechat.open": "開く",
   "message.voicechat.saved_debug_report_failed": "デバッグレポートの保存に失敗しました: %s",
-  "messsage.voicechat.microphone_unavailable": "マイクが利用できません\nコンピューターを再起動してみてください",
+  "messsage.voicechat.microphone_unavailable": "マイクが利用できません",
   "message.voicechat.denoiser": "ノイズ抑制: %s",
   "message.voicechat.enabled": "有効",
   "message.voicechat.disabled": "無効"

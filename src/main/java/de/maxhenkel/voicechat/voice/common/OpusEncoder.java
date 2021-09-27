@@ -8,6 +8,8 @@ import java.nio.ShortBuffer;
 
 import de.maxhenkel.opus4j.Opus;
 
+import javax.annotation.Nullable;
+
 public class OpusEncoder {
 
     protected PointerByReference opusEncoder;
@@ -16,7 +18,7 @@ public class OpusEncoder {
     protected int maxPayloadSize;
     protected int application;
 
-    public OpusEncoder(int sampleRate, int frameSize, int maxPayloadSize, int application) {
+    private OpusEncoder(int sampleRate, int frameSize, int maxPayloadSize, int application) {
         this.sampleRate = sampleRate;
         this.frameSize = frameSize;
         this.maxPayloadSize = maxPayloadSize;
@@ -60,6 +62,11 @@ public class OpusEncoder {
         }
         Opus.INSTANCE.opus_encoder_destroy(opusEncoder);
         opusEncoder = null;
+    }
+
+    @Nullable
+    public static OpusEncoder createEncoder(int sampleRate, int frameSize, int maxPayloadSize, int application) {
+        return Utils.createSafe(() -> new OpusEncoder(sampleRate, frameSize, maxPayloadSize, application));
     }
 
 }

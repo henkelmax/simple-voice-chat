@@ -10,6 +10,10 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
+
 public class Utils {
 
     public static void sleep(int ms) {
@@ -321,6 +325,22 @@ public class Utils {
      */
     public static double percToDb(double perc) {
         return (perc * 127D) - 127D;
+    }
+
+    @Nullable
+    public static <T> T createSafe(Supplier<T> supplier) {
+        AtomicReference<T> obj = new AtomicReference<>();
+        Thread t = new Thread(() -> {
+            obj.set(supplier.get());
+        });
+        t.start();
+
+        try {
+            t.join(1000);
+        } catch (InterruptedException e) {
+            return null;
+        }
+        return obj.get();
     }
 
 }

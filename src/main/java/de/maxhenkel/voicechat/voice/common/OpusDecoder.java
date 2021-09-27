@@ -15,7 +15,7 @@ public class OpusDecoder {
     protected int frameSize;
     protected int maxPayloadSize;
 
-    public OpusDecoder(int sampleRate, int frameSize, int maxPayloadSize) {
+    private OpusDecoder(int sampleRate, int frameSize, int maxPayloadSize) {
         this.sampleRate = sampleRate;
         this.frameSize = frameSize;
         this.maxPayloadSize = maxPayloadSize;
@@ -71,4 +71,10 @@ public class OpusDecoder {
     public void resetState() {
         Opus.INSTANCE.opus_decoder_ctl(opusDecoder, Opus.INSTANCE.OPUS_RESET_STATE);
     }
+
+    @Nullable
+    public static OpusDecoder createEncoder(int sampleRate, int frameSize, int maxPayloadSize) {
+        return Utils.createSafe(() -> new OpusDecoder(sampleRate, frameSize, maxPayloadSize));
+    }
+
 }

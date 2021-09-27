@@ -75,8 +75,12 @@
   "message.voicechat.recording_stopped": "Aufzeichnung gestoppt",
   "message.voicechat.open_folder": "Ordner öffnen",
   "message.voicechat.storage_size": "Erwartete Speichergröße %s",
-  "messsage.voicechat.microphone_unavailable": "Mikrofon nicht verfügbar: Versuchen Sie den Computer neu zu starten",
+  "messsage.voicechat.microphone_unavailable": "Mikrofon nicht verfügbar",
+  "messsage.voicechat.playback_unavailable": "Wiedergabe nicht verfügbar",
   "message.voicechat.denoiser": "Geräuschunterdrückung: %s",
   "message.voicechat.enabled": "Aktiviert",
-  "message.voicechat.disabled": "Deaktiviert"
+  "message.voicechat.disabled": "Deaktiviert",
+  "message.voicechat.saved_debug_report": "Debug Report in %s gespeichert",
+  "message.voicechat.open": "Öffnen",
+  "message.voicechat.saved_debug_report_failed": "Speichern des Debug Reports fehlgeschlagen: %s"
 }

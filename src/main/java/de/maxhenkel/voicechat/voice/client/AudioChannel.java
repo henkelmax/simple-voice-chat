@@ -28,14 +28,17 @@ public class AudioChannel extends Thread {
     private final OpusDecoder decoder;
     private long lastSequenceNumber;
 
-    public AudioChannel(Client client, UUID uuid) {
+    public AudioChannel(Client client, UUID uuid) throws NativeDependencyException {
         this.client = client;
         this.uuid = uuid;
         this.queue = new LinkedBlockingQueue<>();
         this.packetBuffer = new AudioPacketBuffer(VoicechatClient.CLIENT_CONFIG.audioPacketThreshold.get());
         this.lastPacketTime = System.currentTimeMillis();
         this.stopped = false;
-        this.decoder = new OpusDecoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, client.getMtuSize());
+        this.decoder = OpusDecoder.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, client.getMtuSize());
+        if (decoder == null) {
+            throw new NativeDependencyException("Failed to load Opus decoder");
+        }
         this.lastSequenceNumber = -1L;
         this.minecraft = Minecraft.getInstance();
         setDaemon(true);

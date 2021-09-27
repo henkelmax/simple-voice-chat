@@ -4,7 +4,6 @@ import com.sun.jna.Pointer;
 import de.maxhenkel.rnnoise4j.RNNoise;
 
 import javax.annotation.Nullable;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Denoiser {
 
@@ -38,18 +37,7 @@ public class Denoiser {
 
     @Nullable
     public static Denoiser createDenoiser() {
-        AtomicReference<Denoiser> denoiser = new AtomicReference<>();
-        Thread t = new Thread(() -> {
-            denoiser.set(new Denoiser());
-        });
-        t.start();
-
-        try {
-            t.join(1000);
-        } catch (InterruptedException e) {
-            return null;
-        }
-        return denoiser.get();
+        return Utils.createSafe(Denoiser::new);
     }
 
 }

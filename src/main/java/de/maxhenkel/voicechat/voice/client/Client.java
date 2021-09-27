@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.config.ServerConfig;
+import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.events.ClientVoiceChatEvents;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.ChatFormatting;
@@ -165,7 +166,7 @@ public class Client extends Thread {
             micThread = new MicThread(this);
             micThread.start();
         } catch (Exception e) {
-            Voicechat.LOGGER.error("Microphone unavailable: {}", e.getMessage());
+            Voicechat.LOGGER.error("Failed to start microphone thread: {}", e.getMessage());
             sendPlayerError("messsage.voicechat.microphone_unavailable", e);
         }
     }
@@ -202,10 +203,17 @@ public class Client extends Thread {
                         if (!VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
                             AudioChannel sendTo = audioChannels.get(packet.getSender());
                             if (sendTo == null) {
-                                AudioChannel ch = new AudioChannel(this, packet.getSender());
-                                ch.addToQueue(packet);
-                                ch.start();
-                                audioChannels.put(packet.getSender(), ch);
+                                try {
+                                    AudioChannel ch = new AudioChannel(this, packet.getSender());
+                                    ch.addToQueue(packet);
+                                    ch.start();
+                                    audioChannels.put(packet.getSender(), ch);
+                                } catch (NativeDependencyException e) {
+                                    CooldownTimer.run("decoder_unavailable", () -> {
+                                        Voicechat.LOGGER.error("Failed to create audio channel: {}", e.getMessage());
+                                        sendPlayerError("messsage.voicechat.playback_unavailable", e);
+                                    });
+                                }
                             } else {
                                 sendTo.addToQueue(packet);
                             }
