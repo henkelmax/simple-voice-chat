@@ -103,6 +103,7 @@ public class AudioChannel extends Thread {
 
                 if (packet.getData().length == 0) {
                     lastSequenceNumber = -1L;
+                    packetBuffer.clear();
                     flushRecording();
                     decoder.resetState();
                     continue;

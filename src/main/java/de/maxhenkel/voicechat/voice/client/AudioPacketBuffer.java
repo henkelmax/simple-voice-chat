@@ -59,4 +59,11 @@ public class AudioPacketBuffer {
         }
     }
 
+    public void clear() {
+        if (packetBuffer != null) {
+            packetBuffer.clear();
+        }
+        lastSequenceNumber = -1;
+    }
+
 }
