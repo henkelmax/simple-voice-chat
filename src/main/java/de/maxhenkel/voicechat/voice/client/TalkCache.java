@@ -8,7 +8,7 @@ import java.util.*;
 
 public class TalkCache {
 
-    private static final long TIMEOUT = 500L;
+    private static final long TIMEOUT = 250L;
 
     private final Map<UUID, Long> cache;
 
