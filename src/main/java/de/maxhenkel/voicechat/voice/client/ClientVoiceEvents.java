@@ -186,7 +186,7 @@ public class ClientVoiceEvents {
         }
 
         if (VoicechatClient.KEY_GROUP.consumeClick() && checkConnected()) {
-            if (client.groupsEnabled()) {
+            if (client.getData().groupsEnabled()) {
                 if (playerStateManager.isInGroup()) {
                     minecraft.setScreen(new GroupScreen());
                 } else {

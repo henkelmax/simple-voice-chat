@@ -21,7 +21,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
     public MicThread(Client client) throws MicrophoneException, NativeDependencyException {
         this.client = client;
         this.running = true;
-        this.encoder = OpusEncoder.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, client.getMtuSize(), client.getCodec().getOpusValue());
+        this.encoder = OpusEncoder.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, client.getData().getMtuSize(), client.getData().getCodec().getOpusValue());
         if (encoder == null) {
             throw new NativeDependencyException("Failed to load Opus encoder");
         }

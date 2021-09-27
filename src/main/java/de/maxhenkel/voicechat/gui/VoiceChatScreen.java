@@ -57,7 +57,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         });
         addRenderableWidget(disable);
 
-        if (client != null && client.allowRecording()) {
+        if (client != null && client.getData().allowRecording()) {
             ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> VoicechatClient.CLIENT.getClient() != null && VoicechatClient.CLIENT.getClient().getRecorder() != null, button -> {
                 Client c = VoicechatClient.CLIENT.getClient();
                 if (c == null) {
@@ -91,7 +91,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         });
         addRenderableWidget(group);
 
-        group.active = client != null && client.groupsEnabled();
+        group.active = client != null && client.getData().groupsEnabled();
         recordingHoverArea = new HoverArea(6 + 20 + 2 + 20 + 2, ySize - 6 - 20, xSize - (6 + 20 + 2 + 20 + 2) * 2, 20);
 
         checkButtons();

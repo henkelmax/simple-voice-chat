@@ -35,7 +35,7 @@ public class AudioChannel extends Thread {
         this.packetBuffer = new AudioPacketBuffer(VoicechatClient.CLIENT_CONFIG.audioPacketThreshold.get());
         this.lastPacketTime = System.currentTimeMillis();
         this.stopped = false;
-        this.decoder = OpusDecoder.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, client.getMtuSize());
+        this.decoder = OpusDecoder.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, client.getData().getMtuSize());
         if (decoder == null) {
             throw new NativeDependencyException("Failed to load Opus decoder");
         }
@@ -170,8 +170,9 @@ public class AudioChannel extends Thread {
                 return;
             }
             Vec3 pos = player.getEyePosition();
-            speaker.write(monoData, volume * getDistanceVolume(pos), stereo ? pos : null);
-            appendRecording(player, () -> convertLocationalPacketToStereo(pos, monoData));
+            float multiplier = player.isCrouching() ? (float) client.getData().getCrouchDistanceMultiplier() : 1F;
+            speaker.write(monoData, volume * getDistanceVolume(pos, multiplier), stereo ? pos : null);
+            appendRecording(player, () -> convertLocationalPacketToStereo(pos, monoData, multiplier));
         } else if (packet instanceof LocationSoundPacket p) {
             speaker.write(monoData, volume * getDistanceVolume(p.getLocation()), stereo ? p.getLocation() : null);
             appendRecording(player, () -> convertLocationalPacketToStereo(p.getLocation(), monoData));
@@ -179,9 +180,13 @@ public class AudioChannel extends Thread {
     }
 
     private short[] convertLocationalPacketToStereo(Vec3 pos, short[] monoData) {
-        float distanceVolume = getDistanceVolume(pos);
+        return convertLocationalPacketToStereo(pos, monoData, 1F);
+    }
+
+    private short[] convertLocationalPacketToStereo(Vec3 pos, short[] monoData, float distanceMultiplier) {
+        float distanceVolume = getDistanceVolume(pos, distanceMultiplier);
         if (VoicechatClient.CLIENT_CONFIG.stereo.get()) {
-            Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, pos, client.getVoiceChatDistance());
+            Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, pos, client.getData().getVoiceChatDistance() * distanceMultiplier);
             return Utils.convertToStereo(monoData, distanceVolume * stereoVolume.getLeft(), distanceVolume * stereoVolume.getRight());
         } else {
             return Utils.convertToStereo(monoData, distanceVolume, distanceVolume);
@@ -189,9 +194,13 @@ public class AudioChannel extends Thread {
     }
 
     private float getDistanceVolume(Vec3 pos) {
+        return getDistanceVolume(pos, 1F);
+    }
+
+    private float getDistanceVolume(Vec3 pos, float distanceMultiplier) {
         float distance = (float) pos.distanceTo(minecraft.player.getEyePosition());
-        float fadeDistance = (float) client.getVoiceChatFadeDistance();
-        float maxDistance = (float) client.getVoiceChatDistance();
+        float fadeDistance = (float) client.getData().getVoiceChatFadeDistance() * distanceMultiplier;
+        float maxDistance = (float) client.getData().getVoiceChatDistance() * distanceMultiplier;
 
         float percentage = 1F;
         if (distance > fadeDistance) {

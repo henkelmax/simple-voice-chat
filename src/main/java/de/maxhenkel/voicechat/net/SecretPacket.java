@@ -17,6 +17,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     private int mtuSize;
     private double voiceChatDistance;
     private double voiceChatFadeDistance;
+    private double crouchDistanceMultiplier;
     private int keepAlive;
     private boolean groupsEnabled;
     private String voiceHost;
@@ -26,19 +27,6 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     }
 
-    public SecretPacket(UUID secret, int serverPort, ServerConfig.Codec codec, int mtuSize, double voiceChatDistance, double voiceChatFadeDistance, int keepAlive, boolean groupsEnabled, String voiceHost, boolean allowRecording) {
-        this.secret = secret;
-        this.serverPort = serverPort;
-        this.codec = codec;
-        this.mtuSize = mtuSize;
-        this.voiceChatDistance = voiceChatDistance;
-        this.voiceChatFadeDistance = voiceChatFadeDistance;
-        this.keepAlive = keepAlive;
-        this.groupsEnabled = groupsEnabled;
-        this.voiceHost = voiceHost;
-        this.allowRecording = allowRecording;
-    }
-
     public SecretPacket(UUID secret, ServerConfig serverConfig) {
         this.secret = secret;
         this.serverPort = serverConfig.voiceChatPort.get();
@@ -46,6 +34,7 @@ public class SecretPacket implements Packet<SecretPacket> {
         this.mtuSize = serverConfig.voiceChatMtuSize.get();
         this.voiceChatDistance = serverConfig.voiceChatDistance.get();
         this.voiceChatFadeDistance = serverConfig.voiceChatFadeDistance.get();
+        this.crouchDistanceMultiplier = serverConfig.crouchDistanceMultiplier.get();
         this.keepAlive = serverConfig.keepAlive.get();
         this.groupsEnabled = serverConfig.groupsEnabled.get();
         this.voiceHost = serverConfig.voiceHost.get();
@@ -74,6 +63,10 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     public double getVoiceChatFadeDistance() {
         return voiceChatFadeDistance;
+    }
+
+    public double getCrouchDistanceMultiplier() {
+        return crouchDistanceMultiplier;
     }
 
     public int getKeepAlive() {
@@ -105,6 +98,7 @@ public class SecretPacket implements Packet<SecretPacket> {
         mtuSize = buf.readInt();
         voiceChatDistance = buf.readDouble();
         voiceChatFadeDistance = buf.readDouble();
+        crouchDistanceMultiplier = buf.readDouble();
         keepAlive = buf.readInt();
         groupsEnabled = buf.readBoolean();
         voiceHost = buf.readUtf(32767);
@@ -120,6 +114,7 @@ public class SecretPacket implements Packet<SecretPacket> {
         buf.writeInt(mtuSize);
         buf.writeDouble(voiceChatDistance);
         buf.writeDouble(voiceChatFadeDistance);
+        buf.writeDouble(crouchDistanceMultiplier);
         buf.writeInt(keepAlive);
         buf.writeBoolean(groupsEnabled);
         buf.writeUtf(voiceHost);

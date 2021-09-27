@@ -84,7 +84,7 @@ public class NetworkMessage {
         socket.receive(packet);
         byte[] data = new byte[packet.getLength()];
         System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
-        return readFromBytes(packet.getSocketAddress(), client.getSecret(), data, System.currentTimeMillis());
+        return readFromBytes(packet.getSocketAddress(), client.getData().getSecret(), data, System.currentTimeMillis());
     }
 
     public static NetworkMessage readPacketServer(UnprocessedNetworkMessage msg, Server server) throws IllegalAccessException, InstantiationException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvocationTargetException, NoSuchMethodException {
@@ -132,9 +132,9 @@ public class NetworkMessage {
     }
 
     public byte[] writeClient(Client client) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        byte[] payload = write(client.getSecret());
+        byte[] payload = write(client.getData().getSecret());
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer(payload.length + 32));
-        buffer.writeUUID(client.getPlayerUUID());
+        buffer.writeUUID(client.getData().getPlayerUUID());
         buffer.writeByteArray(payload);
         return buffer.array();
     }

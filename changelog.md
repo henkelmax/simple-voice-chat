@@ -5,3 +5,4 @@
 - Fixed audio occasionally cutting out
 - Reduced audio delay
 - Reduced talk indicator debounce
+- Added crouch distance multiplier

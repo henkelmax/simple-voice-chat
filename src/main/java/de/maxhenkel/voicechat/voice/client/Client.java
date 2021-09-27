@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.events.ClientVoiceChatEvents;
 import de.maxhenkel.voicechat.voice.common.*;
@@ -26,17 +25,9 @@ import java.util.UUID;
 
 public class Client extends Thread {
 
+    private final InitializationData data;
     private final DatagramSocket socket;
     private final InetAddress address;
-    private final int port;
-    private final UUID playerUUID;
-    private final UUID secret;
-    private final ServerConfig.Codec codec;
-    private final int mtuSize;
-    private final double voiceChatDistance;
-    private final double voiceChatFadeDistance;
-    private final int keepAlive;
-    private final boolean groupsEnabled;
     private MicThread micThread;
     private boolean running;
     private final TalkCache talkCache;
@@ -47,22 +38,12 @@ public class Client extends Thread {
     private long lastKeepAlive;
     @Nullable
     private AudioRecorder recorder;
-    private final boolean allowRecording;
 
     public Client(InitializationData data) throws IOException {
+        this.data = data;
         this.address = InetAddress.getByName(data.getServerIP());
-        this.port = data.getServerPort();
         this.socket = new DatagramSocket();
         this.socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
-        this.playerUUID = data.getPlayerUUID();
-        this.secret = data.getSecret();
-        this.codec = data.getCodec();
-        this.mtuSize = data.getMtuSize();
-        this.voiceChatDistance = data.getVoiceChatDistance();
-        this.voiceChatFadeDistance = data.getVoiceChatFadeDistance();
-        this.keepAlive = data.getKeepAlive();
-        this.groupsEnabled = data.groupsEnabled();
-        this.allowRecording = data.allowRecording();
         this.lastKeepAlive = -1;
         this.running = true;
         this.talkCache = new TalkCache();
@@ -78,44 +59,12 @@ public class Client extends Thread {
         setName("VoiceChatClientThread");
     }
 
-    public UUID getPlayerUUID() {
-        return playerUUID;
-    }
-
-    public UUID getSecret() {
-        return secret;
-    }
-
-    public ServerConfig.Codec getCodec() {
-        return codec;
-    }
-
-    public int getMtuSize() {
-        return mtuSize;
-    }
-
-    public boolean groupsEnabled() {
-        return groupsEnabled;
-    }
-
-    public boolean allowRecording() {
-        return allowRecording;
-    }
-
-    public double getVoiceChatDistance() {
-        return voiceChatDistance;
-    }
-
-    public double getVoiceChatFadeDistance() {
-        return voiceChatFadeDistance;
+    public InitializationData getData() {
+        return data;
     }
 
     public InetAddress getAddress() {
         return address;
-    }
-
-    public int getPort() {
-        return port;
     }
 
     public DatagramSocket getSocket() {
@@ -311,12 +260,12 @@ public class Client extends Thread {
     }
 
     public void sendToServer(NetworkMessage message) throws Exception {
-        byte[] data = message.writeClient(this);
-        socket.send(new DatagramPacket(data, data.length, address, port));
+        byte[] bytes = message.writeClient(this);
+        socket.send(new DatagramPacket(bytes, bytes.length, address, data.getServerPort()));
     }
 
     public void checkTimeout() {
-        if (lastKeepAlive >= 0 && System.currentTimeMillis() - lastKeepAlive > keepAlive * 10L) {
+        if (lastKeepAlive >= 0 && System.currentTimeMillis() - lastKeepAlive > data.getKeepAlive() * 10L) {
             Voicechat.LOGGER.info("Connection timeout");
             VoicechatClient.CLIENT.onDisconnect();
         }
@@ -336,7 +285,7 @@ public class Client extends Thread {
             while (running && !authenticated) {
                 try {
                     Voicechat.LOGGER.info("Trying to authenticate voice connection");
-                    sendToServer(new NetworkMessage(new AuthenticatePacket(playerUUID, secret)));
+                    sendToServer(new NetworkMessage(new AuthenticatePacket(data.getPlayerUUID(), data.getSecret())));
                 } catch (Exception e) {
                     if (!socket.isClosed()) {
                         Voicechat.LOGGER.error("Failed to authenticate voice connection: {}", e.getMessage());

@@ -15,6 +15,7 @@ public class InitializationData {
     private final int mtuSize;
     private final double voiceChatDistance;
     private final double voiceChatFadeDistance;
+    private final double crouchDistanceMultiplier;
     private final int keepAlive;
     private final boolean groupsEnabled;
     private final boolean allowRecording;
@@ -28,6 +29,7 @@ public class InitializationData {
         this.mtuSize = secretPacket.getMtuSize();
         this.voiceChatDistance = secretPacket.getVoiceChatDistance();
         this.voiceChatFadeDistance = secretPacket.getVoiceChatFadeDistance();
+        this.crouchDistanceMultiplier = secretPacket.getCrouchDistanceMultiplier();
         this.keepAlive = secretPacket.getKeepAlive();
         this.groupsEnabled = secretPacket.groupsEnabled();
         this.allowRecording = secretPacket.allowRecording();
@@ -63,6 +65,10 @@ public class InitializationData {
 
     public double getVoiceChatFadeDistance() {
         return voiceChatFadeDistance;
+    }
+
+    public double getCrouchDistanceMultiplier() {
+        return crouchDistanceMultiplier;
     }
 
     public int getKeepAlive() {
