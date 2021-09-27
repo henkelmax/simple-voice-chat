@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ListScreen;
 import de.maxhenkel.voicechat.voice.client.Client;
-import de.maxhenkel.voicechat.voice.client.DataLines;
+import de.maxhenkel.voicechat.voice.client.SoundManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -19,8 +19,8 @@ public class SelectSpeakerScreen extends ListScreen<String> {
 
     protected int selected;
 
-    public SelectSpeakerScreen(Client client, Screen parent) {
-        super(parent, DataLines.getSpeakerNames(client.getAudioChannelConfig().getStereoFormat()), new TranslatableComponent("gui.voicechat.select_speaker.title"));
+    public SelectSpeakerScreen(Screen parent) {
+        super(parent, SoundManager.getAllSpeakers(), new TranslatableComponent("gui.voicechat.select_speaker.title"));
         for (int i = 0; i < elements.size(); i++) {
             String element = elements.get(i);
             if (element.equals(VoicechatClient.CLIENT_CONFIG.speaker.get())) {
@@ -44,7 +44,7 @@ public class SelectSpeakerScreen extends ListScreen<String> {
             button.active = false;
             Client client = VoicechatClient.CLIENT.getClient();
             if (client != null) {
-                client.reloadDataLines();
+                client.reloadAudio();
             }
         }));
 
@@ -57,7 +57,7 @@ public class SelectSpeakerScreen extends ListScreen<String> {
         int titleWidth = font.width(title);
         font.draw(stack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
 
-        MutableComponent name = getCurrentElement() == null ? new TranslatableComponent("message.voicechat.no_speaker") : new TextComponent(getCurrentElement());
+        MutableComponent name = getCurrentElement() == null ? new TranslatableComponent("message.voicechat.no_speaker") : new TextComponent(SoundManager.cleanDeviceName(getCurrentElement()));
         int nameWidth = font.width(name);
         font.draw(stack, name.withStyle(ChatFormatting.WHITE).getVisualOrderText(), (float) (guiLeft + (xSize - nameWidth) / 2), guiTop + 7 + font.lineHeight + 7, 0);
     }

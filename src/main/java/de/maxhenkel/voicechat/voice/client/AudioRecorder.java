@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.client;
 import com.mojang.authlib.GameProfile;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.voice.common.Utils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -37,8 +38,10 @@ public class AudioRecorder {
     private final Path location;
     private final Client client;
 
-    private Map<UUID, AudioChunk> chunks;
-    private Map<UUID, GameProfile> gameProfileLookup;
+    private final Map<UUID, AudioChunk> chunks;
+    private final Map<UUID, GameProfile> gameProfileLookup;
+
+    private final AudioFormat stereoFormat;
 
     public AudioRecorder(Client client) {
         this.client = client;
@@ -55,6 +58,8 @@ public class AudioRecorder {
         location.toFile().mkdirs();
         chunks = new ConcurrentHashMap<>();
         gameProfileLookup = new ConcurrentHashMap<>();
+
+        stereoFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, SoundManager.SAMPLE_RATE, 16, 2, 4, SoundManager.SAMPLE_RATE, false);
     }
 
     public Path getLocation() {
@@ -81,8 +86,7 @@ public class AudioRecorder {
     }
 
     public String getStorage() {
-        AudioFormat format = client.getAudioChannelConfig().getStereoFormat();
-        return FileUtils.byteCountToDisplaySize((System.currentTimeMillis() - timestamp) * (long) format.getFrameSize() * ((long) format.getFrameRate() / 1000L) * getRecordedPlayerCount());
+        return FileUtils.byteCountToDisplaySize((System.currentTimeMillis() - timestamp) * (long) stereoFormat.getFrameSize() * ((long) stereoFormat.getFrameRate() / 1000L) * getRecordedPlayerCount());
     }
 
     private String lookupName(UUID uuid) {
@@ -97,7 +101,7 @@ public class AudioRecorder {
         return location.resolve(playerUUID.toString()).resolve(timestamp + ".wav");
     }
 
-    public void appendChunk(@Nullable GameProfile profile, long timestamp, byte[] data) throws IOException {
+    public void appendChunk(@Nullable GameProfile profile, long timestamp, short[] data) throws IOException {
         GameProfile p = profile != null ? profile : SYSTEM;
         gameProfileLookup.putIfAbsent(p.getId(), p);
         getChunk(p.getId(), timestamp).add(data);
@@ -107,7 +111,7 @@ public class AudioRecorder {
         File file = getFilePath(playerUUID, chunk.getTimestamp()).toFile();
         file.getParentFile().mkdirs();
         byte[] data = chunk.getBytes();
-        writeWav(data, client.getAudioChannelConfig().getStereoFormat(), file);
+        writeWav(data, stereoFormat, file);
     }
 
     private static void writeWav(byte[] data, AudioFormat format, File file) throws IOException {
@@ -227,7 +231,7 @@ public class AudioRecorder {
             if (audio == null) {
                 return;
             }
-            writeWav(audio.getBytes(), audio.getAudioFormat(), location.resolve(lookupName(uuid) + ".wav").toFile());
+            writeWav(Utils.shortsToBytes(audio.getShorts()), audio.getAudioFormat(), location.resolve(lookupName(uuid) + ".wav").toFile());
             FileUtils.deleteDirectory(userDir);
         }
     }
@@ -262,7 +266,7 @@ public class AudioRecorder {
             }
 
             int ts = (int) (snippet.getB() - timestamp);
-            audio.insertAt(audioInputStream.readAllBytes(), ts);
+            audio.insertAt(Utils.bytesToShorts(audioInputStream.readAllBytes()), ts);
             audioInputStream.close();
             progress.accept(((float) i + 1F) / (float) audioSnippets.size());
         }
@@ -279,8 +283,8 @@ public class AudioRecorder {
             this.buffer = new ByteArrayOutputStream();
         }
 
-        public void add(byte[] data) throws IOException {
-            buffer.write(data);
+        public void add(short[] data) throws IOException {
+            buffer.write(Utils.shortsToBytes(data));
         }
 
         public byte[] getBytes() {
@@ -295,14 +299,14 @@ public class AudioRecorder {
     private static class RandomAccessAudio {
 
         private AudioFormat audioFormat;
-        private DynamicByteArray data;
+        private DynamicShortArray data;
 
         public RandomAccessAudio(AudioFormat audioFormat) {
             this.audioFormat = audioFormat;
-            this.data = new DynamicByteArray();
+            this.data = new DynamicShortArray();
         }
 
-        public void insertAt(byte[] b, int offsetMilliseconds) throws UnsupportedAudioFileException {
+        public void insertAt(short[] shorts, int offsetMilliseconds) throws UnsupportedAudioFileException {
             if (audioFormat.getFrameSize() == AudioSystem.NOT_SPECIFIED) {
                 throw new UnsupportedAudioFileException("Frame size not specified");
             }
@@ -312,46 +316,46 @@ public class AudioRecorder {
             if (audioFormat.getSampleRate() == AudioSystem.NOT_SPECIFIED) {
                 throw new UnsupportedAudioFileException("Sample rate not specified");
             }
-            int bytesPerMs = ((int) audioFormat.getSampleRate() / 1000) * audioFormat.getFrameSize();
-            data.add(b, offsetMilliseconds * bytesPerMs);
+            int shortsPerMs = ((int) audioFormat.getSampleRate() / 1000);
+            data.add(shorts, offsetMilliseconds * shortsPerMs);
         }
 
         public AudioFormat getAudioFormat() {
             return audioFormat;
         }
 
-        public byte[] getBytes() {
-            return data.getBytes();
+        public short[] getShorts() {
+            return data.getShorts();
         }
     }
 
-    private static class DynamicByteArray {
-        private byte[] data;
+    private static class DynamicShortArray {
+        private short[] data;
 
-        public DynamicByteArray() {
+        public DynamicShortArray() {
             this(0);
         }
 
-        public DynamicByteArray(int initialLength) {
-            data = new byte[initialLength];
+        public DynamicShortArray(int initialLength) {
+            data = new short[initialLength];
         }
 
-        public DynamicByteArray(byte[] initialData) {
+        public DynamicShortArray(short[] initialData) {
             data = initialData;
         }
 
-        public void add(byte[] b, int offset) {
-            int max = b.length + offset;
+        public void add(short[] shorts, int offset) {
+            int max = shorts.length + offset;
             if (max > data.length) {
-                byte[] newData = new byte[max];
+                short[] newData = new short[max];
                 System.arraycopy(data, 0, newData, 0, data.length);
                 data = newData;
             }
 
-            System.arraycopy(b, 0, data, offset, b.length);
+            System.arraycopy(shorts, 0, data, offset, shorts.length);
         }
 
-        public byte[] getBytes() {
+        public short[] getShorts() {
             return data;
         }
     }

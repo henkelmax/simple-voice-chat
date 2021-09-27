@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 import javax.annotation.Nullable;
 import java.io.IOException;
 
-public class MicThread extends Thread {
+public class MicThread extends Thread implements ALMicrophone.MicrophoneListener {
 
     private Client client;
     private ALMicrophone mic;
@@ -21,7 +21,7 @@ public class MicThread extends Thread {
     public MicThread(Client client) throws MicrophoneException {
         this.client = client;
         this.running = true;
-        this.encoder = new OpusEncoder(client.getAudioChannelConfig().getSampleRate(), client.getAudioChannelConfig().getFrameSize(), client.getMtuSize(), client.getCodec().getOpusValue());
+        this.encoder = new OpusEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, client.getMtuSize(), client.getCodec().getOpusValue());
 
         this.denoiser = Denoiser.createDenoiser();
         if (denoiser == null) {
@@ -30,7 +30,7 @@ public class MicThread extends Thread {
 
         setDaemon(true);
         setName("MicrophoneThread");
-        mic = new ALMicrophone(client.getAudioChannelConfig().getSampleRate(), client.getAudioChannelConfig().getFrameSize(), VoicechatClient.CLIENT_CONFIG.microphone.get());
+        mic = new ALMicrophone(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get(), this);
         mic.open();
     }
 
@@ -54,7 +54,7 @@ public class MicThread extends Thread {
 
     private boolean activating;
     private int deactivationDelay;
-    private byte[] lastBuff;
+    private short[] lastBuff;
 
     private void voice() {
         wasPTT = false;
@@ -67,15 +67,13 @@ public class MicThread extends Thread {
             return;
         }
 
-        int dataLength = client.getAudioChannelConfig().getFrameSize();
-
         mic.start();
 
-        if (mic.available() < dataLength) {
+        if (mic.available() < SoundManager.FRAME_SIZE) {
             Utils.sleep(1);
             return;
         }
-        byte[] buff = new byte[dataLength];
+        short[] buff = new short[SoundManager.FRAME_SIZE];
         mic.read(buff);
         Utils.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
         buff = denoiseIfEnabled(buff);
@@ -86,6 +84,7 @@ public class MicThread extends Thread {
                 if (deactivationDelay >= VoicechatClient.CLIENT_CONFIG.deactivationDelay.get()) {
                     activating = false;
                     deactivationDelay = 0;
+                    mic.stop();
                     flushRecording();
                 } else {
                     sendAudioPacket(buff);
@@ -110,8 +109,6 @@ public class MicThread extends Thread {
 
     private void ptt() {
         activating = false;
-        int dataLength = client.getAudioChannelConfig().getFrameSize();
-
         if (!VoicechatClient.CLIENT.getPttKeyHandler().isPTTDown() || VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
             if (wasPTT) {
                 mic.stop();
@@ -126,11 +123,11 @@ public class MicThread extends Thread {
 
         mic.start();
 
-        if (mic.available() < dataLength) {
+        if (mic.available() < SoundManager.FRAME_SIZE) {
             Utils.sleep(1);
             return;
         }
-        byte[] buff = new byte[dataLength];
+        short[] buff = new short[SoundManager.FRAME_SIZE];
         mic.read(buff);
         Utils.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
         buff = denoiseIfEnabled(buff);
@@ -139,7 +136,7 @@ public class MicThread extends Thread {
 
     private long sequenceNumber = 0L;
 
-    private void sendAudioPacket(byte[] data) {
+    private void sendAudioPacket(short[] data) {
         try {
             byte[] encoded = encoder.encode(data);
             client.sendToServer(new NetworkMessage(new MicPacket(encoded, sequenceNumber++)));
@@ -155,7 +152,7 @@ public class MicThread extends Thread {
         }
     }
 
-    public byte[] denoiseIfEnabled(byte[] audio) {
+    public short[] denoiseIfEnabled(short[] audio) {
         if (denoiser != null && VoicechatClient.CLIENT_CONFIG.denoiser.get()) {
             return denoiser.denoise(audio);
         }
@@ -202,4 +199,22 @@ public class MicThread extends Thread {
         flushRecording();
     }
 
+    @Override
+    public void onStart() {
+        encoder.open();
+    }
+
+    @Override
+    public void onStop() {
+        sendStopPacket();
+        encoder.resetState();
+    }
+
+    private void sendStopPacket() {
+        try {
+            client.sendToServer(new NetworkMessage(new MicPacket(new byte[0], sequenceNumber++)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

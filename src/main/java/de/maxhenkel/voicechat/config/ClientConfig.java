@@ -13,7 +13,6 @@ public class ClientConfig {
     public final ConfigBuilder.ConfigEntry<MicrophoneActivationType> microphoneActivationType;
     public final ConfigBuilder.ConfigEntry<Integer> outputBufferSize;
     public final ConfigBuilder.ConfigEntry<Integer> audioPacketThreshold;
-    public final ConfigBuilder.ConfigEntry<Boolean> clearFullAudioBuffer;
     public final ConfigBuilder.ConfigEntry<Integer> deactivationDelay;
     public final ConfigBuilder.ConfigEntry<String> microphone;
     public final ConfigBuilder.ConfigEntry<String> speaker;
@@ -36,7 +35,6 @@ public class ClientConfig {
         microphoneActivationType = builder.enumEntry("microphone_activation_type", MicrophoneActivationType.PTT);
         outputBufferSize = builder.integerEntry("output_buffer_size", 5, 1, 16);
         audioPacketThreshold = builder.integerEntry("audio_packet_threshold", 3, 0, 16);
-        clearFullAudioBuffer = builder.booleanEntry("clear_full_audio_buffer", false);
         deactivationDelay = builder.integerEntry("voice_deactivation_delay", 25, 0, 100);
         microphone = builder.stringEntry("microphone", "");
         speaker = builder.stringEntry("speaker", "");

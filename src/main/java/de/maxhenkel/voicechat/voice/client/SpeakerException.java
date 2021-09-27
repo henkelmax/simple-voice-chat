@@ -2,9 +2,9 @@ package de.maxhenkel.voicechat.voice.client;
 
 import java.io.IOException;
 
-public class MicrophoneException extends IOException {
+public class SpeakerException extends IOException {
 
-    public MicrophoneException(String message) {
+    public SpeakerException(String message) {
         super(message);
     }
 

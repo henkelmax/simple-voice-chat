@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -10,13 +9,11 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.SourceDataLine;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Supplier;
 
 public class AudioChannel extends Thread {
 
@@ -26,8 +23,7 @@ public class AudioChannel extends Thread {
     private final BlockingQueue<SoundPacket> queue;
     private final AudioPacketBuffer packetBuffer;
     private long lastPacketTime;
-    private SourceDataLine speaker;
-    private FloatControl gainControl;
+    private ALSpeaker speaker;
     private boolean stopped;
     private final OpusDecoder decoder;
     private long lastSequenceNumber;
@@ -39,7 +35,7 @@ public class AudioChannel extends Thread {
         this.packetBuffer = new AudioPacketBuffer(VoicechatClient.CLIENT_CONFIG.audioPacketThreshold.get());
         this.lastPacketTime = System.currentTimeMillis();
         this.stopped = false;
-        this.decoder = new OpusDecoder(client.getAudioChannelConfig().getSampleRate(), client.getAudioChannelConfig().getFrameSize(), client.getMtuSize());
+        this.decoder = new OpusDecoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, client.getMtuSize());
         this.lastSequenceNumber = -1L;
         this.minecraft = Minecraft.getInstance();
         setDaemon(true);
@@ -54,6 +50,16 @@ public class AudioChannel extends Thread {
     public void closeAndKill() {
         Voicechat.LOGGER.info("Closing audio channel for " + uuid);
         stopped = true;
+        queue.clear();
+        if (Thread.currentThread() == this) {
+            return;
+        }
+        interrupt();
+        try {
+            join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public UUID getUUID() {
@@ -67,37 +73,13 @@ public class AudioChannel extends Thread {
     @Override
     public void run() {
         try {
-            AudioFormat af = client.getAudioChannelConfig().getStereoFormat();
-            speaker = DataLines.getSpeaker(af);
-            speaker.open(af);
-            gainControl = (FloatControl) speaker.getControl(FloatControl.Type.MASTER_GAIN);
+            speaker = new ALSpeaker(client.getSoundManager(), SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE);
+            speaker.open();
             while (!stopped) {
 
                 if (VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
-                    speaker.stop();
-                    queue.clear();
                     closeAndKill();
-                    flushRecording();
                     return;
-                }
-
-                // Stopping the data line when the buffer is empty
-                // to prevent the last sound getting repeated
-                if (speaker.isActive() && speaker.getBufferSize() - speaker.available() <= 0) {
-                    speaker.stop();
-                    lastSequenceNumber = -1L;
-                    flushRecording();
-                }
-
-                // Flush the speaker if the buffer is too full to avoid too big delays
-                if (VoicechatClient.CLIENT_CONFIG.clearFullAudioBuffer.get() && speaker.isActive() && speaker.getBufferSize() - speaker.available() > client.getAudioChannelConfig().maxSpeakerBufferSize()) {
-                    CooldownTimer.run("clear_audio_buffer", () -> {
-                        Voicechat.LOGGER.warn("Clearing buffers to avoid audio delay");
-                    });
-                    speaker.stop();
-                    speaker.flush();
-                    lastSequenceNumber = -1L;
-                    flushRecording();
                 }
 
                 SoundPacket<?> packet = packetBuffer.poll(queue);
@@ -110,13 +92,16 @@ public class AudioChannel extends Thread {
                     continue;
                 }
 
-                // Filling the speaker with silence for one packet size
-                // to build a small buffer to compensate for network latency
-                if (speaker.getBufferSize() - speaker.available() <= 0) {
-                    byte[] data = new byte[Math.min(client.getAudioChannelConfig().getFrameSize() * VoicechatClient.CLIENT_CONFIG.outputBufferSize.get(), speaker.getBufferSize() - client.getAudioChannelConfig().getFrameSize())];
-                    speaker.write(data, 0, data.length);
-                }
                 if (minecraft.level == null || minecraft.player == null) {
+                    continue;
+                }
+
+                speaker.checkBufferEmpty(this::flushRecordingSync);
+
+                if (packet.getData().length == 0) {
+                    lastSequenceNumber = -1L;
+                    flushRecording();
+                    decoder.resetState();
                     continue;
                 }
 
@@ -124,27 +109,29 @@ public class AudioChannel extends Thread {
 
                 if (lastSequenceNumber >= 0) {
                     int packetsToCompensate = (int) (packet.getSequenceNumber() - (lastSequenceNumber + 1));
-                    for (int i = 0; i < packetsToCompensate; i++) {
-                        if (speaker.available() < client.getAudioChannelConfig().getFrameSize()) {
-                            Voicechat.LOGGER.warn("Could not compensate more than " + i + " audio packets");
-                            break;
+
+                    if (packetsToCompensate > 0) {
+                        Voicechat.LOGGER.debug("Compensating {}/{} packets ", packetsToCompensate >= 4 ? 0 : packetsToCompensate, packetsToCompensate);
+                    }
+
+                    if (packetsToCompensate <= 4) {
+                        for (int i = 0; i < packetsToCompensate; i++) {
+                            writeToSpeaker(packet, decoder.decode(null));
                         }
-                        writeToSpeaker(packet, decoder.decode(null));
                     }
                 }
 
                 lastSequenceNumber = packet.getSequenceNumber();
 
-                byte[] decodedAudio = decoder.decode(packet.getData());
+                short[] decodedAudio = decoder.decode(packet.getData());
 
                 writeToSpeaker(packet, decodedAudio);
             }
+        } catch (InterruptedException ignored) {
         } catch (Throwable e) {
             e.printStackTrace();
         } finally {
             if (speaker != null) {
-                speaker.stop();
-                speaker.flush();
                 speaker.close();
             }
             decoder.close();
@@ -154,6 +141,10 @@ public class AudioChannel extends Thread {
     }
 
     private void flushRecording() {
+        minecraft.getSoundManager().soundEngine.executor.execute(this::flushRecordingSync);
+    }
+
+    private void flushRecordingSync() {
         AudioRecorder recorder = client.getRecorder();
         if (recorder == null) {
             return;
@@ -161,36 +152,40 @@ public class AudioChannel extends Thread {
         recorder.writeChunkThreaded(uuid);
     }
 
-    private void writeToSpeaker(Packet<?> packet, byte[] monoData) {
+    private void writeToSpeaker(Packet<?> packet, short[] monoData) {
         @Nullable Player player = minecraft.level.getPlayerByUUID(uuid);
 
-        byte[] stereo = new byte[0];
+        float volume = VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * (float) VoicechatClient.VOLUME_CONFIG.getVolume(uuid);
+        boolean stereo = VoicechatClient.CLIENT_CONFIG.stereo.get();
 
         if (packet instanceof GroupSoundPacket) {
-            stereo = Utils.convertToStereo(monoData, 1F, 1F);
+            speaker.write(monoData, volume, null);
+            appendRecording(player, () -> Utils.convertToStereo(monoData, 1F, 1F));
         } else if (packet instanceof PlayerSoundPacket) {
             if (player == null) {
                 return;
             }
-            stereo = convertLocationalPacketToStereo(player.getEyePosition(), monoData);
+            Vec3 pos = player.getEyePosition();
+            speaker.write(monoData, volume * getDistanceVolume(pos), stereo ? pos : null);
+            appendRecording(player, () -> convertLocationalPacketToStereo(pos, monoData));
         } else if (packet instanceof LocationSoundPacket p) {
-            stereo = convertLocationalPacketToStereo(p.getLocation(), monoData);
+            speaker.write(monoData, volume * getDistanceVolume(p.getLocation()), stereo ? p.getLocation() : null);
+            appendRecording(player, () -> convertLocationalPacketToStereo(p.getLocation(), monoData));
         }
-
-        gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * (float) VoicechatClient.VOLUME_CONFIG.getVolume(uuid)), gainControl.getMinimum()), gainControl.getMaximum()));
-        if (client.getRecorder() != null) {
-            try {
-                client.getRecorder().appendChunk(player != null ? player.getGameProfile() : null, System.currentTimeMillis(), stereo);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        speaker.write(stereo, 0, stereo.length);
-        speaker.start();
     }
 
-    private byte[] convertLocationalPacketToStereo(Vec3 pos, byte[] monoData) {
-        float distance = (float) pos.distanceTo(minecraft.player.position());
+    private short[] convertLocationalPacketToStereo(Vec3 pos, short[] monoData) {
+        float distanceVolume = getDistanceVolume(pos);
+        if (VoicechatClient.CLIENT_CONFIG.stereo.get()) {
+            Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, pos, client.getVoiceChatDistance());
+            return Utils.convertToStereo(monoData, distanceVolume * stereoVolume.getLeft(), distanceVolume * stereoVolume.getRight());
+        } else {
+            return Utils.convertToStereo(monoData, distanceVolume, distanceVolume);
+        }
+    }
+
+    private float getDistanceVolume(Vec3 pos) {
+        float distance = (float) pos.distanceTo(minecraft.player.getEyePosition());
         float fadeDistance = (float) client.getVoiceChatFadeDistance();
         float maxDistance = (float) client.getVoiceChatDistance();
 
@@ -198,13 +193,19 @@ public class AudioChannel extends Thread {
         if (distance > fadeDistance) {
             percentage = 1F - Math.min((distance - fadeDistance) / (maxDistance - fadeDistance), 1F);
         }
+        return percentage;
+    }
 
-        if (VoicechatClient.CLIENT_CONFIG.stereo.get()) {
-            Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, pos, client.getVoiceChatDistance());
-            return Utils.convertToStereo(monoData, percentage * stereoVolume.getLeft(), percentage * stereoVolume.getRight());
-        } else {
-            return Utils.convertToStereo(monoData, percentage, percentage);
-        }
+    private void appendRecording(Player player, Supplier<short[]> stereo) {
+        minecraft.getSoundManager().soundEngine.executor.execute(() -> {
+            if (client.getRecorder() != null) {
+                try {
+                    client.getRecorder().appendChunk(player != null ? player.getGameProfile() : null, System.currentTimeMillis(), stereo.get());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public boolean isClosed() {

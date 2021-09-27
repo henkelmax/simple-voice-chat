@@ -4,8 +4,9 @@ import com.mojang.blaze3d.platform.InputConstants;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.events.IClientConnection;
+import de.maxhenkel.voicechat.voice.client.ALMicrophone;
 import de.maxhenkel.voicechat.voice.client.Client;
-import de.maxhenkel.voicechat.voice.client.DataLines;
+import de.maxhenkel.voicechat.voice.client.SoundManager;
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
 import net.fabricmc.loader.api.FabricLoader;
@@ -23,8 +24,6 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.io.FileUtils;
 
-import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.TargetDataLine;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
@@ -141,50 +140,14 @@ public class DebugReport {
     private void appendMics() {
         addLine("Input Devices");
         addLine("");
-        for (String mic : DataLines.getMicrophoneNames(null)) {
-            TargetDataLine microphone = DataLines.getMicrophoneByName(null, mic);
-            if (microphone == null) {
-                addLine(mic + ": Not found");
-                continue;
-            }
-            addLine(mic
-                    + ": "
-                    + microphone.getFormat().getSampleRate()
-                    + " Hz "
-                    + microphone.getFormat().getEncoding().toString()
-                    + ", "
-                    + microphone.getFormat().getFrameSize()
-                    + " bytes, "
-                    + microphone.getFormat().getChannels()
-                    + " channels, "
-                    + (microphone.getFormat().isBigEndian() ? "BE" : "LE")
-            );
-        }
+        ALMicrophone.getAllMicrophones().forEach(this::addLine);
         addLine("");
     }
 
     private void appendSpeakers() {
         addLine("Output Devices");
         addLine("");
-        for (String name : DataLines.getSpeakerNames(null)) {
-            SourceDataLine speaker = DataLines.getSpeakerByName(null, name);
-            if (speaker == null) {
-                addLine(name + ": Not found");
-                continue;
-            }
-            addLine(name
-                    + ": "
-                    + speaker.getFormat().getSampleRate()
-                    + " Hz "
-                    + speaker.getFormat().getEncoding().toString()
-                    + ", "
-                    + speaker.getFormat().getFrameSize()
-                    + " bytes, "
-                    + speaker.getFormat().getChannels()
-                    + " channels, "
-                    + (speaker.getFormat().isBigEndian() ? "BE" : "LE")
-            );
-        }
+        SoundManager.getAllSpeakers().forEach(this::addLine);
         addLine("");
     }
 
@@ -237,8 +200,8 @@ public class DebugReport {
             addLine("Port: " + client.getPort());
             addLine("Codec: " + client.getCodec().toString());
             addLine(client.groupsEnabled() ? "Groups enabled" : "Groups disabled");
-            addLine("Sample rate: " + client.getAudioChannelConfig().getSampleRate());
-            addLine("Frame size: " + client.getAudioChannelConfig().getFrameSize());
+            addLine("Sample rate: " + SoundManager.SAMPLE_RATE);
+            addLine("Frame size: " + SoundManager.FRAME_SIZE);
             addLine("MTU size: " + client.getMtuSize());
             addLine("Distance: " + client.getVoiceChatDistance());
             addLine("Fade distance: " + client.getVoiceChatFadeDistance());

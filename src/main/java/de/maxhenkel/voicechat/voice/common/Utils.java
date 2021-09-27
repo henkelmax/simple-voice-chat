@@ -19,6 +19,27 @@ public class Utils {
         }
     }
 
+    public static short[] bytesToShorts(byte[] bytes) {
+        if (bytes.length % 2 != 0) {
+            throw new IllegalArgumentException("Input bytes need to be divisible by 2");
+        }
+        short[] data = new short[bytes.length / 2];
+        for (int i = 0; i < bytes.length; i += 2) {
+            data[i / 2] = bytesToShort(bytes[i], bytes[i + 1]);
+        }
+        return data;
+    }
+
+    public static byte[] shortsToBytes(short[] shorts) {
+        byte[] data = new byte[shorts.length * 2];
+        for (int i = 0; i < shorts.length; i++) {
+            byte[] split = shortToBytes(shorts[i]);
+            data[i * 2] = split[0];
+            data[i * 2 + 1] = split[1];
+        }
+        return data;
+    }
+
     public static float percentageToDB(float percentage) {
         return (float) (10D * Math.log(percentage));
     }
@@ -31,6 +52,22 @@ public class Utils {
         return new byte[]{(byte) (s & 0xFF), (byte) ((s >> 8) & 0xFF)};
     }
 
+    public static short[] floatsToShorts(float[] floats) {
+        short[] shorts = new short[floats.length];
+        for (int i = 0; i < floats.length; i++) {
+            shorts[i] = ((Float) floats[i]).shortValue();
+        }
+        return shorts;
+    }
+
+    public static float[] shortsToFloats(short[] shorts) {
+        float[] floats = new float[shorts.length];
+        for (int i = 0; i < shorts.length; i++) {
+            floats[i] = ((Short) shorts[i]).floatValue();
+        }
+        return floats;
+    }
+
     public static byte[] floatToBytes(float[] floats) {
         byte[] bytes = new byte[floats.length * 2];
         for (int i = 0; i < floats.length; i++) {
@@ -41,7 +78,7 @@ public class Utils {
         return bytes;
     }
 
-    public static float[] bytesToFloat(byte[] bytes) {
+    public static float[] bytesToFloats(byte[] bytes) {
         float[] floats = new float[bytes.length / 2];
         for (int i = 0; i < bytes.length / 2; i++) {
             if ((bytes[i * 2 + 1] & 0x80) != 0) {
@@ -61,17 +98,30 @@ public class Utils {
      * @param volume the amplification
      * @return the adjusted audio
      */
-    public static byte[] adjustVolumeMono(byte[] audio, float volume) {
-        for (int i = 0; i < audio.length; i += 2) {
-            short audioSample = bytesToShort(audio[i], audio[i + 1]);
-
-            audioSample = (short) (audioSample * volume);
-
-            audio[i] = (byte) audioSample;
-            audio[i + 1] = (byte) (audioSample >> 8);
-
+    public static short[] adjustVolumeMono(short[] audio, float volume) {
+        // float maximumMultiplier = getMaximumMultiplier(audio, volume); // TODO better sound clipping
+        for (int i = 0; i < audio.length; i++) {
+            audio[i] = (short) ((float) audio[i] * volume);
         }
         return audio;
+    }
+
+    private static float getMaximumMultiplier(short[] audio, float multiplier) {
+        short max = 0;
+
+        for (short value : audio) {
+            short abs;
+            if (value <= Short.MIN_VALUE) {
+                abs = (short) Math.abs(value + 1);
+            } else {
+                abs = (short) Math.abs(value);
+            }
+            if (abs > max) {
+                max = abs;
+            }
+        }
+
+        return Math.min(multiplier, (float) Short.MAX_VALUE / (float) max);
     }
 
     /**
@@ -83,9 +133,10 @@ public class Utils {
      * @param volumeRight the amplification of the right audio
      * @return the adjusted audio
      */
-    public static byte[] adjustVolumeStereo(byte[] audio, float volumeLeft, float volumeRight) {
+    public static byte[] convertToStereo(byte[] audio, float volumeLeft, float volumeRight) {
+        // TODO better sound clipping
         for (int i = 0; i < audio.length; i += 2) {
-            short audioSample = bytesToShort(audio[i], audio[i + 1]); //(short) (((audio[i + 1] & 0xff) << 8) | (audio[i] & 0xff));
+            short audioSample = bytesToShort(audio[i], audio[i + 1]);
 
             audioSample = (short) (audioSample * (i % 4 == 0 ? volumeLeft : volumeRight));
 
@@ -97,19 +148,16 @@ public class Utils {
     }
 
     /**
-     * Convorts 16 bit mono audio to stereo
+     * Converts 16 bit mono audio to stereo
      *
      * @param audio the audio data
      * @return the adjusted audio
      */
-    public static byte[] convertToStereo(byte[] audio) {
-        byte[] stereo = new byte[audio.length * 2];
-        for (int i = 0; i < audio.length; i += 2) {
+    public static short[] convertToStereo(short[] audio) {
+        short[] stereo = new short[audio.length * 2];
+        for (int i = 0; i < audio.length; i++) {
             stereo[i * 2] = audio[i];
-            stereo[i * 2 + 1] = audio[i + 1];
-
-            stereo[i * 2 + 2] = audio[i];
-            stereo[i * 2 + 3] = audio[i + 1];
+            stereo[i * 2 + 1] = audio[i];
         }
         return stereo;
     }
@@ -119,20 +167,17 @@ public class Utils {
      *
      * @param audio       the audio data
      * @param volumeLeft  the volume modifier for the left audio
-     * @param volumeRight tthe volume modifier for the right audio
+     * @param volumeRight the volume modifier for the right audio
      * @return the adjusted audio
      */
-    public static byte[] convertToStereo(byte[] audio, float volumeLeft, float volumeRight) {
-        byte[] stereo = new byte[audio.length * 2];
-        for (int i = 0; i < audio.length; i += 2) {
-            short audioSample = bytesToShort(audio[i], audio[i + 1]);
-            short left = (short) (audioSample * volumeLeft);
-            short right = (short) (audioSample * volumeRight);
-            stereo[i * 2] = (byte) left;
-            stereo[i * 2 + 1] = (byte) (left >> 8);
-
-            stereo[i * 2 + 2] = (byte) right;
-            stereo[i * 2 + 3] = (byte) (right >> 8);
+    public static short[] convertToStereo(short[] audio, float volumeLeft, float volumeRight) {
+        // TODO better sound clipping
+        short[] stereo = new short[audio.length * 2];
+        for (int i = 0; i < audio.length; i++) {
+            short left = (short) (audio[i] * volumeLeft);
+            short right = (short) (audio[i] * volumeRight);
+            stereo[i * 2] = left;
+            stereo[i * 2 + 1] = right;
         }
         return stereo;
     }
@@ -200,11 +245,11 @@ public class Utils {
      * @param length  the length in bytes of the signal in samples starting at offset
      * @return the audio level of the specified signal in db
      */
-    public static double calculateAudioLevel(byte[] samples, int offset, int length) {
+    public static double calculateAudioLevel(short[] samples, int offset, int length) {
         double rms = 0D; // root mean square (RMS) amplitude
 
-        for (int i = offset; i < length; i += 2) {
-            double sample = (double) Utils.bytesToShort(samples[i], samples[i + 1]) / Short.MAX_VALUE;
+        for (int i = offset; i < length; i++) {
+            double sample = (double) samples[i] / (double) Short.MAX_VALUE;
             rms += sample * sample;
         }
 
@@ -229,7 +274,7 @@ public class Utils {
      * @param samples the audio samples
      * @return the audio level in db
      */
-    public static double getHighestAudioLevel(byte[] samples) {
+    public static double getHighestAudioLevel(short[] samples) {
         double highest = -127D;
         for (int i = 0; i < samples.length; i += 100) {
             double level = Utils.calculateAudioLevel(samples, i, Math.min(i + 100, samples.length));
@@ -247,7 +292,7 @@ public class Utils {
      * @param activationLevel the activation threshold
      * @return the audio level in db
      */
-    public static int getActivationOffset(byte[] samples, double activationLevel) {
+    public static int getActivationOffset(short[] samples, double activationLevel) {
         int highestPos = -1;
         for (int i = 0; i < samples.length; i += 100) {
             double level = Utils.calculateAudioLevel(samples, i, Math.min(i + 100, samples.length));

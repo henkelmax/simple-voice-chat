@@ -3,10 +3,7 @@ package de.maxhenkel.voicechat.gui.widgets;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.voice.client.ALMicrophone;
-import de.maxhenkel.voicechat.voice.client.Client;
-import de.maxhenkel.voicechat.voice.client.DataLines;
-import de.maxhenkel.voicechat.voice.client.MicThread;
+import de.maxhenkel.voicechat.voice.client.*;
 import de.maxhenkel.voicechat.voice.common.Denoiser;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.components.AbstractButton;
@@ -15,7 +12,6 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
-import javax.sound.sampled.*;
 
 public class MicTestButton extends AbstractButton {
 
@@ -64,7 +60,7 @@ public class MicTestButton extends AbstractButton {
         setMicActive(!micActive);
         updateText();
         if (micActive) {
-            if (voiceThread != null) {
+            if (voiceThread != null && !voiceThread.isClosed()) {
                 voiceThread.close();
             }
             try {
@@ -76,7 +72,7 @@ public class MicTestButton extends AbstractButton {
                 e.printStackTrace();
             }
         } else {
-            if (voiceThread != null) {
+            if (voiceThread != null && !voiceThread.isClosed()) {
                 voiceThread.close();
             }
         }
@@ -105,32 +101,23 @@ public class MicTestButton extends AbstractButton {
 
     private class VoiceThread extends Thread {
 
-        private final AudioFormat audioFormat;
         private final ALMicrophone mic;
-        private final SourceDataLine speaker;
-        private final FloatControl gainControl;
+        private final ALSpeaker speaker;
         private boolean running;
         private long lastRender;
         @Nullable
         private Denoiser denoiser;
 
-        public VoiceThread() throws LineUnavailableException {
+        public VoiceThread() throws SpeakerException, MicrophoneException {
             this.running = true;
             setDaemon(true);
-            audioFormat = client.getAudioChannelConfig().getMonoFormat();
             mic = getMic();
             if (mic == null) {
-                throw new LineUnavailableException("No microphone");
+                throw new MicrophoneException("No microphone");
             }
-            speaker = DataLines.getSpeaker(audioFormat);
-            if (speaker == null) {
-                throw new LineUnavailableException("No speaker");
-            }
-            speaker.open(audioFormat);
-            speaker.start();
-            speaker.write(new byte[client.getAudioChannelConfig().getFrameSize() * 10], 0, client.getAudioChannelConfig().getFrameSize() * 10);
+            speaker = new ALSpeaker(client.getSoundManager(), SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE);
 
-            gainControl = (FloatControl) speaker.getControl(FloatControl.Type.MASTER_GAIN);
+            speaker.open();
 
             denoiser = Denoiser.createDenoiser();
 
@@ -146,12 +133,11 @@ public class MicTestButton extends AbstractButton {
                     return;
                 }
                 mic.start();
-                int dataLength = client.getAudioChannelConfig().getFrameSize();
-                if (mic.available() < dataLength) {
+                if (mic.available() < SoundManager.FRAME_SIZE) {
                     Utils.sleep(1);
                     continue;
                 }
-                byte[] buff = new byte[dataLength];
+                short[] buff = new short[SoundManager.FRAME_SIZE];
                 mic.read(buff);
                 Utils.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
 
@@ -161,9 +147,7 @@ public class MicTestButton extends AbstractButton {
 
                 micListener.onMicValue(Utils.dbToPerc(Utils.getHighestAudioLevel(buff)));
 
-                gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue()), gainControl.getMinimum()), gainControl.getMaximum()));
-
-                speaker.write(buff, 0, buff.length);
+                speaker.write(buff, VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue(), null);
             }
         }
 
@@ -171,11 +155,13 @@ public class MicTestButton extends AbstractButton {
             lastRender = System.currentTimeMillis();
         }
 
+        public boolean isClosed() {
+            return !running;
+        }
+
         public void close() {
             Voicechat.LOGGER.info("Closing mic test audio channel");
             running = false;
-            speaker.stop();
-            speaker.flush();
             speaker.close();
             mic.stop();
             setMicLocked(false);

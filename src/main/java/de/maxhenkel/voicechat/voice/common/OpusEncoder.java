@@ -14,11 +14,20 @@ public class OpusEncoder {
     protected int sampleRate;
     protected int frameSize;
     protected int maxPayloadSize;
+    protected int application;
 
     public OpusEncoder(int sampleRate, int frameSize, int maxPayloadSize, int application) {
         this.sampleRate = sampleRate;
         this.frameSize = frameSize;
         this.maxPayloadSize = maxPayloadSize;
+        this.application = application;
+        open();
+    }
+
+    public void open() {
+        if (opusEncoder != null) {
+            return;
+        }
         IntBuffer error = IntBuffer.allocate(1);
         opusEncoder = Opus.INSTANCE.opus_encoder_create(sampleRate, 1, application, error);
         if (error.get() != Opus.OPUS_OK && opusEncoder == null) {
@@ -26,17 +35,11 @@ public class OpusEncoder {
         }
     }
 
-    public byte[] encode(byte[] rawAudio) {
-        ShortBuffer nonEncodedBuffer = ShortBuffer.allocate(rawAudio.length / 2);
+    public byte[] encode(short[] rawAudio) {
+        ShortBuffer nonEncodedBuffer = ShortBuffer.wrap(rawAudio);
         ByteBuffer encoded = ByteBuffer.allocate(maxPayloadSize);
-        for (int i = 0; i < rawAudio.length; i += 2) {
-            short toShort = Utils.bytesToShort(rawAudio[i], rawAudio[i + 1]);
 
-            nonEncodedBuffer.put(toShort);
-        }
-        nonEncodedBuffer.flip();
-
-        int result = Opus.INSTANCE.opus_encode(opusEncoder, nonEncodedBuffer, frameSize / 2, encoded, encoded.capacity());
+        int result = Opus.INSTANCE.opus_encode(opusEncoder, nonEncodedBuffer, frameSize, encoded, encoded.capacity());
 
         if (result < 0) {
             throw new RuntimeException("Failed to encode audio data");
@@ -47,8 +50,16 @@ public class OpusEncoder {
         return audio;
     }
 
+    public void resetState() {
+        Opus.INSTANCE.opus_encoder_ctl(opusEncoder, Opus.INSTANCE.OPUS_RESET_STATE);
+    }
+
     public void close() {
+        if (opusEncoder == null) {
+            return;
+        }
         Opus.INSTANCE.opus_encoder_destroy(opusEncoder);
+        opusEncoder = null;
     }
 
 }

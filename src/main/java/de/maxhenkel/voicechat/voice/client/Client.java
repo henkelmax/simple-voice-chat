@@ -25,28 +25,28 @@ import java.util.UUID;
 
 public class Client extends Thread {
 
-    private DatagramSocket socket;
-    private InetAddress address;
-    private int port;
-    private UUID playerUUID;
-    private UUID secret;
-    private ServerConfig.Codec codec;
-    private int mtuSize;
-    private double voiceChatDistance;
-    private double voiceChatFadeDistance;
-    private int keepAlive;
-    private boolean groupsEnabled;
+    private final DatagramSocket socket;
+    private final InetAddress address;
+    private final int port;
+    private final UUID playerUUID;
+    private final UUID secret;
+    private final ServerConfig.Codec codec;
+    private final int mtuSize;
+    private final double voiceChatDistance;
+    private final double voiceChatFadeDistance;
+    private final int keepAlive;
+    private final boolean groupsEnabled;
     private MicThread micThread;
     private boolean running;
-    private TalkCache talkCache;
+    private final TalkCache talkCache;
     private boolean authenticated;
-    private Map<UUID, AudioChannel> audioChannels;
-    private AuthThread authThread;
-    private AudioChannelConfig audioChannelConfig;
+    private SoundManager soundManager;
+    private final Map<UUID, AudioChannel> audioChannels;
+    private final AuthThread authThread;
     private long lastKeepAlive;
     @Nullable
     private AudioRecorder recorder;
-    private boolean allowRecording;
+    private final boolean allowRecording;
 
     public Client(InitializationData data) throws IOException {
         this.address = InetAddress.getByName(data.getServerIP());
@@ -65,16 +65,16 @@ public class Client extends Thread {
         this.lastKeepAlive = -1;
         this.running = true;
         this.talkCache = new TalkCache();
+        try {
+            reloadSoundManager();
+        } catch (SpeakerException e) {
+            e.printStackTrace();
+        }
         this.audioChannels = new HashMap<>();
         this.authThread = new AuthThread();
         this.authThread.start();
-        this.audioChannelConfig = new AudioChannelConfig(this);
         setDaemon(true);
         setName("VoiceChatClientThread");
-    }
-
-    public AudioChannelConfig getAudioChannelConfig() {
-        return audioChannelConfig;
     }
 
     public UUID getPlayerUUID() {
@@ -125,17 +125,36 @@ public class Client extends Thread {
         return authenticated;
     }
 
-    public void reloadDataLines() {
-        Voicechat.LOGGER.info("Reloading data lines");
+    public void reloadSoundManager() throws SpeakerException {
+        if (soundManager != null) {
+            soundManager.close();
+        }
+        soundManager = new SoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
+    }
+
+    public void reloadAudio() {
+        Voicechat.LOGGER.info("Reloading audio");
+
         if (micThread != null) {
-            Voicechat.LOGGER.info("Restarting microphone thread");
+            Voicechat.LOGGER.info("Stopping microphone thread");
             micThread.close();
             micThread = null;
-            startMicThread();
         }
-        Voicechat.LOGGER.info("Clearing audio channels");
-        audioChannels.forEach((uuid, audioChannel) -> audioChannel.closeAndKill());
-        audioChannels.clear();
+
+        synchronized (audioChannels) {
+            Voicechat.LOGGER.info("Clearing audio channels");
+            audioChannels.forEach((uuid, audioChannel) -> audioChannel.closeAndKill());
+            audioChannels.clear();
+            try {
+                Voicechat.LOGGER.info("Restarting sound manager");
+                reloadSoundManager();
+            } catch (SpeakerException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Voicechat.LOGGER.info("Starting microphone thread");
+        startMicThread();
     }
 
     private void startMicThread() {
@@ -179,20 +198,22 @@ public class Client extends Thread {
                         lastKeepAlive = System.currentTimeMillis();
                     }
                 } else if (in.getPacket() instanceof SoundPacket packet) {
-                    if (!VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
-                        AudioChannel sendTo = audioChannels.get(packet.getSender());
-                        if (sendTo == null) {
-                            AudioChannel ch = new AudioChannel(this, packet.getSender());
-                            ch.addToQueue(packet);
-                            ch.start();
-                            audioChannels.put(packet.getSender(), ch);
-                        } else {
-                            sendTo.addToQueue(packet);
+                    synchronized (audioChannels) {
+                        if (!VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
+                            AudioChannel sendTo = audioChannels.get(packet.getSender());
+                            if (sendTo == null) {
+                                AudioChannel ch = new AudioChannel(this, packet.getSender());
+                                ch.addToQueue(packet);
+                                ch.start();
+                                audioChannels.put(packet.getSender(), ch);
+                            } else {
+                                sendTo.addToQueue(packet);
+                            }
                         }
-                    }
 
-                    audioChannels.values().stream().filter(AudioChannel::canKill).forEach(AudioChannel::closeAndKill);
-                    audioChannels.entrySet().removeIf(entry -> entry.getValue().isClosed());
+                        audioChannels.values().stream().filter(AudioChannel::canKill).forEach(AudioChannel::closeAndKill);
+                        audioChannels.entrySet().removeIf(entry -> entry.getValue().isClosed());
+                    }
                 } else if (in.getPacket() instanceof PingPacket packet) {
                     Voicechat.LOGGER.info("Received ping {}, sending pong...", packet.getId());
                     sendToServer(new NetworkMessage(packet));
@@ -201,6 +222,7 @@ public class Client extends Thread {
                     sendToServer(new NetworkMessage(new KeepAlivePacket()));
                 }
             }
+        } catch (InterruptedException ignored) {
         } catch (Exception e) {
             if (running) {
                 Voicechat.LOGGER.error("Failed to process packet from server: {}", e.getMessage());
@@ -210,10 +232,18 @@ public class Client extends Thread {
     }
 
     public void close() {
-        Voicechat.LOGGER.info("Disconnecting client");
+        Voicechat.LOGGER.info("Disconnecting voicechat");
         running = false;
+
+        synchronized (audioChannels) {
+            Voicechat.LOGGER.info("Clearing audio channels");
+            audioChannels.forEach((uuid, audioChannel) -> audioChannel.closeAndKill());
+            audioChannels.clear();
+        }
+
         socket.close();
         authThread.close();
+        soundManager.close();
 
         if (micThread != null) {
             micThread.close();
@@ -233,6 +263,10 @@ public class Client extends Thread {
 
     public boolean isConnected() {
         return running && !socket.isClosed();
+    }
+
+    public SoundManager getSoundManager() {
+        return soundManager;
     }
 
     public TalkCache getTalkCache() {

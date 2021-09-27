@@ -68,10 +68,10 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
         }));
         y += 21;
         addRenderableWidget(new Button(guiLeft + 10, y, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_microphone"), button -> {
-            minecraft.setScreen(new SelectMicrophoneScreen(c, this));
+            minecraft.setScreen(new SelectMicrophoneScreen(this));
         }));
         addRenderableWidget(new Button(guiLeft + xSize / 2 + 6, y, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_speaker"), button -> {
-            minecraft.setScreen(new SelectSpeakerScreen(c, this));
+            minecraft.setScreen(new SelectSpeakerScreen(this));
         }));
     }
 
