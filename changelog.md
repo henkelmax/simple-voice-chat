@@ -2,3 +2,5 @@
 - Improved 3D audio
 - Fixed delayed audio when going out of hearing distance
 - Fixed audio device names on Linux
+- Fixed audio occasionally cutting out
+- Reduce audio delay

@@ -20,7 +20,7 @@ public class AudioChannel extends Thread {
     private final Minecraft minecraft;
     private final Client client;
     private final UUID uuid;
-    private final BlockingQueue<SoundPacket> queue;
+    private final BlockingQueue<SoundPacket<?>> queue;
     private final AudioPacketBuffer packetBuffer;
     private long lastPacketTime;
     private ALSpeaker speaker;
