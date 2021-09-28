@@ -202,11 +202,14 @@ public class AudioChannel extends Thread {
         float fadeDistance = (float) client.getData().getVoiceChatFadeDistance() * distanceMultiplier;
         float maxDistance = (float) client.getData().getVoiceChatDistance() * distanceMultiplier;
 
-        float percentage = 1F;
-        if (distance > fadeDistance) {
-            percentage = 1F - Math.min((distance - fadeDistance) / (maxDistance - fadeDistance), 1F);
+        if (distance < fadeDistance) {
+            return 1F;
+        } else if (distance > maxDistance) {
+            return 0F;
+        } else {
+            float percentage = (distance - fadeDistance) / (maxDistance - fadeDistance);
+            return 1F / (1F + (float) Math.exp((percentage * 12F) - 6F));
         }
-        return percentage;
     }
 
     private void appendRecording(Player player, Supplier<short[]> stereo) {
