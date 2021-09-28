@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.events.IClientConnection;
 import de.maxhenkel.voicechat.voice.client.ALMicrophone;
 import de.maxhenkel.voicechat.voice.client.Client;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
@@ -192,7 +193,7 @@ public class DebugReport {
                 addLine("Server address: N/A (" + e.getMessage() + ")");
             }
         }
-        Client client = VoicechatClient.CLIENT.getClient();
+        Client client = ClientManager.getClient();
         if (client != null) {
             addLine("");
             addLine("Voice chat connected");

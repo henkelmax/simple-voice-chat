@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.*;
 import de.maxhenkel.voicechat.voice.client.Client;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
@@ -31,7 +32,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
     protected void init() {
         super.init();
 
-        Client c = VoicechatClient.CLIENT.getClient();
+        Client c = ClientManager.getClient();
 
         if (c == null) {
             return;
@@ -65,7 +66,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
         addRenderableWidget(new MicTestButton(guiLeft + 10, y, xSize - 20, 20, this, c));
         y += 21;
         addRenderableWidget(new Button(guiLeft + 10, y, xSize - 20, 20, new TranslatableComponent("message.voicechat.adjust_volumes"), button -> {
-            minecraft.setScreen(new AdjustVolumeScreen(this, VoicechatClient.CLIENT.getPlayerStateManager().getPlayerStates().stream().filter(state -> !state.getGameProfile().getId().equals(minecraft.player.getUUID())).collect(Collectors.toList())));
+            minecraft.setScreen(new AdjustVolumeScreen(this, ClientManager.getPlayerStateManager().getPlayerStates().stream().filter(state -> !state.getGameProfile().getId().equals(minecraft.player.getUUID())).collect(Collectors.toList())));
         }));
         y += 21;
         addRenderableWidget(new Button(guiLeft + 10, y, xSize / 2 - 15, 20, new TranslatableComponent("message.voicechat.select_microphone"), button -> {

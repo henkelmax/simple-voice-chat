@@ -2,11 +2,11 @@ package de.maxhenkel.voicechat.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.maxhenkel.voicechat.gui.SkinUtils;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.GroupScreen;
+import de.maxhenkel.voicechat.gui.SkinUtils;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
@@ -183,7 +183,7 @@ public class CreateGroupList extends WidgetBase {
             }
             Group group = entries.get(getOffset() + i);
             mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
-            VoicechatClient.CLIENT.getPlayerStateManager().setGroup(group.name);
+            ClientManager.getPlayerStateManager().setGroup(group.name);
             mc.setScreen(new GroupScreen());
         }
         return super.mouseClicked(mouseX, mouseY, button);

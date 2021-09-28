@@ -149,7 +149,7 @@ public class Client extends Thread {
                     }
                 } else if (in.getPacket() instanceof SoundPacket packet) {
                     synchronized (audioChannels) {
-                        if (!VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
+                        if (!ClientManager.getPlayerStateManager().isDisabled()) {
                             AudioChannel sendTo = audioChannels.get(packet.getSender());
                             if (sendTo == null) {
                                 try {
@@ -267,7 +267,7 @@ public class Client extends Thread {
     public void checkTimeout() {
         if (lastKeepAlive >= 0 && System.currentTimeMillis() - lastKeepAlive > data.getKeepAlive() * 10L) {
             Voicechat.LOGGER.info("Connection timeout");
-            VoicechatClient.CLIENT.onDisconnect();
+            ClientVoiceChatEvents.VOICECHAT_DISCONNECTED.invoker().run();
         }
     }
 

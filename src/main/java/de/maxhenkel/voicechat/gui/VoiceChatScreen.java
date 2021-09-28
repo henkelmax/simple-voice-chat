@@ -5,10 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
-import de.maxhenkel.voicechat.voice.client.AudioRecorder;
-import de.maxhenkel.voicechat.voice.client.Client;
-import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
-import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
+import de.maxhenkel.voicechat.voice.client.*;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
@@ -40,8 +37,8 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     protected void init() {
         super.init();
 
-        ClientPlayerStateManager stateManager = VoicechatClient.CLIENT.getPlayerStateManager();
-        @Nullable Client client = VoicechatClient.CLIENT.getClient();
+        ClientPlayerStateManager stateManager = ClientManager.getPlayerStateManager();
+        @Nullable Client client = ClientManager.getClient();
 
         mute = new ToggleImageButton(guiLeft + 6, guiTop + ySize - 6 - 20, MICROPHONE, stateManager::isMuted, button -> {
             stateManager.setMuted(!stateManager.isMuted());
@@ -58,8 +55,8 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         addRenderableWidget(disable);
 
         if (client != null && client.getData().allowRecording()) {
-            ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> VoicechatClient.CLIENT.getClient() != null && VoicechatClient.CLIENT.getClient().getRecorder() != null, button -> {
-                Client c = VoicechatClient.CLIENT.getClient();
+            ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> ClientManager.getClient() != null && ClientManager.getClient().getRecorder() != null, button -> {
+                Client c = ClientManager.getClient();
                 if (c == null) {
                     return;
                 }
@@ -109,7 +106,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == KeyBindingHelper.getBoundKeyOf(VoicechatClient.KEY_VOICE_CHAT).getValue()) {
+        if (keyCode == KeyBindingHelper.getBoundKeyOf(KeyEvents.KEY_VOICE_CHAT).getValue()) {
             minecraft.setScreen(null);
             return true;
         }
@@ -130,7 +127,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         int titleWidth = font.width(title);
         font.draw(poseStack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
 
-        Client client = VoicechatClient.CLIENT.getClient();
+        Client client = ClientManager.getClient();
         if (client != null && client.getRecorder() != null) {
             AudioRecorder recorder = client.getRecorder();
             TextComponent time = new TextComponent(recorder.getDuration());

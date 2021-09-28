@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
-public class RenderEvents {
+public class RenderNameplateEvents {
 
     public static final Event<RenderNameplate> RENDER_NAMEPLATE = EventFactory.createArrayBacked(RenderNameplate.class, (listeners) -> (entity, component, stack, vertexConsumers, light) -> {
         for (RenderNameplate listener : listeners) {

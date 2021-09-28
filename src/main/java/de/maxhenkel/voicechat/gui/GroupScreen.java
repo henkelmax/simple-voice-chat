@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.GroupList;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.GroupChatManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
@@ -41,7 +42,7 @@ public class GroupScreen extends VoiceChatScreenBase {
         hoverAreas.clear();
         clearWidgets();
 
-        ClientPlayerStateManager stateManager = VoicechatClient.CLIENT.getPlayerStateManager();
+        ClientPlayerStateManager stateManager = ClientManager.getPlayerStateManager();
 
         playerList = new GroupList(this, 9, 16, 160, 176, GroupChatManager::getGroupMembers);
 
@@ -67,7 +68,7 @@ public class GroupScreen extends VoiceChatScreenBase {
         addRenderableWidget(showHUD);
 
         leave = new ImageButton(guiLeft + 168, guiTop + 196, LEAVE, button -> {
-            VoicechatClient.CLIENT.getPlayerStateManager().setGroup(null);
+            ClientManager.getPlayerStateManager().setGroup(null);
             minecraft.setScreen(new CreateGroupScreen());
         }, (button, matrices, mouseX, mouseY) -> {
             renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.leave_group").getVisualOrderText()), mouseX, mouseY);

@@ -3,8 +3,8 @@ package de.maxhenkel.voicechat.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.CreateGroupList;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -33,7 +33,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         clearWidgets();
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
-        playerList = new CreateGroupList(this, 9, 49, 160, 88, () -> VoicechatClient.CLIENT.getPlayerStateManager().getPlayerStates());
+        playerList = new CreateGroupList(this, 9, 49, 160, 88, () -> ClientManager.getPlayerStateManager().getPlayerStates());
 
         groupName = new EditBox(font, guiLeft + 78, guiTop + 20, 88, 10, TextComponent.EMPTY);
 
@@ -43,7 +43,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         addRenderableWidget(groupName);
 
         createGroup = new Button(guiLeft + 169, guiTop + 15, 20, 20, new TextComponent("+"), button -> {
-            VoicechatClient.CLIENT.getPlayerStateManager().setGroup(groupName.getValue());
+            ClientManager.getPlayerStateManager().setGroup(groupName.getValue());
             minecraft.setScreen(new GroupScreen());
         });
         addRenderableWidget(createGroup);

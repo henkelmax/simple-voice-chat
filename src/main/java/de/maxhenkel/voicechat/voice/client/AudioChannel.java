@@ -80,7 +80,7 @@ public class AudioChannel extends Thread {
             speaker.open();
             while (!stopped) {
 
-                if (VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
+                if (ClientManager.getPlayerStateManager().isDisabled()) {
                     closeAndKill();
                     return;
                 }

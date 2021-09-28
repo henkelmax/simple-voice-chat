@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.mixin;
 
 import de.maxhenkel.voicechat.events.ClientWorldEvents;
-import de.maxhenkel.voicechat.events.KeyEvents;
+import de.maxhenkel.voicechat.events.InputEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -26,7 +26,7 @@ public class MinecraftMixin {
 
     @Inject(at = @At("HEAD"), method = "handleKeybinds")
     private void handleKeybinds(CallbackInfo info) {
-        KeyEvents.HANDLE_KEYBINDS.invoker().run();
+        InputEvents.HANDLE_KEYBINDS.invoker().run();
     }
 
 }

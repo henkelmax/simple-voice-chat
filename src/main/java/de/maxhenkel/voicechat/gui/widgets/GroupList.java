@@ -2,12 +2,12 @@ package de.maxhenkel.voicechat.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.maxhenkel.voicechat.gui.SkinUtils;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.AdjustVolumeScreen;
+import de.maxhenkel.voicechat.gui.SkinUtils;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.voice.client.Client;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -29,10 +29,10 @@ public class GroupList extends WidgetBase {
 
     protected Supplier<List<PlayerState>> playerStates;
     protected int offset;
-    private VoiceChatScreenBase.HoverArea[] hoverAreas;
-    private int columnHeight;
-    private int columnCount;
-    private Client voiceChatClient;
+    private final VoiceChatScreenBase.HoverArea[] hoverAreas;
+    private final int columnHeight;
+    private final int columnCount;
+    private final Client voiceChatClient;
 
     public GroupList(VoiceChatScreenBase screen, int posX, int posY, int xSize, int ySize, Supplier<List<PlayerState>> playerStates) {
         super(screen, posX, posY, xSize, ySize);
@@ -45,7 +45,7 @@ public class GroupList extends WidgetBase {
             hoverAreas[i] = new VoiceChatScreenBase.HoverArea(0, i * columnHeight, xSize, columnHeight);
         }
 
-        voiceChatClient = VoicechatClient.CLIENT.getClient();
+        voiceChatClient = ClientManager.getClient();
 
         if (voiceChatClient == null) {
             mc.setScreen(null);

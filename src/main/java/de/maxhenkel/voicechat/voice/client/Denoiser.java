@@ -1,7 +1,8 @@
-package de.maxhenkel.voicechat.voice.common;
+package de.maxhenkel.voicechat.voice.client;
 
 import com.sun.jna.Pointer;
 import de.maxhenkel.rnnoise4j.RNNoise;
+import de.maxhenkel.voicechat.voice.common.Utils;
 
 import javax.annotation.Nullable;
 

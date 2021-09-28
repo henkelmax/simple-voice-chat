@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.events;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-public class KeyEvents {
+public class InputEvents {
 
     public static final Event<KeyboardEvent> KEYBOARD_KEY = EventFactory.createArrayBacked(KeyboardEvent.class, (listeners) -> (window, key, scancode) -> {
         for (KeyboardEvent event : listeners) {

@@ -20,7 +20,7 @@ public class GroupChatManager {
     private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_group_hud_small_off.png");
 
     public static void renderIcons(PoseStack matrixStack) {
-        Client client = VoicechatClient.CLIENT.getClient();
+        Client client = ClientManager.getClient();
 
         if (client == null) {
             return;
@@ -87,7 +87,7 @@ public class GroupChatManager {
         List<PlayerState> entries = new ArrayList<>();
         String group = getGroup();
 
-        for (PlayerState state : VoicechatClient.CLIENT.getPlayerStateManager().getPlayerStates()) {
+        for (PlayerState state : ClientManager.getPlayerStateManager().getPlayerStates()) {
             if (!includeSelf && state.getGameProfile().getId().equals(Minecraft.getInstance().player.getUUID())) {
                 continue;
             }
@@ -100,7 +100,7 @@ public class GroupChatManager {
     }
 
     public static String getGroup() {
-        String group = VoicechatClient.CLIENT.getPlayerStateManager().getGroup();
+        String group = ClientManager.getPlayerStateManager().getGroup();
         if (group == null) {
             return "";
         }

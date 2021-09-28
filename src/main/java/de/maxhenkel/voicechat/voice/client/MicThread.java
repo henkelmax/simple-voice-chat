@@ -62,7 +62,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
     private void voice() {
         wasPTT = false;
 
-        if (VoicechatClient.CLIENT.getPlayerStateManager().isMuted() || VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
+        if (ClientManager.getPlayerStateManager().isMuted() || ClientManager.getPlayerStateManager().isDisabled()) {
             activating = false;
             mic.stop();
             flushRecording();
@@ -112,7 +112,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
 
     private void ptt() {
         activating = false;
-        if (!VoicechatClient.CLIENT.getPttKeyHandler().isPTTDown() || VoicechatClient.CLIENT.getPlayerStateManager().isDisabled()) {
+        if (!ClientManager.getPttKeyHandler().isPTTDown() || ClientManager.getPlayerStateManager().isDisabled()) {
             if (wasPTT) {
                 mic.stop();
                 wasPTT = false;

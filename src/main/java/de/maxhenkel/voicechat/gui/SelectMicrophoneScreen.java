@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ListScreen;
 import de.maxhenkel.voicechat.voice.client.ALMicrophone;
 import de.maxhenkel.voicechat.voice.client.Client;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
@@ -43,7 +44,7 @@ public class SelectMicrophoneScreen extends ListScreen<String> {
         Button b = addRenderableWidget(new Button(width / 2 - bw / 2, guiTop + 35, bw, 20, new TranslatableComponent("message.voicechat.select"), button -> {
             VoicechatClient.CLIENT_CONFIG.microphone.set(currentElement).save();
             button.active = false;
-            Client client = VoicechatClient.CLIENT.getClient();
+            Client client = ClientManager.getClient();
             if (client != null) {
                 client.reloadAudio();
             }
