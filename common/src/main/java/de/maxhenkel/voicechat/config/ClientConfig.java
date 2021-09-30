@@ -23,8 +23,10 @@ public class ClientConfig {
     public final ConfigBuilder.ConfigEntry<Boolean> showGroupHUD;
     public final ConfigBuilder.ConfigEntry<Boolean> showOwnGroupIcon;
     public final ConfigBuilder.ConfigEntry<Double> groupHudIconScale;
-    public final ConfigBuilder.ConfigEntry<HUDIconLocation> hudIconLocation;
     public final ConfigBuilder.ConfigEntry<GroupPlayerIconOrientation> groupPlayerIconOrientation;
+    public final ConfigBuilder.ConfigEntry<Integer> groupPlayerIconPosX;
+    public final ConfigBuilder.ConfigEntry<Integer> groupPlayerIconPosY;
+    public final ConfigBuilder.ConfigEntry<HUDIconLocation> hudIconLocation;
     public final ConfigBuilder.ConfigEntry<String> recordingDestination;
     public final ConfigBuilder.ConfigEntry<Boolean> denoiser;
 
@@ -45,8 +47,10 @@ public class ClientConfig {
         showGroupHUD = builder.booleanEntry("show_group_hud", true);
         showOwnGroupIcon = builder.booleanEntry("show_own_group_icon", true);
         groupHudIconScale = builder.doubleEntry("group_hud_icon_scale", 2D, 0.01D, 10D);
-        hudIconLocation = builder.enumEntry("hud_icon_location", HUDIconLocation.LEFT);
         groupPlayerIconOrientation = builder.enumEntry("group_player_icon_orientation", GroupPlayerIconOrientation.VERTICAL);
+        groupPlayerIconPosX = builder.integerEntry("group_player_icon_pos_x", 4, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        groupPlayerIconPosY = builder.integerEntry("group_player_icon_pos_y", 4, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        hudIconLocation = builder.enumEntry("hud_icon_location", HUDIconLocation.LEFT);
         recordingDestination = builder.stringEntry("recording_destination", "");
         denoiser = builder.booleanEntry("denoiser", false);
     }
