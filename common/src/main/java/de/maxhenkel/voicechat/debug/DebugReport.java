@@ -100,34 +100,13 @@ public class DebugReport {
     private void appendMods() {
         addLine("Loaded mods");
         addLine("");
-        //TODO Re add loaded mods
-        /*for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
-            ModMetadata metadata = mod.getMetadata();
-            addLine("Mod ID: " + metadata.getId());
-            addLine("Name: " + metadata.getName());
-            addLine("Version: " + metadata.getVersion());
-            addLine("Dependencies: " + metadata.getDepends().stream().map(ModDependency::getModId).collect(Collectors.joining(", ")));
-            addLine("");
-        }*/
+        addLine(CommonCompatibilityManager.INSTANCE.listLoadedMods());
     }
 
     private void appendKeyBinds() {
-        addLine("Fabric Keybinds");
+        addLine("Keybinds");
         addLine("");
-        try {
-            //TODO re add keybinds
-            /*Field moddedKeyBindings = KeyBindingRegistryImpl.class.getDeclaredField("moddedKeyBindings");
-            moddedKeyBindings.setAccessible(true);
-            List<KeyMapping> mappings = (List<KeyMapping>) moddedKeyBindings.get(null);
-            for (KeyMapping mapping : mappings) {
-                InputConstants.Key boundKey = ((KeyCodeAccessor) mapping).fabric_getBoundKey();
-                addLine(mapping.getName() + "(" + mapping.getCategory() + "): " + boundKey.getName() + " (" + mapping.getDefaultKey().getName() + ")");
-            }
-            addLine("");*/
-        } catch (Exception e) {
-            addLine("Error: " + e.getMessage());
-            addLine("");
-        }
+        addLine(CommonCompatibilityManager.INSTANCE.listKeybinds());
     }
 
     private void appendMics() {

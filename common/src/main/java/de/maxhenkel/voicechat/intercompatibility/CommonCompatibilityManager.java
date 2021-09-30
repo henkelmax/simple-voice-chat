@@ -29,4 +29,8 @@ public abstract class CommonCompatibilityManager {
 
     public abstract NetManager getNetManager();
 
+    public abstract String listLoadedMods();
+
+    public abstract String listKeybinds();
+
 }
