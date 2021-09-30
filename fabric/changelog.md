@@ -9,3 +9,4 @@
 - Voice distance now uses a sigmoid function
 - Fixed clipping when using microphone amplification
 - Added customizable group HUD position
+- Added customizable HUD icon position

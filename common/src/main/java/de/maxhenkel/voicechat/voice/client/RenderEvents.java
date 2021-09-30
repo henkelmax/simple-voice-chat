@@ -64,20 +64,19 @@ public class RenderEvents {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, texture);
-        int width = minecraft.getWindow().getGuiScaledWidth();
-        int height = minecraft.getWindow().getGuiScaledHeight();
-        HUDIconLocation location = VoicechatClient.CLIENT_CONFIG.hudIconLocation.get();
-        if (location.equals(HUDIconLocation.RIGHT)) {
-            Screen.blit(matrixStack, width - 32, height - 32, 0, 0, 16, 16, 16, 16);
-        } else if (location.equals(HUDIconLocation.CENTER)) {
-            if (minecraft.gameMode != null && minecraft.gameMode.hasExperience()) {
-                Screen.blit(matrixStack, width / 2 - 8, height - 16 - 35 - 2, 0, 0, 16, 16, 16, 16);
-            } else {
-                Screen.blit(matrixStack, width / 2 - 8, height - 35 - 4, 0, 0, 16, 16, 16, 16);
-            }
-        } else {
-            Screen.blit(matrixStack, 16, height - 32, 0, 0, 16, 16, 16, 16);
+        int posX = VoicechatClient.CLIENT_CONFIG.hudIconPosX.get();
+        int posY = VoicechatClient.CLIENT_CONFIG.hudIconPosY.get();
+        if (posX < 0) {
+            matrixStack.translate(minecraft.getWindow().getGuiScaledWidth(), 0D, 0D);
         }
+        if (posY < 0) {
+            matrixStack.translate(0D, minecraft.getWindow().getGuiScaledHeight(), 0D);
+        }
+        matrixStack.translate(posX, posY, 0D);
+        float scale = VoicechatClient.CLIENT_CONFIG.hudIconScale.get().floatValue();
+        matrixStack.scale(scale, scale, 1F);
+
+        Screen.blit(matrixStack, posX < 0 ? -16 : 0, posY < 0 ? -16 : 0, 0, 0, 16, 16, 16, 16);
         matrixStack.popPose();
     }
 

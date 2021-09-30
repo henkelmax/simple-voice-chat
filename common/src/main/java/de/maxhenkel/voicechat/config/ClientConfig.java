@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.config;
 
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
-import de.maxhenkel.voicechat.voice.client.HUDIconLocation;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 
 public class ClientConfig {
@@ -26,7 +25,9 @@ public class ClientConfig {
     public final ConfigBuilder.ConfigEntry<GroupPlayerIconOrientation> groupPlayerIconOrientation;
     public final ConfigBuilder.ConfigEntry<Integer> groupPlayerIconPosX;
     public final ConfigBuilder.ConfigEntry<Integer> groupPlayerIconPosY;
-    public final ConfigBuilder.ConfigEntry<HUDIconLocation> hudIconLocation;
+    public final ConfigBuilder.ConfigEntry<Integer> hudIconPosX;
+    public final ConfigBuilder.ConfigEntry<Integer> hudIconPosY;
+    public final ConfigBuilder.ConfigEntry<Double> hudIconScale;
     public final ConfigBuilder.ConfigEntry<String> recordingDestination;
     public final ConfigBuilder.ConfigEntry<Boolean> denoiser;
 
@@ -50,7 +51,9 @@ public class ClientConfig {
         groupPlayerIconOrientation = builder.enumEntry("group_player_icon_orientation", GroupPlayerIconOrientation.VERTICAL);
         groupPlayerIconPosX = builder.integerEntry("group_player_icon_pos_x", 4, Integer.MIN_VALUE, Integer.MAX_VALUE);
         groupPlayerIconPosY = builder.integerEntry("group_player_icon_pos_y", 4, Integer.MIN_VALUE, Integer.MAX_VALUE);
-        hudIconLocation = builder.enumEntry("hud_icon_location", HUDIconLocation.LEFT);
+        hudIconPosX = builder.integerEntry("hud_icon_pos_x", 16, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        hudIconPosY = builder.integerEntry("hud_icon_pos_y", -16, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        hudIconScale = builder.doubleEntry("hud_icon_scale", 1D, 0.01D, 10D);
         recordingDestination = builder.stringEntry("recording_destination", "");
         denoiser = builder.booleanEntry("denoiser", false);
     }
