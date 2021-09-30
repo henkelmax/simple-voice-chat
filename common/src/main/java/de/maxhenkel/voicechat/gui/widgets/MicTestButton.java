@@ -24,7 +24,7 @@ public class MicTestButton extends AbstractButton {
         super(xIn, yIn, widthIn, heightIn, TextComponent.EMPTY);
         this.micListener = micListener;
         this.client = client;
-        if (getMic() == null) {
+        if (client.getMicThread() == null) {
             active = false;
         }
         updateText();
@@ -78,14 +78,6 @@ public class MicTestButton extends AbstractButton {
         }
     }
 
-    private ALMicrophone getMic() {
-        MicThread micThread = client.getMicThread();
-        if (micThread == null) {
-            return null;
-        }
-        return micThread.getMic();
-    }
-
     private void setMicLocked(boolean locked) {
         MicThread micThread = client.getMicThread();
         if (micThread == null) {
@@ -103,6 +95,7 @@ public class MicTestButton extends AbstractButton {
 
         private final ALMicrophone mic;
         private final ALSpeaker speaker;
+        private final VolumeManager volumeManager;
         private boolean running;
         private long lastRender;
         @Nullable
@@ -111,10 +104,12 @@ public class MicTestButton extends AbstractButton {
         public VoiceThread() throws SpeakerException, MicrophoneException {
             this.running = true;
             setDaemon(true);
-            mic = getMic();
-            if (mic == null) {
+            MicThread micThread = client.getMicThread();
+            if (micThread == null) {
                 throw new MicrophoneException("No microphone");
             }
+            mic = micThread.getMic();
+            volumeManager = micThread.getVolumeManager();
             speaker = new ALSpeaker(client.getSoundManager(), SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE);
 
             speaker.open();
@@ -139,7 +134,7 @@ public class MicTestButton extends AbstractButton {
                 }
                 short[] buff = new short[SoundManager.FRAME_SIZE];
                 mic.read(buff);
-                Utils.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
+                volumeManager.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
 
                 if (denoiser != null && VoicechatClient.CLIENT_CONFIG.denoiser.get()) {
                     buff = denoiser.denoise(buff);

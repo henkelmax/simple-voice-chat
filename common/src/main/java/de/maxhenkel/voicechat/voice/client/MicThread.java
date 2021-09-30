@@ -12,6 +12,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
 
     private Client client;
     private ALMicrophone mic;
+    private VolumeManager volumeManager;
     private boolean running;
     private boolean microphoneLocked;
     private OpusEncoder encoder;
@@ -30,6 +31,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
         if (denoiser == null) {
             Voicechat.LOGGER.warn("Denoiser not available");
         }
+        volumeManager = new VolumeManager();
 
         setDaemon(true);
         setName("MicrophoneThread");
@@ -78,7 +80,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
         }
         short[] buff = new short[SoundManager.FRAME_SIZE];
         mic.read(buff);
-        Utils.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
+        volumeManager.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
         buff = denoiseIfEnabled(buff);
 
         int offset = Utils.getActivationOffset(buff, VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get());
@@ -132,7 +134,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
         }
         short[] buff = new short[SoundManager.FRAME_SIZE];
         mic.read(buff);
-        Utils.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
+        volumeManager.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
         buff = denoiseIfEnabled(buff);
         sendAudioPacket(buff);
     }
@@ -189,6 +191,10 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
     @Nullable
     public Denoiser getDenoiser() {
         return denoiser;
+    }
+
+    public VolumeManager getVolumeManager() {
+        return volumeManager;
     }
 
     public void close() {

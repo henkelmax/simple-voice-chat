@@ -96,40 +96,6 @@ public class Utils {
      * Changes the volume of 16 bit audio
      * Note that this modifies the input array
      *
-     * @param audio  the audio data
-     * @param volume the amplification
-     * @return the adjusted audio
-     */
-    public static short[] adjustVolumeMono(short[] audio, float volume) {
-        // float maximumMultiplier = getMaximumMultiplier(audio, volume); // TODO better sound clipping
-        for (int i = 0; i < audio.length; i++) {
-            audio[i] = (short) ((float) audio[i] * volume);
-        }
-        return audio;
-    }
-
-    private static float getMaximumMultiplier(short[] audio, float multiplier) {
-        short max = 0;
-
-        for (short value : audio) {
-            short abs;
-            if (value <= Short.MIN_VALUE) {
-                abs = (short) Math.abs(value + 1);
-            } else {
-                abs = (short) Math.abs(value);
-            }
-            if (abs > max) {
-                max = abs;
-            }
-        }
-
-        return Math.min(multiplier, (float) Short.MAX_VALUE / (float) max);
-    }
-
-    /**
-     * Changes the volume of 16 bit audio
-     * Note that this modifies the input array
-     *
      * @param audio       the audio data
      * @param volumeLeft  the amplification of the left audio
      * @param volumeRight the amplification of the right audio

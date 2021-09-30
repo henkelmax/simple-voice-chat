@@ -7,3 +7,4 @@
 - Reduced talk indicator debounce
 - Added crouch distance multiplier
 - Voice distance now uses a sigmoid function
+- Fixed clipping when using microphone amplification
