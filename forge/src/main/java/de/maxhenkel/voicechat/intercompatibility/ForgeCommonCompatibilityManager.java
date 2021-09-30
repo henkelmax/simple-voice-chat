@@ -1,0 +1,105 @@
+package de.maxhenkel.voicechat.intercompatibility;
+
+import com.mojang.brigadier.CommandDispatcher;
+import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.net.ForgeNetManager;
+import de.maxhenkel.voicechat.net.NetManager;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
+import net.minecraftforge.forgespi.language.IModInfo;
+
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager {
+
+    private final List<Consumer<MinecraftServer>> serverStartingEvents;
+    private final List<Consumer<CommandDispatcher<CommandSourceStack>>> registerServerCommandsEvents;
+    private final List<Consumer<ServerPlayer>> playerLoggedInEvents;
+    private final List<Consumer<ServerPlayer>> playerLoggedOutEvents;
+
+    public ForgeCommonCompatibilityManager() {
+        serverStartingEvents = new ArrayList<>();
+        registerServerCommandsEvents = new ArrayList<>();
+        playerLoggedInEvents = new ArrayList<>();
+        playerLoggedOutEvents = new ArrayList<>();
+    }
+
+    @SubscribeEvent
+    public void serverStarting(FMLServerStartedEvent event) {
+        serverStartingEvents.forEach(consumer -> consumer.accept(event.getServer()));
+    }
+
+    @SubscribeEvent
+    public void onRegisterCommands(RegisterCommandsEvent event) {
+        registerServerCommandsEvents.forEach(consumer -> consumer.accept(event.getDispatcher()));
+    }
+
+    @SubscribeEvent
+    public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer player) {
+            playerLoggedInEvents.forEach(consumer -> consumer.accept(player));
+        }
+    }
+
+    @SubscribeEvent
+    public void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getPlayer() instanceof ServerPlayer player) {
+            playerLoggedOutEvents.forEach(consumer -> consumer.accept(player));
+        }
+    }
+
+    @Override
+    public String getModVersion() {
+        return ModList.get().getModFileById(Voicechat.MODID).versionString();
+    }
+
+    @Override
+    public String getModName() {
+        return ModList.get().getMods().stream().filter(info -> info.getModId().equals(Voicechat.MODID)).findAny().map(IModInfo::getDisplayName).orElse(Voicechat.MODID);
+    }
+
+    @Override
+    public Path getGameDirectory() {
+        return FMLPaths.GAMEDIR.get();
+    }
+
+    @Override
+    public void onServerStarting(Consumer<MinecraftServer> onServerStarting) {
+        serverStartingEvents.add(onServerStarting);
+    }
+
+    @Override
+    public void onPlayerLoggedIn(Consumer<ServerPlayer> onPlayerLoggedIn) {
+        playerLoggedInEvents.add(onPlayerLoggedIn);
+    }
+
+    @Override
+    public void onPlayerLoggedOut(Consumer<ServerPlayer> onPlayerLoggedOut) {
+        playerLoggedOutEvents.add(onPlayerLoggedOut);
+    }
+
+    @Override
+    public void onRegisterServerCommands(Consumer<CommandDispatcher<CommandSourceStack>> onRegisterServerCommands) {
+        registerServerCommandsEvents.add(onRegisterServerCommands);
+    }
+
+    private ForgeNetManager netManager;
+
+    @Override
+    public NetManager getNetManager() {
+        if (netManager == null) {
+            netManager = new ForgeNetManager();
+        }
+        return netManager;
+    }
+}

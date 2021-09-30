@@ -1,0 +1,9 @@
+- Switched to OpenAL sound capturing and playback
+- Improved 3D audio
+- Fixed delayed audio when going out of hearing distance
+- Fixed audio device names on Linux
+- Fixed audio occasionally cutting out
+- Reduced audio delay
+- Reduced talk indicator debounce
+- Added crouch distance multiplier
+- Voice distance now uses a sigmoid function

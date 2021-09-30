@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="${mod_forge_version}"
+license="All rights reserved"
+issueTrackerURL="https://github.com/henkelmax/simple-voice-chat/issues"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat"
+logoFile="icon.png"
+# credits=""
+authors="Max Henkel"
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+updateJSONURL="https://maxhenkel.de/update/voicechat.json"
+description='''A working voice chat in Minecraft!'''
+[[dependencies.${mod_id}]]
+    modId="forge"
+    mandatory=true
+    versionRange="${mod_forge_version}"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[${mod_minecraft_version}]"
+    ordering="NONE"
+    side="BOTH"

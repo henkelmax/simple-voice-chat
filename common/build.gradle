@@ -1,0 +1,39 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url = 'https://maven.maxhenkel.de/repository/public' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        mavenLocal()
+    }
+}
+
+plugins {
+    id "java"
+    id "org.spongepowered.gradle.vanilla" version "0.2"
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+    maven {
+        name = "henkelmax.public"
+        url = 'https://maven.maxhenkel.de/repository/public'
+    }
+    mavenLocal()
+}
+
+minecraft {
+    version(minecraft_version)
+    runs {
+        server()
+        client()
+    }
+}
+
+dependencies {
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
+    implementation "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
+    implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
+}

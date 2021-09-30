@@ -14,7 +14,7 @@
 
 <p align="center">
     <a href="https://discord.gg/4dH2zwTmyX">
-        <img src="https://discord.com/assets/fc0b01fe10a0b8c602fb0106d8189d9b.png" width="300">
+        <img src="https://i.imgur.com/JgDt1Fl.png" width="300">
     </a>
 </p>
 <p align="center">
