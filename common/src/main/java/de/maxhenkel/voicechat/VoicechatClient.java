@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat;
 
-import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.ClientConfig;
 import de.maxhenkel.voicechat.config.PlayerVolumeConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
@@ -27,8 +26,6 @@ public abstract class VoicechatClient {
 
     public void initializeClient() {
         ClientCompatibilityManager.INSTANCE = createCompatibilityManager();
-
-        ConfigBuilder.create(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-client.properties"), builder -> CLIENT_CONFIG = new ClientConfig(builder));
 
         fixVolumeConfig();
         VOLUME_CONFIG = new PlayerVolumeConfig(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-volumes.properties"));
@@ -59,6 +56,6 @@ public abstract class VoicechatClient {
         }
     }
 
-    public abstract ClientCompatibilityManager createCompatibilityManager();
+    protected abstract ClientCompatibilityManager createCompatibilityManager();
 
 }

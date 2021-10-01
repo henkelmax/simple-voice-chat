@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat;
 
-import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
@@ -28,15 +27,12 @@ public abstract class Voicechat {
         } catch (Exception e) {
             LOGGER.error("Failed to read compatibility version");
         }
-        CommonCompatibilityManager.INSTANCE.onServerStarting(server -> {
-            ConfigBuilder.create(server.getServerDirectory().toPath().resolve("config").resolve(MODID).resolve("voicechat-server.properties"), builder -> SERVER_CONFIG = new ServerConfig(builder));
-        });
         CommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
     }
 
-    public abstract int readCompatibilityVersion() throws Exception;
+    protected abstract int readCompatibilityVersion() throws Exception;
 
-    public abstract CommonCompatibilityManager createCompatibilityManager();
+    protected abstract CommonCompatibilityManager createCompatibilityManager();
 
 }

@@ -1,5 +1,7 @@
 package de.maxhenkel.voicechat;
 
+import de.maxhenkel.configbuilder.ConfigBuilder;
+import de.maxhenkel.voicechat.config.FabricClientConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.FabricClientCompatibilityManager;
 import io.netty.buffer.Unpooled;
@@ -7,6 +9,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.concurrent.CompletableFuture;
@@ -16,7 +19,10 @@ public class FabricVoicechatClientMod extends VoicechatClient implements ClientM
 
     @Override
     public void onInitializeClient() {
+        CLIENT_CONFIG = ConfigBuilder.build(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-client.properties"), FabricClientConfig::new);
+
         initializeClient();
+
         ClientLoginNetworking.registerGlobalReceiver(FabricVoicechatMod.INIT, (client, handler, buf, listenerAdder) -> {
             int serverCompatibilityVersion = buf.readInt();
 
@@ -29,7 +35,6 @@ public class FabricVoicechatClientMod extends VoicechatClient implements ClientM
             return CompletableFuture.completedFuture(buffer);
         });
     }
-
 
     @Override
     public ClientCompatibilityManager createCompatibilityManager() {

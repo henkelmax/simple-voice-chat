@@ -1,11 +1,11 @@
 package de.maxhenkel.voicechat.config;
 
-import de.maxhenkel.configbuilder.Config;
+import de.maxhenkel.configbuilder.PropertyConfig;
 
 import java.nio.file.Path;
 import java.util.UUID;
 
-public class PlayerVolumeConfig extends Config {
+public class PlayerVolumeConfig extends PropertyConfig {
 
     public PlayerVolumeConfig(Path path) {
         super(path);

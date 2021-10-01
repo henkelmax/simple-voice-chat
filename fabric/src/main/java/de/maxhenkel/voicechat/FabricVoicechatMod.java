@@ -1,10 +1,13 @@
 package de.maxhenkel.voicechat;
 
+import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.command.VoicechatCommands;
+import de.maxhenkel.voicechat.config.FabricServerConfig;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.FabricCommonCompatibilityManager;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.loader.api.FabricLoader;
@@ -18,6 +21,10 @@ public class FabricVoicechatMod extends Voicechat implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            SERVER_CONFIG = ConfigBuilder.build(server.getServerDirectory().toPath().resolve("config").resolve(MODID).resolve("voicechat-server.properties"), FabricServerConfig::new);
+        });
+
         initialize();
 
         ServerLoginConnectionEvents.QUERY_START.register((handler, server, sender, synchronizer) -> {

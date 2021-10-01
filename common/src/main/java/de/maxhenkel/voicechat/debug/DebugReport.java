@@ -191,7 +191,7 @@ public class DebugReport {
     private void appendConfig() {
         addLine("Client Configuration");
         addLine("");
-        for (Map.Entry<Object, Object> o : VoicechatClient.CLIENT_CONFIG.hideIcons.getConfig().getProperties().entrySet()) {
+        for (Map.Entry<String, Object> o : VoicechatClient.CLIENT_CONFIG.hideIcons.getConfig().getEntries().entrySet()) {
             addLine(o.getKey() + ": " + o.getValue());
         }
         addLine("");
@@ -201,7 +201,7 @@ public class DebugReport {
         addLine("Player volumes");
         addLine("");
 
-        for (Map.Entry<Object, Object> o : VoicechatClient.VOLUME_CONFIG.getProperties().entrySet()) {
+        for (Map.Entry<String, Object> o : VoicechatClient.VOLUME_CONFIG.getEntries().entrySet()) {
             addLine(o.getKey() + ": " + o.getValue());
         }
         addLine("");
