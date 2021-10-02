@@ -25,6 +25,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -42,6 +44,8 @@ public class AudioRecorder {
 
     private final AudioFormat stereoFormat;
 
+    private ExecutorService threadPool;
+
     public AudioRecorder() {
         timestamp = System.currentTimeMillis();
         Calendar cal = Calendar.getInstance();
@@ -58,6 +62,8 @@ public class AudioRecorder {
         gameProfileLookup = new ConcurrentHashMap<>();
 
         stereoFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, SoundManager.SAMPLE_RATE, 16, 2, 4, SoundManager.SAMPLE_RATE, false);
+
+        threadPool = Executors.newSingleThreadExecutor();
     }
 
     public Path getLocation() {
@@ -126,14 +132,13 @@ public class AudioRecorder {
         if (chunk == null) {
             return;
         }
-        //TODO Thread pooling
-        new Thread(() -> {
+        threadPool.execute(() -> {
             try {
                 writeChunk(playerUUID, chunk);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
     }
 
     @Nullable
@@ -163,10 +168,11 @@ public class AudioRecorder {
 
     public void close() {
         save();
+        threadPool.shutdown();
     }
 
     public void save() {
-        new Thread(() -> {
+        threadPool.execute(() -> {
             send(new TranslatableComponent("message.voicechat.processing_recording_session"));
             try {
                 flush();
@@ -191,7 +197,7 @@ public class AudioRecorder {
                 e.printStackTrace();
                 send(new TranslatableComponent("message.voicechat.save_session_failed", e.getMessage()));
             }
-        }).start();
+        });
     }
 
     private void send(Component msg) {
@@ -292,8 +298,8 @@ public class AudioRecorder {
 
     private static class RandomAccessAudio {
 
-        private AudioFormat audioFormat;
-        private DynamicShortArray data;
+        private final AudioFormat audioFormat;
+        private final DynamicShortArray data;
 
         public RandomAccessAudio(AudioFormat audioFormat) {
             this.audioFormat = audioFormat;
@@ -311,7 +317,7 @@ public class AudioRecorder {
                 throw new UnsupportedAudioFileException("Sample rate not specified");
             }
             int shortsPerMs = ((int) audioFormat.getSampleRate() / 1000);
-            data.add(shorts, offsetMilliseconds * shortsPerMs);
+            data.add(shorts, offsetMilliseconds * shortsPerMs * audioFormat.getChannels());
         }
 
         public AudioFormat getAudioFormat() {
