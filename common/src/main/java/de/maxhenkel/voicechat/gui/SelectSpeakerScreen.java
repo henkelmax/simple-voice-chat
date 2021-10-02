@@ -3,8 +3,8 @@ package de.maxhenkel.voicechat.gui;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ListScreen;
-import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
+import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
@@ -43,7 +43,7 @@ public class SelectSpeakerScreen extends ListScreen<String> {
         Button b = addRenderableWidget(new Button(width / 2 - bw / 2, guiTop + 35, bw, 20, new TranslatableComponent("message.voicechat.select"), button -> {
             VoicechatClient.CLIENT_CONFIG.speaker.set(currentElement).save();
             button.active = false;
-            Client client = ClientManager.getClient();
+            ClientVoicechat client = ClientManager.getClient();
             if (client != null) {
                 client.reloadAudio();
             }

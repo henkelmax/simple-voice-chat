@@ -36,15 +36,13 @@ public class AudioRecorder {
 
     private final long timestamp;
     private final Path location;
-    private final Client client;
 
     private final Map<UUID, AudioChunk> chunks;
     private final Map<UUID, GameProfile> gameProfileLookup;
 
     private final AudioFormat stereoFormat;
 
-    public AudioRecorder(Client client) {
-        this.client = client;
+    public AudioRecorder() {
         timestamp = System.currentTimeMillis();
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp);
@@ -72,10 +70,6 @@ public class AudioRecorder {
 
     public int getRecordedPlayerCount() {
         return gameProfileLookup.size();
-    }
-
-    public Client getClient() {
-        return client;
     }
 
     public String getDuration() {

@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.client.Minecraft;
 
@@ -10,19 +11,22 @@ import java.io.IOException;
 
 public class MicThread extends Thread implements ALMicrophone.MicrophoneListener {
 
-    private Client client;
-    private ALMicrophone mic;
-    private VolumeManager volumeManager;
+    private final ClientVoicechat client;
+    @Nullable
+    private final ClientVoicechatConnection connection;
+    private final ALMicrophone mic;
+    private final VolumeManager volumeManager;
     private boolean running;
     private boolean microphoneLocked;
-    private OpusEncoder encoder;
+    private final OpusEncoder encoder;
     @Nullable
-    private Denoiser denoiser;
+    private final Denoiser denoiser;
 
-    public MicThread(Client client) throws MicrophoneException, NativeDependencyException {
+    public MicThread(ClientVoicechat client, @Nullable ClientVoicechatConnection connection) throws MicrophoneException, NativeDependencyException {
         this.client = client;
+        this.connection = connection;
         this.running = true;
-        this.encoder = OpusEncoder.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, client.getData().getMtuSize(), client.getData().getCodec().getOpusValue());
+        this.encoder = OpusEncoder.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, connection == null ? 1024 : connection.getData().getMtuSize(), connection == null ? ServerConfig.Codec.VOIP.getOpusValue() : connection.getData().getCodec().getOpusValue());
         if (encoder == null) {
             throw new NativeDependencyException("Failed to load Opus encoder");
         }
@@ -41,9 +45,11 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
 
     @Override
     public void run() {
-        while (running && client.isConnected()) {
-            // Checking here for timeouts, because we don't have any other looping thread
-            client.checkTimeout();
+        while (running) {
+            if (connection != null) {
+                // Checking here for timeouts, because we don't have any other looping thread
+                connection.checkTimeout();
+            }
             if (microphoneLocked) {
                 Utils.sleep(10);
             } else {
@@ -143,8 +149,10 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
 
     private void sendAudioPacket(short[] data) {
         try {
-            byte[] encoded = encoder.encode(data);
-            client.sendToServer(new NetworkMessage(new MicPacket(encoded, sequenceNumber++)));
+            if (connection != null && connection.isConnected()) {
+                byte[] encoded = encoder.encode(data);
+                connection.sendToServer(new NetworkMessage(new MicPacket(encoded, sequenceNumber++)));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -220,8 +228,11 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
     }
 
     private void sendStopPacket() {
+        if (connection == null || !connection.isConnected()) {
+            return;
+        }
         try {
-            client.sendToServer(new NetworkMessage(new MicPacket(new byte[0], sequenceNumber++)));
+            connection.sendToServer(new NetworkMessage(new MicPacket(new byte[0], sequenceNumber++)));
         } catch (Exception e) {
             e.printStackTrace();
         }

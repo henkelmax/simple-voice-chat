@@ -19,7 +19,8 @@ import java.util.function.Supplier;
 public class AudioChannel extends Thread {
 
     private final Minecraft minecraft;
-    private final Client client;
+    private final ClientVoicechat client;
+    private final ClientVoicechatConnection clientConnection;
     private final UUID uuid;
     private final BlockingQueue<SoundPacket<?>> queue;
     private final AudioPacketBuffer packetBuffer;
@@ -29,14 +30,15 @@ public class AudioChannel extends Thread {
     private final OpusDecoder decoder;
     private long lastSequenceNumber;
 
-    public AudioChannel(Client client, UUID uuid) throws NativeDependencyException {
+    public AudioChannel(ClientVoicechat client, ClientVoicechatConnection clientConnection, UUID uuid) throws NativeDependencyException {
         this.client = client;
+        this.clientConnection = clientConnection;
         this.uuid = uuid;
         this.queue = new LinkedBlockingQueue<>();
         this.packetBuffer = new AudioPacketBuffer(VoicechatClient.CLIENT_CONFIG.audioPacketThreshold.get());
         this.lastPacketTime = System.currentTimeMillis();
         this.stopped = false;
-        this.decoder = OpusDecoder.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, client.getData().getMtuSize());
+        this.decoder = OpusDecoder.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, clientConnection.getData().getMtuSize());
         if (decoder == null) {
             throw new NativeDependencyException("Failed to load Opus decoder");
         }
@@ -171,7 +173,7 @@ public class AudioChannel extends Thread {
                 return;
             }
             Vec3 pos = player.getEyePosition();
-            float multiplier = player.isCrouching() ? (float) client.getData().getCrouchDistanceMultiplier() : 1F;
+            float multiplier = player.isCrouching() ? (float) clientConnection.getData().getCrouchDistanceMultiplier() : 1F;
             speaker.write(monoData, volume * getDistanceVolume(pos, multiplier), stereo ? pos : null);
             appendRecording(player, () -> convertLocationalPacketToStereo(pos, monoData, multiplier));
         } else if (packet instanceof LocationSoundPacket p) {
@@ -187,7 +189,7 @@ public class AudioChannel extends Thread {
     private short[] convertLocationalPacketToStereo(Vec3 pos, short[] monoData, float distanceMultiplier) {
         float distanceVolume = getDistanceVolume(pos, distanceMultiplier);
         if (VoicechatClient.CLIENT_CONFIG.stereo.get()) {
-            Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, pos, client.getData().getVoiceChatDistance() * distanceMultiplier);
+            Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, pos, clientConnection.getData().getVoiceChatDistance() * distanceMultiplier);
             return Utils.convertToStereo(monoData, distanceVolume * stereoVolume.getLeft(), distanceVolume * stereoVolume.getRight());
         } else {
             return Utils.convertToStereo(monoData, distanceVolume, distanceVolume);
@@ -200,8 +202,8 @@ public class AudioChannel extends Thread {
 
     private float getDistanceVolume(Vec3 pos, float distanceMultiplier) {
         float distance = (float) pos.distanceTo(minecraft.player.getEyePosition());
-        float fadeDistance = (float) client.getData().getVoiceChatFadeDistance() * distanceMultiplier;
-        float maxDistance = (float) client.getData().getVoiceChatDistance() * distanceMultiplier;
+        float fadeDistance = (float) clientConnection.getData().getVoiceChatFadeDistance() * distanceMultiplier;
+        float maxDistance = (float) clientConnection.getData().getVoiceChatDistance() * distanceMultiplier;
 
         if (distance < fadeDistance) {
             return 1F;

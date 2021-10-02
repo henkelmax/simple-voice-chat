@@ -6,8 +6,8 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.AdjustVolumeScreen;
 import de.maxhenkel.voicechat.gui.SkinUtils;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
-import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
+import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -32,7 +32,7 @@ public class GroupList extends WidgetBase {
     private final VoiceChatScreenBase.HoverArea[] hoverAreas;
     private final int columnHeight;
     private final int columnCount;
-    private final Client voiceChatClient;
+    private final ClientVoicechat voiceChatClient;
 
     public GroupList(VoiceChatScreenBase screen, int posX, int posY, int xSize, int ySize, Supplier<List<PlayerState>> playerStates) {
         super(screen, posX, posY, xSize, ySize);
@@ -55,7 +55,7 @@ public class GroupList extends WidgetBase {
     @Override
     public void tick() {
         super.tick();
-        if (!voiceChatClient.isConnected()) {
+        if (voiceChatClient.getConnection() == null || !voiceChatClient.getConnection().isConnected()) {
             mc.setScreen(null);
         }
     }

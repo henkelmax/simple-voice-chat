@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.maxhenkel.voicechat.voice.client.Client;
+import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.sounds.SoundEngineExecutor;
@@ -35,11 +35,11 @@ public abstract class ClientCompatibilityManager {
 
     public abstract KeyMapping registerKeyBinding(KeyMapping keyBinding);
 
-    public abstract void emitVoiceChatConnectedEvent(Client client);
+    public abstract void emitVoiceChatConnectedEvent(ClientVoicechatConnection client);
 
     public abstract void emitVoiceChatDisconnectedEvent();
 
-    public abstract void onVoiceChatConnected(Consumer<Client> onVoiceChatConnected);
+    public abstract void onVoiceChatConnected(Consumer<ClientVoicechatConnection> onVoiceChatConnected);
 
     public abstract void onVoiceChatDisconnected(Runnable onVoiceChatConnected);
 

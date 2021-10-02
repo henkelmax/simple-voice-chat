@@ -18,7 +18,7 @@ import java.util.UUID;
 public class ClientManager {
 
     @Nullable
-    private Client client;
+    private ClientVoicechat client;
     private final ClientPlayerStateManager playerStateManager;
     private final PTTKeyHandler pttKeyHandler;
     private final RenderEvents renderEvents;
@@ -34,7 +34,6 @@ public class ClientManager {
 
         ClientCompatibilityManager.INSTANCE.onJoinServer(this::onJoinServer);
         ClientCompatibilityManager.INSTANCE.onDisconnect(this::onDisconnect);
-        ClientCompatibilityManager.INSTANCE.onVoiceChatDisconnected(this::onVoicechatDisconnect);
 
         CommonCompatibilityManager.INSTANCE.getNetManager().secretChannel.registerServerListener((client, handler, packet) -> {
             authenticate(handler.getLocalGameProfile().getId(), packet);
@@ -56,9 +55,13 @@ public class ClientManager {
     }
 
     private void authenticate(UUID playerUUID, SecretPacket secretPacket) {
+        if (client == null) {
+            Voicechat.LOGGER.error("Received secret without a client being present");
+            return;
+        }
         Voicechat.LOGGER.info("Received secret");
-        if (client != null) {
-            onDisconnect();
+        if (client.getConnection() != null) {
+            ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
         }
         ClientPacketListener connection = minecraft.getConnection();
         if (connection != null) {
@@ -67,8 +70,7 @@ public class ClientManager {
                 if (socketAddress instanceof InetSocketAddress address) {
                     String ip = secretPacket.getVoiceHost().isEmpty() ? address.getHostString() : secretPacket.getVoiceHost();
                     Voicechat.LOGGER.info("Connecting to server: '" + ip + ":" + secretPacket.getServerPort() + "'");
-                    client = new Client(new InitializationData(ip, playerUUID, secretPacket));
-                    client.start();
+                    client.connect(new InitializationData(ip, playerUUID, secretPacket));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -79,21 +81,19 @@ public class ClientManager {
     private void onJoinServer() {
         Voicechat.LOGGER.info("Sending secret request to the server");
         CommonCompatibilityManager.INSTANCE.getNetManager().sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
+        client = new ClientVoicechat();
     }
 
     private void onDisconnect() {
-        ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
-    }
-
-    private void onVoicechatDisconnect() {
         if (client != null) {
             client.close();
             client = null;
         }
+        ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
     }
 
     @Nullable
-    public static Client getClient() {
+    public static ClientVoicechat getClient() {
         return instance().client;
     }
 

@@ -43,7 +43,7 @@ public class RenderEvents {
         }
 
         ClientPlayerStateManager manager = ClientManager.getPlayerStateManager();
-        Client client = ClientManager.getClient();
+        ClientVoicechat client = ClientManager.getClient();
         if (manager.isDisconnected()) {
             renderIcon(stack, DISCONNECT_ICON);
         } else if (manager.isDisabled()) {
@@ -96,7 +96,7 @@ public class RenderEvents {
 
         if (!minecraft.options.hideGui) {
             ClientPlayerStateManager manager = ClientManager.getPlayerStateManager();
-            Client client = ClientManager.getClient();
+            ClientVoicechat client = ClientManager.getClient();
             String group = manager.getGroup(player);
 
             if (client != null && client.getTalkCache().isTalking(player)) {

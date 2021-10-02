@@ -20,7 +20,7 @@ public class GroupChatManager {
     private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_group_hud_small_off.png");
 
     public static void renderIcons(PoseStack matrixStack) {
-        Client client = ClientManager.getClient();
+        ClientVoicechat client = ClientManager.getClient();
 
         if (client == null) {
             return;

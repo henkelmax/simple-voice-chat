@@ -18,14 +18,23 @@ public class MicTestButton extends AbstractButton {
     private boolean micActive;
     private VoiceThread voiceThread;
     private final MicListener micListener;
-    private final Client client;
+    private final ClientVoicechat client;
+    private MicThread micThread;
+    private boolean usesOwnMicThread;
 
-    public MicTestButton(int xIn, int yIn, int widthIn, int heightIn, MicListener micListener, Client client) {
+    public MicTestButton(int xIn, int yIn, int widthIn, int heightIn, MicListener micListener, ClientVoicechat client) {
         super(xIn, yIn, widthIn, heightIn, TextComponent.EMPTY);
         this.micListener = micListener;
         this.client = client;
-        if (client.getMicThread() == null) {
-            active = false;
+        micThread = client.getMicThread();
+        if (micThread == null) {
+            try {
+                micThread = new MicThread(client, null);
+                usesOwnMicThread = true;
+            } catch (Exception e) {
+                active = false;
+                e.printStackTrace();
+            }
         }
         updateText();
     }
@@ -79,7 +88,6 @@ public class MicTestButton extends AbstractButton {
     }
 
     private void setMicLocked(boolean locked) {
-        MicThread micThread = client.getMicThread();
         if (micThread == null) {
             return;
         }
@@ -104,7 +112,6 @@ public class MicTestButton extends AbstractButton {
         public VoiceThread() throws SpeakerException, MicrophoneException {
             this.running = true;
             setDaemon(true);
-            MicThread micThread = client.getMicThread();
             if (micThread == null) {
                 throw new MicrophoneException("No microphone");
             }
@@ -164,6 +171,9 @@ public class MicTestButton extends AbstractButton {
             if (denoiser != null) {
                 denoiser.close();
                 denoiser = null;
+            }
+            if (usesOwnMicThread) {
+                micThread.close();
             }
         }
 

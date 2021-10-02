@@ -1,17 +1,17 @@
 package de.maxhenkel.voicechat.events;
 
-import de.maxhenkel.voicechat.voice.client.Client;
+import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraftforge.eventbus.api.GenericEvent;
 
 public class VoiceChatConnectedEvent extends GenericEvent<VoiceChatConnectedEvent> {
 
-    private final Client client;
+    private final ClientVoicechatConnection client;
 
-    public VoiceChatConnectedEvent(Client client) {
+    public VoiceChatConnectedEvent(ClientVoicechatConnection client) {
         this.client = client;
     }
 
-    public Client getClient() {
+    public ClientVoicechatConnection getClient() {
         return client;
     }
 

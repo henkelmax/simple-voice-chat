@@ -49,7 +49,7 @@ public class ClientPlayerStateManager {
     /**
      * Called when the voicechat client gets (re)connected
      */
-    public void onVoiceChatConnected(Client client) {
+    public void onVoiceChatConnected(ClientVoicechatConnection client) {
         state.setDisconnected(false);
         syncOwnState();
     }

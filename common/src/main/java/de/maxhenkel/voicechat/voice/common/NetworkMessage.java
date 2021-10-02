@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.voice.client.Client;
+import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
@@ -79,7 +79,7 @@ public class NetworkMessage {
         return new UnprocessedNetworkMessage(packet, System.currentTimeMillis());
     }
 
-    public static NetworkMessage readPacketClient(DatagramSocket socket, Client client) throws IllegalAccessException, InstantiationException, IOException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvocationTargetException, NoSuchMethodException {
+    public static NetworkMessage readPacketClient(DatagramSocket socket, ClientVoicechatConnection client) throws IllegalAccessException, InstantiationException, IOException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvocationTargetException, NoSuchMethodException {
         DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
         socket.receive(packet);
         byte[] data = new byte[packet.getLength()];
@@ -131,7 +131,7 @@ public class NetworkMessage {
         return -1;
     }
 
-    public byte[] writeClient(Client client) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public byte[] writeClient(ClientVoicechatConnection client) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         byte[] payload = write(client.getData().getSecret());
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer(payload.length + 32));
         buffer.writeUUID(client.getData().getPlayerUUID());

@@ -46,13 +46,13 @@ public class KeyEvents {
             if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_F3)) {
                 minecraft.options.renderDebug = true;
                 DebugReport.generateReport(minecraft.player);
-            } else if (checkConnected()) {
+            } else {
                 minecraft.setScreen(new VoiceChatScreen());
             }
         }
 
         if (KEY_GROUP.consumeClick() && checkConnected()) {
-            if (ClientManager.getClient().getData().groupsEnabled()) {
+            if (ClientManager.getClient() != null && ClientManager.getClient().getConnection() != null && ClientManager.getClient().getConnection().getData().groupsEnabled()) {
                 if (playerStateManager.isInGroup()) {
                     minecraft.setScreen(new GroupScreen());
                 } else {
@@ -63,7 +63,7 @@ public class KeyEvents {
             }
         }
 
-        if (KEY_VOICE_CHAT_SETTINGS.consumeClick() && checkConnected()) {
+        if (KEY_VOICE_CHAT_SETTINGS.consumeClick()) {
             minecraft.setScreen(new VoiceChatSettingsScreen());
         }
 
@@ -79,7 +79,7 @@ public class KeyEvents {
             playerStateManager.setDisabled(!playerStateManager.isDisabled());
         }
 
-        if (KEY_TOGGLE_RECORDING.consumeClick() && checkConnected()) {
+        if (KEY_TOGGLE_RECORDING.consumeClick() && ClientManager.getClient() != null) {
             ClientManager.getClient().toggleRecording();
         }
 
@@ -96,7 +96,7 @@ public class KeyEvents {
     }
 
     private boolean checkConnected() {
-        if (ClientManager.getClient() == null || !ClientManager.getClient().isAuthenticated()) {
+        if (ClientManager.getClient() == null || ClientManager.getClient().getConnection() == null || !ClientManager.getClient().getConnection().isAuthenticated()) {
             sendUnavailableMessage();
             return false;
         }

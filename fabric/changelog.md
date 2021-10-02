@@ -10,3 +10,4 @@
 - Fixed clipping when using microphone amplification
 - Added customizable group HUD position
 - Added customizable HUD icon position
+- Fixed voice chat settings can't be opened when not connected

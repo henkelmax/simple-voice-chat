@@ -4,10 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.voice.client.ALMicrophone;
-import de.maxhenkel.voicechat.voice.client.Client;
-import de.maxhenkel.voicechat.voice.client.ClientManager;
-import de.maxhenkel.voicechat.voice.client.SoundManager;
+import de.maxhenkel.voicechat.voice.client.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -164,21 +161,22 @@ public class DebugReport {
                 addLine("Server address: N/A (" + e.getMessage() + ")");
             }
         }
-        Client client = ClientManager.getClient();
-        if (client != null) {
+        ClientVoicechat client = ClientManager.getClient();
+        if (client != null && client.getConnection() != null) {
+            ClientVoicechatConnection connection = client.getConnection();
             addLine("");
             addLine("Voice chat connected");
-            addLine("Address: " + client.getAddress().toString());
-            addLine("Port: " + client.getData().getServerPort());
-            addLine("Codec: " + client.getData().getCodec().toString());
-            addLine(client.getData().groupsEnabled() ? "Groups enabled" : "Groups disabled");
+            addLine("Address: " + connection.getAddress().toString());
+            addLine("Port: " + connection.getData().getServerPort());
+            addLine("Codec: " + connection.getData().getCodec().toString());
+            addLine(connection.getData().groupsEnabled() ? "Groups enabled" : "Groups disabled");
             addLine("Sample rate: " + SoundManager.SAMPLE_RATE);
             addLine("Frame size: " + SoundManager.FRAME_SIZE);
-            addLine("MTU size: " + client.getData().getMtuSize());
-            addLine("Distance: " + client.getData().getVoiceChatDistance());
-            addLine("Fade distance: " + client.getData().getVoiceChatFadeDistance());
-            addLine("Crouch distance multiplier: " + client.getData().getCrouchDistanceMultiplier());
-            addLine("Authenticated: " + client.isAuthenticated());
+            addLine("MTU size: " + connection.getData().getMtuSize());
+            addLine("Distance: " + connection.getData().getVoiceChatDistance());
+            addLine("Fade distance: " + connection.getData().getVoiceChatFadeDistance());
+            addLine("Crouch distance multiplier: " + connection.getData().getCrouchDistanceMultiplier());
+            addLine("Authenticated: " + connection.isAuthenticated());
             addLine("Recording: " + (client.getRecorder() != null));
             addLine("");
         } else {

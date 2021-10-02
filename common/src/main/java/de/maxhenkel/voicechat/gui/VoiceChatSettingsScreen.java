@@ -5,8 +5,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.*;
-import de.maxhenkel.voicechat.voice.client.Client;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
+import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
+import de.maxhenkel.voicechat.voice.client.Denoiser;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
@@ -32,7 +33,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
     protected void init() {
         super.init();
 
-        Client c = ClientManager.getClient();
+        ClientVoicechat c = ClientManager.getClient();
 
         if (c == null) {
             return;
@@ -49,7 +50,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
                     enabled ? new TranslatableComponent("message.voicechat.enabled") : new TranslatableComponent("message.voicechat.disabled")
             );
         }));
-        if (c.getMicThread() == null || c.getMicThread().getDenoiser() == null) {
+        if (Denoiser.createDenoiser() == null) {
             denoiser.active = false;
         }
         y += 21;

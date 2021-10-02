@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.intercompatibility;
 import com.mojang.blaze3d.platform.InputConstants;
 import de.maxhenkel.voicechat.events.VoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.events.VoiceChatDisconnectedEvent;
-import de.maxhenkel.voicechat.voice.client.Client;
+import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.sounds.SoundEngineExecutor;
@@ -35,7 +35,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     private final List<Runnable> inputEvents;
     private final List<Runnable> disconnectEvents;
     private final List<Runnable> joinServerEvents;
-    private final List<Consumer<Client>> voicechatConnectEvents;
+    private final List<Consumer<ClientVoicechatConnection>> voicechatConnectEvents;
     private final List<Runnable> voicechatDisconnectEvents;
 
     public ForgeClientCompatibilityManager() {
@@ -131,7 +131,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @Override
-    public void emitVoiceChatConnectedEvent(Client client) {
+    public void emitVoiceChatConnectedEvent(ClientVoicechatConnection client) {
         voicechatConnectEvents.forEach(consumer -> consumer.accept(client));
         MinecraftForge.EVENT_BUS.post(new VoiceChatConnectedEvent(client));
     }
@@ -143,7 +143,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @Override
-    public void onVoiceChatConnected(Consumer<Client> onVoiceChatConnected) {
+    public void onVoiceChatConnected(Consumer<ClientVoicechatConnection> onVoiceChatConnected) {
         voicechatConnectEvents.add(onVoiceChatConnected);
     }
 

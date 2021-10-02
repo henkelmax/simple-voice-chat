@@ -38,7 +38,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         super.init();
 
         ClientPlayerStateManager stateManager = ClientManager.getPlayerStateManager();
-        @Nullable Client client = ClientManager.getClient();
+        @Nullable ClientVoicechat client = ClientManager.getClient();
 
         mute = new ToggleImageButton(guiLeft + 6, guiTop + ySize - 6 - 20, MICROPHONE, stateManager::isMuted, button -> {
             stateManager.setMuted(!stateManager.isMuted());
@@ -54,17 +54,19 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         });
         addRenderableWidget(disable);
 
-        if (client != null && client.getData().allowRecording()) {
-            ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> ClientManager.getClient() != null && ClientManager.getClient().getRecorder() != null, button -> {
-                Client c = ClientManager.getClient();
-                if (c == null) {
-                    return;
-                }
-                c.toggleRecording();
-            }, (button, matrices, mouseX, mouseY) -> {
-                renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.toggle_recording").getVisualOrderText()), mouseX, mouseY);
-            });
-            addRenderableWidget(record);
+        if (client != null) {
+            if (client.getRecorder() != null || (client.getConnection() != null && client.getConnection().getData().allowRecording())) {
+                ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> ClientManager.getClient() != null && ClientManager.getClient().getRecorder() != null, button -> {
+                    ClientVoicechat c = ClientManager.getClient();
+                    if (c == null) {
+                        return;
+                    }
+                    c.toggleRecording();
+                }, (button, matrices, mouseX, mouseY) -> {
+                    renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.toggle_recording").getVisualOrderText()), mouseX, mouseY);
+                });
+                addRenderableWidget(record);
+            }
         }
 
         ToggleImageButton hide = new ToggleImageButton(guiLeft + xSize - 6 - 20, guiTop + ySize - 6 - 20, HIDE, VoicechatClient.CLIENT_CONFIG.hideIcons::get, button -> {
@@ -88,7 +90,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         });
         addRenderableWidget(group);
 
-        group.active = client != null && client.getData().groupsEnabled();
+        group.active = client != null && client.getConnection() != null && client.getConnection().getData().groupsEnabled();
         recordingHoverArea = new HoverArea(6 + 20 + 2 + 20 + 2, ySize - 6 - 20, xSize - (6 + 20 + 2 + 20 + 2) * 2, 20);
 
         checkButtons();
@@ -127,7 +129,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         int titleWidth = font.width(title);
         font.draw(poseStack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
 
-        Client client = ClientManager.getClient();
+        ClientVoicechat client = ClientManager.getClient();
         if (client != null && client.getRecorder() != null) {
             AudioRecorder recorder = client.getRecorder();
             TextComponent time = new TextComponent(recorder.getDuration());
