@@ -21,6 +21,7 @@
   "message.voicechat.mic_test_off": "Enable microphone testing",
   "message.voicechat.mic_test_unavailable": "Microphone testing unavailable",
   "message.voicechat.voice_chat_unavailable": "Voice chat unavailable",
+  "message.voicechat.voice_chat_not_connected": "Voice chat not connected",
   "message.voicechat.activation_type": "Activation type: %s",
   "message.voicechat.activation_type.ptt": "Push to talk",
   "message.voicechat.activation_type.voice": "Voice",

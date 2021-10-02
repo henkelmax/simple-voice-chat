@@ -12,6 +12,7 @@
   "message.voicechat.mic_test_off": "Habilitar teste do microfone",
   "message.voicechat.mic_test_unavailable": "Teste do mircofone indisponível",
   "message.voicechat.voice_chat_unavailable": "Chat de voz indisponível",
+  "message.voicechat.voice_chat_not_connected": "Chat de voz indisponível",
   "message.voicechat.activation_type": "Tipo de ativação: %s",
   "message.voicechat.activation_type.ptt": "Aperte para falar",
   "message.voicechat.activation_type.voice": "Detecção de voz",

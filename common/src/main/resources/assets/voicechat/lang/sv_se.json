@@ -21,6 +21,7 @@
   "message.voicechat.mic_test_off": "Aktivera mikrofontestning",
   "message.voicechat.mic_test_unavailable": "Mikrofontestning ej tillgänglig",
   "message.voicechat.voice_chat_unavailable": "Röstchatt ej tillgänglig",
+  "message.voicechat.voice_chat_not_connected": "Röstchatt ej tillgänglig",
   "message.voicechat.activation_type": "Aktiveringstyp: %s",
   "message.voicechat.activation_type.ptt": "Tryck för tal",
   "message.voicechat.activation_type.voice": "Röst",

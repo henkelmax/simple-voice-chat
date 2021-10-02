@@ -21,6 +21,7 @@
   "message.voicechat.mic_test_off": "Включить тестирование микрофона",
   "message.voicechat.mic_test_unavailable": "Тестирование микрофона недоступно",
   "message.voicechat.voice_chat_unavailable": "Голосовой чат недоступен",
+  "message.voicechat.voice_chat_not_connected": "Голосовой чат недоступен",
   "message.voicechat.activation_type": "Тип активации: %s",
   "message.voicechat.activation_type.ptt": "Нажми, чтобы говорить",
   "message.voicechat.activation_type.voice": "Голос",

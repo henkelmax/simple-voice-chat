@@ -21,6 +21,7 @@
   "message.voicechat.mic_test_off": "Mikrofontest aktivieren",
   "message.voicechat.mic_test_unavailable": "Mikrofontest nicht verfügbar",
   "message.voicechat.voice_chat_unavailable": "Sprachchat nicht verfügbar",
+  "message.voicechat.voice_chat_not_connected": "Sprachchat nicht verbunden",
   "message.voicechat.activation_type": "Aktivierungstyp: %s",
   "message.voicechat.activation_type.ptt": "Drücken zum sprechen",
   "message.voicechat.activation_type.voice": "Sprachaktivierung",

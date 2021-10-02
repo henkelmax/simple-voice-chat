@@ -104,7 +104,7 @@ public class KeyEvents {
     }
 
     private void sendUnavailableMessage() {
-        minecraft.player.displayClientMessage(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), true);
+        minecraft.player.displayClientMessage(new TranslatableComponent("message.voicechat.voice_chat_not_connected"), true);
     }
 
 }

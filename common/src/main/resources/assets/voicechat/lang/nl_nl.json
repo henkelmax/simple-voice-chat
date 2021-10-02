@@ -15,6 +15,7 @@
   "message.voicechat.mic_test_off": "Microfoon testen inschakelen",
   "message.voicechat.mic_test_unavailable": "Microfoon testen niet beschikbaar",
   "message.voicechat.voice_chat_unavailable": "Spraakchat niet beschikbaar",
+  "message.voicechat.voice_chat_not_connected": "Spraakchat niet beschikbaar",
   "message.voicechat.activation_type": "Activeringstype: %s",
   "message.voicechat.activation_type.ptt": "Druk om te praten",
   "message.voicechat.activation_type.voice": "Spraak",

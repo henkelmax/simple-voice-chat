@@ -21,6 +21,7 @@
   "message.voicechat.mic_test_off": "Увімкнути тестування мікрофона",
   "message.voicechat.mic_test_unavailable": "Тестування мікрофона недоступне",
   "message.voicechat.voice_chat_unavailable": "Голосовий чат недоступний",
+  "message.voicechat.voice_chat_not_connected": "Голосовий чат недоступний",
   "message.voicechat.activation_type": "Тип активації: %s",
   "message.voicechat.activation_type.ptt": "Активація кнопкою",
   "message.voicechat.activation_type.voice": "Голосова активація",

@@ -20,6 +20,7 @@
   "message.voicechat.mic_test_off": "开始测试音频输入",
   "message.voicechat.mic_test_unavailable": "音频输入测试不可用",
   "message.voicechat.voice_chat_unavailable": "语音通话不可用",
+  "message.voicechat.voice_chat_not_connected": "语音通话不可用",
   "message.voicechat.activation_type": "通话方式：%s",
   "message.voicechat.activation_type.ptt": "按键通话",
   "message.voicechat.activation_type.voice": "音量触发",

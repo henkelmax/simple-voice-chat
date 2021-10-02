@@ -21,6 +21,7 @@
   "message.voicechat.mic_test_off": "マイクのテストを有効",
   "message.voicechat.mic_test_unavailable": "マイクのテストが利用できません",
   "message.voicechat.voice_chat_unavailable": "ボイスチャットが利用できません",
+  "message.voicechat.voice_chat_not_connected": "ボイスチャットが利用できません",
   "message.voicechat.activation_type": "音声入力モード: %s",
   "message.voicechat.activation_type.ptt": "プッシュトゥートーク",
   "message.voicechat.activation_type.voice": "音声検出",

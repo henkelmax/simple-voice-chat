@@ -15,6 +15,7 @@
   "message.voicechat.mic_test_off": "Activer le test du microphone",
   "message.voicechat.mic_test_unavailable": "Test du microm inaccessible",
   "message.voicechat.voice_chat_unavailable": "Chat vocal inaccessible",
+  "message.voicechat.voice_chat_not_connected": "Chat vocal inaccessible",
   "message.voicechat.activation_type": "Type d'action: %s",
   "message.voicechat.activation_type.ptt": "Appuyer pour parler",
   "message.voicechat.activation_type.voice": "Voix",

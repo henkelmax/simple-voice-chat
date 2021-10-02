@@ -20,6 +20,7 @@
   "message.voicechat.mic_test_off": "Activar la prueba del micrófono",
   "message.voicechat.mic_test_unavailable": "Prueba de micrófono no disponible",
   "message.voicechat.voice_chat_unavailable": "Chat de voz no disponible",
+  "message.voicechat.voice_chat_not_connected": "Chat de voz no disponible",
   "message.voicechat.activation_type": "Tipo de activación: %s",
   "message.voicechat.activation_type.ptt": "Pulsar para hablar",
   "message.voicechat.activation_type.voice": "Activación por voz",

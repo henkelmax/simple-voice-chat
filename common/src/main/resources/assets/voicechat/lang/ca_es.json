@@ -15,6 +15,7 @@
   "message.voicechat.mic_test_off": "Comença la prova del micròfon",
   "message.voicechat.mic_test_unavailable": "La prova del micròfon no està disponible",
   "message.voicechat.voice_chat_unavailable": "Xat de veu no disponible",
+  "message.voicechat.voice_chat_not_connected": "Xat de veu no disponible",
   "message.voicechat.activation_type": "Tipus d'activació: %s",
   "message.voicechat.activation_type.ptt": "Prémer per parlar",
   "message.voicechat.activation_type.voice": "Per veu",
