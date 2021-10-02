@@ -42,7 +42,7 @@ public class PlayerStateManager {
 
     private void removePlayer(ServerPlayer player) {
         states.remove(player.getUUID());
-        broadcastState(player.server, new PlayerState(true, true, player.getGameProfile())); //TODO maybe remove
+        broadcastState(player.server, new PlayerState(true, true, player.getGameProfile()));
     }
 
     @Nullable

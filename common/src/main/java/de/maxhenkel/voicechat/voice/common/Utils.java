@@ -102,7 +102,6 @@ public class Utils {
      * @return the adjusted audio
      */
     public static byte[] convertToStereo(byte[] audio, float volumeLeft, float volumeRight) {
-        // TODO better sound clipping
         for (int i = 0; i < audio.length; i += 2) {
             short audioSample = bytesToShort(audio[i], audio[i + 1]);
 
@@ -139,7 +138,6 @@ public class Utils {
      * @return the adjusted audio
      */
     public static short[] convertToStereo(short[] audio, float volumeLeft, float volumeRight) {
-        // TODO better sound clipping
         short[] stereo = new short[audio.length * 2];
         for (int i = 0; i < audio.length; i++) {
             short left = (short) (audio[i] * volumeLeft);
