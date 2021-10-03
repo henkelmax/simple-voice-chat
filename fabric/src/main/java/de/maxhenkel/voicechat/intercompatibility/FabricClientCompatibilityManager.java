@@ -5,7 +5,6 @@ import de.maxhenkel.voicechat.events.*;
 import de.maxhenkel.voicechat.resourcepacks.IPackRepository;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.sounds.SoundEngineExecutor;
@@ -18,6 +17,8 @@ import java.util.function.Consumer;
 
 public class FabricClientCompatibilityManager extends ClientCompatibilityManager {
 
+    private static final Minecraft mc = Minecraft.getInstance();
+
     @Override
     public SoundEngineExecutor getSoundEngineExecutor() {
         return Minecraft.getInstance().getSoundManager().soundEngine.executor;
@@ -25,12 +26,12 @@ public class FabricClientCompatibilityManager extends ClientCompatibilityManager
 
     @Override
     public void onRenderNamePlate(RenderNameplateEvent onRenderNamePlate) {
-        RenderNameplateEvents.RENDER_NAMEPLATE.register(onRenderNamePlate);
+        RenderEvents.RENDER_NAMEPLATE.register(onRenderNamePlate);
     }
 
     @Override
     public void onRenderHUD(RenderHUDEvent onRenderHUD) {
-        HudRenderCallback.EVENT.register(onRenderHUD::render);
+        RenderEvents.RENDER_HUD.register(poseStack -> onRenderHUD.render(poseStack, mc.getFrameTime()));
     }
 
     @Override

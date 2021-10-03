@@ -13,7 +13,8 @@
     "KeyboardMixin",
     "MouseMixin",
     "PackRepositoryMixin",
-    "ClientPacketListenerMixin"
+    "ClientPacketListenerMixin",
+    "GuiMixin"
   ],
   "injectors": {
     "defaultRequire": 1

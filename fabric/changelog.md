@@ -14,3 +14,4 @@
 - Added thread pooling to audio recording
 - Added password protected groups
 - Groups can now be used while the voice chat is not connected
+- Fixed icons being rendered above the F3 screen

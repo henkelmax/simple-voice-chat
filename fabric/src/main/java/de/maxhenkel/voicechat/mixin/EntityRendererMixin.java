@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.maxhenkel.voicechat.events.RenderNameplateEvents;
+import de.maxhenkel.voicechat.events.RenderEvents;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.network.chat.Component;
@@ -26,7 +26,7 @@ public abstract class EntityRendererMixin {
         if (!entity.getDisplayName().equals(component)) {
             return;
         }
-        RenderNameplateEvents.RENDER_NAMEPLATE.invoker().render(entity, component, poseStack, multiBufferSource, light);
+        RenderEvents.RENDER_NAMEPLATE.invoker().render(entity, component, poseStack, multiBufferSource, light);
     }
 
     @Shadow
