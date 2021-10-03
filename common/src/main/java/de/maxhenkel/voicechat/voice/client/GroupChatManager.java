@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.SkinUtils;
+import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -99,26 +100,22 @@ public class GroupChatManager {
 
     public static List<PlayerState> getGroupMembers(boolean includeSelf) {
         List<PlayerState> entries = new ArrayList<>();
-        String group = getGroup();
+        ClientGroup group = ClientManager.getPlayerStateManager().getGroup();
+
+        if (group == null) {
+            return entries;
+        }
 
         for (PlayerState state : ClientManager.getPlayerStateManager().getPlayerStates()) {
             if (!includeSelf && state.getGameProfile().getId().equals(Minecraft.getInstance().player.getUUID())) {
                 continue;
             }
-            if (state.getGroup() != null && state.getGroup().equals(group)) {
+            if (state.hasGroup() && state.getGroup().getId().equals(group.getId())) {
                 entries.add(state);
             }
         }
 
         return entries;
-    }
-
-    public static String getGroup() {
-        String group = ClientManager.getPlayerStateManager().getGroup();
-        if (group == null) {
-            return "";
-        }
-        return group;
     }
 
 }

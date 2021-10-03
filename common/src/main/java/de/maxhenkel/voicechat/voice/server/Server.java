@@ -30,6 +30,7 @@ public class Server extends Thread {
     private BlockingQueue<NetworkMessage.UnprocessedNetworkMessage> packetQueue;
     private PingManager pingManager;
     private PlayerStateManager playerStateManager;
+    private GroupManager groupManager;
 
     public Server(int port, MinecraftServer server) {
         this.port = port;
@@ -39,6 +40,7 @@ public class Server extends Thread {
         packetQueue = new LinkedBlockingQueue<>();
         pingManager = new PingManager(this);
         playerStateManager = new PlayerStateManager();
+        groupManager = new GroupManager();
         setDaemon(true);
         setName("VoiceChatServerThread");
         processThread = new ProcessThread();
@@ -213,7 +215,10 @@ public class Server extends Thread {
     }
 
     private void processGroupPacket(PlayerState player, MicPacket packet) throws Exception {
-        String group = player.getGroup();
+        ClientGroup group = player.getGroup();
+        if (group == null) {
+            return;
+        }
         NetworkMessage soundMessage = new NetworkMessage(new GroupSoundPacket(player.getGameProfile().getId(), packet.getData(), packet.getSequenceNumber()));
         for (PlayerState state : playerStateManager.getStates()) {
             if (!group.equals(state.getGroup())) {
@@ -231,7 +236,7 @@ public class Server extends Thread {
 
     private void processProximityPacket(PlayerState state, ServerPlayer player, MicPacket packet) {
         double distance = Voicechat.SERVER_CONFIG.voiceChatDistance.get();
-        @Nullable String group = state.getGroup();
+        @Nullable ClientGroup group = state.getGroup();
 
         SoundPacket<?> soundPacket;
         if (player.isSpectator()) {
@@ -307,5 +312,9 @@ public class Server extends Thread {
 
     public PlayerStateManager getPlayerStateManager() {
         return playerStateManager;
+    }
+
+    public GroupManager getGroupManager() {
+        return groupManager;
     }
 }

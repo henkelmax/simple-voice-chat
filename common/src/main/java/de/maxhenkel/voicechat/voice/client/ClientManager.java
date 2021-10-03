@@ -1,8 +1,6 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.gui.CreateGroupScreen;
-import de.maxhenkel.voicechat.gui.GroupScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
@@ -35,22 +33,8 @@ public class ClientManager {
         ClientCompatibilityManager.INSTANCE.onJoinServer(this::onJoinServer);
         ClientCompatibilityManager.INSTANCE.onDisconnect(this::onDisconnect);
 
-        CommonCompatibilityManager.INSTANCE.getNetManager().secretChannel.registerServerListener((client, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().secretChannel.registerClientListener((client, handler, packet) -> {
             authenticate(handler.getLocalGameProfile().getId(), packet);
-        });
-
-        CommonCompatibilityManager.INSTANCE.getNetManager().setGroupChannel.registerServerListener((client, handler, packet) -> {
-            String newGroup = packet.getGroup().isEmpty() ? null : packet.getGroup();
-            if (newGroup == null && playerStateManager.getGroup() == null) {
-                return;
-            }
-            if (newGroup != null && newGroup.equals(playerStateManager.getGroup())) {
-                return;
-            }
-            playerStateManager.setGroup(newGroup);
-            if (minecraft.screen instanceof GroupScreen || minecraft.screen instanceof CreateGroupScreen) {
-                minecraft.setScreen(null);
-            }
         });
     }
 

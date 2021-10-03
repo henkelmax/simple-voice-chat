@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.voice.client;
 import com.mojang.blaze3d.platform.InputConstants;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.debug.DebugReport;
-import de.maxhenkel.voicechat.gui.CreateGroupScreen;
+import de.maxhenkel.voicechat.gui.JoinGroupScreen;
 import de.maxhenkel.voicechat.gui.GroupScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
@@ -51,12 +51,12 @@ public class KeyEvents {
             }
         }
 
-        if (KEY_GROUP.consumeClick() && checkConnected()) {
+        if (KEY_GROUP.consumeClick()) {
             if (ClientManager.getClient() != null && ClientManager.getClient().getConnection() != null && ClientManager.getClient().getConnection().getData().groupsEnabled()) {
                 if (playerStateManager.isInGroup()) {
-                    minecraft.setScreen(new GroupScreen());
+                    minecraft.setScreen(new GroupScreen(playerStateManager.getGroup()));
                 } else {
-                    minecraft.setScreen(new CreateGroupScreen());
+                    minecraft.setScreen(new JoinGroupScreen());
                 }
             } else {
                 minecraft.player.displayClientMessage(new TranslatableComponent("message.voicechat.groups_disabled"), true);

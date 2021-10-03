@@ -19,7 +19,7 @@ public class Channel<T extends Packet<T>> {
         serverListeners = new ArrayList<>();
     }
 
-    public void registerServerListener(NetManager.ClientReceiver<T> packetReceiver) {
+    public void registerClientListener(NetManager.ClientReceiver<T> packetReceiver) {
         clientListeners.add(packetReceiver);
     }
 

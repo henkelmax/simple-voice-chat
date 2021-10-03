@@ -44,7 +44,7 @@ public class ClientVoicechat {
 
         ClientCompatibilityManager.INSTANCE.onVoiceChatConnected(this::startMicThread);
         ClientCompatibilityManager.INSTANCE.onVoiceChatDisconnected(() -> {
-            stopMicThread();
+            closeMicThread();
             if (connection != null) {
                 connection.close();
             }
@@ -95,7 +95,7 @@ public class ClientVoicechat {
     public void reloadAudio() {
         Voicechat.LOGGER.info("Reloading audio");
 
-        stopMicThread();
+        closeMicThread();
 
         synchronized (audioChannels) {
             Voicechat.LOGGER.info("Clearing audio channels");
@@ -128,7 +128,7 @@ public class ClientVoicechat {
         }
     }
 
-    public void stopMicThread() {
+    public void closeMicThread() {
         if (micThread != null) {
             Voicechat.LOGGER.info("Stopping microphone thread");
             micThread.close();
@@ -206,9 +206,7 @@ public class ClientVoicechat {
 
         soundManager.close();
 
-        if (micThread != null) {
-            micThread.close();
-        }
+        closeMicThread();
 
         if (recorder != null) {
             AudioRecorder rec = recorder;

@@ -4,7 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.net.CreateGroupPacket;
+import de.maxhenkel.voicechat.net.JoinGroupPacket;
+import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -15,16 +16,17 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
-public class CreateGroupScreen extends VoiceChatScreenBase {
+public class EnterPasswordScreen extends VoiceChatScreenBase {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_create_group.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_enter_password.png");
 
-    private EditBox groupName;
     private EditBox password;
-    private Button createGroup;
+    private Button joinGroup;
+    private ClientGroup group;
 
-    public CreateGroupScreen() {
-        super(new TranslatableComponent("gui.voicechat.create_group.title"), 195, 100);
+    public EnterPasswordScreen(ClientGroup group) {
+        super(new TranslatableComponent("gui.voicechat.enter_password.title"), 195, 74);
+        this.group = group;
     }
 
     @Override
@@ -34,30 +36,24 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         clearWidgets();
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
-        groupName = new EditBox(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 2 - 5 + 2, xSize - 7 * 2, 10, TextComponent.EMPTY);
-        groupName.setMaxLength(16);
-        groupName.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
-        addRenderableWidget(groupName);
-
-        password = new EditBox(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 3 - 5 + 10 + 2 * 2, xSize - 7 * 2, 10, TextComponent.EMPTY);
+        password = new EditBox(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 2 - 5 + 2, xSize - 7 * 2, 10, TextComponent.EMPTY);
         password.setMaxLength(16);
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(password);
 
-        createGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, new TranslatableComponent("message.voicechat.create"), button -> {
-            if (!groupName.getValue().isEmpty()) {
-                CommonCompatibilityManager.INSTANCE.getNetManager().sendToServer(new CreateGroupPacket(groupName.getValue(), password.getValue().isEmpty() ? null : password.getValue()));
+        joinGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, new TranslatableComponent("message.voicechat.join_group"), button -> {
+            if (!password.getValue().isEmpty()) {
+                CommonCompatibilityManager.INSTANCE.getNetManager().sendToServer(new JoinGroupPacket(group.getId(), password.getValue()));
             }
         });
-        addRenderableWidget(createGroup);
+        addRenderableWidget(joinGroup);
     }
 
     @Override
     public void tick() {
         super.tick();
-        groupName.tick();
         password.tick();
-        createGroup.active = !groupName.getValue().isEmpty();
+        joinGroup.active = !password.getValue().isEmpty();
     }
 
     @Override
@@ -76,10 +72,9 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        Component title = new TranslatableComponent("message.voicechat.create_group");
+        Component title = new TranslatableComponent("message.voicechat.enter_group_password");
         font.draw(poseStack, title, guiLeft + xSize / 2 - font.width(title) / 2, guiTop + 7, FONT_COLOR);
-        font.draw(poseStack, new TranslatableComponent("message.voicechat.group_name"), guiLeft + 8, guiTop + 7 + font.lineHeight + 5, FONT_COLOR);
-        font.draw(poseStack, new TranslatableComponent("message.voicechat.optional_password"), guiLeft + 8, guiTop + 7 + (font.lineHeight + 5) * 2 + 10 + 2, FONT_COLOR);
+        font.draw(poseStack, new TranslatableComponent("message.voicechat.password"), guiLeft + 8, guiTop + 7 + font.lineHeight + 5, FONT_COLOR);
     }
 
     @Override
@@ -88,15 +83,13 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
             minecraft.setScreen(null);
             return true;
         }
-        return groupName.keyPressed(keyCode, scanCode, modifiers) | password.keyPressed(keyCode, scanCode, modifiers) | super.keyPressed(keyCode, scanCode, modifiers); //TODO check
+        return password.keyPressed(keyCode, scanCode, modifiers) || super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public void resize(Minecraft client, int width, int height) {
-        String groupNameText = groupName.getValue();
         String passwordText = password.getValue();
         init(client, width, height);
-        groupName.setValue(groupNameText);
         password.setValue(passwordText);
     }
 

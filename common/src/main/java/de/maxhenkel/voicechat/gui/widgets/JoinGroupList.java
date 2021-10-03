@@ -3,10 +3,13 @@ package de.maxhenkel.voicechat.gui.widgets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.gui.GroupScreen;
+import de.maxhenkel.voicechat.gui.EnterPasswordScreen;
 import de.maxhenkel.voicechat.gui.SkinUtils;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.net.JoinGroupPacket;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
+import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
@@ -19,21 +22,20 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.util.*;
-import java.util.function.Supplier;
 
-public class CreateGroupList extends WidgetBase {
+public class JoinGroupList extends WidgetBase {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_create_group.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_join_group.png");
+    // TODO remove placeholder texture and add variants for the builtin resource packs
+    private static final ResourceLocation LOCK = new ResourceLocation(Voicechat.MODID, "textures/gui/lock.png");
 
-    protected Supplier<List<PlayerState>> playerStates;
     protected int offset;
-    private VoiceChatScreenBase.HoverArea[] hoverAreas;
-    private int columnHeight;
-    private int columnCount;
+    private final VoiceChatScreenBase.HoverArea[] hoverAreas;
+    private final int columnHeight;
+    private final int columnCount;
 
-    public CreateGroupList(VoiceChatScreenBase screen, int posX, int posY, int xSize, int ySize, Supplier<List<PlayerState>> playerStates) {
+    public JoinGroupList(VoiceChatScreenBase screen, int posX, int posY, int xSize, int ySize) {
         super(screen, posX, posY, xSize, ySize);
-        this.playerStates = playerStates;
         columnHeight = 22;
         columnCount = 4;
 
@@ -44,18 +46,18 @@ public class CreateGroupList extends WidgetBase {
     }
 
     public List<Group> getGroups() {
-        Map<String, Group> groups = new HashMap<>();
-        List<PlayerState> playerStates = this.playerStates.get();
+        Map<UUID, Group> groups = new HashMap<>();
+        List<PlayerState> playerStates = ClientManager.getPlayerStateManager().getPlayerStates();
 
         for (PlayerState state : playerStates) {
             if (!state.hasGroup()) {
                 continue;
             }
 
-            Group group = groups.getOrDefault(state.getGroup(), new Group(state.getGroup()));
+            Group group = groups.getOrDefault(state.getGroup().getId(), new Group(state.getGroup()));
             group.members.add(state);
             group.members.sort(Comparator.comparing(o -> o.getGameProfile().getName()));
-            groups.put(state.getGroup(), group);
+            groups.put(state.getGroup().getId(), group);
         }
         return new ArrayList<>(groups.values());
     }
@@ -69,10 +71,21 @@ public class CreateGroupList extends WidgetBase {
             VoiceChatScreenBase.HoverArea hoverArea = hoverAreas[pos];
             int startY = guiTop + pos * columnHeight;
             Group group = entries.get(i);
-            TextComponent groupName = new TextComponent(group.name);
-            mc.font.draw(matrixStack, groupName, guiLeft + 3, startY + 7, 0);
+            boolean hasPassword = group.group.hasPassword();
 
-            int textWidth = mc.font.width(groupName);
+            if (hasPassword) {
+                matrixStack.pushPose();
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+                RenderSystem.setShaderTexture(0, LOCK);
+                Screen.blit(matrixStack, guiLeft + 3, startY + 3, 0, 0, 16, 16, 16, 16);
+                matrixStack.popPose();
+            }
+
+            TextComponent groupName = new TextComponent(group.group.getName());
+            mc.font.draw(matrixStack, groupName, guiLeft + 3 + (hasPassword ? 16 + 3 : 0), startY + 7, 0);
+
+            int textWidth = mc.font.width(groupName) + (hasPassword ? 16 + 3 : 0);
 
             int headsPerRow = (xSize - (3 + textWidth + 3 + 3)) / (8 + 1);
 
@@ -183,18 +196,21 @@ public class CreateGroupList extends WidgetBase {
             }
             Group group = entries.get(getOffset() + i);
             mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
-            ClientManager.getPlayerStateManager().setGroup(group.name);
-            mc.setScreen(new GroupScreen());
+            if (group.group.hasPassword()) {
+                mc.setScreen(new EnterPasswordScreen(group.group));
+            } else {
+                CommonCompatibilityManager.INSTANCE.getNetManager().sendToServer(new JoinGroupPacket(group.group.getId(), null));
+            }
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
     public static class Group {
-        private String name;
-        private List<PlayerState> members;
+        private final ClientGroup group;
+        private final List<PlayerState> members;
 
-        public Group(String name) {
-            this.name = name;
+        public Group(ClientGroup group) {
+            this.group = group;
             this.members = new ArrayList<>();
         }
     }

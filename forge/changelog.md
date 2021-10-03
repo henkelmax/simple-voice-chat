@@ -12,3 +12,5 @@
 - Added customizable HUD icon position
 - Fixed voice chat settings can't be opened when not connected
 - Added thread pooling to audio recording
+- Added password protected groups
+- Groups can now be used while the voice chat is not connected

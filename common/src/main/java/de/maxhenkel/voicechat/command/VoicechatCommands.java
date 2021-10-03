@@ -3,12 +3,12 @@ package de.maxhenkel.voicechat.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.net.SetGroupPacket;
 import de.maxhenkel.voicechat.voice.common.PingPacket;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
+import de.maxhenkel.voicechat.voice.server.Group;
 import de.maxhenkel.voicechat.voice.server.PingManager;
 import de.maxhenkel.voicechat.voice.server.Server;
 import net.minecraft.ChatFormatting;
@@ -16,8 +16,12 @@ import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.network.chat.*;
 import net.minecraft.server.level.ServerPlayer;
+
+import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class VoicechatCommands {
 
@@ -76,12 +80,18 @@ public class VoicechatCommands {
             }
 
             ServerPlayer player = EntityArgument.getPlayer(commandSource, "target");
+            Group group = server.getGroupManager().getGroup(state.getGroup().getId());
 
+            if (group == null) {
+                return 1;
+            }
+
+            String passwordSuffix = group.getPassword() == null ? "" : " \"" + group.getPassword() + "\"";
             player.sendMessage(new TranslatableComponent("message.voicechat.invite",
                     source.getDisplayName(),
-                    new TextComponent(state.getGroup()).withStyle(ChatFormatting.GRAY),
+                    new TextComponent(group.getName().toString()).withStyle(ChatFormatting.GRAY),
                     ComponentUtils.wrapInSquareBrackets(new TranslatableComponent("message.voicechat.accept_invite").withStyle(style -> style
-                                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/voicechat join \"" + state.getGroup() + "\""))
+                                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/voicechat join " + group.getId().toString() + passwordSuffix))
                                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.voicechat.accept_invite.hover")))))
                             .withStyle(ChatFormatting.GREEN)
             ), Util.NIL_UUID);
@@ -91,34 +101,16 @@ public class VoicechatCommands {
             return 1;
         })));
 
-        literalBuilder.then(Commands.literal("join").then(Commands.argument("group", StringArgumentType.string()).executes((commandSource) -> {
-            if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
-                commandSource.getSource().sendFailure(new TranslatableComponent("message.voicechat.groups_disabled"));
-                return 1;
-            }
-
-            Server server = Voicechat.SERVER.getServer();
-            if (server == null) {
-                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), false);
-                return 1;
-            }
-            ServerPlayer source = commandSource.getSource().getPlayerOrException();
-            String groupName = StringArgumentType.getString(commandSource, "group");
-
-            if (groupName.length() > 16) {
-                commandSource.getSource().sendFailure(new TranslatableComponent("message.voicechat.group_name_too_long"));
-                return 1;
-            }
-
-            if (!Voicechat.GROUP_REGEX.matcher(groupName).matches()) {
-                commandSource.getSource().sendFailure(new TranslatableComponent("message.voicechat.invalid_group_name"));
-                return 1;
-            }
-
-            CommonCompatibilityManager.INSTANCE.getNetManager().sendToClient(source, new SetGroupPacket(groupName));
-            commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.join_successful", new TextComponent(groupName).withStyle(ChatFormatting.GRAY)), false);
-            return 1;
+        literalBuilder.then(Commands.literal("join").then(Commands.argument("group", UuidArgument.uuid()).executes((commandSource) -> {
+            UUID groupID = UuidArgument.getUuid(commandSource, "group");
+            return joinGroup(commandSource.getSource(), groupID, null);
         })));
+
+        literalBuilder.then(Commands.literal("join").then(Commands.argument("group", UuidArgument.uuid()).then(Commands.argument("password", StringArgumentType.string()).executes((commandSource) -> {
+            UUID groupID = UuidArgument.getUuid(commandSource, "group");
+            String password = StringArgumentType.getString(commandSource, "password");
+            return joinGroup(commandSource.getSource(), groupID, password.isEmpty() ? null : password);
+        }))));
 
         literalBuilder.then(Commands.literal("leave").executes((commandSource) -> {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
@@ -139,12 +131,37 @@ public class VoicechatCommands {
                 return 1;
             }
 
-            CommonCompatibilityManager.INSTANCE.getNetManager().sendToClient(source, new SetGroupPacket(""));
+            server.getGroupManager().leaveGroup(source);
             commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.leave_successful"), false);
             return 1;
         }));
 
         dispatcher.register(literalBuilder);
+    }
+
+    private static int joinGroup(CommandSourceStack source, UUID groupID, @Nullable String password) throws CommandSyntaxException {
+        if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
+            source.sendFailure(new TranslatableComponent("message.voicechat.groups_disabled"));
+            return 1;
+        }
+
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            source.sendSuccess(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), false);
+            return 1;
+        }
+        ServerPlayer player = source.getPlayerOrException();
+
+        Group group = server.getGroupManager().getGroup(groupID);
+
+        if (group == null) {
+            source.sendFailure(new TranslatableComponent("message.voicechat.group_does_not_exist"));
+            return 1;
+        }
+
+        server.getGroupManager().joinGroup(group, player, password);
+        source.sendSuccess(new TranslatableComponent("message.voicechat.join_successful", new TextComponent(group.getName()).withStyle(ChatFormatting.GRAY)), false);
+        return 1;
     }
 
 }

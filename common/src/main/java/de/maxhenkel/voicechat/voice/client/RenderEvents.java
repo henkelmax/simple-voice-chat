@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -97,7 +98,7 @@ public class RenderEvents {
         if (!minecraft.options.hideGui) {
             ClientPlayerStateManager manager = ClientManager.getPlayerStateManager();
             ClientVoicechat client = ClientManager.getClient();
-            String group = manager.getGroup(player);
+            ClientGroup group = manager.getGroup(player);
 
             if (client != null && client.getTalkCache().isTalking(player)) {
                 renderPlayerIcon(player, component, SPEAKER_ICON, stack, vertexConsumers, light);

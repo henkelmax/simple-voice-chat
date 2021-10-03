@@ -7,10 +7,13 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.GroupList;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.net.LeaveGroupPacket;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.GroupChatManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
+import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -26,14 +29,16 @@ public class GroupScreen extends VoiceChatScreenBase {
     private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_button.png");
     private static final ResourceLocation GROUP_HUD = new ResourceLocation(Voicechat.MODID, "textures/gui/group_hud_button.png");
 
+    private final ClientGroup group;
     private GroupList playerList;
     private ToggleImageButton mute;
     private ToggleImageButton disable;
     private ToggleImageButton showHUD;
     private ImageButton leave;
 
-    public GroupScreen() {
+    public GroupScreen(ClientGroup group) {
         super(new TranslatableComponent("gui.voicechat.group.title"), 195, 222);
+        this.group = group;
     }
 
     @Override
@@ -68,8 +73,8 @@ public class GroupScreen extends VoiceChatScreenBase {
         addRenderableWidget(showHUD);
 
         leave = new ImageButton(guiLeft + 168, guiTop + 196, LEAVE, button -> {
-            ClientManager.getPlayerStateManager().setGroup(null);
-            minecraft.setScreen(new CreateGroupScreen());
+            CommonCompatibilityManager.INSTANCE.getNetManager().sendToServer(new LeaveGroupPacket());
+            minecraft.setScreen(new JoinGroupScreen());
         }, (button, matrices, mouseX, mouseY) -> {
             renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.leave_group").getVisualOrderText()), mouseX, mouseY);
         });
@@ -103,7 +108,7 @@ public class GroupScreen extends VoiceChatScreenBase {
 
         playerList.drawGuiContainerForegroundLayer(poseStack, mouseX, mouseY);
 
-        font.draw(poseStack, new TextComponent(GroupChatManager.getGroup()), guiLeft + 8, guiTop + 5, FONT_COLOR);
+        font.draw(poseStack, new TextComponent(group.getName()), guiLeft + 8, guiTop + 5, FONT_COLOR);
     }
 
     @Override

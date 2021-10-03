@@ -1,11 +1,19 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.gui.CreateGroupScreen;
+import de.maxhenkel.voicechat.gui.EnterPasswordScreen;
+import de.maxhenkel.voicechat.gui.GroupScreen;
+import de.maxhenkel.voicechat.gui.JoinGroupScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
+import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
@@ -22,11 +30,31 @@ public class ClientPlayerStateManager {
         state = getDefaultState();
         states = new HashMap<>();
 
-        CommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel.registerServerListener((client, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel.registerClientListener((client, handler, packet) -> {
             states.put(packet.getPlayerState().getGameProfile().getId(), packet.getPlayerState());
+            if (packet.getPlayerState().getGameProfile().getId().equals(state.getGameProfile().getId())) {
+                state.setGroup(packet.getPlayerState().getGroup());
+            }
         });
-        CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel.registerServerListener((client, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel.registerClientListener((client, handler, packet) -> {
             states = packet.getPlayerStates();
+            PlayerState ownState = states.get(client.getUser().getGameProfile().getId());
+            if (ownState != null) {
+                state.setGroup(ownState.getGroup());
+            }
+        });
+        CommonCompatibilityManager.INSTANCE.getNetManager().joinedGroupChannel.registerClientListener((client, handler, packet) -> {
+            Screen screen = Minecraft.getInstance().screen;
+            if (packet.getGroup() == null) {
+                if (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
+                    Minecraft.getInstance().setScreen(null);
+                }
+                client.player.displayClientMessage(new TranslatableComponent("message.voicechat.wrong_password").withStyle(ChatFormatting.DARK_RED), true);
+                return;
+            }
+            if (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
+                Minecraft.getInstance().setScreen(new GroupScreen(packet.getGroup()));
+            }
         });
         ClientCompatibilityManager.INSTANCE.onVoiceChatConnected(this::onVoiceChatConnected);
         ClientCompatibilityManager.INSTANCE.onVoiceChatDisconnected(this::onVoiceChatDisconnected);
@@ -43,7 +71,6 @@ public class ClientPlayerStateManager {
     public void onVoiceChatDisconnected() {
         state.setDisconnected(true);
         syncOwnState();
-
     }
 
     /**
@@ -117,7 +144,7 @@ public class ClientPlayerStateManager {
     }
 
     @Nullable
-    public String getGroup(Player player) {
+    public ClientGroup getGroup(Player player) {
         PlayerState state = states.get(player.getUUID());
         if (state == null) {
             return null;
@@ -126,13 +153,8 @@ public class ClientPlayerStateManager {
     }
 
     @Nullable
-    public String getGroup() {
+    public ClientGroup getGroup() {
         return state.getGroup();
-    }
-
-    public void setGroup(@Nullable String group) {
-        state.setGroup(group);
-        syncOwnState();
     }
 
     public List<PlayerState> getPlayerStates() {

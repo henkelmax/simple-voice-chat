@@ -83,9 +83,9 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
 
         Button group = new Button(guiLeft + xSize - 6 - 75 + 1, guiTop + 6 + 15, 75, 20, new TextComponent("Group"), button -> {
             if (stateManager.isInGroup()) {
-                minecraft.setScreen(new GroupScreen());
+                minecraft.setScreen(new GroupScreen(stateManager.getGroup()));
             } else {
-                minecraft.setScreen(new CreateGroupScreen());
+                minecraft.setScreen(new JoinGroupScreen());
             }
         });
         addRenderableWidget(group);
