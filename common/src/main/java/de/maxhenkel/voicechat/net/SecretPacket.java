@@ -18,6 +18,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     private double voiceChatDistance;
     private double voiceChatFadeDistance;
     private double crouchDistanceMultiplier;
+    private double whisperDistanceMultiplier;
     private int keepAlive;
     private boolean groupsEnabled;
     private String voiceHost;
@@ -30,11 +31,12 @@ public class SecretPacket implements Packet<SecretPacket> {
     public SecretPacket(UUID secret, ServerConfig serverConfig) {
         this.secret = secret;
         this.serverPort = serverConfig.voiceChatPort.get();
-        this.codec = (ServerConfig.Codec) serverConfig.voiceChatCodec.get();
+        this.codec = serverConfig.voiceChatCodec.get();
         this.mtuSize = serverConfig.voiceChatMtuSize.get();
         this.voiceChatDistance = serverConfig.voiceChatDistance.get();
         this.voiceChatFadeDistance = serverConfig.voiceChatFadeDistance.get();
         this.crouchDistanceMultiplier = serverConfig.crouchDistanceMultiplier.get();
+        this.whisperDistanceMultiplier = serverConfig.whisperDistanceMultiplier.get();
         this.keepAlive = serverConfig.keepAlive.get();
         this.groupsEnabled = serverConfig.groupsEnabled.get();
         this.voiceHost = serverConfig.voiceHost.get();
@@ -67,6 +69,10 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     public double getCrouchDistanceMultiplier() {
         return crouchDistanceMultiplier;
+    }
+
+    public double getWhisperDistanceMultiplier() {
+        return whisperDistanceMultiplier;
     }
 
     public int getKeepAlive() {
@@ -104,6 +110,7 @@ public class SecretPacket implements Packet<SecretPacket> {
         voiceChatDistance = buf.readDouble();
         voiceChatFadeDistance = buf.readDouble();
         crouchDistanceMultiplier = buf.readDouble();
+        whisperDistanceMultiplier = buf.readDouble();
         keepAlive = buf.readInt();
         groupsEnabled = buf.readBoolean();
         voiceHost = buf.readUtf(32767);
@@ -120,6 +127,7 @@ public class SecretPacket implements Packet<SecretPacket> {
         buf.writeDouble(voiceChatDistance);
         buf.writeDouble(voiceChatFadeDistance);
         buf.writeDouble(crouchDistanceMultiplier);
+        buf.writeDouble(whisperDistanceMultiplier);
         buf.writeInt(keepAlive);
         buf.writeBoolean(groupsEnabled);
         buf.writeUtf(voiceHost);

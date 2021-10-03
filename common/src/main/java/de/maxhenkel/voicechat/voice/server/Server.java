@@ -246,7 +246,7 @@ public class Server extends Thread {
                 return;
             }
         } else {
-            soundPacket = new PlayerSoundPacket(player.getUUID(), packet.getData(), packet.getSequenceNumber());
+            soundPacket = new PlayerSoundPacket(player.getUUID(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering());
         }
 
         NetworkMessage soundMessage = new NetworkMessage(soundPacket);

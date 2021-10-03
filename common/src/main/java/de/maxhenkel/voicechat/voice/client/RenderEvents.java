@@ -21,8 +21,10 @@ import net.minecraft.world.entity.player.Player;
 public class RenderEvents {
 
     private static final ResourceLocation MICROPHONE_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/microphone.png");
+    private static final ResourceLocation WHISPER_MICROPHONE_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/microphone_whisper.png");
     private static final ResourceLocation MICROPHONE_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/microphone_off.png");
     private static final ResourceLocation SPEAKER_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker.png");
+    private static final ResourceLocation WHISPER_SPEAKER_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_whisper.png");
     private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_off.png");
     private static final ResourceLocation DISCONNECT_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/disconnected.png");
     private static final ResourceLocation GROUP_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/group.png");
@@ -51,8 +53,12 @@ public class RenderEvents {
             renderIcon(stack, SPEAKER_OFF_ICON);
         } else if (manager.isMuted() && VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE)) {
             renderIcon(stack, MICROPHONE_OFF_ICON);
-        } else if (client != null && client.getMicThread() != null && client.getMicThread().isTalking()) {
-            renderIcon(stack, MICROPHONE_ICON);
+        } else if (client != null && client.getMicThread() != null) {
+            if (client.getMicThread().isWhispering()) {
+                renderIcon(stack, WHISPER_MICROPHONE_ICON);
+            } else if (client.getMicThread().isTalking()) {
+                renderIcon(stack, MICROPHONE_ICON);
+            }
         }
 
         if (manager.isInGroup() && VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()) {
@@ -100,7 +106,9 @@ public class RenderEvents {
             ClientVoicechat client = ClientManager.getClient();
             ClientGroup group = manager.getGroup(player);
 
-            if (client != null && client.getTalkCache().isTalking(player)) {
+            if (client != null && client.getTalkCache().isWhispering(player)) {
+                renderPlayerIcon(player, component, WHISPER_SPEAKER_ICON, stack, vertexConsumers, light);
+            } else if (client != null && client.getTalkCache().isTalking(player)) {
                 renderPlayerIcon(player, component, SPEAKER_ICON, stack, vertexConsumers, light);
             } else if (manager.isPlayerDisconnected(player)) {
                 renderPlayerIcon(player, component, DISCONNECT_ICON, stack, vertexConsumers, light);
@@ -163,6 +171,5 @@ public class RenderEvents {
                 .normal(entry.normal(), 0F, 0F, -1F)
                 .endVertex();
     }
-
 
 }

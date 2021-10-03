@@ -10,6 +10,7 @@ public abstract class ServerConfig {
     public ConfigEntry<Double> voiceChatDistance;
     public ConfigEntry<Double> voiceChatFadeDistance;
     public ConfigEntry<Double> crouchDistanceMultiplier;
+    public ConfigEntry<Double> whisperDistanceMultiplier;
     public ConfigEntry<Codec> voiceChatCodec;
     public ConfigEntry<Integer> voiceChatMtuSize;
     public ConfigEntry<Integer> keepAlive;

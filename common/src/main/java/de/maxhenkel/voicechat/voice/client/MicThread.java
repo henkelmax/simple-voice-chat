@@ -18,6 +18,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
     private final VolumeManager volumeManager;
     private boolean running;
     private boolean microphoneLocked;
+    private boolean wasWhispering;
     private final OpusEncoder encoder;
     @Nullable
     private final Denoiser denoiser;
@@ -72,6 +73,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
 
         if (ClientManager.getPlayerStateManager().isMuted() || ClientManager.getPlayerStateManager().isDisabled()) {
             activating = false;
+            wasWhispering = false;
             mic.stop();
             flushRecording();
             Utils.sleep(10);
@@ -88,6 +90,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
         mic.read(buff);
         volumeManager.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
         buff = denoiseIfEnabled(buff);
+        wasWhispering = ClientManager.getPttKeyHandler().isWhisperDown();
 
         int offset = Utils.getActivationOffset(buff, VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get());
         if (activating) {
@@ -98,18 +101,18 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
                     mic.stop();
                     flushRecording();
                 } else {
-                    sendAudioPacket(buff);
+                    sendAudioPacket(buff, wasWhispering);
                     deactivationDelay++;
                 }
             } else {
-                sendAudioPacket(buff);
+                sendAudioPacket(buff, wasWhispering);
             }
         } else {
             if (offset > 0) {
                 if (lastBuff != null) {
-                    sendAudioPacket(lastBuff);
+                    sendAudioPacket(lastBuff, wasWhispering);
                 }
-                sendAudioPacket(buff);
+                sendAudioPacket(buff, wasWhispering);
                 activating = true;
             }
         }
@@ -120,16 +123,18 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
 
     private void ptt() {
         activating = false;
-        if (!ClientManager.getPttKeyHandler().isPTTDown() || ClientManager.getPlayerStateManager().isDisabled()) {
+        if (!ClientManager.getPttKeyHandler().isAnyDown() || ClientManager.getPlayerStateManager().isDisabled()) {
             if (wasPTT) {
                 mic.stop();
                 wasPTT = false;
+                wasWhispering = false;
                 flushRecording();
             }
             Utils.sleep(10);
             return;
         } else {
             wasPTT = true;
+            wasWhispering = ClientManager.getPttKeyHandler().isWhisperDown();
         }
 
         mic.start();
@@ -142,16 +147,16 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
         mic.read(buff);
         volumeManager.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
         buff = denoiseIfEnabled(buff);
-        sendAudioPacket(buff);
+        sendAudioPacket(buff, wasWhispering);
     }
 
     private long sequenceNumber = 0L;
 
-    private void sendAudioPacket(short[] data) {
+    private void sendAudioPacket(short[] data, boolean whispering) {
         try {
             if (connection != null && connection.isConnected()) {
                 byte[] encoded = encoder.encode(data);
-                connection.sendToServer(new NetworkMessage(new MicPacket(encoded, sequenceNumber++)));
+                connection.sendToServer(new NetworkMessage(new MicPacket(encoded, whispering, sequenceNumber++)));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -186,6 +191,10 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
 
     public boolean isTalking() {
         return !microphoneLocked && (activating || wasPTT);
+    }
+
+    public boolean isWhispering() {
+        return isTalking() && wasWhispering;
     }
 
     public void setMicrophoneLocked(boolean microphoneLocked) {
@@ -232,7 +241,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
             return;
         }
         try {
-            connection.sendToServer(new NetworkMessage(new MicPacket(new byte[0], sequenceNumber++)));
+            connection.sendToServer(new NetworkMessage(new MicPacket(new byte[0], false, sequenceNumber++)));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -10,6 +10,7 @@ public class FabricServerConfig extends ServerConfig {
         voiceChatDistance = builder.doubleEntry("max_voice_distance", 48D, 1D, 1_000_000D);
         voiceChatFadeDistance = builder.doubleEntry("min_voice_distance", 4D, 1D, 1_000_000D);
         crouchDistanceMultiplier = builder.doubleEntry("crouch_distance_multiplier", 1D, 0.01D, 1D);
+        whisperDistanceMultiplier = builder.doubleEntry("whisper_distance_multiplier", 0.5D, 0.01D, 1D);
         voiceChatCodec = builder.enumEntry("codec", Codec.VOIP);
         voiceChatMtuSize = builder.integerEntry("mtu_size", 1024, 256, 10000);
         keepAlive = builder.integerEntry("keep_alive", 1000, 1000, Integer.MAX_VALUE);

@@ -176,6 +176,7 @@ public class DebugReport {
             addLine("Distance: " + connection.getData().getVoiceChatDistance());
             addLine("Fade distance: " + connection.getData().getVoiceChatFadeDistance());
             addLine("Crouch distance multiplier: " + connection.getData().getCrouchDistanceMultiplier());
+            addLine("Whisper distance multiplier: " + connection.getData().getWhisperDistanceMultiplier());
             addLine("Authenticated: " + connection.isAuthenticated());
             addLine("Recording: " + (client.getRecorder() != null));
             addLine("");

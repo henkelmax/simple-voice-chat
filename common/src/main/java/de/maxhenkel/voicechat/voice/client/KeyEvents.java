@@ -18,6 +18,7 @@ public class KeyEvents {
     private final Minecraft minecraft;
 
     public static KeyMapping KEY_PTT;
+    public static KeyMapping KEY_WHISPER;
     public static KeyMapping KEY_MUTE;
     public static KeyMapping KEY_DISABLE;
     public static KeyMapping KEY_HIDE_ICONS;
@@ -31,6 +32,7 @@ public class KeyEvents {
         ClientCompatibilityManager.INSTANCE.onHandleKeyBinds(this::handleKeybinds);
 
         KEY_PTT = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyMapping("key.push_to_talk", GLFW.GLFW_KEY_CAPS_LOCK, "key.categories.voicechat"));
+        KEY_WHISPER = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyMapping("key.whisper", InputConstants.UNKNOWN.getValue(), "key.categories.voicechat"));
         KEY_MUTE = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyMapping("key.mute_microphone", GLFW.GLFW_KEY_M, "key.categories.voicechat"));
         KEY_DISABLE = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyMapping("key.disable_voice_chat", GLFW.GLFW_KEY_N, "key.categories.voicechat"));
         KEY_HIDE_ICONS = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyMapping("key.hide_icons", GLFW.GLFW_KEY_H, "key.categories.voicechat"));
@@ -68,6 +70,10 @@ public class KeyEvents {
         }
 
         if (KEY_PTT.consumeClick()) {
+            checkConnected();
+        }
+
+        if (KEY_WHISPER.consumeClick()) {
             checkConnected();
         }
 
