@@ -16,3 +16,4 @@
 - Groups can now be used while the voice chat is not connected
 - Fixed icons being rendered above the F3 screen
 - Added whispering
+- Fixed unused config values staying in the config

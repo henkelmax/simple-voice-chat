@@ -19,7 +19,7 @@ public class FabricVoicechatClientMod extends VoicechatClient implements ClientM
 
     @Override
     public void onInitializeClient() {
-        CLIENT_CONFIG = ConfigBuilder.build(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-client.properties"), FabricClientConfig::new);
+        CLIENT_CONFIG = ConfigBuilder.build(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-client.properties"), true, FabricClientConfig::new);
 
         initializeClient();
 
