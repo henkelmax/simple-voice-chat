@@ -20,14 +20,14 @@ import net.minecraft.world.entity.player.Player;
 
 public class RenderEvents {
 
-    private static final ResourceLocation MICROPHONE_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/microphone.png");
-    private static final ResourceLocation WHISPER_MICROPHONE_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/microphone_whisper.png");
-    private static final ResourceLocation MICROPHONE_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/microphone_off.png");
-    private static final ResourceLocation SPEAKER_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker.png");
-    private static final ResourceLocation WHISPER_SPEAKER_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_whisper.png");
-    private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_off.png");
-    private static final ResourceLocation DISCONNECT_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/disconnected.png");
-    private static final ResourceLocation GROUP_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/group.png");
+    private static final ResourceLocation MICROPHONE_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone.png");
+    private static final ResourceLocation WHISPER_MICROPHONE_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone_whisper.png");
+    private static final ResourceLocation MICROPHONE_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone_off.png");
+    private static final ResourceLocation SPEAKER_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker.png");
+    private static final ResourceLocation WHISPER_SPEAKER_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_whisper.png");
+    private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_off.png");
+    private static final ResourceLocation DISCONNECT_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/disconnected.png");
+    private static final ResourceLocation GROUP_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/group.png");
 
     private final Minecraft minecraft;
 

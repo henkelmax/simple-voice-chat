@@ -23,9 +23,9 @@ import java.util.function.Supplier;
 public class GroupList extends WidgetBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_group.png");
-    private static final ResourceLocation SPEAKER_OFF = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_small_off.png");
-    private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_small.png");
-    private static final ResourceLocation CHANGE_VOLUME = new ResourceLocation(Voicechat.MODID, "textures/gui/change_volume.png");
+    private static final ResourceLocation SPEAKER_OFF = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_small_off.png");
+    private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_small.png");
+    private static final ResourceLocation CHANGE_VOLUME = new ResourceLocation(Voicechat.MODID, "textures/icons/change_volume.png");
 
     protected Supplier<List<PlayerState>> playerStates;
     protected int offset;

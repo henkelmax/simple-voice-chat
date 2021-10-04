@@ -21,10 +21,10 @@ import java.util.Collections;
 public class VoiceChatScreen extends VoiceChatScreenBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_voicechat.png");
-    private static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/gui/microphone_button.png");
-    private static final ResourceLocation HIDE = new ResourceLocation(Voicechat.MODID, "textures/gui/hide_button.png");
-    private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_button.png");
-    private static final ResourceLocation RECORD = new ResourceLocation(Voicechat.MODID, "textures/gui/record_button.png");
+    private static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone_button.png");
+    private static final ResourceLocation HIDE = new ResourceLocation(Voicechat.MODID, "textures/icons/hide_button.png");
+    private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_button.png");
+    private static final ResourceLocation RECORD = new ResourceLocation(Voicechat.MODID, "textures/icons/record_button.png");
 
     private ToggleImageButton mute;
     private HoverArea recordingHoverArea;

@@ -27,7 +27,7 @@ public class JoinGroupList extends WidgetBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_join_group.png");
     // TODO remove placeholder texture and add variants for the builtin resource packs
-    private static final ResourceLocation LOCK = new ResourceLocation(Voicechat.MODID, "textures/gui/lock.png");
+    private static final ResourceLocation LOCK = new ResourceLocation(Voicechat.MODID, "textures/icons/lock.png");
 
     protected int offset;
     private final VoiceChatScreenBase.HoverArea[] hoverAreas;

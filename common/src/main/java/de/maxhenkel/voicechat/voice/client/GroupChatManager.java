@@ -17,8 +17,8 @@ import java.util.List;
 
 public class GroupChatManager {
 
-    private static final ResourceLocation TALK_OUTLINE = new ResourceLocation(Voicechat.MODID, "textures/gui/talk_outline.png");
-    private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/gui/speaker_group_hud_small_off.png");
+    private static final ResourceLocation TALK_OUTLINE = new ResourceLocation(Voicechat.MODID, "textures/icons/talk_outline.png");
+    private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_group_hud_small_off.png");
 
     public static void renderIcons(PoseStack matrixStack) {
         ClientVoicechat client = ClientManager.getClient();
