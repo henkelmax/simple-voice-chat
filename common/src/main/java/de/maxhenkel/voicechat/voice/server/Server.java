@@ -7,10 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
-import java.net.BindException;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -50,6 +47,7 @@ public class Server extends Thread {
     @Override
     public void run() {
         try {
+            checkCorrectHost();
             InetAddress address = null;
             String addr = Voicechat.SERVER_CONFIG.voiceChatBindAddress.get();
             try {
@@ -88,6 +86,18 @@ public class Server extends Thread {
             }
         } catch (SocketException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void checkCorrectHost() {
+        String host = Voicechat.SERVER_CONFIG.voiceHost.get();
+        if (!host.isEmpty()) {
+            try {
+                new URI("voicechat://" + host);
+            } catch (URISyntaxException e) {
+                Voicechat.LOGGER.warn("Failed to parse voice host: {}", e.getMessage());
+                System.exit(1);
+            }
         }
     }
 

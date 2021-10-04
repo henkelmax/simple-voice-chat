@@ -52,6 +52,7 @@ public class ClientVoicechat {
     }
 
     public void connect(InitializationData data) throws IOException {
+        Voicechat.LOGGER.info("Connecting to server: '" + data.getServerIP() + ":" + data.getServerPort() + "'");
         connection = new ClientVoicechatConnection(this, data);
         connection.start();
     }

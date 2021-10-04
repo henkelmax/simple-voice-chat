@@ -20,3 +20,4 @@
 - Added ModMenu support
 - Added ModMenu configuration screen
 - Added Sound Physics compatibility
+- Added optional port for voice_host setting

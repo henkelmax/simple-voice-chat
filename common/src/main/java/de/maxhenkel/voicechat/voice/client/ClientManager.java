@@ -52,9 +52,7 @@ public class ClientManager {
             try {
                 SocketAddress socketAddress = ClientCompatibilityManager.INSTANCE.getSocketAddress(connection.getConnection());
                 if (socketAddress instanceof InetSocketAddress address) {
-                    String ip = secretPacket.getVoiceHost().isEmpty() ? address.getHostString() : secretPacket.getVoiceHost();
-                    Voicechat.LOGGER.info("Connecting to server: '" + ip + ":" + secretPacket.getServerPort() + "'");
-                    client.connect(new InitializationData(ip, playerUUID, secretPacket));
+                    client.connect(new InitializationData(address.getHostString(), playerUUID, secretPacket));
                 }
             } catch (Exception e) {
                 e.printStackTrace();

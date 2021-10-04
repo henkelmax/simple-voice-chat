@@ -1,8 +1,10 @@
 package de.maxhenkel.voicechat.voice.client;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.net.SecretPacket;
 
+import java.net.URI;
 import java.util.UUID;
 
 public class InitializationData {
@@ -22,8 +24,9 @@ public class InitializationData {
     private final boolean allowRecording;
 
     public InitializationData(String serverIP, UUID playerUUID, SecretPacket secretPacket) {
-        this.serverIP = serverIP;
-        this.serverPort = secretPacket.getServerPort();
+        HostData hostData = parseAddress(secretPacket.getVoiceHost(), serverIP, secretPacket.getServerPort());
+        this.serverIP = hostData.ip;
+        this.serverPort = hostData.port;
         this.playerUUID = playerUUID;
         this.secret = secretPacket.getSecret();
         this.codec = secretPacket.getCodec();
@@ -35,6 +38,30 @@ public class InitializationData {
         this.keepAlive = secretPacket.getKeepAlive();
         this.groupsEnabled = secretPacket.groupsEnabled();
         this.allowRecording = secretPacket.allowRecording();
+    }
+
+    private static HostData parseAddress(String voiceHost, String serverIP, int serverPort) {
+        String ip = serverIP;
+        int port = serverPort;
+        if (!voiceHost.isEmpty()) {
+            try {
+                URI uri = new URI("voicechat://" + voiceHost);
+                String host = uri.getHost();
+                int hostPort = uri.getPort();
+
+                if (host != null) {
+                    ip = host;
+                }
+
+                if (hostPort > 0) {
+                    port = hostPort;
+                }
+
+            } catch (Exception e) {
+                Voicechat.LOGGER.warn("Failed to parse voice host: {}", e.getMessage());
+            }
+        }
+        return new HostData(ip, port);
     }
 
     public String getServerIP() {
@@ -88,4 +115,15 @@ public class InitializationData {
     public boolean allowRecording() {
         return allowRecording;
     }
+
+    private static class HostData {
+        private final String ip;
+        private final int port;
+
+        public HostData(String ip, int port) {
+            this.ip = ip;
+            this.port = port;
+        }
+    }
+
 }
