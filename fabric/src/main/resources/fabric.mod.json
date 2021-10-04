@@ -15,7 +15,7 @@
     "discord": "https://discord.gg/4dH2zwTmyX"
   },
   "license": "All Rights Reserved",
-  "icon": "assets/voicechat/icon.png",
+  "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
