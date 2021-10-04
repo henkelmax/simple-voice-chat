@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.openal.ALC11;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SoundManager {
+public abstract class SoundManager {
 
     public static final int SAMPLE_RATE = 48000;
     public static final int FRAME_SIZE = (SAMPLE_RATE / 1000) * 20;
@@ -97,7 +98,7 @@ public class SoundManager {
         long time = System.currentTimeMillis();
         ClientCompatibilityManager.INSTANCE.getSoundEngineExecutor().execute(() -> {
             long diff = System.currentTimeMillis() - time;
-            if (diff >= 5) {
+            if (diff > 20 || (diff >= 5 && CommonCompatibilityManager.INSTANCE.isDevEnvironment())) {
                 Voicechat.LOGGER.error("Sound executor delay: {} ms!", diff);
             }
             if (openContext()) {

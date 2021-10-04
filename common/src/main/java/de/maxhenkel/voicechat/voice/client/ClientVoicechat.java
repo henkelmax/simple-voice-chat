@@ -89,7 +89,7 @@ public class ClientVoicechat {
         if (soundManager != null) {
             soundManager.close();
         }
-        soundManager = new SoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
+        soundManager = ClientCompatibilityManager.INSTANCE.createSoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
     }
 
     public void reloadAudio() {

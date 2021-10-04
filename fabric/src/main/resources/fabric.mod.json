@@ -38,7 +38,8 @@
     "java": ">=16"
   },
   "suggests": {
-    "modmenu": "*"
+    "modmenu": "*",
+    "soundphysics": "*"
   },
   "custom": {
     "voicechat": {

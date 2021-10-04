@@ -33,4 +33,6 @@ public abstract class CommonCompatibilityManager {
 
     public abstract String listKeybinds();
 
+    public abstract boolean isDevEnvironment();
+
 }

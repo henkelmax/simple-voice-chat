@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.gui.widgets;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.*;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.components.AbstractButton;
@@ -111,12 +112,12 @@ public class MicTestButton extends AbstractButton {
             volumeManager = micThread.getVolumeManager();
             SoundManager soundManager;
             if (client == null) {
-                soundManager = new SoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
+                soundManager = ClientCompatibilityManager.INSTANCE.createSoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
                 ownSoundManager = soundManager;
             } else {
                 soundManager = client.getSoundManager();
             }
-            speaker = new ALSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE);
+            speaker = ClientCompatibilityManager.INSTANCE.createSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE);
 
             speaker.open();
 

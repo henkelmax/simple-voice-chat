@@ -13,6 +13,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
 import net.minecraftforge.forgespi.language.IModInfo;
@@ -130,5 +131,10 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    @Override
+    public boolean isDevEnvironment() {
+        return !FMLLoader.isProduction();
     }
 }

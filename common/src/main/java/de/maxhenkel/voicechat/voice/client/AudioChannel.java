@@ -79,7 +79,7 @@ public class AudioChannel extends Thread {
     @Override
     public void run() {
         try {
-            speaker = new ALSpeaker(client.getSoundManager(), SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE);
+            speaker = ClientCompatibilityManager.INSTANCE.createSpeaker(client.getSoundManager(), SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE);
             speaker.open();
             while (!stopped) {
 

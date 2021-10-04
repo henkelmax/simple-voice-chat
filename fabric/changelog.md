@@ -19,3 +19,4 @@
 - Fixed unused config values staying in the config
 - Added ModMenu support
 - Added ModMenu configuration screen
+- Added Sound Physics compatibility

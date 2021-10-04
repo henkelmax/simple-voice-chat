@@ -10,16 +10,16 @@ import org.lwjgl.openal.AL11;
 
 import javax.annotation.Nullable;
 
-public class ALSpeaker {
+public abstract class ALSpeaker {
 
-    private final Minecraft mc;
-    private final SoundManager soundManager;
-    private final int sampleRate;
-    private final int bufferSize;
-    private final int bufferSampleSize;
-    private int source;
-    private int bufferIndex;
-    private final int[] buffers;
+    protected final Minecraft mc;
+    protected final SoundManager soundManager;
+    protected final int sampleRate;
+    protected final int bufferSize;
+    protected final int bufferSampleSize;
+    protected int source;
+    protected int bufferIndex;
+    protected final int[] buffers;
 
     public ALSpeaker(SoundManager soundManager, int sampleRate, int bufferSize) {
         mc = Minecraft.getInstance();
@@ -67,7 +67,7 @@ public class ALSpeaker {
         source = 0;
     }
 
-    private void setPositionSync(@Nullable Vec3 soundPos) {
+    protected void setPositionSync(@Nullable Vec3 soundPos) {
         if (soundPos != null) {
             Camera camera = mc.gameRenderer.getMainCamera();
             Vec3 position = camera.getPosition();

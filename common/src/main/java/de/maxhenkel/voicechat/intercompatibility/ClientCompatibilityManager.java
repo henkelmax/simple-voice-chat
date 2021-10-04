@@ -2,7 +2,10 @@ package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
+import de.maxhenkel.voicechat.voice.client.ALSpeaker;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
+import de.maxhenkel.voicechat.voice.client.SoundManager;
+import de.maxhenkel.voicechat.voice.client.SpeakerException;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.sounds.SoundEngineExecutor;
@@ -12,6 +15,7 @@ import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
 import net.minecraft.world.entity.Entity;
 
+import javax.annotation.Nullable;
 import java.net.SocketAddress;
 import java.util.function.Consumer;
 
@@ -50,6 +54,10 @@ public abstract class ClientCompatibilityManager {
     public abstract SocketAddress getSocketAddress(Connection connection);
 
     public abstract void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource);
+
+    public abstract ALSpeaker createSpeaker(SoundManager soundManager, int sampleRate, int bufferSize);
+
+    public abstract SoundManager createSoundManager(@Nullable String deviceName) throws SpeakerException;
 
     public interface RenderNameplateEvent {
         void render(Entity entity, Component component, PoseStack stack, MultiBufferSource bufferSource, int light);

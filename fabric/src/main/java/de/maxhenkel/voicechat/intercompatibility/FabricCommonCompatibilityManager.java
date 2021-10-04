@@ -117,4 +117,9 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
         return sb.toString();
     }
 
+    @Override
+    public boolean isDevEnvironment() {
+        return FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
 }

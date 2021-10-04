@@ -35,4 +35,10 @@ public abstract class Voicechat {
 
     protected abstract CommonCompatibilityManager createCompatibilityManager();
 
+    public static void logDebug(String message, Object... objects) {
+        if (CommonCompatibilityManager.INSTANCE.isDevEnvironment()) {
+            LOGGER.info(message, objects);
+        }
+    }
+
 }

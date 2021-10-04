@@ -115,19 +115,22 @@ public class ForgeServerConfig extends ServerConfig {
 
             @Override
             public Config getConfig() {
-                Map<String, Object> entries;
-                try {
-                    ForgeConfigSpec.Builder builder = configValue.next();
-                    Field field = builder.getClass().getDeclaredField("storage");
-                    com.electronwill.nightconfig.core.Config config = (com.electronwill.nightconfig.core.Config) field.get(builder);
-                    entries = config.valueMap();
-                } catch (Exception e) {
-                    entries = new HashMap<>();
-                }
-                Map<String, Object> finalEntries = entries;
-                return () -> finalEntries;
+                return fromBuilder(configValue.next());
             }
         };
+    }
+
+    public static Config fromBuilder(ForgeConfigSpec.Builder builder) {
+        Map<String, Object> entries;
+        try {
+            Field field = builder.getClass().getDeclaredField("storage");
+            com.electronwill.nightconfig.core.Config config = (com.electronwill.nightconfig.core.Config) field.get(builder);
+            entries = config.valueMap();
+        } catch (Exception e) {
+            entries = new HashMap<>();
+        }
+        Map<String, Object> finalEntries = entries;
+        return () -> finalEntries;
     }
 
 }

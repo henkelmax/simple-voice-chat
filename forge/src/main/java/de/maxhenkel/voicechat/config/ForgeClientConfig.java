@@ -133,6 +133,7 @@ public class ForgeClientConfig extends ClientConfig {
                 .comment("If noise cancellation should be enabled")
                 .define("denoiser", false)
         );
+        soundPhysics = new DummyEntry<>(false, builder);
     }
 
 }
