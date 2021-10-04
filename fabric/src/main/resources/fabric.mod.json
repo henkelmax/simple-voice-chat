@@ -8,9 +8,11 @@
     "Max Henkel"
   ],
   "contact": {
-    "website": "https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat",
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat",
     "issues": "https://github.com/henkelmax/simple-voice-chat/issues",
-    "sources": "https://github.com/henkelmax/simple-voice-chat"
+    "sources": "https://github.com/henkelmax/simple-voice-chat",
+    "email": "info@modrepo.de",
+    "discord": "https://discord.gg/4dH2zwTmyX"
   },
   "license": "All Rights Reserved",
   "icon": "assets/voicechat/icon.png",
@@ -21,6 +23,9 @@
     ],
     "main": [
       "de.maxhenkel.voicechat.FabricVoicechatMod"
+    ],
+    "modmenu": [
+      "de.maxhenkel.voicechat.integration.ModMenu"
     ]
   },
   "mixins": [
@@ -32,6 +37,9 @@
     "minecraft": "${minecraft_dependency}",
     "java": ">=16"
   },
+  "suggests": {
+    "modmenu": "*"
+  },
   "custom": {
     "voicechat": {
       "compatibilityVersion": ${compatibility_version}
@@ -42,5 +50,5 @@
       }
     }
   },
-  "accessWidener" : "voicechat.accesswidener"
+  "accessWidener": "voicechat.accesswidener"
 }

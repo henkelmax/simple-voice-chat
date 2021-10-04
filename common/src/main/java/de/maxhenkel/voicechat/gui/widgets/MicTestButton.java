@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.*;
-import de.maxhenkel.voicechat.voice.client.Denoiser;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -16,26 +15,16 @@ import javax.annotation.Nullable;
 public class MicTestButton extends AbstractButton {
 
     private boolean micActive;
+    @Nullable
     private VoiceThread voiceThread;
     private final MicListener micListener;
+    @Nullable
     private final ClientVoicechat client;
-    private MicThread micThread;
-    private boolean usesOwnMicThread;
 
-    public MicTestButton(int xIn, int yIn, int widthIn, int heightIn, MicListener micListener, ClientVoicechat client) {
+    public MicTestButton(int xIn, int yIn, int widthIn, int heightIn, MicListener micListener) {
         super(xIn, yIn, widthIn, heightIn, TextComponent.EMPTY);
         this.micListener = micListener;
-        this.client = client;
-        micThread = client.getMicThread();
-        if (micThread == null) {
-            try {
-                micThread = new MicThread(client, null);
-                usesOwnMicThread = true;
-            } catch (Exception e) {
-                active = false;
-                e.printStackTrace();
-            }
-        }
+        this.client = ClientManager.getClient();
         updateText();
     }
 
@@ -69,8 +58,9 @@ public class MicTestButton extends AbstractButton {
         setMicActive(!micActive);
         updateText();
         if (micActive) {
-            if (voiceThread != null && !voiceThread.isClosed()) {
+            if (voiceThread != null) {
                 voiceThread.close();
+                voiceThread = null;
             }
             try {
                 voiceThread = new VoiceThread();
@@ -81,17 +71,11 @@ public class MicTestButton extends AbstractButton {
                 e.printStackTrace();
             }
         } else {
-            if (voiceThread != null && !voiceThread.isClosed()) {
+            if (voiceThread != null) {
                 voiceThread.close();
+                voiceThread = null;
             }
         }
-    }
-
-    private void setMicLocked(boolean locked) {
-        if (micThread == null) {
-            return;
-        }
-        micThread.setMicrophoneLocked(locked);
     }
 
     @Override
@@ -106,22 +90,35 @@ public class MicTestButton extends AbstractButton {
         private final VolumeManager volumeManager;
         private boolean running;
         private long lastRender;
+        private MicThread micThread;
+        private boolean usesOwnMicThread;
         @Nullable
-        private Denoiser denoiser;
+        private SoundManager ownSoundManager;
 
-        public VoiceThread() throws SpeakerException, MicrophoneException {
+
+        public VoiceThread() throws SpeakerException, MicrophoneException, NativeDependencyException {
             this.running = true;
             setDaemon(true);
+            setName("VoiceTestingThread");
+
+            micThread = client != null ? client.getMicThread() : null;
             if (micThread == null) {
-                throw new MicrophoneException("No microphone");
+                micThread = new MicThread(client, null);
+                usesOwnMicThread = true;
             }
+
             mic = micThread.getMic();
             volumeManager = micThread.getVolumeManager();
-            speaker = new ALSpeaker(client.getSoundManager(), SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE);
+            SoundManager soundManager;
+            if (client == null) {
+                soundManager = new SoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
+                ownSoundManager = soundManager;
+            } else {
+                soundManager = client.getSoundManager();
+            }
+            speaker = new ALSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE);
 
             speaker.open();
-
-            denoiser = Denoiser.createDenoiser();
 
             updateLastRender();
             setMicLocked(true);
@@ -131,8 +128,7 @@ public class MicTestButton extends AbstractButton {
         public void run() {
             while (running) {
                 if (System.currentTimeMillis() - lastRender > 500L) {
-                    close();
-                    return;
+                    break;
                 }
                 mic.start();
                 if (mic.available() < SoundManager.FRAME_SIZE) {
@@ -143,43 +139,53 @@ public class MicTestButton extends AbstractButton {
                 mic.read(buff);
                 volumeManager.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
 
-                if (denoiser != null && VoicechatClient.CLIENT_CONFIG.denoiser.get()) {
-                    buff = denoiser.denoise(buff);
+                if (micThread.getDenoiser() != null && VoicechatClient.CLIENT_CONFIG.denoiser.get()) {
+                    buff = micThread.getDenoiser().denoise(buff);
                 }
 
                 micListener.onMicValue(Utils.dbToPerc(Utils.getHighestAudioLevel(buff)));
 
                 speaker.write(buff, VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue(), null);
             }
+            speaker.close();
+            mic.stop();
+            setMicLocked(false);
+            micListener.onMicValue(0D);
+            if (usesOwnMicThread) {
+                micThread.close();
+            }
+            if (ownSoundManager != null) {
+                ownSoundManager.close();
+            }
+            Voicechat.LOGGER.info("Mic test audio channel closed");
         }
 
         public void updateLastRender() {
             lastRender = System.currentTimeMillis();
         }
 
-        public boolean isClosed() {
-            return !running;
+        private void setMicLocked(boolean locked) {
+            if (micThread == null) {
+                return;
+            }
+            micThread.setMicrophoneLocked(locked);
         }
 
         public void close() {
-            Voicechat.LOGGER.info("Closing mic test audio channel");
-            running = false;
-            speaker.close();
-            mic.stop();
-            setMicLocked(false);
-            micListener.onMicValue(0D);
-            if (denoiser != null) {
-                denoiser.close();
-                denoiser = null;
+            if (!running) {
+                return;
             }
-            if (usesOwnMicThread) {
-                micThread.close();
+            Voicechat.LOGGER.info("Stopping mic test audio channel");
+            running = false;
+            try {
+                join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
-
     }
 
-    public static interface MicListener {
-        void onMicValue(double perc);
+    public interface MicListener {
+        void onMicValue(double percentage);
     }
 }

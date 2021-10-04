@@ -11,6 +11,7 @@ import java.io.IOException;
 
 public class MicThread extends Thread implements ALMicrophone.MicrophoneListener {
 
+    @Nullable
     private final ClientVoicechat client;
     @Nullable
     private final ClientVoicechatConnection connection;
@@ -23,7 +24,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
     @Nullable
     private final Denoiser denoiser;
 
-    public MicThread(ClientVoicechat client, @Nullable ClientVoicechatConnection connection) throws MicrophoneException, NativeDependencyException {
+    public MicThread(@Nullable ClientVoicechat client, @Nullable ClientVoicechatConnection connection) throws MicrophoneException, NativeDependencyException {
         this.client = client;
         this.connection = connection;
         this.running = true;
@@ -162,7 +163,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
             e.printStackTrace();
         }
         try {
-            if (client.getRecorder() != null) {
+            if (client != null && client.getRecorder() != null) {
                 client.getRecorder().appendChunk(Minecraft.getInstance().getUser().getGameProfile(), System.currentTimeMillis(), Utils.convertToStereo(data));
             }
         } catch (IOException e) {
@@ -178,6 +179,9 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
     }
 
     private void flushRecording() {
+        if (client == null) {
+            return;
+        }
         AudioRecorder recorder = client.getRecorder();
         if (recorder == null) {
             return;

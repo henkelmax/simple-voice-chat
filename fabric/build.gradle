@@ -31,6 +31,7 @@ minecraft {
 repositories {
     mavenCentral()
     maven { url = 'https://maven.fabricmc.net/' }
+    maven { url = 'https://maven.terraformersmc.com/' }
     maven {
         name = 'henkelmax.public'
         url = 'https://maven.maxhenkel.de/repository/public'
@@ -49,6 +50,8 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     implementation project(':common')
+
+    modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
@@ -109,6 +112,7 @@ curseforge {
             displayName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
             relations {
                 requiredDependency 'fabric-api'
+                optionalDependency 'modmenu'
             }
         }
         afterEvaluate {
