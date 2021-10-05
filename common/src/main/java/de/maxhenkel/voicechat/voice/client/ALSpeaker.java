@@ -124,6 +124,8 @@ public abstract class ALSpeaker {
         SoundManager.checkAlError();
         AL11.alSourcef(source, AL11.AL_GAIN, volume);
         SoundManager.checkAlError();
+        AL11.alListenerf(AL11.AL_GAIN, 1F);
+        SoundManager.checkAlError();
 
         int queuedBuffers = getQueuedBuffersSync();
         if (queuedBuffers >= buffers.length) {
