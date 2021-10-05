@@ -1,17 +1,18 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.openal.ALC11;
 import org.lwjgl.openal.ALUtil;
+import org.lwjgl.openal.EXTThreadLocalContext;
 
 import javax.annotation.Nullable;
 import java.nio.IntBuffer;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -94,12 +95,12 @@ public abstract class SoundManager {
         return devices == null ? Collections.emptyList() : devices;
     }
 
-    public void runInContext(Runnable runnable) {
+    public void runInContext(Executor executor, Runnable runnable) {
         long time = System.currentTimeMillis();
-        ClientCompatibilityManager.INSTANCE.getSoundEngineExecutor().execute(() -> {
+        executor.execute(() -> {
             long diff = System.currentTimeMillis() - time;
             if (diff > 20 || (diff >= 5 && CommonCompatibilityManager.INSTANCE.isDevEnvironment())) {
-                Voicechat.LOGGER.error("Sound executor delay: {} ms!", diff);
+                Voicechat.LOGGER.warn("Sound executor delay: {} ms!", diff);
             }
             if (openContext()) {
                 runnable.run();
@@ -108,48 +109,18 @@ public abstract class SoundManager {
         });
     }
 
-    private long oldContext;
-
-    private boolean openContext() {
+    public boolean openContext() {
         if (context == 0) {
             return false;
         }
-        long ctx = ALC11.alcGetCurrentContext();
+        boolean success = EXTThreadLocalContext.alcSetThreadContext(context);
         checkAlError();
-
-        if (ctx == context) {
-            return true;
-        }
-
-        oldContext = ctx;
-        ALC11.alcSuspendContext(oldContext);
-        checkAlError();
-        boolean success = ALC11.alcMakeContextCurrent(context);
-        checkAlError();
-        if (success) {
-            ALC11.alcProcessContext(context);
-            checkAlError();
-            return true;
-        } else {
-            Voicechat.LOGGER.error("Failed to switch to voicechat audio context");
-            return false;
-        }
+        return success;
     }
 
-    private void closeContext() {
-        if (oldContext == 0 || context == 0) {
-            return;
-        }
-        ALC11.alcSuspendContext(context);
+    public void closeContext() {
+        EXTThreadLocalContext.alcSetThreadContext(0L);
         checkAlError();
-        boolean success = ALC11.alcMakeContextCurrent(oldContext);
-        checkAlError();
-        ALC11.alcProcessContext(oldContext);
-        checkAlError();
-        oldContext = 0;
-        if (!success) {
-            Voicechat.LOGGER.error("Failed to switch to minecraft audio context");
-        }
     }
 
     public static boolean checkAlError() {

@@ -9,14 +9,18 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class FabricSoundManager extends SoundManager {
 
     private boolean soundPhysicsLoaded;
     private Method setEnvironment;
+    private final ExecutorService executor;
 
     public FabricSoundManager(@Nullable String deviceName) throws SpeakerException {
         super(deviceName);
+        executor = Executors.newSingleThreadExecutor();
         if (!VoicechatClient.CLIENT_CONFIG.soundPhysics.get()) {
             return;
         }
@@ -36,7 +40,7 @@ public class FabricSoundManager extends SoundManager {
     private void initSoundPhysics() throws Exception {
         setEnvironment = SoundPhysics.class.getDeclaredMethod("setEnvironment", int.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class);
         setEnvironment.setAccessible(true);
-        runInContext(SoundPhysics::init);
+        runInContext(executor, SoundPhysics::init);
     }
 
     public void resetEnvironment(int source) {
@@ -54,5 +58,11 @@ public class FabricSoundManager extends SoundManager {
 
     public boolean isSoundPhysicsLoaded() {
         return soundPhysicsLoaded;
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        executor.shutdown();
     }
 }

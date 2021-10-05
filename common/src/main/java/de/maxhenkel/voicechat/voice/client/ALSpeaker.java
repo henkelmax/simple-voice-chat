@@ -9,6 +9,8 @@ import net.minecraft.world.phys.Vec3;
 import org.lwjgl.openal.AL11;
 
 import javax.annotation.Nullable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public abstract class ALSpeaker {
 
@@ -20,6 +22,7 @@ public abstract class ALSpeaker {
     protected int source;
     protected int bufferIndex;
     protected final int[] buffers;
+    private final ExecutorService executor;
 
     public ALSpeaker(SoundManager soundManager, int sampleRate, int bufferSize) {
         mc = Minecraft.getInstance();
@@ -28,10 +31,11 @@ public abstract class ALSpeaker {
         this.bufferSize = bufferSize;
         this.bufferSampleSize = bufferSize;
         this.buffers = new int[32];
+        executor = Executors.newSingleThreadExecutor();
     }
 
     public void open() throws SpeakerException {
-        soundManager.runInContext(this::openSync);
+        runInContext(this::openSync);
     }
 
     private void openSync() {
@@ -49,7 +53,7 @@ public abstract class ALSpeaker {
     }
 
     public void close() {
-        soundManager.runInContext(this::closeSync);
+        runInContext(this::closeSync);
     }
 
     public void closeSync() {
@@ -65,6 +69,7 @@ public abstract class ALSpeaker {
             SoundManager.checkAlError();
         }
         source = 0;
+        executor.shutdown();
     }
 
     protected void setPositionSync(@Nullable Vec3 soundPos) {
@@ -90,7 +95,7 @@ public abstract class ALSpeaker {
     }
 
     public void checkBufferEmpty(Runnable onEmpty) {
-        soundManager.runInContext(() -> {
+        runInContext(() -> {
             if (getStateSync() == AL11.AL_STOPPED || getQueuedBuffersSync() <= 0) {
                 onEmpty.run();
             }
@@ -98,7 +103,7 @@ public abstract class ALSpeaker {
     }
 
     public void write(short[] data, float volume, Vec3 position) {
-        soundManager.runInContext(() -> {
+        runInContext(() -> {
             removeProcessedBuffersSync();
             int buffers = getQueuedBuffersSync();
             boolean stopped = getStateSync() == AL11.AL_INITIAL || getStateSync() == AL11.AL_STOPPED || buffers <= 1;
@@ -170,6 +175,10 @@ public abstract class ALSpeaker {
         boolean validSource = AL11.alIsSource(source);
         SoundManager.checkAlError();
         return validSource;
+    }
+
+    public void runInContext(Runnable runnable) {
+        soundManager.runInContext(executor, runnable);
     }
 
 }
