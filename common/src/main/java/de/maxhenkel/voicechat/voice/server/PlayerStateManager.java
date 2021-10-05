@@ -1,8 +1,10 @@
 package de.maxhenkel.voicechat.voice.server;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.net.PlayerStatesPacket;
+import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,6 +35,7 @@ public class PlayerStateManager {
             }
             states.put(player.getUUID(), state);
             broadcastState(server, state);
+            Voicechat.logDebug("Got state of {}: {}", player.getDisplayName().getString(), state);
         });
     }
 
@@ -47,11 +50,13 @@ public class PlayerStateManager {
         PlayerStatesPacket packet = new PlayerStatesPacket(states);
         CommonCompatibilityManager.INSTANCE.getNetManager().sendToClient(player, packet);
         broadcastState(player.server, state);
+        Voicechat.logDebug("Setting initial state of {}: {}", player.getDisplayName().getString(), state);
     }
 
     private void removePlayer(ServerPlayer player) {
         states.remove(player.getUUID());
         broadcastState(player.server, new PlayerState(true, true, player.getGameProfile()));
+        Voicechat.logDebug("Removing state of {}", player.getDisplayName().getString());
     }
 
     @Nullable
@@ -63,9 +68,16 @@ public class PlayerStateManager {
         return new PlayerState(false, true, player.getGameProfile());
     }
 
-    public void setState(MinecraftServer server, UUID playerUUID, PlayerState state) {
-        states.put(playerUUID, state);
+    public void setGroup(MinecraftServer server, ServerPlayer player, @Nullable ClientGroup group) {
+        PlayerState state = states.get(player.getUUID());
+        if (state == null) {
+            state = PlayerStateManager.defaultDisconnectedState(player);
+            Voicechat.logDebug("Defaulting to default state for {}: {}", player.getDisplayName().getString(), state);
+        }
+        state.setGroup(group);
+        states.put(player.getUUID(), state);
         broadcastState(server, state);
+        Voicechat.logDebug("Setting group of {}: {}", player.getDisplayName().getString(), state);
     }
 
     public Collection<PlayerState> getStates() {

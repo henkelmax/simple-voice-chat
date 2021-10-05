@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.voice.client;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.CreateGroupScreen;
 import de.maxhenkel.voicechat.gui.EnterPasswordScreen;
@@ -34,13 +35,18 @@ public class ClientPlayerStateManager {
             states.put(packet.getPlayerState().getGameProfile().getId(), packet.getPlayerState());
             if (packet.getPlayerState().getGameProfile().getId().equals(state.getGameProfile().getId())) {
                 state.setGroup(packet.getPlayerState().getGroup());
+                Voicechat.logDebug("Setting own state: {}", state);
+            } else {
+                Voicechat.logDebug("Got state for {}: {}", state.getGameProfile().getName(), state);
             }
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel.registerClientListener((client, handler, packet) -> {
             states = packet.getPlayerStates();
+            Voicechat.logDebug("Received {} states", states.size());
             PlayerState ownState = states.get(client.getUser().getGameProfile().getId());
             if (ownState != null) {
                 state.setGroup(ownState.getGroup());
+                Voicechat.logDebug("Setting own state: {}", state);
             }
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().joinedGroupChannel.registerClientListener((client, handler, packet) -> {
@@ -106,6 +112,7 @@ public class ClientPlayerStateManager {
 
     public void syncOwnState() {
         CommonCompatibilityManager.INSTANCE.getNetManager().sendToServer(new PlayerStatePacket(state));
+        Voicechat.logDebug("Sent own state to server: {}", state);
     }
 
     public boolean isDisabled() {

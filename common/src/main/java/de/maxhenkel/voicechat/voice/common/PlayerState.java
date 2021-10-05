@@ -56,6 +56,16 @@ public class PlayerState {
         return group != null;
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+                "disabled=" + disabled +
+                ", disconnected=" + disconnected +
+                ", uuid=" + gameProfile.getId() +
+                ", group=" + group +
+                '}';
+    }
+
     public static PlayerState fromBytes(FriendlyByteBuf buf) {
         PlayerState state = new PlayerState(buf.readBoolean(), buf.readBoolean(), new GameProfile(buf.readUUID(), buf.readUtf(32767)));
 

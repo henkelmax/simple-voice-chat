@@ -45,12 +45,8 @@ public class GroupManager {
         groups.put(group.getId(), group);
 
         PlayerStateManager manager = getStates();
-        PlayerState state = manager.getState(player.getUUID());
-        if (state == null) {
-            state = PlayerStateManager.defaultDisconnectedState(player);
-        }
-        state.setGroup(group.toClientGroup());
-        manager.setState(player.server, player.getUUID(), state);
+        manager.setGroup(player.server, player, group.toClientGroup());
+
         CommonCompatibilityManager.INSTANCE.getNetManager().sendToClient(player, new JoinedGroupPacket(group.toClientGroup()));
         return true;
     }
@@ -66,24 +62,18 @@ public class GroupManager {
                 return false;
             }
         }
+
         PlayerStateManager manager = getStates();
-        PlayerState state = manager.getState(player.getUUID());
-        if (state == null) {
-            state = PlayerStateManager.defaultDisconnectedState(player);
-        }
-        state.setGroup(group.toClientGroup());
-        manager.setState(player.server, player.getUUID(), state);
+        manager.setGroup(player.server, player, group.toClientGroup());
+
         CommonCompatibilityManager.INSTANCE.getNetManager().sendToClient(player, new JoinedGroupPacket(group.toClientGroup()));
         return true;
     }
 
     public void leaveGroup(ServerPlayer player) {
         PlayerStateManager manager = getStates();
-        PlayerState state = manager.getState(player.getUUID());
-        if (state != null) {
-            state.setGroup(null);
-            manager.setState(player.server, player.getUUID(), state);
-        }
+        manager.setGroup(player.server, player, null);
+
         cleanEmptyGroups();
     }
 
