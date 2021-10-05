@@ -24,10 +24,6 @@ archivesBaseName = archives_base_name
 version = mod_version
 group = maven_group
 
-minecraft {
-    accessWidener = file('src/main/resources/voicechat.accesswidener')
-}
-
 repositories {
     mavenCentral()
     maven { url = 'https://maven.fabricmc.net/' }

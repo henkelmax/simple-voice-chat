@@ -12,7 +12,6 @@ import de.maxhenkel.voicechat.voice.client.SpeakerException;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.sounds.SoundEngineExecutor;
 import net.minecraft.network.Connection;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
@@ -24,11 +23,6 @@ import java.util.function.Consumer;
 public class FabricClientCompatibilityManager extends ClientCompatibilityManager {
 
     private static final Minecraft mc = Minecraft.getInstance();
-
-    @Override
-    public SoundEngineExecutor getSoundEngineExecutor() {
-        return Minecraft.getInstance().getSoundManager().soundEngine.executor;
-    }
 
     @Override
     public void onRenderNamePlate(RenderNameplateEvent onRenderNamePlate) {

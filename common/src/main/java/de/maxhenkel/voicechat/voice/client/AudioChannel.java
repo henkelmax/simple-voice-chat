@@ -107,7 +107,7 @@ public class AudioChannel extends Thread {
                 if (packet.getData().length == 0) {
                     lastSequenceNumber = -1L;
                     packetBuffer.clear();
-                    flushRecording();
+                    speaker.runInContext(this::flushRecordingSync);
                     decoder.resetState();
                     continue;
                 }
@@ -144,16 +144,12 @@ public class AudioChannel extends Thread {
             e.printStackTrace();
         } finally {
             if (speaker != null) {
+                speaker.runInContext(this::flushRecordingSync);
                 speaker.close();
             }
             decoder.close();
-            flushRecording();
             Voicechat.LOGGER.info("Closed audio channel for " + uuid);
         }
-    }
-
-    private void flushRecording() {
-        ClientCompatibilityManager.INSTANCE.getSoundEngineExecutor().execute(this::flushRecordingSync);
     }
 
     private void flushRecordingSync() {
@@ -224,7 +220,7 @@ public class AudioChannel extends Thread {
     }
 
     private void appendRecording(Player player, Supplier<short[]> stereo) {
-        ClientCompatibilityManager.INSTANCE.getSoundEngineExecutor().execute(() -> {
+        speaker.runInContext(() -> {
             if (client.getRecorder() != null) {
                 try {
                     client.getRecorder().appendChunk(player != null ? player.getGameProfile() : null, System.currentTimeMillis(), stereo.get());

@@ -29,8 +29,6 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 minecraft {
     mappings channel: 'official', version: mod_minecraft_version
 
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
     runs {
         all {
             lazyToken('minecraft_classpath') {

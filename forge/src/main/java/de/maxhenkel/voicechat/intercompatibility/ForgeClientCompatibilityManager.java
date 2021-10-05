@@ -9,7 +9,6 @@ import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.client.SpeakerException;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.sounds.SoundEngineExecutor;
 import net.minecraft.network.Connection;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
@@ -91,11 +90,6 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @SubscribeEvent
     public void onJoinServer(ClientPlayerNetworkEvent.LoggedInEvent event) {
         joinServerEvents.forEach(Runnable::run);
-    }
-
-    @Override
-    public SoundEngineExecutor getSoundEngineExecutor() {
-        return minecraft.getSoundManager().soundEngine.executor;
     }
 
     @Override

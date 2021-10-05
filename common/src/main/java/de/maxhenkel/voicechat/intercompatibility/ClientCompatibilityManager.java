@@ -8,7 +8,6 @@ import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.client.SpeakerException;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.sounds.SoundEngineExecutor;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.repository.PackRepository;
@@ -22,8 +21,6 @@ import java.util.function.Consumer;
 public abstract class ClientCompatibilityManager {
 
     public static ClientCompatibilityManager INSTANCE;
-
-    public abstract SoundEngineExecutor getSoundEngineExecutor();
 
     public abstract void onRenderNamePlate(RenderNameplateEvent onRenderNamePlate);
 
