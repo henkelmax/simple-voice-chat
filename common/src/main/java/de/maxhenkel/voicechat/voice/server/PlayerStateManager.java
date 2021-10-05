@@ -45,11 +45,10 @@ public class PlayerStateManager {
     }
 
     private void notifyPlayer(ServerPlayer player) {
-        PlayerState state = new PlayerState(false, true, player.getGameProfile());
+        PlayerState state = states.getOrDefault(player.getUUID(), defaultDisconnectedState(player));
         states.put(player.getUUID(), state);
         PlayerStatesPacket packet = new PlayerStatesPacket(states);
         CommonCompatibilityManager.INSTANCE.getNetManager().sendToClient(player, packet);
-        broadcastState(player.server, state);
         Voicechat.logDebug("Setting initial state of {}: {}", player.getDisplayName().getString(), state);
     }
 

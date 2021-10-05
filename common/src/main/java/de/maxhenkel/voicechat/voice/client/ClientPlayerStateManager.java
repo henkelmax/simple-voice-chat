@@ -37,17 +37,12 @@ public class ClientPlayerStateManager {
                 state.setGroup(packet.getPlayerState().getGroup());
                 Voicechat.logDebug("Setting own state: {}", state);
             } else {
-                Voicechat.logDebug("Got state for {}: {}", state.getGameProfile().getName(), state);
+                Voicechat.logDebug("Got state for {}: {}", packet.getPlayerState().getGameProfile().getName(), packet.getPlayerState());
             }
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel.registerClientListener((client, handler, packet) -> {
             states = packet.getPlayerStates();
             Voicechat.logDebug("Received {} states", states.size());
-            PlayerState ownState = states.get(client.getUser().getGameProfile().getId());
-            if (ownState != null) {
-                state.setGroup(ownState.getGroup());
-                Voicechat.logDebug("Setting own state: {}", state);
-            }
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().joinedGroupChannel.registerClientListener((client, handler, packet) -> {
             Screen screen = Minecraft.getInstance().screen;
