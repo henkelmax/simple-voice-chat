@@ -42,9 +42,11 @@ public class PlayerStateManager {
     }
 
     private void notifyPlayer(ServerPlayer player) {
+        PlayerState state = new PlayerState(false, true, player.getGameProfile());
+        states.put(player.getUUID(), state);
         PlayerStatesPacket packet = new PlayerStatesPacket(states);
         CommonCompatibilityManager.INSTANCE.getNetManager().sendToClient(player, packet);
-        broadcastState(player.server, new PlayerState(false, true, player.getGameProfile()));
+        broadcastState(player.server, state);
     }
 
     private void removePlayer(ServerPlayer player) {

@@ -47,6 +47,7 @@ public class ClientVoicechat {
             closeMicThread();
             if (connection != null) {
                 connection.close();
+                connection = null;
             }
         });
     }

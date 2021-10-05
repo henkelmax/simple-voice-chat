@@ -219,7 +219,17 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
     }
 
     public void close() {
+        if (!running) {
+            return;
+        }
         running = false;
+
+        try {
+            join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         mic.stop();
         mic.close();
         encoder.close();
