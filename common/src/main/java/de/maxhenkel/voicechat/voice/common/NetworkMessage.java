@@ -63,14 +63,14 @@ public class NetworkMessage {
 
     static {
         packetRegistry = new HashMap<>();
-        packetRegistry.put((byte) 0, MicPacket.class);
-        packetRegistry.put((byte) 1, PlayerSoundPacket.class);
-        packetRegistry.put((byte) 2, GroupSoundPacket.class);
-        packetRegistry.put((byte) 3, LocationSoundPacket.class);
-        packetRegistry.put((byte) 4, AuthenticatePacket.class);
-        packetRegistry.put((byte) 5, AuthenticateAckPacket.class);
-        packetRegistry.put((byte) 6, PingPacket.class);
-        packetRegistry.put((byte) 7, KeepAlivePacket.class);
+        packetRegistry.put((byte) 0x1, MicPacket.class);
+        packetRegistry.put((byte) 0x2, PlayerSoundPacket.class);
+        packetRegistry.put((byte) 0x3, GroupSoundPacket.class);
+        packetRegistry.put((byte) 0x4, LocationSoundPacket.class);
+        packetRegistry.put((byte) 0x5, AuthenticatePacket.class);
+        packetRegistry.put((byte) 0x6, AuthenticateAckPacket.class);
+        packetRegistry.put((byte) 0x7, PingPacket.class);
+        packetRegistry.put((byte) 0x8, KeepAlivePacket.class);
     }
 
     public static UnprocessedNetworkMessage readPacket(DatagramSocket socket) throws IOException {
@@ -133,10 +133,13 @@ public class NetworkMessage {
 
     public byte[] writeClient(ClientVoicechatConnection client) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         byte[] payload = write(client.getData().getSecret());
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer(payload.length + 32));
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer(payload.length + 16));
         buffer.writeUUID(client.getData().getPlayerUUID());
         buffer.writeByteArray(payload);
-        return buffer.array();
+
+        byte[] bytes = new byte[buffer.readableBytes()];
+        buffer.readBytes(bytes);
+        return bytes;
     }
 
     public byte[] write(UUID secret) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
@@ -151,7 +154,9 @@ public class NetworkMessage {
         buffer.writeByte(type);
         packet.toBytes(buffer);
 
-        return AES.encrypt(secret, buffer.array());
+        byte[] bytes = new byte[buffer.readableBytes()];
+        buffer.readBytes(bytes);
+        return AES.encrypt(secret, bytes);
     }
 
     public static class UnprocessedNetworkMessage {

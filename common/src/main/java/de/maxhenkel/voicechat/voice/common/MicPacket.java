@@ -39,15 +39,15 @@ public class MicPacket implements Packet<MicPacket> {
     public MicPacket fromBytes(FriendlyByteBuf buf) {
         MicPacket soundPacket = new MicPacket();
         soundPacket.data = buf.readByteArray();
-        soundPacket.whispering = buf.readBoolean();
         soundPacket.sequenceNumber = buf.readLong();
+        soundPacket.whispering = buf.readBoolean();
         return soundPacket;
     }
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeByteArray(data);
-        buf.writeBoolean(whispering);
         buf.writeLong(sequenceNumber);
+        buf.writeBoolean(whispering);
     }
 }

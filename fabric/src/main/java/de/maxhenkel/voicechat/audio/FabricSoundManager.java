@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.client.SpeakerException;
+import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
 import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +21,7 @@ public class FabricSoundManager extends SoundManager {
 
     public FabricSoundManager(@Nullable String deviceName) throws SpeakerException {
         super(deviceName);
-        executor = Executors.newSingleThreadExecutor();
+        executor = Executors.newSingleThreadExecutor(NamedThreadPoolFactory.create("VoiceChatSoundPhysicsThread"));
         if (!VoicechatClient.CLIENT_CONFIG.soundPhysics.get()) {
             return;
         }

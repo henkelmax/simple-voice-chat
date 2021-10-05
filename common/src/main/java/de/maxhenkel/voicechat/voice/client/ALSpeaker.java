@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.client;
 import com.mojang.math.Vector3f;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
@@ -20,7 +21,7 @@ public abstract class ALSpeaker {
     protected final int bufferSize;
     protected final int bufferSampleSize;
     protected int source;
-    protected int bufferIndex;
+    protected volatile int bufferIndex;
     protected final int[] buffers;
     private final ExecutorService executor;
 
@@ -31,7 +32,7 @@ public abstract class ALSpeaker {
         this.bufferSize = bufferSize;
         this.bufferSampleSize = bufferSize;
         this.buffers = new int[32];
-        executor = Executors.newSingleThreadExecutor();
+        executor = Executors.newSingleThreadExecutor(NamedThreadPoolFactory.create("SoundSourceThread"));
     }
 
     public void open() throws SpeakerException {

@@ -65,9 +65,9 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
         }
     }
 
-    private boolean activating;
-    private int deactivationDelay;
-    private short[] lastBuff;
+    private volatile boolean activating;
+    private volatile int deactivationDelay;
+    private volatile short[] lastBuff;
 
     private void voice() {
         wasPTT = false;
@@ -120,7 +120,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
         lastBuff = buff;
     }
 
-    private boolean wasPTT;
+    private volatile boolean wasPTT;
 
     private void ptt() {
         activating = false;
@@ -151,7 +151,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
         sendAudioPacket(buff, wasWhispering);
     }
 
-    private long sequenceNumber = 0L;
+    private volatile long sequenceNumber = 0L;
 
     private void sendAudioPacket(short[] data, boolean whispering) {
         try {

@@ -18,3 +18,4 @@
 - Added whispering
 - Fixed unused config values staying in the config
 - Added optional port for voice_host setting
+- Fixed audio randomly popping
