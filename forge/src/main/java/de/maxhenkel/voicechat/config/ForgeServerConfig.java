@@ -114,6 +114,11 @@ public class ForgeServerConfig extends ServerConfig {
             }
 
             @Override
+            public T getDefault() {
+                throw new UnsupportedOperationException("Cannot get default config value");
+            }
+
+            @Override
             public Config getConfig() {
                 return fromBuilder(configValue.next());
             }

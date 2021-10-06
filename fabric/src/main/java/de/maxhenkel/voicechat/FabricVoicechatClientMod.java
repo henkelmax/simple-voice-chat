@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat;
 
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.FabricClientConfig;
+import de.maxhenkel.voicechat.integration.ClothConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.FabricClientCompatibilityManager;
 import io.netty.buffer.Unpooled;
@@ -34,6 +35,8 @@ public class FabricVoicechatClientMod extends VoicechatClient implements ClientM
             buffer.writeInt(FabricVoicechatMod.COMPATIBILITY_VERSION);
             return CompletableFuture.completedFuture(buffer);
         });
+
+        ClothConfig.init();
     }
 
     @Override

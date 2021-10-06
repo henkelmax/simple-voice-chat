@@ -116,6 +116,7 @@ curseforge {
                 requiredDependency 'fabric-api'
                 optionalDependency 'modmenu'
                 optionalDependency 'sound-physics-fabric'
+                optionalDependency 'cloth-config'
             }
         }
         afterEvaluate {

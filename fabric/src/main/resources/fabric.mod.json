@@ -39,7 +39,8 @@
   },
   "suggests": {
     "modmenu": "*",
-    "soundphysics": "*"
+    "soundphysics": "*",
+    "cloth-config2": "*"
   },
   "custom": {
     "voicechat": {

@@ -30,7 +30,7 @@ public class FabricSoundManager extends SoundManager {
                 Class.forName("com.sonicether.soundphysics.SoundPhysics");
                 initSoundPhysics();
                 soundPhysicsLoaded = true;
-                Voicechat.LOGGER.warn("Successfully initialized soundphysics");
+                Voicechat.LOGGER.info("Successfully initialized soundphysics");
             } catch (Exception e) {
                 Voicechat.LOGGER.warn("Failed to load soundphysics: {}", e.getMessage());
                 e.printStackTrace();

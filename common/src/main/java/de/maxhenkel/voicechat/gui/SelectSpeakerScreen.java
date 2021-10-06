@@ -56,7 +56,7 @@ public class SelectSpeakerScreen extends ListScreen<String> {
     protected void renderText(PoseStack stack, @Nullable String element, int mouseX, int mouseY, float partialTicks) {
         Component title = getTitle();
         int titleWidth = font.width(title);
-        font.draw(stack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
+        font.draw(stack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, getFontColor());
 
         MutableComponent name = getCurrentElement() == null ? new TranslatableComponent("message.voicechat.no_speaker") : new TextComponent(SoundManager.cleanDeviceName(getCurrentElement()));
         int nameWidth = font.width(name);

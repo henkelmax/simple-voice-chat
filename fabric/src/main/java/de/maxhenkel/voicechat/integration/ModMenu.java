@@ -8,7 +8,15 @@ public class ModMenu implements ModMenuApi {
 
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return VoiceChatSettingsScreen::new;
+        if (ClothConfig.isLoaded()) {
+            return getClothConfigFactory();
+        } else {
+            return VoiceChatSettingsScreen::new;
+        }
+    }
+
+    private ConfigScreenFactory<?> getClothConfigFactory() {
+        return ClothConfigWrapper::createConfigScreen;
     }
 
 }

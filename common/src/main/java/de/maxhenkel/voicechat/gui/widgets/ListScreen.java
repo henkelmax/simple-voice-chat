@@ -87,10 +87,12 @@ public abstract class ListScreen<T> extends VoiceChatScreenBase {
 
     @Override
     public void renderBackground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, TEXTURE);
-        blit(poseStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+        if (isIngame()) {
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            RenderSystem.setShaderTexture(0, TEXTURE);
+            blit(poseStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -58,6 +59,14 @@ public abstract class VoiceChatScreenBase extends Screen {
 
     public int getGuiTop() {
         return guiTop;
+    }
+
+    protected boolean isIngame() {
+        return minecraft.level != null;
+    }
+
+    protected int getFontColor() {
+        return isIngame() ? FONT_COLOR : ChatFormatting.WHITE.getColor();
     }
 
     public void drawHoverAreas(PoseStack matrixStack, int mouseX, int mouseY) {

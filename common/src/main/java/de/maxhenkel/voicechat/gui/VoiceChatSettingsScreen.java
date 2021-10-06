@@ -8,7 +8,6 @@ import de.maxhenkel.voicechat.gui.widgets.*;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.Denoiser;
 import de.maxhenkel.voicechat.voice.common.Utils;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -110,12 +109,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
     public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         Component title = new TranslatableComponent("gui.voicechat.voice_chat_settings.title");
         int titleWidth = font.width(title);
-        int fontColor = isIngame() ? FONT_COLOR : ChatFormatting.WHITE.getColor();
-        font.draw(poseStack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, fontColor);
-    }
-
-    private boolean isIngame() {
-        return minecraft.level != null;
+        font.draw(poseStack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, getFontColor());
     }
 
     @Override
