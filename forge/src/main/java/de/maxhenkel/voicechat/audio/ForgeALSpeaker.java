@@ -29,6 +29,9 @@ public class ForgeALSpeaker extends ALSpeaker {
     }
 
     private void processSoundPhysics(@Nullable Vec3 soundPos) {
+        if (!(soundManager instanceof ForgeSoundManager manager)) {
+            return;
+        }
         if (soundPos == null) {
             SoundPhysics.setDefaultEnvironment(source);
             return;
@@ -36,11 +39,15 @@ public class ForgeALSpeaker extends ALSpeaker {
 
         long time = System.currentTimeMillis();
 
-        if (time - lastUpdate < 1000 && (lastPos != null && lastPos.distanceTo(soundPos) < 1D)) {
+        if (time - lastUpdate < 500 && (lastPos != null && lastPos.distanceTo(soundPos) < 1D)) {
             return;
         }
-        SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, Voicechat.MODID);
-        SoundPhysics.onPlaySound(soundPos.x(), soundPos.y(), soundPos.z(), source);
+        if (manager.isSoundPhysicsLoaded()) {
+            SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, Voicechat.MODID);
+            SoundPhysics.onPlaySound(soundPos.x(), soundPos.y(), soundPos.z(), source);
+        } else {
+            SoundPhysics.processSound(source, soundPos.x(), soundPos.y(), soundPos.z(), SoundSource.MASTER, Voicechat.MODID);
+        }
 
         lastUpdate = time;
         lastPos = soundPos;

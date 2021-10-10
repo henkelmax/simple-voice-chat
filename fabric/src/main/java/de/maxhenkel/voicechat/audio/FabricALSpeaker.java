@@ -41,8 +41,12 @@ public class FabricALSpeaker extends ALSpeaker {
         if (time - lastUpdate < 500 && (lastPos != null && lastPos.distanceTo(soundPos) < 1D)) {
             return;
         }
-        SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, Voicechat.MODID);
-        SoundPhysics.onPlaySound(soundPos.x(), soundPos.y(), soundPos.z(), source);
+        if (manager.isSoundPhysicsLoaded()) {
+            SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, Voicechat.MODID);
+            SoundPhysics.onPlaySound(soundPos.x(), soundPos.y(), soundPos.z(), source);
+        } else {
+            SoundPhysics.processSound(source, soundPos.x(), soundPos.y(), soundPos.z(), SoundSource.MASTER, Voicechat.MODID);
+        }
 
         lastUpdate = time;
         lastPos = soundPos;
