@@ -103,14 +103,14 @@ public abstract class ALSpeaker {
         });
     }
 
-    public void write(short[] data, float volume, Vec3 position) {
+    public void write(short[] data, float volume, @Nullable Vec3 position) {
         runInContext(() -> {
             removeProcessedBuffersSync();
             int buffers = getQueuedBuffersSync();
             boolean stopped = getStateSync() == AL11.AL_INITIAL || getStateSync() == AL11.AL_STOPPED || buffers <= 1;
             if (stopped) {
                 for (int i = 0; i < VoicechatClient.CLIENT_CONFIG.outputBufferSize.get(); i++) {
-                    writeSync(new short[bufferSampleSize], 1F, null);
+                    writeSync(new short[bufferSampleSize], 1F, position);
                 }
             }
 

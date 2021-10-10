@@ -1,6 +1,8 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import de.maxhenkel.voicechat.audio.ForgeALSpeaker;
+import de.maxhenkel.voicechat.audio.ForgeSoundManager;
 import de.maxhenkel.voicechat.events.VoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.events.VoiceChatDisconnectedEvent;
 import de.maxhenkel.voicechat.voice.client.ALSpeaker;
@@ -172,13 +174,11 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
 
     @Override
     public ALSpeaker createSpeaker(SoundManager soundManager, int sampleRate, int bufferSize) {
-        return new ALSpeaker(soundManager, sampleRate, bufferSize) {
-        };
+        return new ForgeALSpeaker(soundManager, sampleRate, bufferSize);
     }
 
     @Override
     public SoundManager createSoundManager(@Nullable String deviceName) throws SpeakerException {
-        return new SoundManager(deviceName) {
-        };
+        return new ForgeSoundManager(deviceName);
     }
 }

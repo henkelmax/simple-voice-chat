@@ -66,10 +66,7 @@ minecraft {
 
 repositories {
     mavenCentral()
-    maven {
-        name = "henkelmax.public"
-        url = 'https://maven.maxhenkel.de/repository/public'
-    }
+    maven { url = 'https://maven.maxhenkel.de/repository/public' }
     mavenLocal()
 }
 
@@ -81,6 +78,8 @@ dependencies {
     implementation project(':common')
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    implementation fg.deobf("de.maxhenkel.soundphysics:soundphysics-forge:${minecraft_version}-${sound_physics_remastered_version}")
 
     implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
     shadow "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
@@ -98,7 +97,8 @@ processResources {
                 'mod_version': mod_version,
                 'mod_name': mod_name,
                 'mod_forge_version': mod_forge_version,
-                'mod_minecraft_version': mod_minecraft_version
+                'mod_minecraft_version': mod_minecraft_version,
+                'sound_physics_remastered_version': sound_physics_remastered_version
     }
     filesMatching("compatibility.properties") {
         expand 'mod_compatibility_version': mod_compatibility_version

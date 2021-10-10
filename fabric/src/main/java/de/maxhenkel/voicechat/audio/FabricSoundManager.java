@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 public class FabricSoundManager extends SoundManager {
 
     private boolean soundPhysicsLoaded;
+    private boolean soundPhysicsRemasteredLoaded;
     private Method setEnvironment;
     private final ExecutorService executor;
 
@@ -30,9 +31,21 @@ public class FabricSoundManager extends SoundManager {
                 Class.forName("com.sonicether.soundphysics.SoundPhysics");
                 initSoundPhysics();
                 soundPhysicsLoaded = true;
-                Voicechat.LOGGER.info("Successfully initialized soundphysics");
+                Voicechat.LOGGER.warn("Sound Physics can cause very bad performance. Use Sound Physics Remastered instead!");
+                Voicechat.LOGGER.info("Successfully initialized Sound Physics");
             } catch (Exception e) {
-                Voicechat.LOGGER.warn("Failed to load soundphysics: {}", e.getMessage());
+                Voicechat.LOGGER.warn("Failed to load Sound Physics Remastered: {}", e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        if (FabricLoader.getInstance().isModLoaded("sound_physics_remastered")) {
+            try {
+                Class.forName("com.sonicether.soundphysics.SoundPhysics");
+                runInContext(executor, SoundPhysics::init);
+                soundPhysicsRemasteredLoaded = true;
+                Voicechat.LOGGER.info("Successfully initialized Sound Physics Remastered");
+            } catch (Exception e) {
+                Voicechat.LOGGER.warn("Failed to load Sound Physics Remastered: {}", e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -46,6 +59,7 @@ public class FabricSoundManager extends SoundManager {
 
     public void resetEnvironment(int source) {
         if (setEnvironment == null) {
+            SoundPhysics.setDefaultEnvironment(source);
             return;
         }
         try {
@@ -59,6 +73,10 @@ public class FabricSoundManager extends SoundManager {
 
     public boolean isSoundPhysicsLoaded() {
         return soundPhysicsLoaded;
+    }
+
+    public boolean isSoundPhysicsRemasteredLoaded() {
+        return soundPhysicsRemasteredLoaded;
     }
 
     @Override

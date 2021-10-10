@@ -38,9 +38,10 @@
     "java": ">=16"
   },
   "suggests": {
-    "modmenu": "*",
-    "soundphysics": "*",
-    "cloth-config2": "*"
+    "modmenu": ">=${modmenu_version}",
+    "sound_physics_remastered": ">=${sound_physics_remastered_version}",
+    "cloth-config2": ">=${cloth_config_version}",
+    "soundphysics": ">=${soundphysics_version}"
   },
   "custom": {
     "voicechat": {
