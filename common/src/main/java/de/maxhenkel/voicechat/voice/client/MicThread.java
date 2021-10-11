@@ -173,7 +173,9 @@ public class MicThread extends Thread {
 
     private void flush() {
         sendStopPacket();
-        encoder.resetState(); //TODO maybe this has a weird side effect when called every 10ms
+        if (!encoder.isClosed()) {
+            encoder.resetState(); //TODO maybe this has a weird side effect when called every 10ms
+        }
         if (client == null) {
             return;
         }
