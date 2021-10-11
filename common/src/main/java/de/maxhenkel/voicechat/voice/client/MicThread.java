@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class MicThread extends Thread implements ALMicrophone.MicrophoneListener {
 
@@ -22,7 +23,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
     private boolean wasWhispering;
     private final OpusEncoder encoder;
     @Nullable
-    private final Denoiser denoiser;
+    private Denoiser denoiser;
 
     public MicThread(@Nullable ClientVoicechat client, @Nullable ClientVoicechatConnection connection) throws MicrophoneException, NativeDependencyException {
         this.client = client;
@@ -151,13 +152,13 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
         sendAudioPacket(buff, wasWhispering);
     }
 
-    private volatile long sequenceNumber = 0L;
+    private final AtomicLong sequenceNumber = new AtomicLong();
 
     private void sendAudioPacket(short[] data, boolean whispering) {
         try {
             if (connection != null && connection.isConnected()) {
                 byte[] encoded = encoder.encode(data);
-                connection.sendToServer(new NetworkMessage(new MicPacket(encoded, whispering, sequenceNumber++)));
+                connection.sendToServer(new NetworkMessage(new MicPacket(encoded, whispering, sequenceNumber.getAndIncrement())));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -248,6 +249,10 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
     public void onStop() {
         sendStopPacket();
         encoder.resetState();
+        if (denoiser != null) {
+            denoiser.close();
+            denoiser = Denoiser.createDenoiser();
+        }
     }
 
     private void sendStopPacket() {
@@ -255,7 +260,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
             return;
         }
         try {
-            connection.sendToServer(new NetworkMessage(new MicPacket(new byte[0], false, sequenceNumber++)));
+            connection.sendToServer(new NetworkMessage(new MicPacket(new byte[0], false, sequenceNumber.getAndIncrement())));
         } catch (Exception e) {
             e.printStackTrace();
         }
