@@ -19,3 +19,5 @@
 - Fixed unused config values staying in the config
 - Added optional port for voice_host setting
 - Fixed audio randomly popping
+- Fixed audio sometimes doubling when starting to talk
+- Fixed popping sound when starting to talk

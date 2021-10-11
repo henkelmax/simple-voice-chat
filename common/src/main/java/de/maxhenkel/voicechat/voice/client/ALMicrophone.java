@@ -15,27 +15,17 @@ public class ALMicrophone {
     private final String deviceName;
     private long device;
     private final int bufferSize;
-    @Nullable
-    private final MicrophoneListener listener;
     private boolean started;
 
     public ALMicrophone(int sampleRate, int bufferSize, String deviceName) {
-        this(sampleRate, bufferSize, deviceName, null);
-    }
-
-    public ALMicrophone(int sampleRate, int bufferSize, String deviceName, @Nullable MicrophoneListener listener) {
         this.sampleRate = sampleRate;
         this.deviceName = deviceName;
         this.bufferSize = bufferSize;
-        this.listener = listener;
     }
 
     public void open() throws MicrophoneException {
         if (isOpen()) {
             throw new MicrophoneException("Microphone already open");
-        }
-        if (listener != null) {
-            listener.onOpen();
         }
         device = openMic(deviceName);
     }
@@ -46,9 +36,6 @@ public class ALMicrophone {
         }
         if (started) {
             return;
-        }
-        if (listener != null) {
-            listener.onStart();
         }
         ALC11.alcCaptureStart(device);
         SoundManager.checkAlError();
@@ -66,9 +53,6 @@ public class ALMicrophone {
         if (!started) {
             return;
         }
-        if (listener != null) {
-            listener.onStop();
-        }
         ALC11.alcCaptureStop(device);
         SoundManager.checkAlError();
         started = false;
@@ -83,9 +67,6 @@ public class ALMicrophone {
     public void close() {
         if (!isOpen()) {
             return;
-        }
-        if (listener != null) {
-            listener.onClose();
         }
         stop();
         ALC11.alcCaptureCloseDevice(device);
@@ -158,19 +139,5 @@ public class ALMicrophone {
         List<String> devices = ALUtil.getStringList(0L, ALC11.ALC_CAPTURE_DEVICE_SPECIFIER);
         SoundManager.checkAlError();
         return devices == null ? Collections.emptyList() : devices;
-    }
-
-    public interface MicrophoneListener {
-        default void onOpen() {
-        }
-
-        default void onStart() {
-        }
-
-        default void onStop() {
-        }
-
-        default void onClose() {
-        }
     }
 }

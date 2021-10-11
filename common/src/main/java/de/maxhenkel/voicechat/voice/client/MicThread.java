@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class MicThread extends Thread implements ALMicrophone.MicrophoneListener {
+public class MicThread extends Thread {
 
     @Nullable
     private final ClientVoicechat client;
@@ -33,6 +33,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
         if (encoder == null) {
             throw new NativeDependencyException("Failed to load Opus encoder");
         }
+        encoder.open();
 
         this.denoiser = Denoiser.createDenoiser();
         if (denoiser == null) {
@@ -42,7 +43,7 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
 
         setDaemon(true);
         setName("MicrophoneThread");
-        mic = new ALMicrophone(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get(), this);
+        mic = new ALMicrophone(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get());
         mic.open();
     }
 
@@ -53,123 +54,114 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
                 // Checking here for timeouts, because we don't have any other looping thread
                 connection.checkTimeout();
             }
-            if (microphoneLocked) {
-                Utils.sleep(10);
-            } else {
-                MicrophoneActivationType type = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get();
-                if (type.equals(MicrophoneActivationType.PTT)) {
-                    ptt();
-                } else if (type.equals(MicrophoneActivationType.VOICE)) {
-                    voice();
+            if (microphoneLocked || ClientManager.getPlayerStateManager().isDisabled()) {
+                activating = false;
+                wasPTT = false;
+                wasWhispering = false;
+                flush();
+
+                if (!microphoneLocked && ClientManager.getPlayerStateManager().isDisabled()) {
+                    if (mic.isStarted()) {
+                        mic.stop();
+                    }
+                    if (denoiser != null) {
+                        denoiser.close();
+                    }
                 }
+
+                Utils.sleep(10);
+                continue;
+            }
+
+            short[] audio = pollMic();
+            if (audio == null) {
+                continue;
+            }
+            MicrophoneActivationType type = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get();
+            if (type.equals(MicrophoneActivationType.PTT)) {
+                ptt(audio);
+            } else if (type.equals(MicrophoneActivationType.VOICE)) {
+                voice(audio);
             }
         }
+    }
+
+    @Nullable
+    public short[] pollMic() {
+        if (!mic.isStarted()) {
+            mic.start();
+        }
+        if (denoiser != null && denoiser.isClosed()) {
+            denoiser = Denoiser.createDenoiser();
+        }
+
+        if (mic.available() < SoundManager.FRAME_SIZE) {
+            Utils.sleep(5);
+            return null;
+        }
+        short[] buff = new short[SoundManager.FRAME_SIZE];
+        mic.read(buff);
+        volumeManager.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
+        return denoiseIfEnabled(buff);
     }
 
     private volatile boolean activating;
     private volatile int deactivationDelay;
     private volatile short[] lastBuff;
 
-    private void voice() {
+    private void voice(short[] audio) {
         wasPTT = false;
 
-        if (ClientManager.getPlayerStateManager().isMuted() || ClientManager.getPlayerStateManager().isDisabled()) {
+        if (ClientManager.getPlayerStateManager().isMuted()) {
             activating = false;
             wasWhispering = false;
-            mic.stop();
-            flushRecording();
-            Utils.sleep(10);
+            flush();
             return;
         }
 
-        mic.start();
-
-        if (mic.available() < SoundManager.FRAME_SIZE) {
-            Utils.sleep(1);
-            return;
-        }
-        short[] buff = new short[SoundManager.FRAME_SIZE];
-        mic.read(buff);
-        volumeManager.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
-        buff = denoiseIfEnabled(buff);
         wasWhispering = ClientManager.getPttKeyHandler().isWhisperDown();
 
-        int offset = Utils.getActivationOffset(buff, VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get());
+        int offset = Utils.getActivationOffset(audio, VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get());
         if (activating) {
             if (offset < 0) {
                 if (deactivationDelay >= VoicechatClient.CLIENT_CONFIG.deactivationDelay.get()) {
                     activating = false;
                     deactivationDelay = 0;
-                    mic.stop();
-                    flushRecording();
+                    flush();
                 } else {
-                    sendAudioPacket(buff, wasWhispering);
+                    sendAudioPacket(audio, wasWhispering);
                     deactivationDelay++;
                 }
             } else {
-                sendAudioPacket(buff, wasWhispering);
+                sendAudioPacket(audio, wasWhispering);
             }
         } else {
             if (offset > 0) {
                 if (lastBuff != null) {
                     sendAudioPacket(lastBuff, wasWhispering);
                 }
-                sendAudioPacket(buff, wasWhispering);
+                sendAudioPacket(audio, wasWhispering);
                 activating = true;
             }
         }
-        lastBuff = buff;
+        lastBuff = audio;
     }
 
     private volatile boolean wasPTT;
 
-    private void ptt() {
+    private void ptt(short[] audio) {
         activating = false;
-        if (!ClientManager.getPttKeyHandler().isAnyDown() || ClientManager.getPlayerStateManager().isDisabled()) {
+        if (!ClientManager.getPttKeyHandler().isAnyDown()) {
             if (wasPTT) {
-                mic.stop();
                 wasPTT = false;
                 wasWhispering = false;
-                flushRecording();
+                flush();
             }
-            Utils.sleep(10);
-            return;
-        } else {
-            wasPTT = true;
-            wasWhispering = ClientManager.getPttKeyHandler().isWhisperDown();
-        }
-
-        mic.start();
-
-        if (mic.available() < SoundManager.FRAME_SIZE) {
-            Utils.sleep(1);
             return;
         }
-        short[] buff = new short[SoundManager.FRAME_SIZE];
-        mic.read(buff);
-        volumeManager.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
-        buff = denoiseIfEnabled(buff);
-        sendAudioPacket(buff, wasWhispering);
-    }
-
-    private final AtomicLong sequenceNumber = new AtomicLong();
-
-    private void sendAudioPacket(short[] data, boolean whispering) {
-        try {
-            if (connection != null && connection.isConnected()) {
-                byte[] encoded = encoder.encode(data);
-                connection.sendToServer(new NetworkMessage(new MicPacket(encoded, whispering, sequenceNumber.getAndIncrement())));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            if (client != null && client.getRecorder() != null) {
-                client.getRecorder().appendChunk(Minecraft.getInstance().getUser().getGameProfile(), System.currentTimeMillis(), Utils.convertToStereo(data));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        wasPTT = true;
+        wasWhispering = ClientManager.getPttKeyHandler().isWhisperDown();
+        sendAudioPacket(audio, wasWhispering);
     }
 
     public short[] denoiseIfEnabled(short[] audio) {
@@ -179,7 +171,9 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
         return audio;
     }
 
-    private void flushRecording() {
+    private void flush() {
+        sendStopPacket();
+        encoder.resetState(); //TODO maybe this has a weird side effect when called every 10ms
         if (client == null) {
             return;
         }
@@ -188,10 +182,6 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
             return;
         }
         recorder.writeChunkThreaded(Minecraft.getInstance().getUser().getGameProfile().getId());
-    }
-
-    public ALMicrophone getMic() {
-        return mic;
     }
 
     public boolean isTalking() {
@@ -208,15 +198,6 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
         wasPTT = false;
         deactivationDelay = 0;
         lastBuff = null;
-    }
-
-    @Nullable
-    public Denoiser getDenoiser() {
-        return denoiser;
-    }
-
-    public VolumeManager getVolumeManager() {
-        return volumeManager;
     }
 
     public void close() {
@@ -237,30 +218,41 @@ public class MicThread extends Thread implements ALMicrophone.MicrophoneListener
         if (denoiser != null) {
             denoiser.close();
         }
-        flushRecording();
+        flush();
     }
 
-    @Override
-    public void onStart() {
-        encoder.open();
-    }
+    private final AtomicLong sequenceNumber = new AtomicLong();
+    private volatile boolean stopPacketSent;
 
-    @Override
-    public void onStop() {
-        sendStopPacket();
-        encoder.resetState();
-        if (denoiser != null) {
-            denoiser.close();
-            denoiser = Denoiser.createDenoiser();
+    private void sendAudioPacket(short[] data, boolean whispering) {
+        try {
+            if (connection != null && connection.isConnected()) {
+                byte[] encoded = encoder.encode(data);
+                connection.sendToServer(new NetworkMessage(new MicPacket(encoded, whispering, sequenceNumber.getAndIncrement())));
+                stopPacketSent = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            if (client != null && client.getRecorder() != null) {
+                client.getRecorder().appendChunk(Minecraft.getInstance().getUser().getGameProfile(), System.currentTimeMillis(), Utils.convertToStereo(data));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     private void sendStopPacket() {
+        if (stopPacketSent) {
+            return;
+        }
         if (connection == null || !connection.isConnected()) {
             return;
         }
         try {
             connection.sendToServer(new NetworkMessage(new MicPacket(new byte[0], false, sequenceNumber.getAndIncrement())));
+            stopPacketSent = true;
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -23,3 +23,5 @@
 - Added optional port for voice_host setting
 - Fixed audio randomly popping
 - Added Cloth Config GUI support
+- Fixed audio sometimes doubling when starting to talk
+- Fixed popping sound when starting to talk

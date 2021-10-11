@@ -86,9 +86,7 @@ public class MicTestButton extends AbstractButton {
 
     private class VoiceThread extends Thread {
 
-        private final ALMicrophone mic;
         private final ALSpeaker speaker;
-        private final VolumeManager volumeManager;
         private boolean running;
         private long lastRender;
         private MicThread micThread;
@@ -108,8 +106,6 @@ public class MicTestButton extends AbstractButton {
                 usesOwnMicThread = true;
             }
 
-            mic = micThread.getMic();
-            volumeManager = micThread.getVolumeManager();
             SoundManager soundManager;
             if (client == null) {
                 soundManager = ClientCompatibilityManager.INSTANCE.createSoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
@@ -131,17 +127,9 @@ public class MicTestButton extends AbstractButton {
                 if (System.currentTimeMillis() - lastRender > 500L) {
                     break;
                 }
-                mic.start();
-                if (mic.available() < SoundManager.FRAME_SIZE) {
-                    Utils.sleep(1);
+                short[] buff = micThread.pollMic();
+                if (buff == null) {
                     continue;
-                }
-                short[] buff = new short[SoundManager.FRAME_SIZE];
-                mic.read(buff);
-                volumeManager.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
-
-                if (micThread.getDenoiser() != null && VoicechatClient.CLIENT_CONFIG.denoiser.get()) {
-                    buff = micThread.getDenoiser().denoise(buff);
                 }
 
                 micListener.onMicValue(Utils.dbToPerc(Utils.getHighestAudioLevel(buff)));
@@ -149,7 +137,6 @@ public class MicTestButton extends AbstractButton {
                 speaker.write(buff, VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue(), null);
             }
             speaker.close();
-            mic.stop();
             setMicLocked(false);
             micListener.onMicValue(0D);
             if (usesOwnMicThread) {
@@ -166,9 +153,6 @@ public class MicTestButton extends AbstractButton {
         }
 
         private void setMicLocked(boolean locked) {
-            if (micThread == null) {
-                return;
-            }
             micThread.setMicrophoneLocked(locked);
         }
 

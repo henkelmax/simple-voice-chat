@@ -57,8 +57,12 @@ public class OpusEncoder {
         Opus.INSTANCE.opus_encoder_ctl(opusEncoder, Opus.INSTANCE.OPUS_RESET_STATE);
     }
 
+    public boolean isClosed() {
+        return opusEncoder == null;
+    }
+
     public void close() {
-        if (opusEncoder == null) {
+        if (isClosed()) {
             return;
         }
         Opus.INSTANCE.opus_encoder_destroy(opusEncoder);
