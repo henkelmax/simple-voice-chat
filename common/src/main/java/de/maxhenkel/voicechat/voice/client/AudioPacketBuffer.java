@@ -47,6 +47,9 @@ public class AudioPacketBuffer {
     }
 
     private void addSorted(SoundPacket<?> packet) {
+        if (packet.getData().length <= 0) {
+            isFlushingBuffer = true;
+        }
         packetBuffer.add(packet);
         packetBuffer.sort(Comparator.comparingLong(SoundPacket::getSequenceNumber));
     }
