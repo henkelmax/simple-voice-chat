@@ -112,13 +112,6 @@ public class AudioChannel extends Thread {
                     continue;
                 }
 
-                boolean whispering = false;
-                if (packet instanceof PlayerSoundPacket playerSoundPacket) {
-                    whispering = playerSoundPacket.isWhispering();
-                }
-
-                client.getTalkCache().updateTalking(uuid, whispering);
-
                 if (lastSequenceNumber >= 0) {
                     int packetsToCompensate = (int) (packet.getSequenceNumber() - (lastSequenceNumber + 1));
 
@@ -168,6 +161,7 @@ public class AudioChannel extends Thread {
 
         if (packet instanceof GroupSoundPacket) {
             speaker.write(monoData, volume, null);
+            client.getTalkCache().updateTalking(uuid, false);
             appendRecording(player, () -> Utils.convertToStereo(monoData, 1F, 1F));
         } else if (packet instanceof PlayerSoundPacket soundPacket) {
             if (player == null) {
@@ -178,10 +172,15 @@ public class AudioChannel extends Thread {
             float crouchMultiplayer = player.isCrouching() ? (float) clientConnection.getData().getCrouchDistanceMultiplier() : 1F;
             float whisperMultiplayer = soundPacket.isWhispering() ? (float) clientConnection.getData().getWhisperDistanceMultiplier() : 1F;
             float multiplier = crouchMultiplayer * whisperMultiplayer;
-            speaker.write(monoData, volume * getDistanceVolume(pos, multiplier), stereo ? pos : null);
+            float outputVolume = volume * getDistanceVolume(pos, multiplier);
+            speaker.write(monoData, outputVolume, stereo ? pos : null);
+            if (outputVolume >= 0.01F) {
+                client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
+            }
             appendRecording(player, () -> convertLocationalPacketToStereo(pos, monoData, multiplier));
         } else if (packet instanceof LocationSoundPacket p) {
             speaker.write(monoData, volume * getDistanceVolume(p.getLocation()), stereo ? p.getLocation() : null);
+            client.getTalkCache().updateTalking(uuid, false);
             appendRecording(player, () -> convertLocationalPacketToStereo(p.getLocation(), monoData));
         }
     }

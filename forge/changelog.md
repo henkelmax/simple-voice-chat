@@ -21,3 +21,4 @@
 - Fixed audio randomly popping
 - Fixed audio sometimes doubling when starting to talk
 - Fixed popping sound when starting to talk
+- Fixed icons rendering even when not audible
