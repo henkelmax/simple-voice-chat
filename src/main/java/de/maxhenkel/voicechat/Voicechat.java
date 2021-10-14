@@ -39,8 +39,6 @@ public final class Voicechat extends JavaPlugin {
 
     public static ServerVoiceEvents SERVER;
 
-    public static final Pattern GROUP_REGEX = Pattern.compile("^\\S[^\"\\n\\r\\t]{0,15}$");
-
     public static final Pattern VERSION_REGEX = Pattern.compile("^(\\d+).(\\d+).(\\d+).*$");
 
     @Override
@@ -78,7 +76,7 @@ public final class Voicechat extends JavaPlugin {
             return;
         }
 
-        ConfigBuilder.create(getDataFolder().toPath().resolve("voicechat-server.properties"), builder -> SERVER_CONFIG = new ServerConfig(builder));
+        SERVER_CONFIG = ConfigBuilder.build(getDataFolder().toPath().resolve("voicechat-server.properties"), true, ServerConfig::new);
         PROTOCOL_MANAGER = ProtocolLibrary.getProtocolManager();
 
         SERVER = new ServerVoiceEvents(getServer());

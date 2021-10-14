@@ -6,8 +6,11 @@ import java.util.UUID;
 
 public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
 
-    public PlayerSoundPacket(UUID sender, byte[] data, long sequenceNumber) {
+    protected boolean whispering;
+
+    public PlayerSoundPacket(UUID sender, byte[] data, long sequenceNumber, boolean whispering) {
         super(sender, data, sequenceNumber);
+        this.whispering = whispering;
     }
 
     public PlayerSoundPacket() {
@@ -18,12 +21,17 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
         return sender;
     }
 
+    public boolean isWhispering() {
+        return whispering;
+    }
+
     @Override
     public PlayerSoundPacket fromBytes(FriendlyByteBuf buf) {
         PlayerSoundPacket soundPacket = new PlayerSoundPacket();
         soundPacket.sender = buf.readUUID();
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
+        soundPacket.whispering = buf.readBoolean();
         return soundPacket;
     }
 
@@ -32,6 +40,7 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
         buf.writeUUID(sender);
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);
+        buf.writeBoolean(whispering);
     }
 
 }

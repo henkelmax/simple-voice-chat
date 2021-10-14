@@ -2,11 +2,12 @@ package de.maxhenkel.voicechat.command;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.net.NetManager;
-import de.maxhenkel.voicechat.net.SetGroupPacket;
 import de.maxhenkel.voicechat.voice.common.PingPacket;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
+import de.maxhenkel.voicechat.voice.server.Group;
 import de.maxhenkel.voicechat.voice.server.PingManager;
+import de.maxhenkel.voicechat.voice.server.Server;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -17,6 +18,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+
+import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class VoiceChatCommands implements CommandExecutor {
 
@@ -117,18 +121,24 @@ public class VoiceChatCommands implements CommandExecutor {
         }
         if (state == null) {
             commandSender.sendMessage(Voicechat.translate("not_connected"));
+            return true;
         }
         if (!state.hasGroup()) {
             NetManager.sendMessage(player, Component.translatable("message.voicechat.not_in_group"));
             return true;
         }
+        Group group = Voicechat.SERVER.getServer().getGroupManager().getGroup(state.getGroup().getId());
+        if (group == null) {
+            return true;
+        }
+        String passwordSuffix = group.getPassword() == null ? "" : " \"" + group.getPassword() + "\"";
         NetManager.sendMessage(otherPlayer, Component.translatable("message.voicechat.invite",
                 Component.text(player.getName()),
-                Component.text(state.getGroup()).toBuilder().color(NamedTextColor.GRAY).asComponent(),
+                Component.text(group.getName()).toBuilder().color(NamedTextColor.GRAY).asComponent(),
                 Component.text("[").toBuilder().append(
                         Component.translatable("message.voicechat.accept_invite")
                                 .toBuilder()
-                                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/voicechat join \"" + state.getGroup() + "\""))
+                                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/voicechat join " + group.getId().toString() + passwordSuffix))
                                 .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.voicechat.accept_invite.hover")))
                                 .color(NamedTextColor.GREEN)
                                 .build()
@@ -161,32 +171,52 @@ public class VoiceChatCommands implements CommandExecutor {
             return true;
         }
 
-        StringBuilder sb = new StringBuilder();
-        for (int i = 1; i < args.length; i++) {
-            sb.append(args[i]);
-            sb.append(" ");
+        UUID groupUUID;
+        try {
+            groupUUID = UUID.fromString(args[1]);
+        } catch (Exception e) {
+            NetManager.sendMessage(player, Component.translatable("message.voicechat.group_does_not_exist"));
+            return true;
         }
-        String groupName = sb.toString().trim();
-        if (groupName.startsWith("\"")) {
-            String[] split = groupName.split("\"");
-            if (split.length > 1) {
-                groupName = split[1];
+
+        String password = null;
+        if (args.length >= 3) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 2; i < args.length; i++) {
+                sb.append(args[i]);
+                sb.append(" ");
+            }
+            password = sb.toString().trim();
+            if (password.startsWith("\"")) {
+                String[] split = password.split("\"");
+                if (split.length > 1) {
+                    password = split[1];
+                }
             }
         }
 
-        if (groupName.length() > 16) {
-            NetManager.sendMessage(player, Component.translatable("message.voicechat.group_name_too_long"));
-            return true;
-        }
-
-        if (!Voicechat.GROUP_REGEX.matcher(groupName).matches()) {
-            NetManager.sendMessage(player, Component.translatable("message.voicechat.invalid_group_name"));
-            return true;
-        }
-
-        NetManager.sendToClient(player, new SetGroupPacket(groupName));
-        NetManager.sendMessage(player, Component.translatable("message.voicechat.join_successful", Component.text(groupName).toBuilder().color(NamedTextColor.GREEN).asComponent()));
+        joinGroup(player, groupUUID, password);
         return true;
+    }
+
+    private static int joinGroup(Player commandSender, UUID groupID, @Nullable String password) {
+        if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
+            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.groups_disabled"));
+            return 1;
+        }
+
+        Server server = Voicechat.SERVER.getServer();
+
+        Group group = server.getGroupManager().getGroup(groupID);
+
+        if (group == null) {
+            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.group_does_not_exist"));
+            return 1;
+        }
+
+        server.getGroupManager().joinGroup(group, commandSender, password);
+        NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.join_successful", Component.text(group.getName()).toBuilder().color(NamedTextColor.GREEN).asComponent()));
+        return 1;
     }
 
     private boolean leaveCommand(CommandSender commandSender, Command command, String label, String[] args) {
@@ -211,8 +241,8 @@ public class VoiceChatCommands implements CommandExecutor {
             NetManager.sendMessage(player, Component.translatable("message.voicechat.not_in_group"));
             return true;
         }
-
-        NetManager.sendToClient(player, new SetGroupPacket(""));
+        Server server = Voicechat.SERVER.getServer();
+        server.getGroupManager().leaveGroup(player);
         NetManager.sendMessage(player, Component.translatable("message.voicechat.leave_successful"));
         return true;
     }

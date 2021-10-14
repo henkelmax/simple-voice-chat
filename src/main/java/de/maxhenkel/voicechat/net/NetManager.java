@@ -102,6 +102,27 @@ public class NetManager {
             packet.fromBytes(payload);
             onRequestSecretPacket(player, packet);
             event.setCancelled(true);
+        } else if (id.getFullKey().equals(CreateGroupPacket.CREATE_GROUP.getFullKey())) {
+            ByteBuf buf = (ByteBuf) event.getPacket().getModifier().withType(PacketDataSerializer.class).read(0);
+            FriendlyByteBuf payload = new FriendlyByteBuf(buf);
+            CreateGroupPacket packet = new CreateGroupPacket();
+            packet.fromBytes(payload);
+            Voicechat.SERVER.getServer().getGroupManager().onCreateGroupPacket(player, packet);
+            event.setCancelled(true);
+        } else if (id.getFullKey().equals(JoinGroupPacket.SET_GROUP.getFullKey())) {
+            ByteBuf buf = (ByteBuf) event.getPacket().getModifier().withType(PacketDataSerializer.class).read(0);
+            FriendlyByteBuf payload = new FriendlyByteBuf(buf);
+            JoinGroupPacket packet = new JoinGroupPacket();
+            packet.fromBytes(payload);
+            Voicechat.SERVER.getServer().getGroupManager().onJoinGroupPacket(player, packet);
+            event.setCancelled(true);
+        } else if (id.getFullKey().equals(LeaveGroupPacket.LEAVE_GROUP.getFullKey())) {
+            ByteBuf buf = (ByteBuf) event.getPacket().getModifier().withType(PacketDataSerializer.class).read(0);
+            FriendlyByteBuf payload = new FriendlyByteBuf(buf);
+            LeaveGroupPacket packet = new LeaveGroupPacket();
+            packet.fromBytes(payload);
+            Voicechat.SERVER.getServer().getGroupManager().onLeaveGroupPacket(player, packet);
+            event.setCancelled(true);
         }
     }
 

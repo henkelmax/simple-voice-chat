@@ -25,12 +25,12 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation "org.bukkit:craftbukkit:${bukkit_version}"
     implementation "com.comphenix.protocol:ProtocolLib:${protocollib_version}"
-    implementation "net.kyori:adventure-api:4.9.0"
-    shadow "net.kyori:adventure-api:4.9.0"
-    implementation "net.kyori:adventure-text-serializer-gson:4.9.0"
-    shadow "net.kyori:adventure-text-serializer-gson:4.9.0"
-    implementation 'de.maxhenkel.configbuilder:configbuilder:1.0.0'
-    shadow 'de.maxhenkel.configbuilder:configbuilder:1.0.0'
+    implementation "net.kyori:adventure-api:4.9.2"
+    shadow "net.kyori:adventure-api:4.9.2"
+    implementation "net.kyori:adventure-text-serializer-gson:4.9.2"
+    shadow "net.kyori:adventure-text-serializer-gson:4.9.2"
+    implementation 'de.maxhenkel.configbuilder:configbuilder:1.0.5'
+    shadow 'de.maxhenkel.configbuilder:configbuilder:1.0.5'
 }
 
 repositories {

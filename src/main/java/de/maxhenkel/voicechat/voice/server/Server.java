@@ -11,10 +11,7 @@ import javax.annotation.Nullable;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.net.BindException;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 import java.security.InvalidKeyException;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,15 +23,16 @@ import java.util.concurrent.TimeUnit;
 
 public class Server extends Thread {
 
-    private Map<UUID, ClientConnection> connections;
-    private Map<UUID, UUID> secrets;
-    private int port;
-    private org.bukkit.Server server;
+    private final Map<UUID, ClientConnection> connections;
+    private final Map<UUID, UUID> secrets;
+    private final int port;
+    private final org.bukkit.Server server;
     private DatagramSocket socket;
-    private ProcessThread processThread;
-    private BlockingQueue<NetworkMessage.UnprocessedNetworkMessage> packetQueue;
-    private PingManager pingManager;
-    private PlayerStateManager playerStateManager;
+    private final ProcessThread processThread;
+    private final BlockingQueue<NetworkMessage.UnprocessedNetworkMessage> packetQueue;
+    private final PingManager pingManager;
+    private final PlayerStateManager playerStateManager;
+    private final GroupManager groupManager;
 
     public Server(int port, org.bukkit.Server server) {
         this.port = port;
@@ -44,6 +42,7 @@ public class Server extends Thread {
         packetQueue = new LinkedBlockingQueue<>();
         pingManager = new PingManager(this);
         playerStateManager = new PlayerStateManager();
+        groupManager = new GroupManager();
         setDaemon(true);
         setName("VoiceChatServerThread");
         processThread = new ProcessThread();
@@ -53,6 +52,7 @@ public class Server extends Thread {
     @Override
     public void run() {
         try {
+            checkCorrectHost();
             InetAddress address = null;
             String addr = Voicechat.SERVER_CONFIG.voiceChatBindAddress.get();
             try {
@@ -91,6 +91,18 @@ public class Server extends Thread {
             }
         } catch (SocketException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void checkCorrectHost() {
+        String host = Voicechat.SERVER_CONFIG.voiceHost.get();
+        if (!host.isEmpty()) {
+            try {
+                new URI("voicechat://" + host);
+            } catch (URISyntaxException e) {
+                Voicechat.LOGGER.warn("Failed to parse voice host: {}", e.getMessage());
+                System.exit(1);
+            }
         }
     }
 
@@ -219,12 +231,16 @@ public class Server extends Thread {
             if (Voicechat.SERVER_CONFIG.openGroups.get()) {
                 processProximityPacket(state, player, packet);
             }
+            return;
         }
         processProximityPacket(state, player, packet);
     }
 
     private void processGroupPacket(PlayerState player, MicPacket packet) throws Exception {
-        String group = player.getGroup();
+        ClientGroup group = player.getGroup();
+        if (group == null) {
+            return;
+        }
         NetworkMessage soundMessage = new NetworkMessage(new GroupSoundPacket(player.getGameProfile().getId(), packet.getData(), packet.getSequenceNumber()));
         for (PlayerState state : playerStateManager.getStates()) {
             if (!group.equals(state.getGroup())) {
@@ -242,7 +258,7 @@ public class Server extends Thread {
 
     private void processProximityPacket(PlayerState state, Player player, MicPacket packet) {
         double distance = Voicechat.SERVER_CONFIG.voiceChatDistance.get();
-        @Nullable String group = state.getGroup();
+        @Nullable ClientGroup group = state.getGroup();
 
         SoundPacket<?> soundPacket;
         if (player.getGameMode().equals(GameMode.SPECTATOR)) {
@@ -252,7 +268,7 @@ public class Server extends Thread {
                 return;
             }
         } else {
-            soundPacket = new PlayerSoundPacket(player.getUniqueId(), packet.getData(), packet.getSequenceNumber());
+            soundPacket = new PlayerSoundPacket(player.getUniqueId(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering());
         }
 
         NetworkMessage soundMessage = new NetworkMessage(soundPacket);
@@ -319,4 +335,9 @@ public class Server extends Thread {
     public PlayerStateManager getPlayerStateManager() {
         return playerStateManager;
     }
+
+    public GroupManager getGroupManager() {
+        return groupManager;
+    }
+
 }

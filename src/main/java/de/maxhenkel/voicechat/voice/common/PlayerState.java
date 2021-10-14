@@ -11,7 +11,7 @@ public class PlayerState {
     private boolean disconnected;
     private GameProfile gameProfile;
     @Nullable
-    private String group;
+    private ClientGroup group;
 
     public PlayerState(boolean disabled, boolean disconnected, GameProfile gameProfile) {
         this.disabled = disabled;
@@ -44,32 +44,33 @@ public class PlayerState {
     }
 
     @Nullable
-    public String getGroup() {
+    public ClientGroup getGroup() {
         return group;
     }
 
-    /**
-     * Empty strings will be treated as null
-     *
-     * @param group the group name (Max 16 characters)
-     */
-    public void setGroup(@Nullable String group) {
-        if (group == null || group.isEmpty()) {
-            this.group = null;
-        } else {
-            this.group = group;
-        }
+    public void setGroup(@Nullable ClientGroup group) {
+        this.group = group;
     }
 
     public boolean hasGroup() {
         return group != null;
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+                "disabled=" + disabled +
+                ", disconnected=" + disconnected +
+                ", uuid=" + gameProfile.getId() +
+                ", group=" + group +
+                '}';
+    }
+
     public static PlayerState fromBytes(FriendlyByteBuf buf) {
         PlayerState state = new PlayerState(buf.readBoolean(), buf.readBoolean(), new GameProfile(buf.readUUID(), buf.readUtf()));
 
         if (buf.readBoolean()) {
-            state.setGroup(buf.readUtf(512));
+            state.setGroup(ClientGroup.fromBytes(buf));
         }
 
         return state;
@@ -82,7 +83,7 @@ public class PlayerState {
         buf.writeUtf(gameProfile.getName());
         buf.writeBoolean(hasGroup());
         if (hasGroup()) {
-            buf.writeUtf(group, 512);
+            group.toBytes(buf);
         }
     }
 
