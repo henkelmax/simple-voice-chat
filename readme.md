@@ -4,6 +4,7 @@
 
 ## Links
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat)
+- [Spigot](https://www.spigotmc.org/resources/simple-voice-chat.93738/)
 - [Discord](https://discord.gg/4dH2zwTmyX)
 - [Wiki](https://modrepo.de/minecraft/voicechat/wiki)
 - [ModRepo](https://modrepo.de/minecraft/voicechat/overview)
@@ -30,22 +31,26 @@ You can access the voice chat settings by pressing the `V` key.
 ## Features
 
 - Proximity voice chat
-- Group chats
+- Password protected group chats
 - [Opus codec](https://opus-codec.org/)
 - [RNNoise](https://jmvalin.ca/demo/rnnoise/) recurrent neural network noise suppression
+- OpenAL audio
+- Compatibility with [Sound Physics Remastered](https://www.curseforge.com/minecraft/mc-mods/sound-physics-remastered)
+- Compatibility with [Sound Physics Fabric](https://www.curseforge.com/minecraft/mc-mods/sound-physics-fabric) (Not recommended)
+- Compatibility with [ModMenu](https://www.curseforge.com/minecraft/mc-mods/modmenu) (Use [ClothConfig](https://www.curseforge.com/minecraft/mc-mods/cloth-config) for a better configuration UI)
 - Push to talk
 - Voice activation
 - Configurable PTT key
 - Test microphone playback
 - Indicator on the screen when you are talking
 - Indicator next to players names when they are talking
-- Configurable distance
+- Configurable voice distance
+- Whispering
 - Mute other players
 - Adjust the volume of other players
 - Microphone amplification
-- Semi 3D sound
+- 3D sound
 - AES encryption
-- Configurable voice quality
 - Configurable network port
 - Audio recording
 
@@ -89,6 +94,7 @@ Mute Microphone | `M` | The mute button (Only when using voice activation type `
 Disable Voice Chat | `N` | This button disables the voice chat. Other people can't hear you and you can't hear them.
 Hide Voice Chat Icons | `H` | This button hides all icons related to the voice chat. This does not affect any other functionalities.
 Toggle Recording | *Not bound by default* | Toggles voice chat audio recording.
+Whisper | *Not bound by default* | Hold down to whisper.
 
 ## The GUI
 
@@ -141,7 +147,7 @@ you can adjust the individual volumes of each player.
 ## Important Notes
 
 You need to open a port on the server.
-This is port `24454/udp` by default.
+This is port `24454` `UDP` by default.
 Without opening this port, the voice chat will not work.
 This port can be changed in the server config.
 More information [here](https://modrepo.de/minecraft/voicechat/wiki?t=setup).
