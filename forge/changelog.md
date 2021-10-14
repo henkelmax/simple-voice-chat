@@ -1,1 +1,1 @@
-- Fixed open groups config option always active
+- Updated spanish translation
