@@ -89,7 +89,7 @@ public class VoicechatCommands {
             String passwordSuffix = group.getPassword() == null ? "" : " \"" + group.getPassword() + "\"";
             player.sendMessage(new TranslatableComponent("message.voicechat.invite",
                     source.getDisplayName(),
-                    new TextComponent(group.getName().toString()).withStyle(ChatFormatting.GRAY),
+                    new TextComponent(group.getName()).withStyle(ChatFormatting.GRAY),
                     ComponentUtils.wrapInSquareBrackets(new TranslatableComponent("message.voicechat.accept_invite").withStyle(style -> style
                                     .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/voicechat join " + group.getId().toString() + passwordSuffix))
                                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.voicechat.accept_invite.hover")))))
