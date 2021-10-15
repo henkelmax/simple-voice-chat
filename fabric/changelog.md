@@ -1,1 +1,2 @@
-- Updated spanish translation
+- Updated whisper icons
+- Updated lock icon
