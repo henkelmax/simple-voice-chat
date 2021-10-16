@@ -45,7 +45,7 @@ public abstract class NetManager {
     }
 
     public static void sendToClient(ServerPlayer player, Packet<?> packet) {
-        if (Voicechat.SERVER.isCompatible(player)) {
+        if (!Voicechat.SERVER.isCompatible(player)) {
             return;
         }
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
