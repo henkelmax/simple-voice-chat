@@ -3,8 +3,8 @@ package de.maxhenkel.voicechat.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.CreateGroupPacket;
+import de.maxhenkel.voicechat.net.NetManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -46,7 +46,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
 
         createGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, new TranslatableComponent("message.voicechat.create"), button -> {
             if (!groupName.getValue().isEmpty()) {
-                CommonCompatibilityManager.INSTANCE.getNetManager().sendToServer(new CreateGroupPacket(groupName.getValue(), password.getValue().isEmpty() ? null : password.getValue()));
+                NetManager.sendToServer(new CreateGroupPacket(groupName.getValue(), password.getValue().isEmpty() ? null : password.getValue()));
             }
         });
         addRenderableWidget(createGroup);

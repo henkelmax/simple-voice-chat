@@ -3,8 +3,8 @@ package de.maxhenkel.voicechat.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.JoinGroupPacket;
+import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -43,7 +43,7 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
 
         joinGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, new TranslatableComponent("message.voicechat.join_group"), button -> {
             if (!password.getValue().isEmpty()) {
-                CommonCompatibilityManager.INSTANCE.getNetManager().sendToServer(new JoinGroupPacket(group.getId(), password.getValue()));
+                NetManager.sendToServer(new JoinGroupPacket(group.getId(), password.getValue()));
             }
         });
         addRenderableWidget(joinGroup);

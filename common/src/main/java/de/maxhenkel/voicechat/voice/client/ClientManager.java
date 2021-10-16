@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import net.minecraft.client.Minecraft;
@@ -62,7 +63,7 @@ public class ClientManager {
 
     private void onJoinServer() {
         Voicechat.LOGGER.info("Sending secret request to the server");
-        CommonCompatibilityManager.INSTANCE.getNetManager().sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
+        NetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
         client = new ClientVoicechat();
     }
 

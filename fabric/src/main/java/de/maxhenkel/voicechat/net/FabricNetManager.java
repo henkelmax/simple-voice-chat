@@ -1,12 +1,10 @@
 package de.maxhenkel.voicechat.net;
 
-import io.netty.buffer.Unpooled;
+import de.maxhenkel.voicechat.Voicechat;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
 
 public class FabricNetManager extends NetManager {
 
@@ -18,6 +16,9 @@ public class FabricNetManager extends NetManager {
             if (toServer) {
                 ServerPlayNetworking.registerGlobalReceiver(dummyPacket.getIdentifier(), (server, player, handler, buf, responseSender) -> {
                     try {
+                        if (!Voicechat.SERVER.isCompatible(player) && !packetType.equals(RequestSecretPacket.class)) {
+                            return;
+                        }
                         T packet = packetType.getDeclaredConstructor().newInstance();
                         packet.fromBytes(buf);
                         c.onServerPacket(server, player, handler, packet);
@@ -41,20 +42,6 @@ public class FabricNetManager extends NetManager {
             throw new IllegalArgumentException(e);
         }
         return c;
-    }
-
-    @Override
-    public void sendToServer(Packet<?> packet) {
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-        packet.toBytes(buffer);
-        ClientPlayNetworking.send(packet.getIdentifier(), buffer);
-    }
-
-    @Override
-    public void sendToClient(ServerPlayer player, Packet<?> packet) {
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-        packet.toBytes(buffer);
-        ServerPlayNetworking.send(player, packet.getIdentifier(), buffer);
     }
 
 }

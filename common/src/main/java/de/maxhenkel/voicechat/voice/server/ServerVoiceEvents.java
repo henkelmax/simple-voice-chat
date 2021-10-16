@@ -2,8 +2,10 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -12,24 +14,29 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerVoiceEvents {
 
+    private final Map<UUID, Integer> clientCompatibilities;
     private Server server;
 
     public ServerVoiceEvents() {
+        clientCompatibilities = new ConcurrentHashMap<>();
         CommonCompatibilityManager.INSTANCE.onServerStarting(this::serverStarting);
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::playerLoggedOut);
 
         CommonCompatibilityManager.INSTANCE.getNetManager().requestSecretChannel.registerServerListener((server, player, handler, packet) -> {
-            Voicechat.LOGGER.info("Received secret request of {}", player.getDisplayName().getString());
+            Voicechat.LOGGER.info("Received secret request of {} ({})", player.getDisplayName().getString(), packet.getCompatibilityVersion());
+            clientCompatibilities.put(player.getUUID(), packet.getCompatibilityVersion());
             if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
                 Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName().getString(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
-                handler.disconnect(getIncompatibleMessage(packet.getCompatibilityVersion()));
-                return;
+                player.sendMessage(getIncompatibleMessage(packet.getCompatibilityVersion()), Util.NIL_UUID);
+            } else {
+                initializePlayerConnection(player);
             }
-            initializePlayerConnection(player);
         });
     }
 
@@ -45,6 +52,10 @@ public class ServerVoiceEvents {
                     new TextComponent(CommonCompatibilityManager.INSTANCE.getModVersion()).withStyle(ChatFormatting.BOLD),
                     new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()).withStyle(ChatFormatting.BOLD));
         }
+    }
+
+    public boolean isCompatible(ServerPlayer player) {
+        return clientCompatibilities.getOrDefault(player.getUUID(), -1) == Voicechat.COMPATIBILITY_VERSION;
     }
 
     public void serverStarting(MinecraftServer mcServer) {
@@ -68,11 +79,12 @@ public class ServerVoiceEvents {
         }
 
         UUID secret = server.getSecret(player.getUUID());
-        CommonCompatibilityManager.INSTANCE.getNetManager().sendToClient(player, new SecretPacket(secret, Voicechat.SERVER_CONFIG));
+        NetManager.sendToClient(player, new SecretPacket(secret, Voicechat.SERVER_CONFIG));
         Voicechat.LOGGER.info("Sent secret to " + player.getDisplayName().getString());
     }
 
     public void playerLoggedOut(ServerPlayer player) {
+        clientCompatibilities.remove(player.getUUID());
         if (server == null) {
             return;
         }

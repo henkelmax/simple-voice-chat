@@ -6,8 +6,8 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.EnterPasswordScreen;
 import de.maxhenkel.voicechat.gui.SkinUtils;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.JoinGroupPacket;
+import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
@@ -26,7 +26,6 @@ import java.util.*;
 public class JoinGroupList extends WidgetBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_join_group.png");
-    // TODO remove placeholder texture and add variants for the builtin resource packs
     private static final ResourceLocation LOCK = new ResourceLocation(Voicechat.MODID, "textures/icons/lock.png");
 
     protected int offset;
@@ -199,7 +198,7 @@ public class JoinGroupList extends WidgetBase {
             if (group.group.hasPassword()) {
                 mc.setScreen(new EnterPasswordScreen(group.group));
             } else {
-                CommonCompatibilityManager.INSTANCE.getNetManager().sendToServer(new JoinGroupPacket(group.group.getId(), null));
+                NetManager.sendToServer(new JoinGroupPacket(group.group.getId(), null));
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);

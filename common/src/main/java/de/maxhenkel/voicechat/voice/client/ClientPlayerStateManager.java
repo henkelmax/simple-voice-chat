@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.gui.GroupScreen;
 import de.maxhenkel.voicechat.gui.JoinGroupScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
@@ -106,7 +107,7 @@ public class ClientPlayerStateManager {
     }
 
     public void syncOwnState() {
-        CommonCompatibilityManager.INSTANCE.getNetManager().sendToServer(new PlayerStatePacket(state));
+        NetManager.sendToServer(new PlayerStatePacket(state));
         Voicechat.logDebug("Sent own state to server: {}", state);
     }
 

@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.net.PlayerStatesPacket;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
@@ -41,14 +42,14 @@ public class PlayerStateManager {
 
     private void broadcastState(MinecraftServer server, PlayerState state) {
         PlayerStatePacket packet = new PlayerStatePacket(state);
-        server.getPlayerList().getPlayers().forEach(p -> CommonCompatibilityManager.INSTANCE.getNetManager().sendToClient(p, packet));
+        server.getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
     private void notifyPlayer(ServerPlayer player) {
         PlayerState state = states.getOrDefault(player.getUUID(), defaultDisconnectedState(player));
         states.put(player.getUUID(), state);
         PlayerStatesPacket packet = new PlayerStatesPacket(states);
-        CommonCompatibilityManager.INSTANCE.getNetManager().sendToClient(player, packet);
+        NetManager.sendToClient(player, packet);
         Voicechat.logDebug("Setting initial state of {}: {}", player.getDisplayName().getString(), state);
     }
 

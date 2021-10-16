@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.server;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.JoinedGroupPacket;
+import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -47,18 +48,18 @@ public class GroupManager {
         PlayerStateManager manager = getStates();
         manager.setGroup(player.server, player, group.toClientGroup());
 
-        CommonCompatibilityManager.INSTANCE.getNetManager().sendToClient(player, new JoinedGroupPacket(group.toClientGroup()));
+        NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup()));
         return true;
     }
 
     public boolean joinGroup(@Nullable Group group, ServerPlayer player, String password) {
         if (group == null) {
-            CommonCompatibilityManager.INSTANCE.getNetManager().sendToClient(player, new JoinedGroupPacket(null));
+            NetManager.sendToClient(player, new JoinedGroupPacket(null));
             return false;
         }
         if (group.getPassword() != null) {
             if (!group.getPassword().equals(password)) {
-                CommonCompatibilityManager.INSTANCE.getNetManager().sendToClient(player, new JoinedGroupPacket(null));
+                NetManager.sendToClient(player, new JoinedGroupPacket(null));
                 return false;
             }
         }
@@ -66,7 +67,7 @@ public class GroupManager {
         PlayerStateManager manager = getStates();
         manager.setGroup(player.server, player, group.toClientGroup());
 
-        CommonCompatibilityManager.INSTANCE.getNetManager().sendToClient(player, new JoinedGroupPacket(group.toClientGroup()));
+        NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup()));
         return true;
     }
 
