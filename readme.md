@@ -35,6 +35,7 @@ You can access the voice chat settings by pressing the `V` key.
 - [Opus codec](https://opus-codec.org/)
 - [RNNoise](https://jmvalin.ca/demo/rnnoise/) recurrent neural network noise suppression
 - OpenAL audio
+- Cross compatibility between Fabric, Forge, Bukkit, Spigot and Paper
 - Compatibility with [Sound Physics Remastered](https://www.curseforge.com/minecraft/mc-mods/sound-physics-remastered)
 - Compatibility with [Sound Physics Fabric](https://www.curseforge.com/minecraft/mc-mods/sound-physics-fabric) (Not recommended)
 - Compatibility with [ModMenu](https://www.curseforge.com/minecraft/mc-mods/modmenu) (Use [ClothConfig](https://www.curseforge.com/minecraft/mc-mods/cloth-config) for a better configuration UI)
