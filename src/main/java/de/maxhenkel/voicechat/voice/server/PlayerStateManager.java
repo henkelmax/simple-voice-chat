@@ -10,7 +10,6 @@ import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import javax.annotation.Nullable;
@@ -41,11 +40,6 @@ public class PlayerStateManager implements Listener {
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        notifyPlayer(event.getPlayer());
-    }
-
-    @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         removePlayer(event.getPlayer());
     }
@@ -55,7 +49,7 @@ public class PlayerStateManager implements Listener {
         Voicechat.INSTANCE.getServer().getOnlinePlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
-    private void notifyPlayer(Player player) {
+    public void onPlayerCompatibilityCheckSucceded(Player player) {
         PlayerState state = states.getOrDefault(player.getUniqueId(), defaultDisconnectedState(player));
         states.put(player.getUniqueId(), state);
         PlayerStatesPacket packet = new PlayerStatesPacket(states);
