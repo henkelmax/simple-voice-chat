@@ -77,7 +77,7 @@ public class ServerVoiceEvents {
         if (server == null) {
             return;
         }
-
+        server.getPlayerStateManager().onPlayerCompatibilityCheckSucceded(player);
         UUID secret = server.getSecret(player.getUUID());
         NetManager.sendToClient(player, new SecretPacket(secret, Voicechat.SERVER_CONFIG));
         Voicechat.LOGGER.info("Sent secret to " + player.getDisplayName().getString());

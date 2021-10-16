@@ -22,7 +22,6 @@ public class PlayerStateManager {
     public PlayerStateManager() {
         states = new ConcurrentHashMap<>();
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::removePlayer);
-        CommonCompatibilityManager.INSTANCE.onPlayerLoggedIn(this::notifyPlayer);
 
         CommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel.registerServerListener((server, player, handler, packet) -> {
             PlayerState oldState = states.get(player.getUUID());
@@ -45,7 +44,7 @@ public class PlayerStateManager {
         server.getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
-    private void notifyPlayer(ServerPlayer player) {
+    public void onPlayerCompatibilityCheckSucceded(ServerPlayer player) {
         PlayerState state = states.getOrDefault(player.getUUID(), defaultDisconnectedState(player));
         states.put(player.getUUID(), state);
         PlayerStatesPacket packet = new PlayerStatesPacket(states);
