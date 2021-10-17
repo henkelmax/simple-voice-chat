@@ -1,2 +1,3 @@
 - Fixed bad microphone quality on MacOS
 - Fixed missing microphone devices on MacOS
+- Fixed noise suppression crashing the game on older MacOS versions
