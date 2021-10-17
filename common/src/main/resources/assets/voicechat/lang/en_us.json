@@ -94,6 +94,7 @@
   "message.voicechat.enter_group_password": "Enter Group Password",
   "message.voicechat.password": "Password",
   "message.voicechat.wrong_password": "Wrong Password",
+  "message.voicechat.server_port": "Voice chat server hosted on port %s",
   "cloth_config.voicechat.settings": "Voice Chat Settings",
   "cloth_config.voicechat.category.other": "Other",
   "cloth_config.voicechat.category.audio": "Audio",

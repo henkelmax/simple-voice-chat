@@ -14,7 +14,8 @@
     "MouseMixin",
     "PackRepositoryMixin",
     "ClientPacketListenerMixin",
-    "GuiMixin"
+    "GuiMixin",
+    "IntegratedServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
