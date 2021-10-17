@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.config;
 
+import com.sun.jna.Platform;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
@@ -33,6 +34,7 @@ public class FabricClientConfig extends ClientConfig {
         denoiser = builder.booleanEntry("denoiser", false);
         soundPhysics = builder.booleanEntry("soundphysics", true);
         runLocalServer = builder.booleanEntry("run_local_server", true);
+        javaMicrophoneImplementation = builder.booleanEntry("java_microphone_implementation", Platform.isMac());
     }
 
 }

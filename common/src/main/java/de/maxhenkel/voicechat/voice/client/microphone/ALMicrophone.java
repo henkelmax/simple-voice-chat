@@ -1,6 +1,8 @@
-package de.maxhenkel.voicechat.voice.client;
+package de.maxhenkel.voicechat.voice.client.microphone;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.voice.client.MicrophoneException;
+import de.maxhenkel.voicechat.voice.client.SoundManager;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.openal.ALC11;
 import org.lwjgl.openal.ALUtil;
@@ -9,20 +11,22 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class ALMicrophone {
+public class ALMicrophone implements Microphone {
 
     private final int sampleRate;
+    @Nullable
     private final String deviceName;
     private long device;
     private final int bufferSize;
     private boolean started;
 
-    public ALMicrophone(int sampleRate, int bufferSize, String deviceName) {
+    public ALMicrophone(int sampleRate, int bufferSize, @Nullable String deviceName) {
         this.sampleRate = sampleRate;
         this.deviceName = deviceName;
         this.bufferSize = bufferSize;
     }
 
+    @Override
     public void open() throws MicrophoneException {
         if (isOpen()) {
             throw new MicrophoneException("Microphone already open");
@@ -30,6 +34,7 @@ public class ALMicrophone {
         device = openMic(deviceName);
     }
 
+    @Override
     public void start() {
         if (!isOpen()) {
             return;
@@ -46,6 +51,7 @@ public class ALMicrophone {
      * Stops reading data from the microphone
      * Flushes all recorded data
      */
+    @Override
     public void stop() {
         if (!isOpen()) {
             return;
@@ -64,6 +70,7 @@ public class ALMicrophone {
         Voicechat.LOGGER.debug("Clearing {} samples", available);
     }
 
+    @Override
     public void close() {
         if (!isOpen()) {
             return;
@@ -74,28 +81,33 @@ public class ALMicrophone {
         device = 0;
     }
 
+    @Override
     public boolean isOpen() {
         return device != 0;
     }
 
+    @Override
     public boolean isStarted() {
         return started;
     }
 
+    @Override
     public int available() {
         int samples = ALC11.alcGetInteger(device, ALC11.ALC_CAPTURE_SAMPLES);
         SoundManager.checkAlError();
         return samples;
     }
 
-    public short[] read(short[] data) {
+    @Override
+    public short[] read() {
         int available = available();
-        if (data.length > available) {
-            throw new IllegalStateException(String.format("Failed to read from microphone: Capacity %s, available %s", data.length, available));
+        if (bufferSize > available) {
+            throw new IllegalStateException(String.format("Failed to read from microphone: Capacity %s, available %s", bufferSize, available));
         }
-        ALC11.alcCaptureSamples(device, data, data.length);
+        short[] buff = new short[bufferSize];
+        ALC11.alcCaptureSamples(device, buff, buff.length);
         SoundManager.checkAlError();
-        return data;
+        return buff;
     }
 
     private long openMic(@Nullable String name) throws MicrophoneException {

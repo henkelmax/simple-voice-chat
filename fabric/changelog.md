@@ -1,2 +1,2 @@
-- Added compatibility with singleplayer and LAN worlds
-- Fixed voice chat trying to reconnect despite not being in a world
+- Fixed bad microphone quality on MacOS
+- Fixed missing microphone devices on MacOS

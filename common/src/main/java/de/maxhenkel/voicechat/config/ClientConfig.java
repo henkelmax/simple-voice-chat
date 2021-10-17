@@ -32,5 +32,6 @@ public abstract class ClientConfig {
     public ConfigEntry<Boolean> denoiser;
     public ConfigEntry<Boolean> soundPhysics;
     public ConfigEntry<Boolean> runLocalServer;
+    public ConfigEntry<Boolean> javaMicrophoneImplementation;
 
 }

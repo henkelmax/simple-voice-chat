@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.config;
 
+import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -140,6 +141,10 @@ public class ForgeClientConfig extends ClientConfig {
         runLocalServer = wrapConfigEntry(builder
                 .comment("If voice chat should work in singleplayer/LAN worlds")
                 .define("run_local_server", true)
+        );
+        javaMicrophoneImplementation = wrapConfigEntry(builder
+                .comment("Whether to use the Java implementation of microphone capturing instead of OpenAL")
+                .define("java_microphone_implementation", Platform.isMac())
         );
     }
 

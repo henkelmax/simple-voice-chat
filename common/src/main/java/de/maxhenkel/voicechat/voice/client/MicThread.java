@@ -3,6 +3,9 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.config.ServerConfig;
+import de.maxhenkel.voicechat.voice.client.microphone.ALMicrophone;
+import de.maxhenkel.voicechat.voice.client.microphone.JavaxMicrophone;
+import de.maxhenkel.voicechat.voice.client.microphone.Microphone;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.client.Minecraft;
 
@@ -16,7 +19,7 @@ public class MicThread extends Thread {
     private final ClientVoicechat client;
     @Nullable
     private final ClientVoicechatConnection connection;
-    private final ALMicrophone mic;
+    private final Microphone mic;
     private final VolumeManager volumeManager;
     private boolean running;
     private boolean microphoneLocked;
@@ -43,7 +46,12 @@ public class MicThread extends Thread {
 
         setDaemon(true);
         setName("MicrophoneThread");
-        mic = new ALMicrophone(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get());
+        if (VoicechatClient.CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
+            mic = new JavaxMicrophone(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get());
+        } else {
+            mic = new ALMicrophone(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get());
+        }
+
         mic.open();
     }
 
@@ -99,8 +107,7 @@ public class MicThread extends Thread {
             Utils.sleep(5);
             return null;
         }
-        short[] buff = new short[SoundManager.FRAME_SIZE];
-        mic.read(buff);
+        short[] buff = mic.read();
         volumeManager.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
         return denoiseIfEnabled(buff);
     }
