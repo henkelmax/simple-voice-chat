@@ -213,6 +213,10 @@ public class ClientVoicechat {
 
         closeMicThread();
 
+        if (connection != null) {
+            connection.close();
+        }
+
         if (recorder != null) {
             AudioRecorder rec = recorder;
             recorder = null;
