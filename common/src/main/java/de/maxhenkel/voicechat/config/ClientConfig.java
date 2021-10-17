@@ -31,5 +31,6 @@ public abstract class ClientConfig {
     public ConfigEntry<String> recordingDestination;
     public ConfigEntry<Boolean> denoiser;
     public ConfigEntry<Boolean> soundPhysics;
+    public ConfigEntry<Boolean> runLocalServer;
 
 }

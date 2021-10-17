@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.server;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.voice.common.*;
+import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -18,19 +19,23 @@ import java.util.concurrent.TimeUnit;
 
 public class Server extends Thread {
 
-    private Map<UUID, ClientConnection> connections;
-    private Map<UUID, UUID> secrets;
-    private int port;
-    private MinecraftServer server;
+    private final Map<UUID, ClientConnection> connections;
+    private final Map<UUID, UUID> secrets;
+    private final int port;
+    private final MinecraftServer server;
     private DatagramSocket socket;
-    private ProcessThread processThread;
-    private BlockingQueue<NetworkMessage.UnprocessedNetworkMessage> packetQueue;
-    private PingManager pingManager;
-    private PlayerStateManager playerStateManager;
-    private GroupManager groupManager;
+    private final ProcessThread processThread;
+    private final BlockingQueue<NetworkMessage.UnprocessedNetworkMessage> packetQueue;
+    private final PingManager pingManager;
+    private final PlayerStateManager playerStateManager;
+    private final GroupManager groupManager;
 
-    public Server(int port, MinecraftServer server) {
-        this.port = port;
+    public Server(MinecraftServer server) {
+        if (server instanceof IntegratedServer) {
+            this.port = 0;
+        } else {
+            this.port = Voicechat.SERVER_CONFIG.voiceChatPort.get();
+        }
         this.server = server;
         connections = new HashMap<>();
         secrets = new HashMap<>();
@@ -55,7 +60,7 @@ public class Server extends Thread {
                     address = InetAddress.getByName(addr);
                 }
             } catch (Exception e) {
-                Voicechat.LOGGER.error("Failed to parse bind IP address '" + addr + "'");
+                Voicechat.LOGGER.error("Failed to parse bind IP address '{}'", addr);
                 Voicechat.LOGGER.info("Binding to default IP address");
                 e.printStackTrace();
             }
@@ -66,17 +71,17 @@ public class Server extends Thread {
                     if (address == null || addr.equals("0.0.0.0")) {
                         throw e;
                     }
-                    Voicechat.LOGGER.fatal("Failed to bind to address '" + addr + "', binding to '0.0.0.0' instead");
+                    Voicechat.LOGGER.fatal("Failed to bind to address '{}', binding to '0.0.0.0' instead", addr);
                     socket = new DatagramSocket(port);
                 }
                 socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
             } catch (BindException e) {
-                Voicechat.LOGGER.error("Failed to bind to address '" + addr + "'");
+                Voicechat.LOGGER.error("Failed to bind to address '{}'", addr);
                 e.printStackTrace();
                 System.exit(1);
                 return;
             }
-            Voicechat.LOGGER.info("Server started at port " + port);
+            Voicechat.LOGGER.info("Server started at port {}", socket.getLocalPort());
 
             while (!socket.isClosed()) {
                 try {
@@ -311,6 +316,10 @@ public class Server extends Thread {
 
     public DatagramSocket getSocket() {
         return socket;
+    }
+
+    public int getPort() {
+        return socket.getLocalPort();
     }
 
     public void sendPacket(Packet<?> packet, ClientConnection connection) throws Exception {

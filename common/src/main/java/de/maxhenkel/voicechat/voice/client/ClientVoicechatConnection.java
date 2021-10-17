@@ -88,7 +88,6 @@ public class ClientVoicechatConnection extends Thread {
 
         socket.close();
         authThread.close();
-
     }
 
     public boolean isConnected() {

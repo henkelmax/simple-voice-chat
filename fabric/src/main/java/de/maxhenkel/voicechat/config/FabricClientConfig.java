@@ -32,6 +32,7 @@ public class FabricClientConfig extends ClientConfig {
         recordingDestination = builder.stringEntry("recording_destination", "");
         denoiser = builder.booleanEntry("denoiser", false);
         soundPhysics = builder.booleanEntry("soundphysics", true);
+        runLocalServer = builder.booleanEntry("run_local_server", true);
     }
 
 }

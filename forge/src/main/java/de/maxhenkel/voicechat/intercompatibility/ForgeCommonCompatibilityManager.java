@@ -16,6 +16,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 import net.minecraftforge.forgespi.language.IModInfo;
 
 import java.nio.file.Path;
@@ -27,12 +28,14 @@ import java.util.stream.Collectors;
 public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager {
 
     private final List<Consumer<MinecraftServer>> serverStartingEvents;
+    private final List<Consumer<MinecraftServer>> serverStoppingEvents;
     private final List<Consumer<CommandDispatcher<CommandSourceStack>>> registerServerCommandsEvents;
     private final List<Consumer<ServerPlayer>> playerLoggedInEvents;
     private final List<Consumer<ServerPlayer>> playerLoggedOutEvents;
 
     public ForgeCommonCompatibilityManager() {
         serverStartingEvents = new ArrayList<>();
+        serverStoppingEvents = new ArrayList<>();
         registerServerCommandsEvents = new ArrayList<>();
         playerLoggedInEvents = new ArrayList<>();
         playerLoggedOutEvents = new ArrayList<>();
@@ -41,6 +44,11 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     @SubscribeEvent
     public void serverStarting(FMLServerStartedEvent event) {
         serverStartingEvents.forEach(consumer -> consumer.accept(event.getServer()));
+    }
+
+    @SubscribeEvent
+    public void serverStopping(FMLServerStoppingEvent event) {
+        serverStoppingEvents.forEach(consumer -> consumer.accept(event.getServer()));
     }
 
     @SubscribeEvent
@@ -80,6 +88,11 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     @Override
     public void onServerStarting(Consumer<MinecraftServer> onServerStarting) {
         serverStartingEvents.add(onServerStarting);
+    }
+
+    @Override
+    public void onServerStopping(Consumer<MinecraftServer> onServerStopping) {
+        serverStoppingEvents.add(onServerStopping);
     }
 
     @Override

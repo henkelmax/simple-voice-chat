@@ -10,6 +10,7 @@ import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.client.SpeakerException;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Connection;
@@ -87,6 +88,11 @@ public class FabricClientCompatibilityManager extends ClientCompatibilityManager
     @Override
     public void onJoinServer(Runnable onJoinServer) {
         ClientWorldEvents.JOIN_SERVER.register(onJoinServer);
+    }
+
+    @Override
+    public void onJoinWorld(Runnable onJoinWorld) {
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> onJoinWorld.run());
     }
 
     @Override

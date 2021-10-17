@@ -56,6 +56,11 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
     }
 
     @Override
+    public void onServerStopping(Consumer<MinecraftServer> onServerStopping) {
+        ServerLifecycleEvents.SERVER_STOPPING.register(onServerStopping::accept);
+    }
+
+    @Override
     public void onPlayerLoggedIn(Consumer<ServerPlayer> onPlayerLoggedIn) {
         PlayerEvents.PLAYER_LOGGED_IN.register(onPlayerLoggedIn);
     }

@@ -228,7 +228,7 @@ public class MicThread extends Thread {
 
     private void sendAudioPacket(short[] data, boolean whispering) {
         try {
-            if (connection != null && connection.isConnected()) {
+            if (connection != null && connection.isAuthenticated()) {
                 byte[] encoded = encoder.encode(data);
                 connection.sendToServer(new NetworkMessage(new MicPacket(encoded, whispering, sequenceNumber.getAndIncrement())));
                 stopPacketSent = false;
@@ -249,7 +249,7 @@ public class MicThread extends Thread {
         if (stopPacketSent) {
             return;
         }
-        if (connection == null || !connection.isConnected()) {
+        if (connection == null || !connection.isAuthenticated()) {
             return;
         }
         try {

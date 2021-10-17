@@ -20,20 +20,20 @@ public class GroupManager {
 
     public GroupManager() {
         groups = new ConcurrentHashMap<>();
-        CommonCompatibilityManager.INSTANCE.getNetManager().joinGroupChannel.registerServerListener((server, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().joinGroupChannel.setServerListener((server, player, handler, packet) -> {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
             }
             joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
         });
-        CommonCompatibilityManager.INSTANCE.getNetManager().createGroupChannel.registerServerListener((server, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().createGroupChannel.setServerListener((server, player, handler, packet) -> {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
             }
             Group group = new Group(UUID.randomUUID(), packet.getName(), packet.getPassword());
             addGroup(group, player);
         });
-        CommonCompatibilityManager.INSTANCE.getNetManager().leaveGroupChannel.registerServerListener((server, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().leaveGroupChannel.setServerListener((server, player, handler, packet) -> {
             leaveGroup(player);
         });
     }

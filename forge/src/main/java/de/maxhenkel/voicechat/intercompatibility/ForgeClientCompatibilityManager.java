@@ -19,6 +19,7 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fmlclient.registry.ClientRegistry;
@@ -40,6 +41,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     private final List<Runnable> inputEvents;
     private final List<Runnable> disconnectEvents;
     private final List<Runnable> joinServerEvents;
+    private final List<Runnable> joinWorldEvents;
     private final List<Consumer<ClientVoicechatConnection>> voicechatConnectEvents;
     private final List<Runnable> voicechatDisconnectEvents;
 
@@ -52,6 +54,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         inputEvents = new ArrayList<>();
         disconnectEvents = new ArrayList<>();
         joinServerEvents = new ArrayList<>();
+        joinWorldEvents = new ArrayList<>();
         voicechatConnectEvents = new ArrayList<>();
         voicechatDisconnectEvents = new ArrayList<>();
     }
@@ -91,7 +94,19 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
 
     @SubscribeEvent
     public void onJoinServer(ClientPlayerNetworkEvent.LoggedInEvent event) {
+        if (event.getPlayer() != minecraft.player) {
+            return;
+        }
         joinServerEvents.forEach(Runnable::run);
+        joinWorldEvents.forEach(Runnable::run);
+    }
+
+    @SubscribeEvent
+    public void onJoinWorld(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getPlayer() != minecraft.player) {
+            return;
+        }
+        joinWorldEvents.forEach(Runnable::run);
     }
 
     @Override
@@ -160,6 +175,11 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @Override
     public void onJoinServer(Runnable onJoinServer) {
         joinServerEvents.add(onJoinServer);
+    }
+
+    @Override
+    public void onJoinWorld(Runnable onJoinWorld) {
+        joinWorldEvents.add(onJoinWorld);
     }
 
     @Override

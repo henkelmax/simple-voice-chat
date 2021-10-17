@@ -30,6 +30,7 @@ public class ClothConfigWrapper {
         audio.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.stereo"), VoicechatClient.CLIENT_CONFIG.stereo));
         audio.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.soundphysics"), VoicechatClient.CLIENT_CONFIG.soundPhysics));
         audio.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.recording_destination"), VoicechatClient.CLIENT_CONFIG.recordingDestination));
+        audio.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.run_local_server"), VoicechatClient.CLIENT_CONFIG.runLocalServer));
 
         ConfigCategory hudIcons = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.voicechat.category.hud_icons"));
         hudIcons.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.hud_icon_scale"), VoicechatClient.CLIENT_CONFIG.hudIconScale));

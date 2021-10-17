@@ -32,7 +32,7 @@ public class ClientPlayerStateManager {
         state = getDefaultState();
         states = new HashMap<>();
 
-        CommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel.registerClientListener((client, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel.setClientListener((client, handler, packet) -> {
             states.put(packet.getPlayerState().getGameProfile().getId(), packet.getPlayerState());
             if (packet.getPlayerState().getGameProfile().getId().equals(state.getGameProfile().getId())) {
                 state.setGroup(packet.getPlayerState().getGroup());
@@ -41,11 +41,11 @@ public class ClientPlayerStateManager {
                 Voicechat.logDebug("Got state for {}: {}", packet.getPlayerState().getGameProfile().getName(), packet.getPlayerState());
             }
         });
-        CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel.registerClientListener((client, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel.setClientListener((client, handler, packet) -> {
             states = packet.getPlayerStates();
             Voicechat.logDebug("Received {} states", states.size());
         });
-        CommonCompatibilityManager.INSTANCE.getNetManager().joinedGroupChannel.registerClientListener((client, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().joinedGroupChannel.setClientListener((client, handler, packet) -> {
             Screen screen = Minecraft.getInstance().screen;
             if (packet.getGroup() == null) {
                 if (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {

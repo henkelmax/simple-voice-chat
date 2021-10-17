@@ -41,15 +41,18 @@ public class ClientVoicechat {
             e.printStackTrace();
         }
         this.audioChannels = new HashMap<>();
+    }
 
-        ClientCompatibilityManager.INSTANCE.onVoiceChatConnected(this::startMicThread);
-        ClientCompatibilityManager.INSTANCE.onVoiceChatDisconnected(() -> {
-            closeMicThread();
-            if (connection != null) {
-                connection.close();
-                connection = null;
-            }
-        });
+    public void onVoiceChatConnected(ClientVoicechatConnection connection) {
+        startMicThread(connection);
+    }
+
+    public void onVoiceChatDisconnected() {
+        closeMicThread();
+        if (connection != null) {
+            connection.close();
+            connection = null;
+        }
     }
 
     public void connect(InitializationData data) throws IOException {

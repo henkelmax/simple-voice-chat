@@ -55,7 +55,7 @@ public class GroupList extends WidgetBase {
     @Override
     public void tick() {
         super.tick();
-        if (voiceChatClient.getConnection() == null || !voiceChatClient.getConnection().isConnected()) {
+        if (voiceChatClient.getConnection() == null || !voiceChatClient.getConnection().isAuthenticated()) {
             mc.setScreen(null);
         }
     }

@@ -105,6 +105,7 @@
   "cloth_config.voicechat.config.stereo": "Stereo sound",
   "cloth_config.voicechat.config.soundphysics": "Sound Physics integration",
   "cloth_config.voicechat.config.recording_destination": "Recording destination",
+  "cloth_config.voicechat.config.run_local_server": "Run in singleplayer/LAN worlds",
   "cloth_config.voicechat.config.hud_icon_scale": "HUD icon scale",
   "cloth_config.voicechat.config.hud_icon_x": "HUD icon X pos",
   "cloth_config.voicechat.config.hud_icon_y": "HUD icon Y pos",

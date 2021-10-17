@@ -23,7 +23,7 @@ public class PlayerStateManager {
         states = new ConcurrentHashMap<>();
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::removePlayer);
 
-        CommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel.registerServerListener((server, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel.setServerListener((server, player, handler, packet) -> {
             PlayerState oldState = states.get(player.getUUID());
 
             PlayerState state = packet.getPlayerState();

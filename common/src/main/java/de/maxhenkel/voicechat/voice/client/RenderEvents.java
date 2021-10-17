@@ -38,7 +38,7 @@ public class RenderEvents {
     }
 
     private void onRenderHUD(PoseStack stack, float tickDelta) {
-        if (!isMultiplayerServer()) {
+        if (!shouldShowIcons()) {
             return;
         }
         if (VoicechatClient.CLIENT_CONFIG.hideIcons.get()) {
@@ -88,7 +88,7 @@ public class RenderEvents {
     }
 
     private void onRenderName(Entity entity, Component component, PoseStack stack, MultiBufferSource vertexConsumers, int light) {
-        if (!isMultiplayerServer()) {
+        if (!shouldShowIcons()) {
             return;
         }
         if (VoicechatClient.CLIENT_CONFIG.hideIcons.get()) {
@@ -153,7 +153,10 @@ public class RenderEvents {
         matrixStackIn.popPose();
     }
 
-    private boolean isMultiplayerServer() {
+    private boolean shouldShowIcons() {
+        if (ClientManager.getClient() != null && ClientManager.getClient().getConnection() != null && ClientManager.getClient().getConnection().isAuthenticated()) {
+            return true;
+        }
         return minecraft.getCurrentServer() != null && !minecraft.getCurrentServer().isLan();
     }
 

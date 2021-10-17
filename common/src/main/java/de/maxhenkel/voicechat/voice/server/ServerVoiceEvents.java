@@ -1,16 +1,17 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
@@ -27,8 +28,9 @@ public class ServerVoiceEvents {
         clientCompatibilities = new ConcurrentHashMap<>();
         CommonCompatibilityManager.INSTANCE.onServerStarting(this::serverStarting);
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::playerLoggedOut);
+        CommonCompatibilityManager.INSTANCE.onServerStopping(this::serverStopping);
 
-        CommonCompatibilityManager.INSTANCE.getNetManager().requestSecretChannel.registerServerListener((server, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().requestSecretChannel.setServerListener((server, player, handler, packet) -> {
             Voicechat.LOGGER.info("Received secret request of {} ({})", player.getDisplayName().getString(), packet.getCompatibilityVersion());
             clientCompatibilities.put(player.getUUID(), packet.getCompatibilityVersion());
             if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
@@ -63,13 +65,17 @@ public class ServerVoiceEvents {
             server.close();
             server = null;
         }
-        if (mcServer instanceof DedicatedServer) {
-            try {
-                server = new Server(Voicechat.SERVER_CONFIG.voiceChatPort.get(), mcServer);
-                server.start();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
+        if (mcServer instanceof IntegratedServer && !VoicechatClient.CLIENT_CONFIG.runLocalServer.get()) {
+            Voicechat.LOGGER.info("Disabling voice chat in singleplayer");
+            return;
+        }
+
+        try {
+            server = new Server(mcServer);
+            server.start();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -79,7 +85,7 @@ public class ServerVoiceEvents {
         }
         server.getPlayerStateManager().onPlayerCompatibilityCheckSucceded(player);
         UUID secret = server.getSecret(player.getUUID());
-        NetManager.sendToClient(player, new SecretPacket(secret, Voicechat.SERVER_CONFIG));
+        NetManager.sendToClient(player, new SecretPacket(secret, server.getPort(), Voicechat.SERVER_CONFIG));
         Voicechat.LOGGER.info("Sent secret to " + player.getDisplayName().getString());
     }
 
@@ -97,4 +103,12 @@ public class ServerVoiceEvents {
     public Server getServer() {
         return server;
     }
+
+    public void serverStopping(MinecraftServer mcServer) {
+        if (server != null) {
+            server.close();
+            server = null;
+        }
+    }
+
 }

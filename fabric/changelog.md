@@ -1,1 +1,1 @@
-- Added cross compatibility between Fabric, Forge and Bukkit/Spigot/Paper
+- Added compatibility with singleplayer and LAN worlds

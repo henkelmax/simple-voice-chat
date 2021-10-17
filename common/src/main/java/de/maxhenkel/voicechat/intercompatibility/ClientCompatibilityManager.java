@@ -48,6 +48,8 @@ public abstract class ClientCompatibilityManager {
 
     public abstract void onJoinServer(Runnable onJoinServer);
 
+    public abstract void onJoinWorld(Runnable onJoinWorld);
+
     public abstract SocketAddress getSocketAddress(Connection connection);
 
     public abstract void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource);

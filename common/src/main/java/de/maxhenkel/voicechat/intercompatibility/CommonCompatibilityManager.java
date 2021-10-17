@@ -21,6 +21,8 @@ public abstract class CommonCompatibilityManager {
 
     public abstract void onServerStarting(Consumer<MinecraftServer> onServerStarting);
 
+    public abstract void onServerStopping(Consumer<MinecraftServer> onServerStopping);
+
     public abstract void onPlayerLoggedIn(Consumer<ServerPlayer> onPlayerLoggedIn);
 
     public abstract void onPlayerLoggedOut(Consumer<ServerPlayer> onPlayerLoggedOut);

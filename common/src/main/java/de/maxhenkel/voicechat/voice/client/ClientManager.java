@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
+import io.netty.channel.local.LocalAddress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 
@@ -31,10 +32,21 @@ public class ClientManager {
         keyEvents = new KeyEvents();
         minecraft = Minecraft.getInstance();
 
-        ClientCompatibilityManager.INSTANCE.onJoinServer(this::onJoinServer);
+        ClientCompatibilityManager.INSTANCE.onJoinWorld(this::onJoinWorld);
         ClientCompatibilityManager.INSTANCE.onDisconnect(this::onDisconnect);
 
-        CommonCompatibilityManager.INSTANCE.getNetManager().secretChannel.registerClientListener((client, handler, packet) -> {
+        ClientCompatibilityManager.INSTANCE.onVoiceChatConnected(connection -> {
+            if (client != null) {
+                client.onVoiceChatConnected(connection);
+            }
+        });
+        ClientCompatibilityManager.INSTANCE.onVoiceChatDisconnected(() -> {
+            if (client != null) {
+                client.onVoiceChatDisconnected();
+            }
+        });
+
+        CommonCompatibilityManager.INSTANCE.getNetManager().secretChannel.setClientListener((client, handler, packet) -> {
             authenticate(handler.getLocalGameProfile().getId(), packet);
         });
     }
@@ -54,6 +66,8 @@ public class ClientManager {
                 SocketAddress socketAddress = ClientCompatibilityManager.INSTANCE.getSocketAddress(connection.getConnection());
                 if (socketAddress instanceof InetSocketAddress address) {
                     client.connect(new InitializationData(address.getHostString(), playerUUID, secretPacket));
+                } else if (socketAddress instanceof LocalAddress) {
+                    client.connect(new InitializationData("127.0.0.1", playerUUID, secretPacket));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -61,7 +75,7 @@ public class ClientManager {
         }
     }
 
-    private void onJoinServer() {
+    private void onJoinWorld() {
         Voicechat.LOGGER.info("Sending secret request to the server");
         NetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
         client = new ClientVoicechat();
