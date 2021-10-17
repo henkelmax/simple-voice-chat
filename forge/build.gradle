@@ -140,6 +140,9 @@ curseforge {
         addGameVersion 'Java 16'
         mainArtifact(jar) {
             displayName = "[FORGE][${mod_minecraft_version}] ${mod_name} ${mod_version}"
+            relations {
+                optionalDependency 'sound-physics-remastered'
+            }
         }
     }
 }
