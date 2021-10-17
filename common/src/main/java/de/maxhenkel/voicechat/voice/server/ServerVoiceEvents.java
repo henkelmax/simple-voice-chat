@@ -7,11 +7,11 @@ import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
@@ -66,7 +66,7 @@ public class ServerVoiceEvents {
             server = null;
         }
 
-        if (mcServer instanceof IntegratedServer && !VoicechatClient.CLIENT_CONFIG.runLocalServer.get()) {
+        if (!(mcServer instanceof DedicatedServer) && VoicechatClient.CLIENT_CONFIG != null && !VoicechatClient.CLIENT_CONFIG.runLocalServer.get()) {
             Voicechat.LOGGER.info("Disabling voice chat in singleplayer");
             return;
         }

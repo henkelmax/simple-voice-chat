@@ -3,8 +3,8 @@ package de.maxhenkel.voicechat.voice.server;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.voice.common.*;
-import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
@@ -31,10 +31,10 @@ public class Server extends Thread {
     private final GroupManager groupManager;
 
     public Server(MinecraftServer server) {
-        if (server instanceof IntegratedServer) {
-            this.port = 0;
-        } else {
+        if (server instanceof DedicatedServer) {
             this.port = Voicechat.SERVER_CONFIG.voiceChatPort.get();
+        } else {
+            this.port = 0;
         }
         this.server = server;
         connections = new HashMap<>();
