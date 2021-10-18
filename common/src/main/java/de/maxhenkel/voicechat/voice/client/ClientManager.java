@@ -76,6 +76,10 @@ public class ClientManager {
     }
 
     private void onJoinWorld() {
+        if (client != null) {
+            Voicechat.LOGGER.info("Disconnecting from previous connection due to server change");
+            onDisconnect();
+        }
         Voicechat.LOGGER.info("Sending secret request to the server");
         NetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
         client = new ClientVoicechat();
