@@ -30,7 +30,6 @@ After restarting the launcher, Minecraft should now ask for microphone access.
 - Drag the minecraft launcher from your applications folder on the patcher GUI
 
 **CurseForge Launcher**
-- Drag the CurseForge launcher from your applications folder on the patcher GUI
 - Go to `Settings` > `Addons` > `Mod installation path` and open that path (The default is `Documents/curseforge/`)
 - Open the `minecraft` folder in the mod installation path
 - Open the `Install` folder
