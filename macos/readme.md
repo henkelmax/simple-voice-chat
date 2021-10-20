@@ -7,10 +7,10 @@ It also has a hacky method to bypass this restriction.
 
 For a MacOS application to get microphone permissions, the following things must be given:
 
-- The applications `Info.plist` needs a `NSMicrophoneUsageDescription`. More information [here](https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW25).
-- If the application is signed (which is the case for the vanilla launcher), it needs to be signed with a microphone entitlement.
+- The applications `Info.plist` needs a `NSMicrophoneUsageDescription`. More information [here](https://developer.apple.com/documentation/bundleresources/information_property_list/nsmicrophoneusagedescription?language=objc).
+- If the application is signed (which is the case for the vanilla launcher), it needs to be signed with a microphone [entitlement](https://developer.apple.com/documentation/bundleresources/entitlements?language=objc).
 
-If any of these requirements is not given, and the application requests access for the microphone, MacOS will terminate the application. More information [here](https://developer.apple.com/documentation/avfoundation/cameras_and_media_capture/requesting_authorization_for_media_capture_on_ios?language=objc).
+If any of these requirements is not given, and the application requests access for the microphone, MacOS will terminate the application. More information [here](https://developer.apple.com/documentation/avfoundation/cameras_and_media_capture/requesting_authorization_for_media_capture_on_macos?language=objc).
 
 Because Simple Voice Chat itself does not know if it is allowed to ask for microphone permissions, the mod spawns another process to ask for the permission.
 If this process terminates with a non-zero exit code, it is apparent that the launcher does not meet the requirement.
