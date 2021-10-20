@@ -4,15 +4,10 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.ComponentUtils;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
@@ -77,7 +72,7 @@ public class ClientVoicechat {
                     } catch (NativeDependencyException e) {
                         CooldownTimer.run("decoder_unavailable", () -> {
                             Voicechat.LOGGER.error("Failed to create audio channel: {}", e.getMessage());
-                            sendPlayerError("messsage.voicechat.playback_unavailable", e);
+                            ClientManager.sendPlayerError("messsage.voicechat.playback_unavailable", e);
                         });
                     }
                 } else {
@@ -129,7 +124,7 @@ public class ClientVoicechat {
             micThread.start();
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to start microphone thread: {}", e.getMessage());
-            sendPlayerError("messsage.voicechat.microphone_unavailable", e);
+            ClientManager.sendPlayerError("messsage.voicechat.microphone_unavailable", e);
         }
     }
 
@@ -139,20 +134,6 @@ public class ClientVoicechat {
             micThread.close();
             micThread = null;
         }
-    }
-
-    public void sendPlayerError(String translationKey, Exception e) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null) {
-            return;
-        }
-        player.sendMessage(
-                ComponentUtils.wrapInSquareBrackets(new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()))
-                        .withStyle(ChatFormatting.GREEN)
-                        .append(" ")
-                        .append(new TranslatableComponent(translationKey).withStyle(ChatFormatting.RED))
-                        .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED))))
-                , Util.NIL_UUID);
     }
 
     public void toggleRecording() {

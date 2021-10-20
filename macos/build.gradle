@@ -1,0 +1,49 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+}
+
+plugins {
+    id "java"
+    id "com.github.johnrengelman.shadow" version "7.0.0"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'com.googlecode.plist:dd-plist:1.23'
+    shadow 'com.googlecode.plist:dd-plist:1.23'
+    implementation 'net.java.dev.jna:jna:5.8.0'
+    implementation 'net.java.dev.jna:jna-platform:5.8.0'
+
+}
+
+task prepareWorkspace {
+
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'de.maxhenkel.voicechat.Main'
+    }
+}
+
+build.dependsOn shadowJar
+
+shadowJar {
+    classifier ''
+    relocate 'com.dd.plist', 'de.maxhenkel.voicechat.com.dd.plist'
+    dependencies {
+        exclude(dependency('net.java.dev.jna:jna'))
+        exclude(dependency('net.java.dev.jna:jna-platform'))
+        exclude(dependency('com.google.code.findbugs:jsr305'))
+    }
+}

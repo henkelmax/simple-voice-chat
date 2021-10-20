@@ -89,6 +89,9 @@ dependencies {
 
     implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
     shadow "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
+
+    implementation project(path: ':macos', configuration: 'shadow')
+    shadow project(path: ':macos', configuration: 'shadow')
 }
 
 processResources {
@@ -126,6 +129,13 @@ jar {
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
     }
     from configurations.shadow.collect { it.isDirectory() ? it : zipTree(it) }
+
+    copy {
+        from("${project(':macos').buildDir}/libs/macos.jar") {
+            rename { "macos.zip" }
+        }
+        into { "${buildDir}/resources/main" }
+    }
 }
 
 curseforge {
@@ -173,8 +183,11 @@ shadowJar {
     relocate 'de.maxhenkel.configbuilder', "de.maxhenkel.${mod_id}.configbuilder"
     relocate 'de.maxhenkel.opus4j', "de.maxhenkel.${mod_id}.opus4j"
     relocate 'de.maxhenkel.rnnoise4j', "de.maxhenkel.${mod_id}.rnnoise4j"
+    relocate 'com.dd.plist', "de.maxhenkel.${mod_id}.com.dd.plist"
     dependencies {
         exclude(dependency('net.java.dev.jna:jna'))
+        exclude(dependency('net.java.dev.jna:jna-platform'))
+        exclude(dependency('com.google.code.findbugs:jsr305'))
     }
 }
 

@@ -1,10 +1,13 @@
 package de.maxhenkel.voicechat;
 
+import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.config.ClientConfig;
 import de.maxhenkel.voicechat.config.PlayerVolumeConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.macos.PermissionCheck;
 import de.maxhenkel.voicechat.resourcepacks.VoiceChatResourcePack;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
+import de.maxhenkel.voicechat.voice.client.MacOSUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
@@ -42,6 +45,15 @@ public abstract class VoicechatClient {
             consumer.accept(Pack.create(WHITE_ICONS.getName(), false, () -> WHITE_ICONS, packConstructor, Pack.Position.TOP, PackSource.BUILT_IN));
             consumer.accept(Pack.create(BLACK_ICONS.getName(), false, () -> BLACK_ICONS, packConstructor, Pack.Position.TOP, PackSource.BUILT_IN));
         });
+
+        if (Platform.isMac()) {
+            Voicechat.LOGGER.info("Running MacOS microphone permission check");
+            PermissionCheck.AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
+            Voicechat.LOGGER.info("MacOS microphone permission: {}", status.name());
+            if (!status.equals(PermissionCheck.AVAuthorizationStatus.AUTHORIZED)) {
+                MacOSUtils.checkPermissionInSeparateProcess();
+            }
+        }
     }
 
     private void fixVolumeConfig() {

@@ -52,7 +52,7 @@ dependencies {
 
 //    modImplementation("com.sonicether:soundphysics:${soundphysics_version}")
 
-    modImplementation("de.maxhenkel.soundphysics:soundphysics-fabric:${minecraft_version}-${sound_physics_remastered_version}"){
+    modImplementation("de.maxhenkel.soundphysics:soundphysics-fabric:${minecraft_version}-${sound_physics_remastered_version}") {
         exclude(group: 'net.fabricmc.fabric-loader')
         exclude(group: 'me.shedaniel.cloth')
         exclude(group: 'com.terraformersmc')
@@ -72,6 +72,9 @@ dependencies {
 
     implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
     shadow "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
+
+    implementation project(path: ':macos', configuration: 'shadow')
+    shadow project(path: ':macos', configuration: 'shadow')
 }
 
 processResources {
@@ -109,6 +112,13 @@ java {
 jar {
     from('LICENSE') {
         rename { "${it}_${archivesBaseName}" }
+    }
+
+    copy {
+        from("${project(':macos').buildDir}/libs/macos.jar") {
+            rename { "macos.zip" }
+        }
+        into { "${buildDir}/resources/main" }
     }
 }
 
@@ -165,8 +175,11 @@ shadowJar {
     relocate 'de.maxhenkel.configbuilder', "de.maxhenkel.${mod_id}.configbuilder"
     relocate 'de.maxhenkel.opus4j', "de.maxhenkel.${mod_id}.opus4j"
     relocate 'de.maxhenkel.rnnoise4j', "de.maxhenkel.${mod_id}.rnnoise4j"
+    relocate 'com.dd.plist', "de.maxhenkel.${mod_id}.com.dd.plist"
     dependencies {
         exclude(dependency('net.java.dev.jna:jna'))
+        exclude(dependency('net.java.dev.jna:jna-platform'))
+        exclude(dependency('com.google.code.findbugs:jsr305'))
     }
 }
 

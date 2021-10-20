@@ -1,14 +1,23 @@
 package de.maxhenkel.voicechat.voice.client;
 
+import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.macos.PermissionCheck;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import io.netty.channel.local.LocalAddress;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
@@ -83,6 +92,18 @@ public class ClientManager {
         Voicechat.LOGGER.info("Sending secret request to the server");
         NetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
         client = new ClientVoicechat();
+
+        checkMicrophonePermissions();
+    }
+
+    public void checkMicrophonePermissions() {
+        if (Platform.isMac()) {
+            PermissionCheck.AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
+            if (!status.equals(PermissionCheck.AVAuthorizationStatus.AUTHORIZED)) {
+                sendPlayerError("message.voicechat.macos_no_mic_permission", null);
+                Voicechat.LOGGER.warn("User hasn't granted microphone permissions: {}", status.name());
+            }
+        }
     }
 
     private void onDisconnect() {
@@ -91,6 +112,25 @@ public class ClientManager {
             client = null;
         }
         ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
+    }
+
+    public static void sendPlayerError(String translationKey, @Nullable Exception e) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
+        player.sendMessage(
+                ComponentUtils.wrapInSquareBrackets(new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()))
+                        .withStyle(ChatFormatting.GREEN)
+                        .append(" ")
+                        .append(new TranslatableComponent(translationKey).withStyle(ChatFormatting.RED))
+                        .withStyle(style -> {
+                            if (e != null) {
+                                style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED)));
+                            }
+                            return style;
+                        })
+                , Util.NIL_UUID);
     }
 
     @Nullable

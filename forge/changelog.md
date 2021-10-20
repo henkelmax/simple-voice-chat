@@ -1,1 +1,1 @@
-- Fixed voice chat disconnecting when switching servers on a proxy
+- Fixed microphone permission issues on MacOS
