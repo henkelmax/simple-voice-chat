@@ -91,13 +91,6 @@ public class MacosFrame extends JFrame implements DropTargetListener {
         setVisible(true);
 
         new DropTarget(this, this);
-
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                System.exit(12);
-            }
-        });
     }
 
     public void setApplication(MacApplication application) {
@@ -136,9 +129,6 @@ public class MacosFrame extends JFrame implements DropTargetListener {
                 Successfully patched '%s'.
                 Please restart your game and launcher for this change to take effect.
                 """.formatted(application.getName()), "Success", JOptionPane.INFORMATION_MESSAGE);
-        setVisible(false);
-        dispose();
-        System.exit(0);
     }
 
     private void resetDragText() {

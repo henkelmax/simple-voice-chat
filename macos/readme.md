@@ -24,6 +24,21 @@ You can revert these changes by reinstalling the launcher.
 
 After restarting the launcher, Minecraft should now ask for microphone access.
 
+### How to patch your launcher
+
+**Vanilla Minecraft Launcher**
+- Drag the minecraft launcher from your applications folder on the patcher GUI
+
+**CurseForge Launcher**
+- Drag the CurseForge launcher from your applications folder on the patcher GUI
+- Go to `Settings` > `Addons` > `Mod installation path` and open that path (The default is `Documents/curseforge/`)
+- Open the `minecraft` folder in the mod installation path
+- Open the `Install` folder
+- Drag the `Minecraft` application on the patcher GUI
+
+**MultiMC**
+- You don't need to do anything, it just works
+
 ### Are there any alternatives to this?
 
 This issue mostly affects the vanilla Minecraft launcher and the CurseForge launcher.
