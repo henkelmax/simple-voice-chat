@@ -42,8 +42,8 @@ public class MacosFrame extends JFrame implements DropTargetListener {
                     <p>
                     Your Minecraft launcher does not allow access to your microphone.
                     </p>
+                    <p><b>Please read <a href="https://github.com/henkelmax/simple-voice-chat/tree/1.17.1/macos#how-to-patch-your-launcher">this guide</a> on how to patch your launcher.</b></p>
                     <p>
-                    Simple Voice Chat has a workaround for this issue.
                     You need to drag your Minecraft launcher from your applications folder onto the area below.
                     Note that this will remove the original signature of your launcher.
                     If you don't trust this, you can take a look at the <a href="https://github.com/henkelmax/simple-voice-chat/tree/1.17.1/macos">source code</a> of this application.

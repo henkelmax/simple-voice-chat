@@ -46,7 +46,7 @@ public abstract class VoicechatClient {
             consumer.accept(Pack.create(BLACK_ICONS.getName(), false, () -> BLACK_ICONS, packConstructor, Pack.Position.TOP, PackSource.BUILT_IN));
         });
 
-        if (Platform.isMac()) {
+        if (Platform.isMac() && VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get()) {
             Voicechat.LOGGER.info("Running MacOS microphone permission check");
             PermissionCheck.AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
             Voicechat.LOGGER.info("MacOS microphone permission: {}", status.name());

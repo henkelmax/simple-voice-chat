@@ -146,6 +146,10 @@ public class ForgeClientConfig extends ClientConfig {
                 .comment("Whether to use the Java implementation of microphone capturing instead of OpenAL")
                 .define("java_microphone_implementation", Platform.isMac())
         );
+        macosMicrophoneWorkaround = wrapConfigEntry(builder
+                .comment("If the microphone workaround hack should be used (MacOS only)")
+                .define("macos_microphone_workaround", Platform.isMac())
+        );
     }
 
 }
