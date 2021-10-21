@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.macos;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.HyperlinkEvent;
@@ -7,9 +8,9 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.image.ImageObserver;
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 public class MacosFrame extends JFrame implements DropTargetListener {
@@ -31,6 +32,11 @@ public class MacosFrame extends JFrame implements DropTargetListener {
         setSize(800, 600);
         setTitle("Simple Voice Chat");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        try {
+            setIconImage(new ImageIcon(getClass().getResource("/icon.png")).getImage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         Container pane = getContentPane();
 

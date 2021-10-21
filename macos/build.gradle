@@ -32,7 +32,7 @@ task prepareWorkspace {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'de.maxhenkel.voicechat.Main'
+        attributes 'Main-Class': 'de.maxhenkel.voicechat.macos.Main'
     }
 }
 
