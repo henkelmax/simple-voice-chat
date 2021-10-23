@@ -131,6 +131,7 @@ curseforge {
         releaseType = curse_release_type
         addGameVersion curseforge_minecraft_version
         addGameVersion 'Fabric'
+        addGameVersion 'Java 16'
         mainArtifact(file("${buildDir}/libs/${archivesBaseName}-${version}.jar")) {
             displayName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
             relations {
