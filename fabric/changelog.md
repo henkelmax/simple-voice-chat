@@ -1,1 +1,1 @@
-- Fixed microphone permission issues on MacOS
+- Fixed crash with older MacOS versions

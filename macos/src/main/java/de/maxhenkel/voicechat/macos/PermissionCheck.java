@@ -19,7 +19,7 @@ public class PermissionCheck {
     }
 
     public static AVAuthorizationStatus checkMicrophonePermissions(boolean requestIfNeeded) {
-        if (!VersionCheck.isMinimumVersion(10, 4, 0)) {
+        if (!VersionCheck.isMinimumVersion(10, 14, 0)) {
             return AVAuthorizationStatus.AUTHORIZED;
         }
         Pointer classPointerAVCaptureDevice = AVFoundationLibrary.INSTANCE.objc_getClass("AVCaptureDevice");
