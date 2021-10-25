@@ -36,9 +36,11 @@ After restarting the launcher, Minecraft should now ask for microphone access.
 - Drag the `Minecraft` application on the patcher GUI
 
 **MultiMC**
-- You don't need to do anything, it just works
+- Drag MultiMC from your applications folder on the patcher GUI
 
 ### Are there any alternatives to this?
 
-This issue mostly affects the vanilla Minecraft launcher and the CurseForge launcher.
-You can use [MultiMC](https://multimc.org/) without needing to do this workaround, since this application is not signed.
+You can run your launcher in the terminal.
+This will cause the microphone permission popup to work.
+The downside of this is that you need to do this everytime you want to launch Minecraft.
+It will also not work with all launchers.
