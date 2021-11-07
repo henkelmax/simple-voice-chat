@@ -44,7 +44,7 @@ public class PlayerStateManager {
         server.getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
-    public void onPlayerCompatibilityCheckSucceded(ServerPlayer player) {
+    public void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
         PlayerState state = states.getOrDefault(player.getUUID(), defaultDisconnectedState(player));
         states.put(player.getUUID(), state);
         PlayerStatesPacket packet = new PlayerStatesPacket(states);

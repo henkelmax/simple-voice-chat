@@ -1,0 +1,77 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url = 'https://maven.maxhenkel.de/repository/public' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        mavenLocal()
+    }
+}
+
+plugins {
+    id "java"
+    id "org.spongepowered.gradle.vanilla" version "0.2"
+    id 'maven-publish'
+}
+
+archivesBaseName = archives_base_name
+version = version
+group = maven_group
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+    maven {
+        name = "henkelmax.public"
+        url = 'https://maven.maxhenkel.de/repository/public'
+    }
+    mavenLocal()
+}
+
+minecraft {
+    version(minecraft_version)
+    runs {
+        server()
+        client()
+    }
+}
+
+dependencies {
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+}
+
+task packageJavadoc(type: Jar, dependsOn: 'javadoc') {
+    from javadoc.destinationDir
+    classifier 'javadoc'
+}
+task packageSources(type: Jar, dependsOn: 'classes') {
+    from sourceSets.main.allSource
+    classifier 'sources'
+}
+artifacts {
+    archives packageJavadoc
+    archives packageSources
+}
+
+publishing {
+    publications {
+        voiceChatApi(MavenPublication) {
+            artifactId archives_base_name
+            artifact(jar.archivePath) {
+                builtBy build
+                classifier null
+            }
+            artifact packageJavadoc
+            artifact packageSources
+        }
+    }
+    repositories {
+        maven {
+            name = 'henkelmax.public'
+            url = 'https://maven.maxhenkel.de/repository/public'
+            credentials {
+                username System.getenv('MAVEN_USERNAME')
+                password System.getenv('MAVEN_PASSWORD')
+            }
+        }
+    }
+}

@@ -37,7 +37,7 @@ public class OpusDecoder {
 
     public short[] decode(@Nullable byte[] data) {
         if (isClosed()) {
-            throw new IllegalStateException("Trying to decode with a closed decoder");
+            throw new IllegalStateException("Decoder is closed");
         }
         int result;
         ShortBuffer decoded = ShortBuffer.allocate(4096);
@@ -70,11 +70,14 @@ public class OpusDecoder {
     }
 
     public void resetState() {
+        if (isClosed()) {
+            throw new IllegalStateException("Decoder is closed");
+        }
         Opus.INSTANCE.opus_decoder_ctl(opusDecoder, Opus.INSTANCE.OPUS_RESET_STATE);
     }
 
     @Nullable
-    public static OpusDecoder createEncoder(int sampleRate, int frameSize, int maxPayloadSize) {
+    public static OpusDecoder createDecoder(int sampleRate, int frameSize, int maxPayloadSize) {
         return Utils.createSafe(() -> new OpusDecoder(sampleRate, frameSize, maxPayloadSize));
     }
 

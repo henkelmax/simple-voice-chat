@@ -1,12 +1,14 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.brigadier.CommandDispatcher;
+import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.net.NetManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.function.Consumer;
 
 public abstract class CommonCompatibilityManager {
@@ -36,5 +38,7 @@ public abstract class CommonCompatibilityManager {
     public abstract String listKeybinds();
 
     public abstract boolean isDevEnvironment();
+
+    public abstract List<VoicechatPlugin> loadPlugins();
 
 }

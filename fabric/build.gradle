@@ -75,6 +75,9 @@ dependencies {
 
     implementation project(path: ':macos', configuration: 'shadow')
     shadow project(path: ':macos', configuration: 'shadow')
+
+    implementation project(':api')
+    shadow project(':api')
 }
 
 processResources {

@@ -4,6 +4,8 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.JoinedGroupPacket;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -17,50 +19,56 @@ import java.util.stream.Collectors;
 public class GroupManager {
 
     private final Map<UUID, Group> groups;
+    private final Server server;
 
-    public GroupManager() {
+    public GroupManager(Server server) {
+        this.server = server;
         groups = new ConcurrentHashMap<>();
-        CommonCompatibilityManager.INSTANCE.getNetManager().joinGroupChannel.setServerListener((server, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().joinGroupChannel.setServerListener((srv, player, handler, packet) -> {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
             }
             joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
         });
-        CommonCompatibilityManager.INSTANCE.getNetManager().createGroupChannel.setServerListener((server, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().createGroupChannel.setServerListener((srv, player, handler, packet) -> {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
             }
-            Group group = new Group(UUID.randomUUID(), packet.getName(), packet.getPassword());
-            addGroup(group, player);
+            addGroup(new Group(UUID.randomUUID(), packet.getName(), packet.getPassword()), player);
         });
-        CommonCompatibilityManager.INSTANCE.getNetManager().leaveGroupChannel.setServerListener((server, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().leaveGroupChannel.setServerListener((srv, player, handler, packet) -> {
             leaveGroup(player);
         });
     }
 
     private PlayerStateManager getStates() {
-        return Voicechat.SERVER.getServer().getPlayerStateManager();
+        return server.getPlayerStateManager();
     }
 
-    public boolean addGroup(Group group, ServerPlayer player) {
+    public void addGroup(Group group, ServerPlayer player) {
+        if (PluginManager.instance().onCreateGroup(player, group)) {
+            return;
+        }
         groups.put(group.getId(), group);
 
         PlayerStateManager manager = getStates();
         manager.setGroup(player.server, player, group.toClientGroup());
 
         NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup()));
-        return true;
     }
 
-    public boolean joinGroup(@Nullable Group group, ServerPlayer player, String password) {
+    public void joinGroup(@Nullable Group group, ServerPlayer player, @Nullable String password) {
+        if (PluginManager.instance().onJoinGroup(player, group)) {
+            return;
+        }
         if (group == null) {
             NetManager.sendToClient(player, new JoinedGroupPacket(null));
-            return false;
+            return;
         }
         if (group.getPassword() != null) {
             if (!group.getPassword().equals(password)) {
                 NetManager.sendToClient(player, new JoinedGroupPacket(null));
-                return false;
+                return;
             }
         }
 
@@ -68,10 +76,13 @@ public class GroupManager {
         manager.setGroup(player.server, player, group.toClientGroup());
 
         NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup()));
-        return true;
     }
 
     public void leaveGroup(ServerPlayer player) {
+        if (PluginManager.instance().onLeaveGroup(player)) {
+            return;
+        }
+
         PlayerStateManager manager = getStates();
         manager.setGroup(player.server, player, null);
 
@@ -90,6 +101,19 @@ public class GroupManager {
     @Nullable
     public Group getGroup(UUID groupID) {
         return groups.get(groupID);
+    }
+
+    @Nullable
+    public Group getPlayerGroup(ServerPlayer player) {
+        PlayerState state = server.getPlayerStateManager().getState(player.getUUID());
+        if (state == null) {
+            return null;
+        }
+        ClientGroup group = state.getGroup();
+        if (group == null) {
+            return null;
+        }
+        return getGroup(group.getId());
     }
 
 }

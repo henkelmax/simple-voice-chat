@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "voicechat_api",
+  "version": "${version}",
+  "name": "Simple Voice Chat API",
+  "description": "",
+  "authors": [
+    "Max Henkel"
+  ],
+  "license": "All Rights Reserved",
+  "environment": "*"
+}

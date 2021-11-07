@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.SecretPacket;
+import de.maxhenkel.voicechat.plugins.PluginManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
@@ -26,6 +27,7 @@ public class ServerVoiceEvents {
 
     public ServerVoiceEvents() {
         clientCompatibilities = new ConcurrentHashMap<>();
+        PluginManager.instance().init();
         CommonCompatibilityManager.INSTANCE.onServerStarting(this::serverStarting);
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::playerLoggedOut);
         CommonCompatibilityManager.INSTANCE.onServerStopping(this::serverStopping);
@@ -74,6 +76,7 @@ public class ServerVoiceEvents {
         try {
             server = new Server(mcServer);
             server.start();
+            PluginManager.instance().onServerStarted(mcServer);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -83,9 +86,9 @@ public class ServerVoiceEvents {
         if (server == null) {
             return;
         }
-        server.getPlayerStateManager().onPlayerCompatibilityCheckSucceded(player);
+        server.getPlayerStateManager().onPlayerCompatibilityCheckSucceeded(player);
         UUID secret = server.getSecret(player.getUUID());
-        NetManager.sendToClient(player, new SecretPacket(secret, server.getPort(), Voicechat.SERVER_CONFIG));
+        NetManager.sendToClient(player, new SecretPacket(player, secret, server.getPort(), Voicechat.SERVER_CONFIG));
         Voicechat.LOGGER.info("Sent secret to " + player.getDisplayName().getString());
     }
 

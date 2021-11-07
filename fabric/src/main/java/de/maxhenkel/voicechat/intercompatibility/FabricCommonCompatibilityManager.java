@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.intercompatibility;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.CommandDispatcher;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.events.PlayerEvents;
 import de.maxhenkel.voicechat.net.FabricNetManager;
 import de.maxhenkel.voicechat.net.NetManager;
@@ -12,6 +13,7 @@ import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import net.fabricmc.loader.api.metadata.ModDependency;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.KeyMapping;
@@ -125,6 +127,11 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
     @Override
     public boolean isDevEnvironment() {
         return FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
+    @Override
+    public List<VoicechatPlugin> loadPlugins() {
+        return FabricLoader.getInstance().getEntrypointContainers(Voicechat.MODID, VoicechatPlugin.class).stream().map(EntrypointContainer::getEntrypoint).collect(Collectors.toList());
     }
 
 }

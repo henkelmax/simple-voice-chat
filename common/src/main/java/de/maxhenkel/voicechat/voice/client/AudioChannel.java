@@ -38,7 +38,7 @@ public class AudioChannel extends Thread {
         this.packetBuffer = new AudioPacketBuffer(VoicechatClient.CLIENT_CONFIG.audioPacketThreshold.get());
         this.lastPacketTime = System.currentTimeMillis();
         this.stopped = false;
-        this.decoder = OpusDecoder.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, clientConnection.getData().getMtuSize());
+        this.decoder = OpusDecoder.createDecoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, clientConnection.getData().getMtuSize());
         if (decoder == null) {
             throw new NativeDependencyException("Failed to load Opus decoder");
         }

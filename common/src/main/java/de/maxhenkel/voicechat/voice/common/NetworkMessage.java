@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
+import de.maxhenkel.voicechat.api.RawUdpPacket;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
@@ -73,12 +74,6 @@ public class NetworkMessage {
         packetRegistry.put((byte) 0x8, KeepAlivePacket.class);
     }
 
-    public static UnprocessedNetworkMessage readPacket(DatagramSocket socket) throws IOException {
-        DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
-        socket.receive(packet);
-        return new UnprocessedNetworkMessage(packet, System.currentTimeMillis());
-    }
-
     public static NetworkMessage readPacketClient(DatagramSocket socket, ClientVoicechatConnection client) throws IllegalAccessException, InstantiationException, IOException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvocationTargetException, NoSuchMethodException {
         DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
         socket.receive(packet);
@@ -87,12 +82,11 @@ public class NetworkMessage {
         return readFromBytes(packet.getSocketAddress(), client.getData().getSecret(), data, System.currentTimeMillis());
     }
 
-    public static NetworkMessage readPacketServer(UnprocessedNetworkMessage msg, Server server) throws IllegalAccessException, InstantiationException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvocationTargetException, NoSuchMethodException {
-        byte[] data = new byte[msg.packet.getLength()];
-        System.arraycopy(msg.packet.getData(), msg.packet.getOffset(), data, 0, msg.packet.getLength());
+    public static NetworkMessage readPacketServer(RawUdpPacket packet, Server server) throws IllegalAccessException, InstantiationException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvocationTargetException, NoSuchMethodException {
+        byte[] data = packet.getData();
         FriendlyByteBuf b = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
         UUID playerID = b.readUUID();
-        return readFromBytes(msg.packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray(), msg.timestamp);
+        return readFromBytes(packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray(), packet.getTimestamp());
     }
 
     private static NetworkMessage readFromBytes(SocketAddress socketAddress, UUID secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, NoSuchMethodException, InvocationTargetException {
@@ -157,25 +151,6 @@ public class NetworkMessage {
         byte[] bytes = new byte[buffer.readableBytes()];
         buffer.readBytes(bytes);
         return AES.encrypt(secret, bytes);
-    }
-
-    public static class UnprocessedNetworkMessage {
-
-        private DatagramPacket packet;
-        private long timestamp;
-
-        public UnprocessedNetworkMessage(DatagramPacket packet, long timestamp) {
-            this.packet = packet;
-            this.timestamp = timestamp;
-        }
-
-        public DatagramPacket getPacket() {
-            return packet;
-        }
-
-        public long getTimestamp() {
-            return timestamp;
-        }
     }
 
 }

@@ -2,14 +2,13 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 
-import java.net.DatagramPacket;
 import java.net.SocketAddress;
 import java.util.UUID;
 
 public class ClientConnection {
 
-    private UUID playerUUID;
-    private SocketAddress address;
+    private final UUID playerUUID;
+    private final SocketAddress address;
     private long lastKeepAliveResponse;
 
     public ClientConnection(UUID playerUUID, SocketAddress address) {
@@ -36,7 +35,7 @@ public class ClientConnection {
 
     public void send(Server server, NetworkMessage message) throws Exception {
         byte[] data = message.write(server.getSecret(playerUUID));
-        server.getSocket().send(new DatagramPacket(data, data.length, address));
+        server.getSocket().send(data, address);
     }
 
 }

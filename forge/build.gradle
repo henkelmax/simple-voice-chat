@@ -92,6 +92,9 @@ dependencies {
 
     implementation project(path: ':macos', configuration: 'shadow')
     shadow project(path: ':macos', configuration: 'shadow')
+
+    implementation project(':api')
+    shadow project(':api')
 }
 
 processResources {
@@ -136,6 +139,11 @@ jar {
         }
         into { "${buildDir}/resources/main" }
     }
+}
+
+task deobfJar(type: Jar) {
+    classifier 'deobf'
+    from sourceSets.main.output
 }
 
 curseforge {
@@ -193,4 +201,8 @@ shadowJar {
 
 reobf {
     shadowJar {}
+}
+
+artifacts {
+    archives deobfJar
 }

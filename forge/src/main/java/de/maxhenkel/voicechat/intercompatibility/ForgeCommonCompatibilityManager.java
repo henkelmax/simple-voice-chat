@@ -2,6 +2,8 @@ package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.brigadier.CommandDispatcher;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.ForgeVoicechatPlugin;
+import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.net.ForgeNetManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import net.minecraft.client.KeyMapping;
@@ -149,5 +151,26 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     @Override
     public boolean isDevEnvironment() {
         return !FMLLoader.isProduction();
+    }
+
+    @Override
+    public List<VoicechatPlugin> loadPlugins() {
+        List<VoicechatPlugin> plugins = new ArrayList<>();
+        ModList.get().getAllScanData().forEach(scan -> {
+            scan.getAnnotations().forEach(annotationData -> {
+                if (annotationData.annotationType().getClassName().equals(ForgeVoicechatPlugin.class.getName())) {
+                    try {
+                        Class<?> clazz = Class.forName(annotationData.memberName());
+                        if (VoicechatPlugin.class.isAssignableFrom(clazz)) {
+                            VoicechatPlugin plugin = (VoicechatPlugin) clazz.getDeclaredConstructor().newInstance();
+                            plugins.add(plugin);
+                        }
+                    } catch (Exception e) {
+                        Voicechat.LOGGER.warn("Failed to load plugin '{}': {}", annotationData.memberName(), e.getMessage());
+                    }
+                }
+            });
+        });
+        return plugins;
     }
 }

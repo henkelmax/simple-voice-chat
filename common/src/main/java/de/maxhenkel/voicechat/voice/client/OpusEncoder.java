@@ -39,6 +39,9 @@ public class OpusEncoder {
     }
 
     public byte[] encode(short[] rawAudio) {
+        if (isClosed()) {
+            throw new IllegalStateException("Encoder is closed");
+        }
         ShortBuffer nonEncodedBuffer = ShortBuffer.wrap(rawAudio);
         ByteBuffer encoded = ByteBuffer.allocate(maxPayloadSize);
 
@@ -54,6 +57,9 @@ public class OpusEncoder {
     }
 
     public void resetState() {
+        if (isClosed()) {
+            throw new IllegalStateException("Encoder is closed");
+        }
         Opus.INSTANCE.opus_encoder_ctl(opusEncoder, Opus.INSTANCE.OPUS_RESET_STATE);
     }
 

@@ -1,0 +1,76 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+}
+
+plugins {
+    id "java"
+    id 'fabric-loom' version '0.8-SNAPSHOT'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'maven-publish'
+}
+
+archivesBaseName = archives_base_name
+version = version
+group = maven_group
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings minecraft.officialMojangMappings()
+
+    implementation project(':api')
+    shadow project(':api')
+}
+
+processResources {
+    filesMatching("fabric.mod.json") {
+        expand 'version': version
+    }
+}
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+    classifier 'shadow-dev'
+    dependencies {
+        include(project(':api'))
+    }
+}
+
+remapJar {
+    dependsOn shadowJar
+    input.set shadowJar.archiveFile.get()
+}
+
+publishing {
+    publications {
+        voiceChatApi(MavenPublication) {
+            artifactId archives_base_name
+            artifact(remapJar.archivePath) {
+                builtBy build
+                classifier null
+            }
+            artifact("${project(':api').buildDir}/libs/${project(':api').archivesBaseName}-${project(':api').version}-javadoc.jar"){
+                classifier 'javadoc'
+            }
+            artifact("${project(':api').buildDir}/libs/${project(':api').archivesBaseName}-${project(':api').version}-sources.jar"){
+                classifier 'sources'
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = 'henkelmax.public'
+            url = 'https://maven.maxhenkel.de/repository/public'
+            credentials {
+                username System.getenv('MAVEN_USERNAME')
+                password System.getenv('MAVEN_PASSWORD')
+            }
+        }
+    }
+}
+
+task prepareWorkspace {
+
+}
