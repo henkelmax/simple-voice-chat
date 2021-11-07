@@ -1,1 +1,1 @@
-- Fixed crash with older MacOS versions
+- Fixed MacOS patcher
