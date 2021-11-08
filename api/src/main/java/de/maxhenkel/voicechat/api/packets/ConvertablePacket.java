@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.api.packets;
 
-import net.minecraft.world.phys.Vec3;
+import de.maxhenkel.voicechat.api.Position;
 
 import java.util.UUID;
 
@@ -21,7 +21,7 @@ public interface ConvertablePacket {
      * @param position the position of the audio
      * @return the locational sound packet
      */
-    LocationalSoundPacket toLocationalSoundPacket(Vec3 position);
+    LocationalSoundPacket toLocationalSoundPacket(Position position);
 
     /**
      * Converts this packet to a static sound packet

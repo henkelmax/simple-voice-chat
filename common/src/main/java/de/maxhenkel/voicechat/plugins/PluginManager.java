@@ -7,10 +7,7 @@ import de.maxhenkel.voicechat.api.VoicechatServerApi;
 import de.maxhenkel.voicechat.api.VoicechatSocket;
 import de.maxhenkel.voicechat.api.events.*;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.plugins.impl.GroupImpl;
-import de.maxhenkel.voicechat.plugins.impl.VoicechatConnectionImpl;
-import de.maxhenkel.voicechat.plugins.impl.VoicechatServerApiImpl;
-import de.maxhenkel.voicechat.plugins.impl.VoicechatSocketImpl;
+import de.maxhenkel.voicechat.plugins.impl.*;
 import de.maxhenkel.voicechat.plugins.impl.events.*;
 import de.maxhenkel.voicechat.plugins.impl.packets.EntitySoundPacketImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.LocationalSoundPacketImpl;
@@ -36,10 +33,10 @@ public class PluginManager {
         Voicechat.LOGGER.info("Loading plugins");
         plugins = CommonCompatibilityManager.INSTANCE.loadPlugins();
         Voicechat.LOGGER.info("Loaded {} plugin(s)", plugins.size());
-        Voicechat.LOGGER.info("Initialize plugins");
+        Voicechat.LOGGER.info("Initializing plugins");
         for (VoicechatPlugin plugin : plugins) {
             try {
-                plugin.initialize();
+                plugin.initialize(new VoicechatApiImpl());
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -1,7 +1,5 @@
 package de.maxhenkel.voicechat.api;
 
-import net.minecraft.server.level.ServerPlayer;
-
 import javax.annotation.Nullable;
 
 public interface VoicechatConnection {

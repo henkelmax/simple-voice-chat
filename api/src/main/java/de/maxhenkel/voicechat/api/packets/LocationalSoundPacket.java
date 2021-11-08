@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.api.packets;
 
-import net.minecraft.world.phys.Vec3;
+import de.maxhenkel.voicechat.api.Position;
 
 /**
  * The receiver of this event will hear the sound from the specified location
@@ -11,6 +11,6 @@ public interface LocationalSoundPacket extends SoundPacket {
     /**
      * @return the audio location
      */
-    Vec3 getPosition();
+    Position getPosition();
 
 }

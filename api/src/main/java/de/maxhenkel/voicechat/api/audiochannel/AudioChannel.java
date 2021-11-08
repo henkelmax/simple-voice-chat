@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.api.audiochannel;
 
+import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.packets.MicrophonePacket;
-import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
 import java.util.function.Predicate;

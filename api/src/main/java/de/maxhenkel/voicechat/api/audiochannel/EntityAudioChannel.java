@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.api.audiochannel;
 
-import net.minecraft.world.entity.Entity;
+import de.maxhenkel.voicechat.api.Entity;
 
 public interface EntityAudioChannel extends AudioChannel {
 

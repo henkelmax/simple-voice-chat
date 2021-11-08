@@ -1,0 +1,22 @@
+name: voicechat
+version: ${version}
+main: de.maxhenkel.voicechat.Voicechat
+api-version: ${bukkit_api_version}
+prefix: voicechat
+authors: [ "Max Henkel", "Matthew Wells" ]
+description: A working voice chat in Minecraft
+website: https://modrepo.de
+depend: [ ProtocolLib ]
+commands:
+  voicechat:
+    description: Manage voice chat
+    usage: Invalid command syntax
+permissions:
+  voicechat.connect:
+    description: Allows to connect to the voice chat
+  voicechat.speak:
+    description: Allows to speak in the voice chat
+  voicechat.groups:
+    description: Allows to join groups
+  voicechat.admin:
+    description: Allows to test voice chat connections

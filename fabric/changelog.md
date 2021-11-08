@@ -1,1 +1,1 @@
-- Added voicechat API
+- Improved voicechat API

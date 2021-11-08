@@ -6,10 +6,6 @@ import de.maxhenkel.voicechat.api.audiochannel.StaticAudioChannel;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
 import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
 import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -61,7 +57,7 @@ public interface VoicechatServerApi extends VoicechatApi {
      * @return the channel
      */
     @Nullable
-    LocationalAudioChannel createLocationalAudioChannel(UUID channelId, ServerLevel level, Vec3 initialPosition);
+    LocationalAudioChannel createLocationalAudioChannel(UUID channelId, ServerLevel level, Position initialPosition);
 
     /**
      * Creates a static audio channel
@@ -91,7 +87,7 @@ public interface VoicechatServerApi extends VoicechatApi {
      */
     @Nullable
     default VoicechatConnection getConnectionOf(ServerPlayer player) {
-        return getConnectionOf(player.getUUID());
+        return getConnectionOf(player.getUuid());
     }
 
     /**
@@ -126,7 +122,7 @@ public interface VoicechatServerApi extends VoicechatApi {
      * @param filter the filter to exclude specific players
      * @return all players in the provided location
      */
-    Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Vec3 pos, double range, Predicate<ServerPlayer> filter);
+    Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Position pos, double range, Predicate<ServerPlayer> filter);
 
     /**
      * A convenience method to get all players in the range of a specific location
@@ -136,7 +132,7 @@ public interface VoicechatServerApi extends VoicechatApi {
      * @param range the range
      * @return all players in the provided location
      */
-    default Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Vec3 pos, double range) {
+    default Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Position pos, double range) {
         return getPlayersInRange(level, pos, range, player -> true);
     }
 

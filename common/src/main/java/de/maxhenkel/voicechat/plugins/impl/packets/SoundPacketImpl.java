@@ -1,13 +1,14 @@
 package de.maxhenkel.voicechat.plugins.impl.packets;
 
+import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
 import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
 import de.maxhenkel.voicechat.api.packets.SoundPacket;
 import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
+import de.maxhenkel.voicechat.plugins.impl.PositionImpl;
 import de.maxhenkel.voicechat.voice.common.GroupSoundPacket;
 import de.maxhenkel.voicechat.voice.common.LocationSoundPacket;
 import de.maxhenkel.voicechat.voice.common.PlayerSoundPacket;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
 
@@ -44,8 +45,12 @@ public class SoundPacketImpl implements SoundPacket {
     }
 
     @Override
-    public LocationalSoundPacket toLocationalSoundPacket(Vec3 position) {
-        return new LocationalSoundPacketImpl(new LocationSoundPacket(packet.getSender(), position, packet.getData(), packet.getSequenceNumber()));
+    public LocationalSoundPacket toLocationalSoundPacket(Position position) {
+        if (position instanceof PositionImpl p) {
+            return new LocationalSoundPacketImpl(new LocationSoundPacket(packet.getSender(), p.getPosition(), packet.getData(), packet.getSequenceNumber()));
+        } else {
+            throw new IllegalArgumentException("position is not an instance of PositionImpl");
+        }
     }
 
     @Override

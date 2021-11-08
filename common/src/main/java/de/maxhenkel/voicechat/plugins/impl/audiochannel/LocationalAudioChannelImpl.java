@@ -1,35 +1,41 @@
 package de.maxhenkel.voicechat.plugins.impl.audiochannel;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.Position;
+import de.maxhenkel.voicechat.api.ServerLevel;
 import de.maxhenkel.voicechat.api.audiochannel.LocationalAudioChannel;
 import de.maxhenkel.voicechat.api.packets.MicrophonePacket;
+import de.maxhenkel.voicechat.plugins.impl.PositionImpl;
+import de.maxhenkel.voicechat.plugins.impl.ServerPlayerImpl;
 import de.maxhenkel.voicechat.voice.common.LocationSoundPacket;
 import de.maxhenkel.voicechat.voice.server.Server;
 import de.maxhenkel.voicechat.voice.server.ServerWorldUtils;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
 
 public class LocationalAudioChannelImpl extends AudioChannelImpl implements LocationalAudioChannel {
 
     protected ServerLevel level;
-    protected Vec3 position;
+    protected PositionImpl position;
 
-    public LocationalAudioChannelImpl(UUID channelId, Server server, ServerLevel level, Vec3 position) {
+    public LocationalAudioChannelImpl(UUID channelId, Server server, ServerLevel level, PositionImpl position) {
         super(channelId, server);
         this.level = level;
         this.position = position;
     }
 
     @Override
-    public void updateLocation(Vec3 position) {
-        this.position = position;
+    public void updateLocation(Position position) {
+        if (position instanceof PositionImpl p) {
+            this.position = p;
+        } else {
+            throw new IllegalArgumentException("position is not an instance of PositionImpl");
+        }
     }
 
     @Override
     public void send(byte[] opusData) {
-        broadcast(new LocationSoundPacket(channelId, position, opusData, sequenceNumber.getAndIncrement()));
+        broadcast(new LocationSoundPacket(channelId, position.getPosition(), opusData, sequenceNumber.getAndIncrement()));
     }
 
     @Override
@@ -39,11 +45,11 @@ public class LocationalAudioChannelImpl extends AudioChannelImpl implements Loca
 
     @Override
     public void flush() {
-        broadcast(new LocationSoundPacket(channelId, position, new byte[0], sequenceNumber.getAndIncrement()));
+        broadcast(new LocationSoundPacket(channelId, position.getPosition(), new byte[0], sequenceNumber.getAndIncrement()));
     }
 
     private void broadcast(LocationSoundPacket packet) {
-        server.broadcast(ServerWorldUtils.getPlayersInRange(level, position, Voicechat.SERVER_CONFIG.voiceChatDistance.get(), filter == null ? player -> true : filter), packet, null, null, null);
+        server.broadcast(ServerWorldUtils.getPlayersInRange((net.minecraft.server.level.ServerLevel) level.getServerLevel(), position.getPosition(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null);
     }
 
 }

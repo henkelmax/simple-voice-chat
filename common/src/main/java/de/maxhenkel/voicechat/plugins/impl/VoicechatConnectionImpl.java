@@ -2,28 +2,30 @@ package de.maxhenkel.voicechat.plugins.impl;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.Group;
+import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.Server;
-import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
 
 public class VoicechatConnectionImpl implements VoicechatConnection {
 
     private final ServerPlayer player;
+    private final net.minecraft.server.level.ServerPlayer serverPlayer;
     private final PlayerState state;
     @Nullable
     private final Group group;
 
-    public VoicechatConnectionImpl(ServerPlayer player, PlayerState state) {
-        this.player = player;
+    public VoicechatConnectionImpl(net.minecraft.server.level.ServerPlayer player, PlayerState state) {
+        this.serverPlayer = player;
+        this.player = new ServerPlayerImpl(player);
         this.state = state;
         this.group = GroupImpl.create(state);
     }
 
     @Nullable
-    public static VoicechatConnectionImpl fromPlayer(ServerPlayer player) {
+    public static VoicechatConnectionImpl fromPlayer(net.minecraft.server.level.ServerPlayer player) {
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
             return null;
@@ -53,16 +55,16 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
             return;
         }
         if (group == null) {
-            server.getGroupManager().joinGroup(null, player, null);
+            server.getGroupManager().joinGroup(null, serverPlayer, null);
             return;
         }
         if (group instanceof GroupImpl g) {
             de.maxhenkel.voicechat.voice.server.Group actualGroup = server.getGroupManager().getGroup(g.getGroup().getId());
             if (actualGroup == null) {
-                server.getGroupManager().addGroup(g.getGroup(), player);
+                server.getGroupManager().addGroup(g.getGroup(), serverPlayer);
                 actualGroup = g.getGroup();
             }
-            server.getGroupManager().joinGroup(actualGroup, player, g.getGroup().getPassword());
+            server.getGroupManager().joinGroup(actualGroup, serverPlayer, g.getGroup().getPassword());
         }
     }
 
@@ -75,6 +77,5 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
     public ServerPlayer getPlayer() {
         return player;
     }
-
 
 }

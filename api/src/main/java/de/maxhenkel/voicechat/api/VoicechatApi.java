@@ -25,4 +25,30 @@ public interface VoicechatApi {
     @Nullable
     OpusDecoder createDecoder();
 
+    /**
+     * Creates an entity object from an actual entity
+     *
+     * @param entity the entity implementation of your mod/plugin loader
+     * @return the entity object
+     */
+    Entity fromEntity(Object entity);
+
+    /**
+     * Creates a level object from an actual level
+     *
+     * @param serverLevel the level implementation of your mod/plugin loader
+     * @return the level
+     */
+    ServerLevel fromServerLevel(Object serverLevel);
+
+    /**
+     * Creates a new position object
+     *
+     * @param x the X position
+     * @param y the Y position
+     * @param z the Z position
+     * @return the position with the provided coordinates
+     */
+    Position createPosition(double x, double y, double z);
+
 }
