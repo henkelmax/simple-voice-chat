@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.net.*;
+import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import org.bukkit.entity.Player;
 
@@ -43,35 +44,43 @@ public class GroupManager {
         return Voicechat.SERVER.getServer().getPlayerStateManager();
     }
 
-    public boolean addGroup(Group group, Player player) {
+    public void addGroup(Group group, Player player) {
+        if (PluginManager.instance().onCreateGroup(player, group)) {
+            return;
+        }
         groups.put(group.getId(), group);
 
         PlayerStateManager manager = getStates();
         manager.setGroup(player, group.toClientGroup());
 
         NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup()));
-        return true;
     }
 
-    public boolean joinGroup(@Nullable Group group, Player player, String password) {
+    public void joinGroup(@Nullable Group group, Player player, String password) {
+        if (PluginManager.instance().onJoinGroup(player, group)) {
+            return;
+        }
         if (group == null) {
             NetManager.sendToClient(player, new JoinedGroupPacket(null));
-            return false;
+            return;
         }
         if (group.getPassword() != null) {
             if (!group.getPassword().equals(password)) {
                 NetManager.sendToClient(player, new JoinedGroupPacket(null));
-                return false;
+                return;
             }
         }
         PlayerStateManager manager = getStates();
         manager.setGroup(player, group.toClientGroup());
 
         NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup()));
-        return true;
     }
 
     public void leaveGroup(Player player) {
+        if (PluginManager.instance().onLeaveGroup(player)) {
+            return;
+        }
+
         PlayerStateManager manager = getStates();
         manager.setGroup(player, null);
 

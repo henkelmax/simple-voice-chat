@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
+import de.maxhenkel.voicechat.plugins.PluginManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
@@ -25,6 +26,7 @@ public class ServerVoiceEvents implements Listener {
         clientCompatibilities = new ConcurrentHashMap<>();
         server = new Server(Voicechat.SERVER_CONFIG.voiceChatPort.get(), mcServer);
         server.start();
+        PluginManager.instance().onServerStarted(mcServer);
     }
 
     public void onRequestSecretPacket(Player player, RequestSecretPacket packet) {
@@ -68,7 +70,7 @@ public class ServerVoiceEvents implements Listener {
 
         boolean hasGroupPermission = player.hasPermission(VoiceChatCommands.GROUPS_PERMISSION);
 
-        NetManager.sendToClient(player, new SecretPacket(secret, hasGroupPermission, Voicechat.SERVER_CONFIG));
+        NetManager.sendToClient(player, new SecretPacket(player, secret, hasGroupPermission, Voicechat.SERVER_CONFIG));
         Voicechat.LOGGER.info("Sent secret to {}", player.getName());
     }
 

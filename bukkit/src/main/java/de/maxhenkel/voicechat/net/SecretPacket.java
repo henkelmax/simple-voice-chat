@@ -3,7 +3,9 @@ package de.maxhenkel.voicechat.net;
 import com.comphenix.protocol.wrappers.MinecraftKey;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
+import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -28,7 +30,7 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     }
 
-    public SecretPacket(UUID secret, boolean hasGroupPermission, ServerConfig serverConfig) {
+    public SecretPacket(Player player, UUID secret, boolean hasGroupPermission, ServerConfig serverConfig) {
         this.secret = secret;
         this.serverPort = serverConfig.voiceChatPort.get();
         this.codec = serverConfig.voiceChatCodec.get();
@@ -39,7 +41,7 @@ public class SecretPacket implements Packet<SecretPacket> {
         this.whisperDistanceMultiplier = serverConfig.whisperDistanceMultiplier.get();
         this.keepAlive = serverConfig.keepAlive.get();
         this.groupsEnabled = hasGroupPermission && serverConfig.groupsEnabled.get();
-        this.voiceHost = serverConfig.voiceHost.get();
+        this.voiceHost = PluginManager.instance().getVoiceHost(player, serverConfig.voiceHost.get());
         this.allowRecording = serverConfig.allowRecording.get();
     }
 

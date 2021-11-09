@@ -25,7 +25,7 @@ public class Server extends Thread {
     private final Map<UUID, UUID> secrets;
     private final int port;
     private final MinecraftServer server;
-    private VoicechatSocket socket;
+    private final VoicechatSocket socket;
     private final ProcessThread processThread;
     private final BlockingQueue<RawUdpPacket> packetQueue;
     private final PingManager pingManager;
@@ -68,7 +68,6 @@ public class Server extends Thread {
             e.printStackTrace();
         }
     }
-
 
     public UUID getSecret(UUID playerUUID) {
         if (secrets.containsKey(playerUUID)) {

@@ -7,6 +7,7 @@ import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -79,12 +80,16 @@ public final class Voicechat extends JavaPlugin {
         SERVER_CONFIG = ConfigBuilder.build(getDataFolder().toPath().resolve("voicechat-server.properties"), true, ServerConfig::new);
         PROTOCOL_MANAGER = ProtocolLibrary.getProtocolManager();
 
-        SERVER = new ServerVoiceEvents(getServer());
-        NetManager.onEnable();
-        Bukkit.getPluginManager().registerEvents(SERVER, this);
-        Bukkit.getPluginManager().registerEvents(SERVER.getServer().getPlayerStateManager(), this);
-
         getCommand("voicechat").setExecutor(new VoiceChatCommands());
+
+        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+            PluginManager.instance().init(this);
+
+            SERVER = new ServerVoiceEvents(getServer());
+            NetManager.onEnable();
+            Bukkit.getPluginManager().registerEvents(SERVER, this);
+            Bukkit.getPluginManager().registerEvents(SERVER.getServer().getPlayerStateManager(), this);
+        });
     }
 
     @Override
