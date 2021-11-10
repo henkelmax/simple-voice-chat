@@ -46,7 +46,7 @@ public class Main {
         }
     }
 
-    private static void showGui() {
+    public static void showGui() {
         if (GraphicsEnvironment.isHeadless()) {
             System.out.println("This application does not work in headless mode");
             System.exit(5);

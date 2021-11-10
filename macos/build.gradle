@@ -21,8 +21,8 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'com.googlecode.plist:dd-plist:1.23'
     shadow 'com.googlecode.plist:dd-plist:1.23'
-    implementation 'net.java.dev.jna:jna:5.8.0'
-    implementation 'net.java.dev.jna:jna-platform:5.8.0'
+    shadow 'net.java.dev.jna:jna:5.8.0'
+    shadow 'net.java.dev.jna:jna-platform:5.8.0'
 
 }
 
@@ -45,5 +45,18 @@ shadowJar {
         exclude(dependency('net.java.dev.jna:jna'))
         exclude(dependency('net.java.dev.jna:jna-platform'))
         exclude(dependency('com.google.code.findbugs:jsr305'))
+    }
+}
+
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+task standaloneJar(type: ShadowJar) {
+    group = 'build'
+    configurations = [project.configurations.shadow]
+    classifier ''
+    baseName 'simple-voice-chat-macos-workaround'
+    from sourceSets.main.output
+    manifest {
+        attributes 'Main-Class': 'de.maxhenkel.voicechat.macos.StandaloneMain'
     }
 }
