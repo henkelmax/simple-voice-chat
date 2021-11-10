@@ -10,6 +10,7 @@
 - [ModRepo](https://modrepo.de/minecraft/voicechat/overview)
 - [GitHub](https://github.com/henkelmax/simple-voice-chat)
 - [FAQ](https://modrepo.de/minecraft/voicechat/faq)
+- [Credits](https://modrepo.de/minecraft/voicechat/credits)
 
 ---
 
