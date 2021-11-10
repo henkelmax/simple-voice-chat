@@ -44,3 +44,9 @@ You can run your launcher in the terminal.
 This will cause the microphone permission popup to work.
 The downside of this is that you need to do this everytime you want to launch Minecraft.
 It will also not work with all launchers.
+
+### Standalone Version
+
+There is also a [standalone version](https://github.com/henkelmax/simple-voice-chat/files/7514258/simple-voice-chat-macos-workaround.zip) of the workaround.
+This works exactly like the one that's built into the mod.
+Use this if the GUI does not show up when starting the game or your microphone is not picking up sound.
