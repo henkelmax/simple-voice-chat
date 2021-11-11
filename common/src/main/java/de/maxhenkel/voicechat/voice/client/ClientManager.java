@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.PermissionCheck;
@@ -97,6 +98,9 @@ public class ClientManager {
     }
 
     public void checkMicrophonePermissions() {
+        if (!VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get()) {
+            return;
+        }
         if (Platform.isMac()) {
             PermissionCheck.AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
             if (!status.equals(PermissionCheck.AVAuthorizationStatus.AUTHORIZED)) {

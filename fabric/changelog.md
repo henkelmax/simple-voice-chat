@@ -1,1 +1,1 @@
-- Improved voicechat API
+- Don't check for microphone permissions when the MacOS workaround is disabled
