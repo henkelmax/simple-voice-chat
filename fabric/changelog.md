@@ -1,1 +1,1 @@
-- Don't check for microphone permissions when the MacOS workaround is disabled
+- Updated to 1.18-pre1
