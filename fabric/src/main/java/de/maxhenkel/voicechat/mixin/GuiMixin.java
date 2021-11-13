@@ -8,11 +8,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(Gui.class)
+@Mixin(value = Gui.class, priority = 999)
 public class GuiMixin {
 
-    @Inject(method = "renderEffects", at = @At(value = "HEAD"))
-    public void onHUDRender(PoseStack poseStack, CallbackInfo callbackInfo) {
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderEffects(Lcom/mojang/blaze3d/vertex/PoseStack;)V"))
+    private void onHUDRender(PoseStack poseStack, float f, CallbackInfo ci) {
         RenderEvents.RENDER_HUD.invoker().accept(poseStack);
     }
 
