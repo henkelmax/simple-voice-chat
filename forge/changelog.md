@@ -1,1 +1,1 @@
-- Don't check for microphone permissions when the MacOS workaround is disabled
+- Fixed incompatibilities with HUD mods

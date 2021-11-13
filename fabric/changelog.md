@@ -1,1 +1,1 @@
-- Updated to 1.18-pre1
+- Fixed incompatibilities with HUD mods
