@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.*;
 import org.bukkit.GameMode;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -237,22 +238,39 @@ public class Server extends Thread {
         }
     }
 
-    private void processProximityPacket(PlayerState state, Player player, MicPacket packet) {
+    private void processProximityPacket(PlayerState senderState, Player sender, MicPacket packet) throws Exception {
         double distance = Voicechat.SERVER_CONFIG.voiceChatDistance.get();
-        @Nullable ClientGroup group = state.getGroup();
+        @Nullable ClientGroup group = senderState.getGroup();
 
         SoundPacket<?> soundPacket;
-        if (player.getGameMode().equals(GameMode.SPECTATOR)) {
+        if (sender.getGameMode().equals(GameMode.SPECTATOR)) {
+            if (Voicechat.SERVER_CONFIG.spectatorPlayerPossession.get()) {
+                Entity camera = sender.getSpectatorTarget();
+                if (camera instanceof Player spectatingPlayer) {
+                    if (spectatingPlayer != sender) {
+                        PlayerState receiverState = playerStateManager.getState(spectatingPlayer.getUniqueId());
+                        ClientConnection connection = connections.get(receiverState.getGameProfile().getId());
+                        if (connection == null) {
+                            return;
+                        }
+                        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getGameProfile().getId(), packet.getData(), packet.getSequenceNumber());
+                        if (!PluginManager.instance().onSoundPacket(sender, senderState, spectatingPlayer, receiverState, groupSoundPacket)) {
+                            connection.send(this, new NetworkMessage(groupSoundPacket));
+                        }
+                        return;
+                    }
+                }
+            }
             if (Voicechat.SERVER_CONFIG.spectatorInteraction.get()) {
-                soundPacket = new LocationSoundPacket(player.getUniqueId(), player.getEyeLocation(), packet.getData(), packet.getSequenceNumber());
+                soundPacket = new LocationSoundPacket(sender.getUniqueId(), sender.getLocation(), packet.getData(), packet.getSequenceNumber());
             } else {
                 return;
             }
         } else {
-            soundPacket = new PlayerSoundPacket(player.getUniqueId(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering());
+            soundPacket = new PlayerSoundPacket(sender.getUniqueId(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering());
         }
 
-        broadcast(ServerWorldUtils.getPlayersInRange(player.getWorld(), player.getLocation(), distance, p -> !p.getUniqueId().equals(player.getUniqueId())), soundPacket, player, state, group);
+        broadcast(ServerWorldUtils.getPlayersInRange(sender.getWorld(), sender.getLocation(), distance, p -> !p.getUniqueId().equals(sender.getUniqueId())), soundPacket, sender, senderState, group);
     }
 
     public void broadcast(Collection<Player> players, SoundPacket<?> packet, @Nullable Player sender, @Nullable PlayerState senderState, @Nullable ClientGroup group) {

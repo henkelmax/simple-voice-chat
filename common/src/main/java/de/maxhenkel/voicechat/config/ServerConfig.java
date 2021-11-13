@@ -19,6 +19,7 @@ public abstract class ServerConfig {
     public ConfigEntry<String> voiceHost;
     public ConfigEntry<Boolean> allowRecording;
     public ConfigEntry<Boolean> spectatorInteraction;
+    public ConfigEntry<Boolean> spectatorPlayerPossession;
 
     public enum Codec {
         VOIP(Opus.OPUS_APPLICATION_VOIP), AUDIO(Opus.OPUS_APPLICATION_AUDIO), RESTRICTED_LOWDELAY(Opus.OPUS_APPLICATION_RESTRICTED_LOWDELAY);

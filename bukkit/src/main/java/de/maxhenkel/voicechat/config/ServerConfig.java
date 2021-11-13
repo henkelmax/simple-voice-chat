@@ -19,6 +19,7 @@ public class ServerConfig {
     public final ConfigEntry<String> voiceHost;
     public final ConfigEntry<Boolean> allowRecording;
     public final ConfigEntry<Boolean> spectatorInteraction;
+    public ConfigEntry<Boolean> spectatorPlayerPossession;
 
     public ServerConfig(ConfigBuilder builder) {
         voiceChatPort = builder.integerEntry("port", 24454, 0, 65535);
@@ -35,6 +36,7 @@ public class ServerConfig {
         voiceHost = builder.stringEntry("voice_host", "");
         allowRecording = builder.booleanEntry("allow_recording", true);
         spectatorInteraction = builder.booleanEntry("spectator_interaction", false);
+        spectatorPlayerPossession = builder.booleanEntry("spectator_player_possession", false);
     }
 
     public enum Codec {

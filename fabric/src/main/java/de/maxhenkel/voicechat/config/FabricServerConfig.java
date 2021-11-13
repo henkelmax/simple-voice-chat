@@ -19,6 +19,7 @@ public class FabricServerConfig extends ServerConfig {
         voiceHost = builder.stringEntry("voice_host", "");
         allowRecording = builder.booleanEntry("allow_recording", true);
         spectatorInteraction = builder.booleanEntry("spectator_interaction", false);
+        spectatorPlayerPossession = builder.booleanEntry("spectator_player_possession", false);
     }
 
 }

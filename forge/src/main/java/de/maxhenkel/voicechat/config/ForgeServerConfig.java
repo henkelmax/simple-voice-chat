@@ -82,6 +82,11 @@ public class ForgeServerConfig extends ServerConfig {
                 .comment("If spectators are allowed to talk to other players")
                 .define("voice_chat.spectator_interaction", false)
         );
+        spectatorPlayerPossession = wrapConfigEntry(builder
+                .worldRestart()
+                .comment("If spectators can talk to players they are spectating")
+                .define("voice_chat.spectator_player_possession", false)
+        );
     }
 
     public static <T> ConfigEntry<T> wrapConfigEntry(ForgeConfigSpec.ConfigValue<T> configValue) {

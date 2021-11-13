@@ -1,1 +1,1 @@
-- Fixed incompatibilities with HUD mods
+- Added spectator player possession option
