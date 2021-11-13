@@ -154,11 +154,5 @@ Without opening this port, the voice chat will not work.
 This port can be changed in the server config.
 More information [here](https://modrepo.de/minecraft/voicechat/wiki?t=setup).
 
-This mod does only work when connected to a dedicated server.
-You need to have this mod installed on the server and the client for it to work.
-
-The Fabric version of this mod allows you to join with vanilla clients,
-but you won't be able to use the voice chat features.
-
 The voice chat is encrypted, but I don't guarantee the security of it.
 Use at your own risk!
