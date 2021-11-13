@@ -9,6 +9,7 @@ import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -231,22 +232,39 @@ public class Server extends Thread {
         }
     }
 
-    private void processProximityPacket(PlayerState state, ServerPlayer player, MicPacket packet) {
+    private void processProximityPacket(PlayerState senderState, ServerPlayer sender, MicPacket packet) throws Exception {
         double distance = Voicechat.SERVER_CONFIG.voiceChatDistance.get();
-        @Nullable ClientGroup group = state.getGroup();
+        @Nullable ClientGroup group = senderState.getGroup();
 
         SoundPacket<?> soundPacket;
-        if (player.isSpectator()) {
+        if (sender.isSpectator()) {
+            if (Voicechat.SERVER_CONFIG.spectatorPlayerPossession.get()) {
+                Entity camera = sender.getCamera();
+                if (camera instanceof ServerPlayer spectatingPlayer) {
+                    if (spectatingPlayer != sender) {
+                        PlayerState receiverState = playerStateManager.getState(spectatingPlayer.getUUID());
+                        ClientConnection connection = connections.get(receiverState.getGameProfile().getId());
+                        if (connection == null) {
+                            return;
+                        }
+                        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getGameProfile().getId(), packet.getData(), packet.getSequenceNumber());
+                        if (!PluginManager.instance().onSoundPacket(sender, senderState, spectatingPlayer, receiverState, groupSoundPacket)) {
+                            connection.send(this, new NetworkMessage(groupSoundPacket));
+                        }
+                        return;
+                    }
+                }
+            }
             if (Voicechat.SERVER_CONFIG.spectatorInteraction.get()) {
-                soundPacket = new LocationSoundPacket(player.getUUID(), player.getEyePosition(), packet.getData(), packet.getSequenceNumber());
+                soundPacket = new LocationSoundPacket(sender.getUUID(), sender.getEyePosition(), packet.getData(), packet.getSequenceNumber());
             } else {
                 return;
             }
         } else {
-            soundPacket = new PlayerSoundPacket(player.getUUID(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering());
+            soundPacket = new PlayerSoundPacket(sender.getUUID(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering());
         }
 
-        broadcast(ServerWorldUtils.getPlayersInRange(player.getLevel(), player.position(), distance, p -> !p.getUUID().equals(player.getUUID())), soundPacket, player, state, group);
+        broadcast(ServerWorldUtils.getPlayersInRange(sender.getLevel(), sender.position(), distance, p -> !p.getUUID().equals(sender.getUUID())), soundPacket, sender, senderState, group);
     }
 
     public void broadcast(Collection<ServerPlayer> players, SoundPacket<?> packet, @Nullable ServerPlayer sender, @Nullable PlayerState senderState, @Nullable ClientGroup group) {
