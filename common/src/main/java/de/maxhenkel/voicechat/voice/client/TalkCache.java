@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.Entity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,45 +17,45 @@ public class TalkCache {
         this.cache = new HashMap<>();
     }
 
-    public void updateTalking(UUID player, boolean whispering) {
-        cache.put(player, new Talk(whispering));
+    public void updateTalking(UUID entity, boolean whispering) {
+        cache.put(entity, new Talk(whispering));
     }
 
-    public boolean isTalking(Player player) {
-        return isTalking(player.getUUID());
+    public boolean isTalking(Entity entity) {
+        return isTalking(entity.getUUID());
     }
 
-    public boolean isWhispering(Player player) {
-        return isWhispering(player.getUUID());
+    public boolean isWhispering(Entity entity) {
+        return isWhispering(entity.getUUID());
     }
 
-    public boolean isTalking(UUID player) {
-        if (player.equals(Minecraft.getInstance().player.getUUID())) {
+    public boolean isTalking(UUID entity) {
+        if (entity.equals(Minecraft.getInstance().player.getUUID())) {
             ClientVoicechat client = ClientManager.getClient();
             if (client != null && client.getMicThread() != null) {
                 return client.getMicThread().isTalking();
             }
         }
 
-        Talk lastTalk = cache.getOrDefault(player, new Talk(0L, false));
+        Talk lastTalk = cache.getOrDefault(entity, new Talk(0L, false));
         return System.currentTimeMillis() - lastTalk.timestamp < TIMEOUT;
     }
 
-    public boolean isWhispering(UUID player) {
-        if (player.equals(Minecraft.getInstance().player.getUUID())) {
+    public boolean isWhispering(UUID entity) {
+        if (entity.equals(Minecraft.getInstance().player.getUUID())) {
             ClientVoicechat client = ClientManager.getClient();
             if (client != null && client.getMicThread() != null) {
                 return client.getMicThread().isWhispering();
             }
         }
 
-        Talk lastTalk = cache.getOrDefault(player, new Talk(0L, false));
+        Talk lastTalk = cache.getOrDefault(entity, new Talk(0L, false));
         return lastTalk.whispering && System.currentTimeMillis() - lastTalk.timestamp < TIMEOUT;
     }
 
-    private class Talk {
-        private long timestamp;
-        private boolean whispering;
+    private static class Talk {
+        private final long timestamp;
+        private final boolean whispering;
 
         public Talk(long timestamp, boolean whispering) {
             this.timestamp = timestamp;

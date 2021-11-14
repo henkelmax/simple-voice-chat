@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.api.ServerLevel;
 import de.maxhenkel.voicechat.api.audiochannel.LocationalAudioChannel;
+import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.api.packets.MicrophonePacket;
 import de.maxhenkel.voicechat.plugins.impl.PositionImpl;
 import de.maxhenkel.voicechat.plugins.impl.ServerPlayerImpl;
@@ -49,7 +50,7 @@ public class LocationalAudioChannelImpl extends AudioChannelImpl implements Loca
     }
 
     private void broadcast(LocationSoundPacket packet) {
-        server.broadcast(ServerWorldUtils.getPlayersInRange((net.minecraft.server.level.ServerLevel) level.getServerLevel(), position.getPosition(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null);
+        server.broadcast(ServerWorldUtils.getPlayersInRange((net.minecraft.server.level.ServerLevel) level.getServerLevel(), position.getPosition(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
     }
 
 }

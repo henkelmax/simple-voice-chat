@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.api.*;
 import de.maxhenkel.voicechat.api.audiochannel.EntityAudioChannel;
 import de.maxhenkel.voicechat.api.audiochannel.LocationalAudioChannel;
 import de.maxhenkel.voicechat.api.audiochannel.StaticAudioChannel;
+import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
 import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
 import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
@@ -104,7 +105,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (state == null) {
             return;
         }
-        if (PluginManager.instance().onSoundPacket(null, null, (org.bukkit.entity.Player) receiver.getPlayer().getPlayer(), state, s)) {
+        if (PluginManager.instance().onSoundPacket(null, null, (org.bukkit.entity.Player) receiver.getPlayer().getPlayer(), state, s, SoundPacketEvent.SOURCE_PLUGIN)) {
             return;
         }
         ClientConnection c = server.getConnections().get(receiver.getPlayer().getUuid());

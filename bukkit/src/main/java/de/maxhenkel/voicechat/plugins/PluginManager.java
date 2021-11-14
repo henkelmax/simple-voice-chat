@@ -138,7 +138,7 @@ public class PluginManager {
         ));
     }
 
-    public boolean onSoundPacket(@Nullable Player sender, @Nullable PlayerState senderState, Player receiver, PlayerState receiverState, SoundPacket<?> p) {
+    public boolean onSoundPacket(@Nullable Player sender, @Nullable PlayerState senderState, Player receiver, PlayerState receiverState, SoundPacket<?> p, String source) {
         VoicechatServerApi api = new VoicechatServerApiImpl(receiver.getServer());
         VoicechatConnection senderConnection = null;
         if (sender != null && senderState != null) {
@@ -151,21 +151,24 @@ public class PluginManager {
                     api,
                     new LocationalSoundPacketImpl(packet),
                     senderConnection,
-                    receiverConnection
+                    receiverConnection,
+                    source
             ));
         } else if (p instanceof PlayerSoundPacket packet) {
             return dispatchEvent(EntitySoundPacketEvent.class, new EntitySoundPacketEventImpl(
                     api,
                     new EntitySoundPacketImpl(packet),
                     senderConnection,
-                    receiverConnection
+                    receiverConnection,
+                    source
             ));
         } else if (p instanceof GroupSoundPacket packet) {
             return dispatchEvent(StaticSoundPacketEvent.class, new StaticSoundPacketEventImpl(
                     api,
                     new StaticSoundPacketImpl(packet),
                     senderConnection,
-                    receiverConnection
+                    receiverConnection,
+                    source
             ));
         }
         return false;

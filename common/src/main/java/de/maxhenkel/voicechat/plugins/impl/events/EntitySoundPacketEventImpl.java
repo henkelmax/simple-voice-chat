@@ -7,9 +7,9 @@ import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
 
 import javax.annotation.Nullable;
 
-public class EntitySoundPacketEventImpl extends PacketEventImpl<EntitySoundPacket> implements EntitySoundPacketEvent {
+public class EntitySoundPacketEventImpl extends SoundPacketEventImpl<EntitySoundPacket> implements EntitySoundPacketEvent {
 
-    public EntitySoundPacketEventImpl(VoicechatServerApi api, EntitySoundPacket packet, @Nullable VoicechatConnection senderConnection, VoicechatConnection receiverConnection) {
-        super(api, packet, senderConnection, receiverConnection);
+    public EntitySoundPacketEventImpl(VoicechatServerApi api, EntitySoundPacket packet, @Nullable VoicechatConnection senderConnection, VoicechatConnection receiverConnection, String source) {
+        super(api, packet, senderConnection, receiverConnection, source);
     }
 }
