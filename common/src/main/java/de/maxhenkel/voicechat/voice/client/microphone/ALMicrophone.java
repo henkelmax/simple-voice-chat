@@ -43,7 +43,7 @@ public class ALMicrophone implements Microphone {
             return;
         }
         ALC11.alcCaptureStart(device);
-        SoundManager.checkAlError();
+        SoundManager.checkAlcError(device);
         started = true;
     }
 
@@ -60,13 +60,13 @@ public class ALMicrophone implements Microphone {
             return;
         }
         ALC11.alcCaptureStop(device);
-        SoundManager.checkAlError();
+        SoundManager.checkAlcError(device);
         started = false;
 
         int available = available();
         short[] data = new short[available];
         ALC11.alcCaptureSamples(device, data, data.length);
-        SoundManager.checkAlError();
+        SoundManager.checkAlcError(device);
         Voicechat.LOGGER.debug("Clearing {} samples", available);
     }
 
@@ -77,7 +77,7 @@ public class ALMicrophone implements Microphone {
         }
         stop();
         ALC11.alcCaptureCloseDevice(device);
-        SoundManager.checkAlError();
+        SoundManager.checkAlcError(device);
         device = 0;
     }
 
@@ -94,7 +94,7 @@ public class ALMicrophone implements Microphone {
     @Override
     public int available() {
         int samples = ALC11.alcGetInteger(device, ALC11.ALC_CAPTURE_SAMPLES);
-        SoundManager.checkAlError();
+        SoundManager.checkAlcError(device);
         return samples;
     }
 
@@ -106,7 +106,7 @@ public class ALMicrophone implements Microphone {
         }
         short[] buff = new short[bufferSize];
         ALC11.alcCaptureSamples(device, buff, buff.length);
-        SoundManager.checkAlError();
+        SoundManager.checkAlcError(device);
         return buff;
     }
 
@@ -128,9 +128,10 @@ public class ALMicrophone implements Microphone {
     private long tryOpenMic(@Nullable String string) throws MicrophoneException {
         long l = ALC11.alcCaptureOpenDevice(string, sampleRate, AL11.AL_FORMAT_MONO16, bufferSize);
         if (l == 0L) {
-            throw new MicrophoneException(String.format("Failed to open microphone: %s", SoundManager.getError(0)));
+            SoundManager.checkAlcError(0L);
+            throw new MicrophoneException(String.format("Failed to open microphone: %s", SoundManager.getAlcError(0)));
         }
-        SoundManager.checkAlError();
+        SoundManager.checkAlcError(l);
         return l;
     }
 
@@ -140,7 +141,7 @@ public class ALMicrophone implements Microphone {
             return null;
         }
         String mic = ALC11.alcGetString(0L, ALC11.ALC_CAPTURE_DEVICE_SPECIFIER);
-        SoundManager.checkAlError();
+        SoundManager.checkAlcError(0L);
         return mic;
     }
 
@@ -149,7 +150,7 @@ public class ALMicrophone implements Microphone {
             return Collections.emptyList();
         }
         List<String> devices = ALUtil.getStringList(0L, ALC11.ALC_CAPTURE_DEVICE_SPECIFIER);
-        SoundManager.checkAlError();
+        SoundManager.checkAlcError(0L);
         return devices == null ? Collections.emptyList() : devices;
     }
 }
