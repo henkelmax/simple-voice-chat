@@ -1,1 +1,1 @@
-- Added spectator player possession option
+- Fixed OpenAL crash
