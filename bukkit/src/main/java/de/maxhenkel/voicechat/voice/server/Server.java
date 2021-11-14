@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.server;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.RawUdpPacket;
 import de.maxhenkel.voicechat.api.VoicechatSocket;
+import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.plugins.PluginManager;
@@ -232,7 +233,7 @@ public class Server extends Thread {
             if (p == null) {
                 continue;
             }
-            if (!PluginManager.instance().onSoundPacket(sender, senderState, p, state, groupSoundPacket)) {
+            if (!PluginManager.instance().onSoundPacket(sender, senderState, p, state, groupSoundPacket, SoundPacketEvent.SOURCE_GROUP)) {
                 connection.send(this, soundMessage);
             }
         }
@@ -243,6 +244,7 @@ public class Server extends Thread {
         @Nullable ClientGroup group = senderState.getGroup();
 
         SoundPacket<?> soundPacket;
+        String source;
         if (sender.getGameMode().equals(GameMode.SPECTATOR)) {
             if (Voicechat.SERVER_CONFIG.spectatorPlayerPossession.get()) {
                 Entity camera = sender.getSpectatorTarget();
@@ -254,7 +256,7 @@ public class Server extends Thread {
                             return;
                         }
                         GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getGameProfile().getId(), packet.getData(), packet.getSequenceNumber());
-                        if (!PluginManager.instance().onSoundPacket(sender, senderState, spectatingPlayer, receiverState, groupSoundPacket)) {
+                        if (!PluginManager.instance().onSoundPacket(sender, senderState, spectatingPlayer, receiverState, groupSoundPacket, SoundPacketEvent.SOURCE_SPECTATOR)) {
                             connection.send(this, new NetworkMessage(groupSoundPacket));
                         }
                         return;
@@ -263,17 +265,19 @@ public class Server extends Thread {
             }
             if (Voicechat.SERVER_CONFIG.spectatorInteraction.get()) {
                 soundPacket = new LocationSoundPacket(sender.getUniqueId(), sender.getLocation(), packet.getData(), packet.getSequenceNumber());
+                source = SoundPacketEvent.SOURCE_SPECTATOR;
             } else {
                 return;
             }
         } else {
             soundPacket = new PlayerSoundPacket(sender.getUniqueId(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering());
+            source = SoundPacketEvent.SOURCE_PROXIMITY;
         }
 
-        broadcast(ServerWorldUtils.getPlayersInRange(sender.getWorld(), sender.getLocation(), distance, p -> !p.getUniqueId().equals(sender.getUniqueId())), soundPacket, sender, senderState, group);
+        broadcast(ServerWorldUtils.getPlayersInRange(sender.getWorld(), sender.getLocation(), distance, p -> !p.getUniqueId().equals(sender.getUniqueId())), soundPacket, sender, senderState, group, source);
     }
 
-    public void broadcast(Collection<Player> players, SoundPacket<?> packet, @Nullable Player sender, @Nullable PlayerState senderState, @Nullable ClientGroup group) {
+    public void broadcast(Collection<Player> players, SoundPacket<?> packet, @Nullable Player sender, @Nullable PlayerState senderState, @Nullable ClientGroup group, String source) {
         for (Player player : players) {
             PlayerState state = playerStateManager.getState(player.getUniqueId());
             if (state == null) {
@@ -290,7 +294,7 @@ public class Server extends Thread {
                 continue;
             }
             try {
-                if (!PluginManager.instance().onSoundPacket(sender, senderState, player, state, packet)) {
+                if (!PluginManager.instance().onSoundPacket(sender, senderState, player, state, packet, source)) {
                     connection.send(this, new NetworkMessage(packet));
                 }
             } catch (Exception e) {
