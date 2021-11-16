@@ -1,7 +1,10 @@
 package de.maxhenkel.voicechat.plugins;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.api.*;
+import de.maxhenkel.voicechat.api.VoicechatConnection;
+import de.maxhenkel.voicechat.api.VoicechatPlugin;
+import de.maxhenkel.voicechat.api.VoicechatServerApi;
+import de.maxhenkel.voicechat.api.VoicechatSocket;
 import de.maxhenkel.voicechat.api.events.*;
 import de.maxhenkel.voicechat.plugins.impl.*;
 import de.maxhenkel.voicechat.plugins.impl.events.*;
@@ -16,8 +19,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class PluginManager {
@@ -27,7 +31,7 @@ public class PluginManager {
 
     public void init(Plugin p) {
         Voicechat.LOGGER.info("Loading plugins");
-        plugins = loadPlugins(p);
+        plugins = Voicechat.apiService.getPlugins();
         Voicechat.LOGGER.info("Loaded {} plugin(s)", plugins.size());
         Voicechat.LOGGER.info("Initializing plugins");
         for (VoicechatPlugin plugin : plugins) {
@@ -181,31 +185,6 @@ public class PluginManager {
             instance = new PluginManager();
         }
         return instance;
-    }
-
-    public static List<VoicechatPlugin> loadPlugins(Plugin plugin) {
-        List<VoicechatPlugin> plugins = new ArrayList<>();
-        for (Plugin p : plugin.getServer().getPluginManager().getPlugins()) {
-            if (plugin == p) {
-                continue;
-            }
-            for (Field field : p.getClass().getDeclaredFields()) {
-                try {
-                    BukkitVoicechatPlugin annotation = field.getDeclaredAnnotation(BukkitVoicechatPlugin.class);
-                    if (annotation == null) {
-                        continue;
-                    }
-                    field.setAccessible(true);
-                    Object o = field.get(p);
-                    if (o instanceof VoicechatPlugin voicechatPlugin) {
-                        plugins.add(voicechatPlugin);
-                    }
-                } catch (Exception e) {
-                    Voicechat.LOGGER.warn("Failed to load plugin '{}': {}", field.getName(), e.getMessage());
-                }
-            }
-        }
-        return plugins;
     }
 
 }
