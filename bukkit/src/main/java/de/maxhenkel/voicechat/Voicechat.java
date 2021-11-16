@@ -2,12 +2,13 @@ package de.maxhenkel.voicechat;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.wrappers.MinecraftKey;
 import de.maxhenkel.configbuilder.ConfigBuilder;
+import de.maxhenkel.voicechat.api.BukkitVoicechatService;
 import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.plugins.impl.BukkitVoicechatServiceImpl;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -32,8 +34,6 @@ public final class Voicechat extends JavaPlugin {
     public static final Logger LOGGER = LogManager.getLogger(MODID);
     public static int COMPATIBILITY_VERSION = -1;
 
-    public static MinecraftKey INIT = new MinecraftKey(MODID, "init");
-
     public static ServerConfig SERVER_CONFIG;
     private static FileConfiguration TRANSLATIONS;
     public static ProtocolManager PROTOCOL_MANAGER;
@@ -41,6 +41,8 @@ public final class Voicechat extends JavaPlugin {
     public static ServerVoiceEvents SERVER;
 
     public static final Pattern VERSION_REGEX = Pattern.compile("^(\\d+).(\\d+).(\\d+).*$");
+
+    public static BukkitVoicechatServiceImpl apiService;
 
     @Override
     public void onEnable() {
@@ -79,6 +81,9 @@ public final class Voicechat extends JavaPlugin {
 
         SERVER_CONFIG = ConfigBuilder.build(getDataFolder().toPath().resolve("voicechat-server.properties"), true, ServerConfig::new);
         PROTOCOL_MANAGER = ProtocolLibrary.getProtocolManager();
+
+        apiService = new BukkitVoicechatServiceImpl();
+        getServer().getServicesManager().register(BukkitVoicechatService.class, apiService, this, ServicePriority.Normal);
 
         getCommand("voicechat").setExecutor(new VoiceChatCommands());
 
