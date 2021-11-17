@@ -1,1 +1,1 @@
-- Fixed OpenAL crash
+- Updated to 1.18-pre2

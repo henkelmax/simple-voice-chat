@@ -17,8 +17,8 @@ plugins {
 
 apply plugin: 'forge-update'
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = archives_base_name
 version = mod_version
@@ -52,7 +52,7 @@ dependencies {
 
 //    modImplementation("com.sonicether:soundphysics:${soundphysics_version}")
 
-    modImplementation("de.maxhenkel.soundphysics:soundphysics-fabric:${minecraft_version}-${sound_physics_remastered_version}") {
+    modImplementation("de.maxhenkel.soundphysics:soundphysics-fabric:${sound_physics_remastered_version}") {
         exclude(group: 'net.fabricmc.fabric-loader')
         exclude(group: 'me.shedaniel.cloth')
         exclude(group: 'com.terraformersmc')
@@ -97,7 +97,7 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"
-    it.options.release = 16
+    it.options.release = 17
 }
 
 tasks.withType(JavaCompile) {
@@ -134,7 +134,7 @@ curseforge {
         releaseType = curse_release_type
         addGameVersion curseforge_minecraft_version
         addGameVersion 'Fabric'
-        addGameVersion 'Java 16'
+        addGameVersion 'Java 17'
         mainArtifact(file("${buildDir}/libs/${archivesBaseName}-${version}.jar")) {
             displayName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
             relations {

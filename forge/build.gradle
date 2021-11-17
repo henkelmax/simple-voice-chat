@@ -24,7 +24,7 @@ archivesBaseName = project.archives_base_name
 version = mod_version
 group = mod_packagename
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
     mappings channel: 'official', version: mod_minecraft_version
@@ -155,7 +155,7 @@ curseforge {
         releaseType = curse_release_type
         addGameVersion mod_minecraft_version
         addGameVersion 'Forge'
-        addGameVersion 'Java 16'
+        addGameVersion 'Java 17'
         mainArtifact(jar) {
             displayName = "[FORGE][${mod_minecraft_version}] ${mod_name} ${mod_version}"
             relations {
