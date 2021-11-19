@@ -41,7 +41,7 @@ public class ImageButton extends AbstractButton {
         super.renderButton(matrices, mouseX, mouseY, delta);
         renderImage(matrices, mouseX, mouseY, delta);
 
-        if (isHovered()) {
+        if (isHovered) {
             renderToolTip(matrices, mouseX, mouseY);
         }
     }
