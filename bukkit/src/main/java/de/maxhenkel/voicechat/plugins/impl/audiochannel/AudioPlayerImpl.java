@@ -84,6 +84,7 @@ public class AudioPlayerImpl extends Thread implements AudioPlayer {
         }
 
         encoder.close();
+        audioChannel.flush();
     }
 
 }
