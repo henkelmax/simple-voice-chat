@@ -11,4 +11,9 @@ public interface LocationalAudioChannel extends AudioChannel {
      */
     void updateLocation(Position position);
 
+    /**
+     * @return the current location of this channel
+     */
+    Position getLocation();
+
 }

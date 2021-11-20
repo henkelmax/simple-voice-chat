@@ -2,17 +2,14 @@ package de.maxhenkel.voicechat.plugins.impl;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.*;
-import de.maxhenkel.voicechat.api.audiochannel.EntityAudioChannel;
-import de.maxhenkel.voicechat.api.audiochannel.LocationalAudioChannel;
-import de.maxhenkel.voicechat.api.audiochannel.StaticAudioChannel;
+import de.maxhenkel.voicechat.api.audiochannel.*;
 import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
+import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
 import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
 import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
-import de.maxhenkel.voicechat.plugins.impl.audiochannel.EntityAudioChannelImpl;
-import de.maxhenkel.voicechat.plugins.impl.audiochannel.LocationalAudioChannelImpl;
-import de.maxhenkel.voicechat.plugins.impl.audiochannel.StaticAudioChannelImpl;
+import de.maxhenkel.voicechat.plugins.impl.audiochannel.*;
 import de.maxhenkel.voicechat.plugins.impl.packets.EntitySoundPacketImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.LocationalSoundPacketImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.StaticSoundPacketImpl;
@@ -28,6 +25,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class VoicechatServerApiImpl extends VoicechatApiImpl implements VoicechatServerApi {
@@ -96,6 +94,16 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         return null;
     }
 
+    @Override
+    public AudioPlayer createAudioPlayer(AudioChannel audioChannel, OpusEncoder encoder, Supplier<short[]> audioSupplier) {
+        return new AudioPlayerImpl(audioChannel, encoder, audioSupplier);
+    }
+
+    @Override
+    public AudioPlayer createAudioPlayer(AudioChannel audioChannel, OpusEncoder encoder, short[] audio) {
+        return new AudioPlayerImpl(audioChannel, encoder, new AudioSupplier(audio));
+    }
+
     public static void sendPacket(VoicechatConnection receiver, SoundPacket<?> s) {
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
@@ -148,6 +156,11 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         } else {
             throw new IllegalArgumentException("Position is not an instance of PositionImpl");
         }
+    }
+
+    @Override
+    public double getBroadcastRange() {
+        return Voicechat.SERVER_CONFIG.voiceChatDistance.get();
     }
 
 }
