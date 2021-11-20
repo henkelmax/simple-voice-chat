@@ -9,11 +9,22 @@ buildscript {
 
 plugins {
     id "java"
-    id "org.spongepowered.gradle.vanilla" version "0.2.1-SNAPSHOT"
+
+    //TODO remove after snapshots
+    id 'fabric-loom' version '0.10-SNAPSHOT'
+    // id "org.spongepowered.gradle.vanilla" version "0.2.1-SNAPSHOT"
 }
+
+//TODO remove after snapshots
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
+
+    //TODO remove after snapshots
+    maven { url = 'https://maven.fabricmc.net/' }
+
     maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
     maven {
         name = "henkelmax.public"
@@ -22,15 +33,25 @@ repositories {
     mavenLocal()
 }
 
-minecraft {
+//TODO remove after snapshots
+task prepareWorkspace {
+
+}
+
+/*minecraft {
     version(minecraft_version)
     runs {
         server()
         client()
     }
-}
+}*/
 
 dependencies {
+    //TODO remove after snapshots
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings minecraft.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:0.12.5"
+
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
     implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"

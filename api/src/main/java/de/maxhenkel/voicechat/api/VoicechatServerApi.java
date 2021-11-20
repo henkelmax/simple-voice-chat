@@ -1,8 +1,7 @@
 package de.maxhenkel.voicechat.api;
 
-import de.maxhenkel.voicechat.api.audiochannel.EntityAudioChannel;
-import de.maxhenkel.voicechat.api.audiochannel.LocationalAudioChannel;
-import de.maxhenkel.voicechat.api.audiochannel.StaticAudioChannel;
+import de.maxhenkel.voicechat.api.audiochannel.*;
+import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
 import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
 import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
@@ -11,6 +10,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public interface VoicechatServerApi extends VoicechatApi {
 
@@ -71,6 +71,30 @@ public interface VoicechatServerApi extends VoicechatApi {
     StaticAudioChannel createStaticAudioChannel(UUID channelId, ServerLevel level, VoicechatConnection connection);
 
     /**
+     * Creates a new audio player
+     * <br/>
+     * <b>NOTE: Never use more than one audio player for every audio channel</b>
+     *
+     * @param audioChannel  the channel where the audio player should send the audio to
+     * @param encoder       the optus encoder used to encode the audio data
+     * @param audioSupplier this gets called whenever a new audio frame needs to be sent. The size of the array always needs to be 960. To end the playback, return <code>null</code>
+     * @return the audio player
+     */
+    AudioPlayer createAudioPlayer(AudioChannel audioChannel, OpusEncoder encoder, Supplier<short[]> audioSupplier);
+
+    /**
+     * Creates a new audio player
+     * <br/>
+     * <b>NOTE: Never use more than one audio player for every audio channel</b>
+     *
+     * @param audioChannel the channel where the audio player should send the audio to
+     * @param encoder      the optus encoder used to encode the audio data
+     * @param audio        the audio data
+     * @return the audio player
+     */
+    AudioPlayer createAudioPlayer(AudioChannel audioChannel, OpusEncoder encoder, short[] audio);
+
+    /**
      * Gets the connection of the player with this UUID
      *
      * @param playerUuid the players UUID
@@ -123,6 +147,11 @@ public interface VoicechatServerApi extends VoicechatApi {
      * @return all players in the provided location
      */
     Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Position pos, double range, Predicate<ServerPlayer> filter);
+
+    /**
+     * @return the maximum distance, voice chat audio can be heard
+     */
+    double getBroadcastRange();
 
     /**
      * A convenience method to get all players in the range of a specific location

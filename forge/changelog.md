@@ -1,1 +1,1 @@
-- Fixed OpenAL crash
+- Updated voicechat API
