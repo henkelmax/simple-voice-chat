@@ -5,7 +5,7 @@ import de.maxhenkel.voicechat.api.VoicechatServerApi;
 public interface ServerEvent extends Event {
 
     /**
-     * @return the voicechat server API
+     * @return the voice chat server API
      */
     VoicechatServerApi getVoicechat();
 

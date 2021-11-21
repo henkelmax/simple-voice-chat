@@ -10,7 +10,7 @@ public interface VoicechatPlugin {
     String getPluginId();
 
     /**
-     * Called after loading the plugin
+     * Called after loading the plugin.
      */
     void initialize(VoicechatApi api);
 

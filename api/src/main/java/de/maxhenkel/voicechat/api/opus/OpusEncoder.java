@@ -1,9 +1,17 @@
 package de.maxhenkel.voicechat.api.opus;
 
+import de.maxhenkel.voicechat.api.VoicechatApi;
+
+/**
+ * Instances can be obtained by calling {@link VoicechatApi#createEncoder()}.
+ * <br/>
+ * <br/>
+ * <b>NOTE</b>: The bukkit based version of the voice chat does not include Opus natives.
+ */
 public interface OpusEncoder {
 
     /**
-     * Encodes 16 bit PCM audio with opus
+     * Encodes 16 bit PCM audio with opus.
      *
      * @param rawAudio the raw 16 bit PCM audio
      * @return the opus encoded data
@@ -11,7 +19,7 @@ public interface OpusEncoder {
     byte[] encode(short[] rawAudio);
 
     /**
-     * Resets the encoders state
+     * Resets the encoders state.
      */
     void resetState();
 
@@ -21,8 +29,8 @@ public interface OpusEncoder {
     boolean isClosed();
 
     /**
-     * Closes the encoder
-     * Not doing this would result in a memory leak
+     * Closes the encoder.
+     * Not doing this would result in a memory leak.
      */
     void close();
 

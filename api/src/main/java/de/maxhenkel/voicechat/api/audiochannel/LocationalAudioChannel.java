@@ -5,7 +5,7 @@ import de.maxhenkel.voicechat.api.Position;
 public interface LocationalAudioChannel extends AudioChannel {
 
     /**
-     * Updates the location of the audio
+     * Updates the location of the audio.
      *
      * @param position the audio location
      */

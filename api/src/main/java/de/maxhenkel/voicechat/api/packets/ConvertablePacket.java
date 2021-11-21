@@ -7,7 +7,7 @@ import java.util.UUID;
 public interface ConvertablePacket {
 
     /**
-     * Converts this packet to an entity sound packet
+     * Converts this packet to an entity sound packet.
      *
      * @param entityUuid the UUID of the entity
      * @param whispering if the entity is whispering
@@ -16,7 +16,7 @@ public interface ConvertablePacket {
     EntitySoundPacket toEntitySoundPacket(UUID entityUuid, boolean whispering);
 
     /**
-     * Converts this packet to a locational sound packet
+     * Converts this packet to a locational sound packet.
      *
      * @param position the position of the audio
      * @return the locational sound packet
@@ -24,7 +24,7 @@ public interface ConvertablePacket {
     LocationalSoundPacket toLocationalSoundPacket(Position position);
 
     /**
-     * Converts this packet to a static sound packet
+     * Converts this packet to a static sound packet.
      *
      * @return the static sound packet
      */
