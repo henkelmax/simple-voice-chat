@@ -15,7 +15,7 @@ public interface EntityAudioChannel extends AudioChannel {
     boolean isWhispering();
 
     /**
-     * Sets a new entity where this channel is attached to
+     * Sets a new entity where this channel is attached to.
      *
      * @param entity the entity to attach the channel to
      */

@@ -16,7 +16,7 @@ public interface VoicechatConnection {
     boolean isInGroup();
 
     /**
-     * Joins this player to the provided group
+     * Joins this player to the provided group.
      *
      * @param group the group to join or <code>null</code> to leave the current group
      */

@@ -8,7 +8,7 @@ public interface VoiceHostEvent extends ServerEvent {
     String getVoiceHost();
 
     /**
-     * Overwrites voicechats voice host - This is sent to the client and used by it to connect to the server
+     * Overwrites voice chats voice host - This is sent to the client and used by it to connect to the server.
      *
      * @param voiceHost the voice host string
      */

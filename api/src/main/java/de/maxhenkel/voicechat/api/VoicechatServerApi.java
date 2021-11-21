@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 public interface VoicechatServerApi extends VoicechatApi {
 
     /**
-     * Sends the sound packet to the provided connection
+     * Sends the sound packet to the provided connection.
      *
      * @param connection the connection to send the packet to
      * @param packet     the packet to send
@@ -23,7 +23,7 @@ public interface VoicechatServerApi extends VoicechatApi {
     void sendEntitySoundPacketTo(VoicechatConnection connection, EntitySoundPacket packet);
 
     /**
-     * Sends the sound packet to the provided connection
+     * Sends the sound packet to the provided connection.
      *
      * @param connection the connection to send the packet to
      * @param packet     the packet to send
@@ -31,7 +31,7 @@ public interface VoicechatServerApi extends VoicechatApi {
     void sendLocationalSoundPacketTo(VoicechatConnection connection, LocationalSoundPacket packet);
 
     /**
-     * Sends the sound packet to the provided connection
+     * Sends the sound packet to the provided connection.
      *
      * @param connection the connection to send the packet to
      * @param packet     the packet to send
@@ -39,7 +39,7 @@ public interface VoicechatServerApi extends VoicechatApi {
     void sendStaticSoundPacketTo(VoicechatConnection connection, StaticSoundPacket packet);
 
     /**
-     * Creates a sound channel for the specified entity
+     * Creates a sound channel for the specified entity.
      *
      * @param channelId the ID of the channel - Has to be unique
      * @param entity    the entity to attach the channel to
@@ -49,7 +49,7 @@ public interface VoicechatServerApi extends VoicechatApi {
     EntityAudioChannel createEntityAudioChannel(UUID channelId, Entity entity);
 
     /**
-     * Creates a sound channel at the provided location
+     * Creates a sound channel at the provided location.
      *
      * @param channelId       the ID of the channel - Has to be unique
      * @param level           the world
@@ -60,7 +60,7 @@ public interface VoicechatServerApi extends VoicechatApi {
     LocationalAudioChannel createLocationalAudioChannel(UUID channelId, ServerLevel level, Position initialPosition);
 
     /**
-     * Creates a static audio channel
+     * Creates a static audio channel.
      *
      * @param channelId  the ID of the channel - Has to be unique
      * @param level      the level
@@ -71,9 +71,10 @@ public interface VoicechatServerApi extends VoicechatApi {
     StaticAudioChannel createStaticAudioChannel(UUID channelId, ServerLevel level, VoicechatConnection connection);
 
     /**
-     * Creates a new audio player
+     * Creates a new audio player.
      * <br/>
-     * <b>NOTE: Never use more than one audio player for every audio channel</b>
+     * <br/>
+     * <b>NOTE</b>: Never use more than one audio player for every audio channel.
      *
      * @param audioChannel  the channel where the audio player should send the audio to
      * @param encoder       the optus encoder used to encode the audio data
@@ -83,9 +84,10 @@ public interface VoicechatServerApi extends VoicechatApi {
     AudioPlayer createAudioPlayer(AudioChannel audioChannel, OpusEncoder encoder, Supplier<short[]> audioSupplier);
 
     /**
-     * Creates a new audio player
+     * Creates a new audio player.
      * <br/>
-     * <b>NOTE: Never use more than one audio player for every audio channel</b>
+     * <br/>
+     * <b>NOTE</b>: Never use more than one audio player for every audio channel.
      *
      * @param audioChannel the channel where the audio player should send the audio to
      * @param encoder      the optus encoder used to encode the audio data
@@ -95,7 +97,7 @@ public interface VoicechatServerApi extends VoicechatApi {
     AudioPlayer createAudioPlayer(AudioChannel audioChannel, OpusEncoder encoder, short[] audio);
 
     /**
-     * Gets the connection of the player with this UUID
+     * Gets the connection of the player with this UUID.
      *
      * @param playerUuid the players UUID
      * @return the connection or <code>null</code> if the player is not connected
@@ -104,7 +106,7 @@ public interface VoicechatServerApi extends VoicechatApi {
     VoicechatConnection getConnectionOf(UUID playerUuid);
 
     /**
-     * Gets the connection of the player
+     * Gets the connection of the player.
      *
      * @param player the player
      * @return the connection or <code>null</code> if the player is not connected
@@ -115,7 +117,7 @@ public interface VoicechatServerApi extends VoicechatApi {
     }
 
     /**
-     * Creates a new group
+     * Creates a new group.
      *
      * @param name     the name of the group
      * @param password the password of the group - <code>null</code> for no password
@@ -138,7 +140,7 @@ public interface VoicechatServerApi extends VoicechatApi {
     UUID getSecret(UUID userId);
 
     /**
-     * A convenience method to get all players in the range of a specific location
+     * A convenience method to get all players in the range of a specific location.
      *
      * @param level  the world
      * @param pos    the location
@@ -154,7 +156,7 @@ public interface VoicechatServerApi extends VoicechatApi {
     double getBroadcastRange();
 
     /**
-     * A convenience method to get all players in the range of a specific location
+     * A convenience method to get all players in the range of a specific location.
      *
      * @param level the world
      * @param pos   the location
