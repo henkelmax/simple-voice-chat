@@ -33,10 +33,17 @@ task packageJavadoc(type: Jar, dependsOn: 'javadoc') {
     from javadoc.destinationDir
     classifier 'javadoc'
 }
+
 task packageSources(type: Jar, dependsOn: 'classes') {
     from sourceSets.main.allSource
     classifier 'sources'
 }
+
+javadoc {
+    title "Simple Voice Chat Plugin API Version ${version}"
+    options.windowTitle = "Simple Voice Chat Plugin API"
+}
+
 artifacts {
     archives packageJavadoc
     archives packageSources
@@ -66,6 +73,6 @@ publishing {
     }
 }
 
-task prepareWorkspace{
+task prepareWorkspace {
 
 }
