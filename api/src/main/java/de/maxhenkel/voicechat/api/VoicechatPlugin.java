@@ -12,13 +12,15 @@ public interface VoicechatPlugin {
     /**
      * Called after loading the plugin.
      */
-    void initialize(VoicechatApi api);
+    default void initialize(VoicechatApi api) {
+    }
 
     /**
      * Register your events here - Only here!
      *
      * @param registration the event registration object, used to register events
      */
-    void registerEvents(EventRegistration registration);
+    default void registerEvents(EventRegistration registration) {
+    }
 
 }
