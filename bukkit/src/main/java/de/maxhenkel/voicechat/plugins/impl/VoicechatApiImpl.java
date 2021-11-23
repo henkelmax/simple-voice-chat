@@ -4,13 +4,17 @@ import de.maxhenkel.voicechat.api.Entity;
 import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.api.ServerLevel;
 import de.maxhenkel.voicechat.api.VoicechatApi;
+import de.maxhenkel.voicechat.api.audio.AudioConverter;
 import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
+import de.maxhenkel.voicechat.plugins.impl.audio.AudioConverterImpl;
 import org.bukkit.World;
 
 import javax.annotation.Nullable;
 
 public class VoicechatApiImpl implements VoicechatApi {
+
+    private static final AudioConverter AUDIO_CONVERTER = new AudioConverterImpl();
 
     @Nullable
     @Override
@@ -22,6 +26,10 @@ public class VoicechatApiImpl implements VoicechatApi {
     @Override
     public OpusDecoder createDecoder() {
         return null;
+    }
+
+    public AudioConverter getAudioConverter() {
+        return AUDIO_CONVERTER;
     }
 
     @Override
