@@ -70,7 +70,7 @@ public class Utils {
         return floats;
     }
 
-    public static byte[] floatToBytes(float[] floats) {
+    public static byte[] floatsToBytes(float[] floats) {
         byte[] bytes = new byte[floats.length * 2];
         for (int i = 0; i < floats.length; i++) {
             short x = ((Float) floats[i]).shortValue();

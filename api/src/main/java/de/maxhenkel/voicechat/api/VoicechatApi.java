@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.api;
 
+import de.maxhenkel.voicechat.api.audio.AudioConverter;
 import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 
@@ -24,6 +25,11 @@ public interface VoicechatApi {
      */
     @Nullable
     OpusDecoder createDecoder();
+
+    /**
+     * @return the audio converter
+     */
+    AudioConverter getAudioConverter();
 
     /**
      * Creates an entity object from an actual entity.
