@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.api.VoicechatApi;
 import de.maxhenkel.voicechat.api.audio.AudioConverter;
 import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
+import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
 import de.maxhenkel.voicechat.plugins.impl.audio.AudioConverterImpl;
 import org.bukkit.World;
 
@@ -19,6 +20,12 @@ public class VoicechatApiImpl implements VoicechatApi {
     @Nullable
     @Override
     public OpusEncoder createEncoder() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public OpusEncoder createEncoder(OpusEncoderMode mode) {
         return null;
     }
 

@@ -1,1 +1,1 @@
-- Updated to 1.18-pre7
+- Added Opus encoder modes to voice chat API
