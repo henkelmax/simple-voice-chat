@@ -1,1 +1,1 @@
-- Added Opus encoder modes to voice chat API
+- Added more descriptive log messages when the voice chat port is already in use

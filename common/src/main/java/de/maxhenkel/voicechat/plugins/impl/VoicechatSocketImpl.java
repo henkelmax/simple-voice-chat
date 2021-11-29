@@ -12,6 +12,9 @@ public class VoicechatSocketImpl implements VoicechatSocket {
 
     @Override
     public void open(int port, String bindAddress) throws Exception {
+        if (socket != null) {
+            throw new IllegalStateException("Socket already opened");
+        }
         checkCorrectHost();
         InetAddress address = null;
         try {
@@ -20,8 +23,8 @@ public class VoicechatSocketImpl implements VoicechatSocket {
             }
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to parse bind IP address '{}'", bindAddress);
-            Voicechat.LOGGER.info("Binding to default IP address");
             e.printStackTrace();
+            Voicechat.LOGGER.info("Binding to default IP address");
         }
 
         try {
@@ -36,7 +39,7 @@ public class VoicechatSocketImpl implements VoicechatSocket {
             }
             socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
         } catch (BindException e) {
-            Voicechat.LOGGER.error("Failed to bind to address '{}'", bindAddress);
+            Voicechat.LOGGER.error("Failed to bind to address '0.0.0.0', make sure no other application is running at UDP port {}", port);
             e.printStackTrace();
             System.exit(1);
             return;
@@ -72,7 +75,9 @@ public class VoicechatSocketImpl implements VoicechatSocket {
 
     @Override
     public void close() {
-        socket.close();
+        if (socket != null) {
+            socket.close();
+        }
     }
 
     @Override
