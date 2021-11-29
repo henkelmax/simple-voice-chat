@@ -1,1 +1,1 @@
-- Updated to 1.18-rc4
+- Added more descriptive log messages when the voice chat port is already in use
