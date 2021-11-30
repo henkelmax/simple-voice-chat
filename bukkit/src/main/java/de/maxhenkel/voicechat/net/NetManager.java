@@ -44,7 +44,7 @@ public class NetManager {
     private static void onPlayCustomPayload(PacketEvent event) {
         Player player = event.getPlayer();
         PacketPlayInCustomPayload customPayload = (PacketPlayInCustomPayload) event.getPacket().getHandle();
-        MinecraftKey id = new MinecraftKey(customPayload.b().getNamespace(), customPayload.b().getKey());
+        MinecraftKey id = new MinecraftKey(customPayload.b().b(), customPayload.b().a());
         if (id.getFullKey().equals(PlayerStatePacket.PLAYER_STATE.getFullKey())) {
             ByteBuf buf = (ByteBuf) event.getPacket().getModifier().withType(PacketDataSerializer.class).read(0);
             FriendlyByteBuf payload = new FriendlyByteBuf(buf);
