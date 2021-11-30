@@ -13,12 +13,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 import net.minecraftforge.forgespi.language.IModInfo;
 
 import java.nio.file.Path;
@@ -44,12 +44,12 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @SubscribeEvent
-    public void serverStarting(FMLServerStartedEvent event) {
+    public void serverStarting(ServerStartedEvent event) {
         serverStartingEvents.forEach(consumer -> consumer.accept(event.getServer()));
     }
 
     @SubscribeEvent
-    public void serverStopping(FMLServerStoppingEvent event) {
+    public void serverStopping(ServerStoppingEvent event) {
         serverStoppingEvents.forEach(consumer -> consumer.accept(event.getServer()));
     }
 

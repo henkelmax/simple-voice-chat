@@ -3,9 +3,9 @@ package de.maxhenkel.voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.ForgeClientCompatibilityManager;
+import net.minecraftforge.client.ConfigGuiHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fmlclient.ConfigGuiHandler;
 
 public class ForgeVoicechatClientMod extends VoicechatClient {
 
