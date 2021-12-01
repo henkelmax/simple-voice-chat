@@ -1,1 +1,1 @@
-- Updated to 1.18
+- Fixed macos permission issues
