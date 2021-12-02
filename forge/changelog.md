@@ -1,1 +1,2 @@
-- Fixed macos permission issues
+- Updated Forge
+- Fixed sound physics compatibility
