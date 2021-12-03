@@ -1,1 +1,1 @@
-- Fixed macos permission issues
+- Fixed microphone permission issues on M1 Macs

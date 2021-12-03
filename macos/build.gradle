@@ -10,7 +10,7 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 repositories {
     mavenCentral()
