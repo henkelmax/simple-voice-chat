@@ -1,1 +1,1 @@
-- Updated to 1.18.1-pre1
+- Fixed microphone permission issues on M1 Macs

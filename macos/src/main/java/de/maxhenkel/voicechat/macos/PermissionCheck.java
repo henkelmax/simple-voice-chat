@@ -27,19 +27,15 @@ public class PermissionCheck {
         Pointer pointerRequestAccessForMediaType = AVFoundationLibrary.INSTANCE.sel_registerName("requestAccessForMediaType:completionHandler:");
 
         Pointer classPointerNSString = FoundationLibrary.INSTANCE.objc_getClass("NSString");
-        Pointer allocPointer = FoundationLibrary.INSTANCE.sel_registerName("alloc");
-
-        Pointer pointerCreateNSStringWithUTF8CString = FoundationLibrary.INSTANCE.sel_registerName("initWithUTF8String:");
-
-        Pointer instanceNSStringClassPointer = FoundationLibrary.INSTANCE.objc_msgSend(classPointerNSString, allocPointer);
-        Pointer pointerAudioRequestConstant = FoundationLibrary.INSTANCE.objc_msgSend(instanceNSStringClassPointer, pointerCreateNSStringWithUTF8CString, "soun");
+        Pointer pointerCreateNSStringWithUTF8CString = FoundationLibrary.INSTANCE.sel_registerName("stringWithUTF8String:");
+        Pointer pointerAudioRequestConstant = FoundationLibrary.INSTANCE.objc_msgSend(classPointerNSString, pointerCreateNSStringWithUTF8CString, "soun");
 
         NativeLong permissionEnum = AVFoundationLibrary.INSTANCE.objc_msgSend(classPointerAVCaptureDevice, pointerGetAuthorizationStatus, pointerAudioRequestConstant);
 
         AVAuthorizationStatus avAuthorizationStatus = AVAuthorizationStatus.byValue(permissionEnum);
 
         if (requestIfNeeded && avAuthorizationStatus.equals(AVAuthorizationStatus.NOT_DETERMINED)) {
-            AVFoundationLibrary.INSTANCE.objc_msgSend(classPointerAVCaptureDevice, pointerRequestAccessForMediaType, pointerAudioRequestConstant);
+            AVFoundationLibrary.INSTANCE.objc_msgSend(classPointerAVCaptureDevice, pointerRequestAccessForMediaType, pointerAudioRequestConstant, null);
         }
         return avAuthorizationStatus;
     }
@@ -88,7 +84,9 @@ public class PermissionCheck {
         Pointer sel_registerName(String selectorName);
 
         // https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend?language=objc
-        NativeLong objc_msgSend(Pointer receiver, Pointer selector, Object... args);
+        NativeLong objc_msgSend(Pointer receiver, Pointer selector, Pointer pointer);
+
+        NativeLong objc_msgSend(Pointer receiver, Pointer selector, Pointer pointer1, Pointer pointer2);
     }
 
     private interface FoundationLibrary extends Library {
@@ -101,7 +99,7 @@ public class PermissionCheck {
         Pointer sel_registerName(String selectorName);
 
         // https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend?language=objc
-        Pointer objc_msgSend(Pointer receiver, Pointer selector, Object... args);
+        Pointer objc_msgSend(Pointer receiver, Pointer selector, String name);
     }
 
 }
