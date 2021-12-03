@@ -50,7 +50,7 @@ dependencies {
 
     modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
 
-    modImplementation("de.maxhenkel.soundphysics:soundphysics-fabric:${sound_physics_remastered_version}") {
+    modCompileOnly("de.maxhenkel.soundphysics:soundphysics-fabric:${sound_physics_remastered_version}") {
         transitive false
     }
 
