@@ -1,1 +1,1 @@
-- Fixed sound physics integration
+- Fixed microphone permission issues on M1 Macs

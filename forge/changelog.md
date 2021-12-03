@@ -1,2 +1,1 @@
-- Updated Forge
-- Fixed sound physics compatibility
+- Fixed microphone permission issues on M1 Macs
