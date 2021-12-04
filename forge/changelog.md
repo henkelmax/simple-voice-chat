@@ -1,1 +1,1 @@
-- Fixed microphone permission issues on M1 Macs
+- Updated chinese translation
