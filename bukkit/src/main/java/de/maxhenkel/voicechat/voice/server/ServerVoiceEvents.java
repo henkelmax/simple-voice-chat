@@ -31,7 +31,18 @@ public class ServerVoiceEvents implements Listener {
 
     public void onRequestSecretPacket(Player player, RequestSecretPacket packet) {
         Voicechat.LOGGER.info("Received secret request of {} ({})", player.getName(), packet.getCompatibilityVersion());
-        clientCompatibilities.put(player.getUniqueId(), packet.getCompatibilityVersion());
+
+        UUID playerUUID;
+
+        try {
+            playerUUID = player.getUniqueId();
+        } catch (UnsupportedOperationException e) {
+            player.kickPlayer("Tried to authenticate voice chat while still connecting");
+            Voicechat.LOGGER.warn("{} tried to authenticate voice chat while still connecting", player.getName());
+            return;
+        }
+
+        clientCompatibilities.put(playerUUID, packet.getCompatibilityVersion());
         if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
             Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
             NetManager.sendMessage(player, getIncompatibleMessage(packet.getCompatibilityVersion()));
