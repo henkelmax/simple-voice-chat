@@ -18,6 +18,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.io.FileUtils;
+import org.lwjgl.openal.AL11;
 
 import java.io.IOException;
 import java.net.SocketAddress;
@@ -83,6 +84,8 @@ public class DebugReport {
         appendOS();
         divider();
         appendJava();
+        divider();
+        appendOpenAL();
         divider();
         appendServer();
         divider();
@@ -150,6 +153,13 @@ public class DebugReport {
         } catch (Exception e) {
             addLine("Process: ERROR (" + e.getMessage() + ")");
         }
+    }
+
+    private void appendOpenAL() {
+        addLine("OpenAL");
+        addLine("");
+        addLine("Version: " + AL11.alGetString(AL11.AL_VERSION));
+        addLine("Vendor: " + AL11.alGetString(AL11.AL_VENDOR));
     }
 
     private void appendServer() {
