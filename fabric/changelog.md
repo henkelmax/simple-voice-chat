@@ -1,1 +1,1 @@
-- Updated chinese translation
+- Added OpenAL information to debug report
