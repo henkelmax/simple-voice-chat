@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat;
 
+import de.maxhenkel.voicechat.command.VoicechatCommands;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
@@ -29,6 +30,7 @@ public abstract class Voicechat {
         }
         CommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
+        CommonCompatibilityManager.INSTANCE.onRegisterServerCommands(VoicechatCommands::register);
     }
 
     protected abstract int readCompatibilityVersion() throws Exception;

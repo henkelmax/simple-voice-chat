@@ -1,1 +1,1 @@
-- Added OpenAL information to debug report
+- Fixed commands not present

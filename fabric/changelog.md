@@ -1,1 +1,1 @@
-- Added OpenAL information to debug report
+- Fix command registration
