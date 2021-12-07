@@ -1,1 +1,1 @@
-- Fix command registration
+- Updated to 1.18.1-rc1
