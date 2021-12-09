@@ -3,8 +3,10 @@ package de.maxhenkel.voicechat.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.PingPacket;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
@@ -29,6 +31,9 @@ public class VoicechatCommands {
         LiteralArgumentBuilder<CommandSourceStack> literalBuilder = Commands.literal("voicechat");
 
         literalBuilder.then(Commands.literal("test").requires((commandSource) -> commandSource.hasPermission(2)).then(Commands.argument("target", EntityArgument.player()).executes((commandSource) -> {
+            if (checkNoVoicechat(commandSource)) {
+                return 0;
+            }
             ServerPlayer player = EntityArgument.getPlayer(commandSource, "target");
             Server server = Voicechat.SERVER.getServer();
             if (server == null) {
@@ -64,6 +69,9 @@ public class VoicechatCommands {
         })));
 
         literalBuilder.then(Commands.literal("invite").then(Commands.argument("target", EntityArgument.player()).executes((commandSource) -> {
+            if (checkNoVoicechat(commandSource)) {
+                return 0;
+            }
             ServerPlayer source = commandSource.getSource().getPlayerOrException();
 
             Server server = Voicechat.SERVER.getServer();
@@ -87,14 +95,7 @@ public class VoicechatCommands {
             }
 
             String passwordSuffix = group.getPassword() == null ? "" : " \"" + group.getPassword() + "\"";
-            player.sendMessage(new TranslatableComponent("message.voicechat.invite",
-                    source.getDisplayName(),
-                    new TextComponent(group.getName()).withStyle(ChatFormatting.GRAY),
-                    ComponentUtils.wrapInSquareBrackets(new TranslatableComponent("message.voicechat.accept_invite").withStyle(style -> style
-                                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/voicechat join " + group.getId().toString() + passwordSuffix))
-                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.voicechat.accept_invite.hover")))))
-                            .withStyle(ChatFormatting.GREEN)
-            ), Util.NIL_UUID);
+            player.sendMessage(new TranslatableComponent("message.voicechat.invite", source.getDisplayName(), new TextComponent(group.getName()).withStyle(ChatFormatting.GRAY), ComponentUtils.wrapInSquareBrackets(new TranslatableComponent("message.voicechat.accept_invite").withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/voicechat join " + group.getId().toString() + passwordSuffix)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.voicechat.accept_invite.hover"))))).withStyle(ChatFormatting.GREEN)), Util.NIL_UUID);
 
             commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.invite_successful", player.getDisplayName()), false);
 
@@ -102,17 +103,26 @@ public class VoicechatCommands {
         })));
 
         literalBuilder.then(Commands.literal("join").then(Commands.argument("group", UuidArgument.uuid()).executes((commandSource) -> {
+            if (checkNoVoicechat(commandSource)) {
+                return 0;
+            }
             UUID groupID = UuidArgument.getUuid(commandSource, "group");
             return joinGroup(commandSource.getSource(), groupID, null);
         })));
 
         literalBuilder.then(Commands.literal("join").then(Commands.argument("group", UuidArgument.uuid()).then(Commands.argument("password", StringArgumentType.string()).executes((commandSource) -> {
+            if (checkNoVoicechat(commandSource)) {
+                return 0;
+            }
             UUID groupID = UuidArgument.getUuid(commandSource, "group");
             String password = StringArgumentType.getString(commandSource, "password");
             return joinGroup(commandSource.getSource(), groupID, password.isEmpty() ? null : password);
         }))));
 
         literalBuilder.then(Commands.literal("leave").executes((commandSource) -> {
+            if (checkNoVoicechat(commandSource)) {
+                return 0;
+            }
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 commandSource.getSource().sendFailure(new TranslatableComponent("message.voicechat.groups_disabled"));
                 return 1;
@@ -162,6 +172,20 @@ public class VoicechatCommands {
         server.getGroupManager().joinGroup(group, player, password);
         source.sendSuccess(new TranslatableComponent("message.voicechat.join_successful", new TextComponent(group.getName()).withStyle(ChatFormatting.GRAY)), false);
         return 1;
+    }
+
+    private static boolean checkNoVoicechat(CommandContext<CommandSourceStack> commandSource) {
+        try {
+            ServerPlayer player = commandSource.getSource().getPlayerOrException();
+            if (Voicechat.SERVER.isCompatible(player)) {
+                return false;
+            }
+            commandSource.getSource().sendFailure(new TextComponent("You need to have %s installed to use this command".formatted(CommonCompatibilityManager.INSTANCE.getModName())));
+            return true;
+        } catch (Exception e) {
+            commandSource.getSource().sendFailure(new TextComponent("This command can only be executed as a player"));
+            return true;
+        }
     }
 
 }

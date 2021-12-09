@@ -1,1 +1,1 @@
-- Fixed commands not present
+- Fixed untranslated command feedback

@@ -1,1 +1,1 @@
-- Fix command registration
+- Fixed untranslated command feedback
