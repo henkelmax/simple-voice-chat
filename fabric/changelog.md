@@ -1,1 +1,1 @@
-- Updated to 1.18.1-rc3
+- Updated to 1.18.1
