@@ -1,1 +1,1 @@
-- Fixed untranslated command feedback
+- Updated to 1.18.1
