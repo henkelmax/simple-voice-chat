@@ -1,11 +1,11 @@
 package de.maxhenkel.voicechat.macos;
 
 import com.sun.jna.Platform;
+import de.maxhenkel.voicechat.macos.jna.avfoundation.AVAuthorizationStatus;
 
-import java.awt.GraphicsEnvironment;
+import java.awt.*;
 
 public class Main {
-
     public static void main(String[] args) {
         if (!Platform.isMac()) {
             System.out.println("You are not on MacOS");
@@ -25,24 +25,30 @@ public class Main {
     }
 
     private static void request() {
-        PermissionCheck.AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
-        if (status.equals(PermissionCheck.AVAuthorizationStatus.NOT_DETERMINED)) {
+        AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
+        if (status.equals(AVAuthorizationStatus.NOT_DETERMINED)) {
             PermissionCheck.requestMicrophonePermissions();
         }
+
         int i = 0;
-        while (status.equals(PermissionCheck.AVAuthorizationStatus.NOT_DETERMINED)) {
+        while (status.equals(AVAuthorizationStatus.NOT_DETERMINED)) {
             status = PermissionCheck.getMicrophonePermissions();
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
             if (i < 10) {
                 i++;
             } else {
                 System.exit(99);
                 break;
             }
+        }
+
+        if (status != AVAuthorizationStatus.AUTHORIZED) {
+            System.err.println("Simple Voice Chat is unable to use the Microphone. Status: " + status);
         }
     }
 
@@ -55,5 +61,4 @@ public class Main {
 
         new MacosFrame();
     }
-
 }
