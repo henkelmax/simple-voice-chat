@@ -14,7 +14,7 @@ buildscript {
 plugins {
     // https://github.com/matthewprenger/CurseGradle
     id "com.matthewprenger.cursegradle" version "1.4.0"
-    id "com.github.johnrengelman.shadow" version "7.0.0"
+    id "com.github.johnrengelman.shadow" version "7.1.0"
 }
 
 apply plugin: 'net.minecraftforge.gradle'

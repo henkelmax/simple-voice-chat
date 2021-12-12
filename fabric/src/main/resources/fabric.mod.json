@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "id": "${mod_id}",
   "version": "${mod_version}",
-  "name": "Simple Voice Chat",
+  "name": "${mod_name}",
   "description": "A working voice chat in Minecraft!",
   "authors": [
-    "Max Henkel"
+    "${mod_vendor}"
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat",
@@ -32,7 +32,7 @@
     "voicechat.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${loader_version}",
+    "fabricloader": ">=${fabric_loader_version}",
     "fabric": ">=${fabric_version}",
     "minecraft": "${minecraft_dependency}",
     "java": ">=17"

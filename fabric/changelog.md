@@ -1,1 +1,1 @@
-- Updated to 1.18.1
+- Fixed cloth config integration

@@ -1,10 +1,10 @@
 pluginManagement {
     repositories {
+        gradlePluginPortal()
         maven {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
     }
 }
 
