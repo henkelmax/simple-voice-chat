@@ -25,8 +25,8 @@ public class MacosFrame extends JFrame implements DropTargetListener {
         }
 
         setLocationRelativeTo(null);
-        setMinimumSize(new Dimension(400, 300));
-        setSize(800, 600);
+        setMinimumSize(new Dimension(600, 500));
+        setSize(900, 700);
         setTitle("Simple Voice Chat");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         try {
@@ -54,11 +54,10 @@ public class MacosFrame extends JFrame implements DropTargetListener {
                     <p>
                     Doing this may result in your launcher not working correctly.
                     </p>
-                    <p>
-                    <b>Use at your own risk!</b>
-                    </p>
+                    <p><b>Use at your own risk!</b></p>
+                    <p align="right">Version %s</p>
                 </body>
-                """);
+                """.formatted(Main.getVersion()));
         ep.setEditable(false);
         ep.setBorder(new LineBorder(Color.WHITE, 10));
         ep.addHyperlinkListener(e -> {
