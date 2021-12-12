@@ -23,6 +23,8 @@ Note that this might cause other issues with your launcher, so use this at your 
 You can revert these changes by reinstalling the launcher.
 
 After restarting the launcher, Minecraft should now ask for microphone access.
+> If the launcher doesn't ask for Microphone access after patching it in the GUI, run the following command in a Terminal window:
+`codesign --force --deep --sign - <your-application>`.
 
 ### How to patch your launcher
 
