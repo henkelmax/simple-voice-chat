@@ -1,1 +1,2 @@
 - Fixed cloth config integration
+- Improved MacOS support
