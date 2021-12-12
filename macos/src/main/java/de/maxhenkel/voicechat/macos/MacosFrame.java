@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.macos;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.HyperlinkEvent;
@@ -8,9 +7,7 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
-import java.awt.image.ImageObserver;
 import java.io.File;
-import java.io.InputStream;
 import java.util.List;
 
 public class MacosFrame extends JFrame implements DropTargetListener {
@@ -48,11 +45,11 @@ public class MacosFrame extends JFrame implements DropTargetListener {
                     <p>
                     Your Minecraft launcher does not allow access to your microphone.
                     </p>
-                    <p><b>Please read <a href="https://github.com/henkelmax/simple-voice-chat/tree/1.17.1/macos#how-to-patch-your-launcher">this guide</a> on how to patch your launcher.</b></p>
+                    <p><b>Please read <a href="https://github.com/henkelmax/simple-voice-chat/tree/1.18.1/macos#how-to-patch-your-launcher">this guide</a> on how to patch your launcher.</b></p>
                     <p>
                     You need to drag your Minecraft launcher from your applications folder onto the area below.
                     Note that this will remove the original signature of your launcher.
-                    If you don't trust this, you can take a look at the <a href="https://github.com/henkelmax/simple-voice-chat/tree/1.17.1/macos">source code</a> of this application.
+                    If you don't trust this, you can take a look at the <a href="https://github.com/henkelmax/simple-voice-chat/tree/1.18.1/macos">source code</a> of this application.
                     </p>
                     <p>
                     Doing this may result in your launcher not working correctly.
