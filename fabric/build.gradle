@@ -52,7 +52,7 @@ dependencies {
 
 //    modImplementation("com.sonicether:soundphysics:${soundphysics_version}")
 
-    modImplementation("de.maxhenkel.soundphysics:soundphysics-fabric:${minecraft_version}-${sound_physics_remastered_version}") {
+    modImplementation("de.maxhenkel.soundphysics:soundphysics-fabric:${sound_physics_remastered_version}") {
         exclude(group: 'net.fabricmc.fabric-loader')
         exclude(group: 'me.shedaniel.cloth')
         exclude(group: 'com.terraformersmc')

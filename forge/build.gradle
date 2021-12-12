@@ -75,11 +75,15 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
     minecraft "net.minecraftforge:forge:${mod_minecraft_version}-${forge_version}"
 
-    implementation project(':common')
+    implementation(project(':common')) {
+        transitive false
+    }
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
-    implementation fg.deobf("de.maxhenkel.soundphysics:soundphysics-forge:${minecraft_version}-${sound_physics_remastered_version}")
+    compileOnly fg.deobf("de.maxhenkel.soundphysics:soundphysics-forge:${sound_physics_remastered_version}") {
+        transitive false
+    }
 
     implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
     shadow "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
