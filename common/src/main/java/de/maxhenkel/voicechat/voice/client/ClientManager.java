@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.PermissionCheck;
+import de.maxhenkel.voicechat.macos.jna.avfoundation.AVAuthorizationStatus;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
@@ -56,9 +57,7 @@ public class ClientManager {
             }
         });
 
-        CommonCompatibilityManager.INSTANCE.getNetManager().secretChannel.setClientListener((client, handler, packet) -> {
-            authenticate(handler.getLocalGameProfile().getId(), packet);
-        });
+        CommonCompatibilityManager.INSTANCE.getNetManager().secretChannel.setClientListener((client, handler, packet) -> authenticate(handler.getLocalGameProfile().getId(), packet));
     }
 
     private void authenticate(UUID playerUUID, SecretPacket secretPacket) {
@@ -97,17 +96,23 @@ public class ClientManager {
         checkMicrophonePermissions();
     }
 
-    public void checkMicrophonePermissions() {
-        if (!VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get()) {
+    public static void sendPlayerError(String translationKey, @Nullable Exception e) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null) {
             return;
         }
-        if (Platform.isMac()) {
-            PermissionCheck.AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
-            if (!status.equals(PermissionCheck.AVAuthorizationStatus.AUTHORIZED)) {
-                sendPlayerError("message.voicechat.macos_no_mic_permission", null);
-                Voicechat.LOGGER.warn("User hasn't granted microphone permissions: {}", status.name());
-            }
-        }
+        player.sendMessage(
+            ComponentUtils.wrapInSquareBrackets(new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()))
+                .withStyle(ChatFormatting.GREEN)
+                .append(" ")
+                .append(new TranslatableComponent(translationKey).withStyle(ChatFormatting.RED))
+                .withStyle(style -> {
+                    if (e != null) {
+                        style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED)));
+                    }
+                    return style;
+                })
+            , Util.NIL_UUID);
     }
 
     private void onDisconnect() {
@@ -118,23 +123,17 @@ public class ClientManager {
         ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
     }
 
-    public static void sendPlayerError(String translationKey, @Nullable Exception e) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null) {
+    public void checkMicrophonePermissions() {
+        if (!VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get()) {
             return;
         }
-        player.sendMessage(
-                ComponentUtils.wrapInSquareBrackets(new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()))
-                        .withStyle(ChatFormatting.GREEN)
-                        .append(" ")
-                        .append(new TranslatableComponent(translationKey).withStyle(ChatFormatting.RED))
-                        .withStyle(style -> {
-                            if (e != null) {
-                                style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED)));
-                            }
-                            return style;
-                        })
-                , Util.NIL_UUID);
+        if (Platform.isMac()) {
+            AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
+            if (!status.equals(AVAuthorizationStatus.AUTHORIZED)) {
+                sendPlayerError("message.voicechat.macos_no_mic_permission", null);
+                Voicechat.LOGGER.warn("User hasn't granted microphone permissions: {}", status.name());
+            }
+        }
     }
 
     @Nullable
