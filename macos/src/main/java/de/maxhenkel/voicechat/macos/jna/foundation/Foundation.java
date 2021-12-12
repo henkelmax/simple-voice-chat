@@ -6,22 +6,13 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 
 public interface Foundation extends Library {
-    public static final Foundation INSTANCE = Native.load("Foundation", Foundation.class);
-
-    // void objc_msgSend(*); -> https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend?language=objc
-    NativeLong objc_msgSend(Pointer receiver, Pointer selector);
+    Foundation INSTANCE = Native.load("Foundation", Foundation.class);
 
     // void objc_msgSend(*); -> https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend?language=objc
     NativeLong objc_msgSend(NativeLong receiver, Pointer selector);
 
     // void objc_msgSend(*); -> https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend?language=objc
-    NativeLong objc_msgSend(NativeLong receiver, Pointer selector, NativeLong arg1, NativeLong arg2);
-
-    // void objc_msgSend(*); -> https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend?language=objc
     NativeLong objc_msgSend(Pointer receiver, Pointer selector, String arg1);
-
-    // void objc_msgSend(*); -> https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend?language=objc
-    NativeLong objc_msgSend(NativeLong receiver, Pointer selector, NativeLong arg1);
 
     // id objc_getClass(const char* name); -> https://developer.apple.com/documentation/objectivec/1418952-objc_getclass?language=objc
     Pointer objc_getClass(String className);

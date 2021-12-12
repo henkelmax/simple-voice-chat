@@ -15,10 +15,8 @@ public interface AVFoundation extends Library {
     Pointer sel_registerName(String selectorName);
 
     // https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend?language=objc
-    NativeLong objc_msgSend(Pointer receiver, Pointer selector, Pointer pointer);
-
-    // https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend?language=objc
     NativeLong objc_msgSend(Pointer receiver, Pointer selector, NativeLong arg1);
 
+    // https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend?language=objc
     NativeLong objc_msgSend(Pointer receiver, Pointer selector, NativeLong arg1, Pointer arg2);
 }
