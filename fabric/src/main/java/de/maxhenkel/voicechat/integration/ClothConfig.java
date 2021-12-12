@@ -8,9 +8,12 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class ClothConfig {
 
-    private static boolean loaded;
+    private static Boolean loaded;
 
     public static boolean isLoaded() {
+        if (loaded == null) {
+            loaded = checkLoaded();
+        }
         return loaded;
     }
 
@@ -18,28 +21,26 @@ public class ClothConfig {
         if (FabricLoader.getInstance().isModLoaded("cloth-config2")) {
             try {
                 Class.forName("me.shedaniel.clothconfig2.api.ConfigBuilder");
-                Voicechat.LOGGER.warn("Using Cloth Config GUI");
+                Voicechat.LOGGER.info("Using Cloth Config GUI");
                 return true;
             } catch (Exception e) {
                 Voicechat.LOGGER.warn("Failed to load Cloth Config: {}", e.getMessage());
-                e.printStackTrace();
             }
         }
         return false;
     }
 
     public static void init() {
-        loaded = checkLoaded();
-        if (isLoaded()) {
-            ClientTickEvents.START_CLIENT_TICK.register(client -> {
+        ClientTickEvents.START_CLIENT_TICK.register(client -> {
+            if (isLoaded()) {
                 if (client.screen instanceof ClothConfigScreen screen) {
                     if (screen.getSelectedCategory().equals(ClothConfigWrapper.OTHER_SETTINGS)) {
                         screen.selectedCategoryIndex = 0;
                         client.setScreen(new VoiceChatSettingsScreen(client.screen));
                     }
                 }
-            });
-        }
+            }
+        });
     }
 
 }

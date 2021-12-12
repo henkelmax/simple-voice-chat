@@ -2,19 +2,21 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url = 'https://maven.maxhenkel.de/repository/public' }
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         mavenLocal()
     }
 }
 
 plugins {
     id "java"
-    id "org.spongepowered.gradle.vanilla" version "0.2"
+    id 'fabric-loom' version '0.10-SNAPSHOT'
 }
+
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 repositories {
     mavenCentral()
-    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+    maven { url = 'https://maven.fabricmc.net/' }
     maven {
         name = "henkelmax.public"
         url = 'https://maven.maxhenkel.de/repository/public'
@@ -22,15 +24,15 @@ repositories {
     mavenLocal()
 }
 
-minecraft {
-    version(minecraft_version)
-    runs {
-        server()
-        client()
-    }
+task prepareWorkspace {
+
 }
 
 dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings minecraft.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
     implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"

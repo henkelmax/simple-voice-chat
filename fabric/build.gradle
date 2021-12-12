@@ -12,7 +12,7 @@ buildscript {
 plugins {
     id 'fabric-loom' version '0.10-SNAPSHOT'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
 }
 
 apply plugin: 'forge-update'
@@ -43,7 +43,7 @@ runClient.doFirst {
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings minecraft.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     implementation project(':common')
@@ -83,9 +83,11 @@ dependencies {
 processResources {
     filesMatching("fabric.mod.json") {
         expand 'mod_id': mod_id,
+                'mod_name': mod_name,
+                'mod_vendor': mod_vendor,
                 'mod_version': mod_version,
                 'minecraft_dependency': minecraft_dependency,
-                'loader_version': loader_version,
+                'fabric_loader_version': fabric_loader_version,
                 'fabric_version': fabric_version,
                 'compatibility_version': mod_compatibility_version,
                 'modmenu_version': modmenu_version,

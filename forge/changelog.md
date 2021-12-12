@@ -1,1 +1,1 @@
-- Fixed untranslated command feedback
+- Fixed cloth config integration
