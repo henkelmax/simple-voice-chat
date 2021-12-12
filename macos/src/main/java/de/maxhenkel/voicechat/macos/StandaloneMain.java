@@ -8,6 +8,8 @@ import java.awt.*;
 public class StandaloneMain {
 
     public static void main(String[] args) {
+        System.out.printf("MacOS patcher version %s%n", Main.getVersion());
+
         if (GraphicsEnvironment.isHeadless()) {
             System.out.println("This application does not work in headless mode");
             System.exit(-1);

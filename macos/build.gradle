@@ -30,6 +30,12 @@ task prepareWorkspace {
 
 }
 
+processResources{
+    filesMatching("patcher.properties") {
+        expand 'patcher_version': patcher_version
+    }
+}
+
 jar {
     manifest {
         attributes 'Main-Class': 'de.maxhenkel.voicechat.macos.Main'

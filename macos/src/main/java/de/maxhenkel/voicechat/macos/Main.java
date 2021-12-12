@@ -4,9 +4,16 @@ import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.macos.jna.avfoundation.AVAuthorizationStatus;
 
 import java.awt.*;
+import java.io.InputStream;
+import java.util.Properties;
 
 public class Main {
+
+    public static String version;
+
     public static void main(String[] args) {
+        System.out.printf("MacOS patcher version %s%n", getVersion());
+
         if (!Platform.isMac()) {
             System.out.println("You are not on MacOS");
             System.exit(0);
@@ -48,7 +55,7 @@ public class Main {
         }
 
         if (status != AVAuthorizationStatus.AUTHORIZED) {
-            System.err.println("Simple Voice Chat is unable to use the Microphone. Status: " + status);
+            System.err.printf("Simple Voice Chat is unable to use the Microphone. Status: %s%n", status);
         }
     }
 
@@ -61,4 +68,24 @@ public class Main {
 
         new MacosFrame();
     }
+
+    private static String loadVersion() {
+        try {
+            InputStream in = Main.class.getClassLoader().getResourceAsStream("patcher.properties");
+            Properties props = new Properties();
+            props.load(in);
+            return props.getProperty("patcher_version");
+        } catch (Exception e) {
+            System.err.printf("Failed to load version: %s%n", e.getMessage());
+            return "N/A";
+        }
+    }
+
+    public static String getVersion() {
+        if (version == null) {
+            version = loadVersion();
+        }
+        return version;
+    }
+
 }
