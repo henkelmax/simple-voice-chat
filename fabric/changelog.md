@@ -1,1 +1,1 @@
-- Added korean translation
+- Included necessary Fabric API modules
