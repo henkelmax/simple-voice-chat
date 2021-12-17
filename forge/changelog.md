@@ -1,1 +1,1 @@
-- Added korean translation
+- Added help command
