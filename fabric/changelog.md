@@ -1,1 +1,2 @@
 - Included necessary Fabric API modules
+- Added help command

@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.tree.CommandNode;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.PingPacket;
@@ -23,12 +24,18 @@ import net.minecraft.network.chat.*;
 import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.UUID;
 
 public class VoicechatCommands {
 
+    public static final String VOICECHAT_COMMAND = "voicechat";
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        LiteralArgumentBuilder<CommandSourceStack> literalBuilder = Commands.literal("voicechat");
+        LiteralArgumentBuilder<CommandSourceStack> literalBuilder = Commands.literal(VOICECHAT_COMMAND);
+
+        literalBuilder.executes(commandSource -> help(dispatcher, commandSource));
+        literalBuilder.then(Commands.literal("help").executes(commandSource -> help(dispatcher, commandSource)));
 
         literalBuilder.then(Commands.literal("test").requires((commandSource) -> commandSource.hasPermission(2)).then(Commands.argument("target", EntityArgument.player()).executes((commandSource) -> {
             if (checkNoVoicechat(commandSource)) {
@@ -172,6 +179,18 @@ public class VoicechatCommands {
         server.getGroupManager().joinGroup(group, player, password);
         source.sendSuccess(new TranslatableComponent("message.voicechat.join_successful", new TextComponent(group.getName()).withStyle(ChatFormatting.GRAY)), false);
         return 1;
+    }
+
+    private static int help(CommandDispatcher<CommandSourceStack> dispatcher, CommandContext<CommandSourceStack> commandSource) {
+        if (checkNoVoicechat(commandSource)) {
+            return 0;
+        }
+        CommandNode<CommandSourceStack> voicechatCommand = dispatcher.getRoot().getChild(VOICECHAT_COMMAND);
+        Map<CommandNode<CommandSourceStack>, String> map = dispatcher.getSmartUsage(voicechatCommand, commandSource.getSource());
+        for (Map.Entry<CommandNode<CommandSourceStack>, String> entry : map.entrySet()) {
+            commandSource.getSource().sendSuccess(new TextComponent("/%s %s".formatted(VOICECHAT_COMMAND, entry.getValue())), false);
+        }
+        return map.size();
     }
 
     private static boolean checkNoVoicechat(CommandContext<CommandSourceStack> commandSource) {
