@@ -44,7 +44,19 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings minecraft.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+
+    Set<String> apiModules = [
+            "fabric-api-base",
+            "fabric-command-api-v1",
+            "fabric-lifecycle-events-v1",
+            "fabric-networking-api-v1",
+            "fabric-resource-loader-v0",
+            "fabric-key-binding-api-v1"
+    ]
+
+    apiModules.forEach {
+        include(modImplementation(fabricApi.module(it, fabric_version)))
+    }
 
     implementation project(':common')
 
@@ -88,7 +100,6 @@ processResources {
                 'mod_version': mod_version,
                 'minecraft_dependency': minecraft_dependency,
                 'fabric_loader_version': fabric_loader_version,
-                'fabric_version': fabric_version,
                 'compatibility_version': mod_compatibility_version,
                 'modmenu_version': modmenu_version,
                 'cloth_config_version': cloth_config_version,
@@ -140,7 +151,6 @@ curseforge {
         mainArtifact(file("${buildDir}/libs/${archivesBaseName}-${version}.jar")) {
             displayName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
             relations {
-                requiredDependency 'fabric-api'
                 optionalDependency 'modmenu'
                 optionalDependency 'sound-physics-fabric'
                 optionalDependency 'sound-physics-remastered'
