@@ -32,7 +32,9 @@ public class VoiceChatCommands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         if (args.length >= 1) {
-            if (args[0].equalsIgnoreCase("test")) {
+            if (args[0].equalsIgnoreCase("help")) {
+                return helpCommand(commandSender, command, label, args);
+            } else if (args[0].equalsIgnoreCase("test")) {
                 if (commandSender.hasPermission(ADMIN_PERMISSION)) {
                     return testCommand(commandSender, command, label, args);
                 }
@@ -50,7 +52,16 @@ public class VoiceChatCommands implements CommandExecutor {
                 }
             }
         }
-        return false;
+        return helpCommand(commandSender, command, label, args);
+    }
+
+    private boolean helpCommand(CommandSender commandSender, Command command, String label, String[] args) {
+        commandSender.sendMessage("/voicechat [help]");
+        commandSender.sendMessage("/voicechat [test] <target>");
+        commandSender.sendMessage("/voicechat [invite] <target>");
+        commandSender.sendMessage("/voicechat [join] <group> [<password>]");
+        commandSender.sendMessage("/voicechat [leave]");
+        return true;
     }
 
     private boolean testCommand(CommandSender commandSender, Command command, String label, String[] args) {
