@@ -6,7 +6,6 @@ prefix: voicechat
 authors: [ "Max Henkel", "Matthew Wells" ]
 description: A working voice chat in Minecraft
 website: https://modrepo.de
-depend: [ ProtocolLib ]
 commands:
   voicechat:
     description: Manage voice chat

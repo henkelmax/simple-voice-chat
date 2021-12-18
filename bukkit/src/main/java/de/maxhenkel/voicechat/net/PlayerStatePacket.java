@@ -1,13 +1,14 @@
 package de.maxhenkel.voicechat.net;
 
-import com.comphenix.protocol.wrappers.MinecraftKey;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
+import de.maxhenkel.voicechat.util.ResourceLocation;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
+import org.bukkit.entity.Player;
 
 public class PlayerStatePacket implements Packet<PlayerStatePacket> {
 
-    public static final MinecraftKey PLAYER_STATE = new MinecraftKey(Voicechat.MODID, "player_state");
+    public static final ResourceLocation PLAYER_STATE = new ResourceLocation(Voicechat.MODID, "player_state");
 
     private PlayerState playerState;
 
@@ -24,8 +25,13 @@ public class PlayerStatePacket implements Packet<PlayerStatePacket> {
     }
 
     @Override
-    public MinecraftKey getID() {
+    public ResourceLocation getID() {
         return PLAYER_STATE;
+    }
+
+    @Override
+    public void onPacket(Player player) {
+        Voicechat.SERVER.getServer().getPlayerStateManager().onPlayerStatePacket(player, this);
     }
 
     @Override

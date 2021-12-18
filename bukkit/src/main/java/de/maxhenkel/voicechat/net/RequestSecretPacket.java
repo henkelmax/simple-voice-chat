@@ -1,12 +1,13 @@
 package de.maxhenkel.voicechat.net;
 
-import com.comphenix.protocol.wrappers.MinecraftKey;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
+import de.maxhenkel.voicechat.util.ResourceLocation;
+import org.bukkit.entity.Player;
 
 public class RequestSecretPacket implements Packet<RequestSecretPacket> {
 
-    public static final MinecraftKey REQUEST_SECRET = new MinecraftKey(Voicechat.MODID, "request_secret");
+    public static final ResourceLocation REQUEST_SECRET = new ResourceLocation(Voicechat.MODID, "request_secret");
 
     private int compatibilityVersion;
 
@@ -23,8 +24,13 @@ public class RequestSecretPacket implements Packet<RequestSecretPacket> {
     }
 
     @Override
-    public MinecraftKey getID() {
+    public ResourceLocation getID() {
         return REQUEST_SECRET;
+    }
+
+    @Override
+    public void onPacket(Player player) {
+        Voicechat.SERVER.onRequestSecretPacket(player, this);
     }
 
     @Override

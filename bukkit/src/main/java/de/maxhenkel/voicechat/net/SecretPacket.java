@@ -1,17 +1,17 @@
 package de.maxhenkel.voicechat.net;
 
-import com.comphenix.protocol.wrappers.MinecraftKey;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
+import de.maxhenkel.voicechat.util.ResourceLocation;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
 public class SecretPacket implements Packet<SecretPacket> {
 
-    public static final MinecraftKey SECRET = new MinecraftKey(Voicechat.MODID, "secret");
+    public static final ResourceLocation SECRET = new ResourceLocation(Voicechat.MODID, "secret");
 
     private UUID secret;
     private int serverPort;
@@ -90,7 +90,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     }
 
     @Override
-    public MinecraftKey getID() {
+    public ResourceLocation getID() {
         return SECRET;
     }
 

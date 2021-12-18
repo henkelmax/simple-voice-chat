@@ -1,15 +1,15 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
-import com.comphenix.protocol.wrappers.MinecraftKey;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
+import de.maxhenkel.voicechat.util.ResourceLocation;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 
 import javax.annotation.Nullable;
 
 public class JoinedGroupPacket implements Packet<JoinedGroupPacket> {
 
-    public static final MinecraftKey JOINED_GROUP = new MinecraftKey(Voicechat.MODID, "joined_group");
+    public static final ResourceLocation JOINED_GROUP = new ResourceLocation(Voicechat.MODID, "joined_group");
 
     @Nullable
     private ClientGroup group;
@@ -28,7 +28,7 @@ public class JoinedGroupPacket implements Packet<JoinedGroupPacket> {
     }
 
     @Override
-    public MinecraftKey getID() {
+    public ResourceLocation getID() {
         return JOINED_GROUP;
     }
 

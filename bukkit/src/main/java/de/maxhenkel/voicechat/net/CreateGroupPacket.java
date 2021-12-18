@@ -1,14 +1,15 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
-import com.comphenix.protocol.wrappers.MinecraftKey;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
+import de.maxhenkel.voicechat.util.ResourceLocation;
+import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 
 public class CreateGroupPacket implements Packet<CreateGroupPacket> {
 
-    public static final MinecraftKey CREATE_GROUP = new MinecraftKey(Voicechat.MODID, "create_group");
+    public static final ResourceLocation CREATE_GROUP = new ResourceLocation(Voicechat.MODID, "create_group");
 
     private String name;
     @Nullable
@@ -33,8 +34,13 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
     }
 
     @Override
-    public MinecraftKey getID() {
+    public ResourceLocation getID() {
         return CREATE_GROUP;
+    }
+
+    @Override
+    public void onPacket(Player player) {
+        Voicechat.SERVER.getServer().getGroupManager().onCreateGroupPacket(player, this);
     }
 
     @Override
