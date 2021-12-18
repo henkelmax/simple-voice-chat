@@ -20,7 +20,7 @@ public class LeaveGroupPacket implements Packet<LeaveGroupPacket> {
 
     @Override
     public void onPacket(Player player) {
-        Voicechat.SERVER.getServer().getGroupManager().onLeaveGroupPacket(player, this); //TODO
+        Voicechat.SERVER.getServer().getGroupManager().onLeaveGroupPacket(player, this);
     }
 
     @Override
