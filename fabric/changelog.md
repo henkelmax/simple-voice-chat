@@ -1,1 +1,1 @@
-- Fixed test command not working for the first time in singleplayer
+- Added more descriptive messages to test command

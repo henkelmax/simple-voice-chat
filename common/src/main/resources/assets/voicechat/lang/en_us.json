@@ -96,6 +96,7 @@
   "message.voicechat.wrong_password": "Wrong Password",
   "message.voicechat.server_port": "Voice chat server hosted on port %s",
   "message.voicechat.macos_no_mic_permission": "No microphone permission. Please check Security & Privacy settings",
+  "message.voicechat.player_no_voicechat": "%s does not have %s installed",
   "cloth_config.voicechat.settings": "Voice Chat Settings",
   "cloth_config.voicechat.category.other": "Other",
   "cloth_config.voicechat.category.audio": "Audio",

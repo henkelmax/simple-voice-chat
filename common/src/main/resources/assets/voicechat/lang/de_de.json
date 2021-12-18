@@ -92,5 +92,8 @@
   "message.voicechat.join_group": "Gruppe beitreten",
   "message.voicechat.enter_group_password": "Gruppenpasswort eingeben",
   "message.voicechat.password": "Passwort",
-  "message.voicechat.wrong_password": "Falsches passwort"
+  "message.voicechat.wrong_password": "Falsches passwort",
+  "message.voicechat.server_port": "Voice chat server auf port %s gestartet",
+  "message.voicechat.macos_no_mic_permission": "Keine Mikrofonberechtigung. Bitte überprüfe die Sicherheits und Privatsphäre Einstellungen",
+  "message.voicechat.player_no_voicechat": "%s hat %s nicht installiert"
 }

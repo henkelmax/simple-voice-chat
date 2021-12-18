@@ -47,6 +47,12 @@ public class VoicechatCommands {
                 commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.voice_chat_unavailable"), false);
                 return 1;
             }
+
+            if (!Voicechat.SERVER.isCompatible(player)) {
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.player_no_voicechat", player.getDisplayName(), CommonCompatibilityManager.INSTANCE.getModName()), false);
+                return 1;
+            }
+
             ClientConnection clientConnection = server.getConnections().get(player.getUUID());
             if (clientConnection == null) {
                 commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.client_not_connected"), false);
