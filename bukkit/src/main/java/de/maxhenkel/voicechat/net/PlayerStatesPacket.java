@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.net;
 
-import com.comphenix.protocol.wrappers.MinecraftKey;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
+import de.maxhenkel.voicechat.util.ResourceLocation;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 
 import java.util.HashMap;
@@ -13,7 +13,7 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
 
     private Map<UUID, PlayerState> playerStates;
 
-    public static final MinecraftKey PLAYER_STATES = new MinecraftKey(Voicechat.MODID, "player_states");
+    public static final ResourceLocation PLAYER_STATES = new ResourceLocation(Voicechat.MODID, "player_states");
 
     public PlayerStatesPacket() {
 
@@ -28,7 +28,7 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
     }
 
     @Override
-    public MinecraftKey getID() {
+    public ResourceLocation getID() {
         return PLAYER_STATES;
     }
 

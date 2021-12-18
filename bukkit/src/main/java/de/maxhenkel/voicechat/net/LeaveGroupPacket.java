@@ -2,19 +2,25 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import com.comphenix.protocol.wrappers.MinecraftKey;
+import de.maxhenkel.voicechat.util.ResourceLocation;
+import org.bukkit.entity.Player;
 
 public class LeaveGroupPacket implements Packet<LeaveGroupPacket> {
 
-    public static final MinecraftKey LEAVE_GROUP = new MinecraftKey(Voicechat.MODID, "leave_group");
+    public static final ResourceLocation LEAVE_GROUP = new ResourceLocation(Voicechat.MODID, "leave_group");
 
     public LeaveGroupPacket() {
 
     }
 
     @Override
-    public MinecraftKey getID() {
+    public ResourceLocation getID() {
         return LEAVE_GROUP;
+    }
+
+    @Override
+    public void onPacket(Player player) {
+        Voicechat.SERVER.getServer().getGroupManager().onLeaveGroupPacket(player, this); //TODO
     }
 
     @Override
