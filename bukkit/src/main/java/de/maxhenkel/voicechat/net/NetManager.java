@@ -8,8 +8,8 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minecraft.network.chat.ChatMessageType;
 import net.minecraft.network.protocol.game.PacketPlayOutChat;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_18_R1.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -111,7 +111,7 @@ public class NetManager implements Listener {
 
     public static void sendMessage(Player p, Component component) {
         if (p instanceof CraftPlayer player) {
-            player.getHandle().b.a(new PacketPlayOutChat(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(component)), ChatMessageType.b, NUL_UUID));
+            player.getHandle().b.sendPacket(new PacketPlayOutChat(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(component)), ChatMessageType.b, NUL_UUID));
         }
     }
 }
