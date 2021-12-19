@@ -1,1 +1,2 @@
 - Fixed audio issue when spectating players
+- Updated Polish translation
