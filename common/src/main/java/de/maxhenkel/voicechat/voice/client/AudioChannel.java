@@ -167,9 +167,9 @@ public class AudioChannel extends Thread {
             if (player == null) {
                 return;
             }
-            if (minecraft.cameraEntity != null && player.getUUID().equals(minecraft.cameraEntity.getUUID())) {
+            if (player == minecraft.cameraEntity) {
                 speaker.write(monoData, volume, null);
-                client.getTalkCache().updateTalking(uuid, false);
+                client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
                 appendRecording(player, () -> Utils.convertToStereo(monoData, 1F, 1F));
                 return;
             }
