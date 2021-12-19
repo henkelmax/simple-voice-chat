@@ -1,1 +1,1 @@
-- Added more descriptive messages to test command
+- Fixed audio issue when spectating players
