@@ -9,3 +9,7 @@ player_not_connected: "Player not connected to voice chat"
 not_connected: "You are not connected to the voice chat"
 no_speak_permission: "You do not have permission to speak"
 not_compatible: "Your voice chat version is not compatible with the servers version.\nPlease install version %s of %s."
+
+placeholder_api_prefix_uses_voicechat: "§a"
+placeholder_api_prefix_no_voicechat: "§c"
+placeholder_api_prefix_disabled: "§c"

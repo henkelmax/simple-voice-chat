@@ -24,12 +24,15 @@ processResources {
 dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation "org.bukkit:craftbukkit:${bukkit_version}"
+
     implementation "net.kyori:adventure-api:4.9.3"
     shadow 'net.kyori:adventure-api:4.9.3'
     implementation "net.kyori:adventure-text-serializer-gson:4.9.3"
     shadow 'net.kyori:adventure-text-serializer-gson:4.9.3'
-    implementation 'de.maxhenkel.configbuilder:configbuilder:1.0.5'
-    shadow 'de.maxhenkel.configbuilder:configbuilder:1.0.5'
+    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
+    shadow "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
+
+    compileOnly "me.clip:placeholderapi:${placeholder_api_version}"
 
     implementation project(':api')
     shadow project(':api')
@@ -42,6 +45,10 @@ repositories {
     maven {
         name = "henkelmax.public"
         url = 'https://maven.maxhenkel.de/repository/public'
+    }
+    maven {
+        name = "placeholderapi"
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
 }
 
