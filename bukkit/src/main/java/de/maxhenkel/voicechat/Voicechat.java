@@ -4,6 +4,7 @@ import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.api.BukkitVoicechatService;
 import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.config.ServerConfig;
+import de.maxhenkel.voicechat.integration.placeholderapi.VoicechatExpansion;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.BukkitVoicechatServiceImpl;
@@ -11,7 +12,6 @@ import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,6 +19,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.Properties;
 
 public final class Voicechat extends JavaPlugin {
@@ -30,7 +31,8 @@ public final class Voicechat extends JavaPlugin {
     public static int COMPATIBILITY_VERSION = -1;
 
     public static ServerConfig SERVER_CONFIG;
-    private static FileConfiguration TRANSLATIONS;
+    private static YamlConfiguration TRANSLATIONS;
+    private static YamlConfiguration DEFAULT_TRANSLATIONS;
     public static ServerVoiceEvents SERVER;
 
     public static BukkitVoicechatServiceImpl apiService;
@@ -52,12 +54,15 @@ public final class Voicechat extends JavaPlugin {
 
         try {
             LOGGER.info("Loading translations");
+            DEFAULT_TRANSLATIONS = YamlConfiguration.loadConfiguration(new InputStreamReader(getResource("translations.yml")));
             File file = new File(getDataFolder(), "translations.yml");
-            if (!file.exists()) {
-                TRANSLATIONS = YamlConfiguration.loadConfiguration(new InputStreamReader(getResource("translations.yml")));
-                saveResource("translations.yml", false);
+            if (file.exists()) {
+                TRANSLATIONS = YamlConfiguration.loadConfiguration(file);
+                mergeConfigs(TRANSLATIONS, DEFAULT_TRANSLATIONS);
+            } else {
+                TRANSLATIONS = DEFAULT_TRANSLATIONS;
             }
-            TRANSLATIONS = YamlConfiguration.loadConfiguration(file);
+            TRANSLATIONS.save(file);
         } catch (Exception e) {
             LOGGER.fatal("Failed to load translations");
             e.printStackTrace();
@@ -75,6 +80,15 @@ public final class Voicechat extends JavaPlugin {
 
         getCommand("voicechat").setExecutor(new VoiceChatCommands());
 
+        try {
+            if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                new VoicechatExpansion().register();
+                LOGGER.info("Successfully registered PlaceholderAPI expansion");
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to register PlaceholderAPI expansion");
+        }
+
         getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             PluginManager.instance().init(this);
 
@@ -82,6 +96,15 @@ public final class Voicechat extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(SERVER, this);
             Bukkit.getPluginManager().registerEvents(SERVER.getServer().getPlayerStateManager(), this);
         });
+    }
+
+    private static void mergeConfigs(YamlConfiguration base, YamlConfiguration add) {
+        Map<String, Object> values = add.getValues(true);
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            if (!base.contains(entry.getKey())) {
+                base.set(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     @Override
