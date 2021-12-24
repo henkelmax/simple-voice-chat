@@ -24,6 +24,8 @@ import java.util.UUID;
 
 public class VoiceChatCommands implements CommandExecutor {
 
+    public static final String VOICECHAT_COMMAND = "voicechat";
+
     public static Permission CONNECT_PERMISSION = new Permission("voicechat.connect", PermissionDefault.TRUE);
     public static Permission SPEAK_PERMISSION = new Permission("voicechat.speak", PermissionDefault.TRUE);
     public static Permission GROUPS_PERMISSION = new Permission("voicechat.groups", PermissionDefault.TRUE);
