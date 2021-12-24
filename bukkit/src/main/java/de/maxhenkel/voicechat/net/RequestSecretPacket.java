@@ -2,12 +2,13 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import de.maxhenkel.voicechat.util.ResourceLocation;
+import de.maxhenkel.voicechat.util.NamespacedKeyUtil;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
 public class RequestSecretPacket implements Packet<RequestSecretPacket> {
 
-    public static final ResourceLocation REQUEST_SECRET = new ResourceLocation(Voicechat.MODID, "request_secret");
+    public static final NamespacedKey REQUEST_SECRET = NamespacedKeyUtil.voicechat("request_secret");
 
     private int compatibilityVersion;
 
@@ -24,7 +25,7 @@ public class RequestSecretPacket implements Packet<RequestSecretPacket> {
     }
 
     @Override
-    public ResourceLocation getID() {
+    public NamespacedKey getID() {
         return REQUEST_SECRET;
     }
 

@@ -2,14 +2,15 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import de.maxhenkel.voicechat.util.ResourceLocation;
+import de.maxhenkel.voicechat.util.NamespacedKeyUtil;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 
 public class CreateGroupPacket implements Packet<CreateGroupPacket> {
 
-    public static final ResourceLocation CREATE_GROUP = new ResourceLocation(Voicechat.MODID, "create_group");
+    public static final NamespacedKey CREATE_GROUP = NamespacedKeyUtil.voicechat("create_group");
 
     private String name;
     @Nullable
@@ -34,7 +35,7 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
     }
 
     @Override
-    public ResourceLocation getID() {
+    public NamespacedKey getID() {
         return CREATE_GROUP;
     }
 
