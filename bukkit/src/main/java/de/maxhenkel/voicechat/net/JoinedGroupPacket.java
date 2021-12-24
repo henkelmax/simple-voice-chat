@@ -1,15 +1,15 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import de.maxhenkel.voicechat.util.ResourceLocation;
+import de.maxhenkel.voicechat.util.NamespacedKeyUtil;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
+import org.bukkit.NamespacedKey;
 
 import javax.annotation.Nullable;
 
 public class JoinedGroupPacket implements Packet<JoinedGroupPacket> {
 
-    public static final ResourceLocation JOINED_GROUP = new ResourceLocation(Voicechat.MODID, "joined_group");
+    public static final NamespacedKey JOINED_GROUP = NamespacedKeyUtil.voicechat("joined_group");
 
     @Nullable
     private ClientGroup group;
@@ -28,7 +28,7 @@ public class JoinedGroupPacket implements Packet<JoinedGroupPacket> {
     }
 
     @Override
-    public ResourceLocation getID() {
+    public NamespacedKey getID() {
         return JOINED_GROUP;
     }
 

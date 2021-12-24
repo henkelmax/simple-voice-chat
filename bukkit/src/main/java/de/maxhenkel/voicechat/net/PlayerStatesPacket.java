@@ -1,9 +1,9 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import de.maxhenkel.voicechat.util.ResourceLocation;
+import de.maxhenkel.voicechat.util.NamespacedKeyUtil;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
+import org.bukkit.NamespacedKey;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
 
     private Map<UUID, PlayerState> playerStates;
 
-    public static final ResourceLocation PLAYER_STATES = new ResourceLocation(Voicechat.MODID, "player_states");
+    public static final NamespacedKey PLAYER_STATES = NamespacedKeyUtil.voicechat("player_states");
 
     public PlayerStatesPacket() {
 
@@ -28,7 +28,7 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
     }
 
     @Override
-    public ResourceLocation getID() {
+    public NamespacedKey getID() {
         return PLAYER_STATES;
     }
 

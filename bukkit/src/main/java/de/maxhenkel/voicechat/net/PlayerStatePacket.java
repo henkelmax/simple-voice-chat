@@ -2,13 +2,14 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import de.maxhenkel.voicechat.util.ResourceLocation;
+import de.maxhenkel.voicechat.util.NamespacedKeyUtil;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
 public class PlayerStatePacket implements Packet<PlayerStatePacket> {
 
-    public static final ResourceLocation PLAYER_STATE = new ResourceLocation(Voicechat.MODID, "player_state");
+    public static final NamespacedKey PLAYER_STATE = NamespacedKeyUtil.voicechat("player_state");
 
     private PlayerState playerState;
 
@@ -25,7 +26,7 @@ public class PlayerStatePacket implements Packet<PlayerStatePacket> {
     }
 
     @Override
-    public ResourceLocation getID() {
+    public NamespacedKey getID() {
         return PLAYER_STATE;
     }
 
