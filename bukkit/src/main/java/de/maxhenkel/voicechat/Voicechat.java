@@ -4,6 +4,7 @@ import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.api.BukkitVoicechatService;
 import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.config.ServerConfig;
+import de.maxhenkel.voicechat.integration.commodore.CommodoreCommands;
 import de.maxhenkel.voicechat.integration.placeholderapi.VoicechatExpansion;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
@@ -12,7 +13,10 @@ import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
+import me.lucko.commodore.Commodore;
+import me.lucko.commodore.CommodoreProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -78,7 +82,20 @@ public final class Voicechat extends JavaPlugin {
         apiService = new BukkitVoicechatServiceImpl();
         getServer().getServicesManager().register(BukkitVoicechatService.class, apiService, this, ServicePriority.Normal);
 
-        getCommand("voicechat").setExecutor(new VoiceChatCommands());
+        PluginCommand voicechatCommand = getCommand(VoiceChatCommands.VOICECHAT_COMMAND);
+        if (voicechatCommand != null) {
+            voicechatCommand.setExecutor(new VoiceChatCommands());
+
+            if (CommodoreProvider.isSupported()) {
+                Commodore commodore = CommodoreProvider.getCommodore(this);
+                CommodoreCommands.registerCompletions(commodore);
+                LOGGER.info("Successfully initialized commodore command completion");
+            } else {
+                LOGGER.warn("Could not initialize commodore command completion");
+            }
+        } else {
+            LOGGER.error("Failed to register commands");
+        }
 
         try {
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {

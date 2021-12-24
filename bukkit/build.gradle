@@ -25,10 +25,13 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation "org.bukkit:craftbukkit:${bukkit_version}"
 
-    implementation "net.kyori:adventure-api:4.9.3"
-    shadow 'net.kyori:adventure-api:4.9.3'
-    implementation "net.kyori:adventure-text-serializer-gson:4.9.3"
-    shadow 'net.kyori:adventure-text-serializer-gson:4.9.3'
+    implementation "net.kyori:adventure-api:${adventure_api_version}"
+    shadow "net.kyori:adventure-api:${adventure_api_version}"
+    implementation "net.kyori:adventure-text-serializer-gson:${adventure_api_version}"
+    shadow "net.kyori:adventure-text-serializer-gson:${adventure_api_version}"
+    implementation "me.lucko:commodore:${commodore_version}"
+    shadow "me.lucko:commodore:${commodore_version}"
+
     implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
     shadow "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
 
@@ -42,6 +45,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven { url "https://papermc.io/repo/repository/maven-public/" }
+    maven { url "https://libraries.minecraft.net/" }
     maven {
         name = "henkelmax.public"
         url = 'https://maven.maxhenkel.de/repository/public'
@@ -88,5 +92,10 @@ shadowJar {
     classifier ''
     relocate 'net.kyori', "de.maxhenkel.voicechat.net.kyori"
     relocate 'com.google.gson', "de.maxhenkel.voicechat.gson"
+    relocate 'me.lucko.commodore', "de.maxhenkel.voicechat.commodore"
     relocate 'de.maxhenkel.configbuilder', "de.maxhenkel.voicechat.configbuilder"
+    dependencies {
+        exclude(dependency('com.mojang:brigadier:.*'))
+        exclude(dependency('com.google.code.findbugs:jsr305:.*'))
+    }
 }
