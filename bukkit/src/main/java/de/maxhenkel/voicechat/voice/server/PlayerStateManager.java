@@ -6,7 +6,6 @@ import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.net.PlayerStatesPacket;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,7 +28,8 @@ public class PlayerStateManager implements Listener {
         PlayerState oldState = states.get(player.getUniqueId());
 
         PlayerState state = packet.getPlayerState();
-        state.setGameProfile(((CraftPlayer) player).getProfile());
+        state.setUuid(player.getUniqueId());
+        state.setName(player.getName());
         if (oldState != null) {
             state.setGroup(oldState.getGroup());
         } else {
@@ -49,7 +49,7 @@ public class PlayerStateManager implements Listener {
         Voicechat.INSTANCE.getServer().getOnlinePlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
-    public void onPlayerCompatibilityCheckSucceded(Player player) {
+    public void onPlayerCompatibilityCheckSucceeded(Player player) {
         PlayerState state = states.getOrDefault(player.getUniqueId(), defaultDisconnectedState(player));
         states.put(player.getUniqueId(), state);
         PlayerStatesPacket packet = new PlayerStatesPacket(states);
@@ -58,7 +58,7 @@ public class PlayerStateManager implements Listener {
 
     private void removePlayer(Player player) {
         states.remove(player.getUniqueId());
-        broadcastState(new PlayerState(true, true, ((CraftPlayer) player).getProfile()));
+        broadcastState(new PlayerState(player.getUniqueId(), player.getName(), true, true));
     }
 
     @Nullable
@@ -67,7 +67,7 @@ public class PlayerStateManager implements Listener {
     }
 
     public static PlayerState defaultDisconnectedState(Player player) {
-        return new PlayerState(false, true, ((CraftPlayer) player).getProfile());
+        return new PlayerState(player.getUniqueId(), player.getName(),false, true);
     }
 
     public void setGroup(Player player, @Nullable ClientGroup group) {

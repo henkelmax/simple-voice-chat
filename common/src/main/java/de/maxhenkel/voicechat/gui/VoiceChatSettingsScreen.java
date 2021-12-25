@@ -70,7 +70,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase implements MicT
         y += 21;
         if (isIngame()) {
             addRenderableWidget(new Button(guiLeft + 10, y, xSize - 20, 20, new TranslatableComponent("message.voicechat.adjust_volumes"), button -> {
-                minecraft.setScreen(new AdjustVolumeScreen(this, ClientManager.getPlayerStateManager().getPlayerStates().stream().filter(state -> !state.getGameProfile().getId().equals(minecraft.player.getUUID())).collect(Collectors.toList())));
+                minecraft.setScreen(new AdjustVolumeScreen(this, ClientManager.getPlayerStateManager().getPlayerStates().stream().filter(state -> !state.getUuid().equals(minecraft.player.getUUID())).collect(Collectors.toList())));
             }));
             y += 21;
         }

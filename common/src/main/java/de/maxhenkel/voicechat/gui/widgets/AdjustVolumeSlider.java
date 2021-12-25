@@ -13,7 +13,7 @@ public class AdjustVolumeSlider extends AbstractSliderButton {
     private PlayerState player;
 
     public AdjustVolumeSlider(int xIn, int yIn, int widthIn, int heightIn, PlayerState player) {
-        super(xIn, yIn, widthIn, heightIn, TextComponent.EMPTY, (player == null ? 1D : VoicechatClient.VOLUME_CONFIG.getVolume(player.getGameProfile().getId(), 1D)) / MAXIMUM);
+        super(xIn, yIn, widthIn, heightIn, TextComponent.EMPTY, (player == null ? 1D : VoicechatClient.VOLUME_CONFIG.getVolume(player.getUuid(), 1D)) / MAXIMUM);
         this.player = player;
         if (player == null) {
             visible = false;
@@ -29,7 +29,7 @@ public class AdjustVolumeSlider extends AbstractSliderButton {
 
     @Override
     protected void applyValue() {
-        VoicechatClient.VOLUME_CONFIG.setVolume(player.getGameProfile().getId(), value * MAXIMUM);
+        VoicechatClient.VOLUME_CONFIG.setVolume(player.getUuid(), value * MAXIMUM);
         VoicechatClient.VOLUME_CONFIG.save();
     }
 }

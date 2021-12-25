@@ -63,7 +63,7 @@ public class GroupChatManager {
                 }
             }
 
-            if (client.getTalkCache().isTalking(state.getGameProfile().getId())) {
+            if (client.getTalkCache().isTalking(state.getUuid())) {
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
                 RenderSystem.setShaderTexture(0, TALK_OUTLINE);
@@ -73,7 +73,7 @@ public class GroupChatManager {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getGameProfile().getId()));
+            RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getUuid()));
             Screen.blit(matrixStack, posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
             Screen.blit(matrixStack, posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 40, 8, 8, 8, 64, 64);
 
@@ -107,7 +107,7 @@ public class GroupChatManager {
         }
 
         for (PlayerState state : ClientManager.getPlayerStateManager().getPlayerStates()) {
-            if (!includeSelf && state.getGameProfile().getId().equals(Minecraft.getInstance().player.getUUID())) {
+            if (!includeSelf && state.getUuid().equals(Minecraft.getInstance().player.getUUID())) {
                 continue;
             }
             if (state.hasGroup() && state.getGroup().getId().equals(group.getId())) {

@@ -14,6 +14,7 @@ import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.User;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
@@ -33,12 +34,12 @@ public class ClientPlayerStateManager {
         states = new HashMap<>();
 
         CommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel.setClientListener((client, handler, packet) -> {
-            states.put(packet.getPlayerState().getGameProfile().getId(), packet.getPlayerState());
-            if (packet.getPlayerState().getGameProfile().getId().equals(state.getGameProfile().getId())) {
+            states.put(packet.getPlayerState().getUuid(), packet.getPlayerState());
+            if (packet.getPlayerState().getUuid().equals(state.getUuid())) {
                 state.setGroup(packet.getPlayerState().getGroup());
                 Voicechat.logDebug("Setting own state: {}", state);
             } else {
-                Voicechat.logDebug("Got state for {}: {}", packet.getPlayerState().getGameProfile().getName(), packet.getPlayerState());
+                Voicechat.logDebug("Got state for {}: {}", packet.getPlayerState().getName(), packet.getPlayerState());
             }
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel.setClientListener((client, handler, packet) -> {
@@ -64,7 +65,8 @@ public class ClientPlayerStateManager {
     }
 
     private PlayerState getDefaultState() {
-        return new PlayerState(VoicechatClient.CLIENT_CONFIG.disabled.get(), true, Minecraft.getInstance().getUser().getGameProfile());
+        User user = Minecraft.getInstance().getUser();
+        return new PlayerState(user.getGameProfile().getId(), user.getName(), VoicechatClient.CLIENT_CONFIG.disabled.get(), true);
     }
 
     /**

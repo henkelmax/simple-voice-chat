@@ -1,22 +1,40 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import com.mojang.authlib.GameProfile;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class PlayerState {
 
+    private UUID uuid;
+    private String name;
     private boolean disabled;
     private boolean disconnected;
-    private GameProfile gameProfile;
     @Nullable
     private ClientGroup group;
 
-    public PlayerState(boolean disabled, boolean disconnected, GameProfile gameProfile) {
+    public PlayerState(UUID uuid, String name, boolean disabled, boolean disconnected) {
+        this.uuid = uuid;
+        this.name = name;
         this.disabled = disabled;
         this.disconnected = disconnected;
-        this.gameProfile = gameProfile;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean isDisabled() {
@@ -33,14 +51,6 @@ public class PlayerState {
 
     public void setDisconnected(boolean disconnected) {
         this.disconnected = disconnected;
-    }
-
-    public GameProfile getGameProfile() {
-        return gameProfile;
-    }
-
-    public void setGameProfile(GameProfile gameProfile) {
-        this.gameProfile = gameProfile;
     }
 
     @Nullable
@@ -61,13 +71,19 @@ public class PlayerState {
         return "{" +
                 "disabled=" + disabled +
                 ", disconnected=" + disconnected +
-                ", uuid=" + gameProfile.getId() +
+                ", uuid=" + uuid +
+                ", name=" + name +
                 ", group=" + group +
                 '}';
     }
 
     public static PlayerState fromBytes(FriendlyByteBuf buf) {
-        PlayerState state = new PlayerState(buf.readBoolean(), buf.readBoolean(), new GameProfile(buf.readUUID(), buf.readUtf()));
+        boolean disabled = buf.readBoolean();
+        boolean disconnected = buf.readBoolean();
+        UUID uuid = buf.readUUID();
+        String name = buf.readUtf(32767);
+
+        PlayerState state = new PlayerState(uuid, name, disabled, disconnected);
 
         if (buf.readBoolean()) {
             state.setGroup(ClientGroup.fromBytes(buf));
@@ -79,8 +95,8 @@ public class PlayerState {
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeBoolean(disabled);
         buf.writeBoolean(disconnected);
-        buf.writeUUID(gameProfile.getId());
-        buf.writeUtf(gameProfile.getName());
+        buf.writeUUID(uuid);
+        buf.writeUtf(name);
         buf.writeBoolean(hasGroup());
         if (hasGroup()) {
             group.toBytes(buf);

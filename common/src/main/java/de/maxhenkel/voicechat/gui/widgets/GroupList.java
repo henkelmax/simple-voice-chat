@@ -68,7 +68,7 @@ public class GroupList extends WidgetBase {
             int pos = i - getOffset();
             int startY = guiTop + pos * columnHeight;
             PlayerState state = entries.get(i);
-            mc.font.draw(matrixStack, new TextComponent(state.getGameProfile().getName()), guiLeft + 3 + 16 + 1 + 16 + 3, startY + 7, 0);
+            mc.font.draw(matrixStack, new TextComponent(state.getName()), guiLeft + 3 + 16 + 1 + 16 + 3, startY + 7, 0);
         }
     }
 
@@ -84,7 +84,7 @@ public class GroupList extends WidgetBase {
             RenderSystem.setShaderTexture(0, TEXTURE);
             int pos = i - getOffset();
             VoiceChatScreenBase.HoverArea hoverArea = hoverAreas[pos];
-            boolean hovered = hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY) && !state.getGameProfile().getId().equals(mc.player.getUUID());
+            boolean hovered = hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY) && !state.getUuid().equals(mc.player.getUUID());
             int startY = guiTop + pos * columnHeight;
 
             if (hovered) {
@@ -98,7 +98,7 @@ public class GroupList extends WidgetBase {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getGameProfile().getId()));
+            RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getUuid()));
             matrixStack.translate(guiLeft + 3, startY + 3, 0);
             matrixStack.scale(2F, 2F, 1F);
             Screen.blit(matrixStack, 0, 0, 8, 8, 8, 8, 64, 64);
@@ -107,7 +107,7 @@ public class GroupList extends WidgetBase {
 
             if (state.isDisabled()) {
                 drawIcon(matrixStack, startY, SPEAKER_OFF);
-            } else if (voiceChatClient.getTalkCache().isTalking(state.getGameProfile().getId())) {
+            } else if (voiceChatClient.getTalkCache().isTalking(state.getUuid())) {
                 drawIcon(matrixStack, startY, SPEAKER);
             }
 
@@ -179,7 +179,7 @@ public class GroupList extends WidgetBase {
                 continue;
             }
             PlayerState state = entries.get(getOffset() + i);
-            if (!state.getGameProfile().getId().equals(mc.player.getUUID())) {
+            if (!state.getUuid().equals(mc.player.getUUID())) {
                 mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
                 mc.setScreen(new AdjustVolumeScreen(screen, Collections.singletonList(state)));
             }
