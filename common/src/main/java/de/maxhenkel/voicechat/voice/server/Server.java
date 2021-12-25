@@ -210,20 +210,20 @@ public class Server extends Thread {
         if (group == null) {
             return;
         }
-        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getGameProfile().getId(), packet.getData(), packet.getSequenceNumber());
+        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber());
         NetworkMessage soundMessage = new NetworkMessage(groupSoundPacket);
         for (PlayerState state : playerStateManager.getStates()) {
             if (!group.equals(state.getGroup())) {
                 continue;
             }
-            if (senderState.getGameProfile().getId().equals(state.getGameProfile().getId())) {
+            if (senderState.getUuid().equals(state.getUuid())) {
                 continue;
             }
-            ClientConnection connection = connections.get(state.getGameProfile().getId());
+            ClientConnection connection = connections.get(state.getUuid());
             if (connection == null) {
                 continue;
             }
-            ServerPlayer p = server.getPlayerList().getPlayer(senderState.getGameProfile().getId());
+            ServerPlayer p = server.getPlayerList().getPlayer(senderState.getUuid());
             if (p == null) {
                 continue;
             }
@@ -245,11 +245,11 @@ public class Server extends Thread {
                 if (camera instanceof ServerPlayer spectatingPlayer) {
                     if (spectatingPlayer != sender) {
                         PlayerState receiverState = playerStateManager.getState(spectatingPlayer.getUUID());
-                        ClientConnection connection = connections.get(receiverState.getGameProfile().getId());
+                        ClientConnection connection = connections.get(receiverState.getUuid());
                         if (connection == null) {
                             return;
                         }
-                        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getGameProfile().getId(), packet.getData(), packet.getSequenceNumber());
+                        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber());
                         if (!PluginManager.instance().onSoundPacket(sender, senderState, spectatingPlayer, receiverState, groupSoundPacket, SoundPacketEvent.SOURCE_SPECTATOR)) {
                             connection.send(this, new NetworkMessage(groupSoundPacket));
                         }

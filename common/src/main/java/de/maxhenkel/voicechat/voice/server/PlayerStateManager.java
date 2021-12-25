@@ -27,7 +27,8 @@ public class PlayerStateManager {
             PlayerState oldState = states.get(player.getUUID());
 
             PlayerState state = packet.getPlayerState();
-            state.setGameProfile(player.getGameProfile());
+            state.setUuid(player.getUUID());
+            state.setName(player.getGameProfile().getName());
             if (oldState != null) {
                 state.setGroup(oldState.getGroup());
             } else {
@@ -54,7 +55,7 @@ public class PlayerStateManager {
 
     private void removePlayer(ServerPlayer player) {
         states.remove(player.getUUID());
-        broadcastState(player.server, new PlayerState(true, true, player.getGameProfile()));
+        broadcastState(player.server, new PlayerState(player.getUUID(), player.getGameProfile().getName(), true, true));
         Voicechat.logDebug("Removing state of {}", player.getDisplayName().getString());
     }
 
@@ -64,7 +65,7 @@ public class PlayerStateManager {
     }
 
     public static PlayerState defaultDisconnectedState(ServerPlayer player) {
-        return new PlayerState(false, true, player.getGameProfile());
+        return new PlayerState(player.getUUID(), player.getGameProfile().getName(), false, true);
     }
 
     public void setGroup(MinecraftServer server, ServerPlayer player, @Nullable ClientGroup group) {

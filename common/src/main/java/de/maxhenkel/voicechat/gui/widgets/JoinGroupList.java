@@ -55,7 +55,7 @@ public class JoinGroupList extends WidgetBase {
 
             Group group = groups.getOrDefault(state.getGroup().getId(), new Group(state.getGroup()));
             group.members.add(state);
-            group.members.sort(Comparator.comparing(o -> o.getGameProfile().getName()));
+            group.members.sort(Comparator.comparing(PlayerState::getName));
             groups.put(state.getGroup().getId(), group);
         }
         return new ArrayList<>(groups.values());
@@ -105,7 +105,7 @@ public class JoinGroupList extends WidgetBase {
                 RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
-                RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getGameProfile().getId()));
+                RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getUuid()));
                 matrixStack.translate(headPosX, headPosY, 0);
                 Screen.blit(matrixStack, 0, 0, 8, 8, 8, 8, 64, 64);
                 Screen.blit(matrixStack, 0, 0, 40, 8, 8, 8, 64, 64);
@@ -116,7 +116,7 @@ public class JoinGroupList extends WidgetBase {
                 List<FormattedCharSequence> tooltip = new ArrayList<>();
                 tooltip.add(new TranslatableComponent("message.voicechat.group_members").withStyle(ChatFormatting.WHITE).getVisualOrderText());
                 for (PlayerState state : group.members) {
-                    tooltip.add(new TextComponent("- " + state.getGameProfile().getName()).withStyle(ChatFormatting.GRAY).getVisualOrderText());
+                    tooltip.add(new TextComponent("- " + state.getName()).withStyle(ChatFormatting.GRAY).getVisualOrderText());
                 }
                 screen.renderTooltip(matrixStack, tooltip, mouseX, mouseY);
             }

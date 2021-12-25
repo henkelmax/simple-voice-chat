@@ -43,7 +43,7 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
         int count = buf.readInt();
         for (int i = 0; i < count; i++) {
             PlayerState playerState = PlayerState.fromBytes(buf);
-            playerStates.put(playerState.getGameProfile().getId(), playerState);
+            playerStates.put(playerState.getUuid(), playerState);
         }
 
         return this;
