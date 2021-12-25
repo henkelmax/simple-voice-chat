@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 
 import java.util.HashMap;
@@ -30,7 +29,7 @@ public class TalkCache {
     }
 
     public boolean isTalking(UUID entity) {
-        if (entity.equals(Minecraft.getInstance().player.getUUID())) {
+        if (entity.equals(ClientManager.getPlayerStateManager().getOwnID())) {
             ClientVoicechat client = ClientManager.getClient();
             if (client != null && client.getMicThread() != null) {
                 return client.getMicThread().isTalking();
@@ -42,7 +41,7 @@ public class TalkCache {
     }
 
     public boolean isWhispering(UUID entity) {
-        if (entity.equals(Minecraft.getInstance().player.getUUID())) {
+        if (entity.equals(ClientManager.getPlayerStateManager().getOwnID())) {
             ClientVoicechat client = ClientManager.getClient();
             if (client != null && client.getMicThread() != null) {
                 return client.getMicThread().isWhispering();

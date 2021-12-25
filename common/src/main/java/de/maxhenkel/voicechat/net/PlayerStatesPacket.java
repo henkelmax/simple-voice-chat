@@ -33,11 +33,6 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
     }
 
     @Override
-    public int getID() {
-        return 2;
-    }
-
-    @Override
     public PlayerStatesPacket fromBytes(FriendlyByteBuf buf) {
         playerStates = new HashMap<>();
         int count = buf.readInt();

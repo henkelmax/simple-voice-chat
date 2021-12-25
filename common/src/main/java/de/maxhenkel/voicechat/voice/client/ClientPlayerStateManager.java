@@ -9,38 +9,36 @@ import de.maxhenkel.voicechat.gui.JoinGroupScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.NetManager;
-import de.maxhenkel.voicechat.net.PlayerStatePacket;
+import de.maxhenkel.voicechat.net.UpdateStatePacket;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.User;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ClientPlayerStateManager {
 
-    private boolean muted;
-    private PlayerState state;
+    private boolean disconnected;
+    @Nullable
+    private ClientGroup group;
+
     private Map<UUID, PlayerState> states;
 
     public ClientPlayerStateManager() {
-        muted = VoicechatClient.CLIENT_CONFIG.muted.get();
-        state = getDefaultState();
+        this.disconnected = true;
+        this.group = null;
+
         states = new HashMap<>();
 
         CommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel.setClientListener((client, handler, packet) -> {
             states.put(packet.getPlayerState().getUuid(), packet.getPlayerState());
-            if (packet.getPlayerState().getUuid().equals(state.getUuid())) {
-                state.setGroup(packet.getPlayerState().getGroup());
-                Voicechat.logDebug("Setting own state: {}", state);
-            } else {
-                Voicechat.logDebug("Got state for {}: {}", packet.getPlayerState().getName(), packet.getPlayerState());
-            }
+            Voicechat.logDebug("Got state for {}: {}", packet.getPlayerState().getName(), packet.getPlayerState());
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel.setClientListener((client, handler, packet) -> {
             states = packet.getPlayerStates();
@@ -48,32 +46,31 @@ public class ClientPlayerStateManager {
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().joinedGroupChannel.setClientListener((client, handler, packet) -> {
             Screen screen = Minecraft.getInstance().screen;
-            if (packet.getGroup() == null) {
+            if (packet.isWrongPassword()) {
                 if (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
                     Minecraft.getInstance().setScreen(null);
                 }
                 client.player.displayClientMessage(new TranslatableComponent("message.voicechat.wrong_password").withStyle(ChatFormatting.DARK_RED), true);
-                return;
-            }
-            if (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
+            } else if (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
                 Minecraft.getInstance().setScreen(new GroupScreen(packet.getGroup()));
             }
+            group = packet.getGroup();
         });
         ClientCompatibilityManager.INSTANCE.onVoiceChatConnected(this::onVoiceChatConnected);
         ClientCompatibilityManager.INSTANCE.onVoiceChatDisconnected(this::onVoiceChatDisconnected);
         ClientCompatibilityManager.INSTANCE.onDisconnect(this::onDisconnect);
     }
 
-    private PlayerState getDefaultState() {
-        User user = Minecraft.getInstance().getUser();
-        return new PlayerState(user.getGameProfile().getId(), user.getName(), VoicechatClient.CLIENT_CONFIG.disabled.get(), true);
+    private void resetOwnState() {
+        disconnected = true;
+        group = null;
     }
 
     /**
      * Called when the voicechat client gets disconnected or the player logs out
      */
     public void onVoiceChatDisconnected() {
-        state.setDisconnected(true);
+        disconnected = true;
         syncOwnState();
     }
 
@@ -81,13 +78,13 @@ public class ClientPlayerStateManager {
      * Called when the voicechat client gets (re)connected
      */
     public void onVoiceChatConnected(ClientVoicechatConnection client) {
-        state.setDisconnected(false);
+        disconnected = false;
         syncOwnState();
     }
 
     private void onDisconnect() {
         clearStates();
-        state = getDefaultState();
+        resetOwnState();
     }
 
     public boolean isPlayerDisabled(Player player) {
@@ -109,30 +106,28 @@ public class ClientPlayerStateManager {
     }
 
     public void syncOwnState() {
-        NetManager.sendToServer(new PlayerStatePacket(state));
-        Voicechat.logDebug("Sent own state to server: {}", state);
+        NetManager.sendToServer(new UpdateStatePacket(disconnected, isDisabled()));
+        Voicechat.logDebug("Sent own state to server: disconnected={}, disabled={}", disconnected, isDisabled());
     }
 
     public boolean isDisabled() {
-        return state.isDisabled();
+        return VoicechatClient.CLIENT_CONFIG.disabled.get();
     }
 
     public boolean isDisconnected() {
-        return state.isDisconnected();
+        return disconnected;
     }
 
     public void setDisabled(boolean disabled) {
-        state.setDisabled(disabled);
         VoicechatClient.CLIENT_CONFIG.disabled.set(disabled).save();
         syncOwnState();
     }
 
     public boolean isMuted() {
-        return muted;
+        return VoicechatClient.CLIENT_CONFIG.muted.get();
     }
 
     public void setMuted(boolean muted) {
-        this.muted = muted;
         VoicechatClient.CLIENT_CONFIG.muted.set(muted).save();
     }
 
@@ -159,11 +154,26 @@ public class ClientPlayerStateManager {
 
     @Nullable
     public ClientGroup getGroup() {
-        return state.getGroup();
+        return group;
     }
 
-    public List<PlayerState> getPlayerStates() {
-        return new ArrayList<>(states.values());
+    public List<PlayerState> getPlayerStates(boolean includeSelf) {
+        if (includeSelf) {
+            return new ArrayList<>(states.values());
+        } else {
+            return states.values().stream().filter(playerState -> !playerState.getUuid().equals(getOwnID())).collect(Collectors.toList());
+        }
+    }
+
+    public UUID getOwnID() {
+        ClientVoicechat client = ClientManager.getClient();
+        if (client != null) {
+            ClientVoicechatConnection connection = client.getConnection();
+            if (connection != null) {
+                return connection.getData().getPlayerUUID();
+            }
+        }
+        return Minecraft.getInstance().getUser().getGameProfile().getId();
     }
 
     @Nullable

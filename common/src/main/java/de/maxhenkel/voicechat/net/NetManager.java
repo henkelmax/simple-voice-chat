@@ -13,6 +13,7 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 public abstract class NetManager {
 
+    public Channel<UpdateStatePacket> updateStateChannel;
     public Channel<PlayerStatePacket> playerStateChannel;
     public Channel<PlayerStatesPacket> playerStatesChannel;
     public Channel<SecretPacket> secretChannel;
@@ -23,7 +24,8 @@ public abstract class NetManager {
     public Channel<JoinedGroupPacket> joinedGroupChannel;
 
     public void init() {
-        playerStateChannel = registerReceiver(PlayerStatePacket.class, true, true);
+        updateStateChannel = registerReceiver(UpdateStatePacket.class, false, true);
+        playerStateChannel = registerReceiver(PlayerStatePacket.class, true, false);
         playerStatesChannel = registerReceiver(PlayerStatesPacket.class, true, false);
         secretChannel = registerReceiver(SecretPacket.class, true, false);
         requestSecretChannel = registerReceiver(RequestSecretPacket.class, false, true);

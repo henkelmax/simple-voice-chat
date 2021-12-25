@@ -28,11 +28,6 @@ public class RequestSecretPacket implements Packet<RequestSecretPacket> {
     }
 
     @Override
-    public int getID() {
-        return 3;
-    }
-
-    @Override
     public RequestSecretPacket fromBytes(FriendlyByteBuf buf) {
         compatibilityVersion = buf.readInt();
         return this;

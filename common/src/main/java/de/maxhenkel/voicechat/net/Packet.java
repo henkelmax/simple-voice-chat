@@ -7,8 +7,6 @@ public interface Packet<T extends Packet<T>> {
 
     ResourceLocation getIdentifier();
 
-    int getID();
-
     T fromBytes(FriendlyByteBuf buf);
 
     void toBytes(FriendlyByteBuf buf);

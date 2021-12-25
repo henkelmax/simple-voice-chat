@@ -54,7 +54,7 @@ public class GroupManager {
         PlayerStateManager manager = getStates();
         manager.setGroup(player.server, player, group.toClientGroup());
 
-        NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup()));
+        NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
     }
 
     public void joinGroup(@Nullable Group group, ServerPlayer player, @Nullable String password) {
@@ -62,12 +62,12 @@ public class GroupManager {
             return;
         }
         if (group == null) {
-            NetManager.sendToClient(player, new JoinedGroupPacket(null));
+            NetManager.sendToClient(player, new JoinedGroupPacket(null, false));
             return;
         }
         if (group.getPassword() != null) {
             if (!group.getPassword().equals(password)) {
-                NetManager.sendToClient(player, new JoinedGroupPacket(null));
+                NetManager.sendToClient(player, new JoinedGroupPacket(null, true));
                 return;
             }
         }
@@ -75,7 +75,7 @@ public class GroupManager {
         PlayerStateManager manager = getStates();
         manager.setGroup(player.server, player, group.toClientGroup());
 
-        NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup()));
+        NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
     }
 
     public void leaveGroup(ServerPlayer player) {

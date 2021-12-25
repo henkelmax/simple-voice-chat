@@ -100,11 +100,6 @@ public class SecretPacket implements Packet<SecretPacket> {
         return SECRET;
     }
 
-    @Override
-    public int getID() {
-        return 4;
-    }
-
     public boolean allowRecording() {
         return allowRecording;
     }

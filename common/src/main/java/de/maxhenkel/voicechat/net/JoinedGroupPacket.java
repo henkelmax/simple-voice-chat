@@ -13,18 +13,24 @@ public class JoinedGroupPacket implements Packet<JoinedGroupPacket> {
 
     @Nullable
     private ClientGroup group;
+    private boolean wrongPassword;
 
     public JoinedGroupPacket() {
 
     }
 
-    public JoinedGroupPacket(@Nullable ClientGroup group) {
+    public JoinedGroupPacket(@Nullable ClientGroup group, boolean wrongPassword) {
         this.group = group;
+        this.wrongPassword = wrongPassword;
     }
 
     @Nullable
     public ClientGroup getGroup() {
         return group;
+    }
+
+    public boolean isWrongPassword() {
+        return wrongPassword;
     }
 
     @Override
@@ -33,15 +39,11 @@ public class JoinedGroupPacket implements Packet<JoinedGroupPacket> {
     }
 
     @Override
-    public int getID() {
-        return 7;
-    }
-
-    @Override
     public JoinedGroupPacket fromBytes(FriendlyByteBuf buf) {
         if (buf.readBoolean()) {
             group = ClientGroup.fromBytes(buf);
         }
+        wrongPassword = buf.readBoolean();
         return this;
     }
 
@@ -51,6 +53,7 @@ public class JoinedGroupPacket implements Packet<JoinedGroupPacket> {
         if (group != null) {
             group.toBytes(buf);
         }
+        buf.writeBoolean(wrongPassword);
     }
 
 }

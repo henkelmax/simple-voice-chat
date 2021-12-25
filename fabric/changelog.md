@@ -1,1 +1,3 @@
 - Improved BungeeCord compatibility
+- Improved compatibility with offline mode servers
+- Fixed empty group GUI issue
