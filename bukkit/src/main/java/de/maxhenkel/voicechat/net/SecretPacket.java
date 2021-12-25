@@ -15,6 +15,7 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     private UUID secret;
     private int serverPort;
+    private UUID playerUUID;
     private ServerConfig.Codec codec;
     private int mtuSize;
     private double voiceChatDistance;
@@ -33,6 +34,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     public SecretPacket(Player player, UUID secret, boolean hasGroupPermission, ServerConfig serverConfig) {
         this.secret = secret;
         this.serverPort = serverConfig.voiceChatPort.get();
+        this.playerUUID = player.getUniqueId();
         this.codec = serverConfig.voiceChatCodec.get();
         this.mtuSize = serverConfig.voiceChatMtuSize.get();
         this.voiceChatDistance = serverConfig.voiceChatDistance.get();
@@ -51,6 +53,10 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     public int getServerPort() {
         return serverPort;
+    }
+
+    public UUID getPlayerUUID() {
+        return playerUUID;
     }
 
     public ServerConfig.Codec getCodec() {
@@ -102,6 +108,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     public SecretPacket fromBytes(FriendlyByteBuf buf) {
         secret = buf.readUUID();
         serverPort = buf.readInt();
+        playerUUID = buf.readUUID();
         codec = ServerConfig.Codec.values()[buf.readByte()];
         mtuSize = buf.readInt();
         voiceChatDistance = buf.readDouble();
@@ -119,6 +126,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeUUID(secret);
         buf.writeInt(serverPort);
+        buf.writeUUID(playerUUID);
         buf.writeByte(codec.ordinal());
         buf.writeInt(mtuSize);
         buf.writeDouble(voiceChatDistance);

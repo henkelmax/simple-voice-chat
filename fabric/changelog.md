@@ -1,2 +1,1 @@
-- Fixed audio issue when spectating players
-- Updated Polish translation
+- Improved BungeeCord compatibility
