@@ -57,10 +57,10 @@ public class ClientManager {
             }
         });
 
-        CommonCompatibilityManager.INSTANCE.getNetManager().secretChannel.setClientListener((client, handler, packet) -> authenticate(handler.getLocalGameProfile().getId(), packet));
+        CommonCompatibilityManager.INSTANCE.getNetManager().secretChannel.setClientListener((client, handler, packet) -> authenticate(packet));
     }
 
-    private void authenticate(UUID playerUUID, SecretPacket secretPacket) {
+    private void authenticate(SecretPacket secretPacket) {
         if (client == null) {
             Voicechat.LOGGER.error("Received secret without a client being present");
             return;
@@ -74,9 +74,9 @@ public class ClientManager {
             try {
                 SocketAddress socketAddress = ClientCompatibilityManager.INSTANCE.getSocketAddress(connection.getConnection());
                 if (socketAddress instanceof InetSocketAddress address) {
-                    client.connect(new InitializationData(address.getHostString(), playerUUID, secretPacket));
+                    client.connect(new InitializationData(address.getHostString(), secretPacket));
                 } else if (socketAddress instanceof LocalAddress) {
-                    client.connect(new InitializationData("127.0.0.1", playerUUID, secretPacket));
+                    client.connect(new InitializationData("127.0.0.1", secretPacket));
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -23,11 +23,11 @@ public class InitializationData {
     private final boolean groupsEnabled;
     private final boolean allowRecording;
 
-    public InitializationData(String serverIP, UUID playerUUID, SecretPacket secretPacket) {
+    public InitializationData(String serverIP, SecretPacket secretPacket) {
         HostData hostData = parseAddress(secretPacket.getVoiceHost(), serverIP, secretPacket.getServerPort());
         this.serverIP = hostData.ip;
         this.serverPort = hostData.port;
-        this.playerUUID = playerUUID;
+        this.playerUUID = secretPacket.getPlayerUUID();
         this.secret = secretPacket.getSecret();
         this.codec = secretPacket.getCodec();
         this.mtuSize = secretPacket.getMtuSize();
