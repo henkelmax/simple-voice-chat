@@ -29,11 +29,6 @@ public class PlayerStatePacket implements Packet<PlayerStatePacket> {
     }
 
     @Override
-    public int getID() {
-        return 1;
-    }
-
-    @Override
     public PlayerStatePacket fromBytes(FriendlyByteBuf buf) {
         playerState = PlayerState.fromBytes(buf);
         return this;

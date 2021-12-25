@@ -18,11 +18,6 @@ public class LeaveGroupPacket implements Packet<LeaveGroupPacket> {
     }
 
     @Override
-    public int getID() {
-        return 8;
-    }
-
-    @Override
     public LeaveGroupPacket fromBytes(FriendlyByteBuf buf) {
         return this;
     }

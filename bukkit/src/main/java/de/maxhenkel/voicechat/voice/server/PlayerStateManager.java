@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.net.PlayerStatesPacket;
+import de.maxhenkel.voicechat.net.UpdateStatePacket;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import org.bukkit.entity.Player;
@@ -24,18 +25,18 @@ public class PlayerStateManager implements Listener {
         states = new ConcurrentHashMap<>();
     }
 
-    public void onPlayerStatePacket(Player player, PlayerStatePacket packet) {
-        PlayerState oldState = states.get(player.getUniqueId());
+    public void onUpdateStatePacket(Player player, UpdateStatePacket packet) {
+        PlayerState state = states.get(player.getUniqueId());
 
-        PlayerState state = packet.getPlayerState();
-        state.setUuid(player.getUniqueId());
-        state.setName(player.getName());
-        if (oldState != null) {
-            state.setGroup(oldState.getGroup());
-        } else {
-            state.setGroup(null);
+        if (state == null) {
+            state = defaultDisconnectedState(player);
         }
+
+        state.setDisconnected(packet.isDisconnected());
+        state.setDisabled(packet.isDisabled());
+
         states.put(player.getUniqueId(), state);
+
         broadcastState(state);
     }
 
@@ -67,7 +68,7 @@ public class PlayerStateManager implements Listener {
     }
 
     public static PlayerState defaultDisconnectedState(Player player) {
-        return new PlayerState(player.getUniqueId(), player.getName(),false, true);
+        return new PlayerState(player.getUniqueId(), player.getName(), false, true);
     }
 
     public void setGroup(Player player, @Nullable ClientGroup group) {

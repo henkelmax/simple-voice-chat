@@ -39,11 +39,6 @@ public class JoinGroupPacket implements Packet<JoinGroupPacket> {
     }
 
     @Override
-    public int getID() {
-        return 5;
-    }
-
-    @Override
     public JoinGroupPacket fromBytes(FriendlyByteBuf buf) {
         group = buf.readUUID();
         if (buf.readBoolean()) {

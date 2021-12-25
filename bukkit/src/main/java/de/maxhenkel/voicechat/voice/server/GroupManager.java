@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public class GroupManager {
 
@@ -53,7 +52,7 @@ public class GroupManager {
         PlayerStateManager manager = getStates();
         manager.setGroup(player, group.toClientGroup());
 
-        NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup()));
+        NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
     }
 
     public void joinGroup(@Nullable Group group, Player player, String password) {
@@ -61,19 +60,19 @@ public class GroupManager {
             return;
         }
         if (group == null) {
-            NetManager.sendToClient(player, new JoinedGroupPacket(null));
+            NetManager.sendToClient(player, new JoinedGroupPacket(null, false));
             return;
         }
         if (group.getPassword() != null) {
             if (!group.getPassword().equals(password)) {
-                NetManager.sendToClient(player, new JoinedGroupPacket(null));
+                NetManager.sendToClient(player, new JoinedGroupPacket(null, true));
                 return;
             }
         }
         PlayerStateManager manager = getStates();
         manager.setGroup(player, group.toClientGroup());
 
-        NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup()));
+        NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
     }
 
     public void leaveGroup(Player player) {
@@ -89,8 +88,8 @@ public class GroupManager {
 
     public void cleanEmptyGroups() {
         PlayerStateManager manager = getStates();
-        List<UUID> usedGroups = manager.getStates().stream().filter(PlayerState::hasGroup).map(state -> state.getGroup().getId()).distinct().collect(Collectors.toList());
-        List<UUID> groupsToRemove = groups.keySet().stream().filter(uuid -> !usedGroups.contains(uuid)).collect(Collectors.toList());
+        List<UUID> usedGroups = manager.getStates().stream().filter(PlayerState::hasGroup).map(state -> state.getGroup().getId()).distinct().toList();
+        List<UUID> groupsToRemove = groups.keySet().stream().filter(uuid -> !usedGroups.contains(uuid)).toList();
         for (UUID uuid : groupsToRemove) {
             groups.remove(uuid);
         }

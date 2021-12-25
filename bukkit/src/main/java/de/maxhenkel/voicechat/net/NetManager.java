@@ -26,8 +26,8 @@ public class NetManager implements Listener {
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, Voicechat.INSTANCE);
         try {
+            registerIncomingPacket(UpdateStatePacket.class);
             registerIncomingPacket(RequestSecretPacket.class);
-            registerIncomingPacket(PlayerStatePacket.class);
             registerIncomingPacket(CreateGroupPacket.class);
             registerIncomingPacket(JoinGroupPacket.class);
             registerIncomingPacket(LeaveGroupPacket.class);

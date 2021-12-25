@@ -23,18 +23,18 @@ public class PlayerStateManager {
         states = new ConcurrentHashMap<>();
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::removePlayer);
 
-        CommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel.setServerListener((server, player, handler, packet) -> {
-            PlayerState oldState = states.get(player.getUUID());
+        CommonCompatibilityManager.INSTANCE.getNetManager().updateStateChannel.setServerListener((server, player, handler, packet) -> {
+            PlayerState state = states.get(player.getUUID());
 
-            PlayerState state = packet.getPlayerState();
-            state.setUuid(player.getUUID());
-            state.setName(player.getGameProfile().getName());
-            if (oldState != null) {
-                state.setGroup(oldState.getGroup());
-            } else {
-                state.setGroup(null);
+            if (state == null) {
+                state = defaultDisconnectedState(player);
             }
+
+            state.setDisconnected(packet.isDisconnected());
+            state.setDisabled(packet.isDisabled());
+
             states.put(player.getUUID(), state);
+
             broadcastState(server, state);
             Voicechat.logDebug("Got state of {}: {}", player.getDisplayName().getString(), state);
         });

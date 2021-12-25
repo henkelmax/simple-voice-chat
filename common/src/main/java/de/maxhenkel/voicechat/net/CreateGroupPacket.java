@@ -38,11 +38,6 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
     }
 
     @Override
-    public int getID() {
-        return 6;
-    }
-
-    @Override
     public CreateGroupPacket fromBytes(FriendlyByteBuf buf) {
         name = buf.readUtf(512);
         password = null;

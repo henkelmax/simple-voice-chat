@@ -84,7 +84,7 @@ public class GroupList extends WidgetBase {
             RenderSystem.setShaderTexture(0, TEXTURE);
             int pos = i - getOffset();
             VoiceChatScreenBase.HoverArea hoverArea = hoverAreas[pos];
-            boolean hovered = hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY) && !state.getUuid().equals(mc.player.getUUID());
+            boolean hovered = hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY) && !state.getUuid().equals(ClientManager.getPlayerStateManager().getOwnID());
             int startY = guiTop + pos * columnHeight;
 
             if (hovered) {
@@ -179,7 +179,7 @@ public class GroupList extends WidgetBase {
                 continue;
             }
             PlayerState state = entries.get(getOffset() + i);
-            if (!state.getUuid().equals(mc.player.getUUID())) {
+            if (!state.getUuid().equals(ClientManager.getPlayerStateManager().getOwnID())) {
                 mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
                 mc.setScreen(new AdjustVolumeScreen(screen, Collections.singletonList(state)));
             }

@@ -46,7 +46,7 @@ public class JoinGroupList extends WidgetBase {
 
     public List<Group> getGroups() {
         Map<UUID, Group> groups = new HashMap<>();
-        List<PlayerState> playerStates = ClientManager.getPlayerStateManager().getPlayerStates();
+        Collection<PlayerState> playerStates = ClientManager.getPlayerStateManager().getPlayerStates(true);
 
         for (PlayerState state : playerStates) {
             if (!state.hasGroup()) {

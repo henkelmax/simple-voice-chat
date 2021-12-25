@@ -106,10 +106,7 @@ public class GroupChatManager {
             return entries;
         }
 
-        for (PlayerState state : ClientManager.getPlayerStateManager().getPlayerStates()) {
-            if (!includeSelf && state.getUuid().equals(Minecraft.getInstance().player.getUUID())) {
-                continue;
-            }
+        for (PlayerState state : ClientManager.getPlayerStateManager().getPlayerStates(includeSelf)) {
             if (state.hasGroup() && state.getGroup().getId().equals(group.getId())) {
                 entries.add(state);
             }
