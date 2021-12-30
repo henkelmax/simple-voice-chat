@@ -108,7 +108,7 @@ public class VoiceChatCommands implements CommandExecutor {
     }
 
     private boolean inviteCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        if (!(commandSender instanceof Player)) {
+        if (!(commandSender instanceof Player player)) {
             return false;
         }
 
@@ -116,9 +116,7 @@ public class VoiceChatCommands implements CommandExecutor {
             return false;
         }
 
-        Player player = (Player) commandSender;
-
-        Player otherPlayer = commandSender.getServer().getPlayer(args[1]);
+        Player otherPlayer = parsePlayer(commandSender, args[1]);
 
         if (otherPlayer == null) {
             commandSender.sendMessage(Voicechat.translate("player_not_found"));
@@ -163,7 +161,7 @@ public class VoiceChatCommands implements CommandExecutor {
     }
 
     private boolean joinCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        if (!(commandSender instanceof Player)) {
+        if (!(commandSender instanceof Player player)) {
             return false;
         }
 
@@ -171,7 +169,6 @@ public class VoiceChatCommands implements CommandExecutor {
             return false;
         }
 
-        Player player = (Player) commandSender;
         PlayerState state = Voicechat.SERVER.getServer().getPlayerStateManager().getState(player.getUniqueId());
 
         if (state == null) {
@@ -233,11 +230,10 @@ public class VoiceChatCommands implements CommandExecutor {
     }
 
     private boolean leaveCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        if (!(commandSender instanceof Player)) {
+        if (!(commandSender instanceof Player player)) {
             return false;
         }
 
-        Player player = (Player) commandSender;
         PlayerState state = Voicechat.SERVER.getServer().getPlayerStateManager().getState(player.getUniqueId());
 
         if (state == null) {
@@ -259,4 +255,19 @@ public class VoiceChatCommands implements CommandExecutor {
         NetManager.sendMessage(player, Component.translatable("message.voicechat.leave_successful"));
         return true;
     }
+
+    @Nullable
+    public static Player parsePlayer(CommandSender commandSender, String playerArg) {
+        Player player = commandSender.getServer().getPlayer(playerArg);
+        if (player != null) {
+            return player;
+        }
+        try {
+            UUID uuid = UUID.fromString(playerArg);
+            return commandSender.getServer().getPlayer(uuid);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
 }
