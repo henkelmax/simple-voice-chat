@@ -171,7 +171,7 @@ public abstract class SoundManager {
         }
     }
 
-    private static final Pattern DEVICE_NAME = Pattern.compile("^(?:OpenAL.+on )?(.*)$");
+    private static final Pattern DEVICE_NAME = Pattern.compile("^(?:OpenAL.+?on )?(.*)$");
 
     public static String cleanDeviceName(String name) {
         Matcher matcher = DEVICE_NAME.matcher(name);
