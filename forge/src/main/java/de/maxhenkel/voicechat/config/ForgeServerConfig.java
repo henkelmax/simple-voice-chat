@@ -19,8 +19,8 @@ public class ForgeServerConfig extends ServerConfig {
         );
         voiceChatBindAddress = wrapConfigEntry(builder
                 .worldRestart()
-                .comment("The IP address to bind the voice chat server on", "Use '0.0.0.0' to bind to an IP address chosen by the kernel")
-                .define("voice_chat.bind_address", "0.0.0.0")
+                .comment("The IP address to bind the voice chat server on", "Leave empty to bind to an IP address chosen by the kernel")
+                .define("voice_chat.bind_address", "")
         );
         voiceChatDistance = wrapConfigEntry(builder
                 .worldRestart()

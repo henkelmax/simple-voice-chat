@@ -1,4 +1,1 @@
-- Improved BungeeCord compatibility
-- Improved compatibility with offline mode servers
-- Fixed empty group GUI issue
-- Fixed wrong audio device names
+- Improved IPv6 compatibility

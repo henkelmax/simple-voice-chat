@@ -24,7 +24,7 @@ public class VoicechatSocketImpl implements VoicechatSocket {
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to parse bind IP address '{}'", bindAddress);
             e.printStackTrace();
-            Voicechat.LOGGER.info("Binding to default IP address");
+            Voicechat.LOGGER.info("Binding to wildcard IP address");
         }
 
         try {
@@ -34,12 +34,12 @@ public class VoicechatSocketImpl implements VoicechatSocket {
                 if (address == null || bindAddress.equals("0.0.0.0")) {
                     throw e;
                 }
-                Voicechat.LOGGER.fatal("Failed to bind to address '{}', binding to '0.0.0.0' instead", bindAddress);
+                Voicechat.LOGGER.error("Failed to bind to address '{}', binding to wildcard IP instead", bindAddress);
                 socket = new DatagramSocket(port);
             }
             socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
         } catch (BindException e) {
-            Voicechat.LOGGER.error("Failed to bind to address '0.0.0.0', make sure no other application is running at UDP port {}", port);
+            Voicechat.LOGGER.error("Failed to run voice chat at UDP port {}, make sure no other application is running at that port", port);
             e.printStackTrace();
             System.exit(1);
             return;
