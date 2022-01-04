@@ -17,8 +17,8 @@ plugins {
 
 apply plugin: 'forge-update'
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaLanguageVersion.of(java_version as int)
+targetCompatibility = JavaLanguageVersion.of(java_version as int)
 
 archivesBaseName = archives_base_name
 version = mod_version
@@ -98,6 +98,7 @@ processResources {
                 'mod_name': mod_name,
                 'mod_vendor': mod_vendor,
                 'mod_version': mod_version,
+                'java_version': java_version,
                 'minecraft_dependency': minecraft_dependency,
                 'fabric_loader_version': fabric_loader_version,
                 'compatibility_version': mod_compatibility_version,
@@ -110,7 +111,7 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"
-    it.options.release = 16
+    it.options.release = java_version as int
 }
 
 tasks.withType(JavaCompile) {
@@ -147,7 +148,7 @@ curseforge {
         releaseType = curse_release_type
         addGameVersion curseforge_minecraft_version
         addGameVersion 'Fabric'
-        addGameVersion 'Java 16'
+        addGameVersion "Java ${java_version}"
         mainArtifact(file("${buildDir}/libs/${archivesBaseName}-${version}.jar")) {
             displayName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
             relations {

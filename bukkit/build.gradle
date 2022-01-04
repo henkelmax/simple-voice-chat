@@ -3,8 +3,8 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.0"
 }
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaLanguageVersion.of(java_version as int)
+targetCompatibility = JavaLanguageVersion.of(java_version as int)
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
