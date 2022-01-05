@@ -4,6 +4,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.gui.tooltips.DisableTooltipSupplier;
+import de.maxhenkel.voicechat.gui.tooltips.HideTooltipSupplier;
+import de.maxhenkel.voicechat.gui.tooltips.MuteTooltipSupplier;
+import de.maxhenkel.voicechat.gui.tooltips.RecordingTooltipSupplier;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.*;
@@ -16,7 +20,6 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 
 public class VoiceChatScreen extends VoiceChatScreenBase {
 
@@ -42,38 +45,24 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
 
         mute = new ToggleImageButton(guiLeft + 6, guiTop + ySize - 6 - 20, MICROPHONE, stateManager::isMuted, button -> {
             stateManager.setMuted(!stateManager.isMuted());
-        }, (button, matrices, mouseX, mouseY) -> {
-            renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.mute_microphone").getVisualOrderText()), mouseX, mouseY);
-        });
+        }, new MuteTooltipSupplier(this, stateManager));
         addRenderableWidget(mute);
 
         ToggleImageButton disable = new ToggleImageButton(guiLeft + 6 + 20 + 2, guiTop + ySize - 6 - 20, SPEAKER, stateManager::isDisabled, button -> {
             stateManager.setDisabled(!stateManager.isDisabled());
-        }, (button, matrices, mouseX, mouseY) -> {
-            renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.disable_voice_chat").getVisualOrderText()), mouseX, mouseY);
-        });
+        }, new DisableTooltipSupplier(this, stateManager));
         addRenderableWidget(disable);
 
         if (client != null) {
             if (client.getRecorder() != null || (client.getConnection() != null && client.getConnection().getData().allowRecording())) {
-                ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> ClientManager.getClient() != null && ClientManager.getClient().getRecorder() != null, button -> {
-                    ClientVoicechat c = ClientManager.getClient();
-                    if (c == null) {
-                        return;
-                    }
-                    c.toggleRecording();
-                }, (button, matrices, mouseX, mouseY) -> {
-                    renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.toggle_recording").getVisualOrderText()), mouseX, mouseY);
-                });
+                ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> ClientManager.getClient() != null && ClientManager.getClient().getRecorder() != null, button -> toggleRecording(), new RecordingTooltipSupplier(this));
                 addRenderableWidget(record);
             }
         }
 
         ToggleImageButton hide = new ToggleImageButton(guiLeft + xSize - 6 - 20, guiTop + ySize - 6 - 20, HIDE, VoicechatClient.CLIENT_CONFIG.hideIcons::get, button -> {
             VoicechatClient.CLIENT_CONFIG.hideIcons.set(!VoicechatClient.CLIENT_CONFIG.hideIcons.get()).save();
-        }, (button, matrices, mouseX, mouseY) -> {
-            renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.hide_icons").getVisualOrderText()), mouseX, mouseY);
-        });
+        }, new HideTooltipSupplier(this));
         addRenderableWidget(hide);
 
         Button settings = new Button(guiLeft + 6, guiTop + 6 + 15, 75, 20, new TextComponent("Settings"), button -> {
@@ -103,7 +92,15 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     }
 
     private void checkButtons() {
-        mute.active = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE);
+        mute.active = MuteTooltipSupplier.canMuteMic();
+    }
+
+    private void toggleRecording() {
+        ClientVoicechat c = ClientManager.getClient();
+        if (c == null) {
+            return;
+        }
+        c.toggleRecording();
     }
 
     @Override

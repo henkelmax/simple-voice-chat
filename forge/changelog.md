@@ -1,1 +1,1 @@
-- Improved IPv6 compatibility
+- Improved button hover texts
