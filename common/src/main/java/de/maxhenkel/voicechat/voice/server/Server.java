@@ -237,8 +237,8 @@ public class Server extends Thread {
         double distance = Voicechat.SERVER_CONFIG.voiceChatDistance.get();
         @Nullable ClientGroup group = senderState.getGroup();
 
-        SoundPacket<?> soundPacket;
-        String source;
+        SoundPacket<?> soundPacket = null;
+        String source = null;
         if (sender.isSpectator()) {
             if (Voicechat.SERVER_CONFIG.spectatorPlayerPossession.get()) {
                 Entity camera = sender.getCamera();
@@ -260,10 +260,10 @@ public class Server extends Thread {
             if (Voicechat.SERVER_CONFIG.spectatorInteraction.get()) {
                 soundPacket = new LocationSoundPacket(sender.getUUID(), sender.getEyePosition(), packet.getData(), packet.getSequenceNumber());
                 source = SoundPacketEvent.SOURCE_SPECTATOR;
-            } else {
-                return;
             }
-        } else {
+        }
+
+        if (soundPacket == null) {
             soundPacket = new PlayerSoundPacket(sender.getUUID(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering());
             source = SoundPacketEvent.SOURCE_PROXIMITY;
         }

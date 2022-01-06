@@ -1,1 +1,1 @@
-- Improved button hover texts
+- Fixed spectators can't talk to each other
