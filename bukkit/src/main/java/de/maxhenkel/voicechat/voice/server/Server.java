@@ -72,13 +72,17 @@ public class Server extends Thread {
     }
 
     public UUID getSecret(UUID playerUUID) {
-        if (secrets.containsKey(playerUUID)) {
+        if (hasSecret(playerUUID)) {
             return secrets.get(playerUUID);
         } else {
             UUID secret = UUID.randomUUID();
             secrets.put(playerUUID, secret);
             return secret;
         }
+    }
+
+    public boolean hasSecret(UUID playerUUID) {
+        return secrets.containsKey(playerUUID);
     }
 
     public void disconnectClient(UUID playerUUID) {

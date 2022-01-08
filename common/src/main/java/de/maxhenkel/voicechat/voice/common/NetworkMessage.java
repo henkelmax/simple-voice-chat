@@ -86,6 +86,9 @@ public class NetworkMessage {
         byte[] data = packet.getData();
         FriendlyByteBuf b = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
         UUID playerID = b.readUUID();
+        if (!server.hasSecret(playerID)) {
+            throw new InvalidKeyException("Player %s does not have a secret".formatted(playerID));
+        }
         return readFromBytes(packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray(), packet.getTimestamp());
     }
 
@@ -101,7 +104,7 @@ public class NetworkMessage {
         byte packetType = buffer.readByte();
         Class<? extends Packet> packetClass = packetRegistry.get(packetType);
         if (packetClass == null) {
-            throw new InstantiationException("Could not find packet with ID " + packetType);
+            throw new InstantiationException("Could not find packet with ID %s".formatted(packetType));
         }
         Packet<? extends Packet<?>> p = packetClass.getDeclaredConstructor().newInstance();
 
