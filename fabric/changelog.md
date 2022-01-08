@@ -1,1 +1,1 @@
-- Fixed spectators can't talk to each other
+- Improved error messages
