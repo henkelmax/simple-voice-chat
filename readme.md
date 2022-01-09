@@ -11,7 +11,7 @@
 - [GitHub](https://github.com/henkelmax/simple-voice-chat)
 - [FAQ](https://modrepo.de/minecraft/voicechat/faq)
 - [Credits](https://modrepo.de/minecraft/voicechat/credits)
-- [Plugin API](api/docs/readme.md)
+- [Plugin API](api/readme.md)
 
 ---
 
