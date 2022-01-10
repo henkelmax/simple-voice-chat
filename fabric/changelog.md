@@ -1,1 +1,1 @@
-- Added client sound event to voice chat API
+- Fixed crashes when no speakers are available

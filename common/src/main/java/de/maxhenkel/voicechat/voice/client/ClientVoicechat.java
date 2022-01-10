@@ -18,6 +18,7 @@ import java.util.UUID;
 
 public class ClientVoicechat {
 
+    @Nullable
     private SoundManager soundManager;
     private final Map<UUID, AudioChannel> audioChannels;
     private final TalkCache talkCache;
@@ -33,7 +34,8 @@ public class ClientVoicechat {
         try {
             reloadSoundManager();
         } catch (SpeakerException e) {
-            e.printStackTrace();
+            Voicechat.LOGGER.error("Failed to start sound manager: {}", e.getMessage());
+            ClientManager.sendPlayerError("messsage.voicechat.speaker_unavailable", e);
         }
         this.audioChannels = new HashMap<>();
     }
@@ -170,6 +172,7 @@ public class ClientVoicechat {
         return connection;
     }
 
+    @Nullable
     public SoundManager getSoundManager() {
         return soundManager;
     }
@@ -190,7 +193,9 @@ public class ClientVoicechat {
             audioChannels.clear();
         }
 
-        soundManager.close();
+        if (soundManager != null) {
+            soundManager.close();
+        }
 
         closeMicThread();
 

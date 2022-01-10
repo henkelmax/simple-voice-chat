@@ -111,16 +111,27 @@ public class ClientPlayerStateManager {
     }
 
     public boolean isDisabled() {
+        if (!canEnable()) {
+            return true;
+        }
         return VoicechatClient.CLIENT_CONFIG.disabled.get();
     }
 
-    public boolean isDisconnected() {
-        return disconnected;
+    public boolean canEnable() {
+        ClientVoicechat client = ClientManager.getClient();
+        if (client == null) {
+            return false;
+        }
+        return client.getSoundManager() != null;
     }
 
     public void setDisabled(boolean disabled) {
         VoicechatClient.CLIENT_CONFIG.disabled.set(disabled).save();
         syncOwnState();
+    }
+
+    public boolean isDisconnected() {
+        return disconnected;
     }
 
     public boolean isMuted() {

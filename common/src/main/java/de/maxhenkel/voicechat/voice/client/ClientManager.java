@@ -24,7 +24,6 @@ import net.minecraft.network.chat.TranslatableComponent;
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.UUID;
 
 public class ClientManager {
 
@@ -102,17 +101,17 @@ public class ClientManager {
             return;
         }
         player.sendMessage(
-            ComponentUtils.wrapInSquareBrackets(new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()))
-                .withStyle(ChatFormatting.GREEN)
-                .append(" ")
-                .append(new TranslatableComponent(translationKey).withStyle(ChatFormatting.RED))
-                .withStyle(style -> {
-                    if (e != null) {
-                        style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED)));
-                    }
-                    return style;
-                })
-            , Util.NIL_UUID);
+                ComponentUtils.wrapInSquareBrackets(new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()))
+                        .withStyle(ChatFormatting.GREEN)
+                        .append(" ")
+                        .append(new TranslatableComponent(translationKey).withStyle(ChatFormatting.RED))
+                        .withStyle(style -> {
+                            if (e != null) {
+                                return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED)));
+                            }
+                            return style;
+                        })
+                , Util.NIL_UUID);
     }
 
     private void onDisconnect() {

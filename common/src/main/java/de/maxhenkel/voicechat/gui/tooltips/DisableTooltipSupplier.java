@@ -24,7 +24,9 @@ public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
     public void onTooltip(ImageButton button, PoseStack matrices, int mouseX, int mouseY) {
         List<FormattedCharSequence> tooltip = new ArrayList<>();
 
-        if (stateManager.isDisabled()) {
+        if (!stateManager.canEnable()) {
+            tooltip.add(new TranslatableComponent("message.voicechat.disable.no_speaker").getVisualOrderText());
+        } else if (stateManager.isDisabled()) {
             tooltip.add(new TranslatableComponent("message.voicechat.disable.enabled").getVisualOrderText());
         } else {
             tooltip.add(new TranslatableComponent("message.voicechat.disable.disabled").getVisualOrderText());
