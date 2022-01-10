@@ -178,6 +178,10 @@ public class PluginManager {
         return false;
     }
 
+    public boolean onClientSound(short[] rawAudio) {
+        return dispatchEvent(ClientSoundEvent.class, new ClientSoundEventImpl(new VoicechatClientApiImpl(), rawAudio));
+    }
+
     private static PluginManager instance;
 
     public static PluginManager instance() {

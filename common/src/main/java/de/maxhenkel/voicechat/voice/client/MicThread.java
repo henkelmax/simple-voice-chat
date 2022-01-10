@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.config.ServerConfig;
+import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.client.microphone.ALMicrophone;
 import de.maxhenkel.voicechat.voice.client.microphone.JavaxMicrophone;
 import de.maxhenkel.voicechat.voice.client.microphone.Microphone;
@@ -234,6 +235,10 @@ public class MicThread extends Thread {
     private volatile boolean stopPacketSent;
 
     private void sendAudioPacket(short[] data, boolean whispering) {
+        if (PluginManager.instance().onClientSound(data)) {
+            return;
+        }
+
         try {
             if (connection != null && connection.isAuthenticated()) {
                 byte[] encoded = encoder.encode(data);
@@ -256,6 +261,11 @@ public class MicThread extends Thread {
         if (stopPacketSent) {
             return;
         }
+
+        if (PluginManager.instance().onClientSound(new short[0])) {
+            return;
+        }
+
         if (connection == null || !connection.isAuthenticated()) {
             return;
         }

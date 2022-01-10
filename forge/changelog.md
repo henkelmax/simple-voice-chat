@@ -1,1 +1,1 @@
-- Improved error messages
+- Added client sound event to voice chat API
