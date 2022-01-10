@@ -64,7 +64,7 @@ public abstract class SoundManager {
     private long tryOpenSpeaker(@Nullable String string) throws SpeakerException {
         long l = ALC11.alcOpenDevice(string);
         if (l == 0L) {
-            throw new SpeakerException(String.format("Failed to open audio device: %s", getAlcError(0)));
+            throw new SpeakerException("Failed to open audio device: Audio device not found");
         }
         checkAlcError(device);
         return l;

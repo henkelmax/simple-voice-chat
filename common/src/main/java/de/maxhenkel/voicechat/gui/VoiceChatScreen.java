@@ -30,17 +30,19 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     private static final ResourceLocation RECORD = new ResourceLocation(Voicechat.MODID, "textures/icons/record_button.png");
 
     private ToggleImageButton mute;
+    private ToggleImageButton disable;
     private HoverArea recordingHoverArea;
+
+    private ClientPlayerStateManager stateManager;
 
     public VoiceChatScreen() {
         super(new TranslatableComponent("gui.voicechat.voice_chat.title"), 195, 76);
+        stateManager = ClientManager.getPlayerStateManager();
     }
 
     @Override
     protected void init() {
         super.init();
-
-        ClientPlayerStateManager stateManager = ClientManager.getPlayerStateManager();
         @Nullable ClientVoicechat client = ClientManager.getClient();
 
         mute = new ToggleImageButton(guiLeft + 6, guiTop + ySize - 6 - 20, MICROPHONE, stateManager::isMuted, button -> {
@@ -48,7 +50,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         }, new MuteTooltipSupplier(this, stateManager));
         addRenderableWidget(mute);
 
-        ToggleImageButton disable = new ToggleImageButton(guiLeft + 6 + 20 + 2, guiTop + ySize - 6 - 20, SPEAKER, stateManager::isDisabled, button -> {
+        disable = new ToggleImageButton(guiLeft + 6 + 20 + 2, guiTop + ySize - 6 - 20, SPEAKER, stateManager::isDisabled, button -> {
             stateManager.setDisabled(!stateManager.isDisabled());
         }, new DisableTooltipSupplier(this, stateManager));
         addRenderableWidget(disable);
@@ -93,6 +95,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
 
     private void checkButtons() {
         mute.active = MuteTooltipSupplier.canMuteMic();
+        disable.active = stateManager.canEnable();
     }
 
     private void toggleRecording() {

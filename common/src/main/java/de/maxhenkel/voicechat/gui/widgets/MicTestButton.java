@@ -26,11 +26,12 @@ public class MicTestButton extends AbstractButton {
         super(xIn, yIn, widthIn, heightIn, TextComponent.EMPTY);
         this.micListener = micListener;
         this.client = ClientManager.getClient();
+        active = client == null || client.getSoundManager() != null;
         updateText();
     }
 
     private void updateText() {
-        if (!visible) {
+        if (!active) {
             setMessage(new TranslatableComponent("message.voicechat.mic_test_unavailable"));
             return;
         }
@@ -57,7 +58,6 @@ public class MicTestButton extends AbstractButton {
     @Override
     public void onPress() {
         setMicActive(!micActive);
-        updateText();
         if (micActive) {
             if (voiceThread != null) {
                 voiceThread.close();
@@ -77,6 +77,7 @@ public class MicTestButton extends AbstractButton {
                 voiceThread = null;
             }
         }
+        updateText();
     }
 
     @Override
@@ -93,7 +94,6 @@ public class MicTestButton extends AbstractButton {
         private boolean usesOwnMicThread;
         @Nullable
         private SoundManager ownSoundManager;
-
 
         public VoiceThread() throws SpeakerException, MicrophoneException, NativeDependencyException {
             this.running = true;
@@ -113,6 +113,11 @@ public class MicTestButton extends AbstractButton {
             } else {
                 soundManager = client.getSoundManager();
             }
+
+            if (soundManager == null) {
+                throw new SpeakerException("No sound manager");
+            }
+
             speaker = ClientCompatibilityManager.INSTANCE.createSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE);
 
             speaker.open();
