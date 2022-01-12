@@ -1,2 +1,1 @@
-- Fixed crashes when no speakers are available
-- Added offline mode warning message
+- Added czech translation
