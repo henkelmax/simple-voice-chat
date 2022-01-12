@@ -1,1 +1,1 @@
-- Added czech translation
+- Fixed icon sizes
