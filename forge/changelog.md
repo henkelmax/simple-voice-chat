@@ -1,1 +1,2 @@
+- Fixed icon sizes 
 - Fixed leaving group not working
