@@ -82,6 +82,7 @@ public class GroupManager {
 
         PlayerStateManager manager = getStates();
         manager.setGroup(player, null);
+        NetManager.sendToClient(player, new JoinedGroupPacket(null, false));
 
         cleanEmptyGroups();
     }
