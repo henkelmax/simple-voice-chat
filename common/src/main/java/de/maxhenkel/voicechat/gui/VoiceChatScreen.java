@@ -67,12 +67,12 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         }, new HideTooltipSupplier(this));
         addRenderableWidget(hide);
 
-        Button settings = new Button(guiLeft + 6, guiTop + 6 + 15, 75, 20, new TextComponent("Settings"), button -> {
+        Button settings = new Button(guiLeft + 6, guiTop + 6 + 15, 75, 20, new TranslatableComponent("message.voicechat.settings"), button -> {
             minecraft.setScreen(new VoiceChatSettingsScreen());
         });
         addRenderableWidget(settings);
 
-        Button group = new Button(guiLeft + xSize - 6 - 75 + 1, guiTop + 6 + 15, 75, 20, new TextComponent("Group"), button -> {
+        Button group = new Button(guiLeft + xSize - 6 - 75 + 1, guiTop + 6 + 15, 75, 20, new TranslatableComponent("message.voicechat.group"), button -> {
             if (stateManager.isInGroup()) {
                 minecraft.setScreen(new GroupScreen(stateManager.getGroup()));
             } else {
