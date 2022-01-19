@@ -18,6 +18,8 @@
   "gui.voicechat.join_create_group.title": "Join or Create Group",
   "gui.voicechat.create_group.title": "Create a Group",
   "gui.voicechat.enter_password.title": "Enter Group Password",
+  "message.voicechat.settings": "Settings",
+  "message.voicechat.group": "Group",
   "message.voicechat.voice_chat_volume": "Voice chat volume: %s",
   "message.voicechat.microphone_amplification": "Microphone amplification: %s",
   "message.voicechat.mic_test_on": "Disable microphone testing",
