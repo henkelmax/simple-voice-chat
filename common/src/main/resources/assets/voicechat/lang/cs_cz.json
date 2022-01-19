@@ -18,6 +18,8 @@
   "gui.voicechat.join_create_group.title": "Připojit se nebo vytvořit skupinu",
   "gui.voicechat.create_group.title": "Vytvořit skupinu",
   "gui.voicechat.enter_password.title": "Zadat heslo skupiny",
+  "message.voicechat.settings": "Nastavení",
+  "message.voicechat.group": "Skupina",
   "message.voicechat.voice_chat_volume": "Hlasitost hlasové komunikace: %s",
   "message.voicechat.microphone_amplification": "Úprava hlasového vstupu: %s",
   "message.voicechat.mic_test_on": "Vypnout zkoušku mikrofonu",

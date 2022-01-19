@@ -1,1 +1,1 @@
-- Fixed untranslated buttons
+- Updated czech translation
