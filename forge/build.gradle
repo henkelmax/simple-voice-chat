@@ -27,7 +27,7 @@ group = mod_packagename
 java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
 
 minecraft {
-    mappings channel: 'official', version: mod_minecraft_version
+    mappings channel: 'official', version: minecraft_version
 
     runs {
         all {
@@ -73,7 +73,7 @@ repositories {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${mod_minecraft_version}-${forge_version}"
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     implementation(project(':common')) {
         transitive false
@@ -106,8 +106,9 @@ processResources {
         expand 'mod_id': mod_id,
                 'mod_version': mod_version,
                 'mod_name': mod_name,
-                'mod_forge_version': mod_forge_version,
-                'mod_minecraft_version': mod_minecraft_version,
+                'forge_loader_requirement': forge_loader_requirement,
+                'forge_requirement': forge_requirement,
+                'minecraft_version': minecraft_version,
                 'sound_physics_remastered_version': sound_physics_remastered_version
     }
     filesMatching("compatibility.properties") {
@@ -157,11 +158,11 @@ curseforge {
         changelogType = 'markdown'
         changelog = file("changelog.md")
         releaseType = curse_release_type
-        addGameVersion mod_minecraft_version
+        addGameVersion minecraft_version
         addGameVersion 'Forge'
         addGameVersion "Java ${java_version}"
         mainArtifact(jar) {
-            displayName = "[FORGE][${mod_minecraft_version}] ${mod_name} ${mod_version}"
+            displayName = "[FORGE][${minecraft_version}] ${mod_name} ${mod_version}"
             relations {
                 optionalDependency 'sound-physics-remastered'
             }
@@ -180,7 +181,7 @@ forgeUpdate {
     serverURL = 'https://update.maxhenkel.de/'
     apiKey = file("${rootDir}/forge_update_api_key.txt").exists() ? file("${rootDir}/forge_update_api_key.txt").text : ''
     modID = mod_id
-    gameVersion = mod_minecraft_version
+    gameVersion = minecraft_version
     modVersion = mod_version
     updateMessages = messages
     releaseType = curse_release_type

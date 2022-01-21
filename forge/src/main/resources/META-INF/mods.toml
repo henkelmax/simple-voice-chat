@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="${mod_forge_version}"
+loaderVersion="${forge_loader_requirement}"
 license="All rights reserved"
 issueTrackerURL="https://github.com/henkelmax/simple-voice-chat/issues"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat"
@@ -15,13 +15,13 @@ description='''A working voice chat in Minecraft!'''
 [[dependencies.${mod_id}]]
     modId="forge"
     mandatory=true
-    versionRange="${mod_forge_version}"
+    versionRange="${forge_requirement}"
     ordering="NONE"
     side="BOTH"
 [[dependencies.${mod_id}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[${mod_minecraft_version}]"
+    versionRange="[${minecraft_version}]"
     ordering="NONE"
     side="BOTH"
 [[dependencies.${mod_id}]]
