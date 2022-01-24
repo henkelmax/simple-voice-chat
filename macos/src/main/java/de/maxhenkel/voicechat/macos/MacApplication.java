@@ -6,6 +6,7 @@ import com.dd.plist.PropertyListParser;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -47,12 +48,40 @@ public class MacApplication {
     }
 
     public void removeSignature() throws IOException, InterruptedException {
-        ProcessBuilder builder = new ProcessBuilder("codesign", "--deep", "--remove-signature", appPath.toFile().getAbsolutePath());
-        Process process = builder.inheritIO().start();
+        ProcessBuilder builder = new ProcessBuilder("codesign", "--verbose", "--deep", "--remove-signature", appPath.toFile().getAbsolutePath());
+        Process process = builder.start();
+
+        String stderr = captureStream(process.errorReader());
+        String stdout = captureStream(process.inputReader());
+
         process.waitFor();
+
         if (process.exitValue() != 0) {
-            throw new IOException("Exit code " + process.exitValue());
+            StringBuilder sb = new StringBuilder();
+            sb.append("Failed to execute codesign. Exit code ");
+            sb.append(process.exitValue());
+            sb.append(".");
+            if (!stdout.isEmpty()) {
+                sb.append("\n");
+                sb.append(stdout);
+            }
+            if (!stderr.isEmpty()) {
+                sb.append("\n");
+                sb.append(stderr);
+            }
+
+            throw new IOException(sb.toString());
         }
+    }
+
+    public String captureStream(BufferedReader reader) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            builder.append(line);
+            builder.append("\n");
+        }
+        return builder.toString();
     }
 
 }
