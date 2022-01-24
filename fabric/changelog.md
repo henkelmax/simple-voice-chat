@@ -1,1 +1,1 @@
-- Updated to 22w03a
+- Added more descriptive errors to MacOS patcher
