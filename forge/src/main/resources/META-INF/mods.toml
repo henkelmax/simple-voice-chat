@@ -27,6 +27,6 @@ description='''A working voice chat in Minecraft!'''
 [[dependencies.${mod_id}]]
     modId="sound_physics_remastered"
     mandatory=false
-    versionRange="[${mod_minecraft_version}-${sound_physics_remastered_version},)"
+    versionRange="[${minecraft_version}-${sound_physics_remastered_version},)"
     ordering="NONE"
     side="BOTH"
