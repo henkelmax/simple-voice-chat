@@ -49,6 +49,6 @@ It will also not work with all launchers.
 
 ### Standalone Version
 
-There is also a [standalone version](https://github.com/henkelmax/simple-voice-chat/files/7699297/simple-voice-chat-macos-workaround.zip) of the workaround.
+There is also a [standalone version](https://github.com/henkelmax/simple-voice-chat/files/7926761/simple-voice-chat-macos-workaround.zip) of the workaround.
 This works exactly like the one that's built into the mod.
 Use this if the GUI does not show up when starting the game or your microphone is not picking up sound.
