@@ -8,6 +8,8 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
@@ -51,8 +53,8 @@ public class MacApplication {
         ProcessBuilder builder = new ProcessBuilder("codesign", "--verbose", "--deep", "--remove-signature", appPath.toFile().getAbsolutePath());
         Process process = builder.start();
 
-        String stderr = captureStream(process.errorReader());
-        String stdout = captureStream(process.inputReader());
+        String stderr = captureStream(process.getErrorStream());
+        String stdout = captureStream(process.getInputStream());
 
         process.waitFor();
 
@@ -74,14 +76,18 @@ public class MacApplication {
         }
     }
 
-    public String captureStream(BufferedReader reader) throws IOException {
-        StringBuilder builder = new StringBuilder();
+    public String captureStream(InputStream stream) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new InputStreamReader(stream));
         String line;
-        while ((line = reader.readLine()) != null) {
-            builder.append(line);
-            builder.append("\n");
+
+        while ((line = br.readLine()) != null) {
+            sb.append(line);
+            sb.append("\n");
         }
-        return builder.toString();
+
+        br.close();
+        return sb.toString();
     }
 
 }
