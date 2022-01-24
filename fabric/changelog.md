@@ -1,1 +1,1 @@
-- Updated czech translation
+- Added more descriptive errors to MacOS patcher
