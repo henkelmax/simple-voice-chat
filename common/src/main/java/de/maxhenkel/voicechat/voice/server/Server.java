@@ -36,9 +36,15 @@ public class Server extends Thread {
 
     public Server(MinecraftServer server) {
         if (server instanceof DedicatedServer) {
-            this.port = Voicechat.SERVER_CONFIG.voiceChatPort.get();
+            int configPort = Voicechat.SERVER_CONFIG.voiceChatPort.get();
+            if (configPort < 0) {
+                Voicechat.LOGGER.info("Using the Minecraft servers port as voice chat port");
+                port = server.getPort();
+            } else {
+                port = configPort;
+            }
         } else {
-            this.port = 0;
+            port = 0;
         }
         this.server = server;
         socket = PluginManager.instance().getSocketImplementation(server);

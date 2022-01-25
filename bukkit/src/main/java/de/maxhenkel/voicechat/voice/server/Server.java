@@ -38,8 +38,14 @@ public class Server extends Thread {
     private final PlayerStateManager playerStateManager;
     private final GroupManager groupManager;
 
-    public Server(int port, org.bukkit.Server server) {
-        this.port = port;
+    public Server(org.bukkit.Server server) {
+        int configPort = Voicechat.SERVER_CONFIG.voiceChatPort.get();
+        if (configPort < 0) {
+            Voicechat.LOGGER.info("Using the Minecraft servers port as voice chat port");
+            port = server.getPort();
+        } else {
+            port = configPort;
+        }
         this.server = server;
         socket = PluginManager.instance().getSocketImplementation(server);
         connections = new HashMap<>();
