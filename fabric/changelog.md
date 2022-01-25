@@ -1,1 +1,1 @@
-- Added more descriptive errors to MacOS patcher
+- Added config option to use the Minecraft servers port

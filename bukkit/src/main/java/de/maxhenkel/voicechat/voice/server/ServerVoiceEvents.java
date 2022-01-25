@@ -29,7 +29,7 @@ public class ServerVoiceEvents implements Listener {
             Voicechat.LOGGER.warn("Running in offline mode - Voice chat encryption is not secure!");
         }
 
-        server = new Server(Voicechat.SERVER_CONFIG.voiceChatPort.get(), mcServer);
+        server = new Server(mcServer);
         server.start();
         PluginManager.instance().onServerStarted(mcServer);
     }
