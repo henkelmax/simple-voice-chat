@@ -5,7 +5,7 @@ import de.maxhenkel.configbuilder.ConfigBuilder;
 public class FabricServerConfig extends ServerConfig {
 
     public FabricServerConfig(ConfigBuilder builder) {
-        voiceChatPort = builder.integerEntry("port", 24454, 0, 65535);
+        voiceChatPort = builder.integerEntry("port", 24454, -1, 65535);
         voiceChatBindAddress = builder.stringEntry("bind_address", "");
         voiceChatDistance = builder.doubleEntry("max_voice_distance", 48D, 1D, 1_000_000D);
         voiceChatFadeDistance = builder.doubleEntry("min_voice_distance", 4D, 1D, 1_000_000D);
