@@ -65,7 +65,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent.Pre event) {
+    public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
         renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(event.getMatrixStack(), event.getPartialTicks()));
     }
 
