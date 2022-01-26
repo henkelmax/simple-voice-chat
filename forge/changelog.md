@@ -1,1 +1,1 @@
-- Updated Chinese translation
+- Fixed duplicate icons with Quark
