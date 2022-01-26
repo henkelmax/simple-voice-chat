@@ -1,1 +1,1 @@
-- Added config option to use the Minecraft servers port
+- Updated Chinese translation
