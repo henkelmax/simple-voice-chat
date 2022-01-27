@@ -4,10 +4,11 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.plugins.PluginManager;
-import de.maxhenkel.voicechat.voice.client.microphone.ALMicrophone;
-import de.maxhenkel.voicechat.voice.client.microphone.JavaxMicrophone;
 import de.maxhenkel.voicechat.voice.client.microphone.Microphone;
-import de.maxhenkel.voicechat.voice.common.*;
+import de.maxhenkel.voicechat.voice.client.microphone.MicrophoneManager;
+import de.maxhenkel.voicechat.voice.common.MicPacket;
+import de.maxhenkel.voicechat.voice.common.NetworkMessage;
+import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
 
 import javax.annotation.Nullable;
@@ -47,13 +48,8 @@ public class MicThread extends Thread {
 
         setDaemon(true);
         setName("MicrophoneThread");
-        if (VoicechatClient.CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
-            mic = new JavaxMicrophone(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get());
-        } else {
-            mic = new ALMicrophone(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get());
-        }
 
-        mic.open();
+        mic = MicrophoneManager.getMicrophone();
     }
 
     @Override
