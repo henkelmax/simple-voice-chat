@@ -1,9 +1,6 @@
 package de.maxhenkel.voicechat.voice.client.microphone;
 
-import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.MicrophoneException;
-
-import java.util.List;
 
 public interface Microphone {
 
@@ -22,13 +19,5 @@ public interface Microphone {
     int available();
 
     short[] read();
-
-    public static List<String> deviceNames() {
-        if (VoicechatClient.CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
-            return JavaxMicrophone.getAllMicrophones();
-        } else {
-            return ALMicrophone.getAllMicrophones();
-        }
-    }
 
 }

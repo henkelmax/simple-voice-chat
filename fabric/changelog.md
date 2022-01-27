@@ -1,1 +1,1 @@
-- Updated Chinese translation
+- Added Microphone implementation fallback
