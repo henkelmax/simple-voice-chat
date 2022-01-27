@@ -8,7 +8,7 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
-import de.maxhenkel.voicechat.voice.client.microphone.Microphone;
+import de.maxhenkel.voicechat.voice.client.microphone.MicrophoneManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -116,7 +116,7 @@ public class DebugReport {
     private void appendMics() {
         addLine("Input Devices");
         addLine("");
-        Microphone.deviceNames().forEach(this::addLine);
+        MicrophoneManager.deviceNames().forEach(this::addLine);
         addLine("");
     }
 
