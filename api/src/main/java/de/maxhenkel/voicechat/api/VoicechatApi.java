@@ -59,6 +59,14 @@ public interface VoicechatApi {
     ServerLevel fromServerLevel(Object serverLevel);
 
     /**
+     * Creates a player object from an actual player.
+     *
+     * @param serverPlayer the player implementation of your mod/plugin loader
+     * @return the player
+     */
+    ServerPlayer fromServerPlayer(Object serverPlayer);
+
+    /**
      * Creates a new position object.
      *
      * @param x the X position
