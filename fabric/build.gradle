@@ -12,6 +12,7 @@ buildscript {
 plugins {
     id 'fabric-loom' version '0.10-SNAPSHOT'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id "com.modrinth.minotaur" version "1.2.1"
     id 'com.github.johnrengelman.shadow' version '7.1.0'
 }
 
@@ -141,7 +142,7 @@ curseforge {
         id = curse_id
         changelogType = 'markdown'
         changelog = file("changelog.md")
-        releaseType = curse_release_type
+        releaseType = release_type
         addGameVersion curseforge_minecraft_version
         addGameVersion 'Fabric'
         addGameVersion "Java ${java_version}"
@@ -163,6 +164,25 @@ curseforge {
     }
 }
 
+import com.modrinth.minotaur.TaskModrinthUpload
+
+task publishModrinth(type: TaskModrinthUpload) {
+    group = 'upload'
+    token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
+    projectId = modrinth_id
+    versionNumber = "fabric-${mod_version}"
+    versionName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
+    uploadFile = file("${buildDir}/libs/${archivesBaseName}-${version}.jar")
+    versionType = release_type.toUpperCase()
+    changelog = file("changelog.md").text
+    addGameVersion(minecraft_version)
+    addLoader('fabric')
+//    addDependency('mOgUt4GM', 'optional') // ModMenu
+//    addDependency('Af0DueBa', 'optional') // SoundPhysics
+}
+
+tasks.publishModrinth.dependsOn(build)
+
 forgeUpdate {
     def messages = []
     file("changelog.md").eachLine { String line ->
@@ -178,7 +198,7 @@ forgeUpdate {
     modLoader = 'fabric'
     modVersion = mod_version
     updateMessages = messages
-    releaseType = curse_release_type
+    releaseType = release_type
     tags = recommended == 'true' ? ['recommended'] : []
 }
 
