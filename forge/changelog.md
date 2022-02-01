@@ -1,1 +1,1 @@
-- Updated voice chat API Java version
+- Added force voicechat config option

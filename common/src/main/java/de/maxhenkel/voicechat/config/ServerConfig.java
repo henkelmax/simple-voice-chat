@@ -20,6 +20,8 @@ public abstract class ServerConfig {
     public ConfigEntry<Boolean> allowRecording;
     public ConfigEntry<Boolean> spectatorInteraction;
     public ConfigEntry<Boolean> spectatorPlayerPossession;
+    public ConfigEntry<Boolean> forceVoiceChat;
+    public ConfigEntry<Integer> loginTimeout;
 
     public enum Codec {
         VOIP(Opus.OPUS_APPLICATION_VOIP), AUDIO(Opus.OPUS_APPLICATION_AUDIO), RESTRICTED_LOWDELAY(Opus.OPUS_APPLICATION_RESTRICTED_LOWDELAY);
