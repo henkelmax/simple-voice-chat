@@ -20,6 +20,8 @@ public class FabricServerConfig extends ServerConfig {
         allowRecording = builder.booleanEntry("allow_recording", true);
         spectatorInteraction = builder.booleanEntry("spectator_interaction", false);
         spectatorPlayerPossession = builder.booleanEntry("spectator_player_possession", false);
+        forceVoiceChat = builder.booleanEntry("force_voice_chat", false);
+        loginTimeout = builder.integerEntry("login_timeout", 10_000, 100, Integer.MAX_VALUE);
     }
 
 }
