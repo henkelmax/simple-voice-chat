@@ -8,9 +8,11 @@ import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.Map;
@@ -88,6 +90,26 @@ public class ServerVoiceEvents implements Listener {
 
         NetManager.sendToClient(player, new SecretPacket(player, secret, hasGroupPermission, Voicechat.SERVER_CONFIG));
         Voicechat.LOGGER.info("Sent secret to {}", player.getName());
+    }
+
+    @EventHandler
+    public void playerLoggedIn(PlayerLoginEvent event) {
+        if (!Voicechat.SERVER_CONFIG.forceVoiceChat.get()) {
+            return;
+        }
+        Player player = event.getPlayer();
+
+        Bukkit.getScheduler().runTaskLater(Voicechat.INSTANCE, () -> {
+            if (!player.isOnline()) {
+                return;
+            }
+            if (!isCompatible(player)) {
+                player.kickPlayer("You need %s %s to play on this server".formatted(
+                        Voicechat.INSTANCE.getDescription().getName(),
+                        Voicechat.INSTANCE.getDescription().getVersion()
+                ));
+            }
+        }, Voicechat.SERVER_CONFIG.loginTimeout.get() / 50L);
     }
 
     @EventHandler
