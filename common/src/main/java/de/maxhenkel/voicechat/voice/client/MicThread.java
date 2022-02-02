@@ -228,16 +228,17 @@ public class MicThread extends Thread {
     }
 
     private final AtomicLong sequenceNumber = new AtomicLong();
-    private volatile boolean stopPacketSent;
+    private volatile boolean stopPacketSent = true;
 
     private void sendAudioPacket(short[] data, boolean whispering) {
-        if (PluginManager.instance().onClientSound(data)) {
+        short[] audio = PluginManager.instance().onClientSound(data, whispering);
+        if (audio == null) {
             return;
         }
 
         try {
             if (connection != null && connection.isAuthenticated()) {
-                byte[] encoded = encoder.encode(data);
+                byte[] encoded = encoder.encode(audio);
                 connection.sendToServer(new NetworkMessage(new MicPacket(encoded, whispering, sequenceNumber.getAndIncrement())));
                 stopPacketSent = false;
             }
@@ -246,7 +247,7 @@ public class MicThread extends Thread {
         }
         try {
             if (client != null && client.getRecorder() != null) {
-                client.getRecorder().appendChunk(Minecraft.getInstance().getUser().getGameProfile(), System.currentTimeMillis(), Utils.convertToStereo(data));
+                client.getRecorder().appendChunk(Minecraft.getInstance().getUser().getGameProfile(), System.currentTimeMillis(), Utils.convertToStereo(audio));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -255,10 +256,6 @@ public class MicThread extends Thread {
 
     private void sendStopPacket() {
         if (stopPacketSent) {
-            return;
-        }
-
-        if (PluginManager.instance().onClientSound(new short[0])) {
             return;
         }
 
