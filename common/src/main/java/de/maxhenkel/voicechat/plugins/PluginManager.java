@@ -178,8 +178,14 @@ public class PluginManager {
         return false;
     }
 
-    public boolean onClientSound(short[] rawAudio) {
-        return dispatchEvent(ClientSoundEvent.class, new ClientSoundEventImpl(new VoicechatClientApiImpl(), rawAudio));
+    @Nullable
+    public short[] onClientSound(short[] rawAudio, boolean whispering) {
+        ClientSoundEventImpl clientSoundEvent = new ClientSoundEventImpl(new VoicechatClientApiImpl(), rawAudio, whispering);
+        boolean cancelled = dispatchEvent(ClientSoundEvent.class, clientSoundEvent);
+        if (cancelled) {
+            return null;
+        }
+        return clientSoundEvent.getRawAudio();
     }
 
     private static PluginManager instance;
