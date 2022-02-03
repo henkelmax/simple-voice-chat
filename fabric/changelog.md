@@ -1,1 +1,1 @@
-- Added client audio data override to API
+- Added client state events to API
