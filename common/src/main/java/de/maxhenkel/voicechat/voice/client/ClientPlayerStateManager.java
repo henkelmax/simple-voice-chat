@@ -110,7 +110,7 @@ public class ClientPlayerStateManager {
     public boolean isPlayerDisconnected(Player player) {
         PlayerState playerState = states.get(player.getUUID());
         if (playerState == null) {
-            return true;
+            return VoicechatClient.CLIENT_CONFIG.showFakePlayersDisconnected.get();
         }
 
         return playerState.isDisconnected();
