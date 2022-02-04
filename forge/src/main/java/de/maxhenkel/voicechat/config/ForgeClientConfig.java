@@ -150,6 +150,10 @@ public class ForgeClientConfig extends ClientConfig {
                 .comment("If the microphone workaround hack should be used (MacOS only)")
                 .define("macos_microphone_workaround", Platform.isMac())
         );
+        showFakePlayersDisconnected = wrapConfigEntry(builder
+                .comment("If fake players should have the disconnected icon above their head")
+                .define("show_fake_players_disconnected", false)
+        );
     }
 
 }

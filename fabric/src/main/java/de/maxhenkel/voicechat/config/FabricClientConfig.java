@@ -36,6 +36,7 @@ public class FabricClientConfig extends ClientConfig {
         runLocalServer = builder.booleanEntry("run_local_server", true);
         javaMicrophoneImplementation = builder.booleanEntry("java_microphone_implementation", Platform.isMac());
         macosMicrophoneWorkaround = builder.booleanEntry("macos_microphone_workaround", true);
+        showFakePlayersDisconnected = builder.booleanEntry("show_fake_players_disconnected", false);
     }
 
 }

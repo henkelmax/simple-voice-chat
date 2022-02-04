@@ -1,1 +1,1 @@
-- Added client state events to API
+- Hide fake players disconnected icon by default
