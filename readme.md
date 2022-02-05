@@ -8,6 +8,8 @@
 |
 [Spigot](https://www.spigotmc.org/resources/simple-voice-chat.93738/)
 |
+[Modrinth](https://modrinth.com/mod/simple-voice-chat)
+|
 [Discord](https://discord.gg/4dH2zwTmyX)
 |
 [Wiki](https://modrepo.de/minecraft/voicechat/wiki)
