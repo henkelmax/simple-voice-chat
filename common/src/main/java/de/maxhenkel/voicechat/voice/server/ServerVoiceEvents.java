@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.SecretPacket;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -96,9 +97,15 @@ public class ServerVoiceEvents {
             return;
         }
         server.getPlayerStateManager().onPlayerCompatibilityCheckSucceeded(player);
+
+        if (!PermissionManager.INSTANCE.CONNECT_PERMISSION.hasPermission(player)) {
+            Voicechat.LOGGER.info("Player {} has no permission to connect to the voice chat", player.getDisplayName().getString());
+            return;
+        }
+
         UUID secret = server.getSecret(player.getUUID());
         NetManager.sendToClient(player, new SecretPacket(player, secret, server.getPort(), Voicechat.SERVER_CONFIG));
-        Voicechat.LOGGER.info("Sent secret to " + player.getDisplayName().getString());
+        Voicechat.LOGGER.info("Sent secret to {}", player.getDisplayName().getString());
     }
 
     public void playerLoggedIn(ServerPlayer serverPlayer) {

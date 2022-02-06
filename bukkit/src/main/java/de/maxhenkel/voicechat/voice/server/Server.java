@@ -4,10 +4,12 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.RawUdpPacket;
 import de.maxhenkel.voicechat.api.VoicechatSocket;
 import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
-import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
+import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.*;
+import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -181,9 +183,10 @@ public class Server extends Thread {
                         if (player == null) {
                             continue;
                         }
-                        if (!player.hasPermission(VoiceChatCommands.SPEAK_PERMISSION)) {
+                        if (!player.hasPermission(PermissionManager.SPEAK_PERMISSION)) {
                             CooldownTimer.run("muted-" + playerUUID, () -> {
-                                player.sendMessage(Voicechat.translate("no_speak_permission"));
+                                //TODO change to status bar message
+                                NetManager.sendMessage(player, Component.translatable("message.voicechat.no_speak_permission"));
                             });
                             continue;
                         }

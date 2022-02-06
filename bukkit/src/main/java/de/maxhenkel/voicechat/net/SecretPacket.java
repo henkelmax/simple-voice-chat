@@ -31,7 +31,7 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     }
 
-    public SecretPacket(Player player, UUID secret, boolean hasGroupPermission, ServerConfig serverConfig) {
+    public SecretPacket(Player player, UUID secret, ServerConfig serverConfig) {
         this.secret = secret;
         this.serverPort = serverConfig.voiceChatPort.get();
         this.playerUUID = player.getUniqueId();
@@ -42,7 +42,7 @@ public class SecretPacket implements Packet<SecretPacket> {
         this.crouchDistanceMultiplier = serverConfig.crouchDistanceMultiplier.get();
         this.whisperDistanceMultiplier = serverConfig.whisperDistanceMultiplier.get();
         this.keepAlive = serverConfig.keepAlive.get();
-        this.groupsEnabled = hasGroupPermission && serverConfig.groupsEnabled.get();
+        this.groupsEnabled = serverConfig.groupsEnabled.get();
         this.voiceHost = PluginManager.instance().getVoiceHost(player, serverConfig.voiceHost.get());
         this.allowRecording = serverConfig.allowRecording.get();
     }

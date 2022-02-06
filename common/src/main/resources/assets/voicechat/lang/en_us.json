@@ -107,6 +107,8 @@
   "message.voicechat.show_group_hud.disabled": "Press to show the group chat HUD",
   "message.voicechat.recording.disabled": "Press to start recording",
   "message.voicechat.recording.enabled": "Press to stop recording",
+  "message.voicechat.no_speak_permission": "You do not have permission to speak",
+  "message.voicechat.no_group_permission": "You do not have permission to join groups",
   "cloth_config.voicechat.settings": "Voice Chat Settings",
   "cloth_config.voicechat.category.other": "Other",
   "cloth_config.voicechat.category.audio": "Audio",

@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.command;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.voice.common.PingPacket;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
@@ -16,8 +17,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -26,32 +25,21 @@ public class VoiceChatCommands implements CommandExecutor {
 
     public static final String VOICECHAT_COMMAND = "voicechat";
 
-    public static Permission CONNECT_PERMISSION = new Permission("voicechat.connect", PermissionDefault.TRUE);
-    public static Permission SPEAK_PERMISSION = new Permission("voicechat.speak", PermissionDefault.TRUE);
-    public static Permission GROUPS_PERMISSION = new Permission("voicechat.groups", PermissionDefault.TRUE);
-    public static Permission ADMIN_PERMISSION = new Permission("voicechat.admin", PermissionDefault.OP);
-
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("help")) {
                 return helpCommand(commandSender, command, label, args);
             } else if (args[0].equalsIgnoreCase("test")) {
-                if (commandSender.hasPermission(ADMIN_PERMISSION)) {
+                if (commandSender.hasPermission(PermissionManager.ADMIN_PERMISSION)) {
                     return testCommand(commandSender, command, label, args);
                 }
             } else if (args[0].equalsIgnoreCase("invite")) {
-                if (commandSender.hasPermission(GROUPS_PERMISSION)) {
-                    return inviteCommand(commandSender, command, label, args);
-                }
+                return inviteCommand(commandSender, command, label, args);
             } else if (args[0].equalsIgnoreCase("join")) {
-                if (commandSender.hasPermission(GROUPS_PERMISSION)) {
-                    return joinCommand(commandSender, command, label, args);
-                }
+                return joinCommand(commandSender, command, label, args);
             } else if (args[0].equalsIgnoreCase("leave")) {
-                if (commandSender.hasPermission(GROUPS_PERMISSION)) {
-                    return leaveCommand(commandSender, command, label, args);
-                }
+                return leaveCommand(commandSender, command, label, args);
             }
         }
         return helpCommand(commandSender, command, label, args);
@@ -212,6 +200,11 @@ public class VoiceChatCommands implements CommandExecutor {
     private static int joinGroup(Player commandSender, UUID groupID, @Nullable String password) {
         if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
             NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.groups_disabled"));
+            return 1;
+        }
+
+        if (!commandSender.hasPermission(PermissionManager.GROUPS_PERMISSION)) {
+            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.no_group_permission"));
             return 1;
         }
 
