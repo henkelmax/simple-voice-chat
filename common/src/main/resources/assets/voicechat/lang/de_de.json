@@ -107,6 +107,8 @@
   "message.voicechat.show_group_hud.disabled": "Klicke um die Gruppenoberfläche anzuzeigen",
   "message.voicechat.recording.enabled": "Klicke um die Aufzeichnung zu beenden",
   "message.voicechat.recording.disabled": "Klicke um die Aufzeichnung zu starten",
+  "message.voicechat.no_speak_permission": "Sie haben keine Berechtigung zu sprechen",
+  "message.voicechat.no_group_permission": "Sie haben keine Berechtigung Gruppen beizutreten",
   "cloth_config.voicechat.settings": "Sprachchat Einstellungen",
   "cloth_config.voicechat.category.other": "Sonstiges",
   "cloth_config.voicechat.category.audio": "Audio",

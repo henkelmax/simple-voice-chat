@@ -5,8 +5,10 @@ import de.maxhenkel.voicechat.api.RawUdpPacket;
 import de.maxhenkel.voicechat.api.VoicechatSocket;
 import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.*;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -179,6 +181,12 @@ public class Server extends Thread {
                     if (message.getPacket() instanceof MicPacket packet) {
                         ServerPlayer player = server.getPlayerList().getPlayer(playerUUID);
                         if (player == null) {
+                            continue;
+                        }
+                        if (!PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player)) {
+                            CooldownTimer.run("muted-" + playerUUID, () -> {
+                                player.displayClientMessage(new TranslatableComponent("message.voicechat.no_speak_permission"), true);
+                            });
                             continue;
                         }
                         PlayerState state = playerStateManager.getState(player.getUUID());

@@ -4,9 +4,11 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.JoinedGroupPacket;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
@@ -27,10 +29,18 @@ public class GroupManager {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
             }
+            if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
+                player.displayClientMessage(new TranslatableComponent("message.voicechat.no_group_permission"), true);
+                return;
+            }
             joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().createGroupChannel.setServerListener((srv, player, handler, packet) -> {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
+                return;
+            }
+            if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
+                player.displayClientMessage(new TranslatableComponent("message.voicechat.no_group_permission"), true);
                 return;
             }
             addGroup(new Group(UUID.randomUUID(), packet.getName(), packet.getPassword()), player);

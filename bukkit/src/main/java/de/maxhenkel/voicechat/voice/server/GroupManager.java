@@ -2,8 +2,10 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.net.*;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -24,11 +26,21 @@ public class GroupManager {
         if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
             return;
         }
+        if (!player.hasPermission(PermissionManager.GROUPS_PERMISSION)) {
+            //TODO change to status bar message
+            NetManager.sendMessage(player, Component.translatable("message.voicechat.no_group_permission"));
+            return;
+        }
         joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
     }
 
     public void onCreateGroupPacket(Player player, CreateGroupPacket packet) {
         if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
+            return;
+        }
+        if (!player.hasPermission(PermissionManager.GROUPS_PERMISSION)) {
+            //TODO change to status bar message
+            NetManager.sendMessage(player, Component.translatable("message.voicechat.no_group_permission"));
             return;
         }
         Group group = new Group(UUID.randomUUID(), packet.getName(), packet.getPassword());
