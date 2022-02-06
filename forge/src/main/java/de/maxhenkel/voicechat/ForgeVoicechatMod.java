@@ -36,6 +36,7 @@ public class ForgeVoicechatMod extends Voicechat {
     public void commonSetup(FMLCommonSetupEvent event) {
         initialize();
         MinecraftForge.EVENT_BUS.register(compatibilityManager);
+        ((ForgePermissionManager) PermissionManager.INSTANCE).registerPermissions();
     }
 
     public void clientSetup(FMLClientSetupEvent event) {
@@ -57,9 +58,7 @@ public class ForgeVoicechatMod extends Voicechat {
 
     @Override
     protected PermissionManager createPermissionManager() {
-        ForgePermissionManager permissionManager = new ForgePermissionManager();
-        MinecraftForge.EVENT_BUS.register(permissionManager);
-        return permissionManager;
+        return new ForgePermissionManager();
     }
 
     public static <T> T registerConfig(ModConfig.Type type, Function<ForgeConfigSpec.Builder, T> consumer) {
