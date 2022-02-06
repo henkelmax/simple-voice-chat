@@ -4,9 +4,10 @@ import de.maxhenkel.voicechat.config.ForgeClientConfig;
 import de.maxhenkel.voicechat.config.ForgeServerConfig;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.ForgeCommonCompatibilityManager;
+import de.maxhenkel.voicechat.permission.ForgePermissionManager;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -37,7 +38,6 @@ public class ForgeVoicechatMod extends Voicechat {
         MinecraftForge.EVENT_BUS.register(compatibilityManager);
     }
 
-    @SubscribeEvent
     public void clientSetup(FMLClientSetupEvent event) {
         new ForgeVoicechatClientMod();
     }
@@ -51,8 +51,15 @@ public class ForgeVoicechatMod extends Voicechat {
     }
 
     @Override
-    public CommonCompatibilityManager createCompatibilityManager() {
+    protected CommonCompatibilityManager createCompatibilityManager() {
         return compatibilityManager;
+    }
+
+    @Override
+    protected PermissionManager createPermissionManager() {
+        ForgePermissionManager permissionManager = new ForgePermissionManager();
+        MinecraftForge.EVENT_BUS.register(permissionManager);
+        return permissionManager;
     }
 
     public static <T> T registerConfig(ModConfig.Type type, Function<ForgeConfigSpec.Builder, T> consumer) {

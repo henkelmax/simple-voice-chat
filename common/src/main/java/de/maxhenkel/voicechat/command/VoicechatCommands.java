@@ -8,6 +8,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.permission.Permission;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.voice.common.PingPacket;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
@@ -37,7 +39,7 @@ public class VoicechatCommands {
         literalBuilder.executes(commandSource -> help(dispatcher, commandSource));
         literalBuilder.then(Commands.literal("help").executes(commandSource -> help(dispatcher, commandSource)));
 
-        literalBuilder.then(Commands.literal("test").requires((commandSource) -> commandSource.hasPermission(2)).then(Commands.argument("target", EntityArgument.player()).executes((commandSource) -> {
+        literalBuilder.then(Commands.literal("test").requires((commandSource) -> checkPermission(commandSource, PermissionManager.INSTANCE.ADMIN_PERMISSION)).then(Commands.argument("target", EntityArgument.player()).executes((commandSource) -> {
             if (checkNoVoicechat(commandSource)) {
                 return 0;
             }
@@ -175,6 +177,11 @@ public class VoicechatCommands {
         }
         ServerPlayer player = source.getPlayerOrException();
 
+        if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
+            source.sendSuccess(new TranslatableComponent("message.voicechat.no_group_permission"), false);
+            return 1;
+        }
+
         Group group = server.getGroupManager().getGroup(groupID);
 
         if (group == null) {
@@ -210,6 +217,14 @@ public class VoicechatCommands {
         } catch (Exception e) {
             commandSource.getSource().sendFailure(new TextComponent("This command can only be executed as a player"));
             return true;
+        }
+    }
+
+    private static boolean checkPermission(CommandSourceStack stack, Permission permission) {
+        try {
+            return permission.hasPermission(stack.getPlayerOrException());
+        } catch (CommandSyntaxException e) {
+            return stack.hasPermission(stack.getServer().getOperatorUserPermissionLevel());
         }
     }
 

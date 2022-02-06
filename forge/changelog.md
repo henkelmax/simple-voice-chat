@@ -1,1 +1,1 @@
-- Hide fake players disconnected icon by default
+- Added voice chat permissions

@@ -1,10 +1,10 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -79,16 +79,14 @@ public class ServerVoiceEvents implements Listener {
             return;
         }
         server.getPlayerStateManager().onPlayerCompatibilityCheckSucceeded(player);
-        if (!player.hasPermission(VoiceChatCommands.CONNECT_PERMISSION)) {
+
+        if (!player.hasPermission(PermissionManager.CONNECT_PERMISSION)) {
             Voicechat.LOGGER.info("Player {} has no permission to connect to the voice chat", player.getName());
             return;
         }
 
         UUID secret = server.getSecret(player.getUniqueId());
-
-        boolean hasGroupPermission = player.hasPermission(VoiceChatCommands.GROUPS_PERMISSION);
-
-        NetManager.sendToClient(player, new SecretPacket(player, secret, hasGroupPermission, Voicechat.SERVER_CONFIG));
+        NetManager.sendToClient(player, new SecretPacket(player, secret, Voicechat.SERVER_CONFIG));
         Voicechat.LOGGER.info("Sent secret to {}", player.getName());
     }
 
@@ -120,7 +118,7 @@ public class ServerVoiceEvents implements Listener {
         }
 
         server.disconnectClient(event.getPlayer().getUniqueId());
-        Voicechat.LOGGER.info("Disconnecting client " + event.getPlayer().getName());
+        Voicechat.LOGGER.info("Disconnecting client {}", event.getPlayer().getName());
     }
 
     public Server getServer() {
