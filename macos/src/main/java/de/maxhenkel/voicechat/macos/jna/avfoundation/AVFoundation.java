@@ -6,7 +6,7 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 
 public interface AVFoundation extends Library {
-    AVFoundation INSTANCE = Native.load("AVFoundation", AVFoundation.class);
+    AVFoundation INSTANCE = Native.loadLibrary("AVFoundation", AVFoundation.class);
 
     // https://developer.apple.com/documentation/objectivec/1418952-objc_getclass?language=objc
     Pointer objc_getClass(String className);

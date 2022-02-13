@@ -21,8 +21,8 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'com.googlecode.plist:dd-plist:1.23'
     shadow 'com.googlecode.plist:dd-plist:1.23'
-    shadow 'net.java.dev.jna:jna:5.8.0'
-    shadow 'net.java.dev.jna:jna-platform:5.8.0'
+    shadow 'net.java.dev.jna:jna:4.4.0'
+    shadow 'net.java.dev.jna:jna-platform:4.4.0'
 
 }
 

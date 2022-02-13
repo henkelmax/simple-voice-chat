@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.macos.jna.foundation;
 
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
-import com.sun.jna.platform.mac.CoreFoundation;
 
 /**
  * A reference to a NSString object, which encapsulates a CFString reference.

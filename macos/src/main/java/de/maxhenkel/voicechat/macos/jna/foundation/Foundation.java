@@ -6,7 +6,7 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 
 public interface Foundation extends Library {
-    Foundation INSTANCE = Native.load("Foundation", Foundation.class);
+    Foundation INSTANCE = Native.loadLibrary("Foundation", Foundation.class);
 
     // void objc_msgSend(*); -> https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend?language=objc
     NativeLong objc_msgSend(NativeLong receiver, Pointer selector);
