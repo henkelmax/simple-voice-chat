@@ -20,7 +20,7 @@ public class PermissionCheck {
             return AVAuthorizationStatus.AUTHORIZED;
         }
 
-        var status = AVCaptureDevice.getAuthorizationStatus(AVMediaTypeAudio);
+        AVAuthorizationStatus status = AVCaptureDevice.getAuthorizationStatus(AVMediaTypeAudio);
         if (requestIfNeeded && status == AVAuthorizationStatus.NOT_DETERMINED) {
             AVCaptureDevice.requestAccessForMediaType(AVMediaTypeAudio);
         }

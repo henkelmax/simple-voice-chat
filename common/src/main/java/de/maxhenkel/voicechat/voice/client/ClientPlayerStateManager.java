@@ -20,11 +20,11 @@ import de.maxhenkel.voicechat.plugins.impl.events.MicrophoneMuteEventImpl;
 import de.maxhenkel.voicechat.plugins.impl.events.VoicechatDisableEventImpl;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -59,7 +59,7 @@ public class ClientPlayerStateManager {
                 if (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
                     Minecraft.getInstance().setScreen(null);
                 }
-                client.player.displayClientMessage(new TranslatableComponent("message.voicechat.wrong_password").withStyle(ChatFormatting.DARK_RED), true);
+                client.player.displayClientMessage(new TranslationTextComponent("message.voicechat.wrong_password").withStyle(TextFormatting.DARK_RED), true);
             } else if (group != null && screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
                 Minecraft.getInstance().setScreen(new GroupScreen(group));
             }
@@ -98,7 +98,7 @@ public class ClientPlayerStateManager {
         resetOwnState();
     }
 
-    public boolean isPlayerDisabled(Player player) {
+    public boolean isPlayerDisabled(PlayerEntity player) {
         PlayerState playerState = states.get(player.getUUID());
         if (playerState == null) {
             return false;
@@ -107,7 +107,7 @@ public class ClientPlayerStateManager {
         return playerState.isDisabled();
     }
 
-    public boolean isPlayerDisconnected(Player player) {
+    public boolean isPlayerDisconnected(PlayerEntity player) {
         PlayerState playerState = states.get(player.getUUID());
         if (playerState == null) {
             return VoicechatClient.CLIENT_CONFIG.showFakePlayersDisconnected.get();
@@ -159,7 +159,7 @@ public class ClientPlayerStateManager {
         return getGroup() != null;
     }
 
-    public boolean isInGroup(Player player) {
+    public boolean isInGroup(PlayerEntity player) {
         PlayerState state = states.get(player.getUUID());
         if (state == null) {
             return false;
@@ -168,7 +168,7 @@ public class ClientPlayerStateManager {
     }
 
     @Nullable
-    public ClientGroup getGroup(Player player) {
+    public ClientGroup getGroup(PlayerEntity player) {
         PlayerState state = states.get(player.getUUID());
         if (state == null) {
             return null;

@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.permission;
 
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -14,14 +14,20 @@ public class ForgePermission implements Permission {
         this.node = node;
         this.type = type;
         switch (type) {
-            case NOONE -> level = DefaultPermissionLevel.NONE;
-            case EVERYONE -> level = DefaultPermissionLevel.ALL;
-            case OPS -> level = DefaultPermissionLevel.OP;
+            case NOONE:
+                level = DefaultPermissionLevel.NONE;
+                break;
+            case EVERYONE:
+                level = DefaultPermissionLevel.ALL;
+                break;
+            case OPS:
+                level = DefaultPermissionLevel.OP;
+                break;
         }
     }
 
     @Override
-    public boolean hasPermission(ServerPlayer player) {
+    public boolean hasPermission(ServerPlayerEntity player) {
         return PermissionAPI.hasPermission(player, node);
     }
 

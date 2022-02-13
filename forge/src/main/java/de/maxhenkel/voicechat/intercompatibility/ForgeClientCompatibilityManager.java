@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import de.maxhenkel.voicechat.audio.ForgeALSpeaker;
 import de.maxhenkel.voicechat.audio.ForgeSoundManager;
 import de.maxhenkel.voicechat.events.VoiceChatConnectedEvent;
@@ -9,11 +8,12 @@ import de.maxhenkel.voicechat.voice.client.ALSpeaker;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.client.SpeakerException;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.Connection;
-import net.minecraft.server.packs.repository.PackRepository;
-import net.minecraft.server.packs.repository.RepositorySource;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.resources.IPackFinder;
+import net.minecraft.resources.ResourcePackList;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -22,7 +22,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fmlclient.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nullable;
 import java.net.SocketAddress;
@@ -130,7 +130,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @Override
-    public InputConstants.Key getBoundKeyOf(KeyMapping keyBinding) {
+    public InputMappings.Input getBoundKeyOf(KeyBinding keyBinding) {
         return keyBinding.getKey();
     }
 
@@ -140,7 +140,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @Override
-    public KeyMapping registerKeyBinding(KeyMapping keyBinding) {
+    public KeyBinding registerKeyBinding(KeyBinding keyBinding) {
         ClientRegistry.registerKeyBinding(keyBinding);
         return keyBinding;
     }
@@ -183,12 +183,12 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @Override
-    public SocketAddress getSocketAddress(Connection connection) {
+    public SocketAddress getSocketAddress(NetworkManager connection) {
         return connection.channel().remoteAddress();
     }
 
     @Override
-    public void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource) {
+    public void addResourcePackSource(ResourcePackList packRepository, IPackFinder repositorySource) {
         packRepository.addPackFinder(repositorySource);
     }
 

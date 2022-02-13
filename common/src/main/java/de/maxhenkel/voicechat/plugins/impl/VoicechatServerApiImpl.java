@@ -19,7 +19,9 @@ import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import de.maxhenkel.voicechat.voice.server.ServerWorldUtils;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -38,21 +40,24 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
 
     @Override
     public void sendEntitySoundPacketTo(VoicechatConnection connection, EntitySoundPacket p) {
-        if (p instanceof EntitySoundPacketImpl packet) {
+        if (p instanceof EntitySoundPacketImpl) {
+            EntitySoundPacketImpl packet = (EntitySoundPacketImpl) p;
             sendPacket(connection, packet.getPacket());
         }
     }
 
     @Override
     public void sendLocationalSoundPacketTo(VoicechatConnection connection, LocationalSoundPacket p) {
-        if (p instanceof LocationalSoundPacketImpl packet) {
+        if (p instanceof LocationalSoundPacketImpl) {
+            LocationalSoundPacketImpl packet = (LocationalSoundPacketImpl) p;
             sendPacket(connection, packet.getPacket());
         }
     }
 
     @Override
     public void sendStaticSoundPacketTo(VoicechatConnection connection, StaticSoundPacket p) {
-        if (p instanceof StaticSoundPacketImpl packet) {
+        if (p instanceof StaticSoundPacketImpl) {
+            StaticSoundPacketImpl packet = (StaticSoundPacketImpl) p;
             sendPacket(connection, packet.getPacket());
         }
     }
@@ -74,7 +79,8 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (server == null) {
             return null;
         }
-        if (initialPosition instanceof PositionImpl p) {
+        if (initialPosition instanceof PositionImpl) {
+            PositionImpl p = (PositionImpl) initialPosition;
             return new LocationalAudioChannelImpl(channelId, server, level, p);
         } else {
             throw new IllegalArgumentException("initialPosition is not an instance of PositionImpl");
@@ -88,7 +94,8 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (server == null) {
             return null;
         }
-        if (connection instanceof VoicechatConnectionImpl conn) {
+        if (connection instanceof VoicechatConnectionImpl) {
+            VoicechatConnectionImpl conn = (VoicechatConnectionImpl) connection;
             return new StaticAudioChannelImpl(channelId, server, conn);
         }
         return null;
@@ -113,7 +120,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (state == null) {
             return;
         }
-        if (PluginManager.instance().onSoundPacket(null, null, (net.minecraft.server.level.ServerPlayer) receiver.getPlayer().getPlayer(), state, s, SoundPacketEvent.SOURCE_PLUGIN)) {
+        if (PluginManager.instance().onSoundPacket(null, null, (ServerPlayerEntity) receiver.getPlayer().getPlayer(), state, s, SoundPacketEvent.SOURCE_PLUGIN)) {
             return;
         }
         ClientConnection c = server.getConnections().get(receiver.getPlayer().getUuid());
@@ -127,7 +134,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
     @Nullable
     @Override
     public VoicechatConnection getConnectionOf(UUID playerUuid) {
-        net.minecraft.server.level.ServerPlayer player = server.getPlayerList().getPlayer(playerUuid);
+        ServerPlayerEntity player = server.getPlayerList().getPlayer(playerUuid);
         if (player == null) {
             return null;
         }
@@ -151,8 +158,9 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
 
     @Override
     public Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Position pos, double range, Predicate<ServerPlayer> filter) {
-        if (pos instanceof PositionImpl p) {
-            return ServerWorldUtils.getPlayersInRange((net.minecraft.server.level.ServerLevel) level.getServerLevel(), p.getPosition(), range, player -> filter.test(new ServerPlayerImpl(player))).stream().map(ServerPlayerImpl::new).collect(Collectors.toList());
+        if (pos instanceof PositionImpl) {
+            PositionImpl p = (PositionImpl) pos;
+            return ServerWorldUtils.getPlayersInRange((ServerWorld) level.getServerLevel(), p.getPosition(), range, player -> filter.test(new ServerPlayerImpl(player))).stream().map(ServerPlayerImpl::new).collect(Collectors.toList());
         } else {
             throw new IllegalArgumentException("Position is not an instance of PositionImpl");
         }

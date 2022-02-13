@@ -11,15 +11,15 @@ import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import io.netty.channel.local.LocalAddress;
-import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.ComponentUtils;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.network.play.ClientPlayNetHandler;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponentUtils;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.event.HoverEvent;
 
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
@@ -68,11 +68,12 @@ public class ClientManager {
         if (client.getConnection() != null) {
             ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
         }
-        ClientPacketListener connection = minecraft.getConnection();
+        ClientPlayNetHandler connection = minecraft.getConnection();
         if (connection != null) {
             try {
                 SocketAddress socketAddress = ClientCompatibilityManager.INSTANCE.getSocketAddress(connection.getConnection());
-                if (socketAddress instanceof InetSocketAddress address) {
+                if (socketAddress instanceof InetSocketAddress) {
+                    InetSocketAddress address = (InetSocketAddress) socketAddress;
                     client.connect(new InitializationData(address.getHostString(), secretPacket));
                 } else if (socketAddress instanceof LocalAddress) {
                     client.connect(new InitializationData("127.0.0.1", secretPacket));
@@ -96,18 +97,18 @@ public class ClientManager {
     }
 
     public static void sendPlayerError(String translationKey, @Nullable Exception e) {
-        LocalPlayer player = Minecraft.getInstance().player;
+        ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
         player.sendMessage(
-                ComponentUtils.wrapInSquareBrackets(new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()))
-                        .withStyle(ChatFormatting.GREEN)
+                TextComponentUtils.wrapInSquareBrackets(new StringTextComponent(CommonCompatibilityManager.INSTANCE.getModName()))
+                        .withStyle(TextFormatting.GREEN)
                         .append(" ")
-                        .append(new TranslatableComponent(translationKey).withStyle(ChatFormatting.RED))
+                        .append(new TranslationTextComponent(translationKey).withStyle(TextFormatting.RED))
                         .withStyle(style -> {
                             if (e != null) {
-                                return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED)));
+                                return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(e.getMessage()).withStyle(TextFormatting.RED)));
                             }
                             return style;
                         })

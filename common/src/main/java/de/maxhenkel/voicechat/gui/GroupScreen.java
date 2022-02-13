@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.tooltips.DisableTooltipSupplier;
@@ -17,10 +16,9 @@ import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.GroupChatManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Collections;
 
@@ -40,7 +38,7 @@ public class GroupScreen extends VoiceChatScreenBase {
     private ImageButton leave;
 
     public GroupScreen(ClientGroup group) {
-        super(new TranslatableComponent("gui.voicechat.group.title"), 195, 222);
+        super(new TranslationTextComponent("gui.voicechat.group.title"), 195, 222);
         this.group = group;
     }
 
@@ -48,7 +46,8 @@ public class GroupScreen extends VoiceChatScreenBase {
     protected void init() {
         super.init();
         hoverAreas.clear();
-        clearWidgets();
+        buttons.clear();
+        children.clear();
 
         ClientPlayerStateManager stateManager = ClientManager.getPlayerStateManager();
 
@@ -57,25 +56,25 @@ public class GroupScreen extends VoiceChatScreenBase {
         mute = new ToggleImageButton(guiLeft + 8, guiTop + 196, MICROPHONE, stateManager::isMuted, button -> {
             stateManager.setMuted(!stateManager.isMuted());
         }, new MuteTooltipSupplier(this, stateManager));
-        addRenderableWidget(mute);
+        addButton(mute);
 
         disable = new ToggleImageButton(guiLeft + 31, guiTop + 196, SPEAKER, stateManager::isDisabled, button -> {
             stateManager.setDisabled(!stateManager.isDisabled());
         }, new DisableTooltipSupplier(this, stateManager));
-        addRenderableWidget(disable);
+        addButton(disable);
 
         showHUD = new ToggleImageButton(guiLeft + 54, guiTop + 196, GROUP_HUD, VoicechatClient.CLIENT_CONFIG.showGroupHUD::get, button -> {
             VoicechatClient.CLIENT_CONFIG.showGroupHUD.set(!VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()).save();
         }, new HideGroupHudTooltipSupplier(this));
-        addRenderableWidget(showHUD);
+        addButton(showHUD);
 
         leave = new ImageButton(guiLeft + 168, guiTop + 196, LEAVE, button -> {
             NetManager.sendToServer(new LeaveGroupPacket());
             minecraft.setScreen(new JoinGroupScreen());
         }, (button, matrices, mouseX, mouseY) -> {
-            renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.leave_group").getVisualOrderText()), mouseX, mouseY);
+            renderTooltip(matrices, Collections.singletonList(new TranslationTextComponent("message.voicechat.leave_group").getVisualOrderText()), mouseX, mouseY);
         });
-        addRenderableWidget(leave);
+        addButton(leave);
 
         checkButtons();
     }
@@ -92,20 +91,18 @@ public class GroupScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void renderBackground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, TEXTURE);
+    public void renderBackground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
+        minecraft.getTextureManager().bind(TEXTURE);
         blit(poseStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
     }
 
     @Override
-    public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+    public void renderForeground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
         playerList.drawGuiContainerBackgroundLayer(poseStack, delta, mouseX, mouseY);
 
         playerList.drawGuiContainerForegroundLayer(poseStack, mouseX, mouseY);
 
-        font.draw(poseStack, new TextComponent(group.getName()), guiLeft + 8, guiTop + 5, FONT_COLOR);
+        font.draw(poseStack, new StringTextComponent(group.getName()), guiLeft + 8, guiTop + 5, FONT_COLOR);
     }
 
     @Override

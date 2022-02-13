@@ -1,11 +1,11 @@
 package de.maxhenkel.voicechat.gui.tooltips;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,15 +21,15 @@ public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
     }
 
     @Override
-    public void onTooltip(ImageButton button, PoseStack matrices, int mouseX, int mouseY) {
-        List<FormattedCharSequence> tooltip = new ArrayList<>();
+    public void onTooltip(ImageButton button, MatrixStack matrices, int mouseX, int mouseY) {
+        List<IReorderingProcessor> tooltip = new ArrayList<>();
 
         if (!stateManager.canEnable()) {
-            tooltip.add(new TranslatableComponent("message.voicechat.disable.no_speaker").getVisualOrderText());
+            tooltip.add(new TranslationTextComponent("message.voicechat.disable.no_speaker").getVisualOrderText());
         } else if (stateManager.isDisabled()) {
-            tooltip.add(new TranslatableComponent("message.voicechat.disable.enabled").getVisualOrderText());
+            tooltip.add(new TranslationTextComponent("message.voicechat.disable.enabled").getVisualOrderText());
         } else {
-            tooltip.add(new TranslatableComponent("message.voicechat.disable.disabled").getVisualOrderText());
+            tooltip.add(new TranslationTextComponent("message.voicechat.disable.disabled").getVisualOrderText());
         }
 
         screen.renderTooltip(matrices, tooltip, mouseX, mouseY);

@@ -2,8 +2,8 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
@@ -39,7 +39,7 @@ public class JoinedGroupPacket implements Packet<JoinedGroupPacket> {
     }
 
     @Override
-    public JoinedGroupPacket fromBytes(FriendlyByteBuf buf) {
+    public JoinedGroupPacket fromBytes(PacketBuffer buf) {
         if (buf.readBoolean()) {
             group = ClientGroup.fromBytes(buf);
         }
@@ -48,7 +48,7 @@ public class JoinedGroupPacket implements Packet<JoinedGroupPacket> {
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeBoolean(group != null);
         if (group != null) {
             group.toBytes(buf);

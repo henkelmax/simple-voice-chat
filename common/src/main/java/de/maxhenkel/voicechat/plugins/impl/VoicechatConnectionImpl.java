@@ -6,18 +6,19 @@ import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.Server;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
 import javax.annotation.Nullable;
 
 public class VoicechatConnectionImpl implements VoicechatConnection {
 
     private final ServerPlayer player;
-    private final net.minecraft.server.level.ServerPlayer serverPlayer;
+    private final ServerPlayerEntity serverPlayer;
     private final PlayerState state;
     @Nullable
     private final Group group;
 
-    public VoicechatConnectionImpl(net.minecraft.server.level.ServerPlayer player, PlayerState state) {
+    public VoicechatConnectionImpl(ServerPlayerEntity player, PlayerState state) {
         this.serverPlayer = player;
         this.player = new ServerPlayerImpl(player);
         this.state = state;
@@ -25,7 +26,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
     }
 
     @Nullable
-    public static VoicechatConnectionImpl fromPlayer(net.minecraft.server.level.ServerPlayer player) {
+    public static VoicechatConnectionImpl fromPlayer(ServerPlayerEntity player) {
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
             return null;
@@ -58,7 +59,8 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
             server.getGroupManager().joinGroup(null, serverPlayer, null);
             return;
         }
-        if (group instanceof GroupImpl g) {
+        if (group instanceof GroupImpl) {
+            GroupImpl g = (GroupImpl) group;
             de.maxhenkel.voicechat.voice.server.Group actualGroup = server.getGroupManager().getGroup(g.getGroup().getId());
             if (actualGroup == null) {
                 server.getGroupManager().addGroup(g.getGroup(), serverPlayer);

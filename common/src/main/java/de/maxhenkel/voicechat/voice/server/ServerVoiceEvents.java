@@ -7,14 +7,14 @@ import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
-import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -48,21 +48,21 @@ public class ServerVoiceEvents {
         });
     }
 
-    public Component getIncompatibleMessage(int clientCompatibilityVersion) {
+    public ITextComponent getIncompatibleMessage(int clientCompatibilityVersion) {
         if (clientCompatibilityVersion <= 6) {
-            return new TextComponent("Your voice chat version is not compatible with the servers version.\nPlease install version ")
-                    .append(new TextComponent(CommonCompatibilityManager.INSTANCE.getModVersion()).withStyle(ChatFormatting.BOLD))
+            return new StringTextComponent("Your voice chat version is not compatible with the servers version.\nPlease install version ")
+                    .append(new StringTextComponent(CommonCompatibilityManager.INSTANCE.getModVersion()).withStyle(TextFormatting.BOLD))
                     .append(" of ")
-                    .append(new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()).withStyle(ChatFormatting.BOLD))
+                    .append(new StringTextComponent(CommonCompatibilityManager.INSTANCE.getModName()).withStyle(TextFormatting.BOLD))
                     .append(".");
         } else {
-            return new TranslatableComponent("message.voicechat.incompatible_version",
-                    new TextComponent(CommonCompatibilityManager.INSTANCE.getModVersion()).withStyle(ChatFormatting.BOLD),
-                    new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()).withStyle(ChatFormatting.BOLD));
+            return new TranslationTextComponent("message.voicechat.incompatible_version",
+                    new StringTextComponent(CommonCompatibilityManager.INSTANCE.getModVersion()).withStyle(TextFormatting.BOLD),
+                    new StringTextComponent(CommonCompatibilityManager.INSTANCE.getModName()).withStyle(TextFormatting.BOLD));
         }
     }
 
-    public boolean isCompatible(ServerPlayer player) {
+    public boolean isCompatible(ServerPlayerEntity player) {
         return clientCompatibilities.getOrDefault(player.getUUID(), -1) == Voicechat.COMPATIBILITY_VERSION;
     }
 
@@ -92,7 +92,7 @@ public class ServerVoiceEvents {
         }
     }
 
-    public void initializePlayerConnection(ServerPlayer player) {
+    public void initializePlayerConnection(ServerPlayerEntity player) {
         if (server == null) {
             return;
         }
@@ -108,12 +108,12 @@ public class ServerVoiceEvents {
         Voicechat.LOGGER.info("Sent secret to {}", player.getDisplayName().getString());
     }
 
-    public void playerLoggedIn(ServerPlayer serverPlayer) {
+    public void playerLoggedIn(ServerPlayerEntity serverPlayer) {
         if (!Voicechat.SERVER_CONFIG.forceVoiceChat.get()) {
             return;
         }
 
-        Timer timer = new Timer("%s-login-timer".formatted(serverPlayer.getGameProfile().getName()), true);
+        Timer timer = new Timer(serverPlayer.getGameProfile().getName() + "%s-login-timer", true);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -128,10 +128,7 @@ public class ServerVoiceEvents {
                 if (!isCompatible(serverPlayer)) {
                     serverPlayer.server.execute(() -> {
                         serverPlayer.connection.disconnect(
-                                new TextComponent("You need %s %s to play on this server".formatted(
-                                        CommonCompatibilityManager.INSTANCE.getModName(),
-                                        CommonCompatibilityManager.INSTANCE.getModVersion()
-                                ))
+                                new StringTextComponent("You need " + CommonCompatibilityManager.INSTANCE.getModName() + " " + CommonCompatibilityManager.INSTANCE.getModVersion() + " to play on this server")
                         );
                     });
                 }
@@ -139,7 +136,7 @@ public class ServerVoiceEvents {
         }, Voicechat.SERVER_CONFIG.loginTimeout.get());
     }
 
-    public void playerLoggedOut(ServerPlayer player) {
+    public void playerLoggedOut(ServerPlayerEntity player) {
         clientCompatibilities.remove(player.getUUID());
         if (server == null) {
             return;

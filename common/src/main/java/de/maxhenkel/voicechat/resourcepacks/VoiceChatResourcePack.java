@@ -3,9 +3,9 @@ package de.maxhenkel.voicechat.resourcepacks;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import de.maxhenkel.voicechat.Voicechat;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.AbstractPackResources;
-import net.minecraft.server.packs.PackType;
+import net.minecraft.resources.ResourcePack;
+import net.minecraft.resources.ResourcePackType;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class VoiceChatResourcePack extends AbstractPackResources {
+public class VoiceChatResourcePack extends ResourcePack {
 
     protected String path;
     protected String name;
@@ -65,7 +65,7 @@ public class VoiceChatResourcePack extends AbstractPackResources {
     }
 
     @Override
-    public Collection<ResourceLocation> getResources(PackType type, String namespace, String prefix, int maxDepth, Predicate<String> pathFilter) {
+    public Collection<ResourceLocation> getResources(ResourcePackType type, String namespace, String prefix, int maxDepth, Predicate<String> pathFilter) {
         try {
             URL url = Voicechat.class.getResource(getPath());
             Path resPath = Paths.get(url.toURI());
@@ -96,8 +96,8 @@ public class VoiceChatResourcePack extends AbstractPackResources {
     }
 
     @Override
-    public Set<String> getNamespaces(PackType packType) {
-        if (packType == PackType.CLIENT_RESOURCES) {
+    public Set<String> getNamespaces(ResourcePackType packType) {
+        if (packType == ResourcePackType.CLIENT_RESOURCES) {
             return ImmutableSet.of(Voicechat.MODID);
         }
         return ImmutableSet.of();

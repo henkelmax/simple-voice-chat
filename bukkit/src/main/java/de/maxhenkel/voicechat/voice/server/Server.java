@@ -155,7 +155,8 @@ public class Server extends Thread {
                         continue;
                     }
 
-                    if (message.getPacket() instanceof AuthenticatePacket packet) {
+                    if (message.getPacket() instanceof AuthenticatePacket) {
+                        AuthenticatePacket packet = (AuthenticatePacket) message.getPacket();
                         UUID secret = secrets.get(packet.getPlayerUUID());
                         if (secret != null && secret.equals(packet.getSecret())) {
                             ClientConnection connection;
@@ -178,7 +179,8 @@ public class Server extends Thread {
 
                     ClientConnection conn = connections.get(playerUUID);
 
-                    if (message.getPacket() instanceof MicPacket packet) {
+                    if (message.getPacket() instanceof MicPacket) {
+                        MicPacket packet = (MicPacket) message.getPacket();
                         Player player = server.getPlayer(playerUUID);
                         if (player == null) {
                             continue;
@@ -197,7 +199,8 @@ public class Server extends Thread {
                         if (!PluginManager.instance().onMicPacket(player, state, packet)) {
                             processMicPacket(player, state, packet);
                         }
-                    } else if (message.getPacket() instanceof PingPacket packet) {
+                    } else if (message.getPacket() instanceof PingPacket) {
+                        PingPacket packet = (PingPacket) message.getPacket();
                         pingManager.onPongPacket(packet);
                     } else if (message.getPacket() instanceof KeepAlivePacket) {
                         conn.setLastKeepAliveResponse(System.currentTimeMillis());
@@ -261,7 +264,8 @@ public class Server extends Thread {
         if (sender.getGameMode().equals(GameMode.SPECTATOR)) {
             if (Voicechat.SERVER_CONFIG.spectatorPlayerPossession.get()) {
                 Entity camera = sender.getSpectatorTarget();
-                if (camera instanceof Player spectatingPlayer) {
+                if (camera instanceof Player) {
+                    Player spectatingPlayer = (Player) camera;
                     if (spectatingPlayer != sender) {
                         PlayerState receiverState = playerStateManager.getState(spectatingPlayer.getUniqueId());
                         ClientConnection connection = connections.get(receiverState.getUuid());

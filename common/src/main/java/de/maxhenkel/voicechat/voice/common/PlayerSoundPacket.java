@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 import java.util.UUID;
 
@@ -26,7 +26,7 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
     }
 
     @Override
-    public PlayerSoundPacket fromBytes(FriendlyByteBuf buf) {
+    public PlayerSoundPacket fromBytes(PacketBuffer buf) {
         PlayerSoundPacket soundPacket = new PlayerSoundPacket();
         soundPacket.sender = buf.readUUID();
         soundPacket.data = buf.readByteArray();
@@ -36,7 +36,7 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeUUID(sender);
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);

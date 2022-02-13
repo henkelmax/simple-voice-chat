@@ -1,22 +1,20 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public class RenderEvents {
 
@@ -37,7 +35,7 @@ public class RenderEvents {
         ClientCompatibilityManager.INSTANCE.onRenderHUD(this::onRenderHUD);
     }
 
-    private void onRenderHUD(PoseStack stack, float tickDelta) {
+    private void onRenderHUD(MatrixStack stack, float tickDelta) {
         if (!shouldShowIcons()) {
             return;
         }
@@ -66,11 +64,9 @@ public class RenderEvents {
         }
     }
 
-    private void renderIcon(PoseStack matrixStack, ResourceLocation texture) {
+    private void renderIcon(MatrixStack matrixStack, ResourceLocation texture) {
         matrixStack.pushPose();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, texture);
+        minecraft.getTextureManager().bind(texture);
         int posX = VoicechatClient.CLIENT_CONFIG.hudIconPosX.get();
         int posY = VoicechatClient.CLIENT_CONFIG.hudIconPosY.get();
         if (posX < 0) {
@@ -87,16 +83,17 @@ public class RenderEvents {
         matrixStack.popPose();
     }
 
-    private void onRenderName(Entity entity, Component component, PoseStack stack, MultiBufferSource vertexConsumers, int light) {
+    private void onRenderName(Entity entity, ITextComponent component, MatrixStack stack, IRenderTypeBuffer vertexConsumers, int light) {
         if (!shouldShowIcons()) {
             return;
         }
         if (VoicechatClient.CLIENT_CONFIG.hideIcons.get()) {
             return;
         }
-        if (!(entity instanceof Player player)) {
+        if (!(entity instanceof PlayerEntity)) {
             return;
         }
+        PlayerEntity player = (PlayerEntity) entity;
         if (entity == minecraft.player) {
             return;
         }
@@ -120,7 +117,7 @@ public class RenderEvents {
         }
     }
 
-    private void renderPlayerIcon(Player player, Component component, ResourceLocation texture, PoseStack matrixStackIn, MultiBufferSource buffer, int light) {
+    private void renderPlayerIcon(PlayerEntity player, ITextComponent component, ResourceLocation texture, MatrixStack matrixStackIn, IRenderTypeBuffer buffer, int light) {
         matrixStackIn.pushPose();
         matrixStackIn.translate(0D, player.getBbHeight() + 0.5D, 0D);
         matrixStackIn.mulPose(minecraft.getEntityRenderDispatcher().cameraOrientation());
@@ -129,7 +126,7 @@ public class RenderEvents {
 
         float offset = (float) (minecraft.font.width(component) / 2 + 2);
 
-        VertexConsumer builder = buffer.getBuffer(RenderType.text(texture));
+        IVertexBuilder builder = buffer.getBuffer(RenderType.text(texture));
         int alpha = 32;
 
         if (player.isDiscrete()) {
@@ -143,7 +140,7 @@ public class RenderEvents {
             vertex(builder, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, light);
             vertex(builder, matrixStackIn, offset, 0F, 0F, 0F, 0F, light);
 
-            VertexConsumer builderSeeThrough = buffer.getBuffer(RenderType.textSeeThrough(texture));
+            IVertexBuilder builderSeeThrough = buffer.getBuffer(RenderType.textSeeThrough(texture));
             vertex(builderSeeThrough, matrixStackIn, offset, 10F, 0F, 0F, 1F, alpha, light);
             vertex(builderSeeThrough, matrixStackIn, offset + 10F, 10F, 0F, 1F, 1F, alpha, light);
             vertex(builderSeeThrough, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, alpha, light);
@@ -160,12 +157,12 @@ public class RenderEvents {
         return minecraft.getCurrentServer() != null && !minecraft.getCurrentServer().isLan();
     }
 
-    private static void vertex(VertexConsumer builder, PoseStack matrixStack, float x, float y, float z, float u, float v, int light) {
+    private static void vertex(IVertexBuilder builder, MatrixStack matrixStack, float x, float y, float z, float u, float v, int light) {
         vertex(builder, matrixStack, x, y, z, u, v, 255, light);
     }
 
-    private static void vertex(VertexConsumer builder, PoseStack matrixStack, float x, float y, float z, float u, float v, int alpha, int light) {
-        PoseStack.Pose entry = matrixStack.last();
+    private static void vertex(IVertexBuilder builder, MatrixStack matrixStack, float x, float y, float z, float u, float v, int alpha, int light) {
+        MatrixStack.Entry entry = matrixStack.last();
         builder.vertex(entry.pose(), x, y, z)
                 .color(255, 255, 255, alpha)
                 .uv(u, v)

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class PingManager {
 
@@ -31,7 +32,7 @@ public class PingManager {
         if (listeners.isEmpty()) {
             return;
         }
-        List<Map.Entry<UUID, Ping>> timedOut = listeners.entrySet().stream().filter(uuidPingEntry -> uuidPingEntry.getValue().isTimedOut()).toList();
+        List<Map.Entry<UUID, Ping>> timedOut = listeners.entrySet().stream().filter(uuidPingEntry -> uuidPingEntry.getValue().isTimedOut()).collect(Collectors.toList());
         for (Map.Entry<UUID, Ping> ping : timedOut) {
             ping.getValue().listener.onTimeout();
             listeners.remove(ping.getKey());

@@ -3,9 +3,9 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.plugins.PluginManager;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
@@ -31,7 +31,7 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     }
 
-    public SecretPacket(ServerPlayer player, UUID secret, int port, ServerConfig serverConfig) {
+    public SecretPacket(ServerPlayerEntity player, UUID secret, int port, ServerConfig serverConfig) {
         this.secret = secret;
         this.serverPort = port;
         this.playerUUID = player.getUUID();
@@ -105,7 +105,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     }
 
     @Override
-    public SecretPacket fromBytes(FriendlyByteBuf buf) {
+    public SecretPacket fromBytes(PacketBuffer buf) {
         secret = buf.readUUID();
         serverPort = buf.readInt();
         playerUUID = buf.readUUID();
@@ -123,7 +123,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeUUID(secret);
         buf.writeInt(serverPort);
         buf.writeUUID(playerUUID);

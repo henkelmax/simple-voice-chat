@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 import java.util.UUID;
 
@@ -27,7 +27,7 @@ public class PingPacket implements Packet<PingPacket> {
     }
 
     @Override
-    public PingPacket fromBytes(FriendlyByteBuf buf) {
+    public PingPacket fromBytes(PacketBuffer buf) {
         PingPacket soundPacket = new PingPacket();
         soundPacket.id = buf.readUUID();
         soundPacket.timestamp = buf.readLong();
@@ -35,7 +35,7 @@ public class PingPacket implements Packet<PingPacket> {
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeUUID(id);
         buf.writeLong(timestamp);
     }

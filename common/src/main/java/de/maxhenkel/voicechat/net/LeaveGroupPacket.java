@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 public class LeaveGroupPacket implements Packet<LeaveGroupPacket> {
 
@@ -18,12 +18,12 @@ public class LeaveGroupPacket implements Packet<LeaveGroupPacket> {
     }
 
     @Override
-    public LeaveGroupPacket fromBytes(FriendlyByteBuf buf) {
+    public LeaveGroupPacket fromBytes(PacketBuffer buf) {
         return this;
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
 
     }
 

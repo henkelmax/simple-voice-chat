@@ -5,10 +5,10 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -146,17 +146,17 @@ public class ClientVoicechat {
         if (recording == (recorder != null)) {
             return;
         }
-        LocalPlayer player = Minecraft.getInstance().player;
+        ClientPlayerEntity player = Minecraft.getInstance().player;
         if (recording) {
             recorder = new AudioRecorder();
             if (player != null) {
-                player.displayClientMessage(new TranslatableComponent("message.voicechat.recording_started").withStyle(ChatFormatting.DARK_RED), true);
+                player.displayClientMessage(new TranslationTextComponent("message.voicechat.recording_started").withStyle(TextFormatting.DARK_RED), true);
             }
         } else {
             AudioRecorder rec = recorder;
             recorder = null;
             if (player != null) {
-                player.displayClientMessage(new TranslatableComponent("message.voicechat.recording_stopped").withStyle(ChatFormatting.DARK_RED), true);
+                player.displayClientMessage(new TranslationTextComponent("message.voicechat.recording_stopped").withStyle(TextFormatting.DARK_RED), true);
             }
             rec.save();
         }

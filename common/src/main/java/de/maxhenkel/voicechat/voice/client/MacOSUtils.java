@@ -36,12 +36,11 @@ public class MacOSUtils {
 
     @Nullable
     private static String getJavaExecutable() {
-        ProcessHandle current = ProcessHandle.current();
         String javaHome = System.getProperty("java.home");
         if (javaHome == null) {
             return null;
         }
-        return current.info().command().orElse(javaHome + File.separator + "bin" + File.separator + "java");
+        return javaHome + File.separator + "bin" + File.separator + "java";
     }
 
     private static Path copyJar() throws IOException {

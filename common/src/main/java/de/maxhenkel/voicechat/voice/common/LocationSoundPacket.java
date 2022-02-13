@@ -1,15 +1,15 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.UUID;
 
 public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
 
-    protected Vec3 location;
+    protected Vector3d location;
 
-    public LocationSoundPacket(UUID sender, Vec3 location, byte[] data, long sequenceNumber) {
+    public LocationSoundPacket(UUID sender, Vector3d location, byte[] data, long sequenceNumber) {
         super(sender, data, sequenceNumber);
         this.location = location;
     }
@@ -18,22 +18,22 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
 
     }
 
-    public Vec3 getLocation() {
+    public Vector3d getLocation() {
         return location;
     }
 
     @Override
-    public LocationSoundPacket fromBytes(FriendlyByteBuf buf) {
+    public LocationSoundPacket fromBytes(PacketBuffer buf) {
         LocationSoundPacket soundPacket = new LocationSoundPacket();
         soundPacket.sender = buf.readUUID();
-        soundPacket.location = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
+        soundPacket.location = new Vector3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
         return soundPacket;
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeUUID(sender);
         buf.writeDouble(location.x);
         buf.writeDouble(location.y);

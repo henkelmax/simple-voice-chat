@@ -7,9 +7,9 @@ import java.util.UUID;
 
 public class EntityImpl implements Entity {
 
-    protected net.minecraft.world.entity.Entity entity;
+    protected net.minecraft.entity.Entity entity;
 
-    public EntityImpl(net.minecraft.world.entity.Entity entity) {
+    public EntityImpl(net.minecraft.entity.Entity entity) {
         this.entity = entity;
     }
 
@@ -28,7 +28,7 @@ public class EntityImpl implements Entity {
         return new PositionImpl(entity.position());
     }
 
-    public net.minecraft.world.entity.Entity getRealEntity() {
+    public net.minecraft.entity.Entity getRealEntity() {
         return entity;
     }
 

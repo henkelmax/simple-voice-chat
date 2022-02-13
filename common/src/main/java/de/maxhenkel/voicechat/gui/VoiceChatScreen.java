@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.tooltips.DisableTooltipSupplier;
@@ -11,13 +10,12 @@ import de.maxhenkel.voicechat.gui.tooltips.RecordingTooltipSupplier;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.*;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 
@@ -36,7 +34,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     private ClientPlayerStateManager stateManager;
 
     public VoiceChatScreen() {
-        super(new TranslatableComponent("gui.voicechat.voice_chat.title"), 195, 76);
+        super(new TranslationTextComponent("gui.voicechat.voice_chat.title"), 195, 76);
         stateManager = ClientManager.getPlayerStateManager();
     }
 
@@ -48,38 +46,38 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         mute = new ToggleImageButton(guiLeft + 6, guiTop + ySize - 6 - 20, MICROPHONE, stateManager::isMuted, button -> {
             stateManager.setMuted(!stateManager.isMuted());
         }, new MuteTooltipSupplier(this, stateManager));
-        addRenderableWidget(mute);
+        addButton(mute);
 
         disable = new ToggleImageButton(guiLeft + 6 + 20 + 2, guiTop + ySize - 6 - 20, SPEAKER, stateManager::isDisabled, button -> {
             stateManager.setDisabled(!stateManager.isDisabled());
         }, new DisableTooltipSupplier(this, stateManager));
-        addRenderableWidget(disable);
+        addButton(disable);
 
         if (client != null) {
             if (client.getRecorder() != null || (client.getConnection() != null && client.getConnection().getData().allowRecording())) {
                 ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> ClientManager.getClient() != null && ClientManager.getClient().getRecorder() != null, button -> toggleRecording(), new RecordingTooltipSupplier(this));
-                addRenderableWidget(record);
+                addButton(record);
             }
         }
 
         ToggleImageButton hide = new ToggleImageButton(guiLeft + xSize - 6 - 20, guiTop + ySize - 6 - 20, HIDE, VoicechatClient.CLIENT_CONFIG.hideIcons::get, button -> {
             VoicechatClient.CLIENT_CONFIG.hideIcons.set(!VoicechatClient.CLIENT_CONFIG.hideIcons.get()).save();
         }, new HideTooltipSupplier(this));
-        addRenderableWidget(hide);
+        addButton(hide);
 
-        Button settings = new Button(guiLeft + 6, guiTop + 6 + 15, 75, 20, new TranslatableComponent("message.voicechat.settings"), button -> {
+        Button settings = new Button(guiLeft + 6, guiTop + 6 + 15, 75, 20, new TranslationTextComponent("message.voicechat.settings"), button -> {
             minecraft.setScreen(new VoiceChatSettingsScreen());
         });
-        addRenderableWidget(settings);
+        addButton(settings);
 
-        Button group = new Button(guiLeft + xSize - 6 - 75 + 1, guiTop + 6 + 15, 75, 20, new TranslatableComponent("message.voicechat.group"), button -> {
+        Button group = new Button(guiLeft + xSize - 6 - 75 + 1, guiTop + 6 + 15, 75, 20, new TranslationTextComponent("message.voicechat.group"), button -> {
             if (stateManager.isInGroup()) {
                 minecraft.setScreen(new GroupScreen(stateManager.getGroup()));
             } else {
                 minecraft.setScreen(new JoinGroupScreen());
             }
         });
-        addRenderableWidget(group);
+        addButton(group);
 
         group.active = client != null && client.getConnection() != null && client.getConnection().getData().groupsEnabled();
         recordingHoverArea = new HoverArea(6 + 20 + 2 + 20 + 2, ySize - 6 - 20, xSize - (6 + 20 + 2 + 20 + 2) * 2, 20);
@@ -116,27 +114,25 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void renderBackground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, TEXTURE);
+    public void renderBackground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
+        minecraft.getTextureManager().bind(TEXTURE);
         blit(poseStack, guiLeft, guiTop, 0, 0, xSize, ySize);
     }
 
     @Override
-    public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        Component title = new TranslatableComponent("gui.voicechat.voice_chat.title");
+    public void renderForeground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
+        ITextComponent title = new TranslationTextComponent("gui.voicechat.voice_chat.title");
         int titleWidth = font.width(title);
         font.draw(poseStack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
 
         ClientVoicechat client = ClientManager.getClient();
         if (client != null && client.getRecorder() != null) {
             AudioRecorder recorder = client.getRecorder();
-            TextComponent time = new TextComponent(recorder.getDuration());
-            font.draw(poseStack, time.withStyle(ChatFormatting.DARK_RED), (float) (guiLeft + (xSize - font.width(time)) / 2), guiTop + ySize - font.lineHeight - 7, 0);
+            StringTextComponent time = new StringTextComponent(recorder.getDuration());
+            font.draw(poseStack, time.withStyle(TextFormatting.DARK_RED), (float) (guiLeft + (xSize - font.width(time)) / 2), guiTop + ySize - font.lineHeight - 7, 0);
 
             if (recordingHoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
-                renderTooltip(poseStack, new TranslatableComponent("message.voicechat.storage_size", recorder.getStorage()), mouseX, mouseY);
+                renderTooltip(poseStack, new TranslationTextComponent("message.voicechat.storage_size", recorder.getStorage()), mouseX, mouseY);
             }
         }
     }

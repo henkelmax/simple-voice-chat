@@ -15,8 +15,8 @@ import de.maxhenkel.voicechat.plugins.impl.packets.MicrophonePacketImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.StaticSoundPacketImpl;
 import de.maxhenkel.voicechat.voice.common.*;
 import de.maxhenkel.voicechat.voice.server.Group;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -91,7 +91,7 @@ public class PluginManager {
         return socket;
     }
 
-    public String getVoiceHost(ServerPlayer player, String voiceHost) {
+    public String getVoiceHost(ServerPlayerEntity player, String voiceHost) {
         VoiceHostEventImpl event = new VoiceHostEventImpl(new VoicechatServerApiImpl(player.server), voiceHost);
         dispatchEvent(VoiceHostEvent.class, event);
         return event.getVoiceHost();
@@ -105,7 +105,7 @@ public class PluginManager {
         dispatchEvent(VoicechatServerStoppedEvent.class, new VoicechatServerStoppedEventImpl(new VoicechatServerApiImpl(server)));
     }
 
-    public void onPlayerConnected(@Nullable ServerPlayer player) {
+    public void onPlayerConnected(@Nullable ServerPlayerEntity player) {
         if (player == null) {
             return;
         }
@@ -116,25 +116,25 @@ public class PluginManager {
         dispatchEvent(PlayerDisconnectedEvent.class, new PlayerDisconnectedEventImpl(new VoicechatServerApiImpl(server), player));
     }
 
-    public boolean onJoinGroup(ServerPlayer player, @Nullable Group group) {
+    public boolean onJoinGroup(ServerPlayerEntity player, @Nullable Group group) {
         if (group == null) {
             return onLeaveGroup(player);
         }
         return dispatchEvent(JoinGroupEvent.class, new JoinGroupEventImpl(new VoicechatServerApiImpl(player.server), new GroupImpl(group), VoicechatConnectionImpl.fromPlayer(player)));
     }
 
-    public boolean onCreateGroup(ServerPlayer player, Group group) {
+    public boolean onCreateGroup(ServerPlayerEntity player, Group group) {
         if (group == null) {
             return onLeaveGroup(player);
         }
         return dispatchEvent(CreateGroupEvent.class, new CreateGroupEventImpl(new VoicechatServerApiImpl(player.server), new GroupImpl(group), VoicechatConnectionImpl.fromPlayer(player)));
     }
 
-    public boolean onLeaveGroup(ServerPlayer player) {
+    public boolean onLeaveGroup(ServerPlayerEntity player) {
         return dispatchEvent(LeaveGroupEvent.class, new LeaveGroupEventImpl(new VoicechatServerApiImpl(player.server), null, VoicechatConnectionImpl.fromPlayer(player)));
     }
 
-    public boolean onMicPacket(ServerPlayer player, PlayerState state, MicPacket packet) {
+    public boolean onMicPacket(ServerPlayerEntity player, PlayerState state, MicPacket packet) {
         return dispatchEvent(MicrophonePacketEvent.class, new MicrophonePacketEventImpl(
                 new VoicechatServerApiImpl(player.server),
                 new MicrophonePacketImpl(packet, player.getUUID()),
@@ -142,7 +142,7 @@ public class PluginManager {
         ));
     }
 
-    public boolean onSoundPacket(@Nullable ServerPlayer sender, @Nullable PlayerState senderState, ServerPlayer receiver, PlayerState receiverState, SoundPacket<?> p, String source) {
+    public boolean onSoundPacket(@Nullable ServerPlayerEntity sender, @Nullable PlayerState senderState, ServerPlayerEntity receiver, PlayerState receiverState, SoundPacket<?> p, String source) {
         VoicechatServerApi api = new VoicechatServerApiImpl(receiver.server);
         VoicechatConnection senderConnection = null;
         if (sender != null && senderState != null) {
@@ -150,7 +150,8 @@ public class PluginManager {
         }
 
         VoicechatConnection receiverConnection = new VoicechatConnectionImpl(receiver, receiverState);
-        if (p instanceof LocationSoundPacket packet) {
+        if (p instanceof LocationSoundPacket) {
+            LocationSoundPacket packet = (LocationSoundPacket) p;
             return dispatchEvent(LocationalSoundPacketEvent.class, new LocationalSoundPacketEventImpl(
                     api,
                     new LocationalSoundPacketImpl(packet),
@@ -158,7 +159,8 @@ public class PluginManager {
                     receiverConnection,
                     source
             ));
-        } else if (p instanceof PlayerSoundPacket packet) {
+        } else if (p instanceof PlayerSoundPacket) {
+            PlayerSoundPacket packet = (PlayerSoundPacket) p;
             return dispatchEvent(EntitySoundPacketEvent.class, new EntitySoundPacketEventImpl(
                     api,
                     new EntitySoundPacketImpl(packet),
@@ -166,7 +168,8 @@ public class PluginManager {
                     receiverConnection,
                     source
             ));
-        } else if (p instanceof GroupSoundPacket packet) {
+        } else if (p instanceof GroupSoundPacket) {
+            GroupSoundPacket packet = (GroupSoundPacket) p;
             return dispatchEvent(StaticSoundPacketEvent.class, new StaticSoundPacketEventImpl(
                     api,
                     new StaticSoundPacketImpl(packet),

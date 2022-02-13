@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 import java.util.UUID;
 
@@ -28,11 +28,11 @@ public class ClientGroup {
         return hasPassword;
     }
 
-    public static ClientGroup fromBytes(FriendlyByteBuf buf) {
+    public static ClientGroup fromBytes(PacketBuffer buf) {
         return new ClientGroup(buf.readUUID(), buf.readUtf(512), buf.readBoolean());
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeUUID(id);
         buf.writeUtf(name, 512);
         buf.writeBoolean(hasPassword);

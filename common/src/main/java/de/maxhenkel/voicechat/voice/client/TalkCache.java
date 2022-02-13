@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import net.minecraft.world.entity.Entity;
+import net.minecraft.entity.Entity;
 
 import java.util.HashMap;
 import java.util.Map;

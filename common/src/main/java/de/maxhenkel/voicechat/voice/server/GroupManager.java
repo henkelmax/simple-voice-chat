@@ -8,14 +8,15 @@ import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class GroupManager {
 
@@ -30,7 +31,7 @@ public class GroupManager {
                 return;
             }
             if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
-                player.displayClientMessage(new TranslatableComponent("message.voicechat.no_group_permission"), true);
+                player.displayClientMessage(new TranslationTextComponent("message.voicechat.no_group_permission"), true);
                 return;
             }
             joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
@@ -40,7 +41,7 @@ public class GroupManager {
                 return;
             }
             if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
-                player.displayClientMessage(new TranslatableComponent("message.voicechat.no_group_permission"), true);
+                player.displayClientMessage(new TranslationTextComponent("message.voicechat.no_group_permission"), true);
                 return;
             }
             addGroup(new Group(UUID.randomUUID(), packet.getName(), packet.getPassword()), player);
@@ -54,7 +55,7 @@ public class GroupManager {
         return server.getPlayerStateManager();
     }
 
-    public void addGroup(Group group, ServerPlayer player) {
+    public void addGroup(Group group, ServerPlayerEntity player) {
         if (PluginManager.instance().onCreateGroup(player, group)) {
             return;
         }
@@ -66,7 +67,7 @@ public class GroupManager {
         NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
     }
 
-    public void joinGroup(@Nullable Group group, ServerPlayer player, @Nullable String password) {
+    public void joinGroup(@Nullable Group group, ServerPlayerEntity player, @Nullable String password) {
         if (PluginManager.instance().onJoinGroup(player, group)) {
             return;
         }
@@ -87,7 +88,7 @@ public class GroupManager {
         NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
     }
 
-    public void leaveGroup(ServerPlayer player) {
+    public void leaveGroup(ServerPlayerEntity player) {
         if (PluginManager.instance().onLeaveGroup(player)) {
             return;
         }
@@ -101,8 +102,8 @@ public class GroupManager {
 
     public void cleanEmptyGroups() {
         PlayerStateManager manager = getStates();
-        List<UUID> usedGroups = manager.getStates().stream().filter(PlayerState::hasGroup).map(state -> state.getGroup().getId()).distinct().toList();
-        List<UUID> groupsToRemove = groups.keySet().stream().filter(uuid -> !usedGroups.contains(uuid)).toList();
+        List<UUID> usedGroups = manager.getStates().stream().filter(PlayerState::hasGroup).map(state -> state.getGroup().getId()).distinct().collect(Collectors.toList());
+        List<UUID> groupsToRemove = groups.keySet().stream().filter(uuid -> !usedGroups.contains(uuid)).collect(Collectors.toList());
         for (UUID uuid : groupsToRemove) {
             groups.remove(uuid);
         }
@@ -114,7 +115,7 @@ public class GroupManager {
     }
 
     @Nullable
-    public Group getPlayerGroup(ServerPlayer player) {
+    public Group getPlayerGroup(ServerPlayerEntity player) {
         PlayerState state = server.getPlayerStateManager().getState(player.getUUID());
         if (state == null) {
             return null;

@@ -1,1 +1,1 @@
-- Added voice chat permissions
+- Backport v2 to 1.16.5

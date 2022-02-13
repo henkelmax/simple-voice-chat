@@ -1,9 +1,7 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.resources.ResourceLocation;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.function.Supplier;
 
@@ -17,10 +15,8 @@ public class ToggleImageButton extends ImageButton {
     }
 
     @Override
-    protected void renderImage(PoseStack matrices, int mouseX, int mouseY, float delta) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, texture);
+    protected void renderImage(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        mc.getTextureManager().bind(texture);
 
         if (stateSupplier.get()) {
             blit(matrices, x + 2, y + 2, 16, 0, 16, 16, 32, 32);

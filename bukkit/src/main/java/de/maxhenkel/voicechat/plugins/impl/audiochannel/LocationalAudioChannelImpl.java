@@ -28,8 +28,8 @@ public class LocationalAudioChannelImpl extends AudioChannelImpl implements Loca
 
     @Override
     public void updateLocation(Position position) {
-        if (position instanceof PositionImpl p) {
-            this.position = p;
+        if (position instanceof PositionImpl) {
+            this.position = (PositionImpl) position;
         } else {
             throw new IllegalArgumentException("position is not an instance of PositionImpl");
         }

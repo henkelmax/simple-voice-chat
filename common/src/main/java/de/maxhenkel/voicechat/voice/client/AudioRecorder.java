@@ -5,13 +5,18 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.*;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.Tuple;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nullable;
 import javax.sound.sampled.*;
@@ -173,36 +178,36 @@ public class AudioRecorder {
 
     public void save() {
         threadPool.execute(() -> {
-            send(new TranslatableComponent("message.voicechat.processing_recording_session"));
+            send(new TranslationTextComponent("message.voicechat.processing_recording_session"));
             try {
                 flush();
                 AtomicLong time = new AtomicLong();
                 convert(progress -> {
                     if (progress >= 1F || System.currentTimeMillis() - time.get() > 1000L) {
-                        send(new TranslatableComponent("message.voicechat.processing_progress",
-                                new TextComponent(String.valueOf((int) (progress * 100F)))
-                                        .withStyle(ChatFormatting.GRAY))
+                        send(new TranslationTextComponent("message.voicechat.processing_progress",
+                                new StringTextComponent(String.valueOf((int) (progress * 100F)))
+                                        .withStyle(TextFormatting.GRAY))
                         );
                         time.set(System.currentTimeMillis());
                     }
                 });
-                send(new TranslatableComponent("message.voicechat.save_session",
-                        new TextComponent(location.normalize().toString())
-                                .withStyle(ChatFormatting.GRAY)
+                send(new TranslationTextComponent("message.voicechat.save_session",
+                        new StringTextComponent(location.normalize().toString())
+                                .withStyle(TextFormatting.GRAY)
                                 .withStyle(style -> style
-                                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.voicechat.open_folder")))
+                                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("message.voicechat.open_folder")))
                                         .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, location.normalize().toString()))))
                 );
             } catch (Exception e) {
                 e.printStackTrace();
-                send(new TranslatableComponent("message.voicechat.save_session_failed", e.getMessage()));
+                send(new TranslationTextComponent("message.voicechat.save_session_failed", e.getMessage()));
             }
         });
     }
 
-    private void send(Component msg) {
+    private void send(ITextComponent msg) {
         Minecraft mc = Minecraft.getInstance();
-        LocalPlayer player = mc.player;
+        ClientPlayerEntity player = mc.player;
         if (player != null && mc.level != null) {
             player.sendMessage(msg, Util.NIL_UUID);
         } else {
@@ -266,7 +271,7 @@ public class AudioRecorder {
             }
 
             int ts = (int) (snippet.getB() - timestamp);
-            audio.insertAt(Utils.bytesToShorts(audioInputStream.readAllBytes()), ts);
+            audio.insertAt(Utils.bytesToShorts(IOUtils.toByteArray(audioInputStream)), ts);
             audioInputStream.close();
             progress.accept(((float) i + 1F) / (float) audioSnippets.size());
         }

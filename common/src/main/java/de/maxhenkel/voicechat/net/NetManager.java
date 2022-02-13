@@ -3,13 +3,13 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
-import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
+import net.minecraft.client.network.play.ClientPlayNetHandler;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.ServerPlayNetHandler;
+import net.minecraft.network.play.client.CCustomPayloadPacket;
+import net.minecraft.network.play.server.SCustomPayloadPlayPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 public abstract class NetManager {
 
@@ -38,29 +38,29 @@ public abstract class NetManager {
     public abstract <T extends Packet<T>> Channel<T> registerReceiver(Class<T> packetType, boolean toClient, boolean toServer);
 
     public static void sendToServer(Packet<?> packet) {
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
         packet.toBytes(buffer);
-        ClientPacketListener connection = Minecraft.getInstance().getConnection();
+        ClientPlayNetHandler connection = Minecraft.getInstance().getConnection();
         if (connection != null) {
-            connection.send(new ServerboundCustomPayloadPacket(packet.getIdentifier(), buffer));
+            connection.send(new CCustomPayloadPacket(packet.getIdentifier(), buffer));
         }
     }
 
-    public static void sendToClient(ServerPlayer player, Packet<?> packet) {
+    public static void sendToClient(ServerPlayerEntity player, Packet<?> packet) {
         if (!Voicechat.SERVER.isCompatible(player)) {
             return;
         }
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
         packet.toBytes(buffer);
-        player.connection.send(new ClientboundCustomPayloadPacket(packet.getIdentifier(), buffer));
+        player.connection.send(new SCustomPayloadPlayPacket(packet.getIdentifier(), buffer));
     }
 
     public interface ServerReceiver<T extends Packet<T>> {
-        void onPacket(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, T packet);
+        void onPacket(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetHandler handler, T packet);
     }
 
     public interface ClientReceiver<T extends Packet<T>> {
-        void onPacket(Minecraft client, ClientPacketListener handler, T packet);
+        void onPacket(Minecraft client, ClientPlayNetHandler handler, T packet);
     }
 
 }

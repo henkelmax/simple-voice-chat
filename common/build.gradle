@@ -1,22 +1,29 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://maven.maxhenkel.de/repository/public' }
         mavenLocal()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
 
 plugins {
     id "java"
-    id 'fabric-loom' version '0.10-SNAPSHOT'
 }
 
-sourceCompatibility = JavaLanguageVersion.of(java_version as int)
-targetCompatibility = JavaLanguageVersion.of(java_version as int)
+apply plugin: 'net.minecraftforge.gradle'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
+
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+}
 
 repositories {
     mavenCentral()
-    maven { url = 'https://maven.fabricmc.net/' }
     maven {
         name = "henkelmax.public"
         url = 'https://maven.maxhenkel.de/repository/public'
@@ -28,10 +35,10 @@ task prepareWorkspace {
 
 }
 
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
 dependencies {
-    minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings minecraft.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 

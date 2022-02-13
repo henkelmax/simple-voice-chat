@@ -1,12 +1,12 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import com.mojang.math.Vector3f;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.openal.AL11;
 
 import javax.annotation.Nullable;
@@ -73,10 +73,10 @@ public abstract class ALSpeaker {
         executor.shutdown();
     }
 
-    protected void setPositionSync(@Nullable Vec3 soundPos) {
+    protected void setPositionSync(@Nullable Vector3d soundPos) {
         if (soundPos != null) {
-            Camera camera = mc.gameRenderer.getMainCamera();
-            Vec3 position = camera.getPosition();
+            ActiveRenderInfo camera = mc.gameRenderer.getMainCamera();
+            Vector3d position = camera.getPosition();
             Vector3f look = camera.getLookVector();
             Vector3f up = camera.getUpVector();
             AL11.alListener3f(AL11.AL_POSITION, (float) position.x, (float) position.y, (float) position.z);
@@ -103,7 +103,7 @@ public abstract class ALSpeaker {
         });
     }
 
-    public void write(short[] data, float volume, @Nullable Vec3 position) {
+    public void write(short[] data, float volume, @Nullable Vector3d position) {
         runInContext(() -> {
             removeProcessedBuffersSync();
             int buffers = getQueuedBuffersSync();
@@ -123,7 +123,7 @@ public abstract class ALSpeaker {
         });
     }
 
-    private void writeSync(short[] data, float volume, @Nullable Vec3 position) {
+    private void writeSync(short[] data, float volume, @Nullable Vector3d position) {
         setPositionSync(position);
 
         AL11.alSourcef(source, AL11.AL_MAX_GAIN, 6F);

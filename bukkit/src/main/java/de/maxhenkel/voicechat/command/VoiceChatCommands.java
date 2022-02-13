@@ -96,9 +96,10 @@ public class VoiceChatCommands implements CommandExecutor {
     }
 
     private boolean inviteCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        if (!(commandSender instanceof Player player)) {
+        if (!(commandSender instanceof Player)) {
             return false;
         }
+        Player player = (Player) commandSender;
 
         if (args.length < 2) {
             return false;
@@ -149,9 +150,10 @@ public class VoiceChatCommands implements CommandExecutor {
     }
 
     private boolean joinCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        if (!(commandSender instanceof Player player)) {
+        if (!(commandSender instanceof Player)) {
             return false;
         }
+        Player player = (Player) commandSender;
 
         if (args.length < 2) {
             return false;
@@ -223,9 +225,10 @@ public class VoiceChatCommands implements CommandExecutor {
     }
 
     private boolean leaveCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        if (!(commandSender instanceof Player player)) {
+        if (!(commandSender instanceof Player)) {
             return false;
         }
+        Player player = (Player) commandSender;
 
         PlayerState state = Voicechat.SERVER.getServer().getPlayerStateManager().getState(player.getUniqueId());
 

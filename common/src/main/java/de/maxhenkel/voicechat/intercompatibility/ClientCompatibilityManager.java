@@ -1,18 +1,18 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.voice.client.ALSpeaker;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.client.SpeakerException;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.packs.repository.PackRepository;
-import net.minecraft.server.packs.repository.RepositorySource;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.Entity;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.resources.IPackFinder;
+import net.minecraft.resources.ResourcePackList;
+import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
 import java.net.SocketAddress;
@@ -30,11 +30,11 @@ public abstract class ClientCompatibilityManager {
 
     public abstract void onMouseEvent(MouseEvent onMouseEvent);
 
-    public abstract InputConstants.Key getBoundKeyOf(KeyMapping keyBinding);
+    public abstract InputMappings.Input getBoundKeyOf(KeyBinding keyBinding);
 
     public abstract void onHandleKeyBinds(Runnable onHandleKeyBinds);
 
-    public abstract KeyMapping registerKeyBinding(KeyMapping keyBinding);
+    public abstract KeyBinding registerKeyBinding(KeyBinding keyBinding);
 
     public abstract void emitVoiceChatConnectedEvent(ClientVoicechatConnection client);
 
@@ -50,20 +50,20 @@ public abstract class ClientCompatibilityManager {
 
     public abstract void onJoinWorld(Runnable onJoinWorld);
 
-    public abstract SocketAddress getSocketAddress(Connection connection);
+    public abstract SocketAddress getSocketAddress(NetworkManager connection);
 
-    public abstract void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource);
+    public abstract void addResourcePackSource(ResourcePackList packRepository, IPackFinder repositorySource);
 
     public abstract ALSpeaker createSpeaker(SoundManager soundManager, int sampleRate, int bufferSize);
 
     public abstract SoundManager createSoundManager(@Nullable String deviceName) throws SpeakerException;
 
     public interface RenderNameplateEvent {
-        void render(Entity entity, Component component, PoseStack stack, MultiBufferSource bufferSource, int light);
+        void render(Entity entity, ITextComponent component, MatrixStack stack, IRenderTypeBuffer bufferSource, int light);
     }
 
     public interface RenderHUDEvent {
-        void render(PoseStack stack, float tickDelta);
+        void render(MatrixStack stack, float tickDelta);
     }
 
     public interface KeyboardEvent {

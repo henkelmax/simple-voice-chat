@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
@@ -38,7 +38,7 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
     }
 
     @Override
-    public CreateGroupPacket fromBytes(FriendlyByteBuf buf) {
+    public CreateGroupPacket fromBytes(PacketBuffer buf) {
         name = buf.readUtf(512);
         password = null;
         if (buf.readBoolean()) {
@@ -48,7 +48,7 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeUtf(name, 512);
         buf.writeBoolean(password != null);
         if (password != null) {

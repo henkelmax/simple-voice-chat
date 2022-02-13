@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 public class RequestSecretPacket implements Packet<RequestSecretPacket> {
 
@@ -28,13 +28,13 @@ public class RequestSecretPacket implements Packet<RequestSecretPacket> {
     }
 
     @Override
-    public RequestSecretPacket fromBytes(FriendlyByteBuf buf) {
+    public RequestSecretPacket fromBytes(PacketBuffer buf) {
         compatibilityVersion = buf.readInt();
         return this;
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeInt(compatibilityVersion);
     }
 

@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -77,7 +77,7 @@ public class PlayerState {
                 '}';
     }
 
-    public static PlayerState fromBytes(FriendlyByteBuf buf) {
+    public static PlayerState fromBytes(PacketBuffer buf) {
         boolean disabled = buf.readBoolean();
         boolean disconnected = buf.readBoolean();
         UUID uuid = buf.readUUID();
@@ -92,7 +92,7 @@ public class PlayerState {
         return state;
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeBoolean(disabled);
         buf.writeBoolean(disconnected);
         buf.writeUUID(uuid);

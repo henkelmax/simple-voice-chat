@@ -1,15 +1,14 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.*;
 import de.maxhenkel.voicechat.voice.common.Utils;
-import net.minecraft.client.gui.components.AbstractButton;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.client.gui.widget.button.AbstractButton;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 
@@ -23,7 +22,7 @@ public class MicTestButton extends AbstractButton {
     private final ClientVoicechat client;
 
     public MicTestButton(int xIn, int yIn, int widthIn, int heightIn, MicListener micListener) {
-        super(xIn, yIn, widthIn, heightIn, TextComponent.EMPTY);
+        super(xIn, yIn, widthIn, heightIn, new StringTextComponent(""));
         this.micListener = micListener;
         this.client = ClientManager.getClient();
         active = client == null || client.getSoundManager() != null;
@@ -32,18 +31,18 @@ public class MicTestButton extends AbstractButton {
 
     private void updateText() {
         if (!active) {
-            setMessage(new TranslatableComponent("message.voicechat.mic_test_unavailable"));
+            setMessage(new TranslationTextComponent("message.voicechat.mic_test_unavailable"));
             return;
         }
         if (micActive) {
-            setMessage(new TranslatableComponent("message.voicechat.mic_test_on"));
+            setMessage(new TranslationTextComponent("message.voicechat.mic_test_on"));
         } else {
-            setMessage(new TranslatableComponent("message.voicechat.mic_test_off"));
+            setMessage(new TranslationTextComponent("message.voicechat.mic_test_off"));
         }
     }
 
     @Override
-    public void render(PoseStack matrixStack, int x, int y, float partialTicks) {
+    public void render(MatrixStack matrixStack, int x, int y, float partialTicks) {
         super.render(matrixStack, x, y, partialTicks);
         if (voiceThread != null) {
             voiceThread.updateLastRender();
@@ -78,11 +77,6 @@ public class MicTestButton extends AbstractButton {
             }
         }
         updateText();
-    }
-
-    @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
-        this.defaultButtonNarrationText(narrationElementOutput);
     }
 
     private class VoiceThread extends Thread {

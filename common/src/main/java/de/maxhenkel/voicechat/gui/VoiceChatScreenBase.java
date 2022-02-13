@@ -1,10 +1,10 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.FormattedCharSequence;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public abstract class VoiceChatScreenBase extends Screen {
     protected int xSize;
     protected int ySize;
 
-    protected VoiceChatScreenBase(Component title, int xSize, int ySize) {
+    protected VoiceChatScreenBase(ITextComponent title, int xSize, int ySize) {
         super(title);
         this.xSize = xSize;
         this.ySize = ySize;
@@ -30,7 +30,8 @@ public abstract class VoiceChatScreenBase extends Screen {
 
     @Override
     protected void init() {
-        clearWidgets();
+        buttons.clear();
+        children.clear();
         super.init();
 
         this.guiLeft = (width - this.xSize) / 2;
@@ -38,18 +39,18 @@ public abstract class VoiceChatScreenBase extends Screen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+    public void render(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
         renderBackground(poseStack);
         renderBackground(poseStack, mouseX, mouseY, delta);
         super.render(poseStack, mouseX, mouseY, delta);
         renderForeground(poseStack, mouseX, mouseY, delta);
     }
 
-    public void renderBackground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+    public void renderBackground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
 
     }
 
-    public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+    public void renderForeground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
 
     }
 
@@ -66,10 +67,10 @@ public abstract class VoiceChatScreenBase extends Screen {
     }
 
     protected int getFontColor() {
-        return isIngame() ? FONT_COLOR : ChatFormatting.WHITE.getColor();
+        return isIngame() ? FONT_COLOR : TextFormatting.WHITE.getColor();
     }
 
-    public void drawHoverAreas(PoseStack matrixStack, int mouseX, int mouseY) {
+    public void drawHoverAreas(MatrixStack matrixStack, int mouseX, int mouseY) {
         for (HoverArea hoverArea : hoverAreas) {
             if (hoverArea.tooltip != null && hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
                 renderTooltip(matrixStack, hoverArea.tooltip.get(), mouseX - guiLeft, mouseY - guiTop);
@@ -81,13 +82,13 @@ public abstract class VoiceChatScreenBase extends Screen {
         private final int posX, posY;
         private final int width, height;
         @Nullable
-        private final Supplier<List<FormattedCharSequence>> tooltip;
+        private final Supplier<List<IReorderingProcessor>> tooltip;
 
         public HoverArea(int posX, int posY, int width, int height) {
             this(posX, posY, width, height, null);
         }
 
-        public HoverArea(int posX, int posY, int width, int height, Supplier<List<FormattedCharSequence>> tooltip) {
+        public HoverArea(int posX, int posY, int width, int height, Supplier<List<IReorderingProcessor>> tooltip) {
             this.posX = posX;
             this.posY = posY;
             this.width = width;
@@ -112,7 +113,7 @@ public abstract class VoiceChatScreenBase extends Screen {
         }
 
         @Nullable
-        public Supplier<List<FormattedCharSequence>> getTooltip() {
+        public Supplier<List<IReorderingProcessor>> getTooltip() {
             return tooltip;
         }
 

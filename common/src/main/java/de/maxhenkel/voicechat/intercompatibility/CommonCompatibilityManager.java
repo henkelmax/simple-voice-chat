@@ -3,9 +3,9 @@ package de.maxhenkel.voicechat.intercompatibility;
 import com.mojang.brigadier.CommandDispatcher;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.net.NetManager;
-import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -25,11 +25,11 @@ public abstract class CommonCompatibilityManager {
 
     public abstract void onServerStopping(Consumer<MinecraftServer> onServerStopping);
 
-    public abstract void onPlayerLoggedIn(Consumer<ServerPlayer> onPlayerLoggedIn);
+    public abstract void onPlayerLoggedIn(Consumer<ServerPlayerEntity> onPlayerLoggedIn);
 
-    public abstract void onPlayerLoggedOut(Consumer<ServerPlayer> onPlayerLoggedOut);
+    public abstract void onPlayerLoggedOut(Consumer<ServerPlayerEntity> onPlayerLoggedOut);
 
-    public abstract void onRegisterServerCommands(Consumer<CommandDispatcher<CommandSourceStack>> onRegisterServerCommands);
+    public abstract void onRegisterServerCommands(Consumer<CommandDispatcher<CommandSource>> onRegisterServerCommands);
 
     public abstract NetManager getNetManager();
 

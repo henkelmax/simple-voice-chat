@@ -39,25 +39,23 @@ public class MacosFrame extends JFrame implements DropTargetListener {
 
         JEditorPane ep = new JEditorPane();
         ep.setContentType("text/html");
-        ep.setText("""
-                <body style="font-family: Sans-Serif;">
-                    <h1 style="text-align: center;">Simple Voice Chat MacOS Microphone Permission</h1>
-                    <p>
-                    Your Minecraft launcher does not allow access to your microphone.
-                    </p>
-                    <p><b>Please read <a href="https://github.com/henkelmax/simple-voice-chat/tree/1.18.1/macos#how-to-patch-your-launcher">this guide</a> on how to patch your launcher.</b></p>
-                    <p>
-                    You need to drag your Minecraft launcher from your applications folder onto the area below.
-                    Note that this will remove the original signature of your launcher.
-                    If you don't trust this, you can take a look at the <a href="https://github.com/henkelmax/simple-voice-chat/tree/1.18.1/macos">source code</a> of this application.
-                    </p>
-                    <p>
-                    Doing this may result in your launcher not working correctly.
-                    </p>
-                    <p><b>Use at your own risk!</b></p>
-                    <p align="right">Version %s</p>
-                </body>
-                """.formatted(Main.getVersion()));
+        ep.setText("<body style=\"font-family: Sans-Serif;\">" +
+                "<h1 style=\"text-align: center;\">Simple Voice Chat MacOS Microphone Permission</h1>" +
+                "<p>" +
+                "Your Minecraft launcher does not allow access to your microphone." +
+                "</p>" +
+                "<p><b>Please read <a href=\"https://github.com/henkelmax/simple-voice-chat/tree/1.18.1/macos#how-to-patch-your-launcher\">this guide</a> on how to patch your launcher.</b></p>" +
+                "<p>" +
+                "You need to drag your Minecraft launcher from your applications folder onto the area below." +
+                "Note that this will remove the original signature of your launcher." +
+                "If you don't trust this, you can take a look at the <a href=\"https://github.com/henkelmax/simple-voice-chat/tree/1.18.1/macos\">source code</a> of this application." +
+                "</p>" +
+                "<p>" +
+                "Doing this may result in your launcher not working correctly." +
+                "</p>" +
+                "<p><b>Use at your own risk!</b></p>" +
+                "<p align=\"right\">Version " + Main.getVersion() + "</p>" +
+                "</body>");
         ep.setEditable(false);
         ep.setBorder(new LineBorder(Color.WHITE, 10));
         ep.addHyperlinkListener(e -> {
@@ -96,11 +94,7 @@ public class MacosFrame extends JFrame implements DropTargetListener {
     }
 
     public void setApplication(MacApplication application) {
-        int result = JOptionPane.showOptionDialog(null, """
-                              Do you really want to patch '%s'?
-                              Use at your own risk!
-                        """
-                        .formatted(application.getName()),
+        int result = JOptionPane.showOptionDialog(null, "Do you really want to patch '" + application.getName() + "'?\nUse at your own risk!",
                 "Patch Application",
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
@@ -127,10 +121,7 @@ public class MacosFrame extends JFrame implements DropTargetListener {
             return;
         }
 
-        JOptionPane.showMessageDialog(this, """
-                Successfully patched '%s'.
-                Please restart your game and launcher for this change to take effect.
-                """.formatted(application.getName()), "Success", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Successfully patched '" + application.getName() + "'.\nPlease restart your game and launcher for this change to take effect.", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void resetDragText() {

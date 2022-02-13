@@ -1,10 +1,11 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
 import de.maxhenkel.voicechat.api.Player;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class PlayerImpl extends EntityImpl implements Player {
 
-    public PlayerImpl(net.minecraft.world.entity.player.Player entity) {
+    public PlayerImpl(PlayerEntity entity) {
         super(entity);
     }
 
@@ -13,8 +14,8 @@ public class PlayerImpl extends EntityImpl implements Player {
         return entity;
     }
 
-    public net.minecraft.world.entity.player.Player getRealPlayer() {
-        return (net.minecraft.world.entity.player.Player) entity;
+    public PlayerEntity getRealPlayer() {
+        return (PlayerEntity) entity;
     }
 
 }

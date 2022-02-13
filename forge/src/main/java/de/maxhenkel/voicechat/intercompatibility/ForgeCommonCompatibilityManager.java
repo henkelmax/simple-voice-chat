@@ -6,19 +6,19 @@ import de.maxhenkel.voicechat.api.ForgeVoicechatPlugin;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.net.ForgeNetManager;
 import de.maxhenkel.voicechat.net.NetManager;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 import net.minecraftforge.forgespi.language.IModInfo;
 
 import java.nio.file.Path;
@@ -31,9 +31,9 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
 
     private final List<Consumer<MinecraftServer>> serverStartingEvents;
     private final List<Consumer<MinecraftServer>> serverStoppingEvents;
-    private final List<Consumer<CommandDispatcher<CommandSourceStack>>> registerServerCommandsEvents;
-    private final List<Consumer<ServerPlayer>> playerLoggedInEvents;
-    private final List<Consumer<ServerPlayer>> playerLoggedOutEvents;
+    private final List<Consumer<CommandDispatcher<CommandSource>>> registerServerCommandsEvents;
+    private final List<Consumer<ServerPlayerEntity>> playerLoggedInEvents;
+    private final List<Consumer<ServerPlayerEntity>> playerLoggedOutEvents;
 
     public ForgeCommonCompatibilityManager() {
         serverStartingEvents = new ArrayList<>();
@@ -60,21 +60,23 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
 
     @SubscribeEvent
     public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getPlayer() instanceof ServerPlayer player) {
+        if (event.getPlayer() instanceof ServerPlayerEntity) {
+            ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
             playerLoggedInEvents.forEach(consumer -> consumer.accept(player));
         }
     }
 
     @SubscribeEvent
     public void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-        if (event.getPlayer() instanceof ServerPlayer player) {
+        if (event.getPlayer() instanceof ServerPlayerEntity) {
+            ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
             playerLoggedOutEvents.forEach(consumer -> consumer.accept(player));
         }
     }
 
     @Override
     public String getModVersion() {
-        return ModList.get().getModFileById(Voicechat.MODID).versionString();
+        return ModList.get().getModContainerById(Voicechat.MODID).get().getModInfo().getVersion().toString();
     }
 
     @Override
@@ -98,17 +100,17 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
-    public void onPlayerLoggedIn(Consumer<ServerPlayer> onPlayerLoggedIn) {
+    public void onPlayerLoggedIn(Consumer<ServerPlayerEntity> onPlayerLoggedIn) {
         playerLoggedInEvents.add(onPlayerLoggedIn);
     }
 
     @Override
-    public void onPlayerLoggedOut(Consumer<ServerPlayer> onPlayerLoggedOut) {
+    public void onPlayerLoggedOut(Consumer<ServerPlayerEntity> onPlayerLoggedOut) {
         playerLoggedOutEvents.add(onPlayerLoggedOut);
     }
 
     @Override
-    public void onRegisterServerCommands(Consumer<CommandDispatcher<CommandSourceStack>> onRegisterServerCommands) {
+    public void onRegisterServerCommands(Consumer<CommandDispatcher<CommandSource>> onRegisterServerCommands) {
         registerServerCommandsEvents.add(onRegisterServerCommands);
     }
 
@@ -141,7 +143,7 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     @Override
     public String listKeybinds() {
         StringBuilder sb = new StringBuilder();
-        for (KeyMapping mapping : Minecraft.getInstance().options.keyMappings) {
+        for (KeyBinding mapping : Minecraft.getInstance().options.keyMappings) {
             sb.append(mapping.getName() + "(" + mapping.getCategory() + "): " + mapping.getKey().getName() + " (" + mapping.getDefaultKey().getName() + ")");
             sb.append("\n");
         }
@@ -158,15 +160,15 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
         List<VoicechatPlugin> plugins = new ArrayList<>();
         ModList.get().getAllScanData().forEach(scan -> {
             scan.getAnnotations().forEach(annotationData -> {
-                if (annotationData.annotationType().getClassName().equals(ForgeVoicechatPlugin.class.getName())) {
+                if (annotationData.getAnnotationType().getClassName().equals(ForgeVoicechatPlugin.class.getName())) {
                     try {
-                        Class<?> clazz = Class.forName(annotationData.memberName());
+                        Class<?> clazz = Class.forName(annotationData.getMemberName());
                         if (VoicechatPlugin.class.isAssignableFrom(clazz)) {
                             VoicechatPlugin plugin = (VoicechatPlugin) clazz.getDeclaredConstructor().newInstance();
                             plugins.add(plugin);
                         }
                     } catch (Exception e) {
-                        Voicechat.LOGGER.warn("Failed to load plugin '{}': {}", annotationData.memberName(), e.getMessage());
+                        Voicechat.LOGGER.warn("Failed to load plugin '{}': {}", annotationData.getMemberName(), e.getMessage());
                     }
                 }
             });

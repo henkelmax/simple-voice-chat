@@ -11,6 +11,7 @@ import de.maxhenkel.voicechat.plugins.impl.ServerPlayerImpl;
 import de.maxhenkel.voicechat.voice.common.LocationSoundPacket;
 import de.maxhenkel.voicechat.voice.server.Server;
 import de.maxhenkel.voicechat.voice.server.ServerWorldUtils;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.UUID;
 
@@ -27,8 +28,8 @@ public class LocationalAudioChannelImpl extends AudioChannelImpl implements Loca
 
     @Override
     public void updateLocation(Position position) {
-        if (position instanceof PositionImpl p) {
-            this.position = p;
+        if (position instanceof PositionImpl) {
+            this.position = (PositionImpl) position;
         } else {
             throw new IllegalArgumentException("position is not an instance of PositionImpl");
         }
@@ -55,7 +56,7 @@ public class LocationalAudioChannelImpl extends AudioChannelImpl implements Loca
     }
 
     private void broadcast(LocationSoundPacket packet) {
-        server.broadcast(ServerWorldUtils.getPlayersInRange((net.minecraft.server.level.ServerLevel) level.getServerLevel(), position.getPosition(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
+        server.broadcast(ServerWorldUtils.getPlayersInRange((ServerWorld) level.getServerLevel(), position.getPosition(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
     }
 
 }

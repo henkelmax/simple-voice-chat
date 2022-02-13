@@ -23,7 +23,7 @@ public class AudioPlayerImpl extends Thread implements AudioPlayer {
         this.encoder = encoder;
         this.audioSupplier = audioSupplier;
         setDaemon(true);
-        setName("AudioPlayer-%s".formatted(audioChannel.getId()));
+        setName("AudioPlayer-" + audioChannel.getId());
     }
 
     @Override

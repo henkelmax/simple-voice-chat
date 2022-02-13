@@ -5,8 +5,8 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.vector.Vector3d;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -157,7 +157,7 @@ public class AudioChannel extends Thread {
     }
 
     private void writeToSpeaker(Packet<?> packet, short[] monoData) {
-        @Nullable Player player = minecraft.level.getPlayerByUUID(uuid);
+        @Nullable PlayerEntity player = minecraft.level.getPlayerByUUID(uuid);
 
         float volume = VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * (float) VoicechatClient.VOLUME_CONFIG.getVolume(uuid);
         boolean stereo = VoicechatClient.CLIENT_CONFIG.stereo.get();
@@ -166,7 +166,8 @@ public class AudioChannel extends Thread {
             speaker.write(monoData, volume, null);
             client.getTalkCache().updateTalking(uuid, false);
             appendRecording(player, () -> Utils.convertToStereo(monoData, 1F, 1F));
-        } else if (packet instanceof PlayerSoundPacket soundPacket) {
+        } else if (packet instanceof PlayerSoundPacket) {
+            PlayerSoundPacket soundPacket = (PlayerSoundPacket) packet;
             if (player == null) {
                 return;
             }
@@ -176,7 +177,7 @@ public class AudioChannel extends Thread {
                 appendRecording(player, () -> Utils.convertToStereo(monoData, 1F, 1F));
                 return;
             }
-            Vec3 pos = player.getEyePosition();
+            Vector3d pos = player.getEyePosition(1F);
 
             float crouchMultiplayer = player.isCrouching() ? (float) clientConnection.getData().getCrouchDistanceMultiplier() : 1F;
             float whisperMultiplayer = soundPacket.isWhispering() ? (float) clientConnection.getData().getWhisperDistanceMultiplier() : 1F;
@@ -187,18 +188,19 @@ public class AudioChannel extends Thread {
                 client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
             }
             appendRecording(player, () -> convertLocationalPacketToStereo(pos, monoData, multiplier));
-        } else if (packet instanceof LocationSoundPacket p) {
+        } else if (packet instanceof LocationSoundPacket) {
+            LocationSoundPacket p = (LocationSoundPacket) packet;
             speaker.write(monoData, volume * getDistanceVolume(p.getLocation()), stereo ? p.getLocation() : null);
             client.getTalkCache().updateTalking(uuid, false);
             appendRecording(player, () -> convertLocationalPacketToStereo(p.getLocation(), monoData));
         }
     }
 
-    private short[] convertLocationalPacketToStereo(Vec3 pos, short[] monoData) {
+    private short[] convertLocationalPacketToStereo(Vector3d pos, short[] monoData) {
         return convertLocationalPacketToStereo(pos, monoData, 1F);
     }
 
-    private short[] convertLocationalPacketToStereo(Vec3 pos, short[] monoData, float distanceMultiplier) {
+    private short[] convertLocationalPacketToStereo(Vector3d pos, short[] monoData, float distanceMultiplier) {
         float distanceVolume = getDistanceVolume(pos, distanceMultiplier);
         if (VoicechatClient.CLIENT_CONFIG.stereo.get()) {
             Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, pos, clientConnection.getData().getVoiceChatDistance() * distanceMultiplier);
@@ -208,12 +210,12 @@ public class AudioChannel extends Thread {
         }
     }
 
-    private float getDistanceVolume(Vec3 pos) {
+    private float getDistanceVolume(Vector3d pos) {
         return getDistanceVolume(pos, 1F);
     }
 
-    private float getDistanceVolume(Vec3 pos, float distanceMultiplier) {
-        float distance = (float) pos.distanceTo(minecraft.cameraEntity.getEyePosition());
+    private float getDistanceVolume(Vector3d pos, float distanceMultiplier) {
+        float distance = (float) pos.distanceTo(minecraft.cameraEntity.getEyePosition(1F));
         float fadeDistance = (float) clientConnection.getData().getVoiceChatFadeDistance() * distanceMultiplier;
         float maxDistance = (float) clientConnection.getData().getVoiceChatDistance() * distanceMultiplier;
 
@@ -227,7 +229,7 @@ public class AudioChannel extends Thread {
         }
     }
 
-    private void appendRecording(Player player, Supplier<short[]> stereo) {
+    private void appendRecording(PlayerEntity player, Supplier<short[]> stereo) {
         speaker.runInContext(() -> {
             if (client.getRecorder() != null) {
                 try {

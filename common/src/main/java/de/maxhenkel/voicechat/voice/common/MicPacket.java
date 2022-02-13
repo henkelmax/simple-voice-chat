@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 public class MicPacket implements Packet<MicPacket> {
 
@@ -36,7 +36,7 @@ public class MicPacket implements Packet<MicPacket> {
     }
 
     @Override
-    public MicPacket fromBytes(FriendlyByteBuf buf) {
+    public MicPacket fromBytes(PacketBuffer buf) {
         MicPacket soundPacket = new MicPacket();
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
@@ -45,7 +45,7 @@ public class MicPacket implements Packet<MicPacket> {
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);
         buf.writeBoolean(whispering);

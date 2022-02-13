@@ -150,26 +150,26 @@ public class PluginManager {
         }
 
         VoicechatConnection receiverConnection = new VoicechatConnectionImpl(receiver, receiverState);
-        if (p instanceof LocationSoundPacket packet) {
+        if (p instanceof LocationSoundPacket) {
             return dispatchEvent(LocationalSoundPacketEvent.class, new LocationalSoundPacketEventImpl(
                     api,
-                    new LocationalSoundPacketImpl(packet),
+                    new LocationalSoundPacketImpl((LocationSoundPacket) p),
                     senderConnection,
                     receiverConnection,
                     source
             ));
-        } else if (p instanceof PlayerSoundPacket packet) {
+        } else if (p instanceof PlayerSoundPacket) {
             return dispatchEvent(EntitySoundPacketEvent.class, new EntitySoundPacketEventImpl(
                     api,
-                    new EntitySoundPacketImpl(packet),
+                    new EntitySoundPacketImpl((PlayerSoundPacket) p),
                     senderConnection,
                     receiverConnection,
                     source
             ));
-        } else if (p instanceof GroupSoundPacket packet) {
+        } else if (p instanceof GroupSoundPacket) {
             return dispatchEvent(StaticSoundPacketEvent.class, new StaticSoundPacketEventImpl(
                     api,
-                    new StaticSoundPacketImpl(packet),
+                    new StaticSoundPacketImpl((GroupSoundPacket) p),
                     senderConnection,
                     receiverConnection,
                     source

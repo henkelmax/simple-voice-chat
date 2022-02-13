@@ -9,14 +9,14 @@ import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.client.microphone.MicrophoneManager;
-import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import org.apache.commons.io.FileUtils;
 import org.lwjgl.openal.AL11;
 
@@ -39,18 +39,18 @@ public class DebugReport {
         builder = new StringBuilder();
     }
 
-    public static void generateReport(Player player) {
+    public static void generateReport(PlayerEntity player) {
         try {
             Path path = generateReport();
-            player.sendMessage(new TranslatableComponent("message.voicechat.saved_debug_report",
-                    new TextComponent(path.normalize().toString())
-                            .withStyle(ChatFormatting.GRAY)
+            player.sendMessage(new TranslationTextComponent("message.voicechat.saved_debug_report",
+                    new StringTextComponent(path.normalize().toString())
+                            .withStyle(TextFormatting.GRAY)
                             .withStyle(style -> style
-                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.voicechat.open")))
+                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("message.voicechat.open")))
                                     .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, path.normalize().toString())))
             ), Util.NIL_UUID);
         } catch (IOException e) {
-            player.sendMessage(new TranslatableComponent("message.voicechat.saved_debug_report_failed", e.getMessage()), Util.NIL_UUID);
+            player.sendMessage(new TranslationTextComponent("message.voicechat.saved_debug_report_failed", e.getMessage()), Util.NIL_UUID);
             e.printStackTrace();
         }
     }
@@ -139,20 +139,6 @@ public class DebugReport {
         addLine("Java");
         addLine("");
         addLine("Version: " + System.getProperty("java.version"));
-
-        try {
-            ProcessHandle current = ProcessHandle.current();
-            current.info().commandLine().ifPresent(s -> {
-                addLine("Command line: " + s);
-            });
-            current.parent().ifPresent(processHandle -> {
-                addLine("Parent process: " + processHandle.info().commandLine().orElse("UNKNOWN"));
-            });
-
-            addLine("");
-        } catch (Exception e) {
-            addLine("Process: ERROR (" + e.getMessage() + ")");
-        }
     }
 
     private void appendOpenAL() {

@@ -20,11 +20,17 @@ public class OpusEncoderImpl implements OpusEncoder {
         int application = ServerConfig.Codec.VOIP.getOpusValue();
 
         if (mode != null) {
-            application = switch (mode) {
-                case VOIP -> ServerConfig.Codec.VOIP.getOpusValue();
-                case AUDIO -> ServerConfig.Codec.AUDIO.getOpusValue();
-                case RESTRICTED_LOWDELAY -> ServerConfig.Codec.RESTRICTED_LOWDELAY.getOpusValue();
-            };
+            switch (mode) {
+                case VOIP:
+                default:
+                    break;
+                case AUDIO:
+                    application = ServerConfig.Codec.AUDIO.getOpusValue();
+                    break;
+                case RESTRICTED_LOWDELAY:
+                    application = ServerConfig.Codec.RESTRICTED_LOWDELAY.getOpusValue();
+                    break;
+            }
         }
 
         de.maxhenkel.voicechat.voice.client.OpusEncoder encoder = de.maxhenkel.voicechat.voice.client.OpusEncoder.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, 1024, application);

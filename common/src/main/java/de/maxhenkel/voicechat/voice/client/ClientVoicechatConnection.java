@@ -62,9 +62,11 @@ public class ClientVoicechatConnection extends Thread {
                         ClientCompatibilityManager.INSTANCE.emitVoiceChatConnectedEvent(this);
                         lastKeepAlive = System.currentTimeMillis();
                     }
-                } else if (in.getPacket() instanceof SoundPacket packet) {
+                } else if (in.getPacket() instanceof SoundPacket) {
+                    SoundPacket packet = (SoundPacket) in.getPacket();
                     client.processSoundPacket(packet);
-                } else if (in.getPacket() instanceof PingPacket packet) {
+                } else if (in.getPacket() instanceof PingPacket) {
+                    PingPacket packet = (PingPacket) in.getPacket();
                     Voicechat.LOGGER.info("Received ping {}, sending pong...", packet.getId());
                     sendToServer(new NetworkMessage(packet));
                 } else if (in.getPacket() instanceof KeepAlivePacket) {

@@ -16,8 +16,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
 import java.util.Properties;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Mod(ForgeVoicechatMod.MODID)
 public class ForgeVoicechatMod extends Voicechat {

@@ -102,10 +102,7 @@ public class ServerVoiceEvents implements Listener {
                 return;
             }
             if (!isCompatible(player)) {
-                player.kickPlayer("You need %s %s to play on this server".formatted(
-                        Voicechat.INSTANCE.getDescription().getName(),
-                        Voicechat.INSTANCE.getDescription().getVersion()
-                ));
+                player.kickPlayer("You need " + Voicechat.INSTANCE.getDescription().getName() + " " + Voicechat.INSTANCE.getDescription().getVersion() + " to play on this server");
             }
         }, Voicechat.SERVER_CONFIG.loginTimeout.get() / 50L);
     }

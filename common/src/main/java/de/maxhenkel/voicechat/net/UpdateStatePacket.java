@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 public class UpdateStatePacket implements Packet<UpdateStatePacket> {
 
@@ -34,14 +34,14 @@ public class UpdateStatePacket implements Packet<UpdateStatePacket> {
     }
 
     @Override
-    public UpdateStatePacket fromBytes(FriendlyByteBuf buf) {
+    public UpdateStatePacket fromBytes(PacketBuffer buf) {
         disconnected = buf.readBoolean();
         disabled = buf.readBoolean();
         return this;
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeBoolean(disconnected);
         buf.writeBoolean(disabled);
     }

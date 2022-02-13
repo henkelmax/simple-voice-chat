@@ -5,7 +5,7 @@ import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 import javax.annotation.Nonnull;
 import javax.crypto.BadPaddingException;
@@ -84,17 +84,17 @@ public class NetworkMessage {
 
     public static NetworkMessage readPacketServer(RawUdpPacket packet, Server server) throws IllegalAccessException, InstantiationException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvocationTargetException, NoSuchMethodException {
         byte[] data = packet.getData();
-        FriendlyByteBuf b = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
+        PacketBuffer b = new PacketBuffer(Unpooled.wrappedBuffer(data));
         UUID playerID = b.readUUID();
         if (!server.hasSecret(playerID)) {
-            throw new InvalidKeyException("Player %s does not have a secret".formatted(playerID));
+            throw new InvalidKeyException("Player " + playerID + " does not have a secret");
         }
         return readFromBytes(packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray(), packet.getTimestamp());
     }
 
     private static NetworkMessage readFromBytes(SocketAddress socketAddress, UUID secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, NoSuchMethodException, InvocationTargetException {
         byte[] decrypt = AES.decrypt(secret, encryptedPayload);
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(decrypt));
+        PacketBuffer buffer = new PacketBuffer(Unpooled.wrappedBuffer(decrypt));
         UUID readSecret = buffer.readUUID();
 
         if (!secret.equals(readSecret)) {
@@ -104,7 +104,7 @@ public class NetworkMessage {
         byte packetType = buffer.readByte();
         Class<? extends Packet> packetClass = packetRegistry.get(packetType);
         if (packetClass == null) {
-            throw new InstantiationException("Could not find packet with ID %s".formatted(packetType));
+            throw new InstantiationException("Could not find packet with ID " + packetType);
         }
         Packet<? extends Packet<?>> p = packetClass.getDeclaredConstructor().newInstance();
 
@@ -130,7 +130,7 @@ public class NetworkMessage {
 
     public byte[] writeClient(ClientVoicechatConnection client) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         byte[] payload = write(client.getData().getSecret());
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer(payload.length + 16));
+        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(payload.length + 16));
         buffer.writeUUID(client.getData().getPlayerUUID());
         buffer.writeByteArray(payload);
 
@@ -140,7 +140,7 @@ public class NetworkMessage {
     }
 
     public byte[] write(UUID secret) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
         buffer.writeUUID(secret);
 
         byte type = getPacketType(packet);
