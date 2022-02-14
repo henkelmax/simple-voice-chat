@@ -1,1 +1,2 @@
-- Added voice chat permissions
+- Changed voice chat API Java version to 8
+- Cleaned up voice chat API
