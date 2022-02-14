@@ -11,8 +11,8 @@ plugins {
     id 'maven-publish'
 }
 
-sourceCompatibility = JavaLanguageVersion.of(16)
-targetCompatibility = JavaLanguageVersion.of(16)
+sourceCompatibility = JavaLanguageVersion.of(8)
+targetCompatibility = JavaLanguageVersion.of(8)
 
 archivesBaseName = archives_base_name
 version = version
