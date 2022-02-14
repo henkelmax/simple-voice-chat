@@ -1,1 +1,1 @@
-- Added voice chat permissions
+- Updated to 22w06a
