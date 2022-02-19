@@ -1,1 +1,1 @@
-- Updated to 22w06a
+- Updated to 1.18.2-pre1
