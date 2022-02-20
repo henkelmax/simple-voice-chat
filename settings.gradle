@@ -5,4 +5,4 @@ pluginManagement {
 }
 
 rootProject.name = 'voicechat'
-include('api', 'common', 'forge', 'bukkit', 'macos')
+include('api', 'common', 'forge', 'bukkit')

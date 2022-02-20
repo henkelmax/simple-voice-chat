@@ -1,11 +1,8 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.macos.PermissionCheck;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
@@ -91,8 +88,6 @@ public class ClientManager {
         Voicechat.LOGGER.info("Sending secret request to the server");
         NetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
         client = new ClientVoicechat();
-
-        checkMicrophonePermissions();
     }
 
     public static void sendPlayerError(String translationKey, @Nullable Exception e) {
@@ -120,19 +115,6 @@ public class ClientManager {
             client = null;
         }
         ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
-    }
-
-    public void checkMicrophonePermissions() {
-        if (!VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get()) {
-            return;
-        }
-        if (Platform.isMac()) {
-            PermissionCheck.AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
-            if (!status.equals(PermissionCheck.AVAuthorizationStatus.AUTHORIZED)) {
-                sendPlayerError("message.voicechat.macos_no_mic_permission", null);
-                Voicechat.LOGGER.warn("User hasn't granted microphone permissions: {}", status.name());
-            }
-        }
     }
 
     @Nullable

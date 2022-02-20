@@ -32,7 +32,6 @@ public abstract class ClientConfig {
     public ConfigEntry<Boolean> denoiser;
     public ConfigEntry<Boolean> runLocalServer;
     public ConfigEntry<Boolean> javaMicrophoneImplementation;
-    public ConfigEntry<Boolean> macosMicrophoneWorkaround;
     public ConfigEntry<Boolean> showFakePlayersDisconnected;
 
 }
