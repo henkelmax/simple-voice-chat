@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.macos;
 
 import com.sun.jna.Platform;
-import de.maxhenkel.voicechat.macos.jna.avfoundation.AVAuthorizationStatus;
 
 import java.awt.*;
 import java.io.InputStream;
@@ -32,13 +31,13 @@ public class Main {
     }
 
     private static void request() {
-        AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
-        if (status.equals(AVAuthorizationStatus.NOT_DETERMINED)) {
+        PermissionCheck.AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
+        if (status.equals(PermissionCheck.AVAuthorizationStatus.NOT_DETERMINED)) {
             PermissionCheck.requestMicrophonePermissions();
         }
 
         int i = 0;
-        while (status.equals(AVAuthorizationStatus.NOT_DETERMINED)) {
+        while (status.equals(PermissionCheck.AVAuthorizationStatus.NOT_DETERMINED)) {
             status = PermissionCheck.getMicrophonePermissions();
             try {
                 Thread.sleep(500);
@@ -54,7 +53,7 @@ public class Main {
             }
         }
 
-        if (status != AVAuthorizationStatus.AUTHORIZED) {
+        if (status != PermissionCheck.AVAuthorizationStatus.AUTHORIZED) {
             System.err.printf("Simple Voice Chat is unable to use the Microphone. Status: %s%n", status);
         }
     }

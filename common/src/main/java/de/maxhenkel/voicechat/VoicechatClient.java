@@ -5,7 +5,6 @@ import de.maxhenkel.voicechat.config.ClientConfig;
 import de.maxhenkel.voicechat.config.PlayerVolumeConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.macos.PermissionCheck;
-import de.maxhenkel.voicechat.macos.jna.avfoundation.AVAuthorizationStatus;
 import de.maxhenkel.voicechat.resourcepacks.VoiceChatResourcePack;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.MacOSUtils;
@@ -49,9 +48,9 @@ public abstract class VoicechatClient {
 
         if (Platform.isMac() && VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get()) {
             Voicechat.LOGGER.info("Running MacOS microphone permission check");
-            AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
+            PermissionCheck.AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
             Voicechat.LOGGER.info("MacOS microphone permission: {}", status.name());
-            if (!status.equals(AVAuthorizationStatus.AUTHORIZED)) {
+            if (!status.equals(PermissionCheck.AVAuthorizationStatus.AUTHORIZED)) {
                 MacOSUtils.checkPermissionInSeparateProcess();
             }
         }
