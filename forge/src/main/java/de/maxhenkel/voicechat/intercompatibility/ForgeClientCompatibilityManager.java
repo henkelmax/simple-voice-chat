@@ -62,6 +62,10 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @SubscribeEvent
     public void onRenderName(net.minecraftforge.client.event.RenderNameplateEvent event) {
         renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getEntity(), event.getContent(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight()));
+        if (minecraft.player == null || event.getEntity().isInvisibleTo(minecraft.player)) {
+            return;
+        }
+        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getEntity(), event.getContent(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight()));
     }
 
     @SubscribeEvent
