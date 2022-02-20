@@ -1,2 +1,3 @@
 - Changed voice chat API Java version to 8
 - Cleaned up voice chat API
+- Fixed invisible players have voice chat icons
