@@ -1,11 +1,10 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.VoicechatClient;
-import net.minecraft.client.gui.widget.AbstractSlider;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class MicAmplificationSlider extends AbstractSlider {
+public class MicAmplificationSlider extends DebouncedSlider {
 
     private static final float MAXIMUM = 4F;
 
@@ -21,7 +20,7 @@ public class MicAmplificationSlider extends AbstractSlider {
     }
 
     @Override
-    protected void applyValue() {
+    public void applyDebounced() {
         VoicechatClient.CLIENT_CONFIG.microphoneAmplification.set(value * MAXIMUM).save();
     }
 }

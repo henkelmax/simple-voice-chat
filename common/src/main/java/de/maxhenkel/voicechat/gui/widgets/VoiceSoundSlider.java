@@ -1,12 +1,11 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.VoicechatClient;
-import net.minecraft.client.gui.widget.AbstractSlider;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class VoiceSoundSlider extends AbstractSlider {
+public class VoiceSoundSlider extends DebouncedSlider {
 
     public VoiceSoundSlider(int x, int y, int width, int height) {
         super(x, y, width, height, new StringTextComponent(""), VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() / 2F);
@@ -23,7 +22,7 @@ public class VoiceSoundSlider extends AbstractSlider {
     }
 
     @Override
-    protected void applyValue() {
+    public void applyDebounced() {
         VoicechatClient.CLIENT_CONFIG.voiceChatVolume.set(value * 2F).save();
     }
 }
