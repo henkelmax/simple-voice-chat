@@ -2,11 +2,10 @@ package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.common.Utils;
-import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
-public class VoiceActivationSlider extends AbstractSliderButton {
+public class VoiceActivationSlider extends DebouncedSlider {
 
     public VoiceActivationSlider(int x, int y, int width, int height) {
         super(x, y, width, height, TextComponent.EMPTY, Utils.dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
@@ -20,7 +19,7 @@ public class VoiceActivationSlider extends AbstractSliderButton {
     }
 
     @Override
-    protected void applyValue() {
+    public void applyDebounced() {
         VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.set(Utils.percToDb(value)).save();
     }
 
