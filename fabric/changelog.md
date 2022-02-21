@@ -1,1 +1,3 @@
-- Updated to 1.18.2-pre2
+- Changed voice chat API Java version to 8
+- Cleaned up voice chat API
+- Fixed config spam when dragging sliders
