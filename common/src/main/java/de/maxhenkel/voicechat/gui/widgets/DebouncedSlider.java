@@ -1,15 +1,15 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import net.minecraft.client.gui.components.AbstractSliderButton;
-import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.widget.AbstractSlider;
+import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
-public abstract class DebouncedSlider extends AbstractSliderButton {
+public abstract class DebouncedSlider extends AbstractSlider {
 
     private boolean dragged;
     private double lastValue;
 
-    public DebouncedSlider(int i, int j, int k, int l, Component component, double d) {
+    public DebouncedSlider(int i, int j, int k, int l, ITextComponent component, double d) {
         super(i, j, k, l, component, d);
         lastValue = d;
     }
