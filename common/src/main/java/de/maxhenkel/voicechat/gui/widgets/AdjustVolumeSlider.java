@@ -2,11 +2,10 @@ package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
-public class AdjustVolumeSlider extends AbstractSliderButton {
+public class AdjustVolumeSlider extends DebouncedSlider {
 
     private static final float MAXIMUM = 4F;
 
@@ -28,7 +27,7 @@ public class AdjustVolumeSlider extends AbstractSliderButton {
     }
 
     @Override
-    protected void applyValue() {
+    public void applyDebounced() {
         VoicechatClient.VOLUME_CONFIG.setVolume(player.getUuid(), value * MAXIMUM);
         VoicechatClient.VOLUME_CONFIG.save();
     }
