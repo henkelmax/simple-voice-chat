@@ -1,1 +1,2 @@
 - Fixed shading exclusions
+- Fixed translation names
