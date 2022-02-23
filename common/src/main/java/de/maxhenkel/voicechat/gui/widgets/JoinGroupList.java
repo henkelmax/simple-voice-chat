@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.EnterPasswordScreen;
 import de.maxhenkel.voicechat.gui.SkinUtils;
@@ -11,14 +11,16 @@ import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.FormattedCharSequence;
 
 import java.util.*;
 
@@ -26,6 +28,7 @@ public class JoinGroupList extends WidgetBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_join_group.png");
     private static final ResourceLocation LOCK = new ResourceLocation(Voicechat.MODID, "textures/icons/lock.png");
+    private static final Component GROUP_MEMBERS = new TranslatableComponent("message.voicechat.group_members").withStyle(ChatFormatting.WHITE);
 
     protected int offset;
     private final VoiceChatScreenBase.HoverArea[] hoverAreas;
@@ -61,7 +64,7 @@ public class JoinGroupList extends WidgetBase {
     }
 
     @Override
-    public void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+    public void drawGuiContainerForegroundLayer(PoseStack matrixStack, int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
         List<Group> entries = getGroups();
         for (int i = getOffset(); i < entries.size() && i < getOffset() + columnCount; i++) {
@@ -73,12 +76,14 @@ public class JoinGroupList extends WidgetBase {
 
             if (hasPassword) {
                 matrixStack.pushPose();
-                mc.getTextureManager().bind(LOCK);
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+                RenderSystem.setShaderTexture(0, LOCK);
                 Screen.blit(matrixStack, guiLeft + 3, startY + 3, 0, 0, 16, 16, 16, 16);
                 matrixStack.popPose();
             }
 
-            StringTextComponent groupName = new StringTextComponent(group.group.getName());
+            TextComponent groupName = new TextComponent(group.group.getName());
             mc.font.draw(matrixStack, groupName, guiLeft + 3 + (hasPassword ? 16 + 3 : 0), startY + 7, 0);
 
             int textWidth = mc.font.width(groupName) + (hasPassword ? 16 + 3 : 0);
@@ -98,9 +103,11 @@ public class JoinGroupList extends WidgetBase {
                 int headPosY = startY + 2 + 10 - 10 * headYIndex;
 
                 matrixStack.pushPose();
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
-                mc.getTextureManager().bind(SkinUtils.getSkin(state.getUuid()));
+                RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getUuid()));
                 matrixStack.translate(headPosX, headPosY, 0);
                 Screen.blit(matrixStack, 0, 0, 8, 8, 8, 8, 64, 64);
                 Screen.blit(matrixStack, 0, 0, 40, 8, 8, 8, 64, 64);
@@ -108,10 +115,10 @@ public class JoinGroupList extends WidgetBase {
             }
 
             if (hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
-                List<IReorderingProcessor> tooltip = new ArrayList<>();
-                tooltip.add(new TranslationTextComponent("message.voicechat.group_members").withStyle(TextFormatting.WHITE).getVisualOrderText());
+                List<FormattedCharSequence> tooltip = new ArrayList<>();
+                tooltip.add(GROUP_MEMBERS.getVisualOrderText());
                 for (PlayerState state : group.members) {
-                    tooltip.add(new StringTextComponent("- " + state.getName()).withStyle(TextFormatting.GRAY).getVisualOrderText());
+                    tooltip.add(new TextComponent("- " + state.getName()).withStyle(ChatFormatting.GRAY).getVisualOrderText());
                 }
                 screen.renderTooltip(matrixStack, tooltip, mouseX, mouseY);
             }
@@ -119,12 +126,14 @@ public class JoinGroupList extends WidgetBase {
     }
 
     @Override
-    public void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    public void drawGuiContainerBackgroundLayer(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
 
         List<Group> entries = getGroups();
         for (int i = getOffset(); i < entries.size() && i < getOffset() + columnCount; i++) {
-            mc.getTextureManager().bind(TEXTURE);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            RenderSystem.setShaderTexture(0, TEXTURE);
             int pos = i - getOffset();
             VoiceChatScreenBase.HoverArea hoverArea = hoverAreas[pos];
             boolean hovered = hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY);
@@ -138,7 +147,9 @@ public class JoinGroupList extends WidgetBase {
             }
         }
 
-        mc.getTextureManager().bind(TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
 
         if (entries.size() > columnCount) {
             float h = ySize - 17;
@@ -185,7 +196,7 @@ public class JoinGroupList extends WidgetBase {
                 continue;
             }
             Group group = entries.get(getOffset() + i);
-            mc.getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
+            mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
             if (group.group.hasPassword()) {
                 mc.setScreen(new EnterPasswordScreen(group.group));
             } else {

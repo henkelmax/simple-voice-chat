@@ -1,24 +1,31 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ListScreen;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.client.microphone.MicrophoneManager;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.*;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 
 public class SelectMicrophoneScreen extends ListScreen<String> {
 
+    private static final Component TITLE = new TranslatableComponent("gui.voicechat.select_microphone.title");
+    private static final Component SELECT = new TranslatableComponent("message.voicechat.select");
+    private static final Component NO_MICROPHONE = new TranslatableComponent("message.voicechat.no_microphone").withStyle(ChatFormatting.WHITE);
+
     protected int selected;
 
     public SelectMicrophoneScreen(Screen parent) {
-        super(parent, MicrophoneManager.deviceNames(), new TranslationTextComponent("gui.voicechat.select_microphone.title"));
+        super(parent, MicrophoneManager.deviceNames(), TITLE);
         for (int i = 0; i < elements.size(); i++) {
             String element = elements.get(i);
             if (element.equals(VoicechatClient.CLIENT_CONFIG.microphone.get())) {
@@ -37,7 +44,7 @@ public class SelectMicrophoneScreen extends ListScreen<String> {
             return;
         }
         int bw = 60;
-        Button b = addButton(new Button(width / 2 - bw / 2, guiTop + 35, bw, 20, new TranslationTextComponent("message.voicechat.select"), button -> {
+        Button b = addRenderableWidget(new Button(width / 2 - bw / 2, guiTop + 35, bw, 20, SELECT, button -> {
             VoicechatClient.CLIENT_CONFIG.microphone.set(currentElement).save();
             button.active = false;
             ClientVoicechat client = ClientManager.getClient();
@@ -50,13 +57,13 @@ public class SelectMicrophoneScreen extends ListScreen<String> {
     }
 
     @Override
-    protected void renderText(MatrixStack stack, @Nullable String element, int mouseX, int mouseY, float partialTicks) {
-        ITextComponent title = getTitle();
+    protected void renderText(PoseStack stack, @Nullable String element, int mouseX, int mouseY, float partialTicks) {
+        Component title = getTitle();
         int titleWidth = font.width(title);
         font.draw(stack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, getFontColor());
 
-        IFormattableTextComponent name = getCurrentElement() == null ? new TranslationTextComponent("message.voicechat.no_microphone") : new StringTextComponent(SoundManager.cleanDeviceName(getCurrentElement()));
+        Component name = getCurrentElement() == null ? NO_MICROPHONE : new TextComponent(SoundManager.cleanDeviceName(getCurrentElement())).withStyle(ChatFormatting.WHITE);
         int nameWidth = font.width(name);
-        font.draw(stack, name.withStyle(TextFormatting.WHITE).getVisualOrderText(), (float) (guiLeft + (xSize - nameWidth) / 2), guiTop + 7 + font.lineHeight + 7, 0);
+        font.draw(stack, name.getVisualOrderText(), (float) (guiLeft + (xSize - nameWidth) / 2), guiTop + 7 + font.lineHeight + 7, 0);
     }
 }

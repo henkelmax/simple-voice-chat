@@ -1,1 +1,4 @@
 - Fixed crash on servers
+- Reworked volume adjustment GUI
+- Added system sounds slider
+- Improved GUI performance

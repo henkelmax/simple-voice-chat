@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public abstract class VoiceChatScreenBase extends Screen {
 
-    protected static final int FONT_COLOR = 4210752;
+    public static final int FONT_COLOR = 4210752;
 
     protected List<HoverArea> hoverAreas;
     protected int guiLeft;

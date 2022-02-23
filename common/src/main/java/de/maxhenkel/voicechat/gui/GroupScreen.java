@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.tooltips.DisableTooltipSupplier;
@@ -16,9 +17,11 @@ import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.GroupChatManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collections;
 
@@ -29,6 +32,8 @@ public class GroupScreen extends VoiceChatScreenBase {
     private static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone_button.png");
     private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_button.png");
     private static final ResourceLocation GROUP_HUD = new ResourceLocation(Voicechat.MODID, "textures/icons/group_hud_button.png");
+    private static final Component TITLE = new TranslatableComponent("gui.voicechat.group.title");
+    private static final Component LEAVE_GROUP = new TranslatableComponent("message.voicechat.leave_group");
 
     private final ClientGroup group;
     private GroupList playerList;
@@ -38,7 +43,7 @@ public class GroupScreen extends VoiceChatScreenBase {
     private ImageButton leave;
 
     public GroupScreen(ClientGroup group) {
-        super(new TranslationTextComponent("gui.voicechat.group.title"), 195, 222);
+        super(TITLE, 195, 222);
         this.group = group;
     }
 
@@ -46,8 +51,7 @@ public class GroupScreen extends VoiceChatScreenBase {
     protected void init() {
         super.init();
         hoverAreas.clear();
-        buttons.clear();
-        children.clear();
+        clearWidgets();
 
         ClientPlayerStateManager stateManager = ClientManager.getPlayerStateManager();
 
@@ -56,25 +60,25 @@ public class GroupScreen extends VoiceChatScreenBase {
         mute = new ToggleImageButton(guiLeft + 8, guiTop + 196, MICROPHONE, stateManager::isMuted, button -> {
             stateManager.setMuted(!stateManager.isMuted());
         }, new MuteTooltipSupplier(this, stateManager));
-        addButton(mute);
+        addRenderableWidget(mute);
 
         disable = new ToggleImageButton(guiLeft + 31, guiTop + 196, SPEAKER, stateManager::isDisabled, button -> {
             stateManager.setDisabled(!stateManager.isDisabled());
         }, new DisableTooltipSupplier(this, stateManager));
-        addButton(disable);
+        addRenderableWidget(disable);
 
         showHUD = new ToggleImageButton(guiLeft + 54, guiTop + 196, GROUP_HUD, VoicechatClient.CLIENT_CONFIG.showGroupHUD::get, button -> {
             VoicechatClient.CLIENT_CONFIG.showGroupHUD.set(!VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()).save();
         }, new HideGroupHudTooltipSupplier(this));
-        addButton(showHUD);
+        addRenderableWidget(showHUD);
 
         leave = new ImageButton(guiLeft + 168, guiTop + 196, LEAVE, button -> {
             NetManager.sendToServer(new LeaveGroupPacket());
             minecraft.setScreen(new JoinGroupScreen());
         }, (button, matrices, mouseX, mouseY) -> {
-            renderTooltip(matrices, Collections.singletonList(new TranslationTextComponent("message.voicechat.leave_group").getVisualOrderText()), mouseX, mouseY);
+            renderTooltip(matrices, Collections.singletonList(LEAVE_GROUP.getVisualOrderText()), mouseX, mouseY);
         });
-        addButton(leave);
+        addRenderableWidget(leave);
 
         checkButtons();
     }
@@ -91,18 +95,20 @@ public class GroupScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void renderBackground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
-        minecraft.getTextureManager().bind(TEXTURE);
+    public void renderBackground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
         blit(poseStack, guiLeft, guiTop, 0, 0, xSize, ySize, 512, 512);
     }
 
     @Override
-    public void renderForeground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
+    public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         playerList.drawGuiContainerBackgroundLayer(poseStack, delta, mouseX, mouseY);
 
         playerList.drawGuiContainerForegroundLayer(poseStack, mouseX, mouseY);
 
-        font.draw(poseStack, new StringTextComponent(group.getName()), guiLeft + 8, guiTop + 5, FONT_COLOR);
+        font.draw(poseStack, new TextComponent(group.getName()), guiLeft + 8, guiTop + 5, FONT_COLOR);
     }
 
     @Override
