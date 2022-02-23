@@ -196,6 +196,11 @@ shadowJar {
     relocate 'de.maxhenkel.configbuilder', "de.maxhenkel.${mod_id}.configbuilder"
     relocate 'de.maxhenkel.opus4j', "de.maxhenkel.${mod_id}.opus4j"
     relocate 'de.maxhenkel.rnnoise4j', "de.maxhenkel.${mod_id}.rnnoise4j"
+    dependencies {
+        exclude(dependency('net.java.dev.jna:jna'))
+        exclude(dependency('net.java.dev.jna:jna-platform'))
+        exclude(dependency('com.google.code.findbugs:jsr305'))
+    }
 }
 
 reobf {

@@ -1,1 +1,1 @@
-- Backport v2 to 1.16.5
+- Fixed shading exclusions
