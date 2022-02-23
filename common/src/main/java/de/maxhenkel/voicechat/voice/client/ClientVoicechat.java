@@ -35,7 +35,7 @@ public class ClientVoicechat {
             reloadSoundManager();
         } catch (SpeakerException e) {
             Voicechat.LOGGER.error("Failed to start sound manager: {}", e.getMessage());
-            ClientManager.sendPlayerError("messsage.voicechat.speaker_unavailable", e);
+            ClientManager.sendPlayerError("message.voicechat.speaker_unavailable", e);
         }
         this.audioChannels = new HashMap<>();
     }
@@ -74,7 +74,7 @@ public class ClientVoicechat {
                     } catch (NativeDependencyException e) {
                         CooldownTimer.run("decoder_unavailable", () -> {
                             Voicechat.LOGGER.error("Failed to create audio channel: {}", e.getMessage());
-                            ClientManager.sendPlayerError("messsage.voicechat.playback_unavailable", e);
+                            ClientManager.sendPlayerError("message.voicechat.playback_unavailable", e);
                         });
                     }
                 } else {
@@ -126,7 +126,7 @@ public class ClientVoicechat {
             micThread.start();
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to start microphone thread: {}", e.getMessage());
-            ClientManager.sendPlayerError("messsage.voicechat.microphone_unavailable", e);
+            ClientManager.sendPlayerError("message.voicechat.microphone_unavailable", e);
         }
     }
 
