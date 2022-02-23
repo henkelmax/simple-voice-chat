@@ -1,1 +1,3 @@
-- Fixed translation names
+- Reworked volume adjustment GUI
+- Added system sounds slider
+- Improved GUI performance

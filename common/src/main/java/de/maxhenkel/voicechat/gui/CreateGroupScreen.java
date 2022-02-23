@@ -18,13 +18,18 @@ import org.lwjgl.glfw.GLFW;
 public class CreateGroupScreen extends VoiceChatScreenBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_create_group.png");
+    private static final Component TITLE = new TranslatableComponent("gui.voicechat.create_group.title");
+    private static final Component CREATE = new TranslatableComponent("message.voicechat.create");
+    private static final Component CREATE_GROUP = new TranslatableComponent("message.voicechat.create_group");
+    private static final Component GROUP_NAME = new TranslatableComponent("message.voicechat.group_name");
+    private static final Component OPTIONAL_PASSWORD = new TranslatableComponent("message.voicechat.optional_password");
 
     private EditBox groupName;
     private EditBox password;
     private Button createGroup;
 
     public CreateGroupScreen() {
-        super(new TranslatableComponent("gui.voicechat.create_group.title"), 195, 100);
+        super(TITLE, 195, 100);
     }
 
     @Override
@@ -44,7 +49,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(password);
 
-        createGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, new TranslatableComponent("message.voicechat.create"), button -> {
+        createGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, CREATE, button -> {
             if (!groupName.getValue().isEmpty()) {
                 NetManager.sendToServer(new CreateGroupPacket(groupName.getValue(), password.getValue().isEmpty() ? null : password.getValue()));
             }
@@ -76,10 +81,9 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        Component title = new TranslatableComponent("message.voicechat.create_group");
-        font.draw(poseStack, title, guiLeft + xSize / 2 - font.width(title) / 2, guiTop + 7, FONT_COLOR);
-        font.draw(poseStack, new TranslatableComponent("message.voicechat.group_name"), guiLeft + 8, guiTop + 7 + font.lineHeight + 5, FONT_COLOR);
-        font.draw(poseStack, new TranslatableComponent("message.voicechat.optional_password"), guiLeft + 8, guiTop + 7 + (font.lineHeight + 5) * 2 + 10 + 2, FONT_COLOR);
+        font.draw(poseStack, CREATE_GROUP, guiLeft + xSize / 2 - font.width(CREATE_GROUP) / 2, guiTop + 7, FONT_COLOR);
+        font.draw(poseStack, GROUP_NAME, guiLeft + 8, guiTop + 7 + font.lineHeight + 5, FONT_COLOR);
+        font.draw(poseStack, OPTIONAL_PASSWORD, guiLeft + 8, guiTop + 7 + (font.lineHeight + 5) * 2 + 10 + 2, FONT_COLOR);
     }
 
     @Override

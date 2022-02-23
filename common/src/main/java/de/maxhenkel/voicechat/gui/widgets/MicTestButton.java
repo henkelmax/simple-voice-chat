@@ -8,12 +8,17 @@ import de.maxhenkel.voicechat.voice.client.*;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 
 public class MicTestButton extends AbstractButton {
+
+    private static final Component TEST_UNAVAILABLE = new TranslatableComponent("message.voicechat.mic_test_unavailable");
+    private static final Component TEST_ON = new TranslatableComponent("message.voicechat.mic_test_on");
+    private static final Component TEST_OFF = new TranslatableComponent("message.voicechat.mic_test_off");
 
     private boolean micActive;
     @Nullable
@@ -32,13 +37,13 @@ public class MicTestButton extends AbstractButton {
 
     private void updateText() {
         if (!active) {
-            setMessage(new TranslatableComponent("message.voicechat.mic_test_unavailable"));
+            setMessage(TEST_UNAVAILABLE);
             return;
         }
         if (micActive) {
-            setMessage(new TranslatableComponent("message.voicechat.mic_test_on"));
+            setMessage(TEST_ON);
         } else {
-            setMessage(new TranslatableComponent("message.voicechat.mic_test_off"));
+            setMessage(TEST_OFF);
         }
     }
 

@@ -18,6 +18,7 @@ import de.maxhenkel.voicechat.voice.client.GroupChatManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -31,6 +32,8 @@ public class GroupScreen extends VoiceChatScreenBase {
     private static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone_button.png");
     private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_button.png");
     private static final ResourceLocation GROUP_HUD = new ResourceLocation(Voicechat.MODID, "textures/icons/group_hud_button.png");
+    private static final Component TITLE = new TranslatableComponent("gui.voicechat.group.title");
+    private static final Component LEAVE_GROUP = new TranslatableComponent("message.voicechat.leave_group");
 
     private final ClientGroup group;
     private GroupList playerList;
@@ -40,7 +43,7 @@ public class GroupScreen extends VoiceChatScreenBase {
     private ImageButton leave;
 
     public GroupScreen(ClientGroup group) {
-        super(new TranslatableComponent("gui.voicechat.group.title"), 195, 222);
+        super(TITLE, 195, 222);
         this.group = group;
     }
 
@@ -73,7 +76,7 @@ public class GroupScreen extends VoiceChatScreenBase {
             NetManager.sendToServer(new LeaveGroupPacket());
             minecraft.setScreen(new JoinGroupScreen());
         }, (button, matrices, mouseX, mouseY) -> {
-            renderTooltip(matrices, Collections.singletonList(new TranslatableComponent("message.voicechat.leave_group").getVisualOrderText()), mouseX, mouseY);
+            renderTooltip(matrices, Collections.singletonList(LEAVE_GROUP.getVisualOrderText()), mouseX, mouseY);
         });
         addRenderableWidget(leave);
 

@@ -13,12 +13,16 @@ import net.minecraft.resources.ResourceLocation;
 public class JoinGroupScreen extends VoiceChatScreenBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_join_group.png");
+    private static final Component TITLE = new TranslatableComponent("gui.voicechat.join_create_group.title");
+    private static final Component CREATE_GROUP = new TranslatableComponent("message.voicechat.create_group_button");
+    private static final Component JOIN_CREATE_GROUP = new TranslatableComponent("message.voicechat.join_create_group");
+    private static final Component JOIN_GROUP = new TranslatableComponent("message.voicechat.join_a_group");
 
     private JoinGroupList groupList;
     private Button createGroup;
 
     public JoinGroupScreen() {
-        super(new TranslatableComponent("gui.voicechat.join_create_group.title"), 195, 153);
+        super(TITLE, 195, 153);
     }
 
     @Override
@@ -30,7 +34,7 @@ public class JoinGroupScreen extends VoiceChatScreenBase {
 
         groupList = new JoinGroupList(this, 8, 32, 160, 88);
 
-        createGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 14, 20, new TranslatableComponent("message.voicechat.create_group_button"), button -> {
+        createGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 14, 20, CREATE_GROUP, button -> {
             minecraft.setScreen(new CreateGroupScreen());
         });
         addRenderableWidget(createGroup);
@@ -50,9 +54,8 @@ public class JoinGroupScreen extends VoiceChatScreenBase {
 
         groupList.drawGuiContainerForegroundLayer(poseStack, mouseX, mouseY);
 
-        Component title = new TranslatableComponent("message.voicechat.join_create_group");
-        font.draw(poseStack, title, guiLeft + xSize / 2 - font.width(title) / 2, guiTop + 7, FONT_COLOR);
-        font.draw(poseStack, new TranslatableComponent("message.voicechat.join_a_group"), guiLeft + 7, guiTop + 7 + font.lineHeight + 5, FONT_COLOR);
+        font.draw(poseStack, JOIN_CREATE_GROUP, guiLeft + xSize / 2 - font.width(JOIN_CREATE_GROUP) / 2, guiTop + 7, FONT_COLOR);
+        font.draw(poseStack, JOIN_GROUP, guiLeft + 7, guiTop + 7 + font.lineHeight + 5, FONT_COLOR);
     }
 
     @Override

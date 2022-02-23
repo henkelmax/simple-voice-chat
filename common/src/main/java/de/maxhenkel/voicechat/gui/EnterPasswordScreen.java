@@ -19,13 +19,17 @@ import org.lwjgl.glfw.GLFW;
 public class EnterPasswordScreen extends VoiceChatScreenBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_enter_password.png");
+    private static final Component TITLE = new TranslatableComponent("gui.voicechat.enter_password.title");
+    private static final Component JOIN_GROUP = new TranslatableComponent("message.voicechat.join_group");
+    private static final Component ENTER_GROUP_PASSWORD = new TranslatableComponent("message.voicechat.enter_group_password");
+    private static final Component PASSWORD = new TranslatableComponent("message.voicechat.password");
 
     private EditBox password;
     private Button joinGroup;
     private ClientGroup group;
 
     public EnterPasswordScreen(ClientGroup group) {
-        super(new TranslatableComponent("gui.voicechat.enter_password.title"), 195, 74);
+        super(TITLE, 195, 74);
         this.group = group;
     }
 
@@ -41,7 +45,7 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(password);
 
-        joinGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, new TranslatableComponent("message.voicechat.join_group"), button -> {
+        joinGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, JOIN_GROUP, button -> {
             if (!password.getValue().isEmpty()) {
                 NetManager.sendToServer(new JoinGroupPacket(group.getId(), password.getValue()));
             }
@@ -72,9 +76,8 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        Component title = new TranslatableComponent("message.voicechat.enter_group_password");
-        font.draw(poseStack, title, guiLeft + xSize / 2 - font.width(title) / 2, guiTop + 7, FONT_COLOR);
-        font.draw(poseStack, new TranslatableComponent("message.voicechat.password"), guiLeft + 8, guiTop + 7 + font.lineHeight + 5, FONT_COLOR);
+        font.draw(poseStack, ENTER_GROUP_PASSWORD, guiLeft + xSize / 2 - font.width(ENTER_GROUP_PASSWORD) / 2, guiTop + 7, FONT_COLOR);
+        font.draw(poseStack, PASSWORD, guiLeft + 8, guiTop + 7 + font.lineHeight + 5, FONT_COLOR);
     }
 
     @Override
