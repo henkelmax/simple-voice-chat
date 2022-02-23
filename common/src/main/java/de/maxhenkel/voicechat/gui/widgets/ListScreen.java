@@ -19,6 +19,9 @@ import java.util.List;
 public abstract class ListScreen<T> extends VoiceChatScreenBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_generic_small.png");
+    private static final Component PREVIOUS = new TranslatableComponent("message.voicechat.previous");
+    private static final Component BACK = new TranslatableComponent("message.voicechat.back");
+    private static final Component NEXT = new TranslatableComponent("message.voicechat.next");
 
     protected List<T> elements;
     protected int index;
@@ -39,16 +42,16 @@ public abstract class ListScreen<T> extends VoiceChatScreenBase {
     protected void init() {
         super.init();
 
-        previous = new Button(guiLeft + 10, guiTop + 60, 60, 20, new TranslatableComponent("message.voicechat.previous"), button -> {
+        previous = new Button(guiLeft + 10, guiTop + 60, 60, 20, PREVIOUS, button -> {
             index = (index - 1 + elements.size()) % elements.size();
             updateCurrentElement();
         });
 
-        back = new Button(guiLeft + xSize / 2 - 30, guiTop + 60, 60, 20, new TranslatableComponent("message.voicechat.back"), button -> {
+        back = new Button(guiLeft + xSize / 2 - 30, guiTop + 60, 60, 20, BACK, button -> {
             minecraft.setScreen(parent);
         });
 
-        next = new Button(guiLeft + xSize - 70, guiTop + 60, 60, 20, new TranslatableComponent("message.voicechat.next"), button -> {
+        next = new Button(guiLeft + xSize - 70, guiTop + 60, 60, 20, NEXT, button -> {
             index = (index + 1) % elements.size();
             updateCurrentElement();
         });

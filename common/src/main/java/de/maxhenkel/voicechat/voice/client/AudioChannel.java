@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.*;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -159,7 +160,15 @@ public class AudioChannel extends Thread {
     private void writeToSpeaker(Packet<?> packet, short[] monoData) {
         @Nullable Player player = minecraft.level.getPlayerByUUID(uuid);
 
-        float volume = VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * (float) VoicechatClient.VOLUME_CONFIG.getVolume(uuid);
+        float playerVolume;
+
+        if (player != null) {
+            playerVolume = (float) VoicechatClient.VOLUME_CONFIG.getVolume(uuid);
+        } else {
+            playerVolume = (float) VoicechatClient.VOLUME_CONFIG.getVolume(Util.NIL_UUID);
+        }
+
+        float volume = VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * playerVolume;
         boolean stereo = VoicechatClient.CLIENT_CONFIG.stereo.get();
 
         if (packet instanceof GroupSoundPacket) {

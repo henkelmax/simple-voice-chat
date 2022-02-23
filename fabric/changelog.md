@@ -1,1 +1,3 @@
-- Updated to 1.18.2-rc1
+- Reworked volume adjustment GUI
+- Added system sounds slider
+- Improved GUI performance
