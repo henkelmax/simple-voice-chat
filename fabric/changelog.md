@@ -1,1 +1,1 @@
-- Fixed translation names
+- Updated to 1.18.2-pre3
