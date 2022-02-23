@@ -28,6 +28,9 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     private static final ResourceLocation HIDE = new ResourceLocation(Voicechat.MODID, "textures/icons/hide_button.png");
     private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_button.png");
     private static final ResourceLocation RECORD = new ResourceLocation(Voicechat.MODID, "textures/icons/record_button.png");
+    private static final Component TITLE = new TranslatableComponent("gui.voicechat.voice_chat.title");
+    private static final Component SETTINGS = new TranslatableComponent("message.voicechat.settings");
+    private static final Component GROUP = new TranslatableComponent("message.voicechat.group");
 
     private ToggleImageButton mute;
     private ToggleImageButton disable;
@@ -36,7 +39,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     private ClientPlayerStateManager stateManager;
 
     public VoiceChatScreen() {
-        super(new TranslatableComponent("gui.voicechat.voice_chat.title"), 195, 76);
+        super(TITLE, 195, 76);
         stateManager = ClientManager.getPlayerStateManager();
     }
 
@@ -67,12 +70,12 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         }, new HideTooltipSupplier(this));
         addRenderableWidget(hide);
 
-        Button settings = new Button(guiLeft + 6, guiTop + 6 + 15, 75, 20, new TranslatableComponent("message.voicechat.settings"), button -> {
+        Button settings = new Button(guiLeft + 6, guiTop + 6 + 15, 75, 20, SETTINGS, button -> {
             minecraft.setScreen(new VoiceChatSettingsScreen());
         });
         addRenderableWidget(settings);
 
-        Button group = new Button(guiLeft + xSize - 6 - 75 + 1, guiTop + 6 + 15, 75, 20, new TranslatableComponent("message.voicechat.group"), button -> {
+        Button group = new Button(guiLeft + xSize - 6 - 75 + 1, guiTop + 6 + 15, 75, 20, GROUP, button -> {
             if (stateManager.isInGroup()) {
                 minecraft.setScreen(new GroupScreen(stateManager.getGroup()));
             } else {
@@ -125,9 +128,8 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        Component title = new TranslatableComponent("gui.voicechat.voice_chat.title");
-        int titleWidth = font.width(title);
-        font.draw(poseStack, title.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
+        int titleWidth = font.width(TITLE);
+        font.draw(poseStack, TITLE.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, FONT_COLOR);
 
         ClientVoicechat client = ClientManager.getClient();
         if (client != null && client.getRecorder() != null) {

@@ -15,6 +15,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -27,6 +28,7 @@ public class JoinGroupList extends WidgetBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_join_group.png");
     private static final ResourceLocation LOCK = new ResourceLocation(Voicechat.MODID, "textures/icons/lock.png");
+    private static final Component GROUP_MEMBERS = new TranslatableComponent("message.voicechat.group_members").withStyle(ChatFormatting.WHITE);
 
     protected int offset;
     private final VoiceChatScreenBase.HoverArea[] hoverAreas;
@@ -114,7 +116,7 @@ public class JoinGroupList extends WidgetBase {
 
             if (hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
                 List<FormattedCharSequence> tooltip = new ArrayList<>();
-                tooltip.add(new TranslatableComponent("message.voicechat.group_members").withStyle(ChatFormatting.WHITE).getVisualOrderText());
+                tooltip.add(GROUP_MEMBERS.getVisualOrderText());
                 for (PlayerState state : group.members) {
                     tooltip.add(new TextComponent("- " + state.getName()).withStyle(ChatFormatting.GRAY).getVisualOrderText());
                 }

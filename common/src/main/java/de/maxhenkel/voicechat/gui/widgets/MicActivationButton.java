@@ -4,10 +4,14 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
 public class MicActivationButton extends AbstractButton {
+
+    private static final Component PTT = new TranslatableComponent("message.voicechat.activation_type.ptt");
+    private static final Component VOICE = new TranslatableComponent("message.voicechat.activation_type.voice");
 
     private MicrophoneActivationType type;
     private VoiceActivationSlider voiceActivationSlider;
@@ -21,10 +25,10 @@ public class MicActivationButton extends AbstractButton {
 
     private void updateText() {
         if (MicrophoneActivationType.PTT.equals(type)) {
-            setMessage(new TranslatableComponent("message.voicechat.activation_type", new TranslatableComponent("message.voicechat.activation_type.ptt")));
+            setMessage(new TranslatableComponent("message.voicechat.activation_type", PTT));
             voiceActivationSlider.visible = false;
         } else if (MicrophoneActivationType.VOICE.equals(type)) {
-            setMessage(new TranslatableComponent("message.voicechat.activation_type", new TranslatableComponent("message.voicechat.activation_type.voice")));
+            setMessage(new TranslatableComponent("message.voicechat.activation_type", VOICE));
             voiceActivationSlider.visible = true;
         }
     }
