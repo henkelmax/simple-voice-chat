@@ -34,13 +34,12 @@ public class AdjustVolumeList extends ContainerObjectSelectionList<PlayerVolumeE
         RenderSystem.disableScissor();
     }
 
-    public void updatePlayerList(Collection<PlayerState> collection, double scrollAmount) {
+    public void updatePlayerList(Collection<PlayerState> collection) {
         players.clear();
         for (PlayerState state : collection) {
             players.add(new PlayerVolumeEntry(state));
         }
         updateFilter();
-        setScrollAmount(scrollAmount);
     }
 
     public void updateFilter() {
