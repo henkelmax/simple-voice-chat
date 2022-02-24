@@ -39,8 +39,8 @@ public class PlayerVolumeEntry extends ContainerObjectSelectionList.Entry<Player
     public PlayerVolumeEntry(@Nullable PlayerState state) {
         this.minecraft = Minecraft.getInstance();
         this.state = state;
-        volumeSlider = new AdjustVolumeSlider(0, 0, 100, 20, state != null ? state.getUuid() : Util.NIL_UUID);
-        children = ImmutableList.of(volumeSlider);
+        this.volumeSlider = new AdjustVolumeSlider(0, 0, 100, 20, state != null ? state.getUuid() : Util.NIL_UUID);
+        this.children = ImmutableList.of(volumeSlider);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class PlayerVolumeEntry extends ContainerObjectSelectionList.Entry<Player
         int skinX = left + PADDING;
         int skinY = top + (height - SKIN_SIZE) / 2;
         int textX = skinX + SKIN_SIZE + PADDING;
-        int textY = top + (height - this.minecraft.font.lineHeight) / 2;
+        int textY = top + (height - minecraft.font.lineHeight) / 2;
 
         GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL);
 
