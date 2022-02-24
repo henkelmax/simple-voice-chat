@@ -1,2 +1,1 @@
-- Fixed shading exclusions
-- Fixed translation names
+- Fixed crash on servers

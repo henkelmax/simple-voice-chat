@@ -6,8 +6,10 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.ForgeCommonCompatibilityManager;
 import de.maxhenkel.voicechat.permission.ForgePermissionManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -16,10 +18,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.io.InputStream;
-import java.lang.management.ManagementFactory;
 import java.util.Properties;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Mod(ForgeVoicechatMod.MODID)
 public class ForgeVoicechatMod extends Voicechat {
@@ -32,7 +32,9 @@ public class ForgeVoicechatMod extends Voicechat {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 
         SERVER_CONFIG = registerConfig(ModConfig.Type.SERVER, ForgeServerConfig::new);
-        VoicechatClient.CLIENT_CONFIG = ForgeVoicechatMod.registerConfig(ModConfig.Type.CLIENT, ForgeClientConfig::new);
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> {
+            VoicechatClient.CLIENT_CONFIG = ForgeVoicechatMod.registerConfig(ModConfig.Type.CLIENT, ForgeClientConfig::new);
+        });
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
