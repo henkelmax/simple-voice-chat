@@ -23,7 +23,6 @@
   "message.voicechat.adjust_volumes": "Imposta i volumi dei giocatori",
   "message.voicechat.volume_amplification": "Amplificazione: %s",
   "message.voicechat.adjust_volume_player": "Imposta il volume di %s",
-  "message.voicechat.no_player": "Nessun giocatore online",
   "message.voicechat.no_microphone": "Nessun microfono disponibile",
   "message.voicechat.no_speaker": "Nessun altoparlante disponibile",
   "message.voicechat.select": "Seleziona",

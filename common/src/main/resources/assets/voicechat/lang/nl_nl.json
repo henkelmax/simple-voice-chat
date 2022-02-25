@@ -23,7 +23,6 @@
   "message.voicechat.adjust_volumes": "Spelervolumes aanpassen",
   "message.voicechat.volume_amplification": "Versterking: %s",
   "message.voicechat.adjust_volume_player": "Stel het volume in van %s",
-  "message.voicechat.no_player": "Geen andere spelers online",
   "message.voicechat.no_microphone": "Geen microfoon beschikbaar",
   "message.voicechat.no_speaker": "Geen luidspreker beschikbaar",
   "message.voicechat.select": "Selecteer",
