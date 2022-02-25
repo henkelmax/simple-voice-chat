@@ -23,7 +23,6 @@
   "message.voicechat.adjust_volumes": "Ajusta el volum dels jugadors",
   "message.voicechat.volume_amplification": "Amplificació: %s",
   "message.voicechat.adjust_volume_player": "Ajusta el volum de %s",
-  "message.voicechat.no_player": "No hi ha jugadors en línia",
   "message.voicechat.no_microphone": "Cap micròfon disponible",
   "message.voicechat.no_speaker": "Cap altaveu disponible",
   "message.voicechat.select": "Selecciona",
