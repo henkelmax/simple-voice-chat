@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
+import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.EditBox;
@@ -14,12 +15,12 @@ import net.minecraft.util.Mth;
 
 import java.util.Locale;
 
-public class PlayerVolumesScreen extends VoiceChatScreenBase {
+public class PlayerVolumesScreen extends ListScreenBase {
 
     protected static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_player_volumes.png");
-    protected static final Component ADJUST_VOLUMES = new TranslatableComponent("gui.voicechat.adjust_volume.title");
+    protected static final Component TITLE = new TranslatableComponent("gui.voicechat.adjust_volume.title");
     protected static final Component SEARCH_HINT = new TranslatableComponent("message.voicechat.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
-    protected static final Component EMPTY_SEARCH = new TranslatableComponent("gui.socialInteractions.search_empty").withStyle(ChatFormatting.GRAY);
+    protected static final Component EMPTY_SEARCH = new TranslatableComponent("message.voicechat.search_empty").withStyle(ChatFormatting.GRAY);
 
     protected static final int HEADER_SIZE = 16;
     protected static final int FOOTER_SIZE = 8;
@@ -31,10 +32,9 @@ public class PlayerVolumesScreen extends VoiceChatScreenBase {
     protected EditBox searchBox;
     protected String lastSearch;
     protected int units;
-    protected boolean initialized;
 
     public PlayerVolumesScreen() {
-        super(ADJUST_VOLUMES, 236, 0);
+        super(TITLE, 236, 0);
         this.lastSearch = "";
     }
 
@@ -48,13 +48,13 @@ public class PlayerVolumesScreen extends VoiceChatScreenBase {
     protected void init() {
         super.init();
         guiLeft = guiLeft + 2;
-        guiTop = 64;
-        ySize = 0;
+        guiTop = 32;
         int minUnits = Mth.ceil((float) (CELL_HEIGHT + SEARCH_HEIGHT + 4) / (float) UNIT_SIZE);
-        units = Math.max(minUnits, (height - guiTop * 2 - SEARCH_HEIGHT) / UNIT_SIZE);
+        units = Math.max(minUnits, (height - HEADER_SIZE - FOOTER_SIZE - guiTop * 2 - SEARCH_HEIGHT) / UNIT_SIZE);
+        ySize = HEADER_SIZE + units * UNIT_SIZE + FOOTER_SIZE;
 
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
-        if (initialized) {
+        if (volumeList != null) {
             volumeList.updateSize(width, height, guiTop + HEADER_SIZE + SEARCH_HEIGHT, guiTop + HEADER_SIZE + units * UNIT_SIZE);
         } else {
             volumeList = new AdjustVolumeList(width, height, guiTop + HEADER_SIZE + SEARCH_HEIGHT, guiTop + HEADER_SIZE + units * UNIT_SIZE, CELL_HEIGHT);
@@ -69,7 +69,6 @@ public class PlayerVolumesScreen extends VoiceChatScreenBase {
         searchBox.setResponder(this::checkSearchStringUpdate);
         addWidget(searchBox);
         addWidget(volumeList);
-        initialized = true;
 
         volumeList.updatePlayerList(ClientManager.getPlayerStateManager().getPlayerStates(false));
     }
@@ -93,7 +92,7 @@ public class PlayerVolumesScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        font.draw(poseStack, ADJUST_VOLUMES, width / 2 - font.width(ADJUST_VOLUMES) / 2, guiTop + 5, VoiceChatScreenBase.FONT_COLOR);
+        font.draw(poseStack, TITLE, width / 2 - font.width(TITLE) / 2, guiTop + 5, VoiceChatScreenBase.FONT_COLOR);
         if (!volumeList.isEmpty()) {
             volumeList.render(poseStack, mouseX, mouseY, delta);
         } else if (!searchBox.getValue().isEmpty()) {
