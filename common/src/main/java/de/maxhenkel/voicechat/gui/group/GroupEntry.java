@@ -20,17 +20,17 @@ import net.minecraft.util.FastColor;
 
 public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
 
-    private static final ResourceLocation TALK_OUTLINE = new ResourceLocation(Voicechat.MODID, "textures/icons/talk_outline.png");
-    private static final ResourceLocation SPEAKER_OFF = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_small_off.png");
+    protected static final ResourceLocation TALK_OUTLINE = new ResourceLocation(Voicechat.MODID, "textures/icons/talk_outline.png");
+    protected static final ResourceLocation SPEAKER_OFF = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_small_off.png");
 
-    private static final int PADDING = 4;
-    public static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
-    public static final int PLAYER_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
+    protected static final int PADDING = 4;
+    protected static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
+    protected static final int PLAYER_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
 
-    private final ListScreenBase parent;
-    private final Minecraft minecraft;
-    private PlayerState state;
-    private final AdjustVolumeSlider volumeSlider;
+    protected final ListScreenBase parent;
+    protected final Minecraft minecraft;
+    protected PlayerState state;
+    protected final AdjustVolumeSlider volumeSlider;
 
     public GroupEntry(ListScreenBase parent, PlayerState state) {
         this.parent = parent;

@@ -25,7 +25,5 @@
   "message.voicechat.select": "Selecionar",
   "message.voicechat.select_microphone": "Selecione o microfone",
   "message.voicechat.select_speaker": "Selecione a saída de aúdio",
-  "message.voicechat.previous": "Anterior",
-  "message.voicechat.back": "Voltar",
-  "message.voicechat.next": "Próximo"
+  "message.voicechat.back": "Voltar"
 }
