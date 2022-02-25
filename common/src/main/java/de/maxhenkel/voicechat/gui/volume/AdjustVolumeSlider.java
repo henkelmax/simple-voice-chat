@@ -10,11 +10,11 @@ import java.util.UUID;
 
 public class AdjustVolumeSlider extends DebouncedSlider {
 
-    private static final Component MUTED = new TranslatableComponent("message.voicechat.muted");
+    protected static final Component MUTED = new TranslatableComponent("message.voicechat.muted");
 
-    private static final float MAXIMUM = 4F;
+    protected static final float MAXIMUM = 4F;
 
-    private final UUID player;
+    protected final UUID player;
 
     public AdjustVolumeSlider(int xIn, int yIn, int widthIn, int heightIn, UUID player) {
         super(xIn, yIn, widthIn, heightIn, TextComponent.EMPTY, (player == null ? 1D : VoicechatClient.VOLUME_CONFIG.getVolume(player, 1D)) / MAXIMUM);

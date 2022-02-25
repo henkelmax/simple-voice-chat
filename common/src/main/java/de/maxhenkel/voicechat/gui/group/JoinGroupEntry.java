@@ -25,18 +25,18 @@ import java.util.List;
 
 public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
 
-    private static final ResourceLocation LOCK = new ResourceLocation(Voicechat.MODID, "textures/icons/lock.png");
-    private static final Component GROUP_MEMBERS = new TranslatableComponent("message.voicechat.group_members").withStyle(ChatFormatting.WHITE);
+    protected static final ResourceLocation LOCK = new ResourceLocation(Voicechat.MODID, "textures/icons/lock.png");
+    protected static final Component GROUP_MEMBERS = new TranslatableComponent("message.voicechat.group_members").withStyle(ChatFormatting.WHITE);
 
-    private static final int SKIN_SIZE = 12;
-    private static final int PADDING = 4;
-    public static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
-    public static final int BG_FILL_SELECTED = FastColor.ARGB32.color(255, 90, 90, 90);
-    public static final int PLAYER_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
+    protected static final int SKIN_SIZE = 12;
+    protected static final int PADDING = 4;
+    protected static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
+    protected static final int BG_FILL_SELECTED = FastColor.ARGB32.color(255, 90, 90, 90);
+    protected static final int PLAYER_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
 
-    private final ListScreenBase parent;
-    private final Minecraft minecraft;
-    private final Group group;
+    protected final ListScreenBase parent;
+    protected final Minecraft minecraft;
+    protected final Group group;
 
     public JoinGroupEntry(ListScreenBase parent, Group group) {
         this.parent = parent;

@@ -10,9 +10,9 @@ import java.util.Locale;
 
 public class AdjustVolumeList extends ListScreenListBase<PlayerVolumeEntry> {
 
-    private final List<PlayerVolumeEntry> players;
-    private final List<PlayerVolumeEntry> filteredPlayers;
-    private String filter;
+    protected final List<PlayerVolumeEntry> players;
+    protected final List<PlayerVolumeEntry> filteredPlayers;
+    protected String filter;
 
     public AdjustVolumeList(int width, int height, int x, int y, int size) {
         super(width, height, x, y, size);

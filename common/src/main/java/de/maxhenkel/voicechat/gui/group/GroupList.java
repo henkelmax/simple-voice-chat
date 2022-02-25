@@ -12,7 +12,7 @@ import java.util.List;
 
 public class GroupList extends ListScreenListBase<GroupEntry> {
 
-    private final ListScreenBase parent;
+    protected final ListScreenBase parent;
 
     public GroupList(ListScreenBase parent, int width, int height, int x, int y, int size) {
         super(width, height, x, y, size);

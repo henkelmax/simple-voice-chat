@@ -17,18 +17,18 @@ import javax.annotation.Nullable;
 
 public class PlayerVolumeEntry extends ListScreenEntryBase<PlayerVolumeEntry> {
 
-    private static final TranslatableComponent SYSTEM_VOLUME = new TranslatableComponent("message.voicechat.system_volume");
-    private static final ResourceLocation SYSTEM_VOLUME_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/system_volume.png");
+    protected static final TranslatableComponent SYSTEM_VOLUME = new TranslatableComponent("message.voicechat.system_volume");
+    protected static final ResourceLocation SYSTEM_VOLUME_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/system_volume.png");
 
-    private static final int SKIN_SIZE = 24;
-    private static final int PADDING = 4;
-    public static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
-    public static final int PLAYER_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
+    protected static final int SKIN_SIZE = 24;
+    protected static final int PADDING = 4;
+    protected static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
+    protected static final int PLAYER_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
 
-    private final Minecraft minecraft;
+    protected final Minecraft minecraft;
     @Nullable
-    private final PlayerState state;
-    private final AdjustVolumeSlider volumeSlider;
+    protected final PlayerState state;
+    protected final AdjustVolumeSlider volumeSlider;
 
     public PlayerVolumeEntry(@Nullable PlayerState state) {
         this.minecraft = Minecraft.getInstance();
