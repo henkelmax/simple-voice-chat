@@ -1,26 +1,21 @@
 package de.maxhenkel.voicechat.gui.volume;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.SkinUtils;
+import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.ContainerObjectSelectionList;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
-public class PlayerVolumeEntry extends ContainerObjectSelectionList.Entry<PlayerVolumeEntry> {
+public class PlayerVolumeEntry extends ListScreenEntryBase<PlayerVolumeEntry> {
 
     private static final TranslatableComponent SYSTEM_VOLUME = new TranslatableComponent("message.voicechat.system_volume");
     private static final ResourceLocation SYSTEM_VOLUME_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/system_volume.png");
@@ -31,7 +26,6 @@ public class PlayerVolumeEntry extends ContainerObjectSelectionList.Entry<Player
     public static final int PLAYER_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
 
     private final Minecraft minecraft;
-    private final List<AbstractWidget> children;
     @Nullable
     private final PlayerState state;
     private final AdjustVolumeSlider volumeSlider;
@@ -40,7 +34,7 @@ public class PlayerVolumeEntry extends ContainerObjectSelectionList.Entry<Player
         this.minecraft = Minecraft.getInstance();
         this.state = state;
         this.volumeSlider = new AdjustVolumeSlider(0, 0, 100, 20, state != null ? state.getUuid() : Util.NIL_UUID);
-        this.children = ImmutableList.of(volumeSlider);
+        this.children.add(volumeSlider);
     }
 
     @Override
@@ -54,9 +48,9 @@ public class PlayerVolumeEntry extends ContainerObjectSelectionList.Entry<Player
 
         if (state != null) {
             RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getUuid()));
-            GuiComponent.blit(poseStack, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 8F, 8F, 8, 8, 64, 64);
+            GuiComponent.blit(poseStack, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 8, 8, 8, 8, 64, 64);
             RenderSystem.enableBlend();
-            GuiComponent.blit(poseStack, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 40F, 8F, 8, 8, 64, 64);
+            GuiComponent.blit(poseStack, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 40, 8, 8, 8, 64, 64);
             RenderSystem.disableBlend();
             minecraft.font.draw(poseStack, state.getName(), (float) textX, (float) textY, PLAYER_NAME_COLOR);
         } else {
@@ -68,16 +62,6 @@ public class PlayerVolumeEntry extends ContainerObjectSelectionList.Entry<Player
         volumeSlider.x = left + (width - volumeSlider.getWidth() - PADDING);
         volumeSlider.y = top + (height - volumeSlider.getHeight()) / 2;
         volumeSlider.render(poseStack, mouseX, mouseY, delta);
-    }
-
-    @Override
-    public List<? extends GuiEventListener> children() {
-        return children;
-    }
-
-    @Override
-    public List<? extends NarratableEntry> narratables() {
-        return children;
     }
 
     @Nullable

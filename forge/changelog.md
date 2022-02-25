@@ -1,4 +1,6 @@
 - Fixed crash on servers
 - Reworked volume adjustment GUI
+- Reworked join group GUI
+- Reworked group GUI
 - Added system sounds slider
 - Improved GUI performance
