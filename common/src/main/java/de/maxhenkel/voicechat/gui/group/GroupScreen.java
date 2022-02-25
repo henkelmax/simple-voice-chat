@@ -26,13 +26,13 @@ import java.util.Collections;
 
 public class GroupScreen extends ListScreenBase {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_group.png");
-    private static final ResourceLocation LEAVE = new ResourceLocation(Voicechat.MODID, "textures/icons/leave.png");
-    private static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone_button.png");
-    private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_button.png");
-    private static final ResourceLocation GROUP_HUD = new ResourceLocation(Voicechat.MODID, "textures/icons/group_hud_button.png");
-    private static final Component TITLE = new TranslatableComponent("gui.voicechat.group.title");
-    private static final Component LEAVE_GROUP = new TranslatableComponent("message.voicechat.leave_group");
+    protected static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_group.png");
+    protected static final ResourceLocation LEAVE = new ResourceLocation(Voicechat.MODID, "textures/icons/leave.png");
+    protected static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone_button.png");
+    protected static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_button.png");
+    protected static final ResourceLocation GROUP_HUD = new ResourceLocation(Voicechat.MODID, "textures/icons/group_hud_button.png");
+    protected static final Component TITLE = new TranslatableComponent("gui.voicechat.group.title");
+    protected static final Component LEAVE_GROUP = new TranslatableComponent("message.voicechat.leave_group");
 
     protected static final int HEADER_SIZE = 16;
     protected static final int FOOTER_SIZE = 32;
@@ -42,11 +42,11 @@ public class GroupScreen extends ListScreenBase {
     protected GroupList groupList;
     protected int units;
 
-    private final ClientGroup group;
-    private ToggleImageButton mute;
-    private ToggleImageButton disable;
-    private ToggleImageButton showHUD;
-    private ImageButton leave;
+    protected final ClientGroup group;
+    protected ToggleImageButton mute;
+    protected ToggleImageButton disable;
+    protected ToggleImageButton showHUD;
+    protected ImageButton leave;
 
     public GroupScreen(ClientGroup group) {
         super(TITLE, 236, 0);

@@ -4,6 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.gui.audiodevice.SelectMicrophoneScreen;
+import de.maxhenkel.voicechat.gui.audiodevice.SelectSpeakerScreen;
 import de.maxhenkel.voicechat.gui.widgets.*;
 import de.maxhenkel.voicechat.gui.volume.PlayerVolumesScreen;
 import de.maxhenkel.voicechat.voice.client.Denoiser;

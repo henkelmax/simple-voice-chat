@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import net.minecraft.network.chat.Component;
 
-public class ListScreenBase extends VoiceChatScreenBase {
+public abstract class ListScreenBase extends VoiceChatScreenBase {
 
     private Runnable postRender;
 
