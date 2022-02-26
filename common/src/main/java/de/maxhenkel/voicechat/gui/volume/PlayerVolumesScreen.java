@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
-import de.maxhenkel.voicechat.voice.client.ClientManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -42,6 +41,7 @@ public class PlayerVolumesScreen extends ListScreenBase {
     public void tick() {
         super.tick();
         searchBox.tick();
+        volumeList.tick();
     }
 
     @Override
@@ -69,8 +69,6 @@ public class PlayerVolumesScreen extends ListScreenBase {
         searchBox.setResponder(this::checkSearchStringUpdate);
         addWidget(searchBox);
         addWidget(volumeList);
-
-        volumeList.updatePlayerList(ClientManager.getPlayerStateManager().getPlayerStates(false));
     }
 
     @Override
