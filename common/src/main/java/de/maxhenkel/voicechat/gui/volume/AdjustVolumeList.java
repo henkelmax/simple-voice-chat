@@ -7,8 +7,8 @@ import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.Util;
-import net.minecraft.server.players.GameProfileCache;
+import net.minecraft.server.management.PlayerProfileCache;
+import net.minecraft.util.Util;
 
 import java.util.*;
 
@@ -57,7 +57,7 @@ public class AdjustVolumeList extends ListScreenListBase<PlayerVolumeEntry> {
     }
 
     private void addOfflinePlayers(Collection<PlayerState> onlinePlayers) {
-        GameProfileCache gameProfileCache = GameProfileUtils.getGameProfileCache();
+        PlayerProfileCache gameProfileCache = GameProfileUtils.getGameProfileCache();
         if (gameProfileCache == null) {
             return;
         }
@@ -70,7 +70,7 @@ public class AdjustVolumeList extends ListScreenListBase<PlayerVolumeEntry> {
                 continue;
             }
 
-            GameProfile gameProfile = gameProfileCache.get(uuid).orElse(null);
+            GameProfile gameProfile = gameProfileCache.get(uuid);
 
             if (gameProfile == null) {
                 continue;

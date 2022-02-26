@@ -2,12 +2,12 @@ package de.maxhenkel.voicechat.gui;
 
 import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.network.play.ClientPlayNetHandler;
+import net.minecraft.client.network.play.NetworkPlayerInfo;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.players.GameProfileCache;
-import net.minecraft.world.level.block.entity.SkullBlockEntity;
+import net.minecraft.server.management.PlayerProfileCache;
+import net.minecraft.tileentity.SkullTileEntity;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -19,11 +19,11 @@ public class GameProfileUtils {
     private static final Minecraft mc = Minecraft.getInstance();
 
     public static ResourceLocation getSkin(UUID uuid) {
-        ClientPacketListener connection = mc.getConnection();
+        ClientPlayNetHandler connection = mc.getConnection();
         if (connection == null) {
             return DefaultPlayerSkin.getDefaultSkin(uuid);
         }
-        PlayerInfo playerInfo = connection.getPlayerInfo(uuid);
+        NetworkPlayerInfo playerInfo = connection.getPlayerInfo(uuid);
         if (playerInfo == null) {
             return DefaultPlayerSkin.getDefaultSkin(uuid);
         }
@@ -31,13 +31,13 @@ public class GameProfileUtils {
     }
 
     @Nullable
-    public static GameProfileCache getGameProfileCache() {
+    public static PlayerProfileCache getGameProfileCache() {
         Field gameProfileCacheField = getGameProfileCacheField();
         if (gameProfileCacheField == null) {
             return null;
         }
         try {
-            return (GameProfileCache) gameProfileCacheField.get(null);
+            return (PlayerProfileCache) gameProfileCacheField.get(null);
         } catch (IllegalAccessException e) {
             Voicechat.LOGGER.warn("Failed to access GameProfileCache: {}", e.getMessage());
             return null;
@@ -59,11 +59,11 @@ public class GameProfileUtils {
 
     @Nullable
     private static Field findGameProfileCacheField() {
-        for (Field field : SkullBlockEntity.class.getDeclaredFields()) {
+        for (Field field : SkullTileEntity.class.getDeclaredFields()) {
             if (!Modifier.isStatic(field.getModifiers())) {
                 continue;
             }
-            if (!field.getType().equals(GameProfileCache.class)) {
+            if (!field.getType().equals(PlayerProfileCache.class)) {
                 continue;
             }
             field.setAccessible(true);
