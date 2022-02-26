@@ -33,5 +33,6 @@ public abstract class ClientConfig {
     public ConfigEntry<Boolean> runLocalServer;
     public ConfigEntry<Boolean> javaMicrophoneImplementation;
     public ConfigEntry<Boolean> showFakePlayersDisconnected;
+    public ConfigEntry<Boolean> offlinePlayerVolumeAdjustment;
 
 }

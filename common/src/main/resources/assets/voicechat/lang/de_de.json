@@ -130,5 +130,6 @@
   "cloth_config.voicechat.config.group_hud_icon_scale": "Gruppenoberflächen Symbol Skalierung",
   "cloth_config.voicechat.config.group_player_icon_pos_x": "Gruppenoberflächen Symbol X position",
   "cloth_config.voicechat.config.group_player_icon_pos_y": "Gruppenoberflächen Symbol Y position",
-  "cloth_config.voicechat.config.show_own_group_icon": "Eigenes Gruppenoberflächen Symbol anzeigen"
+  "cloth_config.voicechat.config.show_own_group_icon": "Eigenes Gruppenoberflächen Symbol anzeigen",
+  "cloth_config.voicechat.config.offline_player_volume_adjustment": "Offline Spieler Lautstärkenanpassung"
 }

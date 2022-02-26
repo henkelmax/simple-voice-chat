@@ -1,8 +1,1 @@
-- Fixed crash on servers
-- Reworked volume adjustment GUI
-- Reworked join group GUI
-- Reworked group GUI
-- Reworked microphone selection GUI
-- Reworked speaker selection GUI
-- Added system sounds slider
-- Improved GUI performance
+- Added offline player volume adjustment config option

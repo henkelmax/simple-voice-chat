@@ -146,6 +146,10 @@ public class ForgeClientConfig extends ClientConfig {
                 .comment("If fake players should have the disconnected icon above their head")
                 .define("show_fake_players_disconnected", false)
         );
+        offlinePlayerVolumeAdjustment = wrapConfigEntry(builder
+                .comment("If the volume adjustment GUI should also show offline players")
+                .define("offline_player_volume_adjustment", false)
+        );
     }
 
 }

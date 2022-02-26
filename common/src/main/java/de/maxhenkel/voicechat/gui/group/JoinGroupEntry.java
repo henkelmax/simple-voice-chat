@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.gui.SkinUtils;
+import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
@@ -81,7 +81,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             int headPosY = top + height / 2 - ((SKIN_SIZE * 2 + 2) / 2) + ((SKIN_SIZE * 2 + 2) / 2) * headYIndex;
 
             poseStack.pushPose();
-            minecraft.getTextureManager().bind(SkinUtils.getSkin(state.getUuid()));
+            minecraft.getTextureManager().bind(GameProfileUtils.getSkin(state.getUuid()));
             poseStack.translate(headPosX, headPosY, 0);
             float scale = (float) SKIN_SIZE / 8F;
             poseStack.scale(scale, scale, scale);

@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.gui.volume;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.gui.SkinUtils;
+import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
@@ -47,7 +47,7 @@ public class PlayerVolumeEntry extends ListScreenEntryBase<PlayerVolumeEntry> {
         AbstractGui.fill(poseStack, left, top, left + width, top + height, BG_FILL);
 
         if (state != null) {
-            minecraft.getTextureManager().bind(SkinUtils.getSkin(state.getUuid()));
+            minecraft.getTextureManager().bind(GameProfileUtils.getSkin(state.getUuid()));
             AbstractGui.blit(poseStack, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 8, 8, 8, 8, 64, 64);
             RenderSystem.enableBlend();
             AbstractGui.blit(poseStack, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 40, 8, 8, 8, 64, 64);
