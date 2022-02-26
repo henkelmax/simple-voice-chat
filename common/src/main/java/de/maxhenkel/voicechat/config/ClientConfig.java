@@ -35,5 +35,6 @@ public abstract class ClientConfig {
     public ConfigEntry<Boolean> javaMicrophoneImplementation;
     public ConfigEntry<Boolean> macosMicrophoneWorkaround;
     public ConfigEntry<Boolean> showFakePlayersDisconnected;
+    public ConfigEntry<Boolean> offlinePlayerVolumeAdjustment;
 
 }
