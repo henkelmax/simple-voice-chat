@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.gui.SkinUtils;
+import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
@@ -73,7 +73,7 @@ public class GroupChatManager {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getUuid()));
+            RenderSystem.setShaderTexture(0, GameProfileUtils.getSkin(state.getUuid()));
             Screen.blit(matrixStack, posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
             Screen.blit(matrixStack, posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 40, 8, 8, 8, 64, 64);
 

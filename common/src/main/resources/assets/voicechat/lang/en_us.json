@@ -130,5 +130,6 @@
   "cloth_config.voicechat.config.group_hud_icon_scale": "Group HUD icon scale",
   "cloth_config.voicechat.config.group_player_icon_pos_x": "Group icon X position",
   "cloth_config.voicechat.config.group_player_icon_pos_y": "Group icon Y position",
-  "cloth_config.voicechat.config.show_own_group_icon": "Show own group HUD icon"
+  "cloth_config.voicechat.config.show_own_group_icon": "Show own group HUD icon",
+  "cloth_config.voicechat.config.offline_player_volume_adjustment": "Offline player volume adjustment"
 }
