@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.gui.group;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.gui.SkinUtils;
+import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeSlider;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
@@ -59,7 +59,7 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
             }
         }
 
-        RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getUuid()));
+        RenderSystem.setShaderTexture(0, GameProfileUtils.getSkin(state.getUuid()));
         GuiComponent.blit(poseStack, 1, 1, 8, 8, 8, 8, 8, 8, 64, 64);
         RenderSystem.enableBlend();
         GuiComponent.blit(poseStack, 1, 1, 8, 8, 40, 8, 8, 8, 64, 64);
