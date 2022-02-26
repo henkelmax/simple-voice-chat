@@ -81,6 +81,7 @@ dependencies {
     }
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'org.jetbrains:annotations:23.0.0'
 
     compileOnly fg.deobf("de.maxhenkel.soundphysics:soundphysics-forge:${sound_physics_remastered_version}") {
         transitive false
