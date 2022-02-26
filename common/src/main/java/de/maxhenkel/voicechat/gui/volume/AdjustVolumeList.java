@@ -2,8 +2,10 @@ package de.maxhenkel.voicechat.gui.volume;
 
 import com.google.common.collect.Lists;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -11,16 +13,32 @@ import java.util.Locale;
 public class AdjustVolumeList extends ListScreenListBase<PlayerVolumeEntry> {
 
     protected final List<PlayerVolumeEntry> players;
-    protected final List<PlayerVolumeEntry> filteredPlayers;
     protected String filter;
 
     public AdjustVolumeList(int width, int height, int x, int y, int size) {
         super(width, height, x, y, size);
         this.players = Lists.newArrayList();
-        this.filteredPlayers = Lists.newArrayList();
         this.filter = "";
         setRenderBackground(false);
         setRenderTopAndBottom(false);
+        updatePlayerList(ClientManager.getPlayerStateManager().getPlayerStates(false));
+    }
+
+    public void tick() {
+        List<PlayerState> playerStates = ClientManager.getPlayerStateManager().getPlayerStates(false);
+        if (hasChanged(playerStates)) {
+            updatePlayerList(playerStates);
+        }
+    }
+
+    private boolean hasChanged(List<PlayerState> playerStates) {
+        for (PlayerState state : playerStates) {
+            boolean match = players.stream().anyMatch(entry -> entry.getState().getUuid().equals(state.getUuid()));
+            if (!match) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void updatePlayerList(Collection<PlayerState> collection) {
@@ -32,8 +50,8 @@ public class AdjustVolumeList extends ListScreenListBase<PlayerVolumeEntry> {
     }
 
     public void updateFilter() {
-        filteredPlayers.clear();
-        filteredPlayers.addAll(players);
+        clearEntries();
+        List<PlayerVolumeEntry> filteredPlayers = new ArrayList<>(players);
         if (!filter.isEmpty()) {
             filteredPlayers.removeIf(playerEntry -> playerEntry.getState() == null || !playerEntry.getState().getName().toLowerCase(Locale.ROOT).contains(filter));
         }
@@ -50,7 +68,7 @@ public class AdjustVolumeList extends ListScreenListBase<PlayerVolumeEntry> {
     }
 
     public boolean isEmpty() {
-        return filteredPlayers.isEmpty();
+        return children().isEmpty();
     }
 
 }
