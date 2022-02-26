@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.gui.group;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.CreateGroupScreen;
 import de.maxhenkel.voicechat.gui.EnterPasswordScreen;
@@ -9,22 +8,22 @@ import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import de.maxhenkel.voicechat.net.JoinGroupPacket;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
+import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class JoinGroupScreen extends ListScreenBase {
 
     protected static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_join_group.png");
-    protected static final Component TITLE = new TranslatableComponent("gui.voicechat.join_create_group.title");
-    protected static final Component CREATE_GROUP = new TranslatableComponent("message.voicechat.create_group_button");
-    protected static final Component JOIN_CREATE_GROUP = new TranslatableComponent("message.voicechat.join_create_group");
-    protected static final Component NO_GROUPS = new TranslatableComponent("message.voicechat.no_groups").withStyle(ChatFormatting.GRAY);
+    protected static final ITextComponent TITLE = new TranslationTextComponent("gui.voicechat.join_create_group.title");
+    protected static final ITextComponent CREATE_GROUP = new TranslationTextComponent("message.voicechat.create_group_button");
+    protected static final ITextComponent JOIN_CREATE_GROUP = new TranslationTextComponent("message.voicechat.join_create_group");
+    protected static final ITextComponent NO_GROUPS = new TranslationTextComponent("message.voicechat.no_groups").withStyle(TextFormatting.GRAY);
 
     protected static final int HEADER_SIZE = 16;
     protected static final int FOOTER_SIZE = 32;
@@ -44,7 +43,7 @@ public class JoinGroupScreen extends ListScreenBase {
         super.init();
         guiLeft = guiLeft + 2;
         guiTop = 32;
-        int minUnits = Mth.ceil((float) (CELL_HEIGHT + 4) / (float) UNIT_SIZE);
+        int minUnits = MathHelper.ceil((float) (CELL_HEIGHT + 4) / (float) UNIT_SIZE);
         units = Math.max(minUnits, (height - HEADER_SIZE - FOOTER_SIZE - guiTop * 2) / UNIT_SIZE);
         ySize = HEADER_SIZE + units * UNIT_SIZE + FOOTER_SIZE;
 
@@ -58,7 +57,7 @@ public class JoinGroupScreen extends ListScreenBase {
         createGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 14, 20, CREATE_GROUP, button -> {
             minecraft.setScreen(new CreateGroupScreen());
         });
-        addRenderableWidget(createGroup);
+        addButton(createGroup);
     }
 
     @Override
@@ -68,8 +67,8 @@ public class JoinGroupScreen extends ListScreenBase {
     }
 
     @Override
-    public void renderBackground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        RenderSystem.setShaderTexture(0, TEXTURE);
+    public void renderBackground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
+        minecraft.getTextureManager().bind(TEXTURE);
         blit(poseStack, guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE);
         for (int i = 0; i < units; i++) {
             blit(poseStack, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * i, 0, HEADER_SIZE, xSize, UNIT_SIZE);
@@ -79,7 +78,7 @@ public class JoinGroupScreen extends ListScreenBase {
     }
 
     @Override
-    public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+    public void renderForeground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
         font.draw(poseStack, JOIN_CREATE_GROUP, guiLeft + xSize / 2 - font.width(JOIN_CREATE_GROUP) / 2, guiTop + 5, FONT_COLOR);
 
         if (!groupList.isEmpty()) {
@@ -97,7 +96,7 @@ public class JoinGroupScreen extends ListScreenBase {
         for (JoinGroupEntry entry : groupList.children()) {
             if (entry.isMouseOver(mouseX, mouseY)) {
                 ClientGroup group = entry.getGroup().getGroup();
-                minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
+                minecraft.getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
                 if (group.hasPassword()) {
                     minecraft.setScreen(new EnterPasswordScreen(group));
                 } else {

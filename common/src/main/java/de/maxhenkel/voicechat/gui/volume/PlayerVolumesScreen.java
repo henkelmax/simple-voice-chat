@@ -1,25 +1,24 @@
 package de.maxhenkel.voicechat.gui.volume;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Locale;
 
 public class PlayerVolumesScreen extends ListScreenBase {
 
     protected static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_player_volumes.png");
-    protected static final Component TITLE = new TranslatableComponent("gui.voicechat.adjust_volume.title");
-    protected static final Component SEARCH_HINT = new TranslatableComponent("message.voicechat.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
-    protected static final Component EMPTY_SEARCH = new TranslatableComponent("message.voicechat.search_empty").withStyle(ChatFormatting.GRAY);
+    protected static final ITextComponent TITLE = new TranslationTextComponent("gui.voicechat.adjust_volume.title");
+    protected static final ITextComponent SEARCH_HINT = new TranslationTextComponent("message.voicechat.search_hint").withStyle(TextFormatting.ITALIC).withStyle(TextFormatting.GRAY);
+    protected static final ITextComponent EMPTY_SEARCH = new TranslationTextComponent("message.voicechat.search_empty").withStyle(TextFormatting.GRAY);
 
     protected static final int HEADER_SIZE = 16;
     protected static final int FOOTER_SIZE = 8;
@@ -28,7 +27,7 @@ public class PlayerVolumesScreen extends ListScreenBase {
     protected static final int CELL_HEIGHT = 36;
 
     protected AdjustVolumeList volumeList;
-    protected EditBox searchBox;
+    protected TextFieldWidget searchBox;
     protected String lastSearch;
     protected int units;
 
@@ -49,7 +48,7 @@ public class PlayerVolumesScreen extends ListScreenBase {
         super.init();
         guiLeft = guiLeft + 2;
         guiTop = 32;
-        int minUnits = Mth.ceil((float) (CELL_HEIGHT + SEARCH_HEIGHT + 4) / (float) UNIT_SIZE);
+        int minUnits = MathHelper.ceil((float) (CELL_HEIGHT + SEARCH_HEIGHT + 4) / (float) UNIT_SIZE);
         units = Math.max(minUnits, (height - HEADER_SIZE - FOOTER_SIZE - guiTop * 2 - SEARCH_HEIGHT) / UNIT_SIZE);
         ySize = HEADER_SIZE + units * UNIT_SIZE + FOOTER_SIZE;
 
@@ -60,7 +59,7 @@ public class PlayerVolumesScreen extends ListScreenBase {
             volumeList = new AdjustVolumeList(width, height, guiTop + HEADER_SIZE + SEARCH_HEIGHT, guiTop + HEADER_SIZE + units * UNIT_SIZE, CELL_HEIGHT);
         }
         String string = searchBox != null ? searchBox.getValue() : "";
-        searchBox = new EditBox(font, guiLeft + 28, guiTop + HEADER_SIZE + 6, 196, SEARCH_HEIGHT, SEARCH_HINT);
+        searchBox = new TextFieldWidget(font, guiLeft + 28, guiTop + HEADER_SIZE + 6, 196, SEARCH_HEIGHT, SEARCH_HINT);
         searchBox.setMaxLength(16);
         searchBox.setBordered(false);
         searchBox.setVisible(true);
@@ -78,8 +77,8 @@ public class PlayerVolumesScreen extends ListScreenBase {
     }
 
     @Override
-    public void renderBackground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        RenderSystem.setShaderTexture(0, TEXTURE);
+    public void renderBackground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
+        minecraft.getTextureManager().bind(TEXTURE);
         blit(poseStack, guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE);
         for (int i = 0; i < units; i++) {
             blit(poseStack, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * i, 0, HEADER_SIZE, xSize, UNIT_SIZE);
@@ -89,7 +88,7 @@ public class PlayerVolumesScreen extends ListScreenBase {
     }
 
     @Override
-    public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+    public void renderForeground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
         font.draw(poseStack, TITLE, width / 2 - font.width(TITLE) / 2, guiTop + 5, VoiceChatScreenBase.FONT_COLOR);
         if (!volumeList.isEmpty()) {
             volumeList.render(poseStack, mouseX, mouseY, delta);

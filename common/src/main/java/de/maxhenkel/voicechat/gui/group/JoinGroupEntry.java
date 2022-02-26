@@ -1,24 +1,24 @@
 package de.maxhenkel.voicechat.gui.group;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.SkinUtils;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
-import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.ColorHelper;
+import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +26,13 @@ import java.util.List;
 public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
 
     protected static final ResourceLocation LOCK = new ResourceLocation(Voicechat.MODID, "textures/icons/lock.png");
-    protected static final Component GROUP_MEMBERS = new TranslatableComponent("message.voicechat.group_members").withStyle(ChatFormatting.WHITE);
+    protected static final ITextComponent GROUP_MEMBERS = new TranslationTextComponent("message.voicechat.group_members").withStyle(TextFormatting.WHITE);
 
     protected static final int SKIN_SIZE = 12;
     protected static final int PADDING = 4;
-    protected static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
-    protected static final int BG_FILL_SELECTED = FastColor.ARGB32.color(255, 90, 90, 90);
-    protected static final int PLAYER_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
+    protected static final int BG_FILL = ColorHelper.PackedColor.color(255, 74, 74, 74);
+    protected static final int BG_FILL_SELECTED = ColorHelper.PackedColor.color(255, 90, 90, 90);
+    protected static final int PLAYER_NAME_COLOR = ColorHelper.PackedColor.color(255, 255, 255, 255);
 
     protected final ListScreenBase parent;
     protected final Minecraft minecraft;
@@ -45,21 +45,21 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
     }
 
     @Override
-    public void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+    public void render(MatrixStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
         if (hovered) {
-            GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL_SELECTED);
+            AbstractGui.fill(poseStack, left, top, left + width, top + height, BG_FILL_SELECTED);
         } else {
-            GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL);
+            AbstractGui.fill(poseStack, left, top, left + width, top + height, BG_FILL);
         }
 
         boolean hasPassword = group.group.hasPassword();
 
         if (hasPassword) {
-            RenderSystem.setShaderTexture(0, LOCK);
+            minecraft.getTextureManager().bind(LOCK);
             Screen.blit(poseStack, left + PADDING, top + height / 2 - 8, 0, 0, 16, 16, 16, 16);
         }
 
-        TextComponent groupName = new TextComponent(group.group.getName());
+        StringTextComponent groupName = new StringTextComponent(group.group.getName());
         minecraft.font.draw(poseStack, groupName, left + PADDING + (hasPassword ? 16 + PADDING : 0), top + height / 2 - minecraft.font.lineHeight / 2, PLAYER_NAME_COLOR);
 
         int textWidth = minecraft.font.width(groupName) + (hasPassword ? 16 + PADDING : 0);
@@ -81,7 +81,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             int headPosY = top + height / 2 - ((SKIN_SIZE * 2 + 2) / 2) + ((SKIN_SIZE * 2 + 2) / 2) * headYIndex;
 
             poseStack.pushPose();
-            RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getUuid()));
+            minecraft.getTextureManager().bind(SkinUtils.getSkin(state.getUuid()));
             poseStack.translate(headPosX, headPosY, 0);
             float scale = (float) SKIN_SIZE / 8F;
             poseStack.scale(scale, scale, scale);
@@ -93,16 +93,16 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
         }
 
         if (hovered) {
-            List<FormattedCharSequence> tooltip = Lists.newArrayList();
+            List<IReorderingProcessor> tooltip = Lists.newArrayList();
             tooltip.add(GROUP_MEMBERS.getVisualOrderText());
             int maxMembers = 10;
             for (int i = 0; i < group.getMembers().size(); i++) {
                 if (i >= maxMembers) {
-                    tooltip.add(new TranslatableComponent("message.voicechat.more_members", group.getMembers().size() - maxMembers).withStyle(ChatFormatting.GRAY).getVisualOrderText());
+                    tooltip.add(new TranslationTextComponent("message.voicechat.more_members", group.getMembers().size() - maxMembers).withStyle(TextFormatting.GRAY).getVisualOrderText());
                     break;
                 }
                 PlayerState state = group.getMembers().get(i);
-                tooltip.add(new TextComponent("  " + state.getName()).withStyle(ChatFormatting.GRAY).getVisualOrderText());
+                tooltip.add(new StringTextComponent("  " + state.getName()).withStyle(TextFormatting.GRAY).getVisualOrderText());
             }
             parent.postRender(() -> {
                 parent.renderTooltip(poseStack, tooltip, mouseX, mouseY);

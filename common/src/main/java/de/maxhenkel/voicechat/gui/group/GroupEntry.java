@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.gui.group;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.SkinUtils;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeSlider;
@@ -10,13 +10,13 @@ import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.ColorHelper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.StringTextComponent;
 
 public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
 
@@ -24,8 +24,8 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
     protected static final ResourceLocation SPEAKER_OFF = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_small_off.png");
 
     protected static final int PADDING = 4;
-    protected static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
-    protected static final int PLAYER_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
+    protected static final int BG_FILL = ColorHelper.PackedColor.color(255, 74, 74, 74);
+    protected static final int PLAYER_NAME_COLOR = ColorHelper.PackedColor.color(255, 255, 255, 255);
 
     protected final ListScreenBase parent;
     protected final Minecraft minecraft;
@@ -41,8 +41,8 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
     }
 
     @Override
-    public void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
-        GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL);
+    public void render(MatrixStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+        AbstractGui.fill(poseStack, left, top, left + width, top + height, BG_FILL);
 
         poseStack.pushPose();
         int outlineSize = height - PADDING * 2;
@@ -54,28 +54,28 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
         if (!state.isDisabled()) {
             ClientVoicechat client = ClientManager.getClient();
             if (client != null && client.getTalkCache().isTalking(state.getUuid())) {
-                RenderSystem.setShaderTexture(0, TALK_OUTLINE);
+                minecraft.getTextureManager().bind(TALK_OUTLINE);
                 Screen.blit(poseStack, 0, 0, 0, 0, 10, 10, 16, 16);
             }
         }
 
-        RenderSystem.setShaderTexture(0, SkinUtils.getSkin(state.getUuid()));
-        GuiComponent.blit(poseStack, 1, 1, 8, 8, 8, 8, 8, 8, 64, 64);
+        minecraft.getTextureManager().bind(SkinUtils.getSkin(state.getUuid()));
+        AbstractGui.blit(poseStack, 1, 1, 8, 8, 8, 8, 8, 8, 64, 64);
         RenderSystem.enableBlend();
-        GuiComponent.blit(poseStack, 1, 1, 8, 8, 40, 8, 8, 8, 64, 64);
+        AbstractGui.blit(poseStack, 1, 1, 8, 8, 40, 8, 8, 8, 64, 64);
         RenderSystem.disableBlend();
 
         if (state.isDisabled()) {
             poseStack.pushPose();
             poseStack.translate(1D, 1D, 0D);
             poseStack.scale(0.5F, 0.5F, 1F);
-            RenderSystem.setShaderTexture(0, SPEAKER_OFF);
+            minecraft.getTextureManager().bind(SPEAKER_OFF);
             Screen.blit(poseStack, 0, 0, 0, 0, 16, 16, 16, 16);
             poseStack.popPose();
         }
         poseStack.popPose();
 
-        TextComponent name = new TextComponent(state.getName());
+        StringTextComponent name = new StringTextComponent(state.getName());
         minecraft.font.draw(poseStack, name, left + PADDING + outlineSize + PADDING, top + height / 2 - minecraft.font.lineHeight / 2, PLAYER_NAME_COLOR);
 
         if (hovered && !ClientManager.getPlayerStateManager().getOwnID().equals(state.getUuid())) {

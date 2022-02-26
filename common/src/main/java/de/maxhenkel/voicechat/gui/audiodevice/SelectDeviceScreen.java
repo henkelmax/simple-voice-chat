@@ -1,27 +1,27 @@
 package de.maxhenkel.voicechat.gui.audiodevice;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
+import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class SelectDeviceScreen extends ListScreenBase {
 
     protected static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_audio_devices.png");
-    protected static final Component BACK = new TranslatableComponent("message.voicechat.back");
+    protected static final ITextComponent BACK = new TranslationTextComponent("message.voicechat.back");
 
     protected static final int HEADER_SIZE = 16;
     protected static final int FOOTER_SIZE = 32;
@@ -34,7 +34,7 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
     protected Button back;
     protected int units;
 
-    public SelectDeviceScreen(Component title, @Nullable Screen parent) {
+    public SelectDeviceScreen(ITextComponent title, @Nullable Screen parent) {
         super(title, 236, 0);
         this.parent = parent;
     }
@@ -47,7 +47,7 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
 
     public abstract ResourceLocation getIcon(String device);
 
-    public abstract Component getEmptyListComponent();
+    public abstract ITextComponent getEmptyListComponent();
 
     public abstract String getVisibleName(String device);
 
@@ -56,7 +56,7 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
         super.init();
         guiLeft = guiLeft + 2;
         guiTop = 32;
-        int minUnits = Mth.ceil((float) (CELL_HEIGHT + 4) / (float) UNIT_SIZE);
+        int minUnits = MathHelper.ceil((float) (CELL_HEIGHT + 4) / (float) UNIT_SIZE);
         units = Math.max(minUnits, (height - HEADER_SIZE - FOOTER_SIZE - guiTop * 2) / UNIT_SIZE);
         ySize = HEADER_SIZE + units * UNIT_SIZE + FOOTER_SIZE;
 
@@ -70,16 +70,16 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
         back = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 14, 20, BACK, button -> {
             minecraft.setScreen(parent);
         });
-        addRenderableWidget(back);
+        addButton(back);
 
-        deviceList.replaceEntries(getDevices().stream().map(s -> new AudioDeviceEntry(this, s)).toList());
+        deviceList.replaceEntries(getDevices().stream().map(s -> new AudioDeviceEntry(this, s)).collect(Collectors.toList()));
     }
 
 
     @Override
-    public void renderBackground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+    public void renderBackground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
         if (isIngame()) {
-            RenderSystem.setShaderTexture(0, TEXTURE);
+            minecraft.getTextureManager().bind(TEXTURE);
             blit(poseStack, guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE);
             for (int i = 0; i < units; i++) {
                 blit(poseStack, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * i, 0, HEADER_SIZE, xSize, UNIT_SIZE);
@@ -90,8 +90,8 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
     }
 
     @Override
-    public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        font.draw(poseStack, title, width / 2 - font.width(title) / 2, guiTop + 5, isIngame() ? VoiceChatScreenBase.FONT_COLOR : ChatFormatting.WHITE.getColor());
+    public void renderForeground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
+        font.draw(poseStack, title, width / 2 - font.width(title) / 2, guiTop + 5, isIngame() ? VoiceChatScreenBase.FONT_COLOR : TextFormatting.WHITE.getColor());
         if (!deviceList.isEmpty()) {
             deviceList.render(poseStack, mouseX, mouseY, delta);
         } else {
@@ -107,7 +107,7 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
         for (AudioDeviceEntry entry : deviceList.children()) {
             if (entry.isMouseOver(mouseX, mouseY)) {
                 if (!getSelectedDevice().equals(entry.getDevice())) {
-                    minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
+                    minecraft.getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
                     onSelect(entry.getDevice());
                     return true;
                 }

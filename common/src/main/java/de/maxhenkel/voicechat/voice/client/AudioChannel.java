@@ -4,9 +4,9 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.*;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.vector.Vector3d;
 import org.apache.commons.lang3.tuple.Pair;
 

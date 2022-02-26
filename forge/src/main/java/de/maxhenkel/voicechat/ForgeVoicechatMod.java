@@ -32,7 +32,7 @@ public class ForgeVoicechatMod extends Voicechat {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 
         SERVER_CONFIG = registerConfig(ModConfig.Type.SERVER, ForgeServerConfig::new);
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             VoicechatClient.CLIENT_CONFIG = ForgeVoicechatMod.registerConfig(ModConfig.Type.CLIENT, ForgeClientConfig::new);
         });
     }

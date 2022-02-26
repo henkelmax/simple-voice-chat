@@ -1,23 +1,22 @@
 package de.maxhenkel.voicechat.gui.audiodevice;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.util.ColorHelper;
+import net.minecraft.util.ResourceLocation;
 
 public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
 
     protected static final ResourceLocation SELECTED = new ResourceLocation(Voicechat.MODID, "textures/icons/device_selected.png");
 
     protected static final int PADDING = 4;
-    protected static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
-    protected static final int BG_FILL_HOVERED = FastColor.ARGB32.color(255, 90, 90, 90);
-    protected static final int BG_FILL_SELECTED = FastColor.ARGB32.color(255, 40, 40, 40);
-    protected static final int DEVICE_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
+    protected static final int BG_FILL = ColorHelper.PackedColor.color(255, 74, 74, 74);
+    protected static final int BG_FILL_HOVERED = ColorHelper.PackedColor.color(255, 90, 90, 90);
+    protected static final int BG_FILL_SELECTED = ColorHelper.PackedColor.color(255, 40, 40, 40);
+    protected static final int DEVICE_NAME_COLOR = ColorHelper.PackedColor.color(255, 255, 255, 255);
 
     protected final Minecraft minecraft;
     protected final String device;
@@ -32,21 +31,21 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
     }
 
     @Override
-    public void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+    public void render(MatrixStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
         boolean selected = parent.getSelectedDevice().equals(device);
         if (selected) {
-            GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL_SELECTED);
+            AbstractGui.fill(poseStack, left, top, left + width, top + height, BG_FILL_SELECTED);
         } else if (hovered) {
-            GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL_HOVERED);
+            AbstractGui.fill(poseStack, left, top, left + width, top + height, BG_FILL_HOVERED);
         } else {
-            GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL);
+            AbstractGui.fill(poseStack, left, top, left + width, top + height, BG_FILL);
         }
 
-        RenderSystem.setShaderTexture(0, parent.getIcon(device));
-        GuiComponent.blit(poseStack, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
+        minecraft.getTextureManager().bind(parent.getIcon(device));
+        AbstractGui.blit(poseStack, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
         if (selected) {
-            RenderSystem.setShaderTexture(0, SELECTED);
-            GuiComponent.blit(poseStack, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
+            minecraft.getTextureManager().bind(SELECTED);
+            AbstractGui.blit(poseStack, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
         }
 
         float deviceWidth = minecraft.font.width(visibleDeviceName);
