@@ -5,3 +5,4 @@
 - Reworked speaker selection GUI
 - Added system sounds slider
 - Improved GUI performance
+- Updated to 1.18.2
