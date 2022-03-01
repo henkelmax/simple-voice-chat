@@ -61,8 +61,7 @@ dependencies {
 
     implementation project(':common')
 
-    modCompileOnly "com.terraformersmc:modmenu:${modmenu_version}"
-    // modImplementation "com.terraformersmc:modmenu:${modmenu_version}" //TODO add back after snapshots
+    modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
 
     modCompileOnly("de.maxhenkel.soundphysics:soundphysics-fabric:${sound_physics_remastered_version}") {
         transitive false
