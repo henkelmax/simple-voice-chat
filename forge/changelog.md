@@ -1,1 +1,2 @@
 - Fixed hunger bar disappearing when having icons visible
+- Force java microphone implementation on MacOS
