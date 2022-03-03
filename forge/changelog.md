@@ -1,1 +1,1 @@
-- Added offline player volume adjustment config option
+- Force java microphone implementation on MacOS
