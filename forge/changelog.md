@@ -1,1 +1,1 @@
-- Added offline player volume adjustment config option
+- Fixed hunger bar disappearing when having icons visible
