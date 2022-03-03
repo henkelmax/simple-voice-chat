@@ -38,6 +38,10 @@ public class FabricClientConfig extends ClientConfig {
         macosMicrophoneWorkaround = builder.booleanEntry("macos_microphone_workaround", true);
         showFakePlayersDisconnected = builder.booleanEntry("show_fake_players_disconnected", false);
         offlinePlayerVolumeAdjustment = builder.booleanEntry("offline_player_volume_adjustment", false);
+
+        if (Platform.isMac() && !javaMicrophoneImplementation.get()) {
+            javaMicrophoneImplementation.set(true).save();
+        }
     }
 
 }
