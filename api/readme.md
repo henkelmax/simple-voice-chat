@@ -23,5 +23,5 @@ This submodule contains everything related to the Simple Voice Chat Plugin API.
 - [x] Bukkit getting started
 - [x] Introduction
 - [x] Bukkit code examples
-- [ ] ~~Fabric code examples~~
+- [x] Fabric code examples
 - [ ] ~~Forge code examples~~
