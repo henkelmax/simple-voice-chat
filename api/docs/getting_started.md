@@ -1,6 +1,18 @@
 # Getting Started
 
-## Fabric
+## Starting From Scratch
+
+If you are starting your project from scratch, you can use one of the provided project templates:
+
+- [Fabric Template](https://github.com/henkelmax/voicechat-api-fabric)
+- [Forge Template](https://github.com/henkelmax/voicechat-api-forge)
+- [Bukkit Template](https://github.com/henkelmax/voicechat-api-bukkit)
+
+## With Existing Mods/Plugins
+
+If you already have a project, that you want to integrate Simple Voice Chat into, follow the steps below.
+
+### Fabric
 
 To add the API dependency to your Fabric mod, add the following maven repository to your project.
 
@@ -79,23 +91,29 @@ created.
 }
 ```
 
-To have *Simple Voice Chat* installed in your development environment, you can either drop the mod `.jar` into
-the `mods` folder, or use [Cursemaven](https://www.cursemaven.com/).
+To have *Simple Voice Chat* installed in your development environment, use the [Modrinth Maven Repository](https://docs.modrinth.com/docs/tutorials/maven/).
+Alternatively use [Cursemaven](https://www.cursemaven.com/).
 
 *build.gradle*
 
 ```groovy
 repositories {
     ...
-    maven { url = 'https://cursemaven.com' }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 dependencies {
     ...
-    modImplementation "curse.maven:simple-voice-chat-416089:${voicechat_curseforge_file_id}"
+    modRuntimeOnly "maven.modrinth:simple-voice-chat:fabric-${voicechat_version}"
 }
 ```
 
-## Forge
+### Forge
 
 To add the API dependency to your Forge mod, add the following maven repository to your project.
 
@@ -158,22 +176,29 @@ public class TestPlugin implements VoicechatPlugin {
 }
 ```
 
-To have *Simple Voice Chat* installed in your development environment, use [Cursemaven](https://www.cursemaven.com/).
+To have *Simple Voice Chat* installed in your development environment, use the [Modrinth Maven Repository](https://docs.modrinth.com/docs/tutorials/maven/).
+Alternatively use [Cursemaven](https://www.cursemaven.com/).
 
 *build.gradle*
 
 ```groovy
 repositories {
     ...
-    maven { url = 'https://cursemaven.com' }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 dependencies {
     ...
-    implementation fg.deobf("curse.maven:simple-voice-chat-416089:${voicechat_curseforge_file_id}")
+    runtimeOnly fg.deobf("maven.modrinth:simple-voice-chat:forge-${voicechat_version}")
 }
 ```
 
-## Bukkit/Spigot/Paper
+### Bukkit/Spigot/Paper
 
 To add the API dependency to your Bukkit/Spigot/Paper plugin add the following maven repository to your project.
 
