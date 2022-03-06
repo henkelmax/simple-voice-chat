@@ -7,7 +7,7 @@ This submodule contains everything related to the Simple Voice Chat Plugin API.
 - [Javadocs](https://voicechat.modrepo.de/)
 - [Fabric Template Mod](https://github.com/henkelmax/voicechat-api-fabric)
 - [Forge Template Mod](https://github.com/henkelmax/voicechat-api-forge)
-- [Bukkit Template plugin](https://github.com/henkelmax/voicechat-api-bukkit)
+- [Bukkit Template Plugin](https://github.com/henkelmax/voicechat-api-bukkit)
 - [Examples](docs/examples.md)
 
 ## Table of Contents
