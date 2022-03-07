@@ -145,7 +145,6 @@ curseforge {
             displayName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
             relations {
                 optionalDependency 'modmenu'
-                optionalDependency 'sound-physics-fabric'
                 optionalDependency 'sound-physics-remastered'
                 optionalDependency 'cloth-config'
             }
@@ -173,7 +172,6 @@ task publishModrinth(type: TaskModrinthUpload) {
     addGameVersion(minecraft_version)
     addLoader('fabric')
 //    addDependency('mOgUt4GM', 'optional') // ModMenu
-//    addDependency('Af0DueBa', 'optional') // SoundPhysics
 }
 
 tasks.publishModrinth.dependsOn(build)
