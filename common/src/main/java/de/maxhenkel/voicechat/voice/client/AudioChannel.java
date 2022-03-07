@@ -83,7 +83,7 @@ public class AudioChannel extends Thread {
             if (client.getSoundManager() == null) {
                 throw new IllegalStateException("Started audio channel without sound manager");
             }
-            speaker = ClientCompatibilityManager.INSTANCE.createSpeaker(client.getSoundManager(), SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE);
+            speaker = new ALSpeaker(client.getSoundManager(), SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, uuid);
             speaker.open();
             while (!stopped) {
 

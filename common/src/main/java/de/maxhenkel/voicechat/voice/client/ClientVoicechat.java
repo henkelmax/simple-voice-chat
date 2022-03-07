@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
-import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -91,7 +90,7 @@ public class ClientVoicechat {
         if (soundManager != null) {
             soundManager.close();
         }
-        soundManager = ClientCompatibilityManager.INSTANCE.createSoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
+        soundManager = new SoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
     }
 
     public void reloadAudio() {

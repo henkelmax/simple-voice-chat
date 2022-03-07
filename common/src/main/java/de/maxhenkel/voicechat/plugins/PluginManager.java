@@ -59,7 +59,7 @@ public class PluginManager {
         events = eventBuilder.build();
     }
 
-    public <T extends Event> boolean dispatchEvent(Class<T> eventClass, T event) {
+    public <T extends Event> boolean dispatchEvent(Class<? extends T> eventClass, T event) {
         List<Consumer<? extends Event>> events = this.events.get(eventClass);
         if (events == null) {
             return false;
@@ -189,6 +189,31 @@ public class PluginManager {
             return null;
         }
         return clientSoundEvent.getRawAudio();
+    }
+
+    public void onALSound(int source, @Nullable UUID channelId, @Nullable Vec3 pos, Class<? extends OpenALSoundEvent> eventClass) {
+        dispatchEvent(eventClass, new OpenALSoundEventImpl(
+                new VoicechatClientApiImpl(),
+                channelId,
+                pos == null ? null : new PositionImpl(pos),
+                source
+        ));
+    }
+
+    public void onCreateALContext(long context, long device) {
+        dispatchEvent(CreateOpenALContextEvent.class, new CreateOpenALContextEventImpl(
+                new VoicechatClientApiImpl(),
+                context,
+                device
+        ));
+    }
+
+    public void onDestroyALContext(long context, long device) {
+        dispatchEvent(DestroyOpenALContextEvent.class, new DestroyOpenALContextEventImpl(
+                new VoicechatClientApiImpl(),
+                context,
+                device
+        ));
     }
 
     private static PluginManager instance;

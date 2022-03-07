@@ -1,2 +1,2 @@
-- Fixed hunger bar disappearing when having icons visible
-- Force java microphone implementation on MacOS
+- Added OpenAL sound events to voice chat API
+- Move Sound Physics Remastered integration to voice chat API

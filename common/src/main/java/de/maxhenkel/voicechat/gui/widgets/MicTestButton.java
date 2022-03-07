@@ -107,7 +107,7 @@ public class MicTestButton extends AbstractButton {
 
             SoundManager soundManager;
             if (client == null) {
-                soundManager = ClientCompatibilityManager.INSTANCE.createSoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
+                soundManager = new SoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
                 ownSoundManager = soundManager;
             } else {
                 soundManager = client.getSoundManager();
@@ -117,7 +117,7 @@ public class MicTestButton extends AbstractButton {
                 throw new SpeakerException("No sound manager");
             }
 
-            speaker = ClientCompatibilityManager.INSTANCE.createSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE);
+            speaker = new ALSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE);
 
             speaker.open();
 

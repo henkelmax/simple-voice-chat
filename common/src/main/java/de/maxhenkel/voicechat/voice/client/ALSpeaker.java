@@ -2,6 +2,8 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.api.events.OpenALSoundEvent;
+import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ActiveRenderInfo;
@@ -10,10 +12,11 @@ import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.openal.AL11;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public abstract class ALSpeaker {
+public class ALSpeaker {
 
     protected final Minecraft mc;
     protected final SoundManager soundManager;
@@ -23,16 +26,24 @@ public abstract class ALSpeaker {
     protected int source;
     protected volatile int bufferIndex;
     protected final int[] buffers;
-    private final ExecutorService executor;
+    protected final ExecutorService executor;
 
-    public ALSpeaker(SoundManager soundManager, int sampleRate, int bufferSize) {
+    @Nullable
+    protected UUID audioChannelId;
+
+    public ALSpeaker(SoundManager soundManager, int sampleRate, int bufferSize, @Nullable UUID audioChannelId) {
         mc = Minecraft.getInstance();
         this.soundManager = soundManager;
         this.sampleRate = sampleRate;
         this.bufferSize = bufferSize;
         this.bufferSampleSize = bufferSize;
+        this.audioChannelId = audioChannelId;
         this.buffers = new int[32];
         executor = Executors.newSingleThreadExecutor(NamedThreadPoolFactory.create("SoundSourceThread"));
+    }
+
+    public ALSpeaker(SoundManager soundManager, int sampleRate, int bufferSize) {
+        this(soundManager, sampleRate, bufferSize, null);
     }
 
     public void open() throws SpeakerException {
@@ -124,7 +135,9 @@ public abstract class ALSpeaker {
     }
 
     private void writeSync(short[] data, float volume, @Nullable Vector3d position) {
+        PluginManager.instance().onALSound(source, audioChannelId, position, OpenALSoundEvent.Pre.class);
         setPositionSync(position);
+        PluginManager.instance().onALSound(source, audioChannelId, position, OpenALSoundEvent.class);
 
         AL11.alSourcef(source, AL11.AL_MAX_GAIN, 6F);
         SoundManager.checkAlError();
@@ -149,6 +162,8 @@ public abstract class ALSpeaker {
         AL11.alSourceQueueBuffers(source, buffers[bufferIndex]);
         SoundManager.checkAlError();
         bufferIndex = (bufferIndex + 1) % buffers.length;
+
+        PluginManager.instance().onALSound(source, audioChannelId, position, OpenALSoundEvent.Post.class);
     }
 
     private void removeProcessedBuffersSync() {

@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.plugins.PluginManager;
 import org.lwjgl.openal.*;
 
 import javax.annotation.Nullable;
@@ -12,7 +13,7 @@ import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class SoundManager {
+public class SoundManager {
 
     public static final int SAMPLE_RATE = 48000;
     public static final int FRAME_SIZE = (SAMPLE_RATE / 1000) * 20;
@@ -27,9 +28,12 @@ public abstract class SoundManager {
 
         device = openSpeaker(deviceName);
         context = ALC11.alcCreateContext(device, (IntBuffer) null);
+
+        PluginManager.instance().onCreateALContext(context, device);
     }
 
     public void close() {
+        PluginManager.instance().onDestroyALContext(context, device);
         if (context != 0L) {
             ALC11.alcDestroyContext(context);
             checkAlcError(device);
