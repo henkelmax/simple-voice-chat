@@ -83,10 +83,6 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'org.jetbrains:annotations:23.0.0'
 
-    compileOnly fg.deobf("de.maxhenkel.soundphysics:soundphysics-forge:${sound_physics_remastered_version}") {
-        transitive false
-    }
-
     implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
     shadow "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
 
@@ -110,8 +106,7 @@ processResources {
                 'mod_name': mod_name,
                 'forge_loader_requirement': forge_loader_requirement,
                 'forge_requirement': forge_requirement,
-                'minecraft_version': minecraft_version,
-                'sound_physics_remastered_version': sound_physics_remastered_version
+                'minecraft_version': minecraft_version
     }
     filesMatching("compatibility.properties") {
         expand 'mod_compatibility_version': mod_compatibility_version

@@ -32,7 +32,6 @@ public class FabricClientConfig extends ClientConfig {
         hudIconScale = builder.doubleEntry("hud_icon_scale", 1D, 0.01D, 10D);
         recordingDestination = builder.stringEntry("recording_destination", "");
         denoiser = builder.booleanEntry("denoiser", false);
-        soundPhysics = builder.booleanEntry("soundphysics", true);
         runLocalServer = builder.booleanEntry("run_local_server", true);
         javaMicrophoneImplementation = builder.booleanEntry("java_microphone_implementation", Platform.isMac());
         macosMicrophoneWorkaround = builder.booleanEntry("macos_microphone_workaround", true);

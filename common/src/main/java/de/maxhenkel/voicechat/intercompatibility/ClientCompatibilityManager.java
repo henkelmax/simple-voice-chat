@@ -54,10 +54,6 @@ public abstract class ClientCompatibilityManager {
 
     public abstract void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource);
 
-    public abstract ALSpeaker createSpeaker(SoundManager soundManager, int sampleRate, int bufferSize);
-
-    public abstract SoundManager createSoundManager(@Nullable String deviceName) throws SpeakerException;
-
     public interface RenderNameplateEvent {
         void render(Entity entity, Component component, PoseStack stack, MultiBufferSource bufferSource, int light);
     }
