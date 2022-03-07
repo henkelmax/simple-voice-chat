@@ -38,9 +38,11 @@
   },
   "suggests": {
     "modmenu": ">=${modmenu_version}",
-    "sound_physics_remastered": ">=${sound_physics_remastered_version}",
-    "cloth-config2": ">=${cloth_config_version}",
-    "soundphysics": ">=${soundphysics_version}"
+    "sound_physics_remastered": ">=1.18.2-1.0.5",
+    "cloth-config2": ">=${cloth_config_version}"
+  },
+  "breaks": {
+    "sound_physics_remastered": "<1.18.2-1.0.5"
   },
   "custom": {
     "voicechat": {

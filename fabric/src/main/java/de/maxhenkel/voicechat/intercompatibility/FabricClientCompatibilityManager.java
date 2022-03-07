@@ -1,14 +1,9 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import de.maxhenkel.voicechat.audio.FabricALSpeaker;
-import de.maxhenkel.voicechat.audio.FabricSoundManager;
 import de.maxhenkel.voicechat.events.*;
 import de.maxhenkel.voicechat.resourcepacks.IPackRepository;
-import de.maxhenkel.voicechat.voice.client.ALSpeaker;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
-import de.maxhenkel.voicechat.voice.client.SoundManager;
-import de.maxhenkel.voicechat.voice.client.SpeakerException;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.KeyMapping;
@@ -16,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.Connection;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
-import org.jetbrains.annotations.Nullable;
 
 import java.net.SocketAddress;
 import java.util.function.Consumer;
@@ -104,15 +98,5 @@ public class FabricClientCompatibilityManager extends ClientCompatibilityManager
     public void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource) {
         IPackRepository repository = (IPackRepository) packRepository;
         repository.addSource(repositorySource);
-    }
-
-    @Override
-    public ALSpeaker createSpeaker(SoundManager soundManager, int sampleRate, int bufferSize) {
-        return new FabricALSpeaker(soundManager, sampleRate, bufferSize);
-    }
-
-    @Override
-    public SoundManager createSoundManager(@Nullable String deviceName) throws SpeakerException {
-        return new FabricSoundManager(deviceName);
     }
 }

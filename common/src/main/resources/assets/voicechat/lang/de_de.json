@@ -120,7 +120,6 @@
   "cloth_config.voicechat.config.deactivation_delay": "Verzögerung der Deaktivierung",
   "cloth_config.voicechat.config.output_buffer_size": "Größe des Ausgabepuffers",
   "cloth_config.voicechat.config.stereo": "Stereoton",
-  "cloth_config.voicechat.config.soundphysics": "Sound Physics integration",
   "cloth_config.voicechat.config.recording_destination": "Aufnahmepfad",
   "cloth_config.voicechat.config.run_local_server": "In Einzelspieler/LAN Welten ausführen",
   "cloth_config.voicechat.config.hud_icon_scale": "HUD Symbol Skalierung",
