@@ -1,6 +1,6 @@
 ---
 name: Translation
-about: Have you translated this mod into another language?
+about: Have you translated this mod/plugin into another language?
 title: ''
 labels: translation
 assignees: henkelmax
