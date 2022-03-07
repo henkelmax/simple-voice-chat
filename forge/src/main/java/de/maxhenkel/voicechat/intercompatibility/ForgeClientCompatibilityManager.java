@@ -1,14 +1,9 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import de.maxhenkel.voicechat.audio.ForgeALSpeaker;
-import de.maxhenkel.voicechat.audio.ForgeSoundManager;
 import de.maxhenkel.voicechat.events.VoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.events.VoiceChatDisconnectedEvent;
-import de.maxhenkel.voicechat.voice.client.ALSpeaker;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
-import de.maxhenkel.voicechat.voice.client.SoundManager;
-import de.maxhenkel.voicechat.voice.client.SpeakerException;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Connection;
@@ -24,7 +19,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import javax.annotation.Nullable;
 import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -193,15 +187,5 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @Override
     public void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource) {
         packRepository.addPackFinder(repositorySource);
-    }
-
-    @Override
-    public ALSpeaker createSpeaker(SoundManager soundManager, int sampleRate, int bufferSize) {
-        return new ForgeALSpeaker(soundManager, sampleRate, bufferSize);
-    }
-
-    @Override
-    public SoundManager createSoundManager(@Nullable String deviceName) throws SpeakerException {
-        return new ForgeSoundManager(deviceName);
     }
 }

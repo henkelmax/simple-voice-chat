@@ -94,7 +94,6 @@
   "cloth_config.voicechat.config.deactivation_delay": "Demora de desactivación",
   "cloth_config.voicechat.config.output_buffer_size": "Tamaño del búfer de salida",
   "cloth_config.voicechat.config.stereo": "Sonido estéreo",
-  "cloth_config.voicechat.config.soundphysics": "Integración de física del sonido",
   "cloth_config.voicechat.config.recording_destination": "Destino de grabaciones",
   "cloth_config.voicechat.config.hud_icon_scale": "Escala de iconos del HUD",
   "cloth_config.voicechat.config.hud_icon_x": "Posición X del HUD",

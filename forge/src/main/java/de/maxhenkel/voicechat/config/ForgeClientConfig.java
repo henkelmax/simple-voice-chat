@@ -134,10 +134,6 @@ public class ForgeClientConfig extends ClientConfig {
                 .comment("If noise cancellation should be enabled")
                 .define("denoiser", false)
         );
-        soundPhysics = wrapConfigEntry(builder
-                .comment("If sound physics integration should be enabled")
-                .define("soundphysics", true)
-        );
         runLocalServer = wrapConfigEntry(builder
                 .comment("If voice chat should work in singleplayer/LAN worlds")
                 .define("run_local_server", true)
