@@ -17,6 +17,7 @@ import de.maxhenkel.voicechat.voice.common.*;
 import de.maxhenkel.voicechat.voice.server.Group;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -191,7 +192,7 @@ public class PluginManager {
         return clientSoundEvent.getRawAudio();
     }
 
-    public void onALSound(int source, @Nullable UUID channelId, @Nullable Vec3 pos, Class<? extends OpenALSoundEvent> eventClass) {
+    public void onALSound(int source, @Nullable UUID channelId, @Nullable Vector3d pos, Class<? extends OpenALSoundEvent> eventClass) {
         dispatchEvent(eventClass, new OpenALSoundEventImpl(
                 new VoicechatClientApiImpl(),
                 channelId,
