@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.voice.client.speaker.*;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,7 +26,7 @@ public class AudioChannel extends Thread {
     private final BlockingQueue<SoundPacket<?>> queue;
     private final AudioPacketBuffer packetBuffer;
     private long lastPacketTime;
-    private ALSpeaker speaker;
+    private ALSpeakerBase speaker;
     private boolean stopped;
     private final OpusDecoder decoder;
     private long lastSequenceNumber;
@@ -83,8 +83,9 @@ public class AudioChannel extends Thread {
             if (client.getSoundManager() == null) {
                 throw new IllegalStateException("Started audio channel without sound manager");
             }
-            speaker = new ALSpeaker(client.getSoundManager(), SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, uuid);
-            speaker.open();
+
+            speaker = SpeakerManager.createSpeaker(client.getSoundManager(), uuid);
+
             while (!stopped) {
 
                 if (ClientManager.getPlayerStateManager().isDisabled()) {
@@ -169,21 +170,20 @@ public class AudioChannel extends Thread {
         }
 
         float volume = VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * playerVolume;
-        boolean stereo = VoicechatClient.CLIENT_CONFIG.stereo.get();
 
         if (packet instanceof GroupSoundPacket) {
-            speaker.write(monoData, volume, null);
+            speaker.play(monoData, volume, null);
             client.getTalkCache().updateTalking(uuid, false);
-            appendRecording(player, () -> Utils.convertToStereo(monoData, 1F, 1F));
+            appendRecording(player, () -> PositionalAudioUtils.convertToStereo(monoData));
         } else if (packet instanceof PlayerSoundPacket) {
             PlayerSoundPacket soundPacket = (PlayerSoundPacket) packet;
             if (player == null) {
                 return;
             }
             if (player == minecraft.cameraEntity) {
-                speaker.write(monoData, volume, null);
+                speaker.play(monoData, volume, null);
                 client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
-                appendRecording(player, () -> Utils.convertToStereo(monoData, 1F, 1F));
+                appendRecording(player, () -> PositionalAudioUtils.convertToStereo(monoData));
                 return;
             }
             Vector3d pos = player.getEyePosition(1F);
@@ -191,50 +191,17 @@ public class AudioChannel extends Thread {
             float crouchMultiplayer = player.isCrouching() ? (float) clientConnection.getData().getCrouchDistanceMultiplier() : 1F;
             float whisperMultiplayer = soundPacket.isWhispering() ? (float) clientConnection.getData().getWhisperDistanceMultiplier() : 1F;
             float multiplier = crouchMultiplayer * whisperMultiplayer;
-            float outputVolume = volume * getDistanceVolume(pos, multiplier);
-            speaker.write(monoData, outputVolume, stereo ? pos : null);
+            float outputVolume = volume * PositionalAudioUtils.getDistanceVolume(clientConnection, pos, multiplier);
+            speaker.play(monoData, outputVolume, pos);
             if (outputVolume >= 0.01F) {
                 client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
             }
-            appendRecording(player, () -> convertLocationalPacketToStereo(pos, monoData, multiplier));
+            appendRecording(player, () -> PositionalAudioUtils.convertLocationalPacketToStereo(clientConnection, pos, monoData, multiplier));
         } else if (packet instanceof LocationSoundPacket) {
             LocationSoundPacket p = (LocationSoundPacket) packet;
-            speaker.write(monoData, volume * getDistanceVolume(p.getLocation()), stereo ? p.getLocation() : null);
+            speaker.play(monoData, volume * PositionalAudioUtils.getDistanceVolume(clientConnection, p.getLocation()), stereo ? p.getLocation() : null);
             client.getTalkCache().updateTalking(uuid, false);
-            appendRecording(player, () -> convertLocationalPacketToStereo(p.getLocation(), monoData));
-        }
-    }
-
-    private short[] convertLocationalPacketToStereo(Vector3d pos, short[] monoData) {
-        return convertLocationalPacketToStereo(pos, monoData, 1F);
-    }
-
-    private short[] convertLocationalPacketToStereo(Vector3d pos, short[] monoData, float distanceMultiplier) {
-        float distanceVolume = getDistanceVolume(pos, distanceMultiplier);
-        if (VoicechatClient.CLIENT_CONFIG.stereo.get()) {
-            Pair<Float, Float> stereoVolume = Utils.getStereoVolume(minecraft, pos, clientConnection.getData().getVoiceChatDistance() * distanceMultiplier);
-            return Utils.convertToStereo(monoData, distanceVolume * stereoVolume.getLeft(), distanceVolume * stereoVolume.getRight());
-        } else {
-            return Utils.convertToStereo(monoData, distanceVolume, distanceVolume);
-        }
-    }
-
-    private float getDistanceVolume(Vector3d pos) {
-        return getDistanceVolume(pos, 1F);
-    }
-
-    private float getDistanceVolume(Vector3d pos, float distanceMultiplier) {
-        float distance = (float) pos.distanceTo(minecraft.cameraEntity.getEyePosition(1F));
-        float fadeDistance = (float) clientConnection.getData().getVoiceChatFadeDistance() * distanceMultiplier;
-        float maxDistance = (float) clientConnection.getData().getVoiceChatDistance() * distanceMultiplier;
-
-        if (distance < fadeDistance) {
-            return 1F;
-        } else if (distance > maxDistance) {
-            return 0F;
-        } else {
-            float percentage = (distance - fadeDistance) / (maxDistance - fadeDistance);
-            return 1F / (1F + (float) Math.exp((percentage * 12F) - 6F));
+            appendRecording(player, () -> PositionalAudioUtils.convertToStereoForRecording(clientConnection, p.getLocation(), monoData));
         }
     }
 

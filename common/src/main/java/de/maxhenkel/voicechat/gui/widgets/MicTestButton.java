@@ -3,8 +3,8 @@ package de.maxhenkel.voicechat.gui.widgets;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.*;
+import de.maxhenkel.voicechat.voice.client.speaker.*;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.widget.button.AbstractButton;
 import net.minecraft.util.text.ITextComponent;
@@ -86,7 +86,7 @@ public class MicTestButton extends AbstractButton {
 
     private class VoiceThread extends Thread {
 
-        private final ALSpeaker speaker;
+        private final Speaker speaker;
         private boolean running;
         private long lastRender;
         private MicThread micThread;
@@ -117,9 +117,7 @@ public class MicTestButton extends AbstractButton {
                 throw new SpeakerException("No sound manager");
             }
 
-            speaker = new ALSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE);
-
-            speaker.open();
+            speaker = SpeakerManager.createSpeaker(soundManager, null);
 
             updateLastRender();
             setMicLocked(true);
@@ -138,7 +136,7 @@ public class MicTestButton extends AbstractButton {
 
                 micListener.onMicValue(Utils.dbToPerc(Utils.getHighestAudioLevel(buff)));
 
-                speaker.write(buff, VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue(), null);
+                speaker.play(buff, VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue(), null);
             }
             speaker.close();
             setMicLocked(false);

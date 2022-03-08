@@ -111,7 +111,6 @@
   "cloth_config.voicechat.config.audio_packet_threshold": "音频包阈值",
   "cloth_config.voicechat.config.deactivation_delay": "关闭延迟",
   "cloth_config.voicechat.config.output_buffer_size": "输出缓冲区大小",
-  "cloth_config.voicechat.config.stereo": "立体音频",
   "cloth_config.voicechat.config.recording_destination": "录音保存位置",
   "cloth_config.voicechat.config.run_local_server": "在单人/局域网游戏中启用",
   "cloth_config.voicechat.config.hud_icon_scale": "HUD 图标缩放",

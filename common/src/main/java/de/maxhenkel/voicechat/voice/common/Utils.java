@@ -92,91 +92,7 @@ public class Utils {
         return floats;
     }
 
-    /**
-     * Changes the volume of 16 bit audio
-     * Note that this modifies the input array
-     *
-     * @param audio       the audio data
-     * @param volumeLeft  the amplification of the left audio
-     * @param volumeRight the amplification of the right audio
-     * @return the adjusted audio
-     */
-    public static byte[] convertToStereo(byte[] audio, float volumeLeft, float volumeRight) {
-        for (int i = 0; i < audio.length; i += 2) {
-            short audioSample = bytesToShort(audio[i], audio[i + 1]);
-
-            audioSample = (short) (audioSample * (i % 4 == 0 ? volumeLeft : volumeRight));
-
-            audio[i] = (byte) audioSample;
-            audio[i + 1] = (byte) (audioSample >> 8);
-
-        }
-        return audio;
-    }
-
-    /**
-     * Converts 16 bit mono audio to stereo
-     *
-     * @param audio the audio data
-     * @return the adjusted audio
-     */
-    public static short[] convertToStereo(short[] audio) {
-        short[] stereo = new short[audio.length * 2];
-        for (int i = 0; i < audio.length; i++) {
-            stereo[i * 2] = audio[i];
-            stereo[i * 2 + 1] = audio[i];
-        }
-        return stereo;
-    }
-
-    /**
-     * Convorts 16 bit mono audio to stereo
-     *
-     * @param audio       the audio data
-     * @param volumeLeft  the volume modifier for the left audio
-     * @param volumeRight the volume modifier for the right audio
-     * @return the adjusted audio
-     */
-    public static short[] convertToStereo(short[] audio, float volumeLeft, float volumeRight) {
-        short[] stereo = new short[audio.length * 2];
-        for (int i = 0; i < audio.length; i++) {
-            short left = (short) (audio[i] * volumeLeft);
-            short right = (short) (audio[i] * volumeRight);
-            stereo[i * 2] = left;
-            stereo[i * 2 + 1] = right;
-        }
-        return stereo;
-    }
-
-    public static Pair<Float, Float> getStereoVolume(Minecraft minecraft, Vector3d soundPos, double voiceChatDistance) {
-        ActiveRenderInfo mainCamera = minecraft.gameRenderer.getMainCamera();
-        Vector3d cameraPos = mainCamera.getPosition();
-        Vector3d d = soundPos.subtract(cameraPos).normalize();
-        Vector2f diff = new Vector2f((float) d.x, (float) d.z);
-        float diffAngle = angle(diff, new Vector2f(-1F, 0F));
-        float angle = normalizeAngle(diffAngle - (mainCamera.getYRot() % 360F));
-        float dif = (float) (Math.abs(cameraPos.y - soundPos.y) / voiceChatDistance);
-
-        float rot = angle / 180F;
-        float perc = rot;
-        if (rot < -0.5F) {
-            perc = -(0.5F + (rot + 0.5F));
-        } else if (rot > 0.5F) {
-            perc = 0.5F - (rot - 0.5F);
-        }
-        perc = perc * (1 - dif);
-
-        float left = perc < 0F ? Math.abs(perc * 1.4F) + 0.3F : 0.3F;
-        float right = perc >= 0F ? (perc * 1.4F) + 0.3F : 0.3F;
-
-        float fill = 1F - Math.max(left, right);
-        left += fill;
-        right += fill;
-
-        return new ImmutablePair<>(left, right);
-    }
-
-    private static float normalizeAngle(float angle) {
+    public static float normalizeAngle(float angle) {
         angle = angle % 360F;
         if (angle <= -180F) {
             angle += 360F;
@@ -186,7 +102,7 @@ public class Utils {
         return angle;
     }
 
-    private static float angle(Vector2f vec1, Vector2f vec2) {
+    public static float angle(Vector2f vec1, Vector2f vec2) {
         return (float) Math.toDegrees(Math.atan2(vec1.x * vec2.x + vec1.y * vec2.y, vec1.x * vec2.y - vec1.y * vec2.x));
     }
 

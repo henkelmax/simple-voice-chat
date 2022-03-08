@@ -7,35 +7,19 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class MicActivationButton extends AbstractButton {
+public class MicActivationButton extends EnumButton<MicrophoneActivationType> {
 
-    private static final ITextComponent PTT = new TranslationTextComponent("message.voicechat.activation_type.ptt");
-    private static final ITextComponent VOICE = new TranslationTextComponent("message.voicechat.activation_type.voice");
-
-    private MicrophoneActivationType type;
-    private VoiceActivationSlider voiceActivationSlider;
+    private final VoiceActivationSlider voiceActivationSlider;
 
     public MicActivationButton(int xIn, int yIn, int widthIn, int heightIn, VoiceActivationSlider voiceActivationSlider) {
-        super(xIn, yIn, widthIn, heightIn, new StringTextComponent(""));
+        super(xIn, yIn, widthIn, heightIn, VoicechatClient.CLIENT_CONFIG.microphoneActivationType);
         this.voiceActivationSlider = voiceActivationSlider;
-        type = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get();
         updateText();
-    }
-
-    private void updateText() {
-        if (MicrophoneActivationType.PTT.equals(type)) {
-            setMessage(new TranslationTextComponent("message.voicechat.activation_type", PTT));
-            voiceActivationSlider.visible = false;
-        } else if (MicrophoneActivationType.VOICE.equals(type)) {
-            setMessage(new TranslationTextComponent("message.voicechat.activation_type", VOICE));
-            voiceActivationSlider.visible = true;
-        }
     }
 
     @Override
-    public void onPress() {
-        type = MicrophoneActivationType.values()[(type.ordinal() + 1) % MicrophoneActivationType.values().length];
-        VoicechatClient.CLIENT_CONFIG.microphoneActivationType.set(type).save();
-        updateText();
+    protected Component getText(MicrophoneActivationType type) {
+        return new TranslationTextComponent("message.voicechat.activation_type", type.getText());
     }
+
 }

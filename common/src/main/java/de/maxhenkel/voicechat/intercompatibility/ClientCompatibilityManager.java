@@ -14,7 +14,6 @@ import net.minecraft.resources.IPackFinder;
 import net.minecraft.resources.ResourcePackList;
 import net.minecraft.util.text.ITextComponent;
 
-import javax.annotation.Nullable;
 import java.net.SocketAddress;
 import java.util.function.Consumer;
 
