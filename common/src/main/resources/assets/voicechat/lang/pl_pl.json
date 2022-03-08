@@ -95,7 +95,6 @@
   "cloth_config.voicechat.config.audio_packet_threshold": "Próg pakietów audio",
   "cloth_config.voicechat.config.deactivation_delay": "Czas dezaktywacji",
   "cloth_config.voicechat.config.output_buffer_size": "Wielkość buforu wyjściowego",
-  "cloth_config.voicechat.config.stereo": "Dźwięk stereo",
   "cloth_config.voicechat.config.recording_destination": "Folder docelowy nagrań",
   "cloth_config.voicechat.config.run_local_server": "Działaj w trybie jednoosobowym/światach LAN",
   "cloth_config.voicechat.config.hud_icon_scale": "Wielkość ikon HUD",
