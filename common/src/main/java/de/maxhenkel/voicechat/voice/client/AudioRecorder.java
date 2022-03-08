@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.client;
 import com.mojang.authlib.GameProfile;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
@@ -39,17 +40,17 @@ import java.util.stream.Collectors;
 public class AudioRecorder {
 
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
-    private static final GameProfile SYSTEM = new GameProfile(new UUID(0L, 0L), "system");
 
     private final long timestamp;
     private final Path location;
 
+    @Nullable
+    private final GameProfileCache gameProfileCache;
     private final Map<UUID, AudioChunk> chunks;
-    private final Map<UUID, GameProfile> gameProfileLookup;
 
     private final AudioFormat stereoFormat;
 
-    private ExecutorService threadPool;
+    private final ExecutorService threadPool;
 
     public AudioRecorder() {
         timestamp = System.currentTimeMillis();
@@ -64,7 +65,7 @@ public class AudioRecorder {
 
         location.toFile().mkdirs();
         chunks = new ConcurrentHashMap<>();
-        gameProfileLookup = new ConcurrentHashMap<>();
+        gameProfileCache = GameProfileUtils.getGameProfileCache();
 
         stereoFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, SoundManager.SAMPLE_RATE, 16, 2, 4, SoundManager.SAMPLE_RATE, false);
 
@@ -80,7 +81,7 @@ public class AudioRecorder {
     }
 
     public int getRecordedPlayerCount() {
-        return gameProfileLookup.size();
+        return chunks.size();
     }
 
     public String getDuration() {
@@ -95,21 +96,18 @@ public class AudioRecorder {
     }
 
     private String lookupName(UUID uuid) {
-        GameProfile gameProfile = gameProfileLookup.get(uuid);
-        if (gameProfile == null) {
+        if (gameProfileCache == null) {
             return uuid.toString();
         }
-        return gameProfile.getName();
+        return gameProfileCache.get(uuid).map(GameProfile::getName).orElse("system-" + uuid);
     }
 
     private Path getFilePath(UUID playerUUID, long timestamp) {
         return location.resolve(playerUUID.toString()).resolve(timestamp + ".wav");
     }
 
-    public void appendChunk(@Nullable GameProfile profile, long timestamp, short[] data) throws IOException {
-        GameProfile p = profile != null ? profile : SYSTEM;
-        gameProfileLookup.putIfAbsent(p.getId(), p);
-        getChunk(p.getId(), timestamp).add(data);
+    public void appendChunk(UUID uuid, long timestamp, short[] data) throws IOException {
+        getChunk(uuid, timestamp).add(data);
     }
 
     private void writeChunk(UUID playerUUID, AudioChunk chunk) throws IOException {
@@ -151,13 +149,13 @@ public class AudioRecorder {
         return chunks.remove(playerUUID);
     }
 
-    private AudioChunk getChunk(UUID playerUUID, long timestamp) {
-        if (!chunks.containsKey(playerUUID)) {
+    private AudioChunk getChunk(UUID uuid, long timestamp) {
+        if (!chunks.containsKey(uuid)) {
             AudioChunk chunk = new AudioChunk(timestamp);
-            chunks.put(playerUUID, chunk);
+            chunks.put(uuid, chunk);
             return chunk;
         } else {
-            return chunks.get(playerUUID);
+            return chunks.get(uuid);
         }
     }
 

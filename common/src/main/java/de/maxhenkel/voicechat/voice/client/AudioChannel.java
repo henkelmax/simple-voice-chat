@@ -174,7 +174,7 @@ public class AudioChannel extends Thread {
         if (packet instanceof GroupSoundPacket) {
             speaker.play(monoData, volume, null);
             client.getTalkCache().updateTalking(uuid, false);
-            appendRecording(player, () -> PositionalAudioUtils.convertToStereo(monoData));
+            appendRecording(() -> PositionalAudioUtils.convertToStereo(monoData));
         } else if (packet instanceof PlayerSoundPacket) {
             PlayerSoundPacket soundPacket = (PlayerSoundPacket) packet;
             if (player == null) {
@@ -183,7 +183,7 @@ public class AudioChannel extends Thread {
             if (player == minecraft.cameraEntity) {
                 speaker.play(monoData, volume, null);
                 client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
-                appendRecording(player, () -> PositionalAudioUtils.convertToStereo(monoData));
+                appendRecording(() -> PositionalAudioUtils.convertToStereo(monoData));
                 return;
             }
             Vector3d pos = player.getEyePosition(1F);
@@ -196,20 +196,20 @@ public class AudioChannel extends Thread {
             if (outputVolume >= 0.01F) {
                 client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
             }
-            appendRecording(player, () -> PositionalAudioUtils.convertLocationalPacketToStereo(clientConnection, pos, monoData, multiplier));
+            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(clientConnection, pos, monoData, multiplier));
         } else if (packet instanceof LocationSoundPacket) {
             LocationSoundPacket p = (LocationSoundPacket) packet;
-            speaker.play(monoData, volume * PositionalAudioUtils.getDistanceVolume(clientConnection, p.getLocation()), stereo ? p.getLocation() : null);
+            speaker.play(monoData, volume * PositionalAudioUtils.getDistanceVolume(clientConnection, p.getLocation()), p.getLocation());
             client.getTalkCache().updateTalking(uuid, false);
-            appendRecording(player, () -> PositionalAudioUtils.convertToStereoForRecording(clientConnection, p.getLocation(), monoData));
+            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(clientConnection, p.getLocation(), monoData));
         }
     }
 
-    private void appendRecording(PlayerEntity player, Supplier<short[]> stereo) {
+    private void appendRecording(Supplier<short[]> stereo) {
         speaker.runInContext(() -> {
             if (client.getRecorder() != null) {
                 try {
-                    client.getRecorder().appendChunk(player != null ? player.getGameProfile() : null, System.currentTimeMillis(), stereo.get());
+                    client.getRecorder().appendChunk(uuid, System.currentTimeMillis(), stereo.get());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
