@@ -11,30 +11,30 @@ public class MicrophoneManager {
 
     private static boolean fallback;
 
-    public static Microphone getMicrophone() throws MicrophoneException {
+    public static Microphone createMicrophone() throws MicrophoneException {
         Microphone mic;
         if (fallback || VoicechatClient.CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
-            mic = getJavaMicrophone();
+            mic = createJavaMicrophone();
         } else {
             try {
-                mic = getALMicrophone();
+                mic = createALMicrophone();
             } catch (MicrophoneException e) {
                 Voicechat.LOGGER.warn("Failed to use OpenAL microphone implementation: {}", e.getMessage());
                 Voicechat.LOGGER.warn("Falling back to Java microphone implementation");
-                mic = getJavaMicrophone();
+                mic = createJavaMicrophone();
                 fallback = true;
             }
         }
         return mic;
     }
 
-    private static Microphone getJavaMicrophone() throws MicrophoneException {
+    private static Microphone createJavaMicrophone() throws MicrophoneException {
         Microphone mic = new JavaxMicrophone(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get());
         mic.open();
         return mic;
     }
 
-    private static Microphone getALMicrophone() throws MicrophoneException {
+    private static Microphone createALMicrophone() throws MicrophoneException {
         Microphone mic = new ALMicrophone(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get());
         mic.open();
         return mic;

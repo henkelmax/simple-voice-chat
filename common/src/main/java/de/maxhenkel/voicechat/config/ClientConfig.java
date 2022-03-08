@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.config;
 import de.maxhenkel.configbuilder.ConfigEntry;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
+import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
 
 public abstract class ClientConfig {
 
@@ -17,7 +18,6 @@ public abstract class ClientConfig {
     public ConfigEntry<String> speaker;
     public ConfigEntry<Boolean> muted;
     public ConfigEntry<Boolean> disabled;
-    public ConfigEntry<Boolean> stereo;
     public ConfigEntry<Boolean> hideIcons;
     public ConfigEntry<Boolean> showGroupHUD;
     public ConfigEntry<Boolean> showOwnGroupIcon;
@@ -35,5 +35,6 @@ public abstract class ClientConfig {
     public ConfigEntry<Boolean> macosMicrophoneWorkaround;
     public ConfigEntry<Boolean> showFakePlayersDisconnected;
     public ConfigEntry<Boolean> offlinePlayerVolumeAdjustment;
+    public ConfigEntry<AudioType> audioType;
 
 }

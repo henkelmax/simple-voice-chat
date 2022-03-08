@@ -1,4 +1,4 @@
-package de.maxhenkel.voicechat.voice.client;
+package de.maxhenkel.voicechat.voice.client.speaker;
 
 import java.io.IOException;
 

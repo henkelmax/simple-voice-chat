@@ -4,6 +4,7 @@ import com.sun.jna.Platform;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
+import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
 
 public class FabricClientConfig extends ClientConfig {
 
@@ -19,7 +20,6 @@ public class FabricClientConfig extends ClientConfig {
         speaker = builder.stringEntry("speaker", "");
         muted = builder.booleanEntry("muted", false);
         disabled = builder.booleanEntry("disabled", false);
-        stereo = builder.booleanEntry("stereo", true);
         hideIcons = builder.booleanEntry("hide_icons", false);
         showGroupHUD = builder.booleanEntry("show_group_hud", true);
         showOwnGroupIcon = builder.booleanEntry("show_own_group_icon", true);
@@ -37,6 +37,7 @@ public class FabricClientConfig extends ClientConfig {
         macosMicrophoneWorkaround = builder.booleanEntry("macos_microphone_workaround", true);
         showFakePlayersDisconnected = builder.booleanEntry("show_fake_players_disconnected", false);
         offlinePlayerVolumeAdjustment = builder.booleanEntry("offline_player_volume_adjustment", false);
+        audioType = builder.enumEntry("audio_type", AudioType.NORMAL);
 
         if (Platform.isMac() && !javaMicrophoneImplementation.get()) {
             javaMicrophoneImplementation.set(true).save();

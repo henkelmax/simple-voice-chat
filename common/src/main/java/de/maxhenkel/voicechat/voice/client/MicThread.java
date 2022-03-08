@@ -49,7 +49,7 @@ public class MicThread extends Thread {
         setDaemon(true);
         setName("MicrophoneThread");
 
-        mic = MicrophoneManager.getMicrophone();
+        mic = MicrophoneManager.createMicrophone();
     }
 
     @Override
@@ -247,7 +247,7 @@ public class MicThread extends Thread {
         }
         try {
             if (client != null && client.getRecorder() != null) {
-                client.getRecorder().appendChunk(Minecraft.getInstance().getUser().getGameProfile(), System.currentTimeMillis(), Utils.convertToStereo(audio));
+                client.getRecorder().appendChunk(Minecraft.getInstance().getUser().getGameProfile(), System.currentTimeMillis(), PositionalAudioUtils.convertToStereo(audio));
             }
         } catch (IOException e) {
             e.printStackTrace();
