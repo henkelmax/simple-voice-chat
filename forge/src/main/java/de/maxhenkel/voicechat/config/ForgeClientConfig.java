@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.config;
 import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
+import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import static de.maxhenkel.voicechat.config.ForgeServerConfig.wrapConfigEntry;
@@ -68,11 +69,6 @@ public class ForgeClientConfig extends ClientConfig {
         disabled = wrapConfigEntry(builder
                 .comment("If the voice chat is disabled (sound and microphone off)")
                 .define("disabled", false)
-        );
-        stereo = wrapConfigEntry(builder
-                .worldRestart()
-                .comment("If the voice chat should use semi 3D stereo sound")
-                .define("stereo", true)
         );
         hideIcons = wrapConfigEntry(builder
                 .comment("If the voice chat icons should be hidden")
@@ -153,6 +149,10 @@ public class ForgeClientConfig extends ClientConfig {
         offlinePlayerVolumeAdjustment = wrapConfigEntry(builder
                 .comment("If the volume adjustment GUI should also show offline players")
                 .define("offline_player_volume_adjustment", false)
+        );
+        audioType = wrapConfigEntry(builder
+                .comment("The 3D audio type")
+                .defineEnum("audio_type", AudioType.NORMAL)
         );
     }
 
