@@ -247,7 +247,7 @@ public class MicThread extends Thread {
         }
         try {
             if (client != null && client.getRecorder() != null) {
-                client.getRecorder().appendChunk(Minecraft.getInstance().getUser().getGameProfile(), System.currentTimeMillis(), PositionalAudioUtils.convertToStereo(audio));
+                client.getRecorder().appendChunk(Minecraft.getInstance().getUser().getGameProfile().getId(), System.currentTimeMillis(), PositionalAudioUtils.convertToStereo(audio));
             }
         } catch (IOException e) {
             e.printStackTrace();
