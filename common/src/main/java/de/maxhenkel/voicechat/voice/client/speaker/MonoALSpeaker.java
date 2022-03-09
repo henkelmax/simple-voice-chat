@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.voice.client.speaker;
 
 import de.maxhenkel.voicechat.voice.client.SoundManager;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.util.math.vector.Vector3d;
 import org.lwjgl.openal.AL11;
 
 import javax.annotation.Nullable;
@@ -14,7 +14,7 @@ public class MonoALSpeaker extends ALSpeakerBase {
     }
 
     @Override
-    public void play(short[] data, float volume, @Nullable Vec3 position) {
+    public void play(short[] data, float volume, @Nullable Vector3d position) {
         super.play(data, volume, null);
     }
 

@@ -1,19 +1,19 @@
 package de.maxhenkel.voicechat.voice.client.speaker;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public enum AudioType {
 
-    NORMAL(new TranslatableComponent("message.voicechat.audio_type.normal")), REDUCED(new TranslatableComponent("message.voicechat.audio_type.reduced")), OFF(new TranslatableComponent("message.voicechat.audio_type.off"));
+    NORMAL(new TranslationTextComponent("message.voicechat.audio_type.normal")), REDUCED(new TranslationTextComponent("message.voicechat.audio_type.reduced")), OFF(new TranslationTextComponent("message.voicechat.audio_type.off"));
 
-    private final Component component;
+    private final ITextComponent component;
 
-    AudioType(Component component) {
+    AudioType(ITextComponent component) {
         this.component = component;
     }
 
-    public Component getText() {
+    public ITextComponent getText() {
         return component;
     }
 }

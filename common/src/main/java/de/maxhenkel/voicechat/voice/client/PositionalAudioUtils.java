@@ -3,10 +3,10 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
 import de.maxhenkel.voicechat.voice.common.Utils;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.util.math.vector.Vector2f;
+import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nullable;
 
@@ -18,12 +18,12 @@ public class PositionalAudioUtils {
      * @param soundPos the position of the sound
      * @return a float array of length 2, containing the left and right volume (0-1)
      */
-    private static float[] getStereoVolume(Vec3 soundPos) {
-        Camera mainCamera = mc.gameRenderer.getMainCamera();
-        Vec3 cameraPos = mainCamera.getPosition();
-        Vec3 d = soundPos.subtract(cameraPos).normalize();
-        Vec2 diff = new Vec2((float) d.x, (float) d.z);
-        float diffAngle = Utils.angle(diff, new Vec2(-1F, 0F));
+    private static float[] getStereoVolume(Vector3d soundPos) {
+        ActiveRenderInfo mainCamera = mc.gameRenderer.getMainCamera();
+        Vector3d cameraPos = mainCamera.getPosition();
+        Vector3d d = soundPos.subtract(cameraPos).normalize();
+        Vector2f diff = new Vector2f((float) d.x, (float) d.z);
+        float diffAngle = Utils.angle(diff, new Vector2f(-1F, 0F));
         float angle = Utils.normalizeAngle(diffAngle - (mainCamera.getYRot() % 360F));
         float dif = (float) (Math.abs(cameraPos.y - soundPos.y) / 32); //TODO tweak value
 
@@ -55,7 +55,7 @@ public class PositionalAudioUtils {
      * @param pos              the position of the audio
      * @return the resulting audio volume
      */
-    public static float getDistanceVolume(ClientVoicechatConnection clientConnection, Vec3 pos) {
+    public static float getDistanceVolume(ClientVoicechatConnection clientConnection, Vector3d pos) {
         return getDistanceVolume(clientConnection, pos, 1F);
     }
 
@@ -67,8 +67,8 @@ public class PositionalAudioUtils {
      * @param distanceMultiplier a multiplier for the distance
      * @return the resulting audio volume
      */
-    public static float getDistanceVolume(ClientVoicechatConnection clientConnection, Vec3 pos, float distanceMultiplier) {
-        float distance = (float) pos.distanceTo(mc.cameraEntity.getEyePosition());
+    public static float getDistanceVolume(ClientVoicechatConnection clientConnection, Vector3d pos, float distanceMultiplier) {
+        float distance = (float) pos.distanceTo(mc.cameraEntity.getEyePosition(1F));
         float fadeDistance = (float) clientConnection.getData().getVoiceChatFadeDistance() * distanceMultiplier;
         float maxDistance = (float) clientConnection.getData().getVoiceChatDistance() * distanceMultiplier;
 
@@ -90,7 +90,7 @@ public class PositionalAudioUtils {
      * @param soundPos the position of the sound - Might be null in case of non-positional audio
      * @return the stereo audio data
      */
-    public static short[] convertToStereo(short[] audio, @Nullable Vec3 soundPos) {
+    public static short[] convertToStereo(short[] audio, @Nullable Vector3d soundPos) {
         if (soundPos == null) {
             return convertToStereo(audio);
         }
@@ -142,11 +142,11 @@ public class PositionalAudioUtils {
         return convertToStereo(audio, volumes[0], volumes[1]);
     }
 
-    public static short[] convertToStereoForRecording(ClientVoicechatConnection clientConnection, Vec3 pos, short[] monoData) {
+    public static short[] convertToStereoForRecording(ClientVoicechatConnection clientConnection, Vector3d pos, short[] monoData) {
         return convertToStereoForRecording(clientConnection, pos, monoData, 1F);
     }
 
-    public static short[] convertToStereoForRecording(ClientVoicechatConnection clientConnection, Vec3 pos, short[] monoData, float distanceMultiplier) {
+    public static short[] convertToStereoForRecording(ClientVoicechatConnection clientConnection, Vector3d pos, short[] monoData, float distanceMultiplier) {
         float distanceVolume = getDistanceVolume(clientConnection, pos, distanceMultiplier);
         if (!VoicechatClient.CLIENT_CONFIG.audioType.get().equals(AudioType.OFF)) {
             float[] stereoVolume = getStereoVolume(pos);

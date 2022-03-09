@@ -9,11 +9,19 @@ import java.util.UUID;
 public class SpeakerManager {
 
     public static ALSpeakerBase createSpeaker(SoundManager soundManager, @Nullable UUID audioChannel) throws SpeakerException {
-        ALSpeakerBase speaker = switch (VoicechatClient.CLIENT_CONFIG.audioType.get()) {
-            case NORMAL -> new ALSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, audioChannel);
-            case REDUCED -> new FakeALSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, audioChannel);
-            case OFF -> new MonoALSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, audioChannel);
-        };
+        ALSpeakerBase speaker;
+        switch (VoicechatClient.CLIENT_CONFIG.audioType.get()) {
+            case NORMAL:
+            default:
+                speaker = new ALSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, audioChannel);
+                break;
+            case REDUCED:
+                speaker = new FakeALSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, audioChannel);
+                break;
+            case OFF:
+                speaker = new MonoALSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, audioChannel);
+                break;
+        }
         speaker.open();
         return speaker;
     }

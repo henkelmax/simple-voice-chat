@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.voice.client.speaker;
 
 import de.maxhenkel.voicechat.voice.client.PositionalAudioUtils;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.util.math.vector.Vector3d;
 import org.lwjgl.openal.AL11;
 
 import javax.annotation.Nullable;
@@ -16,7 +16,7 @@ public class FakeALSpeaker extends ALSpeakerBase {
     }
 
     @Override
-    protected short[] convert(short[] data, @Nullable Vec3 position) {
+    protected short[] convert(short[] data, @Nullable Vector3d position) {
         return PositionalAudioUtils.convertToStereo(data, position);
     }
 
@@ -26,7 +26,7 @@ public class FakeALSpeaker extends ALSpeakerBase {
     }
 
     @Override
-    protected void setPositionSync(@Nullable Vec3 soundPos) {
+    protected void setPositionSync(@Nullable Vector3d soundPos) {
 
     }
 

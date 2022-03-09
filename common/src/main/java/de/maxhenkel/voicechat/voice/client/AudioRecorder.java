@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
@@ -45,7 +46,7 @@ public class AudioRecorder {
     private final Path location;
 
     @Nullable
-    private final GameProfileCache gameProfileCache;
+    private final PlayerProfileCache gameProfileCache;
     private final Map<UUID, AudioChunk> chunks;
 
     private final AudioFormat stereoFormat;
@@ -99,7 +100,11 @@ public class AudioRecorder {
         if (gameProfileCache == null) {
             return uuid.toString();
         }
-        return gameProfileCache.get(uuid).map(GameProfile::getName).orElse("system-" + uuid);
+        GameProfile gameProfile = gameProfileCache.get(uuid);
+        if (gameProfile == null) {
+            return "system-" + uuid;
+        }
+        return gameProfile.getName();
     }
 
     private Path getFilePath(UUID playerUUID, long timestamp) {

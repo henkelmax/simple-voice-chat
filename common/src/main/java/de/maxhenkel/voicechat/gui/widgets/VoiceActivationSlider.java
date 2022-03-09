@@ -1,14 +1,12 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -24,9 +22,9 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, Minecraft minecraft, int i, int j) {
-        RenderSystem.setShaderTexture(0, SLIDER);
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+    protected void renderBg(MatrixStack poseStack, Minecraft minecraft, int i, int j) {
+        minecraft.getTextureManager().bind(SLIDER);
+        RenderSystem.color4f(1F, 1F, 1F, 1F);
         int width = (int) (226D * micValue);
         blit(poseStack, x + 1, y + 1, 0, 0, width, 18);
         super.renderBg(poseStack, minecraft, i, j);

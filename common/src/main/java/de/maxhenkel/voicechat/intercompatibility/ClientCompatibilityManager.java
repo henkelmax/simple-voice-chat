@@ -1,10 +1,7 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import de.maxhenkel.voicechat.voice.client.ALSpeaker;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
-import de.maxhenkel.voicechat.voice.client.SoundManager;
-import de.maxhenkel.voicechat.voice.client.SpeakerException;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;

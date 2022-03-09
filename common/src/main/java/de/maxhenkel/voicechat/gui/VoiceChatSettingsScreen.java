@@ -10,19 +10,12 @@ import de.maxhenkel.voicechat.gui.widgets.*;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.Denoiser;
-import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
 
@@ -72,16 +65,17 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         addButton(new MicActivationButton(guiLeft + 10, y, xSize - 20, 20, voiceActivationSlider));
         y += 21;
 
-        addRenderableWidget(voiceActivationSlider);
+        addButton(voiceActivationSlider);
         y += 21;
 
         addButton(new MicTestButton(guiLeft + 10, y, xSize - 20, 20, voiceActivationSlider));
         y += 21;
 
-        addButton(new EnumButton<>(guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.audioType) {
+        addButton(new EnumButton<AudioType>(guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.audioType) {
+
             @Override
-            protected Component getText(AudioType type) {
-                return new TranslatableComponent("message.voicechat.audio_type", type.getText());
+            protected ITextComponent getText(AudioType type) {
+                return new TranslationTextComponent("message.voicechat.audio_type", type.getText());
             }
 
             @Override
