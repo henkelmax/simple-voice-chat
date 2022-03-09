@@ -12,11 +12,11 @@ buildscript {
 plugins {
     id 'fabric-loom' version '0.10-SNAPSHOT'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "1.2.1"
     id 'com.github.johnrengelman.shadow' version '7.1.0'
 }
 
 apply plugin: 'forge-update'
+apply plugin: 'com.modrinth.minotaur'
 
 sourceCompatibility = JavaLanguageVersion.of(java_version as int)
 targetCompatibility = JavaLanguageVersion.of(java_version as int)
@@ -158,10 +158,13 @@ curseforge {
     }
 }
 
-import com.modrinth.minotaur.TaskModrinthUpload
+import com.modrinth.minotaur.dependencies.ModDependency
 
-task publishModrinth(type: TaskModrinthUpload) {
+tasks.modrinth.configure({
     group = 'upload'
+})
+
+modrinth {
     token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
     projectId = modrinth_id
     versionNumber = "fabric-${mod_version}"
@@ -169,12 +172,13 @@ task publishModrinth(type: TaskModrinthUpload) {
     uploadFile = file("${buildDir}/libs/${archivesBaseName}-${version}.jar")
     versionType = release_type.toUpperCase()
     changelog = file("changelog.md").text
-    addGameVersion(minecraft_version)
-    addLoader('fabric')
-//    addDependency('mOgUt4GM', 'optional') // ModMenu
+    gameVersions = [minecraft_version]
+    loaders = ['fabric']
+    dependencies = [
+            new ModDependency("mOgUt4GM", "optional") // ModMenu
+    ]
 }
-
-tasks.publishModrinth.dependsOn(build)
+tasks.modrinth.dependsOn(build)
 
 forgeUpdate {
     def messages = []
