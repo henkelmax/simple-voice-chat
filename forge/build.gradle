@@ -14,12 +14,12 @@ buildscript {
 plugins {
     // https://github.com/matthewprenger/CurseGradle
     id "com.matthewprenger.cursegradle" version "1.4.0"
-    id "com.modrinth.minotaur" version "1.2.1"
     id "com.github.johnrengelman.shadow" version "7.1.0"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'forge-update'
+apply plugin: 'com.modrinth.minotaur'
 
 archivesBaseName = project.archives_base_name
 version = mod_version
@@ -167,10 +167,11 @@ curseforge {
     }
 }
 
-import com.modrinth.minotaur.TaskModrinthUpload
-
-task publishModrinth(type: TaskModrinthUpload) {
+tasks.modrinth.configure({
     group = 'upload'
+})
+
+modrinth {
     token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
     projectId = modrinth_id
     versionNumber = "forge-${mod_version}"
@@ -178,11 +179,10 @@ task publishModrinth(type: TaskModrinthUpload) {
     uploadFile = file("${buildDir}/libs/${archivesBaseName}-${version}.jar")
     versionType = release_type.toUpperCase()
     changelog = file("changelog.md").text
-    addGameVersion(minecraft_version)
-    addLoader('forge')
+    gameVersions = [minecraft_version]
+    loaders = ['forge']
 }
-
-tasks.publishModrinth.dependsOn(build)
+tasks.modrinth.dependsOn(build)
 
 forgeUpdate {
     def messages = []
