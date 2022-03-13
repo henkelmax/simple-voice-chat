@@ -22,6 +22,7 @@ public abstract class ServerConfig {
     public ConfigEntry<Boolean> spectatorPlayerPossession;
     public ConfigEntry<Boolean> forceVoiceChat;
     public ConfigEntry<Integer> loginTimeout;
+    public ConfigEntry<Double> broadcastRange;
 
     public enum Codec {
         VOIP(Opus.OPUS_APPLICATION_VOIP), AUDIO(Opus.OPUS_APPLICATION_AUDIO), RESTRICTED_LOWDELAY(Opus.OPUS_APPLICATION_RESTRICTED_LOWDELAY);

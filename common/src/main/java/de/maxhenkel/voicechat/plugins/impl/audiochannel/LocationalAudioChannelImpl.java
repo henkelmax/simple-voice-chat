@@ -56,7 +56,7 @@ public class LocationalAudioChannelImpl extends AudioChannelImpl implements Loca
     }
 
     private void broadcast(LocationSoundPacket packet) {
-        server.broadcast(ServerWorldUtils.getPlayersInRange((ServerWorld) level.getServerLevel(), position.getPosition(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
+        server.broadcast(ServerWorldUtils.getPlayersInRange((ServerWorld) level.getServerLevel(), position.getPosition(), server.getBroadcastRange(), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
     }
 
 }
