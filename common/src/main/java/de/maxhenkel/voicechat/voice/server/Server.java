@@ -252,7 +252,6 @@ public class Server extends Thread {
     }
 
     private void processProximityPacket(PlayerState senderState, ServerPlayer sender, MicPacket packet) throws Exception {
-        double distance = Voicechat.SERVER_CONFIG.voiceChatDistance.get();
         @Nullable ClientGroup group = senderState.getGroup();
 
         SoundPacket<?> soundPacket = null;
@@ -286,7 +285,15 @@ public class Server extends Thread {
             source = SoundPacketEvent.SOURCE_PROXIMITY;
         }
 
-        broadcast(ServerWorldUtils.getPlayersInRange(sender.getLevel(), sender.position(), distance, p -> !p.getUUID().equals(sender.getUUID())), soundPacket, sender, senderState, group, source);
+        broadcast(ServerWorldUtils.getPlayersInRange(sender.getLevel(), sender.position(), getBroadcastRange(), p -> !p.getUUID().equals(sender.getUUID())), soundPacket, sender, senderState, group, source);
+    }
+
+    public double getBroadcastRange() {
+        double broadcastRange = Voicechat.SERVER_CONFIG.broadcastRange.get();
+        if (broadcastRange < 0D) {
+            broadcastRange = Voicechat.SERVER_CONFIG.voiceChatDistance.get() + 1D;
+        }
+        return broadcastRange;
     }
 
     public void broadcast(Collection<ServerPlayer> players, SoundPacket<?> packet, @Nullable ServerPlayer sender, @Nullable PlayerState senderState, @Nullable ClientGroup group, String source) {
