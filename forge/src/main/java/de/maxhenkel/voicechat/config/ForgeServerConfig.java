@@ -97,6 +97,11 @@ public class ForgeServerConfig extends ServerConfig {
                 .comment("The amount of milliseconds, the server should wait to check if the player has the mod installed", "Only active when force_voice_chat is set to true")
                 .defineInRange("voice_chat.login_timeout", 10_000, 100, Integer.MAX_VALUE)
         );
+        broadcastRange = wrapConfigEntry(builder
+                .worldRestart()
+                .comment("The range where the voice chat should broadcast audio to", "A value <0 means 'max_voice_distance'")
+                .defineInRange("voice_chat.broadcast_range", -1D, -1D, Double.MAX_VALUE)
+        );
     }
 
     public static <T> ConfigEntry<T> wrapConfigEntry(ForgeConfigSpec.ConfigValue<T> configValue) {

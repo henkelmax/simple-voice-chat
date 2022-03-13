@@ -60,7 +60,7 @@ public class EntityAudioChannelImpl extends AudioChannelImpl implements EntityAu
 
     private void broadcast(PlayerSoundPacket packet) {
         if (entity.getEntity() instanceof org.bukkit.entity.Entity entity) {
-            server.broadcast(ServerWorldUtils.getPlayersInRange(entity.getWorld(), entity.getLocation(), Voicechat.SERVER_CONFIG.voiceChatDistance.get(), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
+            server.broadcast(ServerWorldUtils.getPlayersInRange(entity.getWorld(), entity.getLocation(), server.getBroadcastRange(), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
         }
     }
 
