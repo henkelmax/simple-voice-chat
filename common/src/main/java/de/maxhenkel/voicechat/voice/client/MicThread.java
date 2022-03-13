@@ -187,7 +187,7 @@ public class MicThread extends Thread {
         if (recorder == null) {
             return;
         }
-        recorder.writeChunkThreaded(Minecraft.getInstance().getUser().getGameProfile().getId());
+        recorder.flushChunkThreaded(Minecraft.getInstance().getUser().getGameProfile().getId());
     }
 
     public boolean isTalking() {

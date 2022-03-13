@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import de.maxhenkel.voicechat.events.*;
+import de.maxhenkel.voicechat.mixin.ConnectionAccessor;
 import de.maxhenkel.voicechat.resourcepacks.IPackRepository;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -91,7 +92,7 @@ public class FabricClientCompatibilityManager extends ClientCompatibilityManager
 
     @Override
     public SocketAddress getSocketAddress(Connection connection) {
-        return ((IClientConnection) connection).getChannel().remoteAddress();
+        return ((ConnectionAccessor) connection).getChannel().remoteAddress();
     }
 
     @Override

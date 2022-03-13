@@ -14,6 +14,12 @@ public abstract class SoundPacket<T extends SoundPacket> implements Packet<T> {
         this.sequenceNumber = sequenceNumber;
     }
 
+    public SoundPacket(UUID sender, short[] data) {
+        this.sender = sender;
+        this.data = Utils.shortsToBytes(data);
+        this.sequenceNumber = -1L;
+    }
+
     public SoundPacket() {
 
     }
@@ -24,6 +30,10 @@ public abstract class SoundPacket<T extends SoundPacket> implements Packet<T> {
 
     public UUID getSender() {
         return sender;
+    }
+
+    public boolean isFromClientAudioChannel() {
+        return sequenceNumber < 0L;
     }
 
     public long getSequenceNumber() {

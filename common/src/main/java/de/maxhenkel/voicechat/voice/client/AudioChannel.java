@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.client.speaker.*;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.Util;
@@ -20,25 +21,25 @@ public class AudioChannel extends Thread {
 
     private final Minecraft minecraft;
     private final ClientVoicechat client;
-    private final ClientVoicechatConnection clientConnection;
+    private final InitializationData initializationData;
     private final UUID uuid;
     private final BlockingQueue<SoundPacket<?>> queue;
     private final AudioPacketBuffer packetBuffer;
     private long lastPacketTime;
-    private ALSpeakerBase speaker;
+    private Speaker speaker;
     private boolean stopped;
     private final OpusDecoder decoder;
     private long lastSequenceNumber;
 
-    public AudioChannel(ClientVoicechat client, ClientVoicechatConnection clientConnection, UUID uuid) throws NativeDependencyException {
+    public AudioChannel(ClientVoicechat client, InitializationData initializationData, UUID uuid) throws NativeDependencyException {
         this.client = client;
-        this.clientConnection = clientConnection;
+        this.initializationData = initializationData;
         this.uuid = uuid;
         this.queue = new LinkedBlockingQueue<>();
         this.packetBuffer = new AudioPacketBuffer(VoicechatClient.CLIENT_CONFIG.audioPacketThreshold.get());
         this.lastPacketTime = System.currentTimeMillis();
         this.stopped = false;
-        this.decoder = OpusDecoder.createDecoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, clientConnection.getData().getMtuSize());
+        this.decoder = OpusDecoder.createDecoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, initializationData.getMtuSize());
         if (decoder == null) {
             throw new NativeDependencyException("Failed to load Opus decoder");
         }
@@ -98,7 +99,7 @@ public class AudioChannel extends Thread {
                 }
                 lastPacketTime = System.currentTimeMillis();
 
-                if (lastSequenceNumber >= 0 && packet.getSequenceNumber() <= lastSequenceNumber) {
+                if (!packet.isFromClientAudioChannel() && lastSequenceNumber >= 0 && packet.getSequenceNumber() <= lastSequenceNumber) {
                     continue;
                 }
 
@@ -106,17 +107,22 @@ public class AudioChannel extends Thread {
                     continue;
                 }
 
-                speaker.checkBufferEmpty(this::flushRecordingSync);
-
                 if (packet.getData().length == 0) {
+                    if (packet instanceof PlayerSoundPacket playerSoundPacket) {
+                        PluginManager.instance().onReceiveEntityClientSound(uuid, new short[0], playerSoundPacket.isWhispering());
+                    } else if (packet instanceof LocationSoundPacket locationSoundPacket) {
+                        PluginManager.instance().onReceiveLocationalClientSound(uuid, new short[0], locationSoundPacket.getLocation());
+                    } else if (packet instanceof GroupSoundPacket) {
+                        PluginManager.instance().onReceiveStaticClientSound(uuid, new short[0]);
+                    }
                     lastSequenceNumber = -1L;
                     packetBuffer.clear();
-                    speaker.runInContext(this::flushRecordingSync);
+                    flushRecording();
                     decoder.resetState();
                     continue;
                 }
 
-                if (lastSequenceNumber >= 0) {
+                if (!packet.isFromClientAudioChannel() && lastSequenceNumber >= 0) {
                     int packetsToCompensate = (int) (packet.getSequenceNumber() - (lastSequenceNumber + 1));
 
                     if (packetsToCompensate > 0) {
@@ -132,7 +138,12 @@ public class AudioChannel extends Thread {
 
                 lastSequenceNumber = packet.getSequenceNumber();
 
-                short[] decodedAudio = decoder.decode(packet.getData());
+                short[] decodedAudio;
+                if (packet.isFromClientAudioChannel()) {
+                    decodedAudio = Utils.bytesToShorts(packet.getData());
+                } else {
+                    decodedAudio = decoder.decode(packet.getData());
+                }
 
                 writeToSpeaker(packet, decodedAudio);
             }
@@ -141,7 +152,7 @@ public class AudioChannel extends Thread {
             e.printStackTrace();
         } finally {
             if (speaker != null) {
-                speaker.runInContext(this::flushRecordingSync);
+                flushRecording();
                 speaker.close();
             }
             decoder.close();
@@ -149,12 +160,12 @@ public class AudioChannel extends Thread {
         }
     }
 
-    private void flushRecordingSync() {
+    private void flushRecording() {
         AudioRecorder recorder = client.getRecorder();
         if (recorder == null) {
             return;
         }
-        recorder.writeChunkThreaded(uuid);
+        recorder.flushChunkThreaded(uuid);
     }
 
     private void writeToSpeaker(Packet<?> packet, short[] monoData) {
@@ -171,47 +182,49 @@ public class AudioChannel extends Thread {
         float volume = VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * playerVolume;
 
         if (packet instanceof GroupSoundPacket) {
-            speaker.play(monoData, volume, null);
+            short[] processedMonoData = PluginManager.instance().onReceiveStaticClientSound(uuid, monoData);
+            speaker.play(processedMonoData, volume, null);
             client.getTalkCache().updateTalking(uuid, false);
-            appendRecording(() -> PositionalAudioUtils.convertToStereo(monoData));
+            appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData));
         } else if (packet instanceof PlayerSoundPacket soundPacket) {
             if (player == null) {
                 return;
             }
             if (player == minecraft.cameraEntity) {
-                speaker.play(monoData, volume, null);
+                short[] processedMonoData = PluginManager.instance().onReceiveStaticClientSound(uuid, monoData);
+                speaker.play(processedMonoData, volume, null);
                 client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
-                appendRecording(() -> PositionalAudioUtils.convertToStereo(monoData));
+                appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData));
                 return;
             }
             Vec3 pos = player.getEyePosition();
 
-            float crouchMultiplayer = player.isCrouching() ? (float) clientConnection.getData().getCrouchDistanceMultiplier() : 1F;
-            float whisperMultiplayer = soundPacket.isWhispering() ? (float) clientConnection.getData().getWhisperDistanceMultiplier() : 1F;
+            float crouchMultiplayer = player.isCrouching() ? (float) initializationData.getCrouchDistanceMultiplier() : 1F;
+            float whisperMultiplayer = soundPacket.isWhispering() ? (float) initializationData.getWhisperDistanceMultiplier() : 1F;
             float multiplier = crouchMultiplayer * whisperMultiplayer;
-            float outputVolume = volume * PositionalAudioUtils.getDistanceVolume(clientConnection, pos, multiplier);
-            speaker.play(monoData, outputVolume, pos);
+            float outputVolume = volume * PositionalAudioUtils.getDistanceVolume(initializationData, pos, multiplier);
+            short[] processedMonoData = PluginManager.instance().onReceiveEntityClientSound(uuid, monoData, soundPacket.isWhispering());
+            speaker.play(processedMonoData, outputVolume, pos);
             if (outputVolume >= 0.01F) {
                 client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
             }
-            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(clientConnection, pos, monoData, multiplier));
+            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(initializationData, pos, processedMonoData, multiplier));
         } else if (packet instanceof LocationSoundPacket p) {
-            speaker.play(monoData, volume * PositionalAudioUtils.getDistanceVolume(clientConnection, p.getLocation()), p.getLocation());
+            short[] processedMonoData = PluginManager.instance().onReceiveLocationalClientSound(uuid, monoData, p.getLocation());
+            speaker.play(processedMonoData, volume * PositionalAudioUtils.getDistanceVolume(initializationData, p.getLocation()), p.getLocation());
             client.getTalkCache().updateTalking(uuid, false);
-            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(clientConnection, p.getLocation(), monoData));
+            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(initializationData, p.getLocation(), processedMonoData));
         }
     }
 
     private void appendRecording(Supplier<short[]> stereo) {
-        speaker.runInContext(() -> {
-            if (client.getRecorder() != null) {
-                try {
-                    client.getRecorder().appendChunk(uuid, System.currentTimeMillis(), stereo.get());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        if (client.getRecorder() != null) {
+            try {
+                client.getRecorder().appendChunk(uuid, System.currentTimeMillis(), stereo.get());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        });
+        }
     }
 
     public boolean isClosed() {

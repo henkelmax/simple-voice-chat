@@ -12,7 +12,7 @@ public class FakeALSpeaker extends ALSpeakerBase {
 
     public FakeALSpeaker(SoundManager soundManager, int sampleRate, int bufferSize, @Nullable UUID audioChannelId) {
         super(soundManager, sampleRate, bufferSize, audioChannelId);
-        bufferSampleSize *= 2;
+        this.bufferSize *= 2;
     }
 
     @Override
