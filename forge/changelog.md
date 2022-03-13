@@ -3,3 +3,4 @@
 - Fixed system audio recording
 - Added client audio channels to voice chat API
 - Reworked username cache
+- Added broadcast range config option

@@ -22,6 +22,7 @@ public class ServerConfig {
     public ConfigEntry<Boolean> spectatorPlayerPossession;
     public ConfigEntry<Boolean> forceVoiceChat;
     public ConfigEntry<Integer> loginTimeout;
+    public ConfigEntry<Double> broadcastRange;
 
     public ServerConfig(ConfigBuilder builder) {
         voiceChatPort = builder.integerEntry("port", 24454, -1, 65535);
@@ -41,6 +42,7 @@ public class ServerConfig {
         spectatorPlayerPossession = builder.booleanEntry("spectator_player_possession", false);
         forceVoiceChat = builder.booleanEntry("force_voice_chat", false);
         loginTimeout = builder.integerEntry("login_timeout", 10_000, 100, Integer.MAX_VALUE);
+        broadcastRange = builder.doubleEntry("broadcast_range", -1D, -1D, Double.MAX_VALUE);
     }
 
     public enum Codec {
