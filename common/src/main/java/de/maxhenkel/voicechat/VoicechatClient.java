@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.config.PlayerVolumeConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.macos.PermissionCheck;
 import de.maxhenkel.voicechat.macos.jna.avfoundation.AVAuthorizationStatus;
+import de.maxhenkel.voicechat.profile.UsernameCache;
 import de.maxhenkel.voicechat.resourcepacks.VoiceChatResourcePack;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.MacOSUtils;
@@ -23,6 +24,7 @@ public abstract class VoicechatClient {
 
     public static ClientConfig CLIENT_CONFIG;
     public static PlayerVolumeConfig VOLUME_CONFIG;
+    public static UsernameCache USERNAME_CACHE;
 
     public static VoiceChatResourcePack CLASSIC_ICONS;
     public static VoiceChatResourcePack WHITE_ICONS;
@@ -33,6 +35,7 @@ public abstract class VoicechatClient {
 
         fixVolumeConfig();
         VOLUME_CONFIG = new PlayerVolumeConfig(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-volumes.properties"));
+        USERNAME_CACHE = new UsernameCache(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("username-cache.json").toFile());
 
         //Load instance
         ClientManager.instance();

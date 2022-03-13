@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.voice.client;
 import com.mojang.authlib.GameProfile;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.ChatFormatting;
@@ -11,7 +10,6 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.*;
-import net.minecraft.server.players.GameProfileCache;
 import net.minecraft.util.Tuple;
 import org.apache.commons.io.FileUtils;
 
@@ -40,32 +38,37 @@ public class AudioRecorder {
     private final long timestamp;
     private final Path location;
 
-    @Nullable
-    private final GameProfileCache gameProfileCache;
+    private final GameProfile ownProfile;
     private final Map<UUID, AudioChunk> chunks;
 
     private final AudioFormat stereoFormat;
 
     private final ExecutorService threadPool;
 
-    public AudioRecorder() {
-        timestamp = System.currentTimeMillis();
+    public AudioRecorder(Path location, long timestamp) {
+        this.timestamp = timestamp;
+        this.location = location;
+        location.toFile().mkdirs();
+        chunks = new ConcurrentHashMap<>();
+        ownProfile = Minecraft.getInstance().getUser().getGameProfile();
+
+        stereoFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, SoundManager.SAMPLE_RATE, 16, 2, 4, SoundManager.SAMPLE_RATE, false);
+
+        threadPool = Executors.newSingleThreadExecutor();
+    }
+
+    public static AudioRecorder create() {
+        long timestamp = System.currentTimeMillis();
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp);
         String recordingDestination = VoicechatClient.CLIENT_CONFIG.recordingDestination.get();
+        Path location;
         if (recordingDestination.trim().isEmpty()) {
             location = CommonCompatibilityManager.INSTANCE.getGameDirectory().resolve("voicechat_recordings").resolve(FORMAT.format(cal.getTime()));
         } else {
             location = Paths.get(recordingDestination).resolve(FORMAT.format(cal.getTime()));
         }
-
-        location.toFile().mkdirs();
-        chunks = new ConcurrentHashMap<>();
-        gameProfileCache = GameProfileUtils.getGameProfileCache();
-
-        stereoFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, SoundManager.SAMPLE_RATE, 16, 2, 4, SoundManager.SAMPLE_RATE, false);
-
-        threadPool = Executors.newSingleThreadExecutor();
+        return new AudioRecorder(location, timestamp);
     }
 
     public Path getLocation() {
@@ -81,21 +84,33 @@ public class AudioRecorder {
     }
 
     public String getDuration() {
-        long duration = System.currentTimeMillis() - timestamp;
+        return getDuration(System.currentTimeMillis());
+    }
+
+    public String getDuration(long currentTime) {
+        long duration = currentTime - timestamp;
         DateFormat fmt = new SimpleDateFormat(":mm:ss");
         fmt.setTimeZone(TimeZone.getTimeZone("UTC"));
         return (duration / (1000L * 60L * 60L)) + fmt.format(new Date(duration));
     }
 
     public String getStorage() {
-        return FileUtils.byteCountToDisplaySize((System.currentTimeMillis() - timestamp) * (long) stereoFormat.getFrameSize() * ((long) stereoFormat.getFrameRate() / 1000L) * getRecordedPlayerCount());
+        return getStorage(System.currentTimeMillis());
+    }
+
+    public String getStorage(long currentTime) {
+        return FileUtils.byteCountToDisplaySize((currentTime - timestamp) * (long) stereoFormat.getFrameSize() * ((long) stereoFormat.getFrameRate() / 1000L) * getRecordedPlayerCount());
     }
 
     private String lookupName(UUID uuid) {
-        if (gameProfileCache == null) {
-            return uuid.toString();
+        if (uuid.equals(ownProfile.getId())) {
+            return ownProfile.getName();
         }
-        return gameProfileCache.get(uuid).map(GameProfile::getName).orElse("system-" + uuid);
+        String username = VoicechatClient.USERNAME_CACHE.getUsername(uuid);
+        if (username == null) {
+            return "system-" + uuid;
+        }
+        return username;
     }
 
     private Path getFilePath(UUID playerUUID, long timestamp) {
@@ -103,7 +118,20 @@ public class AudioRecorder {
     }
 
     public void appendChunk(UUID uuid, long timestamp, short[] data) throws IOException {
-        getChunk(uuid, timestamp).add(data);
+        if (data.length <= 0) {
+            flushChunkThreaded(uuid);
+            return;
+        }
+        AudioChunk chunk = getChunk(uuid, timestamp);
+        long passedTime = timestamp - chunk.getEndTimestamp();
+        long threshold = VoicechatClient.CLIENT_CONFIG.outputBufferSize.get() * 20L;
+        if (passedTime < threshold) {
+            chunk.add(data, timestamp);
+        } else {
+            flushChunkThreaded(uuid);
+            chunk = getChunk(uuid, timestamp);
+            chunk.add(data, timestamp);
+        }
     }
 
     private void writeChunk(UUID playerUUID, AudioChunk chunk) throws IOException {
@@ -126,7 +154,7 @@ public class AudioRecorder {
         );
     }
 
-    public void writeChunkThreaded(UUID playerUUID) {
+    public void flushChunkThreaded(UUID playerUUID) {
         AudioChunk chunk = getAndRemoveChunk(playerUUID);
         if (chunk == null) {
             return;
@@ -159,22 +187,28 @@ public class AudioRecorder {
      * Writes every unfinished audio chunk to disk.
      * Not threaded.
      */
-    private void flush() throws IOException {
+    public void flush() throws IOException {
         for (Map.Entry<UUID, AudioChunk> chunk : chunks.entrySet()) {
             writeChunk(chunk.getKey(), chunk.getValue());
         }
     }
 
     public void close() {
-        save();
+        if (threadPool.isShutdown()) {
+            throw new IllegalStateException("Recorder already closed");
+        }
         threadPool.shutdown();
     }
 
-    public void save() {
+    public void saveAndClose() {
+        save();
+        close();
+    }
+
+    private void save() {
         threadPool.execute(() -> {
             send(new TranslatableComponent("message.voicechat.processing_recording_session"));
             try {
-                flush();
                 AtomicLong time = new AtomicLong();
                 convert(progress -> {
                     if (progress >= 1F || System.currentTimeMillis() - time.get() > 1000L) {
@@ -209,7 +243,8 @@ public class AudioRecorder {
         }
     }
 
-    private void convert(Consumer<Float> progress) throws UnsupportedAudioFileException, IOException {
+    public void convert(Consumer<Float> progress) throws UnsupportedAudioFileException, IOException {
+        flush();
         String[] directories = location.toFile().list();
         if (directories == null) {
             return;
@@ -273,17 +308,19 @@ public class AudioRecorder {
         return audio;
     }
 
-    private static class AudioChunk {
+    private class AudioChunk {
         private final long timestamp;
         private final ByteArrayOutputStream buffer;
+        private long lastTimestamp;
 
         public AudioChunk(long timestamp) {
             this.timestamp = timestamp;
             this.buffer = new ByteArrayOutputStream();
         }
 
-        public void add(short[] data) throws IOException {
+        public void add(short[] data, long timestamp) throws IOException {
             buffer.write(Utils.shortsToBytes(data));
+            this.lastTimestamp = timestamp + ((data.length * 1000L) / stereoFormat.getChannels()) / (long) stereoFormat.getSampleRate();
         }
 
         public byte[] getBytes() {
@@ -292,6 +329,10 @@ public class AudioRecorder {
 
         public long getTimestamp() {
             return timestamp;
+        }
+
+        public long getEndTimestamp() {
+            return lastTimestamp;
         }
     }
 

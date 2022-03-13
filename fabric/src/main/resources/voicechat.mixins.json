@@ -7,7 +7,7 @@
     "PlayerManagerMixin"
   ],
   "client": [
-    "ClientConnectionMixin",
+    "ConnectionAccessor",
     "EntityRendererMixin",
     "MinecraftMixin",
     "KeyboardMixin",
