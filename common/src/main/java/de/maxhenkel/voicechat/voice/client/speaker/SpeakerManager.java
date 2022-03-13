@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class SpeakerManager {
 
-    public static ALSpeakerBase createSpeaker(SoundManager soundManager, @Nullable UUID audioChannel) throws SpeakerException {
+    public static Speaker createSpeaker(SoundManager soundManager, @Nullable UUID audioChannel) throws SpeakerException {
         ALSpeakerBase speaker;
         switch (VoicechatClient.CLIENT_CONFIG.audioType.get()) {
             case NORMAL:

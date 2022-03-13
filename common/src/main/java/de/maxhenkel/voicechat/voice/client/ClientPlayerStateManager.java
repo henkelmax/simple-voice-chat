@@ -47,10 +47,15 @@ public class ClientPlayerStateManager {
         CommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel.setClientListener((client, handler, packet) -> {
             states.put(packet.getPlayerState().getUuid(), packet.getPlayerState());
             Voicechat.logDebug("Got state for {}: {}", packet.getPlayerState().getName(), packet.getPlayerState());
+            VoicechatClient.USERNAME_CACHE.updateUsernameAndSave(packet.getPlayerState().getUuid(), packet.getPlayerState().getName());
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel.setClientListener((client, handler, packet) -> {
             states = packet.getPlayerStates();
             Voicechat.logDebug("Received {} states", states.size());
+            for (PlayerState state : states.values()) {
+                VoicechatClient.USERNAME_CACHE.updateUsername(state.getUuid(), state.getName());
+            }
+            VoicechatClient.USERNAME_CACHE.save();
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().joinedGroupChannel.setClientListener((client, handler, packet) -> {
             Screen screen = Minecraft.getInstance().screen;

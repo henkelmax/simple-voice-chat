@@ -13,6 +13,11 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
         this.whispering = whispering;
     }
 
+    public PlayerSoundPacket(UUID sender, short[] data, boolean whispering) {
+        super(sender, data);
+        this.whispering = whispering;
+    }
+
     public PlayerSoundPacket() {
 
     }

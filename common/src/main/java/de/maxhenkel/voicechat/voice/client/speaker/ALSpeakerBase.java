@@ -22,7 +22,7 @@ public abstract class ALSpeakerBase implements Speaker {
     protected final Minecraft mc;
     protected final SoundManager soundManager;
     protected final int sampleRate;
-    protected final int bufferSize;
+    protected int bufferSize;
     protected int bufferSampleSize;
     protected int source;
     protected volatile int bufferIndex;
@@ -70,7 +70,7 @@ public abstract class ALSpeakerBase implements Speaker {
             boolean stopped = getStateSync() == AL11.AL_INITIAL || getStateSync() == AL11.AL_STOPPED || buffers <= 1;
             if (stopped) {
                 for (int i = 0; i < VoicechatClient.CLIENT_CONFIG.outputBufferSize.get(); i++) {
-                    writeSync(new short[bufferSampleSize], 1F, position);
+                    writeSync(new short[bufferSize], 1F, position);
                 }
             }
 

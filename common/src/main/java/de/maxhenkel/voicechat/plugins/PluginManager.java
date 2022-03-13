@@ -192,6 +192,24 @@ public class PluginManager {
         return clientSoundEvent.getRawAudio();
     }
 
+    public short[] onReceiveEntityClientSound(UUID id, short[] rawAudio, boolean whispering) {
+        ClientReceiveSoundEventImpl.EntitySoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.EntitySoundImpl(new VoicechatClientApiImpl(), id, rawAudio, whispering);
+        dispatchEvent(ClientReceiveSoundEvent.EntitySound.class, clientSoundEvent);
+        return clientSoundEvent.getRawAudio();
+    }
+
+    public short[] onReceiveLocationalClientSound(UUID id, short[] rawAudio, Vector3d pos) {
+        ClientReceiveSoundEventImpl.LocationalSoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.LocationalSoundImpl(new VoicechatClientApiImpl(), id, rawAudio, new PositionImpl(pos));
+        dispatchEvent(ClientReceiveSoundEvent.LocationalSound.class, clientSoundEvent);
+        return clientSoundEvent.getRawAudio();
+    }
+
+    public short[] onReceiveStaticClientSound(UUID id, short[] rawAudio) {
+        ClientReceiveSoundEventImpl.StaticSoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.StaticSoundImpl(new VoicechatClientApiImpl(), id, rawAudio);
+        dispatchEvent(ClientReceiveSoundEvent.StaticSound.class, clientSoundEvent);
+        return clientSoundEvent.getRawAudio();
+    }
+
     public void onALSound(int source, @Nullable UUID channelId, @Nullable Vector3d pos, Class<? extends OpenALSoundEvent> eventClass) {
         dispatchEvent(eventClass, new OpenALSoundEventImpl(
                 new VoicechatClientApiImpl(),
