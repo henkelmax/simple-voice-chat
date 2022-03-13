@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 public interface AudioChannel {
 
     /**
-     * Sends the audio date to this audio channel.
+     * Sends the audio data to this audio channel.
      *
      * @param opusData Opus encoded audio data
      */

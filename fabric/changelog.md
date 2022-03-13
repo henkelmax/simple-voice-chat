@@ -1,3 +1,5 @@
 - Removed stereo config option
 - Added audio type option
 - Fixed system audio recording
+- Added client audio channels to voice chat API
+- Reworked username cache

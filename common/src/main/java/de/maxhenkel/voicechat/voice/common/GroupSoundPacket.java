@@ -10,6 +10,10 @@ public class GroupSoundPacket extends SoundPacket<GroupSoundPacket> {
         super(sender, data, sequenceNumber);
     }
 
+    public GroupSoundPacket(UUID sender, short[] data) {
+        super(sender, data);
+    }
+
     public GroupSoundPacket() {
 
     }

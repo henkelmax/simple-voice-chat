@@ -67,7 +67,7 @@ public class ClientVoicechat {
                 AudioChannel sendTo = audioChannels.get(packet.getSender());
                 if (sendTo == null) {
                     try {
-                        AudioChannel ch = new AudioChannel(this, connection, packet.getSender());
+                        AudioChannel ch = new AudioChannel(this, connection.getData(), packet.getSender());
                         ch.addToQueue(packet);
                         ch.start();
                         audioChannels.put(packet.getSender(), ch);
@@ -148,7 +148,7 @@ public class ClientVoicechat {
         }
         LocalPlayer player = Minecraft.getInstance().player;
         if (recording) {
-            recorder = new AudioRecorder();
+            recorder = AudioRecorder.create();
             if (player != null) {
                 player.displayClientMessage(new TranslatableComponent("message.voicechat.recording_started").withStyle(ChatFormatting.DARK_RED), true);
             }
@@ -158,7 +158,7 @@ public class ClientVoicechat {
             if (player != null) {
                 player.displayClientMessage(new TranslatableComponent("message.voicechat.recording_stopped").withStyle(ChatFormatting.DARK_RED), true);
             }
-            rec.save();
+            rec.saveAndClose();
         }
     }
 
@@ -206,7 +206,7 @@ public class ClientVoicechat {
         if (recorder != null) {
             AudioRecorder rec = recorder;
             recorder = null;
-            rec.close();
+            rec.saveAndClose();
         }
     }
 

@@ -1,14 +1,11 @@
 package de.maxhenkel.voicechat.gui.volume;
 
 import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfile;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.Util;
-import net.minecraft.server.players.GameProfileCache;
 
 import java.util.*;
 
@@ -57,11 +54,6 @@ public class AdjustVolumeList extends ListScreenListBase<PlayerVolumeEntry> {
     }
 
     private void addOfflinePlayers(Collection<PlayerState> onlinePlayers) {
-        GameProfileCache gameProfileCache = GameProfileUtils.getGameProfileCache();
-        if (gameProfileCache == null) {
-            return;
-        }
-
         for (UUID uuid : VoicechatClient.VOLUME_CONFIG.getVolumes().keySet()) {
             if (uuid.equals(Util.NIL_UUID)) {
                 continue;
@@ -70,13 +62,13 @@ public class AdjustVolumeList extends ListScreenListBase<PlayerVolumeEntry> {
                 continue;
             }
 
-            GameProfile gameProfile = gameProfileCache.get(uuid).orElse(null);
+            String name = VoicechatClient.USERNAME_CACHE.getUsername(uuid);
 
-            if (gameProfile == null) {
+            if (name == null) {
                 continue;
             }
 
-            players.add(new PlayerVolumeEntry(new PlayerState(uuid, gameProfile.getName(), false, true)));
+            players.add(new PlayerVolumeEntry(new PlayerState(uuid, name, false, true)));
         }
     }
 
