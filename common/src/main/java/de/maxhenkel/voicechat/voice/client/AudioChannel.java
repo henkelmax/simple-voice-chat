@@ -199,11 +199,16 @@ public class AudioChannel extends Thread {
             }
             Vec3 pos = player.getEyePosition();
 
+            short[] processedMonoData = PluginManager.instance().onReceiveEntityClientSound(uuid, monoData, soundPacket.isWhispering());
+
+            if (pos.distanceTo(minecraft.gameRenderer.getMainCamera().getPosition()) > initializationData.getVoiceChatDistance() + 1D) {
+                return;
+            }
+
             float crouchMultiplayer = player.isCrouching() ? (float) initializationData.getCrouchDistanceMultiplier() : 1F;
             float whisperMultiplayer = soundPacket.isWhispering() ? (float) initializationData.getWhisperDistanceMultiplier() : 1F;
             float multiplier = crouchMultiplayer * whisperMultiplayer;
             float outputVolume = volume * PositionalAudioUtils.getDistanceVolume(initializationData, pos, multiplier);
-            short[] processedMonoData = PluginManager.instance().onReceiveEntityClientSound(uuid, monoData, soundPacket.isWhispering());
             speaker.play(processedMonoData, outputVolume, pos);
             if (outputVolume >= 0.01F) {
                 client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
@@ -211,6 +216,9 @@ public class AudioChannel extends Thread {
             appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(initializationData, pos, processedMonoData, multiplier));
         } else if (packet instanceof LocationSoundPacket p) {
             short[] processedMonoData = PluginManager.instance().onReceiveLocationalClientSound(uuid, monoData, p.getLocation());
+            if (p.getLocation().distanceTo(minecraft.gameRenderer.getMainCamera().getPosition()) > initializationData.getVoiceChatDistance() + 1D) {
+                return;
+            }
             speaker.play(processedMonoData, volume * PositionalAudioUtils.getDistanceVolume(initializationData, p.getLocation()), p.getLocation());
             client.getTalkCache().updateTalking(uuid, false);
             appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(initializationData, p.getLocation(), processedMonoData));
