@@ -53,7 +53,6 @@ Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki?t=setup) for 
 - OpenAL audio
 - Cross compatibility between Fabric, Forge, Bukkit, Spigot and Paper
 - Compatibility with [Sound Physics Remastered](https://www.curseforge.com/minecraft/mc-mods/sound-physics-remastered)
-- Compatibility with [Sound Physics Fabric](https://www.curseforge.com/minecraft/mc-mods/sound-physics-fabric)
 - Compatibility with [ModMenu](https://www.curseforge.com/minecraft/mc-mods/modmenu) (Use [ClothConfig](https://www.curseforge.com/minecraft/mc-mods/cloth-config) for a better configuration UI)
 - Push to talk
 - Voice activation
