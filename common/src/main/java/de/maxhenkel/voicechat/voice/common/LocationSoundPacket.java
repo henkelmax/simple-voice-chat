@@ -14,7 +14,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
         this.location = location;
     }
 
-    public LocationSoundPacket(UUID sender, short[] data, Vec3 location) {
+    public LocationSoundPacket(UUID sender, short[] data, Vector3d location) {
         super(sender, data);
         this.location = location;
     }

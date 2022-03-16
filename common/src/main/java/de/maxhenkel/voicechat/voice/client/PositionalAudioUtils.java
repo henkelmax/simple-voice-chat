@@ -52,8 +52,8 @@ public class PositionalAudioUtils {
      * @param soundPos the position of the sound
      * @return a float array of length 2, containing the left and right volume (0-1)
      */
-    private static float[] getStereoVolume(Vec3 soundPos) {
-        Camera mainCamera = mc.gameRenderer.getMainCamera();
+    private static float[] getStereoVolume(Vector3d soundPos) {
+        ActiveRenderInfo mainCamera = mc.gameRenderer.getMainCamera();
         return getStereoVolume(mainCamera.getPosition(), mainCamera.getYRot(), soundPos);
     }
 
@@ -64,8 +64,8 @@ public class PositionalAudioUtils {
      * @param pos                the position of the audio
      * @return the resulting audio volume
      */
-    public static float getDistanceVolume(ClientVoicechatConnection clientConnection, Vector3d pos) {
-        return getDistanceVolume(clientConnection, pos, 1F);
+    public static float getDistanceVolume(InitializationData initializationData, Vector3d pos) {
+        return getDistanceVolume(initializationData, pos, 1F);
     }
 
     /**
@@ -186,7 +186,7 @@ public class PositionalAudioUtils {
         return convertToStereoForRecording(initializationData, mc.gameRenderer.getMainCamera().getPosition(), mc.gameRenderer.getMainCamera().getYRot(), pos, monoData, distanceMultiplier);
     }
 
-    public static short[] convertToStereoForRecording(InitializationData initializationData, Vec3 cameraPos, float yRot, Vector3d pos, short[] monoData, float distanceMultiplier) {
+    public static short[] convertToStereoForRecording(InitializationData initializationData, Vector3d cameraPos, float yRot, Vector3d pos, short[] monoData, float distanceMultiplier) {
         float distanceVolume = getDistanceVolume(initializationData, cameraPos, pos, distanceMultiplier);
         if (!VoicechatClient.CLIENT_CONFIG.audioType.get().equals(AudioType.OFF)) {
             float[] stereoVolume = getStereoVolume(cameraPos, yRot, pos);

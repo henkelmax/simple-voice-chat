@@ -3,9 +3,9 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.plugins.PluginManager;
-import de.maxhenkel.voicechat.voice.client.speaker.*;
+import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
+import de.maxhenkel.voicechat.voice.client.speaker.SpeakerManager;
 import de.maxhenkel.voicechat.voice.common.*;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Util;
@@ -109,9 +109,11 @@ public class AudioChannel extends Thread {
                 }
 
                 if (packet.getData().length == 0) {
-                    if (packet instanceof PlayerSoundPacket playerSoundPacket) {
+                    if (packet instanceof PlayerSoundPacket) {
+                        PlayerSoundPacket playerSoundPacket = (PlayerSoundPacket) packet;
                         PluginManager.instance().onReceiveEntityClientSound(uuid, new short[0], playerSoundPacket.isWhispering());
-                    } else if (packet instanceof LocationSoundPacket locationSoundPacket) {
+                    } else if (packet instanceof LocationSoundPacket) {
+                        LocationSoundPacket locationSoundPacket = (LocationSoundPacket) packet;
                         PluginManager.instance().onReceiveLocationalClientSound(uuid, new short[0], locationSoundPacket.getLocation());
                     } else if (packet instanceof GroupSoundPacket) {
                         PluginManager.instance().onReceiveStaticClientSound(uuid, new short[0]);

@@ -4,7 +4,7 @@ import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.api.audiochannel.ClientLocationalAudioChannel;
 import de.maxhenkel.voicechat.voice.common.LocationSoundPacket;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.UUID;
 
@@ -19,7 +19,7 @@ public class ClientLocationalAudioChannelImpl extends ClientAudioChannelImpl imp
 
     @Override
     protected SoundPacket<?> createSoundPacket(short[] rawAudio) {
-        return new LocationSoundPacket(id, rawAudio, new Vec3(position.getX(), position.getY(), position.getZ()));
+        return new LocationSoundPacket(id, rawAudio, new Vector3d(position.getX(), position.getY(), position.getZ()));
     }
 
     @Override
