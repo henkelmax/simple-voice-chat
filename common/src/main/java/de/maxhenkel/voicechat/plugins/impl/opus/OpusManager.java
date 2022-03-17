@@ -21,11 +21,17 @@ public class OpusManager {
     public static OpusEncoder createEncoder(OpusEncoderMode mode) {
         int application = ServerConfig.Codec.VOIP.getOpusValue();
         if (mode != null) {
-            application = switch (mode) {
-                case VOIP -> ServerConfig.Codec.VOIP.getOpusValue();
-                case AUDIO -> ServerConfig.Codec.AUDIO.getOpusValue();
-                case RESTRICTED_LOWDELAY -> ServerConfig.Codec.RESTRICTED_LOWDELAY.getOpusValue();
-            };
+            switch (mode) {
+                case VOIP:
+                    application = ServerConfig.Codec.VOIP.getOpusValue();
+                    break;
+                case AUDIO:
+                    application = ServerConfig.Codec.AUDIO.getOpusValue();
+                    break;
+                case RESTRICTED_LOWDELAY:
+                    application = ServerConfig.Codec.RESTRICTED_LOWDELAY.getOpusValue();
+                    break;
+            }
         }
         return createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, 1024, application);
     }
