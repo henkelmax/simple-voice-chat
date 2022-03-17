@@ -2,9 +2,10 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.plugins.PluginManager;
-import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
-import de.maxhenkel.voicechat.voice.client.speaker.SpeakerManager;
+import de.maxhenkel.voicechat.plugins.impl.opus.OpusManager;
+import de.maxhenkel.voicechat.voice.client.speaker.*;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,10 +41,7 @@ public class AudioChannel extends Thread {
         this.packetBuffer = new AudioPacketBuffer(VoicechatClient.CLIENT_CONFIG.audioPacketThreshold.get());
         this.lastPacketTime = System.currentTimeMillis();
         this.stopped = false;
-        this.decoder = OpusDecoder.createDecoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, initializationData.getMtuSize());
-        if (decoder == null) {
-            throw new NativeDependencyException("Failed to load Opus decoder");
-        }
+        this.decoder = OpusManager.createDecoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, initializationData.getMtuSize());
         this.lastSequenceNumber = -1L;
         this.minecraft = Minecraft.getInstance();
         setDaemon(true);

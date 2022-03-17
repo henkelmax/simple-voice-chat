@@ -2,8 +2,10 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.plugins.impl.opus.OpusManager;
 import de.maxhenkel.voicechat.voice.client.microphone.Microphone;
 import de.maxhenkel.voicechat.voice.client.microphone.MicrophoneManager;
 import de.maxhenkel.voicechat.voice.common.MicPacket;
@@ -34,11 +36,7 @@ public class MicThread extends Thread {
         this.client = client;
         this.connection = connection;
         this.running = true;
-        this.encoder = OpusEncoder.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, connection == null ? 1024 : connection.getData().getMtuSize(), connection == null ? ServerConfig.Codec.VOIP.getOpusValue() : connection.getData().getCodec().getOpusValue());
-        if (encoder == null) {
-            throw new NativeDependencyException("Failed to load Opus encoder");
-        }
-        encoder.open();
+        this.encoder = OpusManager.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, connection == null ? 1024 : connection.getData().getMtuSize(), connection == null ? ServerConfig.Codec.VOIP.getOpusValue() : connection.getData().getCodec().getOpusValue());
 
         this.denoiser = Denoiser.createDenoiser();
         if (denoiser == null) {

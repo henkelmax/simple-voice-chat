@@ -6,10 +6,9 @@ import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
 import de.maxhenkel.voicechat.plugins.impl.audio.AudioConverterImpl;
-import de.maxhenkel.voicechat.plugins.impl.opus.OpusDecoderImpl;
-import de.maxhenkel.voicechat.plugins.impl.opus.OpusEncoderImpl;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.server.ServerWorld;
+import de.maxhenkel.voicechat.plugins.impl.opus.OpusManager;
 
 import javax.annotation.Nullable;
 
@@ -20,19 +19,19 @@ public class VoicechatApiImpl implements VoicechatApi {
     @Nullable
     @Override
     public OpusEncoder createEncoder() {
-        return OpusEncoderImpl.create(null);
+        return OpusManager.createEncoder(null);
     }
 
     @Nullable
     @Override
     public OpusEncoder createEncoder(OpusEncoderMode mode) {
-        return OpusEncoderImpl.create(mode);
+        return OpusManager.createEncoder(mode);
     }
 
     @Nullable
     @Override
     public OpusDecoder createDecoder() {
-        return OpusDecoderImpl.create();
+        return OpusManager.createDecoder();
     }
 
     public AudioConverter getAudioConverter() {
