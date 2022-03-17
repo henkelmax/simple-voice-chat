@@ -1,17 +1,16 @@
-package de.maxhenkel.voicechat.voice.client;
+package de.maxhenkel.voicechat.plugins.impl.opus;
 
 import com.sun.jna.ptr.PointerByReference;
+import de.maxhenkel.opus4j.Opus;
+import de.maxhenkel.voicechat.api.opus.OpusEncoder;
+import de.maxhenkel.voicechat.voice.common.Utils;
 
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
-import de.maxhenkel.opus4j.Opus;
-import de.maxhenkel.voicechat.voice.common.Utils;
-
-import javax.annotation.Nullable;
-
-public class OpusEncoder {
+public class NativeOpusEncoderImpl implements OpusEncoder {
 
     protected PointerByReference opusEncoder;
     protected int sampleRate;
@@ -19,7 +18,7 @@ public class OpusEncoder {
     protected int maxPayloadSize;
     protected int application;
 
-    private OpusEncoder(int sampleRate, int frameSize, int maxPayloadSize, int application) {
+    private NativeOpusEncoderImpl(int sampleRate, int frameSize, int maxPayloadSize, int application) {
         this.sampleRate = sampleRate;
         this.frameSize = frameSize;
         this.maxPayloadSize = maxPayloadSize;
@@ -27,7 +26,7 @@ public class OpusEncoder {
         open();
     }
 
-    public void open() {
+    private void open() {
         if (opusEncoder != null) {
             return;
         }
@@ -38,6 +37,7 @@ public class OpusEncoder {
         }
     }
 
+    @Override
     public byte[] encode(short[] rawAudio) {
         if (isClosed()) {
             throw new IllegalStateException("Encoder is closed");
@@ -56,6 +56,7 @@ public class OpusEncoder {
         return audio;
     }
 
+    @Override
     public void resetState() {
         if (isClosed()) {
             throw new IllegalStateException("Encoder is closed");
@@ -63,10 +64,12 @@ public class OpusEncoder {
         Opus.INSTANCE.opus_encoder_ctl(opusEncoder, Opus.INSTANCE.OPUS_RESET_STATE);
     }
 
+    @Override
     public boolean isClosed() {
         return opusEncoder == null;
     }
 
+    @Override
     public void close() {
         if (isClosed()) {
             return;
@@ -76,8 +79,8 @@ public class OpusEncoder {
     }
 
     @Nullable
-    public static OpusEncoder createEncoder(int sampleRate, int frameSize, int maxPayloadSize, int application) {
-        return Utils.createSafe(() -> new OpusEncoder(sampleRate, frameSize, maxPayloadSize, application));
+    public static NativeOpusEncoderImpl createEncoder(int sampleRate, int frameSize, int maxPayloadSize, int application) {
+        return Utils.createSafe(() -> new NativeOpusEncoderImpl(sampleRate, frameSize, maxPayloadSize, application));
     }
 
 }

@@ -1,29 +1,30 @@
-package de.maxhenkel.voicechat.voice.client;
+package de.maxhenkel.voicechat.plugins.impl.opus;
 
 import com.sun.jna.ptr.PointerByReference;
 import de.maxhenkel.opus4j.Opus;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
 import javax.annotation.Nullable;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
-public class OpusDecoder {
+public class NativeOpusDecoderImpl implements OpusDecoder {
 
     protected PointerByReference opusDecoder;
     protected int sampleRate;
     protected int frameSize;
     protected int maxPayloadSize;
 
-    private OpusDecoder(int sampleRate, int frameSize, int maxPayloadSize) {
+    private NativeOpusDecoderImpl(int sampleRate, int frameSize, int maxPayloadSize) {
         this.sampleRate = sampleRate;
         this.frameSize = frameSize;
         this.maxPayloadSize = maxPayloadSize;
         open();
     }
 
-    public void open() {
+    private void open() {
         if (opusDecoder != null) {
             return;
         }
@@ -35,6 +36,7 @@ public class OpusDecoder {
         Voicechat.LOGGER.info("Initializing Opus decoder with sample rate " + sampleRate + " Hz, frame size " + frameSize + " bytes and max payload size " + maxPayloadSize + " bytes");
     }
 
+    @Override
     public short[] decode(@Nullable byte[] data) {
         if (isClosed()) {
             throw new IllegalStateException("Decoder is closed");
@@ -57,10 +59,12 @@ public class OpusDecoder {
         return audio;
     }
 
+    @Override
     public boolean isClosed() {
         return opusDecoder == null;
     }
 
+    @Override
     public void close() {
         if (opusDecoder == null) {
             return;
@@ -69,6 +73,7 @@ public class OpusDecoder {
         opusDecoder = null;
     }
 
+    @Override
     public void resetState() {
         if (isClosed()) {
             throw new IllegalStateException("Decoder is closed");
@@ -77,8 +82,8 @@ public class OpusDecoder {
     }
 
     @Nullable
-    public static OpusDecoder createDecoder(int sampleRate, int frameSize, int maxPayloadSize) {
-        return Utils.createSafe(() -> new OpusDecoder(sampleRate, frameSize, maxPayloadSize));
+    public static NativeOpusDecoderImpl createDecoder(int sampleRate, int frameSize, int maxPayloadSize) {
+        return Utils.createSafe(() -> new NativeOpusDecoderImpl(sampleRate, frameSize, maxPayloadSize));
     }
 
 }
