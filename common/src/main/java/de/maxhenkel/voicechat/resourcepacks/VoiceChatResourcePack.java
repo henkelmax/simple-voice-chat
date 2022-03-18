@@ -65,7 +65,7 @@ public class VoiceChatResourcePack extends AbstractPackResources {
     }
 
     @Override
-    public Collection<ResourceLocation> getResources(PackType type, String namespace, String prefix, int maxDepth, Predicate<String> pathFilter) {
+    public Collection<ResourceLocation> getResources(PackType type, String namespace, String prefix, Predicate<ResourceLocation> pathFilter) {
         try {
             URL url = Voicechat.class.getResource(getPath());
             Path resPath = Paths.get(url.toURI());
@@ -79,11 +79,7 @@ public class VoiceChatResourcePack extends AbstractPackResources {
                 if (!Files.isDirectory(path)) {
                     String name = path.getFileName().toString();
                     if (!name.endsWith(".mcmeta") && name.startsWith(absolutePrefixPath)) {
-                        String resourcePath = name.substring(absolutePath.length());
-                        String[] splitPath = resourcePath.split("/");
-                        if (splitPath.length >= maxDepth + 1 && pathFilter.test(splitPath[splitPath.length - 1])) {
-                            list.add(new ResourceLocation(namespace, resourcePath));
-                        }
+                        list.add(new ResourceLocation(namespace, name.substring(absolutePath.length())));
                     }
                 }
             }
