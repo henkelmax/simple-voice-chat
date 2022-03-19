@@ -63,6 +63,7 @@
   "message.voicechat.join_successful": "Successfully joined %s",
   "message.voicechat.leave_successful": "Successfully left the group",
   "message.voicechat.groups_disabled": "Groups are disabled on this server",
+  "message.voicechat.recording_disabled": "Recording is disabled on this server",
   "message.voicechat.invite_successful": "Successfully invited %s",
   "message.voicechat.processing_recording_session": "Processing recording session...",
   "message.voicechat.processing_progress": "Processing %s%%",
