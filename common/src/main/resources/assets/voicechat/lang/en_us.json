@@ -9,6 +9,7 @@
   "key.voice_chat": "Voice Chat GUI",
   "key.voice_chat_group": "Voice Chat Group",
   "key.voice_chat_toggle_recording": "Toggle Recording",
+  "key.voice_chat_adjust_volumes": "Adjust Player Volumes",
   "gui.voicechat.voice_chat.title": "Voice Chat",
   "gui.voicechat.voice_chat_settings.title": "Voice Chat Settings",
   "gui.voicechat.adjust_volume.title": "Adjust Player Volumes",
