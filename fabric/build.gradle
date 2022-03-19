@@ -152,6 +152,7 @@ curseforge {
                 optionalDependency 'modmenu'
                 optionalDependency 'sound-physics-remastered'
                 optionalDependency 'cloth-config'
+                optionalDependency 'audioplayer'
             }
         }
         afterEvaluate {
