@@ -1,1 +1,2 @@
-- Added Java Opus fallback implementation
+- Added player volumes keybind
+- Updated german translation
