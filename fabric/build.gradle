@@ -99,6 +99,7 @@ processResources {
                 'java_version': java_version,
                 'minecraft_dependency': minecraft_dependency,
                 'fabric_loader_version': fabric_loader_version,
+                'min_fabric_version': min_fabric_version,
                 'compatibility_version': mod_compatibility_version,
                 'modmenu_version': modmenu_version,
                 'cloth_config_version': cloth_config_version
