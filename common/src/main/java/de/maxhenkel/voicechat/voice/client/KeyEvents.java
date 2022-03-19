@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
 import de.maxhenkel.voicechat.gui.group.GroupScreen;
 import de.maxhenkel.voicechat.gui.group.JoinGroupScreen;
+import de.maxhenkel.voicechat.gui.volume.PlayerVolumesScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -26,6 +27,7 @@ public class KeyEvents {
     public static KeyBinding KEY_VOICE_CHAT_SETTINGS;
     public static KeyBinding KEY_GROUP;
     public static KeyBinding KEY_TOGGLE_RECORDING;
+    public static KeyBinding KEY_ADJUST_VOLUMES;
 
     public KeyEvents() {
         minecraft = Minecraft.getInstance();
@@ -40,6 +42,7 @@ public class KeyEvents {
         KEY_VOICE_CHAT_SETTINGS = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyBinding("key.voice_chat_settings", InputMappings.UNKNOWN.getValue(), "key.categories.voicechat"));
         KEY_GROUP = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyBinding("key.voice_chat_group", GLFW.GLFW_KEY_G, "key.categories.voicechat"));
         KEY_TOGGLE_RECORDING = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyBinding("key.voice_chat_toggle_recording", InputMappings.UNKNOWN.getValue(), "key.categories.voicechat"));
+        KEY_ADJUST_VOLUMES = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyBinding("key.voice_chat_adjust_volumes", InputMappings.UNKNOWN.getValue(), "key.categories.voicechat"));
     }
 
     private void handleKeybinds() {
@@ -67,6 +70,10 @@ public class KeyEvents {
 
         if (KEY_VOICE_CHAT_SETTINGS.consumeClick()) {
             minecraft.setScreen(new VoiceChatSettingsScreen());
+        }
+
+        if (KEY_ADJUST_VOLUMES.consumeClick()) {
+            minecraft.setScreen(new PlayerVolumesScreen());
         }
 
         if (KEY_PTT.consumeClick()) {
