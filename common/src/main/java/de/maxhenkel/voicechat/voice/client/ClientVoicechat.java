@@ -148,18 +148,25 @@ public class ClientVoicechat {
         }
         LocalPlayer player = Minecraft.getInstance().player;
         if (recording) {
+            if (connection == null || !connection.getData().allowRecording()) {
+                if (player != null) {
+                    player.displayClientMessage(new TranslatableComponent("message.voicechat.recording_disabled"), true);
+                }
+                return;
+            }
             recorder = AudioRecorder.create();
             if (player != null) {
                 player.displayClientMessage(new TranslatableComponent("message.voicechat.recording_started").withStyle(ChatFormatting.DARK_RED), true);
             }
-        } else {
-            AudioRecorder rec = recorder;
-            recorder = null;
-            if (player != null) {
-                player.displayClientMessage(new TranslatableComponent("message.voicechat.recording_stopped").withStyle(ChatFormatting.DARK_RED), true);
-            }
-            rec.saveAndClose();
+            return;
         }
+
+        AudioRecorder rec = recorder;
+        recorder = null;
+        if (player != null) {
+            player.displayClientMessage(new TranslatableComponent("message.voicechat.recording_stopped").withStyle(ChatFormatting.DARK_RED), true);
+        }
+        rec.saveAndClose();
     }
 
     @Nullable

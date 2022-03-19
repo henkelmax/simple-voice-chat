@@ -46,6 +46,7 @@ public class KeyEvents {
     }
 
     private void handleKeybinds() {
+        ClientVoicechat client = ClientManager.getClient();
         ClientPlayerStateManager playerStateManager = ClientManager.getPlayerStateManager();
         if (KEY_VOICE_CHAT.consumeClick()) {
             if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_F3)) {
@@ -57,7 +58,7 @@ public class KeyEvents {
         }
 
         if (KEY_GROUP.consumeClick()) {
-            if (ClientManager.getClient() != null && ClientManager.getClient().getConnection() != null && ClientManager.getClient().getConnection().getData().groupsEnabled()) {
+            if (client != null && client.getConnection() != null && client.getConnection().getData().groupsEnabled()) {
                 if (playerStateManager.isInGroup()) {
                     minecraft.setScreen(new GroupScreen(playerStateManager.getGroup()));
                 } else {
@@ -92,7 +93,7 @@ public class KeyEvents {
             playerStateManager.setDisabled(!playerStateManager.isDisabled());
         }
 
-        if (KEY_TOGGLE_RECORDING.consumeClick() && ClientManager.getClient() != null) {
+        if (KEY_TOGGLE_RECORDING.consumeClick() && client != null) {
             ClientManager.getClient().toggleRecording();
         }
 
