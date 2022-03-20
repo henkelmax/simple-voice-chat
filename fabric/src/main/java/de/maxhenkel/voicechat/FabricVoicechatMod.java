@@ -28,7 +28,7 @@ public class FabricVoicechatMod extends Voicechat implements ModInitializer {
         if (modContainer == null) {
             return -1;
         }
-        return modContainer.getMetadata().getCustomValue(MODID).getAsObject().get("compatibilityVersion").getAsNumber().intValue();
+        return Integer.parseInt(modContainer.getMetadata().getCustomValue(MODID).getAsObject().get("compatibilityVersion").getAsString());
     }
 
     @Override

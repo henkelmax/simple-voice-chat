@@ -10,7 +10,7 @@ buildscript {
 }
 
 plugins {
-    id 'fabric-loom' version '0.10-SNAPSHOT'
+    id 'fabric-loom' version '0.11-SNAPSHOT'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id 'com.github.johnrengelman.shadow' version '7.1.0'
 }
@@ -43,7 +43,7 @@ runClient.doFirst {
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings minecraft.officialMojangMappings()
+    mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
 
     Set<String> apiModules = [
@@ -103,19 +103,16 @@ processResources {
                 'modmenu_version': modmenu_version,
                 'cloth_config_version': cloth_config_version
     }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    it.options.encoding = "UTF-8"
-    it.options.release = java_version as int
+    from project(":common").sourceSets.main.resources
 }
 
 tasks.withType(JavaCompile) {
     source(project(':common').sourceSets.main.allSource)
 }
 
-processResources {
-    from("${project(':common').projectDir}/src/main/resources")
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    it.options.release = java_version as int
 }
 
 java {
@@ -219,7 +216,10 @@ shadowJar {
     }
 }
 
-remapJar {
+prepareRemapJar {
     dependsOn shadowJar
-    input.set shadowJar.archiveFile.get()
+}
+
+remapJar {
+    input = shadowJar.archiveFile.get()
 }

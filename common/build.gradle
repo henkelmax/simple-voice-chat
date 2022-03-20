@@ -8,7 +8,7 @@ buildscript {
 
 plugins {
     id "java"
-    id 'fabric-loom' version '0.10-SNAPSHOT'
+    id 'fabric-loom' version '0.11-SNAPSHOT'
 }
 
 sourceCompatibility = JavaLanguageVersion.of(java_version as int)
@@ -30,7 +30,7 @@ task prepareWorkspace {
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings minecraft.officialMojangMappings()
+    mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'

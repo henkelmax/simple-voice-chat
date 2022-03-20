@@ -47,7 +47,7 @@
   },
   "custom": {
     "voicechat": {
-      "compatibilityVersion": ${compatibility_version}
+      "compatibilityVersion": "${compatibility_version}"
     },
     "modmenu": {
       "links": {
