@@ -41,6 +41,10 @@ runClient.doFirst {
     args = ['--username', "henkelmax${new Random().nextInt(1000)}"]
 }
 
+configurations {
+    macos
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.officialMojangMappings()
@@ -85,6 +89,9 @@ dependencies {
 
     implementation project(path: ':macos', configuration: 'shadow')
     shadow project(path: ':macos', configuration: 'shadow')
+    macos(project(':macos')) {
+        transitive(false)
+    }
 
     implementation project(':api')
     shadow project(':api')
@@ -105,6 +112,15 @@ processResources {
                 'cloth_config_version': cloth_config_version
     }
     from project(":common").sourceSets.main.resources
+
+    doLast {
+        copy {
+            from(configurations.macos) {
+                rename { 'macos.zip' }
+            }
+            into { "${buildDir}/resources/main" }
+        }
+    }
 }
 
 tasks.withType(JavaCompile) {
@@ -123,13 +139,6 @@ java {
 jar {
     from('LICENSE') {
         rename { "${it}_${archivesBaseName}" }
-    }
-
-    copy {
-        from("${project(':macos').buildDir}/libs/macos.jar") {
-            rename { "macos.zip" }
-        }
-        into { "${buildDir}/resources/main" }
     }
 }
 
