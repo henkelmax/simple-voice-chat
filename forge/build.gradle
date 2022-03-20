@@ -165,7 +165,7 @@ modrinth {
     projectId = modrinth_id
     versionNumber = "forge-${mod_version}"
     versionName = "[FORGE][${minecraft_version}] ${mod_name} ${mod_version}"
-    uploadFile = file("${buildDir}/libs/${archivesBaseName}-${version}.jar")
+    uploadFile = jar
     versionType = release_type.toUpperCase()
     changelog = file("changelog.md").text
     gameVersions = [minecraft_version]
