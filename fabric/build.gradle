@@ -59,7 +59,7 @@ dependencies {
         include(modImplementation(fabricApi.module(it, fabric_version)))
     }
 
-    implementation project(':common')
+    implementation project(path: ':common', configuration: 'namedElements')
 
 //    modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
     modCompileOnly "com.terraformersmc:modmenu:${modmenu_version}"
@@ -172,7 +172,7 @@ modrinth {
     projectId = modrinth_id
     versionNumber = "fabric-${mod_version}"
     versionName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
-    uploadFile = file("${buildDir}/libs/${archivesBaseName}-${version}.jar")
+    uploadFile = remapJar
     versionType = release_type.toUpperCase()
     changelog = file("changelog.md").text
     gameVersions = [minecraft_version]
