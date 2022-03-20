@@ -73,6 +73,10 @@ repositories {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+configurations {
+    macos
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
@@ -97,6 +101,9 @@ dependencies {
 
     implementation project(path: ':macos', configuration: 'shadow')
     shadow project(path: ':macos', configuration: 'shadow')
+    macos(project(':macos')) {
+        transitive(false)
+    }
 
     implementation project(':api')
     shadow project(':api')
@@ -115,6 +122,15 @@ processResources {
         expand 'mod_compatibility_version': mod_compatibility_version
     }
     from("${project(':common').projectDir}/src/main/resources")
+
+    doLast {
+        copy {
+            from(configurations.macos) {
+                rename { 'macos.zip' }
+            }
+            into { "${buildDir}/resources/main" }
+        }
+    }
 }
 
 tasks.withType(JavaCompile) {
@@ -137,13 +153,6 @@ jar {
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
     }
     from configurations.shadow.collect { it.isDirectory() ? it : zipTree(it) }
-
-    copy {
-        from("${project(':macos').buildDir}/libs/macos.jar") {
-            rename { "macos.zip" }
-        }
-        into { "${buildDir}/resources/main" }
-    }
 }
 
 task deobfJar(type: Jar) {
