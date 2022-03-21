@@ -8,6 +8,7 @@ buildscript {
 plugins {
     id "java"
     id "com.github.johnrengelman.shadow" version "7.1.0"
+    id "com.github.hexomod.replace.token.preprocessor" version "0.4"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
@@ -65,4 +66,8 @@ task standaloneJar(type: ShadowJar) {
     manifest {
         attributes 'Main-Class': 'de.maxhenkel.voicechat.macos.StandaloneMain'
     }
+}
+
+replaceTokenPreprocessorSettings {
+    replace '@PATCHER_VERSION@': patcher_version
 }
