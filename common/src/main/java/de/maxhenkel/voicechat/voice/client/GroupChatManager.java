@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class GroupChatManager {
@@ -111,6 +112,8 @@ public class GroupChatManager {
                 entries.add(state);
             }
         }
+
+        entries.sort(Comparator.comparing(PlayerState::getName));
 
         return entries;
     }
