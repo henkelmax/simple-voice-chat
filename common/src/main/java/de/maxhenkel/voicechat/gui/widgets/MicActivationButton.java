@@ -13,11 +13,21 @@ public class MicActivationButton extends EnumButton<MicrophoneActivationType> {
         super(xIn, yIn, widthIn, heightIn, VoicechatClient.CLIENT_CONFIG.microphoneActivationType);
         this.voiceActivationSlider = voiceActivationSlider;
         updateText();
+        setVisibility();
     }
 
     @Override
     protected ITextComponent getText(MicrophoneActivationType type) {
         return new TranslationTextComponent("message.voicechat.activation_type", type.getText());
+    }
+
+    @Override
+    protected void onUpdate(MicrophoneActivationType type) {
+        setVisibility();
+    }
+
+    private void setVisibility() {
+        voiceActivationSlider.visible = MicrophoneActivationType.VOICE.equals(entry.get());
     }
 
 }
