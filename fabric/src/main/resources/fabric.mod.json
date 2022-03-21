@@ -46,9 +46,6 @@
     "sound_physics_remastered": "<1.18.2-1.0.5"
   },
   "custom": {
-    "voicechat": {
-      "compatibilityVersion": "${compatibility_version}"
-    },
     "modmenu": {
       "links": {
         "modmenu.discord": "https://discord.gg/4dH2zwTmyX"
