@@ -40,7 +40,13 @@ public abstract class ALSpeakerBase implements Speaker {
         this.bufferSampleSize = bufferSize;
         this.audioChannelId = audioChannelId;
         this.buffers = new int[32];
-        executor = Executors.newSingleThreadExecutor(NamedThreadPoolFactory.create("SoundSourceThread"));
+        String threadName;
+        if (audioChannelId == null) {
+            threadName = "SoundSourceThread";
+        } else {
+            threadName = "SoundSourceThread-" + audioChannelId;
+        }
+        executor = Executors.newSingleThreadExecutor(NamedThreadPoolFactory.create(threadName));
     }
 
     @Override
@@ -122,23 +128,19 @@ public abstract class ALSpeakerBase implements Speaker {
     }
 
     protected void setPositionSync(@Nullable Vector3d soundPos) {
+        ActiveRenderInfo camera = mc.gameRenderer.getMainCamera();
+        Vector3d position = camera.getPosition();
+        Vector3f look = camera.getLookVector();
+        Vector3f up = camera.getUpVector();
+        AL11.alListener3f(AL11.AL_POSITION, (float) position.x, (float) position.y, (float) position.z);
+        SoundManager.checkAlError();
+        AL11.alListenerfv(AL11.AL_ORIENTATION, new float[]{look.x(), look.y(), look.z(), up.x(), up.y(), up.z()});
+        SoundManager.checkAlError();
         if (soundPos != null) {
-            ActiveRenderInfo camera = mc.gameRenderer.getMainCamera();
-            Vector3d position = camera.getPosition();
-            Vector3f look = camera.getLookVector();
-            Vector3f up = camera.getUpVector();
-            AL11.alListener3f(AL11.AL_POSITION, (float) position.x, (float) position.y, (float) position.z);
-            SoundManager.checkAlError();
-            AL11.alListenerfv(AL11.AL_ORIENTATION, new float[]{look.x(), look.y(), look.z(), up.x(), up.y(), up.z()});
-            SoundManager.checkAlError();
             AL11.alSource3f(source, AL11.AL_POSITION, (float) soundPos.x, (float) soundPos.y, (float) soundPos.z);
             SoundManager.checkAlError();
         } else {
-            AL11.alListener3f(AL11.AL_POSITION, 0F, 0F, 0F);
-            SoundManager.checkAlError();
-            AL11.alListenerfv(AL11.AL_ORIENTATION, new float[]{0F, 0F, -1F, 0F, 1F, 0F});
-            SoundManager.checkAlError();
-            AL11.alSource3f(source, AL11.AL_POSITION, 0F, 0F, 0F);
+            AL11.alSource3f(source, AL11.AL_POSITION, (float) position.x, (float) position.y, (float) position.z);
             SoundManager.checkAlError();
         }
     }
