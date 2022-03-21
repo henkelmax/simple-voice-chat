@@ -12,6 +12,7 @@ buildscript {
 
 plugins {
     id "java"
+    id "com.github.hexomod.replace.token.preprocessor" version "0.4"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
@@ -48,4 +49,8 @@ dependencies {
     implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
 
     implementation project(':api')
+}
+
+replaceTokenPreprocessorSettings {
+    replace '@MOD_COMPATIBILITY_VERSION@': mod_compatibility_version
 }
