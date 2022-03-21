@@ -57,7 +57,7 @@ public class MacosFrame extends JFrame implements DropTargetListener {
                     <p><b>Use at your own risk!</b></p>
                     <p align="right">Version %s</p>
                 </body>
-                """.formatted(Main.getVersion()));
+                """.formatted(Main.VERSION));
         ep.setEditable(false);
         ep.setBorder(new LineBorder(Color.WHITE, 10));
         ep.addHyperlinkListener(e -> {
