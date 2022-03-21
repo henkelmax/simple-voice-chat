@@ -8,8 +8,6 @@ import de.maxhenkel.voicechat.permission.FabricPermissionManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
 
 public class FabricVoicechatMod extends Voicechat implements ModInitializer {
 
@@ -20,15 +18,6 @@ public class FabricVoicechatMod extends Voicechat implements ModInitializer {
         });
 
         initialize();
-    }
-
-    @Override
-    public int readCompatibilityVersion() {
-        ModContainer modContainer = FabricLoader.getInstance().getModContainer(MODID).orElse(null);
-        if (modContainer == null) {
-            return -1;
-        }
-        return Integer.parseInt(modContainer.getMetadata().getCustomValue(MODID).getAsObject().get("compatibilityVersion").getAsString());
     }
 
     @Override

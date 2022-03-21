@@ -40,14 +40,6 @@ public class ForgeVoicechatMod extends Voicechat {
     }
 
     @Override
-    public int readCompatibilityVersion() throws Exception {
-        InputStream in = getClass().getClassLoader().getResourceAsStream("compatibility.properties");
-        Properties props = new Properties();
-        props.load(in);
-        return Integer.parseInt(props.getProperty("compatibility_version"));
-    }
-
-    @Override
     protected CommonCompatibilityManager createCompatibilityManager() {
         return compatibilityManager;
     }

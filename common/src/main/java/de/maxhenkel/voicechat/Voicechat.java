@@ -17,25 +17,18 @@ public abstract class Voicechat {
     public static ServerVoiceEvents SERVER;
     public static ServerConfig SERVER_CONFIG;
 
-    public static int COMPATIBILITY_VERSION = -1;
+    public static int COMPATIBILITY_VERSION = Integer.parseInt("@MOD_COMPATIBILITY_VERSION@");
 
     public static final Pattern GROUP_REGEX = Pattern.compile("^[^\"\\n\\r\\t\\s][^\"\\n\\r\\t]{0,15}$");
 
     public void initialize() {
         CommonCompatibilityManager.INSTANCE = createCompatibilityManager();
         PermissionManager.INSTANCE = createPermissionManager();
-        try {
-            COMPATIBILITY_VERSION = readCompatibilityVersion();
-            LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
-        } catch (Exception e) {
-            LOGGER.error("Failed to read compatibility version");
-        }
+        LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
         CommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
         CommonCompatibilityManager.INSTANCE.onRegisterServerCommands(VoicechatCommands::register);
     }
-
-    protected abstract int readCompatibilityVersion() throws Exception;
 
     protected abstract CommonCompatibilityManager createCompatibilityManager();
 
