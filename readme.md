@@ -100,7 +100,7 @@ You will also see the heads of the group members in the top left corner of your 
 Talking players will be outlined.
 You can disable these icons by pressing the third button from the left.
 
-![](https://i.imgur.com/sYfa350.png)
+![](https://i.imgur.com/ZVSfBms.png)
 
 Players that are not in a group will see a group icon next to your head, indicating that they can't talk to you.
 
@@ -115,7 +115,7 @@ In addition, there is the possibility to specify the recording and playback devi
 
 By clicking the 'Enable microphone testing' button, you can hear your own voice and adjust the activation level of the voice activation.
 
-![](https://i.imgur.com/D8GUick.png)
+![](https://i.imgur.com/TMyfSYU.png)
 
 ## Key Bindings
 
