@@ -8,7 +8,7 @@ import net.minecraft.network.chat.TextComponent;
 
 public abstract class EnumButton<T extends Enum<T>> extends AbstractButton {
 
-    private ConfigEntry<T> entry;
+    protected ConfigEntry<T> entry;
 
     public EnumButton(int xIn, int yIn, int widthIn, int heightIn, ConfigEntry<T> entry) {
         super(xIn, yIn, widthIn, heightIn, TextComponent.EMPTY);
