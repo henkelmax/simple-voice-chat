@@ -1,3 +1,4 @@
 - Added player volumes keybind
 - Updated german translation
 - Fixed player ordering in the group HUD
+- Fixed voice activation slider visible in PTT mode
