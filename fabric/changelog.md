@@ -3,3 +3,4 @@
 - Fixed player ordering in the group HUD
 - Fixed voice activation slider visible in PTT mode
 - Fixed sound glitch when hearing group and locational sounds simultaneously
+- Fixed changing audio type while testing the microphone causes errors
