@@ -68,7 +68,8 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         addButton(voiceActivationSlider);
         y += 21;
 
-        addButton(new MicTestButton(guiLeft + 10, y, xSize - 20, 20, voiceActivationSlider));
+        MicTestButton micTestButton = new MicTestButton(guiLeft + 10, y, xSize - 20, 20, voiceActivationSlider);
+        addButton(micTestButton);
         y += 21;
 
         addButton(new EnumButton<AudioType>(guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.audioType) {
@@ -82,6 +83,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
             protected void onUpdate(AudioType type) {
                 ClientVoicechat client = ClientManager.getClient();
                 if (client != null) {
+                    micTestButton.stop();
                     client.reloadAudio();
                 }
             }

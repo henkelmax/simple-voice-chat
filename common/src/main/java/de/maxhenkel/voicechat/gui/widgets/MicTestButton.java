@@ -63,10 +63,7 @@ public class MicTestButton extends AbstractButton {
     public void onPress() {
         setMicActive(!micActive);
         if (micActive) {
-            if (voiceThread != null) {
-                voiceThread.close();
-                voiceThread = null;
-            }
+            close();
             try {
                 voiceThread = new VoiceThread();
                 voiceThread.start();
@@ -76,12 +73,21 @@ public class MicTestButton extends AbstractButton {
                 e.printStackTrace();
             }
         } else {
-            if (voiceThread != null) {
-                voiceThread.close();
-                voiceThread = null;
-            }
+            close();
         }
         updateText();
+    }
+
+    private void close() {
+        if (voiceThread != null) {
+            voiceThread.close();
+            voiceThread = null;
+        }
+    }
+
+    public void stop() {
+        close();
+        setMicActive(false);
     }
 
     private class VoiceThread extends Thread {
