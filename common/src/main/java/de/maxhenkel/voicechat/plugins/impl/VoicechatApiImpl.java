@@ -10,25 +10,20 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.server.ServerWorld;
 import de.maxhenkel.voicechat.plugins.impl.opus.OpusManager;
 
-import javax.annotation.Nullable;
-
 public class VoicechatApiImpl implements VoicechatApi {
 
     private static final AudioConverter AUDIO_CONVERTER = new AudioConverterImpl();
 
-    @Nullable
     @Override
     public OpusEncoder createEncoder() {
         return OpusManager.createEncoder(null);
     }
 
-    @Nullable
     @Override
     public OpusEncoder createEncoder(OpusEncoderMode mode) {
         return OpusManager.createEncoder(mode);
     }
 
-    @Nullable
     @Override
     public OpusDecoder createDecoder() {
         return OpusManager.createDecoder();

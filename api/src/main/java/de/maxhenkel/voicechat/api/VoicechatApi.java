@@ -5,17 +5,12 @@ import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
 
-import javax.annotation.Nullable;
-
 public interface VoicechatApi {
 
     /**
      * Creates a new opus encoder.
      * Note that the encoder needs to be closed after you are finished using it.
-     *
-     * @return the opus encoder or <code>null</code> if there are no natives for this platform.
      */
-    @Nullable
     OpusEncoder createEncoder();
 
     /**
@@ -23,18 +18,16 @@ public interface VoicechatApi {
      * Note that the encoder needs to be closed after you are finished using it.
      *
      * @param mode the opus encoder mode
-     * @return the opus encoder or <code>null</code> if there are no natives for this platform.
+     * @return the opus encoder
      */
-    @Nullable
     OpusEncoder createEncoder(OpusEncoderMode mode);
 
     /**
      * Creates a new opus decoder.
      * Note that the decoder needs to be closed after you are finished using it.
      *
-     * @return the opus decoder or <code>null</code> if there are no natives for this platform.
+     * @return the opus decoder
      */
-    @Nullable
     OpusDecoder createDecoder();
 
     /**
