@@ -6,9 +6,6 @@ import javax.annotation.Nullable;
 
 /**
  * Instances can be obtained by calling {@link VoicechatApi#createDecoder()}.
- * <br/>
- * <br/>
- * <b>NOTE</b>: The bukkit based version of the voice chat does not include Opus natives.
  */
 public interface OpusDecoder {
 
