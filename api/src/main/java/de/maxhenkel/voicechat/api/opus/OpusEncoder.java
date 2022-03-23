@@ -4,9 +4,6 @@ import de.maxhenkel.voicechat.api.VoicechatApi;
 
 /**
  * Instances can be obtained by calling {@link VoicechatApi#createEncoder()}.
- * <br/>
- * <br/>
- * <b>NOTE</b>: The bukkit based version of the voice chat does not include Opus natives.
  */
 public interface OpusEncoder {
 
