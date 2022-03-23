@@ -23,8 +23,6 @@ Note that this might cause other issues with your launcher, so use this at your 
 You can revert these changes by reinstalling the launcher.
 
 After restarting the launcher, Minecraft should now ask for microphone access.
-> If the launcher doesn't ask for Microphone access after patching it in the GUI, run the following command in a Terminal window:
-`codesign --force --deep --sign - <your-application>`.
 
 ### How to patch your launcher
 
@@ -40,6 +38,16 @@ After restarting the launcher, Minecraft should now ask for microphone access.
 **MultiMC**
 - Drag MultiMC from your applications folder on the patcher GUI
 
+### Troubleshooting Problems
+
+If the launcher doesn't ask for Microphone access after patching it in the GUI, run the following command in a Terminal window:
+`codesign --force --deep --sign - <your-application>` where `<your-application>` is the path to your launcher.
+
+
+If there is a popup `Minecraft wants to use your confidential information stored in "mojangTokenService" in your keychain`,
+enter the password of your Mac and click on `Always Allow`.
+If the popup still constantly pops up, restart your computer and try again.
+
 ### Are there any alternatives to this?
 
 You can run your launcher in the terminal.
@@ -52,3 +60,6 @@ It will also not work with all launchers.
 There is also a [standalone version](https://github.com/henkelmax/simple-voice-chat/files/7926761/simple-voice-chat-macos-workaround.zip) of the workaround.
 This works exactly like the one that's built into the mod.
 Use this if the GUI does not show up when starting the game or your microphone is not picking up sound.
+You also need to use this version if you are using `Minecraft 1.16.5` or older.
+
+*Note* that you need to open the `.jar` with `Java 17`.
