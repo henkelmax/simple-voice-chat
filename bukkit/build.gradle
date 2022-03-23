@@ -35,6 +35,9 @@ dependencies {
     implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
     shadow "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
 
+    implementation "org.concentus:Concentus:${concentus_version}"
+    shadow "org.concentus:Concentus:${concentus_version}"
+
     compileOnly "me.clip:placeholderapi:${placeholder_api_version}"
 
     implementation project(':api')
@@ -94,6 +97,7 @@ shadowJar {
     relocate 'com.google.gson', "de.maxhenkel.voicechat.gson"
     relocate 'me.lucko.commodore', "de.maxhenkel.voicechat.commodore"
     relocate 'de.maxhenkel.configbuilder', "de.maxhenkel.voicechat.configbuilder"
+    relocate 'org.concentus', "de.maxhenkel.voicechat.concentus"
     dependencies {
         exclude(dependency('com.mojang:brigadier:.*'))
         exclude(dependency('com.google.code.findbugs:jsr305:.*'))
