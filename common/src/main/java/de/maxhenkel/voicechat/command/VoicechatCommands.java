@@ -110,6 +110,11 @@ public class VoicechatCommands {
                 return 1;
             }
 
+            if (!Voicechat.SERVER.isCompatible(player)) {
+                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.player_no_voicechat", player.getDisplayName(), CommonCompatibilityManager.INSTANCE.getModName()), false);
+                return 1;
+            }
+
             String passwordSuffix = group.getPassword() == null ? "" : " \"" + group.getPassword() + "\"";
             player.sendMessage(new TranslationTextComponent("message.voicechat.invite", source.getDisplayName(), new StringTextComponent(group.getName()).withStyle(TextFormatting.GRAY), TextComponentUtils.wrapInSquareBrackets(new TranslationTextComponent("message.voicechat.accept_invite").withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/voicechat join " + group.getId().toString() + passwordSuffix)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("message.voicechat.accept_invite.hover"))))).withStyle(TextFormatting.GREEN)), Util.NIL_UUID);
 
