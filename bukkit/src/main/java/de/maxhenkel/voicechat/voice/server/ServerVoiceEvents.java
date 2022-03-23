@@ -103,7 +103,7 @@ public class ServerVoiceEvents implements Listener {
             }
             if (!isCompatible(player)) {
                 player.kickPlayer("You need %s %s to play on this server".formatted(
-                        Voicechat.INSTANCE.getDescription().getName(),
+                        "Simple Voice Chat",
                         Voicechat.INSTANCE.getDescription().getVersion()
                 ));
             }
