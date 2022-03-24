@@ -111,7 +111,7 @@ public class VoicechatCommands {
             }
 
             if (!Voicechat.SERVER.isCompatible(player)) {
-                commandSource.getSource().sendSuccess(new TranslatableComponent("message.voicechat.player_no_voicechat", player.getDisplayName(), CommonCompatibilityManager.INSTANCE.getModName()), false);
+                commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.player_no_voicechat", player.getDisplayName(), CommonCompatibilityManager.INSTANCE.getModName()), false);
                 return 1;
             }
 
