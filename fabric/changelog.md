@@ -1,2 +1,1 @@
-- Improve voice chat commands
-- Fixed player volumes not respected in some cases
+- Updated to 22w12a
