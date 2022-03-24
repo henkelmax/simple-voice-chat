@@ -17,11 +17,17 @@ public class OpusManager {
     public static OpusEncoder createEncoder(OpusEncoderMode mode) {
         OpusApplication application = OpusApplication.OPUS_APPLICATION_VOIP;
         if (mode != null) {
-            application = switch (mode) {
-                case VOIP -> OpusApplication.OPUS_APPLICATION_VOIP;
-                case AUDIO -> OpusApplication.OPUS_APPLICATION_AUDIO;
-                case RESTRICTED_LOWDELAY -> OpusApplication.OPUS_APPLICATION_RESTRICTED_LOWDELAY;
-            };
+            switch (mode) {
+                case VOIP:
+                    application = OpusApplication.OPUS_APPLICATION_VOIP;
+                    break;
+                case AUDIO:
+                    application = OpusApplication.OPUS_APPLICATION_AUDIO;
+                    break;
+                case RESTRICTED_LOWDELAY:
+                    application = OpusApplication.OPUS_APPLICATION_RESTRICTED_LOWDELAY;
+                    break;
+            }
         }
         return createEncoder(SAMPLE_RATE, FRAME_SIZE, 1024, application);
     }

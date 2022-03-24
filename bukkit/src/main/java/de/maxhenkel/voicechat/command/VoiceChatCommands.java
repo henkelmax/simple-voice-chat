@@ -30,9 +30,12 @@ public class VoiceChatCommands implements CommandExecutor {
         if (checkNoVoicechat(commandSender)) {
             return true;
         }
-        if (!(commandSender instanceof Player sender)) {
+        if (!(commandSender instanceof Player)) {
             return true;
         }
+
+        Player sender = (Player) commandSender;
+
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("help")) {
                 return helpCommand(sender, command, label, args);
@@ -229,11 +232,12 @@ public class VoiceChatCommands implements CommandExecutor {
     }
 
     private static boolean checkNoVoicechat(CommandSender commandSender) {
-        if (commandSender instanceof Player player) {
+        if (commandSender instanceof Player) {
+            Player player = (Player) commandSender;
             if (Voicechat.SERVER.isCompatible(player)) {
                 return false;
             }
-            commandSender.sendMessage(Voicechat.translate("voicechat_needed_command").formatted("Simple Voice Chat"));
+            commandSender.sendMessage(String.format(Voicechat.translate("voicechat_needed_command"), "Simple Voice Chat"));
         } else {
             commandSender.sendMessage(Voicechat.translate("command_as_player"));
         }
