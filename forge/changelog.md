@@ -1,1 +1,2 @@
 - Improve voice chat commands
+- Fixed player volumes not respected in some cases

@@ -51,6 +51,10 @@ public class UsernameCache {
         return names.get(uuid);
     }
 
+    public boolean has(UUID uuid) {
+        return names.containsKey(uuid);
+    }
+
     public void updateUsername(UUID uuid, String name) {
         names.put(uuid, name);
     }
