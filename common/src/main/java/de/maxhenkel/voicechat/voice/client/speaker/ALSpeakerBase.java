@@ -137,10 +137,14 @@ public abstract class ALSpeakerBase implements Speaker {
         AL11.alListenerfv(AL11.AL_ORIENTATION, new float[]{look.x(), look.y(), look.z(), up.x(), up.y(), up.z()});
         SoundManager.checkAlError();
         if (soundPos != null) {
+            AL11.alSourcei(source, AL11.AL_SOURCE_RELATIVE, AL11.AL_FALSE);
+            SoundManager.checkAlError();
             AL11.alSource3f(source, AL11.AL_POSITION, (float) soundPos.x, (float) soundPos.y, (float) soundPos.z);
             SoundManager.checkAlError();
         } else {
-            AL11.alSource3f(source, AL11.AL_POSITION, (float) position.x, (float) position.y, (float) position.z);
+            AL11.alSourcei(source, AL11.AL_SOURCE_RELATIVE, AL11.AL_TRUE);
+            SoundManager.checkAlError();
+            AL11.alSource3f(source, AL11.AL_POSITION, 0F, 0F, 0F);
             SoundManager.checkAlError();
         }
     }
