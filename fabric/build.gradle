@@ -34,6 +34,7 @@ repositories {
         name = 'henkelmax.public'
         url = 'https://maven.maxhenkel.de/repository/public'
     }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     mavenLocal()
 }
 
@@ -70,6 +71,8 @@ dependencies {
     modApi("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}") {
         exclude(group: 'net.fabricmc.fabric-api')
     }
+
+    modImplementation "me.lucko:fabric-permissions-api:${fabric_permission_api_version}"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'org.jetbrains:annotations:23.0.0'
@@ -157,6 +160,7 @@ curseforge {
                 optionalDependency 'sound-physics-remastered'
                 optionalDependency 'cloth-config'
                 optionalDependency 'audioplayer'
+                optionalDependency 'luckperms'
             }
         }
         afterEvaluate {
@@ -185,7 +189,8 @@ modrinth {
     gameVersions = [minecraft_version]
     loaders = ['fabric']
     dependencies = [
-            new ModDependency("mOgUt4GM", "optional") // ModMenu
+            new ModDependency("mOgUt4GM", "optional"), // ModMenu
+            new ModDependency("Vebnzrzj", "optional") // LuckPerms
     ]
 }
 tasks.modrinth.dependsOn(build)

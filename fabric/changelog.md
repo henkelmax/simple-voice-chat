@@ -1,1 +1,1 @@
-- Fixed group audio
+- Added Fabric Permissions API
