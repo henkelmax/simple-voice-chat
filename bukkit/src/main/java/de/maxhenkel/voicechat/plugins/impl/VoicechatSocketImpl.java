@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.plugins.impl;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.RawUdpPacket;
 import de.maxhenkel.voicechat.api.VoicechatSocket;
+import org.bukkit.Bukkit;
 
 import java.net.*;
 
@@ -40,20 +41,22 @@ public class VoicechatSocketImpl implements VoicechatSocket {
             socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
         } catch (BindException e) {
             Voicechat.LOGGER.error("Failed to run voice chat at UDP port {}, make sure no other application is running at that port", port);
-            e.printStackTrace();
-            System.exit(1);
-            return;
+            Voicechat.LOGGER.error("Shutting down server");
+            Bukkit.shutdown();
+            throw e;
         }
     }
 
-    private void checkCorrectHost() {
+    private void checkCorrectHost() throws Exception {
         String host = Voicechat.SERVER_CONFIG.voiceHost.get();
         if (!host.isEmpty()) {
             try {
                 new URI("voicechat://" + host);
             } catch (URISyntaxException e) {
                 Voicechat.LOGGER.warn("Failed to parse voice host: {}", e.getMessage());
-                System.exit(1);
+                Voicechat.LOGGER.error("Shutting down server");
+                Bukkit.shutdown();
+                throw e;
             }
         }
     }
@@ -70,6 +73,9 @@ public class VoicechatSocketImpl implements VoicechatSocket {
 
     @Override
     public int getLocalPort() {
+        if (socket == null) {
+            return -1;
+        }
         return socket.getLocalPort();
     }
 
@@ -82,6 +88,9 @@ public class VoicechatSocketImpl implements VoicechatSocket {
 
     @Override
     public boolean isClosed() {
+        if (socket == null) {
+            return true;
+        }
         return socket.isClosed();
     }
 }
