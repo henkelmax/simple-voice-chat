@@ -75,7 +75,7 @@ public class Server extends Thread {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Voicechat.LOGGER.error("Voice chat server error {}", e.getMessage());
         }
     }
 
