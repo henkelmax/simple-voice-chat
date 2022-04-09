@@ -40,13 +40,14 @@ public class VoicechatSocketImpl implements VoicechatSocket {
             socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
         } catch (BindException e) {
             Voicechat.LOGGER.error("Failed to run voice chat at UDP port {}, make sure no other application is running at that port", port);
-            e.printStackTrace();
+            Voicechat.LOGGER.error("Shutting down server");
+            Voicechat.LOGGER.error("Voice chat server error {}", e.getMessage());
             System.exit(1);
-            return;
+            throw e;
         }
     }
 
-    private void checkCorrectHost() {
+    private void checkCorrectHost() throws Exception {
         String host = Voicechat.SERVER_CONFIG.voiceHost.get();
         if (!host.isEmpty()) {
             try {
@@ -54,6 +55,7 @@ public class VoicechatSocketImpl implements VoicechatSocket {
             } catch (URISyntaxException e) {
                 Voicechat.LOGGER.warn("Failed to parse voice host: {}", e.getMessage());
                 System.exit(1);
+                throw e;
             }
         }
     }
@@ -70,6 +72,9 @@ public class VoicechatSocketImpl implements VoicechatSocket {
 
     @Override
     public int getLocalPort() {
+        if (socket == null) {
+            return -1;
+        }
         return socket.getLocalPort();
     }
 
@@ -82,6 +87,9 @@ public class VoicechatSocketImpl implements VoicechatSocket {
 
     @Override
     public boolean isClosed() {
+        if (socket == null) {
+            return true;
+        }
         return socket.isClosed();
     }
 }
