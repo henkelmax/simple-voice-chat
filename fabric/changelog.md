@@ -1,1 +1,1 @@
-- Added Fabric Permissions API
+- Updated native Opus version

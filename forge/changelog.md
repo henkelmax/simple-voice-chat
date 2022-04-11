@@ -1,1 +1,1 @@
-- Fixed group audio
+- Updated native Opus version
