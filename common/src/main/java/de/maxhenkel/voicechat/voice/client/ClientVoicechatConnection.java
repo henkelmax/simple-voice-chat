@@ -85,7 +85,6 @@ public class ClientVoicechatConnection extends Thread {
         Voicechat.LOGGER.info("Disconnecting voicechat");
         running = false;
 
-
         socket.close();
         authThread.close();
     }
@@ -95,6 +94,9 @@ public class ClientVoicechatConnection extends Thread {
     }
 
     public void sendToServer(NetworkMessage message) throws Exception {
+        if (!isConnected()) {
+            return; // Ignore sending packets when connection is closed
+        }
         byte[] bytes = message.writeClient(this);
         socket.send(new DatagramPacket(bytes, bytes.length, address, data.getServerPort()));
     }
