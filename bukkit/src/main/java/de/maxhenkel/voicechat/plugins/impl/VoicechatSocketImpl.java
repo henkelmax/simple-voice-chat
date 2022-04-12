@@ -63,11 +63,17 @@ public class VoicechatSocketImpl implements VoicechatSocket {
 
     @Override
     public RawUdpPacket read() throws Exception {
+        if (socket == null) {
+            throw new IllegalStateException("Socket not opened yet");
+        }
         return RawUdpPacketImpl.read(socket);
     }
 
     @Override
     public void send(byte[] data, SocketAddress address) throws Exception {
+        if (socket == null) {
+            return; // Ignoring packet sending when socket isn't open yet
+        }
         socket.send(new DatagramPacket(data, data.length, address));
     }
 
