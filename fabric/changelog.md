@@ -1,1 +1,1 @@
-- Updated native Opus version
+- Fixed potential errors in singleplayer
