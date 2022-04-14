@@ -19,6 +19,9 @@ public class OpusManager {
     public static boolean isNativeOpusCompatible() {
         if (nativeOpusCompatible == null) {
             Boolean isCompatible = Utils.createSafe(OpusManager::isOpusCompatible);
+            if (isCompatible == null) {
+                Voicechat.LOGGER.warn("Failed to load native Opus encoder - Falling back to Java Opus implementation");
+            }
             nativeOpusCompatible = isCompatible != null && isCompatible;
         }
         return nativeOpusCompatible;
