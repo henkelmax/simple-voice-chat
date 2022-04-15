@@ -39,6 +39,7 @@ public class UsernameCache {
     }
 
     public void save() {
+        file.getParentFile().mkdirs();
         try (Writer writer = new FileWriter(file)) {
             gson.toJson(names, writer);
         } catch (Exception e) {
