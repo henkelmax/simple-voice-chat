@@ -11,11 +11,13 @@ import java.util.*;
 
 public class AdjustVolumeList extends ListScreenListBase<PlayerVolumeEntry> {
 
+    protected PlayerVolumesScreen screen;
     protected final List<PlayerVolumeEntry> players;
     protected String filter;
 
-    public AdjustVolumeList(int width, int height, int x, int y, int size) {
+    public AdjustVolumeList(int width, int height, int x, int y, int size, PlayerVolumesScreen screen) {
         super(width, height, x, y, size);
+        this.screen = screen;
         this.players = Lists.newArrayList();
         this.filter = "";
         setRenderBackground(false);
@@ -43,7 +45,7 @@ public class AdjustVolumeList extends ListScreenListBase<PlayerVolumeEntry> {
     public void updatePlayerList(Collection<PlayerState> onlinePlayers) {
         players.clear();
         for (PlayerState state : onlinePlayers) {
-            players.add(new PlayerVolumeEntry(state));
+            players.add(new PlayerVolumeEntry(state, screen));
         }
 
         if (VoicechatClient.CLIENT_CONFIG.offlinePlayerVolumeAdjustment.get()) {
@@ -68,7 +70,7 @@ public class AdjustVolumeList extends ListScreenListBase<PlayerVolumeEntry> {
                 continue;
             }
 
-            players.add(new PlayerVolumeEntry(new PlayerState(uuid, name, false, true)));
+            players.add(new PlayerVolumeEntry(new PlayerState(uuid, name, false, true), screen));
         }
     }
 
@@ -80,7 +82,7 @@ public class AdjustVolumeList extends ListScreenListBase<PlayerVolumeEntry> {
         }
         filteredPlayers.sort((e1, e2) -> e1.getState().getName().compareToIgnoreCase(e2.getState().getName()));
         if (filter.isEmpty()) {
-            filteredPlayers.add(0, new PlayerVolumeEntry(null));
+            filteredPlayers.add(0, new PlayerVolumeEntry(null, screen));
         }
         replaceEntries(filteredPlayers);
     }
