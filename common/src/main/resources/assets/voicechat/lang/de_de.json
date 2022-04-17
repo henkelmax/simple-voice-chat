@@ -117,6 +117,7 @@
   "message.voicechat.audio_type.normal": "Normal",
   "message.voicechat.audio_type.reduced": "Reduziert",
   "message.voicechat.audio_type.off": "Aus",
+  "message.voicechat.invite_player": "%s in Ihre Gruppe einladen",
   "cloth_config.voicechat.settings": "Sprachchat Einstellungen",
   "cloth_config.voicechat.category.other": "Sonstiges",
   "cloth_config.voicechat.category.audio": "Audio",
