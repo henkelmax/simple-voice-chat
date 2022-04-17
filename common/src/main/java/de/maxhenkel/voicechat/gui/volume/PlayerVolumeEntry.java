@@ -14,11 +14,13 @@ import net.minecraft.util.Util;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 
 public class PlayerVolumeEntry extends ListScreenEntryBase<PlayerVolumeEntry> {
 
-    protected static final TranslationTextComponent SYSTEM_VOLUME = new TranslationTextComponent("message.voicechat.system_volume");
-    protected static final ResourceLocation SYSTEM_VOLUME_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/system_volume.png");
+    protected static final TranslationTextComponent OTHER_VOLUME = new TranslationTextComponent("message.voicechat.other_volume");
+    protected static final TranslationTextComponent OTHER_VOLUME_DESCRIPTION = new TranslationTextComponent("message.voicechat.other_volume.description");
+    protected static final ResourceLocation OTHER_VOLUME_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/other_volume.png");
 
     protected static final int SKIN_SIZE = 24;
     protected static final int PADDING = 4;
@@ -28,11 +30,13 @@ public class PlayerVolumeEntry extends ListScreenEntryBase<PlayerVolumeEntry> {
     protected final Minecraft minecraft;
     @Nullable
     protected final PlayerState state;
+    protected final PlayerVolumesScreen screen;
     protected final AdjustVolumeSlider volumeSlider;
 
-    public PlayerVolumeEntry(@Nullable PlayerState state) {
+    public PlayerVolumeEntry(@Nullable PlayerState state, PlayerVolumesScreen screen) {
         this.minecraft = Minecraft.getInstance();
         this.state = state;
+        this.screen = screen;
         this.volumeSlider = new AdjustVolumeSlider(0, 0, 100, 20, state != null ? state.getUuid() : Util.NIL_UUID);
         this.children.add(volumeSlider);
     }
@@ -54,9 +58,14 @@ public class PlayerVolumeEntry extends ListScreenEntryBase<PlayerVolumeEntry> {
             RenderSystem.disableBlend();
             minecraft.font.draw(poseStack, state.getName(), (float) textX, (float) textY, PLAYER_NAME_COLOR);
         } else {
-            minecraft.getTextureManager().bind(SYSTEM_VOLUME_ICON);
+            minecraft.getTextureManager().bind(OTHER_VOLUME_ICON);
             AbstractGui.blit(poseStack, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
-            minecraft.font.draw(poseStack, SYSTEM_VOLUME, (float) textX, (float) textY, PLAYER_NAME_COLOR);
+            minecraft.font.draw(poseStack, OTHER_VOLUME, (float) textX, (float) textY, PLAYER_NAME_COLOR);
+            if (hovered) {
+                screen.postRender(() -> {
+                    screen.renderTooltip(poseStack, Collections.singletonList(OTHER_VOLUME_DESCRIPTION.getVisualOrderText()), mouseX, mouseY);
+                });
+            }
         }
 
         volumeSlider.x = left + (width - volumeSlider.getWidth() - PADDING);
