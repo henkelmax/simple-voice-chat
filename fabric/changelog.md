@@ -1,3 +1,2 @@
-- Fixed potential errors in singleplayer
-- Fixed username cache not saving in some cases
-- Added invite button to social interactions menu
+- Renamed "System" volume to "Other" volume
+- Added tooltip to "Other" volume
