@@ -40,7 +40,7 @@ repositories {
 }
 
 runClient.doFirst {
-    args = ['--username', "henkelmax${new Random().nextInt(1000)}", '--uuid', UUID.randomUUID()]
+    args = ['--username', "henkelmax${new Random().nextInt(1000)}"]
 }
 
 configurations {
