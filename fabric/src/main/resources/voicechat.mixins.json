@@ -15,7 +15,8 @@
     "PackRepositoryMixin",
     "ClientPacketListenerMixin",
     "GuiMixin",
-    "IntegratedServerMixin"
+    "IntegratedServerMixin",
+    "PlayerEntryMixin"
   ],
   "injectors": {
     "defaultRequire": 1
