@@ -6,9 +6,13 @@ task publishAll(type: GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':macos:clean',
+            ':quilt:clean',
             ':forge:clean',
             ':fabric:clean',
             ':bukkit:clean',
+//            ':quilt:curseforge',
+            ':quilt:modrinth',
+//            ':quilt:forgeUpdate',
             ':forge:curseforge',
             ':forge:modrinth',
             ':forge:forgeUpdate',
@@ -44,6 +48,13 @@ task publishAPILocal(type: GradleBuild) {
     ]
 }
 
+task quiltClient(type: GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':quilt:runClient'
+    ]
+}
+
 task fabricClient(type: GradleBuild) {
     group = 'voicechat'
     tasks = [
@@ -55,6 +66,13 @@ task forgeClient(type: GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':forge:runClient'
+    ]
+}
+
+task quiltServer(type: GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':quilt:runServer'
     ]
 }
 
@@ -78,6 +96,7 @@ task cleanAll(type: GradleBuild) {
             ':api:clean',
             ':macos:clean',
             ':common:clean',
+            ':quilt:clean',
             ':fabric:clean',
             ':forge:clean',
             ':bukkit:clean',

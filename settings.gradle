@@ -1,16 +1,25 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         maven {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
         maven {
+            name = 'Quilt'
+            url = 'https://maven.quiltmc.org/repository/release'
+        }
+        maven {
+            name = 'Quilt Snapshots'
+            url = 'https://maven.quiltmc.org/repository/snapshot'
+        }
+        maven {
             name = 'Cotton'
             url = 'https://server.bbkr.space/artifactory/libs-release/'
         }
+        gradlePluginPortal()
+        mavenCentral()
     }
 }
 
 rootProject.name = 'voicechat'
-include('api', 'common', 'fabric', 'forge', 'bukkit', 'macos')
+include('api', 'common', 'fabric', 'quilt', 'forge', 'bukkit', 'macos')
