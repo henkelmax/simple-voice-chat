@@ -6,7 +6,7 @@ import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.util.ArrayList;
@@ -27,11 +27,11 @@ public class MuteTooltipSupplier implements ImageButton.TooltipSupplier {
         List<FormattedCharSequence> tooltip = new ArrayList<>();
 
         if (!canMuteMic()) {
-            tooltip.add(new TranslatableComponent("message.voicechat.mute.disabled_ptt").getVisualOrderText());
+            tooltip.add(Component.translatable("message.voicechat.mute.disabled_ptt").getVisualOrderText());
         } else if (stateManager.isMuted()) {
-            tooltip.add(new TranslatableComponent("message.voicechat.mute.enabled").getVisualOrderText());
+            tooltip.add(Component.translatable("message.voicechat.mute.enabled").getVisualOrderText());
         } else {
-            tooltip.add(new TranslatableComponent("message.voicechat.mute.disabled").getVisualOrderText());
+            tooltip.add(Component.translatable("message.voicechat.mute.disabled").getVisualOrderText());
         }
 
         screen.renderTooltip(matrices, tooltip, mouseX, mouseY);

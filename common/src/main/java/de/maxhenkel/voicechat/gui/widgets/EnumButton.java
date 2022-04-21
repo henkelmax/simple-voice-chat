@@ -4,14 +4,13 @@ import de.maxhenkel.configbuilder.ConfigEntry;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 public abstract class EnumButton<T extends Enum<T>> extends AbstractButton {
 
     protected ConfigEntry<T> entry;
 
     public EnumButton(int xIn, int yIn, int widthIn, int heightIn, ConfigEntry<T> entry) {
-        super(xIn, yIn, widthIn, heightIn, TextComponent.EMPTY);
+        super(xIn, yIn, widthIn, heightIn, Component.empty());
         this.entry = entry;
         updateText();
     }

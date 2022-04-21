@@ -3,21 +3,19 @@ package de.maxhenkel.voicechat.gui.volume;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.DebouncedSlider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.UUID;
 
 public class AdjustVolumeSlider extends DebouncedSlider {
 
-    protected static final Component MUTED = new TranslatableComponent("message.voicechat.muted");
+    protected static final Component MUTED = Component.translatable("message.voicechat.muted");
 
     protected static final float MAXIMUM = 4F;
 
     protected final UUID player;
 
     public AdjustVolumeSlider(int xIn, int yIn, int widthIn, int heightIn, UUID player) {
-        super(xIn, yIn, widthIn, heightIn, TextComponent.EMPTY, (player == null ? 1D : VoicechatClient.VOLUME_CONFIG.getVolume(player, 1D)) / MAXIMUM);
+        super(xIn, yIn, widthIn, heightIn, Component.empty(), (player == null ? 1D : VoicechatClient.VOLUME_CONFIG.getVolume(player, 1D)) / MAXIMUM);
         this.player = player;
         if (player == null) {
             visible = false;
@@ -32,7 +30,7 @@ public class AdjustVolumeSlider extends DebouncedSlider {
             return;
         }
         long amp = Math.round(value * MAXIMUM * 100F - 100F);
-        setMessage(new TranslatableComponent("message.voicechat.volume_amplification", (amp > 0F ? "+" : "") + amp + "%"));
+        setMessage(Component.translatable("message.voicechat.volume_amplification", (amp > 0F ? "+" : "") + amp + "%"));
     }
 
     @Override

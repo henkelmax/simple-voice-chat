@@ -17,8 +17,7 @@ import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -31,8 +30,8 @@ public class GroupScreen extends ListScreenBase {
     protected static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone_button.png");
     protected static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_button.png");
     protected static final ResourceLocation GROUP_HUD = new ResourceLocation(Voicechat.MODID, "textures/icons/group_hud_button.png");
-    protected static final Component TITLE = new TranslatableComponent("gui.voicechat.group.title");
-    protected static final Component LEAVE_GROUP = new TranslatableComponent("message.voicechat.leave_group");
+    protected static final Component TITLE = Component.translatable("gui.voicechat.group.title");
+    protected static final Component LEAVE_GROUP = Component.translatable("message.voicechat.leave_group");
 
     protected static final int HEADER_SIZE = 16;
     protected static final int FOOTER_SIZE = 32;
@@ -125,7 +124,7 @@ public class GroupScreen extends ListScreenBase {
 
     @Override
     public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        TextComponent title = new TextComponent(group.getName());
+        MutableComponent title = Component.literal(group.getName());
         font.draw(poseStack, title, guiLeft + xSize / 2 - font.width(title) / 2, guiTop + 5, FONT_COLOR);
 
         groupList.render(poseStack, mouseX, mouseY, delta);

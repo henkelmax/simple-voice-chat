@@ -8,7 +8,6 @@ import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -17,9 +16,9 @@ import java.util.Locale;
 public class PlayerVolumesScreen extends ListScreenBase {
 
     protected static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_player_volumes.png");
-    protected static final Component TITLE = new TranslatableComponent("gui.voicechat.adjust_volume.title");
-    protected static final Component SEARCH_HINT = new TranslatableComponent("message.voicechat.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
-    protected static final Component EMPTY_SEARCH = new TranslatableComponent("message.voicechat.search_empty").withStyle(ChatFormatting.GRAY);
+    protected static final Component TITLE = Component.translatable("gui.voicechat.adjust_volume.title");
+    protected static final Component SEARCH_HINT = Component.translatable("message.voicechat.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
+    protected static final Component EMPTY_SEARCH = Component.translatable("message.voicechat.search_empty").withStyle(ChatFormatting.GRAY);
 
     protected static final int HEADER_SIZE = 16;
     protected static final int FOOTER_SIZE = 8;

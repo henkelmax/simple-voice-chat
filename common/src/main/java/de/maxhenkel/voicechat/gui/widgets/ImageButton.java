@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class ImageButton extends AbstractButton {
@@ -17,7 +17,7 @@ public class ImageButton extends AbstractButton {
     protected TooltipSupplier tooltipSupplier;
 
     public ImageButton(int x, int y, ResourceLocation texture, PressAction onPress, TooltipSupplier tooltipSupplier) {
-        super(x, y, 20, 20, TextComponent.EMPTY);
+        super(x, y, 20, 20, Component.empty());
         mc = Minecraft.getInstance();
         this.texture = texture;
         this.onPress = onPress;

@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.social.PlayerEntry;
 import net.minecraft.client.gui.screens.social.SocialInteractionsScreen;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -67,7 +67,7 @@ public class PlayerEntryMixin {
                 return;
             }
             screen.setPostRenderRunnable(() -> {
-                screen.renderTooltip(matrices, new TranslatableComponent("message.voicechat.invite_player", playerName), mouseX, mouseY);
+                screen.renderTooltip(matrices, Component.translatable("message.voicechat.invite_player", playerName), mouseX, mouseY);
                 screen.setPostRenderRunnable(null);
             });
         });

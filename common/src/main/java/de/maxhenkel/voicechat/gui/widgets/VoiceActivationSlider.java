@@ -6,8 +6,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class VoiceActivationSlider extends DebouncedSlider implements MicTestButton.MicListener {
@@ -17,7 +16,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     private double micValue;
 
     public VoiceActivationSlider(int x, int y, int width, int height) {
-        super(x, y, width, height, TextComponent.EMPTY, Utils.dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
+        super(x, y, width, height, Component.empty(), Utils.dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
         updateMessage();
     }
 
@@ -33,7 +32,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     @Override
     protected void updateMessage() {
         long db = Math.round(Utils.percToDb(value));
-        setMessage(new TranslatableComponent("message.voicechat.voice_activation", db));
+        setMessage(Component.translatable("message.voicechat.voice_activation", db));
     }
 
     @Override

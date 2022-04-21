@@ -4,7 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.server.Server;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.GameType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,7 +23,7 @@ public class IntegratedServerMixin {
         }
         Server server = Voicechat.SERVER.getServer();
         if (server != null) {
-            Minecraft.getInstance().gui.getChat().addMessage(new TranslatableComponent("message.voicechat.server_port", server.getPort()));
+            Minecraft.getInstance().gui.getChat().addMessage(Component.translatable("message.voicechat.server_port", server.getPort()));
         }
     }
 

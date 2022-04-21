@@ -10,8 +10,6 @@ import de.maxhenkel.voicechat.plugins.PluginManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -50,15 +48,15 @@ public class ServerVoiceEvents {
 
     public Component getIncompatibleMessage(int clientCompatibilityVersion) {
         if (clientCompatibilityVersion <= 6) {
-            return new TextComponent("Your voice chat version is not compatible with the servers version.\nPlease install version ")
-                    .append(new TextComponent(CommonCompatibilityManager.INSTANCE.getModVersion()).withStyle(ChatFormatting.BOLD))
+            return Component.literal("Your voice chat version is not compatible with the servers version.\nPlease install version ")
+                    .append(Component.literal(CommonCompatibilityManager.INSTANCE.getModVersion()).withStyle(ChatFormatting.BOLD))
                     .append(" of ")
-                    .append(new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()).withStyle(ChatFormatting.BOLD))
+                    .append(Component.literal(CommonCompatibilityManager.INSTANCE.getModName()).withStyle(ChatFormatting.BOLD))
                     .append(".");
         } else {
-            return new TranslatableComponent("message.voicechat.incompatible_version",
-                    new TextComponent(CommonCompatibilityManager.INSTANCE.getModVersion()).withStyle(ChatFormatting.BOLD),
-                    new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()).withStyle(ChatFormatting.BOLD));
+            return Component.translatable("message.voicechat.incompatible_version",
+                    Component.literal(CommonCompatibilityManager.INSTANCE.getModVersion()).withStyle(ChatFormatting.BOLD),
+                    Component.literal(CommonCompatibilityManager.INSTANCE.getModName()).withStyle(ChatFormatting.BOLD));
         }
     }
 
@@ -128,7 +126,7 @@ public class ServerVoiceEvents {
                 if (!isCompatible(serverPlayer)) {
                     serverPlayer.server.execute(() -> {
                         serverPlayer.connection.disconnect(
-                                new TextComponent("You need %s %s to play on this server".formatted(
+                                Component.literal("You need %s %s to play on this server".formatted(
                                         CommonCompatibilityManager.INSTANCE.getModName(),
                                         CommonCompatibilityManager.INSTANCE.getModVersion()
                                 ))

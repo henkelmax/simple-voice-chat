@@ -8,7 +8,7 @@ import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
@@ -30,7 +30,7 @@ public class GroupManager {
                 return;
             }
             if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
-                player.displayClientMessage(new TranslatableComponent("message.voicechat.no_group_permission"), true);
+                player.displayClientMessage(Component.translatable("message.voicechat.no_group_permission"), true);
                 return;
             }
             joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
@@ -40,7 +40,7 @@ public class GroupManager {
                 return;
             }
             if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
-                player.displayClientMessage(new TranslatableComponent("message.voicechat.no_group_permission"), true);
+                player.displayClientMessage(Component.translatable("message.voicechat.no_group_permission"), true);
                 return;
             }
             addGroup(new Group(UUID.randomUUID(), packet.getName(), packet.getPassword()), player);

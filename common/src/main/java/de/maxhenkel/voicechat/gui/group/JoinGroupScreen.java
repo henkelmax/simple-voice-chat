@@ -13,7 +13,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -21,10 +20,10 @@ import net.minecraft.util.Mth;
 public class JoinGroupScreen extends ListScreenBase {
 
     protected static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_join_group.png");
-    protected static final Component TITLE = new TranslatableComponent("gui.voicechat.join_create_group.title");
-    protected static final Component CREATE_GROUP = new TranslatableComponent("message.voicechat.create_group_button");
-    protected static final Component JOIN_CREATE_GROUP = new TranslatableComponent("message.voicechat.join_create_group");
-    protected static final Component NO_GROUPS = new TranslatableComponent("message.voicechat.no_groups").withStyle(ChatFormatting.GRAY);
+    protected static final Component TITLE = Component.translatable("gui.voicechat.join_create_group.title");
+    protected static final Component CREATE_GROUP = Component.translatable("message.voicechat.create_group_button");
+    protected static final Component JOIN_CREATE_GROUP = Component.translatable("message.voicechat.join_create_group");
+    protected static final Component NO_GROUPS = Component.translatable("message.voicechat.no_groups").withStyle(ChatFormatting.GRAY);
 
     protected static final int HEADER_SIZE = 16;
     protected static final int FOOTER_SIZE = 32;

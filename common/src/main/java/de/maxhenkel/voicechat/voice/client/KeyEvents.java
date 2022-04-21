@@ -11,7 +11,7 @@ import de.maxhenkel.voicechat.gui.volume.PlayerVolumesScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
 public class KeyEvents {
@@ -65,7 +65,7 @@ public class KeyEvents {
                     minecraft.setScreen(new JoinGroupScreen());
                 }
             } else {
-                minecraft.player.displayClientMessage(new TranslatableComponent("message.voicechat.groups_disabled"), true);
+                minecraft.player.displayClientMessage(Component.translatable("message.voicechat.groups_disabled"), true);
             }
         }
 
@@ -102,9 +102,9 @@ public class KeyEvents {
             VoicechatClient.CLIENT_CONFIG.hideIcons.set(hidden).save();
 
             if (hidden) {
-                minecraft.player.displayClientMessage(new TranslatableComponent("message.voicechat.icons_hidden"), true);
+                minecraft.player.displayClientMessage(Component.translatable("message.voicechat.icons_hidden"), true);
             } else {
-                minecraft.player.displayClientMessage(new TranslatableComponent("message.voicechat.icons_visible"), true);
+                minecraft.player.displayClientMessage(Component.translatable("message.voicechat.icons_visible"), true);
             }
         }
     }
@@ -118,7 +118,7 @@ public class KeyEvents {
     }
 
     private void sendUnavailableMessage() {
-        minecraft.player.displayClientMessage(new TranslatableComponent("message.voicechat.voice_chat_not_connected"), true);
+        minecraft.player.displayClientMessage(Component.translatable("message.voicechat.voice_chat_not_connected"), true);
     }
 
 }

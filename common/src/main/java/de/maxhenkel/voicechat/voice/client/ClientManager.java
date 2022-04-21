@@ -16,10 +16,9 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
@@ -101,13 +100,13 @@ public class ClientManager {
             return;
         }
         player.sendMessage(
-                ComponentUtils.wrapInSquareBrackets(new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()))
+                ComponentUtils.wrapInSquareBrackets(Component.literal(CommonCompatibilityManager.INSTANCE.getModName()))
                         .withStyle(ChatFormatting.GREEN)
                         .append(" ")
-                        .append(new TranslatableComponent(translationKey).withStyle(ChatFormatting.RED))
+                        .append(Component.translatable(translationKey).withStyle(ChatFormatting.RED))
                         .withStyle(style -> {
                             if (e != null) {
-                                return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED)));
+                                return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(e.getMessage()).withStyle(ChatFormatting.RED)));
                             }
                             return style;
                         })

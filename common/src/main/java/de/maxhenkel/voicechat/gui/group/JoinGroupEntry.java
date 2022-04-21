@@ -14,8 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.FormattedCharSequence;
@@ -26,7 +25,7 @@ import java.util.List;
 public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
 
     protected static final ResourceLocation LOCK = new ResourceLocation(Voicechat.MODID, "textures/icons/lock.png");
-    protected static final Component GROUP_MEMBERS = new TranslatableComponent("message.voicechat.group_members").withStyle(ChatFormatting.WHITE);
+    protected static final Component GROUP_MEMBERS = Component.translatable("message.voicechat.group_members").withStyle(ChatFormatting.WHITE);
 
     protected static final int SKIN_SIZE = 12;
     protected static final int PADDING = 4;
@@ -59,7 +58,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             Screen.blit(poseStack, left + PADDING, top + height / 2 - 8, 0, 0, 16, 16, 16, 16);
         }
 
-        TextComponent groupName = new TextComponent(group.group.getName());
+        MutableComponent groupName = Component.literal(group.group.getName());
         minecraft.font.draw(poseStack, groupName, left + PADDING + (hasPassword ? 16 + PADDING : 0), top + height / 2 - minecraft.font.lineHeight / 2, PLAYER_NAME_COLOR);
 
         int textWidth = minecraft.font.width(groupName) + (hasPassword ? 16 + PADDING : 0);
@@ -98,11 +97,11 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             int maxMembers = 10;
             for (int i = 0; i < group.getMembers().size(); i++) {
                 if (i >= maxMembers) {
-                    tooltip.add(new TranslatableComponent("message.voicechat.more_members", group.getMembers().size() - maxMembers).withStyle(ChatFormatting.GRAY).getVisualOrderText());
+                    tooltip.add(Component.translatable("message.voicechat.more_members", group.getMembers().size() - maxMembers).withStyle(ChatFormatting.GRAY).getVisualOrderText());
                     break;
                 }
                 PlayerState state = group.getMembers().get(i);
-                tooltip.add(new TextComponent("  " + state.getName()).withStyle(ChatFormatting.GRAY).getVisualOrderText());
+                tooltip.add(Component.literal("  " + state.getName()).withStyle(ChatFormatting.GRAY).getVisualOrderText());
             }
             parent.postRender(() -> {
                 parent.renderTooltip(poseStack, tooltip, mouseX, mouseY);

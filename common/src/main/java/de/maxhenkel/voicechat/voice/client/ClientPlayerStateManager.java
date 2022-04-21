@@ -23,7 +23,7 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
@@ -64,7 +64,7 @@ public class ClientPlayerStateManager {
                 if (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
                     Minecraft.getInstance().setScreen(null);
                 }
-                client.player.displayClientMessage(new TranslatableComponent("message.voicechat.wrong_password").withStyle(ChatFormatting.DARK_RED), true);
+                client.player.displayClientMessage(Component.translatable("message.voicechat.wrong_password").withStyle(ChatFormatting.DARK_RED), true);
             } else if (group != null && screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
                 Minecraft.getInstance().setScreen(new GroupScreen(group));
             }

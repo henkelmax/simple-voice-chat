@@ -9,16 +9,14 @@ import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 
 public class MicTestButton extends AbstractButton {
 
-    private static final Component TEST_UNAVAILABLE = new TranslatableComponent("message.voicechat.mic_test_unavailable");
-    private static final Component TEST_ON = new TranslatableComponent("message.voicechat.mic_test_on");
-    private static final Component TEST_OFF = new TranslatableComponent("message.voicechat.mic_test_off");
+    private static final Component TEST_UNAVAILABLE = Component.translatable("message.voicechat.mic_test_unavailable");
+    private static final Component TEST_ON = Component.translatable("message.voicechat.mic_test_on");
+    private static final Component TEST_OFF = Component.translatable("message.voicechat.mic_test_off");
 
     private boolean micActive;
     @Nullable
@@ -28,7 +26,7 @@ public class MicTestButton extends AbstractButton {
     private final ClientVoicechat client;
 
     public MicTestButton(int xIn, int yIn, int widthIn, int heightIn, MicListener micListener) {
-        super(xIn, yIn, widthIn, heightIn, TextComponent.EMPTY);
+        super(xIn, yIn, widthIn, heightIn, Component.empty());
         this.micListener = micListener;
         this.client = ClientManager.getClient();
         active = client == null || client.getSoundManager() != null;

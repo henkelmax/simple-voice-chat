@@ -10,19 +10,17 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
 public class CreateGroupScreen extends VoiceChatScreenBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_create_group.png");
-    private static final Component TITLE = new TranslatableComponent("gui.voicechat.create_group.title");
-    private static final Component CREATE = new TranslatableComponent("message.voicechat.create");
-    private static final Component CREATE_GROUP = new TranslatableComponent("message.voicechat.create_group");
-    private static final Component GROUP_NAME = new TranslatableComponent("message.voicechat.group_name");
-    private static final Component OPTIONAL_PASSWORD = new TranslatableComponent("message.voicechat.optional_password");
+    private static final Component TITLE = Component.translatable("gui.voicechat.create_group.title");
+    private static final Component CREATE = Component.translatable("message.voicechat.create");
+    private static final Component CREATE_GROUP = Component.translatable("message.voicechat.create_group");
+    private static final Component GROUP_NAME = Component.translatable("message.voicechat.group_name");
+    private static final Component OPTIONAL_PASSWORD = Component.translatable("message.voicechat.optional_password");
 
     private EditBox groupName;
     private EditBox password;
@@ -39,12 +37,12 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         clearWidgets();
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
-        groupName = new EditBox(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 2 - 5 + 2, xSize - 7 * 2, 10, TextComponent.EMPTY);
+        groupName = new EditBox(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 2 - 5 + 2, xSize - 7 * 2, 10, Component.empty());
         groupName.setMaxLength(16);
         groupName.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(groupName);
 
-        password = new EditBox(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 3 - 5 + 10 + 2 * 2, xSize - 7 * 2, 10, TextComponent.EMPTY);
+        password = new EditBox(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 3 - 5 + 10 + 2 * 2, xSize - 7 * 2, 10, Component.empty());
         password.setMaxLength(16);
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(password);

@@ -14,7 +14,7 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
@@ -75,7 +75,7 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
         }
         poseStack.popPose();
 
-        TextComponent name = new TextComponent(state.getName());
+        Component name = Component.literal(state.getName());
         minecraft.font.draw(poseStack, name, left + PADDING + outlineSize + PADDING, top + height / 2 - minecraft.font.lineHeight / 2, PLAYER_NAME_COLOR);
 
         if (hovered && !ClientManager.getPlayerStateManager().getOwnID().equals(state.getUuid())) {

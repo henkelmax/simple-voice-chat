@@ -11,18 +11,16 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
 public class EnterPasswordScreen extends VoiceChatScreenBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_enter_password.png");
-    private static final Component TITLE = new TranslatableComponent("gui.voicechat.enter_password.title");
-    private static final Component JOIN_GROUP = new TranslatableComponent("message.voicechat.join_group");
-    private static final Component ENTER_GROUP_PASSWORD = new TranslatableComponent("message.voicechat.enter_group_password");
-    private static final Component PASSWORD = new TranslatableComponent("message.voicechat.password");
+    private static final Component TITLE = Component.translatable("gui.voicechat.enter_password.title");
+    private static final Component JOIN_GROUP = Component.translatable("message.voicechat.join_group");
+    private static final Component ENTER_GROUP_PASSWORD = Component.translatable("message.voicechat.enter_group_password");
+    private static final Component PASSWORD = Component.translatable("message.voicechat.password");
 
     private EditBox password;
     private Button joinGroup;
@@ -40,7 +38,7 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
         clearWidgets();
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
-        password = new EditBox(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 2 - 5 + 2, xSize - 7 * 2, 10, TextComponent.EMPTY);
+        password = new EditBox(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 2 - 5 + 2, xSize - 7 * 2, 10, Component.empty());
         password.setMaxLength(16);
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(password);

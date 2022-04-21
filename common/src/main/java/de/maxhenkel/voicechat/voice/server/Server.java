@@ -8,7 +8,7 @@ import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.*;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -185,7 +185,7 @@ public class Server extends Thread {
                         }
                         if (!PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player)) {
                             CooldownTimer.run("muted-" + playerUUID, () -> {
-                                player.displayClientMessage(new TranslatableComponent("message.voicechat.no_speak_permission"), true);
+                                player.displayClientMessage(Component.translatable("message.voicechat.no_speak_permission"), true);
                             });
                             continue;
                         }

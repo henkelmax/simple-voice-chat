@@ -4,7 +4,6 @@ import de.maxhenkel.configbuilder.ConfigEntry;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 import java.util.function.Function;
 
@@ -14,7 +13,7 @@ public class BooleanConfigButton extends AbstractButton {
     private Function<Boolean, Component> component;
 
     public BooleanConfigButton(int x, int y, int width, int height, ConfigEntry<Boolean> entry, Function<Boolean, Component> component) {
-        super(x, y, width, height, TextComponent.EMPTY);
+        super(x, y, width, height, Component.empty());
         this.entry = entry;
         this.component = component;
         updateText();

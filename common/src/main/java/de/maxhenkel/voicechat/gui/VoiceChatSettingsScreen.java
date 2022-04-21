@@ -16,7 +16,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -24,13 +23,13 @@ import javax.annotation.Nullable;
 public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_voicechat_settings.png");
-    private static final Component TITLE = new TranslatableComponent("gui.voicechat.voice_chat_settings.title");
-    private static final Component ENABLED = new TranslatableComponent("message.voicechat.enabled");
-    private static final Component DISABLED = new TranslatableComponent("message.voicechat.disabled");
-    private static final Component ADJUST_VOLUMES = new TranslatableComponent("message.voicechat.adjust_volumes");
-    private static final Component SELECT_MICROPHONE = new TranslatableComponent("message.voicechat.select_microphone");
-    private static final Component SELECT_SPEAKER = new TranslatableComponent("message.voicechat.select_speaker");
-    private static final Component BACK = new TranslatableComponent("message.voicechat.back");
+    private static final Component TITLE = Component.translatable("gui.voicechat.voice_chat_settings.title");
+    private static final Component ENABLED = Component.translatable("message.voicechat.enabled");
+    private static final Component DISABLED = Component.translatable("message.voicechat.disabled");
+    private static final Component ADJUST_VOLUMES = Component.translatable("message.voicechat.adjust_volumes");
+    private static final Component SELECT_MICROPHONE = Component.translatable("message.voicechat.select_microphone");
+    private static final Component SELECT_SPEAKER = Component.translatable("message.voicechat.select_speaker");
+    private static final Component BACK = Component.translatable("message.voicechat.back");
 
     @Nullable
     private final Screen parent;
@@ -55,7 +54,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         addRenderableWidget(new MicAmplificationSlider(guiLeft + 10, y, xSize - 20, 20));
         y += 21;
         BooleanConfigButton denoiser = addRenderableWidget(new BooleanConfigButton(guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.denoiser, enabled -> {
-            return new TranslatableComponent("message.voicechat.denoiser", enabled ? ENABLED : DISABLED);
+            return Component.translatable("message.voicechat.denoiser", enabled ? ENABLED : DISABLED);
         }));
         if (Denoiser.createDenoiser() == null) {
             denoiser.active = false;
@@ -77,7 +76,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         addRenderableWidget(new EnumButton<>(guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.audioType) {
             @Override
             protected Component getText(AudioType type) {
-                return new TranslatableComponent("message.voicechat.audio_type", type.getText());
+                return Component.translatable("message.voicechat.audio_type", type.getText());
             }
 
             @Override

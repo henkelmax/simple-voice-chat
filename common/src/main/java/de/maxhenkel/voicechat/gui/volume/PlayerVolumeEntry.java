@@ -9,7 +9,7 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
@@ -18,8 +18,8 @@ import java.util.Collections;
 
 public class PlayerVolumeEntry extends ListScreenEntryBase<PlayerVolumeEntry> {
 
-    protected static final TranslatableComponent OTHER_VOLUME = new TranslatableComponent("message.voicechat.other_volume");
-    protected static final TranslatableComponent OTHER_VOLUME_DESCRIPTION = new TranslatableComponent("message.voicechat.other_volume.description");
+    protected static final Component OTHER_VOLUME = Component.translatable("message.voicechat.other_volume");
+    protected static final Component OTHER_VOLUME_DESCRIPTION = Component.translatable("message.voicechat.other_volume.description");
     protected static final ResourceLocation OTHER_VOLUME_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/other_volume.png");
 
     protected static final int SKIN_SIZE = 24;

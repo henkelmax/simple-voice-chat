@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.gui.widgets;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public class MicActivationButton extends EnumButton<MicrophoneActivationType> {
 
@@ -18,7 +17,7 @@ public class MicActivationButton extends EnumButton<MicrophoneActivationType> {
 
     @Override
     protected Component getText(MicrophoneActivationType type) {
-        return new TranslatableComponent("message.voicechat.activation_type", type.getText());
+        return Component.translatable("message.voicechat.activation_type", type.getText());
     }
 
     @Override

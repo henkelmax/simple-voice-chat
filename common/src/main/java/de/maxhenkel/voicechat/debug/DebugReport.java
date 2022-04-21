@@ -13,9 +13,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.io.FileUtils;
 import org.lwjgl.openal.AL11;
@@ -42,15 +41,15 @@ public class DebugReport {
     public static void generateReport(Player player) {
         try {
             Path path = generateReport();
-            player.sendMessage(new TranslatableComponent("message.voicechat.saved_debug_report",
-                    new TextComponent(path.normalize().toString())
+            player.sendMessage(Component.translatable("message.voicechat.saved_debug_report",
+                    Component.literal(path.normalize().toString())
                             .withStyle(ChatFormatting.GRAY)
                             .withStyle(style -> style
-                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.voicechat.open")))
+                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.voicechat.open")))
                                     .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, path.normalize().toString())))
             ), Util.NIL_UUID);
         } catch (IOException e) {
-            player.sendMessage(new TranslatableComponent("message.voicechat.saved_debug_report_failed", e.getMessage()), Util.NIL_UUID);
+            player.sendMessage(Component.translatable("message.voicechat.saved_debug_report_failed", e.getMessage()), Util.NIL_UUID);
             e.printStackTrace();
         }
     }

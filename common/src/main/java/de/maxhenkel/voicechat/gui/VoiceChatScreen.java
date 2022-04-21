@@ -17,8 +17,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -30,9 +29,9 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     private static final ResourceLocation HIDE = new ResourceLocation(Voicechat.MODID, "textures/icons/hide_button.png");
     private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_button.png");
     private static final ResourceLocation RECORD = new ResourceLocation(Voicechat.MODID, "textures/icons/record_button.png");
-    private static final Component TITLE = new TranslatableComponent("gui.voicechat.voice_chat.title");
-    private static final Component SETTINGS = new TranslatableComponent("message.voicechat.settings");
-    private static final Component GROUP = new TranslatableComponent("message.voicechat.group");
+    private static final Component TITLE = Component.translatable("gui.voicechat.voice_chat.title");
+    private static final Component SETTINGS = Component.translatable("message.voicechat.settings");
+    private static final Component GROUP = Component.translatable("message.voicechat.group");
 
     private ToggleImageButton mute;
     private ToggleImageButton disable;
@@ -136,11 +135,11 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         ClientVoicechat client = ClientManager.getClient();
         if (client != null && client.getRecorder() != null) {
             AudioRecorder recorder = client.getRecorder();
-            TextComponent time = new TextComponent(recorder.getDuration());
+            MutableComponent time = Component.literal(recorder.getDuration());
             font.draw(poseStack, time.withStyle(ChatFormatting.DARK_RED), (float) (guiLeft + (xSize - font.width(time)) / 2), guiTop + ySize - font.lineHeight - 7, 0);
 
             if (recordingHoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
-                renderTooltip(poseStack, new TranslatableComponent("message.voicechat.storage_size", recorder.getStorage()), mouseX, mouseY);
+                renderTooltip(poseStack, Component.translatable("message.voicechat.storage_size", recorder.getStorage()), mouseX, mouseY);
             }
         }
     }

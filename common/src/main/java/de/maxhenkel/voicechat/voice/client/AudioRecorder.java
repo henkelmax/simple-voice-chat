@@ -207,28 +207,28 @@ public class AudioRecorder {
 
     private void save() {
         threadPool.execute(() -> {
-            send(new TranslatableComponent("message.voicechat.processing_recording_session"));
+            send(Component.translatable("message.voicechat.processing_recording_session"));
             try {
                 AtomicLong time = new AtomicLong();
                 convert(progress -> {
                     if (progress >= 1F || System.currentTimeMillis() - time.get() > 1000L) {
-                        send(new TranslatableComponent("message.voicechat.processing_progress",
-                                new TextComponent(String.valueOf((int) (progress * 100F)))
+                        send(Component.translatable("message.voicechat.processing_progress",
+                                Component.literal(String.valueOf((int) (progress * 100F)))
                                         .withStyle(ChatFormatting.GRAY))
                         );
                         time.set(System.currentTimeMillis());
                     }
                 });
-                send(new TranslatableComponent("message.voicechat.save_session",
-                        new TextComponent(location.normalize().toString())
+                send(Component.translatable("message.voicechat.save_session",
+                        Component.literal(location.normalize().toString())
                                 .withStyle(ChatFormatting.GRAY)
                                 .withStyle(style -> style
-                                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.voicechat.open_folder")))
+                                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.voicechat.open_folder")))
                                         .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, location.normalize().toString()))))
                 );
             } catch (Exception e) {
                 e.printStackTrace();
-                send(new TranslatableComponent("message.voicechat.save_session_failed", e.getMessage()));
+                send(Component.translatable("message.voicechat.save_session_failed", e.getMessage()));
             }
         });
     }
