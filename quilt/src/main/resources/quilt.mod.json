@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "${mod_group}",
+    "id": "${mod_id}",
+    "version": "${mod_version}",
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "client_init": [
+        "de.maxhenkel.voicechat.QuiltVoicechatClientMod"
+      ],
+      "init": [
+        "de.maxhenkel.voicechat.QuiltVoicechatMod"
+      ],
+      "modmenu": [
+        "de.maxhenkel.voicechat.integration.ModMenu"
+      ]
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "version": ">=${quilt_loader_version}"
+      },
+      {
+        "id": "minecraft",
+        "version": "${minecraft_dependency}"
+      },
+      {
+        "id": "java",
+        "version": ">=${java_version}"
+      },
+      {
+        "id": "quilt_base",
+        "version": ">=${qsl_version}"
+      },
+      {
+        "id": "quilt_lifecycle_events",
+        "version": ">=${qsl_version}"
+      },
+      {
+        "id": "quilt_resource_loader",
+        "version": ">=${qsl_version}"
+      },
+      {
+        "id": "quilt_networking",
+        "version": ">=${qsl_version}"
+      },
+      {
+        "id": "quilt_command",
+        "version": ">=${qsl_version}"
+      },
+      {
+        "id": "quilted_fabric_key_binding_api_v1",
+        "version": ">=${qsl_version}"
+      }
+    ],
+    "suggests": [
+      {
+        "id": "modmenu",
+        "version": ">=${modmenu_version}"
+      },
+      {
+        "id": "sound_physics_remastered",
+        "version": ">=1.18.2-1.0.5"
+      },
+      {
+        "id": "cloth-config2",
+        "version": ">=${cloth_config_version}"
+      },
+      {
+        "id": "fabric-permissions-api-v0",
+        "version": "*"
+      }
+    ],
+    "breaks": [
+      {
+        "id": "sound_physics_remastered",
+        "version": "<1.18.2-1.0.5"
+      }
+    ],
+    "metadata": {
+      "name": "${mod_name}",
+      "description": "A working voice chat in Minecraft!",
+      "contributors": {
+        "${mod_vendor}": "Author"
+      },
+      "contact": {
+        "homepage": "https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat",
+        "issues": "https://github.com/henkelmax/simple-voice-chat/issues",
+        "sources": "https://github.com/henkelmax/simple-voice-chat",
+        "email": "info@modrepo.de",
+        "discord": "https://discord.gg/4dH2zwTmyX"
+      },
+      "license": {
+        "name": "All Rights Reserved",
+        "id": "ARR",
+        "url": "https://modrepo.de",
+        "description": "All Rights Reserved"
+      },
+      "icon": "icon.png"
+    },
+    "minecraft": {
+      "environment": "*"
+    },
+    "custom": {
+      "modmenu": {
+        "links": {
+          "modmenu.discord": "https://discord.gg/4dH2zwTmyX"
+        }
+      }
+    }
+  },
+  "mixin": [
+    "voicechat.mixins.json"
+  ]
+}
