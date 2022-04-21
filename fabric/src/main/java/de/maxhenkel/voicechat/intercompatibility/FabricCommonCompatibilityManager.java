@@ -98,7 +98,7 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
             sb.append("\n");
             sb.append("Version: " + metadata.getVersion());
             sb.append("\n");
-            sb.append("Dependencies: " + metadata.getDependencies().stream().map(ModDependency::getModId).collect(Collectors.joining(", ")));
+            sb.append("Dependencies: " + metadata.getDepends().stream().map(ModDependency::getModId).collect(Collectors.joining(", ")));
             sb.append("\n\n");
         }
         return sb.toString();
