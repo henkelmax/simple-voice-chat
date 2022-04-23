@@ -1,2 +1,1 @@
-- Renamed "System" volume to "Other" volume
-- Added tooltip to "Other" volume
+- Use service loader to load platform specific classes

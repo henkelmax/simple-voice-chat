@@ -2,8 +2,6 @@ package de.maxhenkel.voicechat;
 
 import de.maxhenkel.voicechat.config.ForgeServerConfig;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.intercompatibility.ForgeCommonCompatibilityManager;
-import de.maxhenkel.voicechat.permission.ForgePermissionManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -15,17 +13,12 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import java.io.InputStream;
-import java.util.Properties;
 import java.util.function.Function;
 
 @Mod(ForgeVoicechatMod.MODID)
 public class ForgeVoicechatMod extends Voicechat {
 
-    private final ForgeCommonCompatibilityManager compatibilityManager;
-
     public ForgeVoicechatMod() {
-        compatibilityManager = new ForgeCommonCompatibilityManager();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 
         SERVER_CONFIG = registerConfig(ModConfig.Type.SERVER, ForgeServerConfig::new);
@@ -35,18 +28,8 @@ public class ForgeVoicechatMod extends Voicechat {
 
     public void commonSetup(FMLCommonSetupEvent event) {
         initialize();
-        MinecraftForge.EVENT_BUS.register(compatibilityManager);
+        MinecraftForge.EVENT_BUS.register(CommonCompatibilityManager.INSTANCE);
         ((ForgePermissionManager) PermissionManager.INSTANCE).registerPermissions();
-    }
-
-    @Override
-    protected CommonCompatibilityManager createCompatibilityManager() {
-        return compatibilityManager;
-    }
-
-    @Override
-    protected PermissionManager createPermissionManager() {
-        return new ForgePermissionManager();
     }
 
     public static <T> T registerConfig(ModConfig.Type type, Function<ForgeConfigSpec.Builder, T> consumer) {

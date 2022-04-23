@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.net.NetManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import de.maxhenkel.voicechat.service.Service;
 import net.minecraft.server.MinecraftServer;
 
 import java.nio.file.Path;
@@ -13,7 +14,7 @@ import java.util.function.Consumer;
 
 public abstract class CommonCompatibilityManager {
 
-    public static CommonCompatibilityManager INSTANCE;
+    public static CommonCompatibilityManager INSTANCE = Service.get(CommonCompatibilityManager.class);
 
     public abstract String getModVersion();
 

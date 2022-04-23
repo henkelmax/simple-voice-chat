@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import de.maxhenkel.voicechat.service.Service;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.settings.KeyBinding;
@@ -16,7 +17,7 @@ import java.util.function.Consumer;
 
 public abstract class ClientCompatibilityManager {
 
-    public static ClientCompatibilityManager INSTANCE;
+    public static ClientCompatibilityManager INSTANCE = Service.get(ClientCompatibilityManager.class);
 
     public abstract void onRenderNamePlate(RenderNameplateEvent onRenderNamePlate);
 
