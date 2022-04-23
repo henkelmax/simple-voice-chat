@@ -1,13 +1,14 @@
 package de.maxhenkel.voicechat.permission;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.service.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PermissionManager {
 
-    public static PermissionManager INSTANCE;
+    public static PermissionManager INSTANCE = Service.get(PermissionManager.class);
 
     public final Permission CONNECT_PERMISSION;
     public final Permission SPEAK_PERMISSION;

@@ -3,8 +3,6 @@ package de.maxhenkel.voicechat;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.FabricClientConfig;
 import de.maxhenkel.voicechat.integration.ClothConfig;
-import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
-import de.maxhenkel.voicechat.intercompatibility.FabricClientCompatibilityManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,8 +18,4 @@ public class FabricVoicechatClientMod extends VoicechatClient implements ClientM
         ClothConfig.init();
     }
 
-    @Override
-    public ClientCompatibilityManager createCompatibilityManager() {
-        return new FabricClientCompatibilityManager();
-    }
 }

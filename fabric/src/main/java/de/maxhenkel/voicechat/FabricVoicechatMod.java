@@ -2,10 +2,6 @@ package de.maxhenkel.voicechat;
 
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.FabricServerConfig;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.intercompatibility.FabricCommonCompatibilityManager;
-import de.maxhenkel.voicechat.permission.FabricPermissionManager;
-import de.maxhenkel.voicechat.permission.PermissionManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
@@ -18,16 +14,6 @@ public class FabricVoicechatMod extends Voicechat implements ModInitializer {
         });
 
         initialize();
-    }
-
-    @Override
-    public CommonCompatibilityManager createCompatibilityManager() {
-        return new FabricCommonCompatibilityManager();
-    }
-
-    @Override
-    protected PermissionManager createPermissionManager() {
-        return new FabricPermissionManager();
     }
 
 }
