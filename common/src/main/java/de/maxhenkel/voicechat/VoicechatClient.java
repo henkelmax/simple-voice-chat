@@ -31,8 +31,6 @@ public abstract class VoicechatClient {
     public static VoiceChatResourcePack BLACK_ICONS;
 
     public void initializeClient() {
-        ClientCompatibilityManager.INSTANCE = createCompatibilityManager();
-
         fixVolumeConfig();
         VOLUME_CONFIG = new PlayerVolumeConfig(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-volumes.properties"));
         USERNAME_CACHE = new UsernameCache(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("username-cache.json").toFile());
@@ -71,7 +69,4 @@ public abstract class VoicechatClient {
             }
         }
     }
-
-    protected abstract ClientCompatibilityManager createCompatibilityManager();
-
 }
