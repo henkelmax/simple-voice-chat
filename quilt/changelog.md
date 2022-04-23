@@ -1,1 +1,1 @@
-- Ported to quilt
+- Use service loader to load platform specific classes

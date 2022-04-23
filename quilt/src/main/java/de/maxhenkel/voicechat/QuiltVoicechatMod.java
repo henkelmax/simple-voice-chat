@@ -2,10 +2,6 @@ package de.maxhenkel.voicechat;
 
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.QuiltServerConfig;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.intercompatibility.QuiltCommonCompatibilityManager;
-import de.maxhenkel.voicechat.permission.QuiltPermissionManager;
-import de.maxhenkel.voicechat.permission.PermissionManager;
 import net.minecraft.client.Minecraft;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
@@ -20,16 +16,6 @@ public class QuiltVoicechatMod extends Voicechat implements ModInitializer {
         });
 
         initialize();
-    }
-
-    @Override
-    public CommonCompatibilityManager createCompatibilityManager() {
-        return new QuiltCommonCompatibilityManager();
-    }
-
-    @Override
-    protected PermissionManager createPermissionManager() {
-        return new QuiltPermissionManager();
     }
 
     public static boolean isClient() {

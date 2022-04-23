@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.intercompatibility;
 import com.mojang.brigadier.CommandDispatcher;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.service.Service;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,7 +14,7 @@ import java.util.function.Consumer;
 
 public abstract class CommonCompatibilityManager {
 
-    public static CommonCompatibilityManager INSTANCE;
+    public static CommonCompatibilityManager INSTANCE = Service.get(CommonCompatibilityManager.class);
 
     public abstract String getModVersion();
 

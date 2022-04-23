@@ -3,8 +3,6 @@ package de.maxhenkel.voicechat;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.QuiltClientConfig;
 import de.maxhenkel.voicechat.integration.ClothConfig;
-import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
-import de.maxhenkel.voicechat.intercompatibility.QuiltClientCompatibilityManager;
 import net.minecraft.client.Minecraft;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
@@ -17,10 +15,4 @@ public class QuiltVoicechatClientMod extends VoicechatClient implements ClientMo
         initializeClient();
         ClothConfig.init();
     }
-
-    @Override
-    public ClientCompatibilityManager createCompatibilityManager() {
-        return new QuiltClientCompatibilityManager();
-    }
-
 }
