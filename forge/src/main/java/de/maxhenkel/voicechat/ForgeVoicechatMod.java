@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat;
 
 import de.maxhenkel.voicechat.config.ForgeServerConfig;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.permission.ForgePermissionManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
