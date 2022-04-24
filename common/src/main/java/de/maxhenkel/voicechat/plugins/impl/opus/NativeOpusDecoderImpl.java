@@ -83,7 +83,9 @@ public class NativeOpusDecoderImpl implements OpusDecoder {
 
     @Nullable
     public static NativeOpusDecoderImpl createDecoder(int sampleRate, int frameSize, int maxPayloadSize) {
-        return Utils.createSafe(() -> new NativeOpusDecoderImpl(sampleRate, frameSize, maxPayloadSize));
+        return Utils.createSafe(() -> new NativeOpusDecoderImpl(sampleRate, frameSize, maxPayloadSize), e -> {
+            Voicechat.LOGGER.warn("Failed to load native Opus decoder: {}", e.getMessage());
+        });
     }
 
 }

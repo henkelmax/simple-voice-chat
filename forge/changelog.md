@@ -1,1 +1,1 @@
-- Use service loader to load platform specific classes
+- Handle uncaught exceptions when failing to load natives
