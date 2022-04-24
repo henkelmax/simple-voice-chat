@@ -5,6 +5,7 @@ import net.minecraft.util.math.vector.Vector2f;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class Utils {
@@ -200,9 +201,15 @@ public class Utils {
     }
 
     @Nullable
-    public static <T> T createSafe(Supplier<T> supplier) {
+    public static <T> T createSafe(Supplier<T> supplier, @Nullable Consumer<Throwable> onError) {
+        AtomicReference<Throwable> exception = new AtomicReference<>();
         AtomicReference<T> obj = new AtomicReference<>();
         Thread t = new Thread(() -> {
+            if (onError != null) {
+                Thread.setDefaultUncaughtExceptionHandler((t1, e) -> {
+                    exception.set(e);
+                });
+            }
             obj.set(supplier.get());
         });
         t.start();
@@ -212,7 +219,16 @@ public class Utils {
         } catch (InterruptedException e) {
             return null;
         }
+        Throwable ex = exception.get();
+        if (onError != null && ex != null) {
+            onError.accept(ex);
+        }
         return obj.get();
+    }
+
+    @Nullable
+    public static <T> T createSafe(Supplier<T> supplier) {
+        return createSafe(supplier, null);
     }
 
 }
