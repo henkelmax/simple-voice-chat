@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.plugins.impl.opus;
 
 import com.sun.jna.ptr.PointerByReference;
 import de.maxhenkel.opus4j.Opus;
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
@@ -80,7 +81,9 @@ public class NativeOpusEncoderImpl implements OpusEncoder {
 
     @Nullable
     public static NativeOpusEncoderImpl createEncoder(int sampleRate, int frameSize, int maxPayloadSize, int application) {
-        return Utils.createSafe(() -> new NativeOpusEncoderImpl(sampleRate, frameSize, maxPayloadSize, application));
+        return Utils.createSafe(() -> new NativeOpusEncoderImpl(sampleRate, frameSize, maxPayloadSize, application), e -> {
+            Voicechat.LOGGER.warn("Failed to load native Opus encoder: {}", e.getMessage());
+        });
     }
 
 }
