@@ -10,7 +10,6 @@ import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.client.microphone.MicrophoneManager;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -41,15 +40,15 @@ public class DebugReport {
     public static void generateReport(Player player) {
         try {
             Path path = generateReport();
-            player.sendMessage(Component.translatable("message.voicechat.saved_debug_report",
+            player.sendSystemMessage(Component.translatable("message.voicechat.saved_debug_report",
                     Component.literal(path.normalize().toString())
                             .withStyle(ChatFormatting.GRAY)
                             .withStyle(style -> style
                                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.voicechat.open")))
                                     .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, path.normalize().toString())))
-            ), Util.NIL_UUID);
+            ));
         } catch (IOException e) {
-            player.sendMessage(Component.translatable("message.voicechat.saved_debug_report_failed", e.getMessage()), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("message.voicechat.saved_debug_report_failed", e.getMessage()));
             e.printStackTrace();
         }
     }

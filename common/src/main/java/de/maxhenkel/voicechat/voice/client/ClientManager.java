@@ -12,7 +12,6 @@ import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import io.netty.channel.local.LocalAddress;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
@@ -99,7 +98,7 @@ public class ClientManager {
         if (player == null) {
             return;
         }
-        player.sendMessage(
+        player.sendSystemMessage(
                 ComponentUtils.wrapInSquareBrackets(Component.literal(CommonCompatibilityManager.INSTANCE.getModName()))
                         .withStyle(ChatFormatting.GREEN)
                         .append(" ")
@@ -110,7 +109,7 @@ public class ClientManager {
                             }
                             return style;
                         })
-                , Util.NIL_UUID);
+        );
     }
 
     private void onDisconnect() {

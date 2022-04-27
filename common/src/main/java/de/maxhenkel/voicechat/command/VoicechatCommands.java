@@ -17,12 +17,14 @@ import de.maxhenkel.voicechat.voice.server.Group;
 import de.maxhenkel.voicechat.voice.server.PingManager;
 import de.maxhenkel.voicechat.voice.server.Server;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.UuidArgument;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
@@ -115,7 +117,7 @@ public class VoicechatCommands {
             }
 
             String passwordSuffix = group.getPassword() == null ? "" : " \"" + group.getPassword() + "\"";
-            player.sendMessage(Component.translatable("message.voicechat.invite", source.getDisplayName(), Component.literal(group.getName()).withStyle(ChatFormatting.GRAY), ComponentUtils.wrapInSquareBrackets(Component.translatable("message.voicechat.accept_invite").withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/voicechat join " + group.getId().toString() + passwordSuffix)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.voicechat.accept_invite.hover"))))).withStyle(ChatFormatting.GREEN)), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("message.voicechat.invite", source.getDisplayName(), Component.literal(group.getName()).withStyle(ChatFormatting.GRAY), ComponentUtils.wrapInSquareBrackets(Component.translatable("message.voicechat.accept_invite").withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/voicechat join " + group.getId().toString() + passwordSuffix)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.voicechat.accept_invite.hover"))))).withStyle(ChatFormatting.GREEN)));
 
             commandSource.getSource().sendSuccess(Component.translatable("message.voicechat.invite_successful", player.getDisplayName()), false);
 

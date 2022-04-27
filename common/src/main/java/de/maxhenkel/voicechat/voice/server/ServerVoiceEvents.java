@@ -8,7 +8,6 @@ import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -39,7 +38,7 @@ public class ServerVoiceEvents {
             clientCompatibilities.put(player.getUUID(), packet.getCompatibilityVersion());
             if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
                 Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName().getString(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
-                player.sendMessage(getIncompatibleMessage(packet.getCompatibilityVersion()), Util.NIL_UUID);
+                player.sendSystemMessage(getIncompatibleMessage(packet.getCompatibilityVersion()));
             } else {
                 initializePlayerConnection(player);
             }
