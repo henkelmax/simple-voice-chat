@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.events.VoiceChatDisconnectedEvent;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.Connection;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
@@ -38,6 +39,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     private final List<Runnable> joinWorldEvents;
     private final List<Consumer<ClientVoicechatConnection>> voicechatConnectEvents;
     private final List<Runnable> voicechatDisconnectEvents;
+    private final List<Consumer<Integer>> publishServerEvents;
 
     public ForgeClientCompatibilityManager() {
         minecraft = Minecraft.getInstance();
@@ -51,6 +53,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         joinWorldEvents = new ArrayList<>();
         voicechatConnectEvents = new ArrayList<>();
         voicechatDisconnectEvents = new ArrayList<>();
+        publishServerEvents = new ArrayList<>();
     }
 
     @SubscribeEvent
@@ -105,6 +108,27 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
             return;
         }
         joinWorldEvents.forEach(Runnable::run);
+    }
+
+    private boolean wasPublished;
+
+    @SubscribeEvent
+    public void onServer(TickEvent.ServerTickEvent event) {
+        if (!event.phase.equals(TickEvent.Phase.END)) {
+            return;
+        }
+        IntegratedServer server = Minecraft.getInstance().getSingleplayerServer();
+        if (server == null) {
+            return;
+        }
+
+        boolean published = server.isPublished();
+
+        if (published && !wasPublished) {
+            publishServerEvents.forEach(portConsumer -> portConsumer.accept(server.getPort()));
+        }
+
+        wasPublished = published;
     }
 
     @Override
@@ -178,6 +202,11 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @Override
     public void onJoinWorld(Runnable onJoinWorld) {
         joinWorldEvents.add(onJoinWorld);
+    }
+
+    @Override
+    public void onPublishServer(Consumer<Integer> onPublishServer) {
+        publishServerEvents.add(onPublishServer);
     }
 
     @Override
