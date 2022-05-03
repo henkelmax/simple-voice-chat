@@ -47,6 +47,8 @@ public abstract class ClientCompatibilityManager {
 
     public abstract void onJoinWorld(Runnable onJoinWorld);
 
+    public abstract void onPublishServer(Consumer<Integer> onPublishServer);
+
     public abstract SocketAddress getSocketAddress(Connection connection);
 
     public abstract void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource);
