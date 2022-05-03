@@ -136,22 +136,9 @@ public class ClientManager {
                 }
             }
             NetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
-            Minecraft.getInstance().gui.getChat().addMessage(new TranslatableComponent("message.voicechat.server_port", server.getPort()));
+            Minecraft.getInstance().gui.getChat().addMessage(new TranslationTextComponent("message.voicechat.server_port", server.getPort()));
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to change voice chat port: {}", e.getMessage());
-        }
-    }
-
-    public void checkMicrophonePermissions() {
-        if (!VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get()) {
-            return;
-        }
-        if (Platform.isMac()) {
-            AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
-            if (!status.equals(AVAuthorizationStatus.AUTHORIZED)) {
-                sendPlayerError("message.voicechat.macos_no_mic_permission", null);
-                Voicechat.LOGGER.warn("User hasn't granted microphone permissions: {}", status.name());
-            }
         }
     }
 
