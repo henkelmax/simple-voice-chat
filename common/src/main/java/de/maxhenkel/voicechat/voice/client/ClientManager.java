@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
+import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.channel.local.LocalAddress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -40,6 +41,7 @@ public class ClientManager {
 
         ClientCompatibilityManager.INSTANCE.onJoinWorld(this::onJoinWorld);
         ClientCompatibilityManager.INSTANCE.onDisconnect(this::onDisconnect);
+        ClientCompatibilityManager.INSTANCE.onPublishServer(this::onPublishServer);
 
         ClientCompatibilityManager.INSTANCE.onVoiceChatConnected(connection -> {
             if (client != null) {
@@ -115,6 +117,42 @@ public class ClientManager {
             client = null;
         }
         ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
+    }
+
+    private void onPublishServer(int port) {
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return;
+        }
+        try {
+            Voicechat.LOGGER.info("Changing voice chat port to {}", port);
+            server.changePort(port);
+            ClientVoicechat client = ClientManager.getClient();
+            if (client != null) {
+                ClientVoicechatConnection connection = client.getConnection();
+                if (connection != null) {
+                    Voicechat.LOGGER.info("Force disconnecting due to port change");
+                    connection.disconnect();
+                }
+            }
+            NetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
+            Minecraft.getInstance().gui.getChat().addMessage(new TranslatableComponent("message.voicechat.server_port", server.getPort()));
+        } catch (Exception e) {
+            Voicechat.LOGGER.error("Failed to change voice chat port: {}", e.getMessage());
+        }
+    }
+
+    public void checkMicrophonePermissions() {
+        if (!VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get()) {
+            return;
+        }
+        if (Platform.isMac()) {
+            AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
+            if (!status.equals(AVAuthorizationStatus.AUTHORIZED)) {
+                sendPlayerError("message.voicechat.macos_no_mic_permission", null);
+                Voicechat.LOGGER.warn("User hasn't granted microphone permissions: {}", status.name());
+            }
+        }
     }
 
     @Nullable

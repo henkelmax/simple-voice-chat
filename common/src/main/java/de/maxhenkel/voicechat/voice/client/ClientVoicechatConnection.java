@@ -106,8 +106,12 @@ public class ClientVoicechatConnection extends Thread {
     public void checkTimeout() {
         if (lastKeepAlive >= 0 && System.currentTimeMillis() - lastKeepAlive > data.getKeepAlive() * 10L) {
             Voicechat.LOGGER.info("Connection timeout");
-            ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
+            disconnect();
         }
+    }
+
+    public void disconnect() {
+        ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
     }
 
     private class AuthThread extends Thread {
