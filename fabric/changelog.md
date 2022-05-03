@@ -1,1 +1,2 @@
-- Updated to 22w17a
+- Use the minecraft servers port in LAN worlds
+- Added Essential compatibility

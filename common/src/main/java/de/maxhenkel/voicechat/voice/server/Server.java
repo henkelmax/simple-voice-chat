@@ -27,9 +27,9 @@ public class Server extends Thread {
 
     private final Map<UUID, ClientConnection> connections;
     private final Map<UUID, UUID> secrets;
-    private final int port;
+    private int port;
     private final MinecraftServer server;
-    private final VoicechatSocket socket;
+    private VoicechatSocket socket;
     private final ProcessThread processThread;
     private final BlockingQueue<RawUdpPacket> packetQueue;
     private final PingManager pingManager;
@@ -77,6 +77,24 @@ public class Server extends Thread {
         } catch (Exception e) {
             Voicechat.LOGGER.error("Voice chat server error {}", e.getMessage());
         }
+    }
+
+    /**
+     * Changes the port of the voice chat server.
+     * <b>NOTE:</b> This removes every existing connection and all secrets!
+     *
+     * @param port the new voice chat port
+     * @throws Exception if an error opening the socket on the new port occurs
+     */
+    public void changePort(int port) throws Exception {
+        VoicechatSocket newSocket = PluginManager.instance().getSocketImplementation(server);
+        newSocket.open(port, Voicechat.SERVER_CONFIG.voiceChatBindAddress.get());
+        VoicechatSocket old = socket;
+        socket = newSocket;
+        this.port = port;
+        old.close();
+        connections.clear();
+        secrets.clear();
     }
 
     public UUID getSecret(UUID playerUUID) {

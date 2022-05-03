@@ -91,6 +91,11 @@ public class QuiltClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @Override
+    public void onPublishServer(Consumer<Integer> onPublishServer) {
+        PublishServerEvents.SERVER_PUBLISHED.register(onPublishServer);
+    }
+
+    @Override
     public SocketAddress getSocketAddress(Connection connection) {
         return ((ConnectionAccessor) connection).getChannel().remoteAddress();
     }
