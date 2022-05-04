@@ -1,2 +1,1 @@
-- Use the minecraft servers port in LAN worlds
-- Added Essential compatibility
+- Added stop listener to audio player
