@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public class AudioPlayerImpl extends Thread implements AudioPlayer {
@@ -17,6 +18,8 @@ public class AudioPlayerImpl extends Thread implements AudioPlayer {
     private final OpusEncoder encoder;
     private final Supplier<short[]> audioSupplier;
     private boolean started;
+    @Nullable
+    private Runnable onStopped;
 
     public AudioPlayerImpl(AudioChannel audioChannel, @Nonnull OpusEncoder encoder, Supplier<short[]> audioSupplier) {
         this.audioChannel = audioChannel;
@@ -56,6 +59,11 @@ public class AudioPlayerImpl extends Thread implements AudioPlayer {
     }
 
     @Override
+    public void setOnStopped(Runnable onStopped) {
+        this.onStopped = onStopped;
+    }
+
+    @Override
     public void run() {
         int framePosition = 0;
 
@@ -84,6 +92,11 @@ public class AudioPlayerImpl extends Thread implements AudioPlayer {
         }
 
         encoder.close();
+        audioChannel.flush();
+
+        if (onStopped != null) {
+            onStopped.run();
+        }
     }
 
 }
