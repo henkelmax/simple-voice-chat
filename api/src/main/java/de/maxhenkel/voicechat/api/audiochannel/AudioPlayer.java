@@ -31,4 +31,9 @@ public interface AudioPlayer {
      */
     boolean isStopped();
 
+    /**
+     * @param onStopped a runnable that's called when the player is finished playing
+     */
+    void setOnStopped(Runnable onStopped);
+
 }
