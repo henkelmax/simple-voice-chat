@@ -106,6 +106,11 @@ public final class Voicechat extends JavaPlugin {
             LOGGER.error("Failed to register PlaceholderAPI expansion");
         }
 
+        if (System.getProperty("VOICECHAT_RELOADED") != null) {
+            LOGGER.error("Simple Voice Chat does not support reloads! Expect that things will break!");
+        }
+        System.setProperty("VOICECHAT_RELOADED", "true");
+
         getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
             PluginManager.instance().init(this);
 
