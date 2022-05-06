@@ -21,7 +21,8 @@ public class PlayerStateManager {
 
     public PlayerStateManager() {
         states = new ConcurrentHashMap<>();
-        CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::removePlayer);
+        CommonCompatibilityManager.INSTANCE.onPlayerLoggedIn(this::onPlayerLoggedIn);
+        CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::onPlayerLoggedOut);
 
         CommonCompatibilityManager.INSTANCE.getNetManager().updateStateChannel.setServerListener((server, player, handler, packet) -> {
             PlayerState state = states.get(player.getUUID());
@@ -53,7 +54,13 @@ public class PlayerStateManager {
         Voicechat.logDebug("Setting initial state of {}: {}", player.getDisplayName().getString(), state);
     }
 
-    private void removePlayer(ServerPlayer player) {
+    private void onPlayerLoggedIn(ServerPlayer player) {
+        PlayerState state = defaultDisconnectedState(player);
+        states.put(player.getUUID(), state);
+        broadcastState(player.server, state);
+    }
+
+    private void onPlayerLoggedOut(ServerPlayer player) {
         states.remove(player.getUUID());
         broadcastState(player.server, new PlayerState(player.getUUID(), player.getGameProfile().getName(), true, true));
         Voicechat.logDebug("Removing state of {}", player.getDisplayName().getString());
