@@ -1,1 +1,1 @@
-- Updated to 22w18a
+- Fixed disconnection symbol not shown for vanilla players

@@ -1,1 +1,1 @@
-- Added stop listener to audio player
+- Fixed disconnection symbol not shown for vanilla players
