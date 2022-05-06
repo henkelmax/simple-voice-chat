@@ -10,6 +10,7 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import javax.annotation.Nullable;
@@ -43,6 +44,13 @@ public class PlayerStateManager implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         removePlayer(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerJoinEvent event) {
+        PlayerState state = defaultDisconnectedState(event.getPlayer());
+        states.put(event.getPlayer().getUniqueId(), state);
+        broadcastState(state);
     }
 
     private void broadcastState(PlayerState state) {
