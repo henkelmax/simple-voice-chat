@@ -7,3 +7,4 @@
 ## Fabric
 
 - [Audio Player](https://github.com/henkelmax/audio-player)
+- [Instant Groups](https://github.com/henkelmax/instant-group)
