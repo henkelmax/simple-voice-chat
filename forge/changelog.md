@@ -1,1 +1,1 @@
-- Fixed disconnection symbol not shown for vanilla players
+- Fixed game shutting down when opening a LAN world and the voice chat port is already in use

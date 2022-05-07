@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.QuiltVoicechatMod;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
@@ -26,7 +26,7 @@ public class QuiltNetManager extends NetManager {
                     }
                 });
             }
-            if (toClient && QuiltVoicechatMod.isClient()) {
+            if (toClient && !CommonCompatibilityManager.INSTANCE.isDedicatedServer()) {
                 ClientPlayNetworking.registerGlobalReceiver(dummyPacket.getIdentifier(), (client, handler, buf, responseSender) -> {
                     try {
                         T packet = packetType.getDeclaredConstructor().newInstance();
