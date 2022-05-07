@@ -40,6 +40,8 @@ public abstract class CommonCompatibilityManager {
 
     public abstract boolean isDevEnvironment();
 
+    public abstract boolean isDedicatedServer();
+
     public abstract List<VoicechatPlugin> loadPlugins();
 
 }

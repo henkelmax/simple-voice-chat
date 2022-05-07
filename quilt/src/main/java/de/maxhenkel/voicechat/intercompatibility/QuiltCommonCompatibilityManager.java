@@ -5,8 +5,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.events.PlayerEvents;
-import de.maxhenkel.voicechat.net.QuiltNetManager;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.net.QuiltNetManager;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
 import net.minecraft.client.KeyMapping;
@@ -17,6 +18,7 @@ import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.loader.api.ModMetadata;
 import org.quiltmc.loader.api.QuiltLoader;
 import org.quiltmc.loader.api.entrypoint.EntrypointContainer;
+import org.quiltmc.loader.api.minecraft.MinecraftQuiltLoader;
 import org.quiltmc.qsl.command.api.CommandRegistrationCallback;
 import org.quiltmc.qsl.lifecycle.api.event.ServerLifecycleEvents;
 
@@ -124,6 +126,11 @@ public class QuiltCommonCompatibilityManager extends CommonCompatibilityManager 
     @Override
     public boolean isDevEnvironment() {
         return QuiltLoader.isDevelopmentEnvironment();
+    }
+
+    @Override
+    public boolean isDedicatedServer() {
+        return MinecraftQuiltLoader.getEnvironmentType().equals(EnvType.SERVER);
     }
 
     @Override

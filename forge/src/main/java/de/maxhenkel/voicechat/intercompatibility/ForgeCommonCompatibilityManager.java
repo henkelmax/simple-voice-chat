@@ -154,6 +154,11 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
+    public boolean isDedicatedServer() {
+        return FMLLoader.getDist().isDedicatedServer();
+    }
+
+    @Override
     public List<VoicechatPlugin> loadPlugins() {
         List<VoicechatPlugin> plugins = new ArrayList<>();
         ModList.get().getAllScanData().forEach(scan -> {
