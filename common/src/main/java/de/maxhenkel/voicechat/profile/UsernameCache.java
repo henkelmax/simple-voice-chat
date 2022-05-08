@@ -36,6 +36,9 @@ public class UsernameCache {
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to load username cache: {}", e.getMessage());
         }
+        if (names == null) {
+            names = new ConcurrentHashMap<>();
+        }
     }
 
     public void save() {
