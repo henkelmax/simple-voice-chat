@@ -1,2 +1,1 @@
-- Fixed game shutting down when opening a LAN world and the voice chat port is already in use
-- Fixed empty username cache causing issues
+- Updated to 22w19a
