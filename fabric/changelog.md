@@ -1,1 +1,1 @@
-- Updated to 22w19a
+- Updated russian translation
