@@ -1,1 +1,1 @@
-- Moved compatibility version to manifest file
+- Updated to 1.19-pre1
