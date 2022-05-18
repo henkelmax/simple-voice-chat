@@ -148,9 +148,22 @@ java {
 }
 
 jar {
+    manifest {
+        attributes([
+                "Compatibility-Version": mod_compatibility_version
+        ])
+    }
     from('LICENSE') {
         rename { "${it}_${archivesBaseName}" }
     }
+}
+
+tasks.runClient.doFirst {
+    environment 'COMPATIBILITY_VERSION', mod_compatibility_version
+}
+
+tasks.runServer.doFirst {
+    environment 'COMPATIBILITY_VERSION', mod_compatibility_version
 }
 
 curseforge {
