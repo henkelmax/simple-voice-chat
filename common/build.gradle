@@ -9,7 +9,6 @@ buildscript {
 plugins {
     id "java"
     id 'fabric-loom' version '0.12-SNAPSHOT'
-    id "com.github.hexomod.replace.token.preprocessor" version "0.4"
 }
 
 sourceCompatibility = JavaLanguageVersion.of(java_version as int)
@@ -44,8 +43,4 @@ dependencies {
     implementation project(':api')
 
     implementation project(path: ':macos', configuration: 'shadow')
-}
-
-replaceTokenPreprocessorSettings {
-    replace '@MOD_COMPATIBILITY_VERSION@': mod_compatibility_version
 }
