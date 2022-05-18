@@ -1,1 +1,1 @@
-- Updated russian translation
+- Moved compatibility version to manifest file
