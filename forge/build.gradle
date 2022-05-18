@@ -118,9 +118,6 @@ processResources {
                 'forge_requirement': forge_requirement,
                 'minecraft_version': minecraft_version
     }
-    filesMatching("compatibility.properties") {
-        expand 'mod_compatibility_version': mod_compatibility_version
-    }
     from("${project(':common').projectDir}/src/main/resources")
 
     doLast {
