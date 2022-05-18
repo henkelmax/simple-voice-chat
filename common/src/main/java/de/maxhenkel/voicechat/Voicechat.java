@@ -7,6 +7,10 @@ import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 
 public abstract class Voicechat {
@@ -16,7 +20,16 @@ public abstract class Voicechat {
     public static ServerVoiceEvents SERVER;
     public static ServerConfig SERVER_CONFIG;
 
-    public static int COMPATIBILITY_VERSION = Integer.parseInt("@MOD_COMPATIBILITY_VERSION@");
+    public static int COMPATIBILITY_VERSION;
+
+    static {
+        try {
+            COMPATIBILITY_VERSION = readVersion();
+        } catch (Exception e) {
+            LOGGER.fatal("Failed to read compatibility version: {}", e.getMessage());
+            COMPATIBILITY_VERSION = -1;
+        }
+    }
 
     public static final Pattern GROUP_REGEX = Pattern.compile("^[^\"\\n\\r\\t\\s][^\"\\n\\r\\t]{0,15}$");
 
@@ -31,6 +44,23 @@ public abstract class Voicechat {
         if (CommonCompatibilityManager.INSTANCE.isDevEnvironment()) {
             LOGGER.info(message, objects);
         }
+    }
+
+    private static int readVersion() throws IOException {
+        Enumeration<URL> resources = Voicechat.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
+        while (resources.hasMoreElements()) {
+            Manifest manifest = new Manifest(resources.nextElement().openStream());
+            String version = manifest.getMainAttributes().getValue("Compatibility-Version");
+            if (version != null) {
+                return Integer.parseInt(version);
+            }
+        }
+        // Use the environment variable in development
+        String env = System.getenv("COMPATIBILITY_VERSION");
+        if (env != null) {
+            return Integer.parseInt(env);
+        }
+        throw new IOException("Could not read MANIFEST.MF");
     }
 
 }

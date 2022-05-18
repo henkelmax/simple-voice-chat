@@ -6,18 +6,14 @@ plugins {
 sourceCompatibility = JavaLanguageVersion.of(java_version as int)
 targetCompatibility = JavaLanguageVersion.of(java_version as int)
 
-archivesBaseName = project.archives_base_name
-version = project.mod_version
-group = project.maven_group
+archivesBaseName = archives_base_name
+version = mod_version
+group = maven_group
 
 processResources {
     filesMatching("plugin.yml") {
-        expand "version": project.version,
-                "bukkit_api_version": project.bukkit_api_version
-    }
-
-    filesMatching("compatibility.properties") {
-        expand "mod_compatibility_version": project.mod_compatibility_version
+        expand "version": version,
+                "bukkit_api_version": bukkit_api_version
     }
 }
 
@@ -59,14 +55,22 @@ repositories {
     }
 }
 
+jar {
+    manifest {
+        attributes([
+                "Compatibility-Version": mod_compatibility_version
+        ])
+    }
+}
+
 task copyJarToServer {
     doLast {
         delete {
-            delete "${project.projectDir}/run/plugins/${archivesBaseName}-${version}.jar"
+            delete "${projectDir}/run/plugins/${archivesBaseName}-${version}.jar"
         }
         copy {
-            from "${project.buildDir}/libs/${archivesBaseName}-${version}.jar"
-            into "${project.projectDir}/run/plugins"
+            from "${buildDir}/libs/${archivesBaseName}-${version}.jar"
+            into "${projectDir}/run/plugins"
         }
     }
 }
@@ -77,10 +81,10 @@ task runServer {
     doLast {
         javaexec {
             debug = true
-            workingDir = "${project.projectDir}/run"
+            workingDir = "${projectDir}/run"
             main = "-jar";
             args = [
-                    "${project.projectDir}/run/paper.jar",
+                    "${projectDir}/run/paper.jar",
                     "nogui"
             ]
         }

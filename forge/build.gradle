@@ -35,6 +35,7 @@ minecraft {
             lazyToken('minecraft_classpath') {
                 configurations.shadow.copyRecursive().resolve().collect { it.absolutePath }.join(File.pathSeparator)
             }
+            environment 'COMPATIBILITY_VERSION', mod_compatibility_version
         }
         client {
             workingDirectory project.file('run')
@@ -147,7 +148,9 @@ jar {
                     "Implementation-Title"    : mod_name,
                     "Implementation-Version"  : mod_version,
                     "Implementation-Vendor"   : mod_vendor,
-                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                    "Compatibility-Version"   : mod_compatibility_version
+        ])
     }
     from configurations.shadow.collect { it.isDirectory() ? it : zipTree(it) }
 }
