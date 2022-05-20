@@ -8,7 +8,7 @@ import de.maxhenkel.voicechat.events.PlayerEvents;
 import de.maxhenkel.voicechat.net.FabricNetManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
@@ -75,7 +75,7 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
 
     @Override
     public void onRegisterServerCommands(Consumer<CommandDispatcher<CommandSourceStack>> onRegisterServerCommands) {
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> onRegisterServerCommands.accept(dispatcher));
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> onRegisterServerCommands.accept(dispatcher));
     }
 
     private FabricNetManager netManager;
