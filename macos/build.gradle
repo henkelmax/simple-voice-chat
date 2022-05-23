@@ -8,7 +8,6 @@ buildscript {
 plugins {
     id "java"
     id "com.github.johnrengelman.shadow" version "7.1.0"
-    id "com.github.hexomod.replace.token.preprocessor" version "0.4"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
@@ -31,7 +30,7 @@ task prepareWorkspace {
 
 }
 
-processResources{
+processResources {
     filesMatching("patcher.properties") {
         expand 'patcher_version': patcher_version
     }
@@ -39,7 +38,8 @@ processResources{
 
 jar {
     manifest {
-        attributes 'Main-Class': 'de.maxhenkel.voicechat.macos.Main'
+        attributes 'Main-Class': 'de.maxhenkel.voicechat.macos.Main',
+                "Patcher-Version": patcher_version
     }
 }
 
@@ -64,10 +64,7 @@ task standaloneJar(type: ShadowJar) {
     baseName 'simple-voice-chat-macos-workaround'
     from sourceSets.main.output
     manifest {
-        attributes 'Main-Class': 'de.maxhenkel.voicechat.macos.StandaloneMain'
+        attributes 'Main-Class': 'de.maxhenkel.voicechat.macos.StandaloneMain',
+                "Patcher-Version": patcher_version
     }
-}
-
-replaceTokenPreprocessorSettings {
-    replace '@PATCHER_VERSION@': patcher_version
 }
