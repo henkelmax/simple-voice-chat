@@ -1,1 +1,1 @@
-- Moved compatibility version to manifest file
+- Updated MacOS patcher
