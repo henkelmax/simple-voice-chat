@@ -1,1 +1,2 @@
-- Updated to 1.19-pre1
+- Updated MacOS patcher
+- Updated Fabric command API
