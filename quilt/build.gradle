@@ -174,7 +174,7 @@ curseforge {
         changelog = file("changelog.md")
         releaseType = release_type
         addGameVersion curseforge_minecraft_version
-        addGameVersion 'Fabric' //TODO
+        addGameVersion 'Quilt'
         addGameVersion "Java ${java_version}"
         mainArtifact(file("${buildDir}/libs/${archivesBaseName}-${version}.jar")) {
             displayName = "[QUILT][${minecraft_version}] ${mod_name} ${mod_version}"

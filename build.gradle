@@ -10,7 +10,7 @@ task publishAll(type: GradleBuild) {
             ':forge:clean',
             ':fabric:clean',
             ':bukkit:clean',
-//            ':quilt:curseforge',
+            ':quilt:curseforge',
             ':quilt:modrinth',
 //            ':quilt:forgeUpdate',
             ':forge:curseforge',
