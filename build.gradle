@@ -19,6 +19,14 @@ task publishAll(type: GradleBuild) {
             ':fabric:curseforge',
             ':fabric:modrinth',
             ':fabric:forgeUpdate',
+            ':bukkit:build'
+    ]
+}
+
+task publishBukkit(type: GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':bukkit:clean',
             ':bukkit:curseforge'
     ]
 }
