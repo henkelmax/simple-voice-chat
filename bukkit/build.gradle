@@ -1,7 +1,18 @@
+buildscript {
+    repositories {
+        maven { url = "https://repo.u-team.info" }
+    }
+    dependencies {
+        classpath "info.u-team.curse_gradle_uploader:curse_gradle_uploader:1.5.0"
+    }
+}
+
 plugins {
     id 'java'
     id "com.github.johnrengelman.shadow" version "7.1.0"
 }
+
+apply plugin: "info.u_team.curse_gradle_uploader"
 
 sourceCompatibility = JavaLanguageVersion.of(java_version as int)
 targetCompatibility = JavaLanguageVersion.of(java_version as int)
@@ -105,5 +116,20 @@ shadowJar {
     dependencies {
         exclude(dependency('com.mojang:brigadier:.*'))
         exclude(dependency('com.google.code.findbugs:jsr305:.*'))
+    }
+}
+
+curseforge {
+    apiBaseUrl = "https://dev.bukkit.org"
+    apiKey = file("${rootDir}/curseforge_api_key.txt").exists() ? file("${rootDir}/curseforge_api_key.txt").text : ''
+    project {
+        id = curse_id
+        changelogType = 'markdown'
+        changelog = file("changelog.md")
+        releaseType = release_type
+        addGameVersion curseforge_minecraft_version
+        mainArtifact(shadowJar) {
+            displayName = "[BUKKIT/SPIGOT/PAPER][${minecraft_version}] ${mod_name} ${mod_version}"
+        }
     }
 }
