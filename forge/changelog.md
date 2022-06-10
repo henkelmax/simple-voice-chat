@@ -1,1 +1,1 @@
-- Updated MacOS patcher
+- Added custom displaytest to check for compatible voice chat versions
