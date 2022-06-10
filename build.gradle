@@ -19,7 +19,7 @@ task publishAll(type: GradleBuild) {
             ':fabric:curseforge',
             ':fabric:modrinth',
             ':fabric:forgeUpdate',
-            ':bukkit:build'
+            ':bukkit:curseforge'
     ]
 }
 
