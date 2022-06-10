@@ -8,12 +8,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 @Mod(ForgeVoicechatMod.MODID)
@@ -31,6 +34,11 @@ public class ForgeVoicechatMod extends Voicechat {
         initialize();
         MinecraftForge.EVENT_BUS.register(CommonCompatibilityManager.INSTANCE);
         ((ForgePermissionManager) PermissionManager.INSTANCE).registerPermissions();
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> {
+            return new ImmutablePair<>(() -> String.valueOf(Voicechat.COMPATIBILITY_VERSION), (incoming, isNetwork) -> {
+                return Objects.equals(incoming, String.valueOf(Voicechat.COMPATIBILITY_VERSION));
+            });
+        });
     }
 
     public static <T> T registerConfig(ModConfig.Type type, Function<ForgeConfigSpec.Builder, T> consumer) {
