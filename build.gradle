@@ -10,7 +10,7 @@ task publishAll(type: GradleBuild) {
             ':forge:curseforge',
             ':forge:modrinth',
             ':forge:forgeUpdate',
-            ':bukkit:build'
+            ':bukkit:curseforge'
     ]
 }
 
