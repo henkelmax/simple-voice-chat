@@ -56,7 +56,7 @@ public class PlayerEntryMixin {
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList;of(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;"))
     private ImmutableList<?> children(Object o1, Object o2) {
         inviteButton = new ImageButton(0, 0, GROUP_ICON, button -> {
-            minecraft.player.chat("/voicechat invite %s".formatted(playerName));
+            minecraft.player.command("voicechat invite %s".formatted(playerName));
             invited = true;
         }, (button, matrices, mouseX, mouseY) -> {
             if (screen == null || invited) {

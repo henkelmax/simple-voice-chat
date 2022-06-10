@@ -1,0 +1,1 @@
+- Fixed social interaction screen invites
