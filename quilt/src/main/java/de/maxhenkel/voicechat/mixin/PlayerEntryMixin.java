@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.social.PlayerEntry;
 import net.minecraft.client.gui.screens.social.SocialInteractionsScreen;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -56,7 +56,7 @@ public class PlayerEntryMixin {
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList;of(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;"))
     private ImmutableList<?> children(Object o1, Object o2) {
         inviteButton = new ImageButton(0, 0, GROUP_ICON, button -> {
-            minecraft.player.chat("/voicechat invite %s".formatted(playerName));
+            minecraft.player.command("voicechat invite %s".formatted(playerName));
             invited = true;
         }, (button, matrices, mouseX, mouseY) -> {
             if (screen == null || invited) {
@@ -67,7 +67,7 @@ public class PlayerEntryMixin {
                 return;
             }
             screen.setPostRenderRunnable(() -> {
-                screen.renderTooltip(matrices, new TranslatableComponent("message.voicechat.invite_player", playerName), mouseX, mouseY);
+                screen.renderTooltip(matrices, Component.translatable("message.voicechat.invite_player", playerName), mouseX, mouseY);
                 screen.setPostRenderRunnable(null);
             });
         });
