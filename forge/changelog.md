@@ -1,1 +1,1 @@
-- Updated to 1.19
+- Added custom displaytest to check for compatible voice chat versions

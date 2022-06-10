@@ -11,6 +11,7 @@ modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
 updateJSONURL="https://maxhenkel.de/update/voicechat.json"
+displayTest="NONE"
 description='''A working voice chat in Minecraft!'''
 [[dependencies.${mod_id}]]
     modId="forge"
