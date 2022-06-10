@@ -59,13 +59,13 @@ dependencies {
 
     modImplementation("org.quiltmc:quilt-loader:${quilt_loader_version}")
 
-    include(modImplementation("org.quiltmc.quilted-fabric-api:fabric-key-binding-api-v1:0.1.0+1.18.2-SNAPSHOT"))
+    include(modImplementation("org.quiltmc.quilted-fabric-api:fabric-key-binding-api-v1:1.0.0-beta.9+0.51.1-1.18.2"))
 
     include(modImplementation("org.quiltmc.qsl.core:qsl_base:${qsl_version}"))
     include(modImplementation("org.quiltmc.qsl.core:lifecycle_events:${qsl_version}"))
     include(modImplementation("org.quiltmc.qsl.core:networking:${qsl_version}"))
     include(modImplementation("org.quiltmc.qsl.core:resource_loader:${qsl_version}"))
-    include(modImplementation("org.quiltmc.qsl.command:command:${qsl_version}"))
+    include(modImplementation("org.quiltmc.qsl.management:command:${qsl_version}"))
 
     implementation(project(path: ':common', configuration: 'namedElements')) {
         transitive false

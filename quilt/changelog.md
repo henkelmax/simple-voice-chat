@@ -1,1 +1,1 @@
-- Updated MacOS patcher
+- Updated to 1.19
