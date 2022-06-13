@@ -1,0 +1,1 @@
+- Fixed command completion
