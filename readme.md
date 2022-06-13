@@ -43,6 +43,7 @@ Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki?t=setup) for 
 - [Fabric](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat/files/all?filter-status=1&filter-game-version=2020709689:7499)
 - [Forge](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat/files/all?filter-status=1&filter-game-version=2020709689:7498)
 - [Bukkit/Spigot/Paper](https://www.curseforge.com/minecraft/bukkit-plugins/simple-voice-chat/files/all)
+- [Quilt](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat/files/all?filter-status=1&filter-game-version=2020709689:9153)
 
 ## Features
 
