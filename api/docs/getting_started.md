@@ -269,3 +269,107 @@ public final class MyPlugin extends JavaPlugin {
     ...
 }
 ```
+
+### Quilt
+
+To add the API dependency to your Quilt mod, add the following maven repository to your project.
+
+*build.gradle*
+
+```groovy
+repositories {
+    ...
+    maven { url = 'https://maven.maxhenkel.de/repository/public' }
+}
+```
+
+In the `dependencies` section add the following maven dependency. Make sure `voicechat_api_version` is set to the voice
+chat API version you want to target. Available API versions can be
+found [here](https://maven.maxhenkel.de/#artifact/de.maxhenkel.voicechat/voicechat-api).
+
+*build.gradle*
+
+```groovy
+dependencies {
+    ...
+    implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
+}
+```
+
+To avoid crashes due to outdated voice chat versions, make sure to add `voicechat` to the `depends` section in
+the `quilt.mod.json`. This prevents your mod from loading if versions of the voice chat are installed, that are older
+than the API version you are targeting.
+
+*quilt.mod.json*
+
+```json
+{
+  "schemaVersion": 1,
+  ...
+  "depends": {
+    ...
+    {
+      "id": "voicechat",
+      "version": ">=${minecraft_version}-${voicechat_api_version}"
+    }
+  }
+}
+```
+
+To register the voice chat plugin for a Quilt mod, you need to create a class that
+implements `de.maxhenkel.voicechat.api.VoicechatPlugin`.
+
+*TestPlugin.java*
+
+```java
+package com.example.yourmod;
+
+import de.maxhenkel.voicechat.api.VoicechatPlugin;
+
+public class TestPlugin implements VoicechatPlugin {
+    ...
+}
+```
+
+Additionally, you need to add a `voicechat` entrypoint in your `quilt.mod.json`, that refers to the class you just
+created.
+
+*quilt.mod.json*
+
+```json
+{
+  "schemaVersion": 1,
+  ...
+  "entrypoints": {
+    "init": [
+      ...
+    ],
+    "voicechat": [
+      "com.example.yourmod.TestPlugin"
+    ]
+  },
+  ...
+}
+```
+
+To have *Simple Voice Chat* installed in your development environment, use the [Modrinth Maven Repository](https://docs.modrinth.com/docs/tutorials/maven/).
+Alternatively use [Cursemaven](https://www.cursemaven.com/).
+
+*build.gradle*
+
+```groovy
+repositories {
+    ...
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
+}
+dependencies {
+    ...
+    modRuntimeOnly "maven.modrinth:simple-voice-chat:quilt-${voicechat_version}"
+}
+```
