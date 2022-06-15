@@ -1,1 +1,1 @@
-- Fixed social interaction screen invites
+- Updated to 22w24a
