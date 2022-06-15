@@ -14,7 +14,7 @@ public class ForgeServerConfig extends ServerConfig {
 
         voiceChatPort = wrapConfigEntry(builder
                 .worldRestart()
-                .comment("The port of the voice chat server")
+                .comment("The port of the voice chat server", "Setting this to \"-1\" sets the port to the Minecraft servers port")
                 .defineInRange("voice_chat.port", 24454, -1, 65535)
         );
         voiceChatBindAddress = wrapConfigEntry(builder
