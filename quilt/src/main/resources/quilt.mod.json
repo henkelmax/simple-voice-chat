@@ -51,7 +51,7 @@
       },
       {
         "id": "quilted_fabric_key_binding_api_v1",
-        "versions": ">=${qsl_version}"
+        "versions": "*"
       }
     ],
     "suggests": [
