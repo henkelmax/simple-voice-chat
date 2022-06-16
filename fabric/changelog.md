@@ -1,1 +1,1 @@
-- Updated to 22w24a
+- Fixed social interactions menu crashing
