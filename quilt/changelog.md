@@ -1,1 +1,1 @@
-- Updated to 1.19
+- Fixed leaving groups with voice chat API

@@ -1,1 +1,1 @@
-- Fixed social interaction screen invites
+- Fixed leaving groups with voice chat API
