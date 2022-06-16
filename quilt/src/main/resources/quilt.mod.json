@@ -19,63 +19,63 @@
     "depends": [
       {
         "id": "quilt_loader",
-        "version": ">=${quilt_loader_version}"
+        "versions": ">=${quilt_loader_version}"
       },
       {
         "id": "minecraft",
-        "version": "${minecraft_dependency}"
+        "versions": "${minecraft_dependency}"
       },
       {
         "id": "java",
-        "version": ">=${java_version}"
+        "versions": ">=${java_version}"
       },
       {
         "id": "quilt_base",
-        "version": ">=${qsl_version}"
+        "versions": ">=${qsl_version}"
       },
       {
         "id": "quilt_lifecycle_events",
-        "version": ">=${qsl_version}"
+        "versions": ">=${qsl_version}"
       },
       {
         "id": "quilt_resource_loader",
-        "version": ">=${qsl_version}"
+        "versions": ">=${qsl_version}"
       },
       {
         "id": "quilt_networking",
-        "version": ">=${qsl_version}"
+        "versions": ">=${qsl_version}"
       },
       {
         "id": "quilt_command",
-        "version": ">=${qsl_version}"
+        "versions": ">=${qsl_version}"
       },
       {
         "id": "quilted_fabric_key_binding_api_v1",
-        "version": ">=${qsl_version}"
+        "versions": ">=${qsl_version}"
       }
     ],
     "suggests": [
       {
         "id": "modmenu",
-        "version": ">=${modmenu_version}"
+        "versions": ">=${modmenu_version}"
       },
       {
         "id": "sound_physics_remastered",
-        "version": ">=1.18.2-1.0.5"
+        "versions": ">=1.18.2-1.0.5"
       },
       {
         "id": "cloth-config2",
-        "version": ">=${cloth_config_version}"
+        "versions": ">=${cloth_config_version}"
       },
       {
         "id": "fabric-permissions-api-v0",
-        "version": "*"
+        "versions": "*"
       }
     ],
     "breaks": [
       {
         "id": "sound_physics_remastered",
-        "version": "<1.18.2-1.0.5"
+        "versions": "<1.18.2-1.0.5"
       }
     ],
     "metadata": {
