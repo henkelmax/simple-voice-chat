@@ -1,1 +1,1 @@
-- Added custom displaytest to check for compatible voice chat versions
+- Fixed leaving groups with voice chat API
