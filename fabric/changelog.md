@@ -1,1 +1,1 @@
-- Updated MacOS patcher
+- Fixed leaving groups with voice chat API

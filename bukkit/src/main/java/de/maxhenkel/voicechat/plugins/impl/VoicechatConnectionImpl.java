@@ -56,7 +56,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
             return;
         }
         if (group == null) {
-            server.getGroupManager().joinGroup(null, serverPlayer, null);
+            server.getGroupManager().leaveGroup((Player) player.getPlayer());
             return;
         }
         if (group instanceof GroupImpl g) {
