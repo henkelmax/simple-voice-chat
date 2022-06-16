@@ -1,1 +1,1 @@
-- Fixed command completion
+- Fixed leaving groups with voice chat API

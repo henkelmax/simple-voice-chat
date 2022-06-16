@@ -1,1 +1,2 @@
 - Fixed social interactions menu crashing
+- Fixed leaving groups with voice chat API
