@@ -1,1 +1,1 @@
-- Fixed leaving groups with voice chat API
+- Fixed placeholder API integration not working after reload
