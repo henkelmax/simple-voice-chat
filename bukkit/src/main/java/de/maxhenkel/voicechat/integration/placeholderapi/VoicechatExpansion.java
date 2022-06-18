@@ -26,8 +26,8 @@ public class VoicechatExpansion extends PlaceholderExpansion {
     }
 
     @Override
-    public @Nullable String getRequiredPlugin() {
-        return Voicechat.MODID;
+    public boolean persist() {
+        return true;
     }
 
     @Override
