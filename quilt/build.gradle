@@ -230,7 +230,7 @@ forgeUpdate {
     apiKey = file("${rootDir}/forge_update_api_key.txt").exists() ? file("${rootDir}/forge_update_api_key.txt").text : ''
     modID = mod_id
     gameVersion = minecraft_version
-    modLoader = 'fabric' //TODO
+    modLoader = 'quilt'
     modVersion = mod_version
     updateMessages = messages
     releaseType = release_type
