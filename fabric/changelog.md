@@ -1,2 +1,1 @@
-- Fixed social interactions menu crashing
-- Fixed leaving groups with voice chat API
+- Updated to 1.19.1-pre1
