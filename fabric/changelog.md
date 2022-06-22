@@ -1,1 +1,1 @@
-- Fixed leaving groups with voice chat API
+- Updated korean translation
