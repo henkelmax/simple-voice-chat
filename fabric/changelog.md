@@ -1,1 +1,1 @@
-- Updated to 1.19.1-pre1
+- Updated korean translation
