@@ -1,1 +1,2 @@
 - Updated korean translation
+- Fixed LAN server message appearing twice
