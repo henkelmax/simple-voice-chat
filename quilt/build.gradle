@@ -195,8 +195,6 @@ curseforge {
     }
 }
 
-import com.modrinth.minotaur.dependencies.ModDependency
-
 tasks.modrinth.configure({
     group = 'upload'
 })
@@ -211,10 +209,11 @@ modrinth {
     changelog = file("changelog.md").text
     gameVersions = [minecraft_version]
     loaders = ['quilt']
-    dependencies = [
-            new ModDependency("mOgUt4GM", "optional"), // ModMenu
-            new ModDependency("Vebnzrzj", "optional") // LuckPerms
-    ]
+    dependencies {
+        optional.project "mOgUt4GM" // ModMenu
+        optional.project "9s6osm5g" // ClothConfig
+        optional.project "Vebnzrzj" // LuckPerms
+    }
 }
 tasks.modrinth.dependsOn(build)
 
