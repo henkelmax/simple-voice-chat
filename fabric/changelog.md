@@ -1,2 +1,3 @@
 - Updated korean translation
 - Fixed LAN server message appearing twice
+- Updated to 1.19.1-pre2
