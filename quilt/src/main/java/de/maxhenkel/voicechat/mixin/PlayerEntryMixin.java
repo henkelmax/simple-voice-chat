@@ -33,6 +33,9 @@ public class PlayerEntryMixin {
     @Nullable
     private Button hideButton;
     @Shadow
+    @Nullable
+    private Button reportButton;
+    @Shadow
     @Final
     private String playerName;
     @Shadow
@@ -53,10 +56,10 @@ public class PlayerEntryMixin {
         screen = socialInteractionsScreen;
     }
 
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList;of(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;"))
-    private ImmutableList<?> children(Object o1, Object o2) {
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList;of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;"))
+    private ImmutableList<?> children(Object o1, Object o2, Object o3) {
         inviteButton = new ImageButton(0, 0, GROUP_ICON, button -> {
-            minecraft.player.command("voicechat invite %s".formatted(playerName));
+            minecraft.player.commandUnsigned("voicechat invite %s".formatted(playerName));
             invited = true;
         }, (button, matrices, mouseX, mouseY) -> {
             if (screen == null || invited) {
@@ -71,19 +74,19 @@ public class PlayerEntryMixin {
                 screen.setPostRenderRunnable(null);
             });
         });
-        return ImmutableList.of(o1, o2, inviteButton);
+        return ImmutableList.of(o1, o2, o3, inviteButton);
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/Button;render(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V", ordinal = 1))
     private void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, CallbackInfo ci) {
-        if (inviteButton != null && hideButton != null) {
+        if (inviteButton != null && hideButton != null && reportButton != null) {
             if (!ClientManager.getPlayerStateManager().isInGroup() || !canInvite()) {
                 inviteButton.visible = false;
                 return;
             }
             inviteButton.visible = true;
             inviteButton.active = !invited;
-            inviteButton.x = left + (width - hideButton.getWidth() - 4) - inviteButton.getWidth() - 4;
+            inviteButton.x = left + (width - hideButton.getWidth() - 4 - reportButton.getWidth() - 4) - inviteButton.getWidth() - 4;
             inviteButton.y = top + (height - inviteButton.getHeight()) / 2;
             inviteButton.render(poseStack, mouseX, mouseY, delta);
         }
