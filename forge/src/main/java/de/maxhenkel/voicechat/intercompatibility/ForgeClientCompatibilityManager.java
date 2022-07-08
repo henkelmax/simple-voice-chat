@@ -132,7 +132,6 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         wasPublished = published;
     }
 
-    @SubscribeEvent
     public void onRegisterKeyBinds(RegisterKeyMappingsEvent event) {
         for (KeyMapping mapping : keyMappings) {
             event.register(mapping);

@@ -1,3 +1,1 @@
-- Updated to newest Forge version
-- Updated render event names
-- Fixed MacOS version check
+- Fixed voice chat key binds not appearing

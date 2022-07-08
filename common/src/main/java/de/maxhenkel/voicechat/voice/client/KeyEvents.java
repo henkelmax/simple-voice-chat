@@ -32,6 +32,12 @@ public class KeyEvents {
     public KeyEvents() {
         minecraft = Minecraft.getInstance();
         ClientCompatibilityManager.INSTANCE.onHandleKeyBinds(this::handleKeybinds);
+    }
+
+    public static void registerKeyBinds() {
+        if (KEY_PTT != null) {
+            throw new IllegalStateException("Registered key binds twice");
+        }
 
         KEY_PTT = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyMapping("key.push_to_talk", GLFW.GLFW_KEY_CAPS_LOCK, "key.categories.voicechat"));
         KEY_WHISPER = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyMapping("key.whisper", InputConstants.UNKNOWN.getValue(), "key.categories.voicechat"));
