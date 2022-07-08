@@ -1,1 +1,1 @@
-- Bump mod version
+- Fixed slight positional delay on reduced 3D audio option
