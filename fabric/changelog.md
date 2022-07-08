@@ -1,1 +1,1 @@
-- Fixed MacOS version check
+- Updated to 1.19.1-pre4
