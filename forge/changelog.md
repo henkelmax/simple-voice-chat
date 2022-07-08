@@ -1,2 +1,3 @@
 - Updated to newest Forge version
 - Updated render event names
+- Fixed MacOS version check

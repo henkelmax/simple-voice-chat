@@ -1,2 +1,1 @@
-- Updated korean translation
-- Fixed LAN server message appearing twice
+- Fixed MacOS version check
