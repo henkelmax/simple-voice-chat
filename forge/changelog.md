@@ -1,3 +1,1 @@
-- Updated to newest Forge version
-- Updated render event names
-- Fixed MacOS version check
+- Fixed slight positional delay on reduced 3D audio option
