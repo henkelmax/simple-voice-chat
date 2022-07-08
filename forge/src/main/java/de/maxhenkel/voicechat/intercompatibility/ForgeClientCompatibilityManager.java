@@ -10,10 +10,10 @@ import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.Connection;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
-import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -40,6 +40,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     private final List<Consumer<ClientVoicechatConnection>> voicechatConnectEvents;
     private final List<Runnable> voicechatDisconnectEvents;
     private final List<Consumer<Integer>> publishServerEvents;
+    private final List<KeyMapping> keyMappings;
 
     public ForgeClientCompatibilityManager() {
         minecraft = Minecraft.getInstance();
@@ -54,10 +55,11 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         voicechatConnectEvents = new ArrayList<>();
         voicechatDisconnectEvents = new ArrayList<>();
         publishServerEvents = new ArrayList<>();
+        keyMappings = new ArrayList<>();
     }
 
     @SubscribeEvent
-    public void onRenderName(net.minecraftforge.client.event.RenderNameplateEvent event) {
+    public void onRenderName(net.minecraftforge.client.event.RenderNameTagEvent event) {
         if (minecraft.player == null || event.getEntity().isInvisibleTo(minecraft.player)) {
             return;
         }
@@ -65,17 +67,17 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
+    public void onRenderOverlay(RenderGuiOverlayEvent.Post event) {
         renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(event.getPoseStack(), event.getPartialTick()));
     }
 
     @SubscribeEvent
-    public void onKey(InputEvent.KeyInputEvent event) {
+    public void onKey(InputEvent.Key event) {
         keyboardEvents.forEach(keyboardEvent -> keyboardEvent.onKeyboardEvent(minecraft.getWindow().getWindow(), event.getKey(), event.getScanCode()));
     }
 
     @SubscribeEvent
-    public void onMouse(InputEvent.RawMouseEvent event) {
+    public void onMouse(InputEvent.MouseButton.Pre event) {
         mouseEvents.forEach(mouseEvent -> mouseEvent.onMouseEvent(minecraft.getWindow().getWindow(), event.getButton(), event.getAction(), event.getModifiers()));
     }
 
@@ -93,7 +95,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @SubscribeEvent
-    public void onJoinServer(ClientPlayerNetworkEvent.LoggedInEvent event) {
+    public void onJoinServer(ClientPlayerNetworkEvent.LoggingIn event) {
         if (event.getPlayer() != minecraft.player) {
             return;
         }
@@ -130,6 +132,13 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         wasPublished = published;
     }
 
+    @SubscribeEvent
+    public void onRegisterKeyBinds(RegisterKeyMappingsEvent event) {
+        for (KeyMapping mapping : keyMappings) {
+            event.register(mapping);
+        }
+    }
+
     @Override
     public void onRenderNamePlate(RenderNameplateEvent onRenderNamePlate) {
         renderNameplateEvents.add(onRenderNamePlate);
@@ -162,7 +171,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
 
     @Override
     public KeyMapping registerKeyBinding(KeyMapping keyBinding) {
-        ClientRegistry.registerKeyBinding(keyBinding);
+        keyMappings.add(keyBinding);
         return keyBinding;
     }
 
