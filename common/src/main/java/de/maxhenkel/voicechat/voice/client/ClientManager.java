@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.PermissionCheck;
+import de.maxhenkel.voicechat.macos.VersionCheck;
 import de.maxhenkel.voicechat.macos.jna.avfoundation.AVAuthorizationStatus;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
@@ -151,7 +152,7 @@ public class ClientManager {
         if (!VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get()) {
             return;
         }
-        if (Platform.isMac()) {
+        if (Platform.isMac() && VersionCheck.isCompatible()) {
             AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
             if (!status.equals(AVAuthorizationStatus.AUTHORIZED)) {
                 sendPlayerError("message.voicechat.macos_no_mic_permission", null);

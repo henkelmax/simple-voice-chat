@@ -1,2 +1,3 @@
-- Updated korean translation
-- Fixed LAN server message appearing twice
+- Updated to newest Forge version
+- Updated render event names
+- Fixed MacOS version check
