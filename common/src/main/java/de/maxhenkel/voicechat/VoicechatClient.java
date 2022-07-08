@@ -11,6 +11,7 @@ import de.maxhenkel.voicechat.macos.jna.avfoundation.AVAuthorizationStatus;
 import de.maxhenkel.voicechat.profile.UsernameCache;
 import de.maxhenkel.voicechat.resourcepacks.VoiceChatResourcePack;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
+import de.maxhenkel.voicechat.voice.client.KeyEvents;
 import de.maxhenkel.voicechat.voice.client.MacOSUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.repository.Pack;
@@ -31,6 +32,10 @@ public abstract class VoicechatClient {
     public static VoiceChatResourcePack CLASSIC_ICONS;
     public static VoiceChatResourcePack WHITE_ICONS;
     public static VoiceChatResourcePack BLACK_ICONS;
+
+    public VoicechatClient() {
+        KeyEvents.registerKeyBinds();
+    }
 
     public void initializeClient() {
         fixVolumeConfig();
