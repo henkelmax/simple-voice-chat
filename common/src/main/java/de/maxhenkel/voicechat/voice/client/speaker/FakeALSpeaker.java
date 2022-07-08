@@ -30,4 +30,8 @@ public class FakeALSpeaker extends ALSpeakerBase {
 
     }
 
+    @Override
+    protected int getBufferSize() {
+        return Math.min(super.getBufferSize(), 3);
+    }
 }
