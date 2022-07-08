@@ -4,7 +4,9 @@ import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.config.ClientConfig;
 import de.maxhenkel.voicechat.config.PlayerVolumeConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.PermissionCheck;
+import de.maxhenkel.voicechat.macos.VersionCheck;
 import de.maxhenkel.voicechat.macos.jna.avfoundation.AVAuthorizationStatus;
 import de.maxhenkel.voicechat.profile.UsernameCache;
 import de.maxhenkel.voicechat.resourcepacks.VoiceChatResourcePack;
@@ -48,12 +50,16 @@ public abstract class VoicechatClient {
             consumer.accept(Pack.create(BLACK_ICONS.getName(), false, () -> BLACK_ICONS, packConstructor, Pack.Position.TOP, PackSource.BUILT_IN));
         });
 
-        if (Platform.isMac() && VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get()) {
-            Voicechat.LOGGER.info("Running MacOS microphone permission check");
-            AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
-            Voicechat.LOGGER.info("MacOS microphone permission: {}", status.name());
-            if (!status.equals(AVAuthorizationStatus.AUTHORIZED)) {
-                MacOSUtils.checkPermissionInSeparateProcess();
+        if (VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get() && Platform.isMac()) {
+            if (VersionCheck.isCompatible()) {
+                Voicechat.LOGGER.info("Running MacOS microphone permission check");
+                AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
+                Voicechat.LOGGER.info("MacOS microphone permission: {}", status.name());
+                if (!status.equals(AVAuthorizationStatus.AUTHORIZED)) {
+                    MacOSUtils.checkPermissionInSeparateProcess();
+                }
+            } else {
+                Voicechat.LOGGER.warn("Your MacOS version is incompatible with {}", CommonCompatibilityManager.INSTANCE.getModName());
             }
         }
     }
