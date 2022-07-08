@@ -1,1 +1,1 @@
-- Fixed voice chat key binds not appearing
+- Fixed slight positional delay on reduced 3D audio option

@@ -75,7 +75,7 @@ public abstract class ALSpeakerBase implements Speaker {
             int buffers = getQueuedBuffersSync();
             boolean stopped = getStateSync() == AL11.AL_INITIAL || getStateSync() == AL11.AL_STOPPED || buffers <= 1;
             if (stopped) {
-                for (int i = 0; i < VoicechatClient.CLIENT_CONFIG.outputBufferSize.get(); i++) {
+                for (int i = 0; i < getBufferSize(); i++) {
                     writeSync(new short[bufferSize], 1F, position);
                 }
             }
@@ -87,6 +87,10 @@ public abstract class ALSpeakerBase implements Speaker {
                 SoundManager.checkAlError();
             }
         });
+    }
+
+    protected int getBufferSize() {
+        return VoicechatClient.CLIENT_CONFIG.outputBufferSize.get();
     }
 
     protected void writeSync(short[] data, float volume, @Nullable Vec3 position) {
@@ -106,7 +110,7 @@ public abstract class ALSpeakerBase implements Speaker {
             Voicechat.LOGGER.warn("Full playback buffer: {}/{}", queuedBuffers, buffers.length);
             int sampleOffset = AL11.alGetSourcei(source, AL11.AL_SAMPLE_OFFSET);
             SoundManager.checkAlError();
-            int buffersToSkip = queuedBuffers - VoicechatClient.CLIENT_CONFIG.outputBufferSize.get();
+            int buffersToSkip = queuedBuffers - getBufferSize();
             AL11.alSourcei(source, AL11.AL_SAMPLE_OFFSET, sampleOffset + buffersToSkip * bufferSampleSize);
             SoundManager.checkAlError();
             removeProcessedBuffersSync();

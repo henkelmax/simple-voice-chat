@@ -1,1 +1,1 @@
-- Updated to 1.19.1-pre4
+- Fixed slight positional delay on reduced 3D audio option
