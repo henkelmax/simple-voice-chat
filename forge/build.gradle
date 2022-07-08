@@ -84,7 +84,6 @@ dependencies {
         transitive false
     }
 
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'org.jetbrains:annotations:23.0.0'
 
     implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
@@ -99,14 +98,22 @@ dependencies {
     implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
     shadow "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
 
-    implementation project(path: ':macos', configuration: 'shadow')
-    shadow project(path: ':macos', configuration: 'shadow')
+    implementation(project(path: ':macos', configuration: 'shadow')) {
+        transitive(false)
+    }
+    shadow(project(path: ':macos', configuration: 'shadow')) {
+        transitive(false)
+    }
     macos(project(':macos')) {
         transitive(false)
     }
 
-    implementation project(':api')
-    shadow project(':api')
+    implementation(project(':api')) {
+        transitive false
+    }
+    shadow(project(':api')) {
+        transitive false
+    }
 }
 
 processResources {
