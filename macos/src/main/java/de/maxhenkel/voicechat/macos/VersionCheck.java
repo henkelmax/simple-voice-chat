@@ -28,13 +28,17 @@ public class VersionCheck {
             if (minor > actualMinor) {
                 return false;
             } else if (minor == actualMinor) {
-                return patch < actualPatch;
+                return patch <= actualPatch;
             } else {
                 return true;
             }
         } else {
             return true;
         }
+    }
+
+    public static boolean isCompatible() {
+        return isMinimumVersion(10, 15, 0);
     }
 
 }

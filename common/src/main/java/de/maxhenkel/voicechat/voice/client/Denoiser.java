@@ -53,7 +53,7 @@ public class Denoiser {
 
     public static boolean supportsRNNoise() {
         if (Platform.isMac()) {
-            return VersionCheck.isMinimumVersion(10, 14, 0);
+            return VersionCheck.isMinimumVersion(10, 15, 0);
         }
         return true;
     }

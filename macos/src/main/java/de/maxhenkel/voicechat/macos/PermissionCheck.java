@@ -16,7 +16,7 @@ public class PermissionCheck {
     }
 
     public static AVAuthorizationStatus checkMicrophonePermissions(boolean requestIfNeeded) {
-        if (!VersionCheck.isMinimumVersion(10, 14, 0)) {
+        if (!VersionCheck.isMinimumVersion(10, 15, 0)) {
             return AVAuthorizationStatus.AUTHORIZED;
         }
 
