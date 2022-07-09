@@ -53,7 +53,6 @@ Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki?t=setup) for 
 - [RNNoise](https://jmvalin.ca/demo/rnnoise/) recurrent neural network noise suppression
 - OpenAL audio
 - Cross compatibility between Fabric, Forge, Bukkit, Spigot and Paper
-- Compatibility with [Sound Physics Remastered](https://www.curseforge.com/minecraft/mc-mods/sound-physics-remastered)
 - Compatibility with [ModMenu](https://www.curseforge.com/minecraft/mc-mods/modmenu) (Use [ClothConfig](https://www.curseforge.com/minecraft/mc-mods/cloth-config) for a better configuration UI)
 - Push to talk
 - Voice activation
@@ -70,13 +69,14 @@ Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki?t=setup) for 
 
 ## Addons
 
-| Name                              | Description                                                    | Links                                                                                                                                |
-|-----------------------------------|----------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
-| AudioPlayer                       | Allows putting custum audio files on music discs               | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/audioplayer), [Modrinth](https://modrinth.com/mod/audioplayer)             |
-| Voice Chat Interaction            | Voice chat skulk sensor activation and warden detection        | [GitHub (Fabric)](https://github.com/henkelmax/voicechat-interaction), [GitHub (Paper)](https://github.com/iGalaxyYT/voicechat-interaction-paper)        |
-| Replay Voice Chat                 | A compatibility mod to record Simple Voice Chat with ReplayMod | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/replay-voice-chat), [Modrinth](https://modrinth.com/mod/replay-voice-chat) |
-| Voice Chat Broadcast              | Broadcast your voice to everyone                               | [GitHub](https://github.com/henkelmax/voicechat-broadcast-plugin)                                                                    |
-| Simple Voice Chat Instant Groups  | Adds nearby players to a group                                 | [GitHub](https://github.com/henkelmax/instant-group)                                                                                 |
+| Name                               | Description                                                    | Links                                                                                                                                                                                                          |
+|------------------------------------|----------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| AudioPlayer                        | Allows putting custum audio files on music discs               | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/audioplayer), [Modrinth](https://modrinth.com/mod/audioplayer)                                                                                       |
+| Voice Chat Interaction             | Voice chat skulk sensor activation and warden detection        | [Modrinth](https://modrinth.com/mod/voice-chat-interaction), [GitHub (Fabric)](https://github.com/henkelmax/voicechat-interaction), [GitHub (Paper)](https://github.com/iGalaxyYT/voicechat-interaction-paper) |
+| Sound Physics Remastered           | Sound Physics for Simple Voice Chat                            | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/sound-physics-remastered), [Modrinth](https://modrinth.com/mod/sound-physics-remastered)                                                             |
+| Replay Voice Chat                  | A compatibility mod to record Simple Voice Chat with ReplayMod | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/replay-voice-chat), [Modrinth](https://modrinth.com/mod/replay-voice-chat)                                                                           |
+| Voice Chat Broadcast               | Broadcast your voice to everyone                               | [GitHub](https://github.com/henkelmax/voicechat-broadcast-plugin)                                                                                                                                              |
+| Simple Voice Chat Instant Groups   | Adds nearby players to a group                                 | [GitHub](https://github.com/henkelmax/instant-group)                                                                                                                                                           |
 
 
 ## Icons
