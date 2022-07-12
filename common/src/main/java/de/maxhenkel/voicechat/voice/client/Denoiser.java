@@ -4,6 +4,7 @@ import com.sun.jna.Platform;
 import com.sun.jna.Pointer;
 import de.maxhenkel.rnnoise4j.RNNoise;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.macos.VersionCheck;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
@@ -60,6 +61,9 @@ public class Denoiser {
 
     @Nullable
     public static Denoiser createDenoiser() {
+        if (!VoicechatClient.CLIENT_CONFIG.useNatives.get()) {
+            return null;
+        }
         if (!supportsRNNoise()) {
             return null;
         }
