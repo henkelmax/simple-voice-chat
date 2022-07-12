@@ -150,6 +150,10 @@ public class ForgeClientConfig extends ClientConfig {
                 .comment("The 3D audio type")
                 .defineEnum("audio_type", AudioType.NORMAL)
         );
+        offlinePlayerVolumeAdjustment = wrapConfigEntry(builder
+                .comment("If the mod should load native libraries", "If set to false, the Java Opus implementation will be used and the denoiser won't be available")
+                .define("use_natives", true)
+        );
     }
 
 }

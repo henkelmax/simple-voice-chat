@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.plugins.impl.opus;
 
 import de.maxhenkel.opus4j.Opus;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
@@ -30,7 +31,7 @@ public class OpusManager {
     }
 
     public static OpusEncoder createEncoder(int sampleRate, int frameSize, int maxPayloadSize, int application) {
-        if (isNativeOpusCompatible()) {
+        if (useNatives() && isNativeOpusCompatible()) {
             NativeOpusEncoderImpl encoder = NativeOpusEncoderImpl.createEncoder(sampleRate, frameSize, maxPayloadSize, application);
             if (encoder != null) {
                 return encoder;
@@ -60,7 +61,7 @@ public class OpusManager {
     }
 
     public static OpusDecoder createDecoder(int sampleRate, int frameSize, int maxPayloadSize) {
-        if (isNativeOpusCompatible()) {
+        if (useNatives() && isNativeOpusCompatible()) {
             NativeOpusDecoderImpl decoder = NativeOpusDecoderImpl.createDecoder(sampleRate, frameSize, maxPayloadSize);
             if (decoder != null) {
                 return decoder;
@@ -115,6 +116,13 @@ public class OpusManager {
         } else {
             return true;
         }
+    }
+
+    private static boolean useNatives() {
+        if (VoicechatClient.CLIENT_CONFIG == null) {
+            return true;
+        }
+        return VoicechatClient.CLIENT_CONFIG.useNatives.get();
     }
 
 }
