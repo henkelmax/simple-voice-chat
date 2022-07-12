@@ -1,2 +1,2 @@
-- Updated Forge version
-- Added use natives config option
+- Fixed network packet processing
+- Fixed some crashes
