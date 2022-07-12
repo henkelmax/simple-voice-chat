@@ -38,6 +38,7 @@ public class FabricClientConfig extends ClientConfig {
         showFakePlayersDisconnected = builder.booleanEntry("show_fake_players_disconnected", false);
         offlinePlayerVolumeAdjustment = builder.booleanEntry("offline_player_volume_adjustment", false);
         audioType = builder.enumEntry("audio_type", AudioType.NORMAL);
+        useNatives = builder.booleanEntry("use_natives", true);
 
         if (Platform.isMac() && !javaMicrophoneImplementation.get()) {
             javaMicrophoneImplementation.set(true).save();
