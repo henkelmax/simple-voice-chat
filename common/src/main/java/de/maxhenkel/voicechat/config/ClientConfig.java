@@ -36,5 +36,6 @@ public abstract class ClientConfig {
     public ConfigEntry<Boolean> showFakePlayersDisconnected;
     public ConfigEntry<Boolean> offlinePlayerVolumeAdjustment;
     public ConfigEntry<AudioType> audioType;
+    public ConfigEntry<Boolean> useNatives;
 
 }
