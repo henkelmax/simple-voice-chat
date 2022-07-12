@@ -1,2 +1,1 @@
-- Updated Cloth Config and Mod Menu dependency
-- Added use natives config option
+- Fixed network packet processing
