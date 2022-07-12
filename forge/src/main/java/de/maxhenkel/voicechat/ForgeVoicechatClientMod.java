@@ -5,7 +5,7 @@ import de.maxhenkel.voicechat.config.ForgeClientConfig;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.ForgeClientCompatibilityManager;
-import net.minecraftforge.client.ConfigGuiHandler;
+import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
@@ -23,7 +23,7 @@ public class ForgeVoicechatClientMod extends VoicechatClient {
     public void clientSetup(FMLClientSetupEvent event) {
         initializeClient();
         MinecraftForge.EVENT_BUS.register(ClientCompatibilityManager.INSTANCE);
-        ModLoadingContext.get().registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class, () -> new ConfigGuiHandler.ConfigGuiFactory((client, parent) -> {
+        ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory((client, parent) -> {
             return new VoiceChatSettingsScreen(parent);
         }));
 

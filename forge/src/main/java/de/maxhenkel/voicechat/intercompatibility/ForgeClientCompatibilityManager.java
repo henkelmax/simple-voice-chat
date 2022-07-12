@@ -17,7 +17,7 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.net.SocketAddress;
@@ -87,7 +87,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @SubscribeEvent
-    public void onDisconnect(WorldEvent.Unload event) {
+    public void onDisconnect(LevelEvent.Unload event) {
         // Not just changing the world - Disconnecting
         if (minecraft.gameMode == null) {
             disconnectEvents.forEach(Runnable::run);
@@ -105,7 +105,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
 
     @SubscribeEvent
     public void onJoinWorld(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getPlayer() != minecraft.player) {
+        if (event.getEntity() != minecraft.player) {
             return;
         }
         joinWorldEvents.forEach(Runnable::run);

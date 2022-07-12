@@ -60,14 +60,14 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
 
     @SubscribeEvent
     public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getPlayer() instanceof ServerPlayer player) {
+        if (event.getEntity() instanceof ServerPlayer player) {
             playerLoggedInEvents.forEach(consumer -> consumer.accept(player));
         }
     }
 
     @SubscribeEvent
     public void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-        if (event.getPlayer() instanceof ServerPlayer player) {
+        if (event.getEntity() instanceof ServerPlayer player) {
             playerLoggedOutEvents.forEach(consumer -> consumer.accept(player));
         }
     }
