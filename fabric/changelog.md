@@ -1,1 +1,1 @@
-- Fixed slight positional delay on reduced 3D audio option
+- Updated Cloth Config and Mod Menu dependency
