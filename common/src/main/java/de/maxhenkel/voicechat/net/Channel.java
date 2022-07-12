@@ -28,15 +28,19 @@ public class Channel<T extends Packet<T>> {
     }
 
     public void onClientPacket(Minecraft client, ClientPlayNetHandler handler, T packet) {
-        if (clientListener != null) {
-            clientListener.onPacket(client, handler, packet);
-        }
+        client.execute(() -> {
+            if (clientListener != null) {
+                clientListener.onPacket(client, handler, packet);
+            }
+        });
     }
 
     public void onServerPacket(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetHandler handler, T packet) {
-        if (serverListener != null) {
-            serverListener.onPacket(server, player, handler, packet);
-        }
+        server.execute(() -> {
+            if (serverListener != null) {
+                serverListener.onPacket(server, player, handler, packet);
+            }
+        });
     }
 
 }
