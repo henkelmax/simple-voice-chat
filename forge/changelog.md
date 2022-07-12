@@ -1,1 +1,2 @@
 - Updated Forge version
+- Added use natives config option
