@@ -40,27 +40,11 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.console.level', 'debug'
             args = ['--username', "henkelmax${new Random().nextInt(1000)}"]
-            source sourceSets.main
-            source project(":common").sourceSets.main
-            mods {
-                voicechat {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
-                }
-            }
         }
         server {
             workingDirectory project.file('run/server').canonicalPath
             property 'forge.logging.console.level', 'debug'
             arg "--nogui"
-            source sourceSets.main
-            source project(":common").sourceSets.main
-            mods {
-                voicechat {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
-                }
-            }
         }
     }
 }
