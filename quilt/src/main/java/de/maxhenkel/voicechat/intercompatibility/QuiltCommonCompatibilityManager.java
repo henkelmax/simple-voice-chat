@@ -7,6 +7,8 @@ import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.events.PlayerEvents;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.QuiltNetManager;
+import de.maxhenkel.voicechat.permission.PermissionManager;
+import de.maxhenkel.voicechat.permission.QuiltPermissionManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
@@ -136,6 +138,11 @@ public class QuiltCommonCompatibilityManager extends CommonCompatibilityManager 
     @Override
     public List<VoicechatPlugin> loadPlugins() {
         return QuiltLoader.getEntrypointContainers(Voicechat.MODID, VoicechatPlugin.class).stream().map(EntrypointContainer::getEntrypoint).collect(Collectors.toList());
+    }
+
+    @Override
+    public PermissionManager createPermissionManager() {
+        return new QuiltPermissionManager();
     }
 
 }
