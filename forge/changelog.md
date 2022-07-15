@@ -1,2 +1,2 @@
-- Fixed network packet processing
-- Fixed some crashes
+- Improved service loader compatibility
+- Fixed issues with QuestCraft
