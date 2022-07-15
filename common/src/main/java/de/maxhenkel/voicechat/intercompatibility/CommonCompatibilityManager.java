@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.intercompatibility;
 import com.mojang.brigadier.CommandDispatcher;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.service.Service;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
@@ -43,5 +44,7 @@ public abstract class CommonCompatibilityManager {
     public abstract boolean isDedicatedServer();
 
     public abstract List<VoicechatPlugin> loadPlugins();
+
+    public abstract PermissionManager createPermissionManager();
 
 }
