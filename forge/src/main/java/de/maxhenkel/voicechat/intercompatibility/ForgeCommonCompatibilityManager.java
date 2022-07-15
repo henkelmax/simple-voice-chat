@@ -6,6 +6,8 @@ import de.maxhenkel.voicechat.api.ForgeVoicechatPlugin;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.net.ForgeNetManager;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.permission.ForgePermissionManager;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
@@ -177,5 +179,10 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
             });
         });
         return plugins;
+    }
+
+    @Override
+    public PermissionManager createPermissionManager() {
+        return new ForgePermissionManager();
     }
 }
