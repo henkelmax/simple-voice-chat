@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.net.NetManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.service.Service;
 import net.minecraft.server.MinecraftServer;
 
@@ -43,5 +44,7 @@ public abstract class CommonCompatibilityManager {
     public abstract boolean isDedicatedServer();
 
     public abstract List<VoicechatPlugin> loadPlugins();
+
+    public abstract PermissionManager createPermissionManager();
 
 }
