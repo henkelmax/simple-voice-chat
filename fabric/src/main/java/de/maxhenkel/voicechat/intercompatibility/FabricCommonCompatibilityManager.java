@@ -7,6 +7,8 @@ import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.events.PlayerEvents;
 import de.maxhenkel.voicechat.net.FabricNetManager;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.permission.FabricPermissionManager;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -138,6 +140,11 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
     @Override
     public List<VoicechatPlugin> loadPlugins() {
         return FabricLoader.getInstance().getEntrypointContainers(Voicechat.MODID, VoicechatPlugin.class).stream().map(EntrypointContainer::getEntrypoint).collect(Collectors.toList());
+    }
+
+    @Override
+    public PermissionManager createPermissionManager() {
+        return new FabricPermissionManager();
     }
 
 }
