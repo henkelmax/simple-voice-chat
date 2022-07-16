@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.server;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
+import de.maxhenkel.voicechat.net.PlayerStatesPacket;
 import de.maxhenkel.voicechat.net.UpdateStatePacket;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
@@ -20,10 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PlayerStateManager implements Listener {
 
     private final ConcurrentHashMap<UUID, PlayerState> states;
-    private final Server voicechatServer;
 
-    public PlayerStateManager(Server voicechatServer) {
-        this.voicechatServer = voicechatServer;
+    public PlayerStateManager() {
         this.states = new ConcurrentHashMap<>();
     }
 
@@ -34,7 +33,6 @@ public class PlayerStateManager implements Listener {
             state = defaultDisconnectedState(player);
         }
 
-        state.setDisconnected(voicechatServer.getConnection(player.getUniqueId()) == null);
         state.setDisabled(packet.isDisabled());
 
         states.put(player.getUniqueId(), state);
@@ -59,6 +57,11 @@ public class PlayerStateManager implements Listener {
         Voicechat.INSTANCE.getServer().getOnlinePlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
+    public void onPlayerCompatibilityCheckSucceeded(Player player) {
+        PlayerStatesPacket packet = new PlayerStatesPacket(states);
+        NetManager.sendToClient(player, packet);
+    }
+
     private void removePlayer(Player player) {
         states.remove(player.getUniqueId());
         broadcastState(new PlayerState(player.getUniqueId(), player.getName(), false, true));
@@ -79,7 +82,7 @@ public class PlayerStateManager implements Listener {
         PlayerState state = states.get(player.getUniqueId());
 
         if (state == null) {
-            return;
+            state = defaultDisconnectedState(player);
         }
 
         state.setDisconnected(false);
