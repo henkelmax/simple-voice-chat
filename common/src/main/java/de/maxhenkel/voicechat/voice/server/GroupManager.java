@@ -62,7 +62,7 @@ public class GroupManager {
         groups.put(group.getId(), group);
 
         PlayerStateManager manager = getStates();
-        manager.setGroup(player.server, player, group.toClientGroup());
+        manager.setGroup(player, group.toClientGroup());
 
         NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
     }
@@ -83,7 +83,7 @@ public class GroupManager {
         }
 
         PlayerStateManager manager = getStates();
-        manager.setGroup(player.server, player, group.toClientGroup());
+        manager.setGroup(player, group.toClientGroup());
 
         NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
     }
@@ -94,7 +94,7 @@ public class GroupManager {
         }
 
         PlayerStateManager manager = getStates();
-        manager.setGroup(player.server, player, null);
+        manager.setGroup(player, null);
         NetManager.sendToClient(player, new JoinedGroupPacket(null, false));
 
         cleanEmptyGroups();

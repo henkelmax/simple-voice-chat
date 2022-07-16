@@ -4,6 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.ForgeVoicechatPlugin;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
+import de.maxhenkel.voicechat.events.ServerVoiceChatConnectedEvent;
+import de.maxhenkel.voicechat.events.ServerVoiceChatDisconnectedEvent;
 import de.maxhenkel.voicechat.net.ForgeNetManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.ForgePermissionManager;
@@ -14,6 +16,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,6 +30,7 @@ import net.minecraftforge.forgespi.language.IModInfo;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -37,6 +41,8 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     private final List<Consumer<CommandDispatcher<CommandSource>>> registerServerCommandsEvents;
     private final List<Consumer<ServerPlayerEntity>> playerLoggedInEvents;
     private final List<Consumer<ServerPlayerEntity>> playerLoggedOutEvents;
+    private final List<Consumer<ServerPlayer>> voicechatConnectEvents;
+    private final List<Consumer<UUID>> voicechatDisconnectEvents;
 
     public ForgeCommonCompatibilityManager() {
         serverStartingEvents = new ArrayList<>();
@@ -44,6 +50,8 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
         registerServerCommandsEvents = new ArrayList<>();
         playerLoggedInEvents = new ArrayList<>();
         playerLoggedOutEvents = new ArrayList<>();
+        voicechatConnectEvents = new ArrayList<>();
+        voicechatDisconnectEvents = new ArrayList<>();
     }
 
     @SubscribeEvent
@@ -90,6 +98,28 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     @Override
     public Path getGameDirectory() {
         return FMLPaths.GAMEDIR.get();
+    }
+
+    @Override
+    public void emitServerVoiceChatConnectedEvent(ServerPlayerEntity player) {
+        voicechatConnectEvents.forEach(consumer -> consumer.accept(player));
+        MinecraftForge.EVENT_BUS.post(new ServerVoiceChatConnectedEvent(player));
+    }
+
+    @Override
+    public void emitServerVoiceChatDisconnectedEvent(UUID clientID) {
+        voicechatDisconnectEvents.forEach(consumer -> consumer.accept(clientID));
+        MinecraftForge.EVENT_BUS.post(new ServerVoiceChatDisconnectedEvent(clientID));
+    }
+
+    @Override
+    public void onServerVoiceChatConnected(Consumer<ServerPlayer> onVoiceChatConnected) {
+        voicechatConnectEvents.add(onVoiceChatConnected);
+    }
+
+    @Override
+    public void onServerVoiceChatDisconnected(Consumer<UUID> onVoiceChatDisconnected) {
+        voicechatDisconnectEvents.add(onVoiceChatDisconnected);
     }
 
     @Override

@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.api.RawUdpPacket;
 import de.maxhenkel.voicechat.api.VoicechatSocket;
 import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.*;
@@ -54,7 +55,7 @@ public class Server extends Thread {
         secrets = new HashMap<>();
         packetQueue = new LinkedBlockingQueue<>();
         pingManager = new PingManager(this);
-        playerStateManager = new PlayerStateManager();
+        playerStateManager = new PlayerStateManager(this);
         groupManager = new GroupManager(this);
         setDaemon(true);
         setName("VoiceChatServerThread");
@@ -182,9 +183,13 @@ public class Server extends Thread {
                                 connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress());
                                 connections.put(packet.getPlayerUUID(), connection);
                                 Voicechat.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
-                                PluginManager.instance().onPlayerConnected(server.getPlayerList().getPlayer(packet.getPlayerUUID()));
+                                ServerPlayer player = server.getPlayerList().getPlayer(packet.getPlayerUUID());
+                                if (player != null) {
+                                    CommonCompatibilityManager.INSTANCE.emitServerVoiceChatConnectedEvent(player);
+                                    PluginManager.instance().onPlayerConnected(player);
+                                }
                             } else {
-                                connection = connections.get(packet.getPlayerUUID());
+                                connection = getConnection(packet.getPlayerUUID());
                             }
                             sendPacket(new AuthenticateAckPacket(), connection);
                         }
@@ -195,7 +200,7 @@ public class Server extends Thread {
                         continue;
                     }
 
-                    ClientConnection conn = connections.get(playerUUID);
+                    ClientConnection conn = getConnection(playerUUID);
 
                     if (message.getPacket() instanceof MicPacket) {
                         MicPacket packet = (MicPacket) message.getPacket();
@@ -258,7 +263,7 @@ public class Server extends Thread {
             if (senderState.getUuid().equals(state.getUuid())) {
                 continue;
             }
-            ClientConnection connection = connections.get(state.getUuid());
+            ClientConnection connection = getConnection(state.getUuid());
             if (connection == null) {
                 continue;
             }
@@ -284,7 +289,7 @@ public class Server extends Thread {
                     ServerPlayerEntity spectatingPlayer = (ServerPlayerEntity) camera;
                     if (spectatingPlayer != sender) {
                         PlayerState receiverState = playerStateManager.getState(spectatingPlayer.getUUID());
-                        ClientConnection connection = connections.get(receiverState.getUuid());
+                        ClientConnection connection = getConnection(receiverState.getUuid());
                         if (connection == null) {
                             return;
                         }
@@ -330,7 +335,7 @@ public class Server extends Thread {
             if (state.hasGroup() && state.getGroup().equals(group)) {
                 continue;
             }
-            ClientConnection connection = connections.get(player.getGameProfile().getId());
+            ClientConnection connection = getConnection(player.getGameProfile().getId());
             if (connection == null) {
                 continue;
             }
@@ -359,6 +364,7 @@ public class Server extends Thread {
                 } else {
                     Voicechat.LOGGER.warn("Reconnecting player {} failed (Could not find player)", connection.getPlayerUUID());
                 }
+                CommonCompatibilityManager.INSTANCE.emitServerVoiceChatDisconnectedEvent(connection.getPlayerUUID());
                 PluginManager.instance().onPlayerDisconnected(server, connection.getPlayerUUID());
                 return true;
             }
@@ -373,6 +379,11 @@ public class Server extends Thread {
 
     public Map<UUID, ClientConnection> getConnections() {
         return connections;
+    }
+
+    @Nullable
+    public ClientConnection getConnection(UUID playerID) {
+        return connections.get(playerID);
     }
 
     public VoicechatSocket getSocket() {

@@ -39,7 +39,7 @@ public abstract class ClientCompatibilityManager {
 
     public abstract void onVoiceChatConnected(Consumer<ClientVoicechatConnection> onVoiceChatConnected);
 
-    public abstract void onVoiceChatDisconnected(Runnable onVoiceChatConnected);
+    public abstract void onVoiceChatDisconnected(Runnable onVoiceChatDisconnected);
 
     public abstract void onDisconnect(Runnable onDisconnect);
 
