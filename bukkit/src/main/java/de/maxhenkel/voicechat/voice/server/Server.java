@@ -54,7 +54,7 @@ public class Server extends Thread {
         secrets = new HashMap<>();
         packetQueue = new LinkedBlockingQueue<>();
         pingManager = new PingManager(this);
-        playerStateManager = new PlayerStateManager(this);
+        playerStateManager = new PlayerStateManager();
         groupManager = new GroupManager();
         setDaemon(true);
         setName("VoiceChatServerThread");
