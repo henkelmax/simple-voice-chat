@@ -106,10 +106,7 @@ public class PluginManager {
         dispatchEvent(VoicechatServerStoppedEvent.class, new VoicechatServerStoppedEventImpl(new VoicechatServerApiImpl(server)));
     }
 
-    public void onPlayerConnected(@Nullable ServerPlayer player) {
-        if (player == null) {
-            return;
-        }
+    public void onPlayerConnected(ServerPlayer player) {
         dispatchEvent(PlayerConnectedEvent.class, new PlayerConnectedEventImpl(new VoicechatServerApiImpl(player.server), VoicechatConnectionImpl.fromPlayer(player)));
     }
 

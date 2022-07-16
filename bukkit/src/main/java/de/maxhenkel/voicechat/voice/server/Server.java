@@ -54,7 +54,7 @@ public class Server extends Thread {
         secrets = new HashMap<>();
         packetQueue = new LinkedBlockingQueue<>();
         pingManager = new PingManager(this);
-        playerStateManager = new PlayerStateManager();
+        playerStateManager = new PlayerStateManager(this);
         groupManager = new GroupManager();
         setDaemon(true);
         setName("VoiceChatServerThread");
@@ -140,7 +140,8 @@ public class Server extends Thread {
                     NetworkMessage message;
                     try {
                         message = NetworkMessage.readPacketServer(rawPacket, Server.this);
-                    } catch (IndexOutOfBoundsException | BadPaddingException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException e) {
+                    } catch (IndexOutOfBoundsException | BadPaddingException | NoSuchPaddingException |
+                             IllegalBlockSizeException | InvalidKeyException e) {
                         CooldownTimer.run("failed_reading_packet", () -> {
                             Voicechat.LOGGER.warn("Failed to read packet from {}", rawPacket.getSocketAddress());
                         });
@@ -163,9 +164,14 @@ public class Server extends Thread {
                                 connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress());
                                 connections.put(packet.getPlayerUUID(), connection);
                                 Voicechat.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
-                                PluginManager.instance().onPlayerConnected(server.getPlayer(packet.getPlayerUUID()));
+                                Player player = server.getPlayer(packet.getPlayerUUID());
+                                if (player != null) {
+                                    playerStateManager.onPlayerVoicechatConnect(player);
+                                    PluginManager.instance().onPlayerConnected(player);
+                                }
+
                             } else {
-                                connection = connections.get(packet.getPlayerUUID());
+                                connection = getConnection(packet.getPlayerUUID());
                             }
                             sendPacket(new AuthenticateAckPacket(), connection);
                         }
@@ -176,7 +182,7 @@ public class Server extends Thread {
                         continue;
                     }
 
-                    ClientConnection conn = connections.get(playerUUID);
+                    ClientConnection conn = getConnection(playerUUID);
 
                     if (message.getPacket() instanceof MicPacket packet) {
                         Player player = server.getPlayer(playerUUID);
@@ -238,7 +244,7 @@ public class Server extends Thread {
             if (senderState.getUuid().equals(state.getUuid())) {
                 continue;
             }
-            ClientConnection connection = connections.get(state.getUuid());
+            ClientConnection connection = getConnection(state.getUuid());
             if (connection == null) {
                 continue;
             }
@@ -263,7 +269,7 @@ public class Server extends Thread {
                 if (camera instanceof Player spectatingPlayer) {
                     if (spectatingPlayer != sender) {
                         PlayerState receiverState = playerStateManager.getState(spectatingPlayer.getUniqueId());
-                        ClientConnection connection = connections.get(receiverState.getUuid());
+                        ClientConnection connection = getConnection(receiverState.getUuid());
                         if (connection == null) {
                             return;
                         }
@@ -309,7 +315,7 @@ public class Server extends Thread {
             if (state.hasGroup() && state.getGroup().equals(group)) {
                 continue;
             }
-            ClientConnection connection = connections.get(state.getUuid());
+            ClientConnection connection = getConnection(state.getUuid());
             if (connection == null) {
                 continue;
             }
@@ -338,6 +344,7 @@ public class Server extends Thread {
                 } else {
                     Voicechat.LOGGER.error("Reconnecting player {} failed (Could not find player)", connection.getPlayerUUID());
                 }
+                playerStateManager.onPlayerVoicechatDisconnect(connection.getPlayerUUID());
                 PluginManager.instance().onPlayerDisconnected(server, connection.getPlayerUUID());
                 return true;
             }
@@ -352,6 +359,11 @@ public class Server extends Thread {
 
     public Map<UUID, ClientConnection> getConnections() {
         return connections;
+    }
+
+    @Nullable
+    public ClientConnection getConnection(UUID playerID) {
+        return connections.get(playerID);
     }
 
     public VoicechatSocket getSocket() {
