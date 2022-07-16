@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import de.maxhenkel.voicechat.events.VoiceChatConnectedEvent;
-import de.maxhenkel.voicechat.events.VoiceChatDisconnectedEvent;
+import de.maxhenkel.voicechat.events.ClientVoiceChatConnectedEvent;
+import de.maxhenkel.voicechat.events.ClientVoiceChatDisconnectedEvent;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -169,13 +169,13 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @Override
     public void emitVoiceChatConnectedEvent(ClientVoicechatConnection client) {
         voicechatConnectEvents.forEach(consumer -> consumer.accept(client));
-        MinecraftForge.EVENT_BUS.post(new VoiceChatConnectedEvent(client));
+        MinecraftForge.EVENT_BUS.post(new ClientVoiceChatConnectedEvent(client));
     }
 
     @Override
     public void emitVoiceChatDisconnectedEvent() {
         voicechatDisconnectEvents.forEach(Runnable::run);
-        MinecraftForge.EVENT_BUS.post(new VoiceChatDisconnectedEvent());
+        MinecraftForge.EVENT_BUS.post(new ClientVoiceChatDisconnectedEvent());
     }
 
     @Override
