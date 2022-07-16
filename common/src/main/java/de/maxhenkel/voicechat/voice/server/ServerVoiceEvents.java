@@ -93,7 +93,6 @@ public class ServerVoiceEvents {
         if (server == null) {
             return;
         }
-        server.getPlayerStateManager().onPlayerCompatibilityCheckSucceeded(player);
 
         if (!PermissionManager.INSTANCE.CONNECT_PERMISSION.hasPermission(player)) {
             Voicechat.LOGGER.info("Player {} has no permission to connect to the voice chat", player.getDisplayName().getString());

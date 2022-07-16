@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.events.PlayerEvents;
+import de.maxhenkel.voicechat.events.ServerVoiceChatEvents;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.QuiltNetManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
@@ -27,6 +28,7 @@ import org.quiltmc.qsl.lifecycle.api.event.ServerLifecycleEvents;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -53,6 +55,26 @@ public class QuiltCommonCompatibilityManager extends CommonCompatibilityManager 
     @Override
     public Path getGameDirectory() {
         return QuiltLoader.getGameDir();
+    }
+
+    @Override
+    public void emitServerVoiceChatConnectedEvent(ServerPlayer player) {
+        ServerVoiceChatEvents.VOICECHAT_CONNECTED.invoker().accept(player);
+    }
+
+    @Override
+    public void emitServerVoiceChatDisconnectedEvent(UUID clientID) {
+        ServerVoiceChatEvents.VOICECHAT_DISCONNECTED.invoker().accept(clientID);
+    }
+
+    @Override
+    public void onServerVoiceChatConnected(Consumer<ServerPlayer> onVoiceChatConnected) {
+        ServerVoiceChatEvents.VOICECHAT_CONNECTED.register(onVoiceChatConnected);
+    }
+
+    @Override
+    public void onServerVoiceChatDisconnected(Consumer<UUID> onVoiceChatDisconnected) {
+        ServerVoiceChatEvents.VOICECHAT_DISCONNECTED.register(onVoiceChatDisconnected);
     }
 
     @Override
