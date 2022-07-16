@@ -7,7 +7,6 @@ import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -46,15 +45,6 @@ public class PlayerStateManager {
 
     private void broadcastState(PlayerState state) {
         PlayerStatePacket packet = new PlayerStatePacket(state);
-        server.getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
-    }
-
-    public void onPlayerCompatibilityCheckSucceeded(ServerPlayerEntity player) {
-        PlayerState state = states.getOrDefault(player.getUUID(), defaultDisconnectedState(player));
-        states.put(player.getUUID(), state);
-        PlayerStatesPacket packet = new PlayerStatesPacket(states);
-        NetManager.sendToClient(player, packet);
-        Voicechat.logDebug("Setting initial state of {}: {}", player.getDisplayName().getString(), state);
         voicechatServer.getServer().getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
@@ -83,7 +73,7 @@ public class PlayerStateManager {
         Voicechat.logDebug("Set state of {} to disconnected: {}", uuid, state);
     }
 
-    private void onPlayerVoicechatConnect(ServerPlayer player) {
+    private void onPlayerVoicechatConnect(ServerPlayerEntity player) {
         PlayerState state = states.get(player.getUUID());
 
         if (state == null) {

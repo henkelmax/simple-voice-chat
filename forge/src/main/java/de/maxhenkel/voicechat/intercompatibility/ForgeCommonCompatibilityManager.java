@@ -10,7 +10,6 @@ import de.maxhenkel.voicechat.net.ForgeNetManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.ForgePermissionManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandSource;
@@ -41,7 +40,7 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     private final List<Consumer<CommandDispatcher<CommandSource>>> registerServerCommandsEvents;
     private final List<Consumer<ServerPlayerEntity>> playerLoggedInEvents;
     private final List<Consumer<ServerPlayerEntity>> playerLoggedOutEvents;
-    private final List<Consumer<ServerPlayer>> voicechatConnectEvents;
+    private final List<Consumer<ServerPlayerEntity>> voicechatConnectEvents;
     private final List<Consumer<UUID>> voicechatDisconnectEvents;
 
     public ForgeCommonCompatibilityManager() {
@@ -113,7 +112,7 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
-    public void onServerVoiceChatConnected(Consumer<ServerPlayer> onVoiceChatConnected) {
+    public void onServerVoiceChatConnected(Consumer<ServerPlayerEntity> onVoiceChatConnected) {
         voicechatConnectEvents.add(onVoiceChatConnected);
     }
 

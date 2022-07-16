@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.service;
 
 import de.maxhenkel.voicechat.Voicechat;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ServiceLoader;
@@ -16,7 +16,7 @@ public class Service {
             try {
                 return loadFallback(serviceClass);
             } catch (Exception e) {
-                throw new IllegalStateException("Failed to load service %s".formatted(serviceClass.getSimpleName()), e);
+                throw new IllegalStateException("Failed to load service " + serviceClass.getSimpleName(), e);
             }
         }
         return iterator.next();
@@ -25,7 +25,7 @@ public class Service {
     private static <T> T loadFallback(Class<T> serviceClass) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Class<?> fallbackClass = loadFallbackClass(serviceClass);
         if (!serviceClass.isAssignableFrom(fallbackClass)) {
-            throw new ClassNotFoundException("Class %s is not an instance of %s".formatted(fallbackClass.getSimpleName(), serviceClass.getSimpleName()));
+            throw new ClassNotFoundException("Class " + fallbackClass.getSimpleName() + " is not an instance of " + serviceClass.getSimpleName());
         }
         return (T) fallbackClass.getDeclaredConstructor().newInstance();
     }
@@ -43,13 +43,13 @@ public class Service {
         if (implClass != null) {
             return implClass;
         }
-        throw new ClassNotFoundException("Implementation of %s not found in package %s".formatted(serviceClass.getSimpleName(), serviceClass.getPackageName()));
+        throw new ClassNotFoundException("Implementation of " + serviceClass.getSimpleName() + " not found in package " + serviceClass.getPackage().getName());
     }
 
     @Nullable
     private static Class<?> loadClassWithPrefix(Class<?> serviceClass, String prefix) {
         try {
-            return Class.forName(serviceClass.getPackageName() + "." + prefix + serviceClass.getSimpleName());
+            return Class.forName(serviceClass.getPackage().getName() + "." + prefix + serviceClass.getSimpleName());
         } catch (ClassNotFoundException e) {
             return null;
         }

@@ -183,7 +183,7 @@ public class Server extends Thread {
                                 connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress());
                                 connections.put(packet.getPlayerUUID(), connection);
                                 Voicechat.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
-                                ServerPlayer player = server.getPlayerList().getPlayer(packet.getPlayerUUID());
+                                ServerPlayerEntity player = server.getPlayerList().getPlayer(packet.getPlayerUUID());
                                 if (player != null) {
                                     CommonCompatibilityManager.INSTANCE.emitServerVoiceChatConnectedEvent(player);
                                     PluginManager.instance().onPlayerConnected(player);

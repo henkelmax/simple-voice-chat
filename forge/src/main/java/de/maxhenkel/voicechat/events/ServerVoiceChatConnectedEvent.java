@@ -1,17 +1,17 @@
 package de.maxhenkel.voicechat.events;
 
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.GenericEvent;
 
 public class ServerVoiceChatConnectedEvent extends GenericEvent<ServerVoiceChatConnectedEvent> {
 
-    private final ServerPlayer player;
+    private final ServerPlayerEntity player;
 
-    public ServerVoiceChatConnectedEvent(ServerPlayer player) {
+    public ServerVoiceChatConnectedEvent(ServerPlayerEntity player) {
         this.player = player;
     }
 
-    public ServerPlayer getPlayer() {
+    public ServerPlayerEntity getPlayer() {
         return player;
     }
 
