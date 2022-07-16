@@ -1,1 +1,1 @@
-- Fixed placeholder API integration not working after reload
+- Fixed disconnected state being controlled by the client
