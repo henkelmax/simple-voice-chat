@@ -12,4 +12,14 @@ public interface ClientEntityAudioChannel extends ClientAudioChannel {
      */
     boolean isWhispering();
 
+    /**
+     * @return the distance, the audio can be heard
+     */
+    float getDistance();
+
+    /**
+     * @param distance the distance, the audio can be heard
+     */
+    void setDistance(float distance);
+
 }

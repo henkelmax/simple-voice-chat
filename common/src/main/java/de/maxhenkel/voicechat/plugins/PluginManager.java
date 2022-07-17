@@ -186,14 +186,14 @@ public class PluginManager {
         return clientSoundEvent.getRawAudio();
     }
 
-    public short[] onReceiveEntityClientSound(UUID id, short[] rawAudio, boolean whispering) {
-        ClientReceiveSoundEventImpl.EntitySoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.EntitySoundImpl(new VoicechatClientApiImpl(), id, rawAudio, whispering);
+    public short[] onReceiveEntityClientSound(UUID id, short[] rawAudio, boolean whispering, float distance) {
+        ClientReceiveSoundEventImpl.EntitySoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.EntitySoundImpl(new VoicechatClientApiImpl(), id, rawAudio, whispering, distance);
         dispatchEvent(ClientReceiveSoundEvent.EntitySound.class, clientSoundEvent);
         return clientSoundEvent.getRawAudio();
     }
 
-    public short[] onReceiveLocationalClientSound(UUID id, short[] rawAudio, Vec3 pos) {
-        ClientReceiveSoundEventImpl.LocationalSoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.LocationalSoundImpl(new VoicechatClientApiImpl(), id, rawAudio, new PositionImpl(pos));
+    public short[] onReceiveLocationalClientSound(UUID id, short[] rawAudio, Vec3 pos, float distance) {
+        ClientReceiveSoundEventImpl.LocationalSoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.LocationalSoundImpl(new VoicechatClientApiImpl(), id, rawAudio, new PositionImpl(pos), distance);
         dispatchEvent(ClientReceiveSoundEvent.LocationalSound.class, clientSoundEvent);
         return clientSoundEvent.getRawAudio();
     }

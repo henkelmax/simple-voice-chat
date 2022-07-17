@@ -16,12 +16,31 @@ public interface ConvertablePacket {
     EntitySoundPacket toEntitySoundPacket(UUID entityUuid, boolean whispering);
 
     /**
+     * Converts this packet to an entity sound packet.
+     *
+     * @param entityUuid the UUID of the entity
+     * @param whispering if the entity is whispering
+     * @param distance   the distance, the audio can be heard
+     * @return the entity sound packet
+     */
+    EntitySoundPacket toEntitySoundPacket(UUID entityUuid, boolean whispering, float distance);
+
+    /**
      * Converts this packet to a locational sound packet.
      *
      * @param position the position of the audio
      * @return the locational sound packet
      */
     LocationalSoundPacket toLocationalSoundPacket(Position position);
+
+    /**
+     * Converts this packet to a locational sound packet.
+     *
+     * @param position the position of the audio
+     * @param distance the distance, the audio can be heard
+     * @return the locational sound packet
+     */
+    LocationalSoundPacket toLocationalSoundPacket(Position position, float distance);
 
     /**
      * Converts this packet to a static sound packet.

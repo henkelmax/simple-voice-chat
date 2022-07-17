@@ -38,6 +38,11 @@ public interface ClientReceiveSoundEvent extends ClientEvent {
          * @return if the player is whispering
          */
         boolean isWhispering();
+
+        /**
+         * @return the distance, the audio can be heard
+         */
+        float getDistance();
     }
 
     public static interface LocationalSound extends ClientReceiveSoundEvent {
@@ -45,6 +50,11 @@ public interface ClientReceiveSoundEvent extends ClientEvent {
          * @return the position of the sound
          */
         Position getPosition();
+
+        /**
+         * @return the distance, the audio can be heard
+         */
+        float getDistance();
     }
 
     public static interface StaticSound extends ClientReceiveSoundEvent {

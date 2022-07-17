@@ -19,4 +19,9 @@ public interface EntitySoundPacket extends SoundPacket {
      */
     boolean isWhispering();
 
+    /**
+     * @return the distance, the audio can be heard
+     */
+    float getDistance();
+
 }
