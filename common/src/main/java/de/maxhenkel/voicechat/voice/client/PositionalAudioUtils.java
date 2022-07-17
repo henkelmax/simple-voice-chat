@@ -61,45 +61,48 @@ public class PositionalAudioUtils {
      * Gets the volume for the provided distance
      *
      * @param initializationData the voice chat connections initialization data
+     * @param maxDistance        the maximum distance of the sound
      * @param pos                the position of the audio
      * @return the resulting audio volume
      */
-    public static float getDistanceVolume(InitializationData initializationData, Vec3 pos) {
-        return getDistanceVolume(initializationData, pos, 1F);
+    public static float getDistanceVolume(InitializationData initializationData, float maxDistance, Vec3 pos) {
+        return getDistanceVolume(initializationData, maxDistance, pos, 1F);
     }
 
     /**
      * Gets the volume for the provided distance
      *
      * @param initializationData the voice chat connections initialization data
+     * @param maxDistance        the maximum distance of the sound
      * @param pos                the position of the audio
      * @param distanceMultiplier a multiplier for the distance
      * @return the resulting audio volume
      */
-    public static float getDistanceVolume(InitializationData initializationData, Vec3 pos, float distanceMultiplier) {
-        return getDistanceVolume(initializationData, mc.gameRenderer.getMainCamera().getPosition(), pos, distanceMultiplier);
+    public static float getDistanceVolume(InitializationData initializationData, float maxDistance, Vec3 pos, float distanceMultiplier) {
+        return getDistanceVolume(initializationData, maxDistance, mc.gameRenderer.getMainCamera().getPosition(), pos, distanceMultiplier);
     }
 
     /**
      * Gets the volume for the provided distance
      *
      * @param initializationData the voice chat connections initialization data
+     * @param maxDistance        the maximum distance of the sound
      * @param listenerPos        the position of the listener
      * @param pos                the position of the audio
      * @param distanceMultiplier a multiplier for the distance
      * @return the resulting audio volume
      */
-    public static float getDistanceVolume(InitializationData initializationData, Vec3 listenerPos, Vec3 pos, float distanceMultiplier) {
+    public static float getDistanceVolume(InitializationData initializationData, float maxDistance, Vec3 listenerPos, Vec3 pos, float distanceMultiplier) {
         float distance = (float) pos.distanceTo(listenerPos);
-        float fadeDistance = (float) initializationData.getVoiceChatFadeDistance() * distanceMultiplier;
-        float maxDistance = (float) initializationData.getVoiceChatDistance() * distanceMultiplier;
+        float realMaxDistance = maxDistance * distanceMultiplier;
+        float fadeDistance = Math.min(realMaxDistance - 0.1F, (float) initializationData.getVoiceChatFadeDistance() * distanceMultiplier);
 
-        if (distance < fadeDistance) {
-            return 1F;
-        } else if (distance > maxDistance) {
+        if (distance > realMaxDistance) {
             return 0F;
+        } else if (distance < fadeDistance) {
+            return 1F;
         } else {
-            float percentage = (distance - fadeDistance) / (maxDistance - fadeDistance);
+            float percentage = (distance - fadeDistance) / (realMaxDistance - fadeDistance);
             return 1F / (1F + (float) Math.exp((percentage * 12F) - 6F));
         }
     }
@@ -178,16 +181,16 @@ public class PositionalAudioUtils {
         return convertToStereo(audio, volumes[0], volumes[1]);
     }
 
-    public static short[] convertToStereoForRecording(InitializationData initializationData, Vec3 pos, short[] monoData) {
-        return convertToStereoForRecording(initializationData, pos, monoData, 1F);
+    public static short[] convertToStereoForRecording(InitializationData initializationData, float maxDistance, Vec3 pos, short[] monoData) {
+        return convertToStereoForRecording(initializationData, maxDistance, pos, monoData, 1F);
     }
 
-    public static short[] convertToStereoForRecording(InitializationData initializationData, Vec3 pos, short[] monoData, float distanceMultiplier) {
-        return convertToStereoForRecording(initializationData, mc.gameRenderer.getMainCamera().getPosition(), mc.gameRenderer.getMainCamera().getYRot(), pos, monoData, distanceMultiplier);
+    public static short[] convertToStereoForRecording(InitializationData initializationData, float maxDistance, Vec3 pos, short[] monoData, float distanceMultiplier) {
+        return convertToStereoForRecording(initializationData, maxDistance, mc.gameRenderer.getMainCamera().getPosition(), mc.gameRenderer.getMainCamera().getYRot(), pos, monoData, distanceMultiplier);
     }
 
-    public static short[] convertToStereoForRecording(InitializationData initializationData, Vec3 cameraPos, float yRot, Vec3 pos, short[] monoData, float distanceMultiplier) {
-        float distanceVolume = getDistanceVolume(initializationData, cameraPos, pos, distanceMultiplier);
+    public static short[] convertToStereoForRecording(InitializationData initializationData, float maxDistance, Vec3 cameraPos, float yRot, Vec3 pos, short[] monoData, float distanceMultiplier) {
+        float distanceVolume = getDistanceVolume(initializationData, maxDistance, cameraPos, pos, distanceMultiplier);
         if (!VoicechatClient.CLIENT_CONFIG.audioType.get().equals(AudioType.OFF)) {
             float[] stereoVolume = getStereoVolume(cameraPos, yRot, pos);
             return convertToStereo(monoData, distanceVolume * stereoVolume[0], distanceVolume * stereoVolume[1]);
@@ -195,5 +198,4 @@ public class PositionalAudioUtils {
             return convertToStereo(monoData, distanceVolume, distanceVolume);
         }
     }
-
 }

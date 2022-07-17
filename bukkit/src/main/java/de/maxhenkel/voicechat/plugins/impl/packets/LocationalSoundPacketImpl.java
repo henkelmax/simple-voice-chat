@@ -21,6 +21,11 @@ public class LocationalSoundPacketImpl extends SoundPacketImpl implements Locati
     }
 
     @Override
+    public float getDistance() {
+        return packet.getDistance();
+    }
+
+    @Override
     public LocationSoundPacket getPacket() {
         return packet;
     }

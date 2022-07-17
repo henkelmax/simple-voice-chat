@@ -7,10 +7,12 @@ import java.util.UUID;
 public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
 
     protected boolean whispering;
+    protected float distance;
 
-    public PlayerSoundPacket(UUID sender, byte[] data, long sequenceNumber, boolean whispering) {
+    public PlayerSoundPacket(UUID sender, byte[] data, long sequenceNumber, boolean whispering, float distance) {
         super(sender, data, sequenceNumber);
         this.whispering = whispering;
+        this.distance = distance;
     }
 
     public PlayerSoundPacket() {
@@ -25,6 +27,10 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
         return whispering;
     }
 
+    public float getDistance() {
+        return distance;
+    }
+
     @Override
     public PlayerSoundPacket fromBytes(FriendlyByteBuf buf) {
         PlayerSoundPacket soundPacket = new PlayerSoundPacket();
@@ -32,6 +38,7 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
         soundPacket.whispering = buf.readBoolean();
+        soundPacket.distance = buf.readFloat();
         return soundPacket;
     }
 
@@ -41,6 +48,7 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);
         buf.writeBoolean(whispering);
+        buf.writeFloat(distance);
     }
 
 }

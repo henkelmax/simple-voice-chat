@@ -42,24 +42,33 @@ public class ClientReceiveSoundEventImpl extends ClientEventImpl implements Clie
 
     public static class EntitySoundImpl extends ClientReceiveSoundEventImpl implements ClientReceiveSoundEvent.EntitySound {
         private boolean whispering;
+        private float distance;
 
-        public EntitySoundImpl(VoicechatClientApi api, UUID id, short[] rawAudio, boolean whispering) {
+        public EntitySoundImpl(VoicechatClientApi api, UUID id, short[] rawAudio, boolean whispering, float distance) {
             super(api, id, rawAudio);
             this.whispering = whispering;
+            this.distance = distance;
         }
 
         @Override
         public boolean isWhispering() {
             return whispering;
         }
+
+        @Override
+        public float getDistance() {
+            return distance;
+        }
     }
 
     public static class LocationalSoundImpl extends ClientReceiveSoundEventImpl implements ClientReceiveSoundEvent.LocationalSound {
         private Position position;
+        private float distance;
 
-        public LocationalSoundImpl(VoicechatClientApi api, UUID id, short[] rawAudio, Position position) {
+        public LocationalSoundImpl(VoicechatClientApi api, UUID id, short[] rawAudio, Position position, float distance) {
             super(api, id, rawAudio);
             this.position = position;
+            this.distance = distance;
         }
 
         @Override
@@ -67,6 +76,10 @@ public class ClientReceiveSoundEventImpl extends ClientEventImpl implements Clie
             return position;
         }
 
+        @Override
+        public float getDistance() {
+            return distance;
+        }
     }
 
     public static class StaticSoundImpl extends ClientReceiveSoundEventImpl implements ClientReceiveSoundEvent.StaticSound {

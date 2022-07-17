@@ -1,1 +1,1 @@
-- Updated to 1.19.1
+- Added custom distance to voice chat API
