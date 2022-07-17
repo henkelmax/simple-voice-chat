@@ -6,10 +6,7 @@ import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
 import de.maxhenkel.voicechat.api.packets.MicrophonePacket;
 import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
 import de.maxhenkel.voicechat.plugins.impl.PositionImpl;
-import de.maxhenkel.voicechat.voice.common.GroupSoundPacket;
-import de.maxhenkel.voicechat.voice.common.LocationSoundPacket;
-import de.maxhenkel.voicechat.voice.common.MicPacket;
-import de.maxhenkel.voicechat.voice.common.PlayerSoundPacket;
+import de.maxhenkel.voicechat.voice.common.*;
 
 import java.util.UUID;
 
@@ -35,14 +32,24 @@ public class MicrophonePacketImpl implements MicrophonePacket {
 
     @Override
     public EntitySoundPacket toEntitySoundPacket(UUID entityUuid, boolean whispering) {
-        return new EntitySoundPacketImpl(new PlayerSoundPacket(sender, packet.getData(), packet.getSequenceNumber(), whispering));
+        return toEntitySoundPacket(entityUuid, whispering, Utils.getDefaultDistance());
+    }
+
+    @Override
+    public EntitySoundPacket toEntitySoundPacket(UUID entityUuid, boolean whispering, float distance) {
+        return new EntitySoundPacketImpl(new PlayerSoundPacket(sender, packet.getData(), packet.getSequenceNumber(), whispering, distance));
     }
 
     @Override
     public LocationalSoundPacket toLocationalSoundPacket(Position position) {
+        return toLocationalSoundPacket(position, Utils.getDefaultDistance());
+    }
+
+    @Override
+    public LocationalSoundPacket toLocationalSoundPacket(Position position, float distance) {
         if (position instanceof PositionImpl) {
             PositionImpl p = (PositionImpl) position;
-            return new LocationalSoundPacketImpl(new LocationSoundPacket(sender, p.getPosition(), packet.getData(), packet.getSequenceNumber()));
+            return new LocationalSoundPacketImpl(new LocationSoundPacket(sender, p.getPosition(), packet.getData(), packet.getSequenceNumber(), distance));
         } else {
             throw new IllegalArgumentException("position is not an instance of PositionImpl");
         }

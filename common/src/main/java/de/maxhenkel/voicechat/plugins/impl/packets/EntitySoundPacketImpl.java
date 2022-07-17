@@ -25,6 +25,11 @@ public class EntitySoundPacketImpl extends SoundPacketImpl implements EntitySoun
     }
 
     @Override
+    public float getDistance() {
+        return packet.getDistance();
+    }
+
+    @Override
     public PlayerSoundPacket getPacket() {
         return packet;
     }

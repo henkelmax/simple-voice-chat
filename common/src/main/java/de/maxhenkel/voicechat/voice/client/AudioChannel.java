@@ -109,10 +109,10 @@ public class AudioChannel extends Thread {
                 if (packet.getData().length == 0) {
                     if (packet instanceof PlayerSoundPacket) {
                         PlayerSoundPacket playerSoundPacket = (PlayerSoundPacket) packet;
-                        PluginManager.instance().onReceiveEntityClientSound(uuid, new short[0], playerSoundPacket.isWhispering());
+                        PluginManager.instance().onReceiveEntityClientSound(uuid, new short[0], playerSoundPacket.isWhispering(), playerSoundPacket.getDistance());
                     } else if (packet instanceof LocationSoundPacket) {
                         LocationSoundPacket locationSoundPacket = (LocationSoundPacket) packet;
-                        PluginManager.instance().onReceiveLocationalClientSound(uuid, new short[0], locationSoundPacket.getLocation());
+                        PluginManager.instance().onReceiveLocationalClientSound(uuid, new short[0], locationSoundPacket.getLocation(), playerSoundPacket.getDistance());
                     } else if (packet instanceof GroupSoundPacket) {
                         PluginManager.instance().onReceiveStaticClientSound(uuid, new short[0]);
                     }
@@ -201,30 +201,30 @@ public class AudioChannel extends Thread {
             }
             Vector3d pos = player.getEyePosition(1F);
 
-            short[] processedMonoData = PluginManager.instance().onReceiveEntityClientSound(uuid, monoData, soundPacket.isWhispering());
+            short[] processedMonoData = PluginManager.instance().onReceiveEntityClientSound(uuid, monoData, soundPacket.isWhispering(), soundPacket.getDistance());
 
-            if (pos.distanceTo(minecraft.gameRenderer.getMainCamera().getPosition()) > initializationData.getVoiceChatDistance() + 1D) {
+            if (pos.distanceTo(minecraft.gameRenderer.getMainCamera().getPosition()) > soundPacket.getDistance() + 1D) {
                 return;
             }
 
             float crouchMultiplayer = player.isCrouching() ? (float) initializationData.getCrouchDistanceMultiplier() : 1F;
             float whisperMultiplayer = soundPacket.isWhispering() ? (float) initializationData.getWhisperDistanceMultiplier() : 1F;
             float multiplier = crouchMultiplayer * whisperMultiplayer;
-            float outputVolume = volume * PositionalAudioUtils.getDistanceVolume(initializationData, pos, multiplier);
+            float outputVolume = volume * PositionalAudioUtils.getDistanceVolume(initializationData, soundPacket.getDistance(), pos, multiplier);
             speaker.play(processedMonoData, outputVolume, pos);
             if (outputVolume >= 0.01F) {
                 client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
             }
-            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(initializationData, pos, processedMonoData, multiplier));
+            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(initializationData, soundPacket.getDistance(), pos, processedMonoData, multiplier));
         } else if (packet instanceof LocationSoundPacket) {
             LocationSoundPacket p = (LocationSoundPacket) packet;
-            short[] processedMonoData = PluginManager.instance().onReceiveLocationalClientSound(uuid, monoData, p.getLocation());
-            if (p.getLocation().distanceTo(minecraft.gameRenderer.getMainCamera().getPosition()) > initializationData.getVoiceChatDistance() + 1D) {
+            short[] processedMonoData = PluginManager.instance().onReceiveLocationalClientSound(uuid, monoData, p.getLocation(), p.getDistance());
+            if (p.getLocation().distanceTo(minecraft.gameRenderer.getMainCamera().getPosition()) > p.getDistance() + 1D) {
                 return;
             }
-            speaker.play(processedMonoData, volume * PositionalAudioUtils.getDistanceVolume(initializationData, p.getLocation()), p.getLocation());
+            speaker.play(processedMonoData, volume * PositionalAudioUtils.getDistanceVolume(initializationData, p.getDistance(), p.getLocation()), p.getLocation());
             client.getTalkCache().updateTalking(uuid, false);
-            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(initializationData, p.getLocation(), processedMonoData));
+            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(initializationData, p.getDistance(), p.getLocation(), processedMonoData));
         }
     }
 

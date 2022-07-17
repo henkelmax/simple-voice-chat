@@ -16,4 +16,14 @@ public interface ClientLocationalAudioChannel extends ClientAudioChannel {
      */
     void setLocation(Position position);
 
+    /**
+     * @return the distance, the audio can be heard
+     */
+    float getDistance();
+
+    /**
+     * @param distance the distance, the audio can be heard
+     */
+    void setDistance(float distance);
+
 }

@@ -8,15 +8,18 @@ import java.util.UUID;
 public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
 
     protected Vector3d location;
+    protected float distance;
 
-    public LocationSoundPacket(UUID sender, Vector3d location, byte[] data, long sequenceNumber) {
+    public LocationSoundPacket(UUID sender, Vector3d location, byte[] data, long sequenceNumber, float distance) {
         super(sender, data, sequenceNumber);
         this.location = location;
+        this.distance = distance;
     }
 
-    public LocationSoundPacket(UUID sender, short[] data, Vector3d location) {
+    public LocationSoundPacket(UUID sender, short[] data, Vector3d location, float distance) {
         super(sender, data);
         this.location = location;
+        this.distance = distance;
     }
 
     public LocationSoundPacket() {
@@ -27,6 +30,10 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
         return location;
     }
 
+    public float getDistance() {
+        return distance;
+    }
+
     @Override
     public LocationSoundPacket fromBytes(PacketBuffer buf) {
         LocationSoundPacket soundPacket = new LocationSoundPacket();
@@ -34,6 +41,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
         soundPacket.location = new Vector3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
+        soundPacket.distance = buf.readFloat();
         return soundPacket;
     }
 
@@ -45,5 +53,6 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
         buf.writeDouble(location.z);
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);
+        buf.writeFloat(distance);
     }
 }
