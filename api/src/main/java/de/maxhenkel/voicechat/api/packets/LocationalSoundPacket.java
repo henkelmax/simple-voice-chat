@@ -13,4 +13,9 @@ public interface LocationalSoundPacket extends SoundPacket {
      */
     Position getPosition();
 
+    /**
+     * @return the distance, the audio can be heard
+     */
+    float getDistance();
+
 }

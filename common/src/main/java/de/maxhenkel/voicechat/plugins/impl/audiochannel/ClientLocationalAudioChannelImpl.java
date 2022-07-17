@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.api.audiochannel.ClientLocationalAudioChannel;
 import de.maxhenkel.voicechat.voice.common.LocationSoundPacket;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
+import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
@@ -11,15 +12,17 @@ import java.util.UUID;
 public class ClientLocationalAudioChannelImpl extends ClientAudioChannelImpl implements ClientLocationalAudioChannel {
 
     private Position position;
+    private float distance;
 
     public ClientLocationalAudioChannelImpl(UUID id, Position position) {
         super(id);
         this.position = position;
+        this.distance = Utils.getDefaultDistance();
     }
 
     @Override
     protected SoundPacket<?> createSoundPacket(short[] rawAudio) {
-        return new LocationSoundPacket(id, rawAudio, new Vec3(position.getX(), position.getY(), position.getZ()));
+        return new LocationSoundPacket(id, rawAudio, new Vec3(position.getX(), position.getY(), position.getZ()), distance);
     }
 
     @Override
@@ -31,4 +34,15 @@ public class ClientLocationalAudioChannelImpl extends ClientAudioChannelImpl imp
     public Position getLocation() {
         return position;
     }
+
+    @Override
+    public float getDistance() {
+        return distance;
+    }
+
+    @Override
+    public void setDistance(float distance) {
+        this.distance = distance;
+    }
+
 }
