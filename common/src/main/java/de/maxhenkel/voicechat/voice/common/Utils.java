@@ -1,5 +1,10 @@
 package de.maxhenkel.voicechat.voice.common;
 
+import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
+import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
+import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
 
@@ -229,6 +234,27 @@ public class Utils {
     @Nullable
     public static <T> T createSafe(Supplier<T> supplier) {
         return createSafe(supplier, null);
+    }
+
+    /**
+     * Gets the default voice chat distance
+     *
+     * @return 48 if the voice chat is not connected
+     */
+    public static float getDefaultDistance() {
+        if (VoicechatClient.CLIENT_CONFIG == null) {
+            return Voicechat.SERVER_CONFIG.voiceChatDistance.get().floatValue();
+        }
+
+        ClientVoicechat client = ClientManager.getClient();
+        if (client == null) {
+            return 48F;
+        }
+        ClientVoicechatConnection connection = client.getConnection();
+        if (connection == null) {
+            return 48F;
+        }
+        return (float) connection.getData().getVoiceChatDistance();
     }
 
 }

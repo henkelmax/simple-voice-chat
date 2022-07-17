@@ -8,10 +8,12 @@ import java.util.UUID;
 public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
 
     protected Location location;
+    protected float distance;
 
-    public LocationSoundPacket(UUID sender, Location location, byte[] data, long sequenceNumber) {
+    public LocationSoundPacket(UUID sender, Location location, byte[] data, long sequenceNumber, float distance) {
         super(sender, data, sequenceNumber);
         this.location = location;
+        this.distance = distance;
     }
 
     public LocationSoundPacket() {
@@ -22,6 +24,10 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
         return location;
     }
 
+    public float getDistance() {
+        return distance;
+    }
+
     @Override
     public LocationSoundPacket fromBytes(FriendlyByteBuf buf) {
         LocationSoundPacket soundPacket = new LocationSoundPacket();
@@ -29,6 +35,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
         soundPacket.location = new Location(null, buf.readDouble(), buf.readDouble(), buf.readDouble());
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
+        soundPacket.distance = buf.readFloat();
         return soundPacket;
     }
 
@@ -40,5 +47,6 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
         buf.writeDouble(location.getZ());
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);
+        buf.writeFloat(distance);
     }
 }
