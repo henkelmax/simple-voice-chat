@@ -1,1 +1,4 @@
 - Added custom distance to voice chat API
+- Reworked voice chat UDP protocol
+- Fixed potential security vulnerability
+- Added debug command line parameter
