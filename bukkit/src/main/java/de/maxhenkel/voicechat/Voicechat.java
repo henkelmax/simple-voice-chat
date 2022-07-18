@@ -146,6 +146,12 @@ public final class Voicechat extends JavaPlugin {
         return (String) TRANSLATIONS.get(key);
     }
 
+    public static void logDebug(String message, Object... objects) {
+        if (System.getProperty("voicechat.debug") != null) {
+            LOGGER.info(message, objects);
+        }
+    }
+
     private static int readVersion() throws IOException {
         Enumeration<URL> resources = Voicechat.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
         while (resources.hasMoreElements()) {
