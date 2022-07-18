@@ -121,8 +121,8 @@ public class ClientPlayerStateManager {
     }
 
     public void syncOwnState() {
-        NetManager.sendToServer(new UpdateStatePacket(disconnected, isDisabled()));
-        Voicechat.logDebug("Sent own state to server: disconnected={}, disabled={}", disconnected, isDisabled());
+        NetManager.sendToServer(new UpdateStatePacket(isDisabled()));
+        Voicechat.logDebug("Sent own state to server: disabled={}", isDisabled());
     }
 
     public boolean isDisabled() {
