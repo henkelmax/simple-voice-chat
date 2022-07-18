@@ -16,7 +16,6 @@ public class InitializationData {
     private final ServerConfig.Codec codec;
     private final int mtuSize;
     private final double voiceChatDistance;
-    private final double voiceChatFadeDistance;
     private final double crouchDistanceMultiplier;
     private final double whisperDistanceMultiplier;
     private final int keepAlive;
@@ -32,7 +31,6 @@ public class InitializationData {
         this.codec = secretPacket.getCodec();
         this.mtuSize = secretPacket.getMtuSize();
         this.voiceChatDistance = secretPacket.getVoiceChatDistance();
-        this.voiceChatFadeDistance = secretPacket.getVoiceChatFadeDistance();
         this.crouchDistanceMultiplier = secretPacket.getCrouchDistanceMultiplier();
         this.whisperDistanceMultiplier = secretPacket.getWhisperDistanceMultiplier();
         this.keepAlive = secretPacket.getKeepAlive();
@@ -90,10 +88,6 @@ public class InitializationData {
 
     public double getVoiceChatDistance() {
         return voiceChatDistance;
-    }
-
-    public double getVoiceChatFadeDistance() {
-        return voiceChatFadeDistance;
     }
 
     public double getCrouchDistanceMultiplier() {
