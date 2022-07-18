@@ -41,7 +41,7 @@ public abstract class Voicechat {
     }
 
     public static void logDebug(String message, Object... objects) {
-        if (CommonCompatibilityManager.INSTANCE.isDevEnvironment()) {
+        if (CommonCompatibilityManager.INSTANCE.isDevEnvironment() || System.getProperty("voicechat.debug") != null) {
             LOGGER.info(message, objects);
         }
     }

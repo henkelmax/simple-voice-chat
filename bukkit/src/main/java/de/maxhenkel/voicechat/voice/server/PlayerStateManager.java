@@ -38,11 +38,14 @@ public class PlayerStateManager implements Listener {
         states.put(player.getUniqueId(), state);
 
         broadcastState(state);
+        Voicechat.logDebug("Got state of {}: {}", player.getName(), state);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        removePlayer(event.getPlayer());
+        states.remove(event.getPlayer().getUniqueId());
+        broadcastState(new PlayerState(event.getPlayer().getUniqueId(), event.getPlayer().getName(), false, true));
+        Voicechat.logDebug("Removing state of {}", event.getPlayer().getName());
     }
 
     @EventHandler
@@ -50,6 +53,7 @@ public class PlayerStateManager implements Listener {
         PlayerState state = defaultDisconnectedState(event.getPlayer());
         states.put(event.getPlayer().getUniqueId(), state);
         broadcastState(state);
+        Voicechat.logDebug("Setting default state of {}: {}", event.getPlayer().getName(), state);
     }
 
     private void broadcastState(PlayerState state) {
@@ -60,11 +64,7 @@ public class PlayerStateManager implements Listener {
     public void onPlayerCompatibilityCheckSucceeded(Player player) {
         PlayerStatesPacket packet = new PlayerStatesPacket(states);
         NetManager.sendToClient(player, packet);
-    }
-
-    private void removePlayer(Player player) {
-        states.remove(player.getUniqueId());
-        broadcastState(new PlayerState(player.getUniqueId(), player.getName(), false, true));
+        Voicechat.logDebug("Sending initial states to {}", player.getName());
     }
 
     public void onPlayerVoicechatDisconnect(UUID uuid) {
@@ -76,6 +76,7 @@ public class PlayerStateManager implements Listener {
         state.setDisconnected(true);
 
         broadcastState(state);
+        Voicechat.logDebug("Set state of {} to disconnected: {}", uuid, state);
     }
 
     public void onPlayerVoicechatConnect(Player player) {
@@ -90,6 +91,7 @@ public class PlayerStateManager implements Listener {
         states.put(player.getUniqueId(), state);
 
         broadcastState(state);
+        Voicechat.logDebug("Set state of {} to connected: {}", player.getName(), state);
     }
 
     @Nullable
@@ -105,10 +107,12 @@ public class PlayerStateManager implements Listener {
         PlayerState state = states.get(player.getUniqueId());
         if (state == null) {
             state = PlayerStateManager.defaultDisconnectedState(player);
+            Voicechat.logDebug("Defaulting to default state for {}: {}", player.getName(), state);
         }
         state.setGroup(group);
         states.put(player.getUniqueId(), state);
         broadcastState(state);
+        Voicechat.logDebug("Setting group of {}: {}", player.getName(), state);
     }
 
     public Collection<PlayerState> getStates() {
