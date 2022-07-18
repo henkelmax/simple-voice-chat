@@ -27,11 +27,6 @@ public class ForgeServerConfig extends ServerConfig {
                 .comment("The distance to where the voice can be heard")
                 .defineInRange("voice_chat.max_voice_distance", 48D, 1D, 1_000_000D)
         );
-        voiceChatFadeDistance = wrapConfigEntry(builder
-                .worldRestart()
-                .comment("The distance to where the voice starts fading")
-                .defineInRange("voice_chat.min_voice_distance", 4D, 1D, 1_000_000D)
-        );
         crouchDistanceMultiplier = wrapConfigEntry(builder
                 .worldRestart()
                 .comment("The multiplier the voice distance will be reduced by when sneaking")

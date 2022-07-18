@@ -8,7 +8,6 @@ public class QuiltServerConfig extends ServerConfig {
         voiceChatPort = builder.integerEntry("port", 24454, -1, 65535);
         voiceChatBindAddress = builder.stringEntry("bind_address", "");
         voiceChatDistance = builder.doubleEntry("max_voice_distance", 48D, 1D, 1_000_000D);
-        voiceChatFadeDistance = builder.doubleEntry("min_voice_distance", 4D, 1D, 1_000_000D);
         crouchDistanceMultiplier = builder.doubleEntry("crouch_distance_multiplier", 1D, 0.01D, 1D);
         whisperDistanceMultiplier = builder.doubleEntry("whisper_distance_multiplier", 0.5D, 0.01D, 1D);
         voiceChatCodec = builder.enumEntry("codec", Codec.VOIP);
