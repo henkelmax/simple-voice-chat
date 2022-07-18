@@ -2,3 +2,6 @@
 - Reworked voice chat UDP protocol
 - Fixed potential security vulnerability
 - Added debug command line parameter
+- Changed distance model to linear
+- Improved recording quality
+- Removed minimum distance config option

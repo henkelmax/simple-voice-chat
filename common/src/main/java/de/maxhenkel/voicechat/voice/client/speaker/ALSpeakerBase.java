@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.api.events.OpenALSoundEvent;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
+import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
@@ -62,25 +63,31 @@ public abstract class ALSpeakerBase implements Speaker {
         SoundManager.checkAlError();
         AL11.alSourcei(source, AL11.AL_LOOPING, AL11.AL_FALSE);
         SoundManager.checkAlError();
-        AL11.alDistanceModel(AL11.AL_NONE);
+
+        AL11.alDistanceModel(AL11.AL_LINEAR_DISTANCE);
         SoundManager.checkAlError();
+        AL11.alSourcef(source, AL11.AL_MAX_DISTANCE, Utils.getDefaultDistance());
+        SoundManager.checkAlError();
+        AL11.alSourcef(source, AL11.AL_REFERENCE_DISTANCE, 0F);
+        SoundManager.checkAlError();
+
         AL11.alGenBuffers(buffers);
         SoundManager.checkAlError();
     }
 
     @Override
-    public void play(short[] data, float volume, @Nullable Vec3 position) {
+    public void play(short[] data, float volume, @Nullable Vec3 position, float maxDistance) {
         runInContext(() -> {
             removeProcessedBuffersSync();
             int buffers = getQueuedBuffersSync();
             boolean stopped = getStateSync() == AL11.AL_INITIAL || getStateSync() == AL11.AL_STOPPED || buffers <= 1;
             if (stopped) {
                 for (int i = 0; i < getBufferSize(); i++) {
-                    writeSync(new short[bufferSize], 1F, position);
+                    writeSync(new short[bufferSize], 1F, position, maxDistance);
                 }
             }
 
-            writeSync(data, volume, position);
+            writeSync(data, volume, position, maxDistance);
 
             if (stopped) {
                 AL11.alSourcePlay(source);
@@ -93,14 +100,14 @@ public abstract class ALSpeakerBase implements Speaker {
         return VoicechatClient.CLIENT_CONFIG.outputBufferSize.get();
     }
 
-    protected void writeSync(short[] data, float volume, @Nullable Vec3 position) {
+    protected void writeSync(short[] data, float volume, @Nullable Vec3 position, float maxDistance) {
         PluginManager.instance().onALSound(source, audioChannelId, position, OpenALSoundEvent.Pre.class);
-        setPositionSync(position);
+        setPositionSync(position, maxDistance);
         PluginManager.instance().onALSound(source, audioChannelId, position, OpenALSoundEvent.class);
 
         AL11.alSourcef(source, AL11.AL_MAX_GAIN, 6F);
         SoundManager.checkAlError();
-        AL11.alSourcef(source, AL11.AL_GAIN, volume);
+        AL11.alSourcef(source, AL11.AL_GAIN, getVolume(volume, position, maxDistance));
         SoundManager.checkAlError();
         AL11.alListenerf(AL11.AL_GAIN, 1F);
         SoundManager.checkAlError();
@@ -125,13 +132,30 @@ public abstract class ALSpeakerBase implements Speaker {
         PluginManager.instance().onALSound(source, audioChannelId, position, OpenALSoundEvent.Post.class);
     }
 
+    protected float getVolume(float volume, @Nullable Vec3 position, float maxDistance) {
+        return volume;
+    }
+
+    protected void linearAttenuation(float maxDistance) {
+        AL11.alDistanceModel(AL11.AL_LINEAR_DISTANCE);
+        SoundManager.checkAlError();
+
+        AL11.alSourcef(source, AL11.AL_MAX_DISTANCE, maxDistance);
+        SoundManager.checkAlError();
+    }
+
+    protected void noAttenuation() {
+        AL11.alDistanceModel(AL11.AL_NONE);
+        SoundManager.checkAlError();
+    }
+
     protected abstract int getFormat();
 
     protected short[] convert(short[] data, @Nullable Vec3 position) {
         return data;
     }
 
-    protected void setPositionSync(@Nullable Vec3 soundPos) {
+    protected void setPositionSync(@Nullable Vec3 soundPos, float maxDistance) {
         Camera camera = mc.gameRenderer.getMainCamera();
         Vec3 position = camera.getPosition();
         Vector3f look = camera.getLookVector();
@@ -141,11 +165,13 @@ public abstract class ALSpeakerBase implements Speaker {
         AL11.alListenerfv(AL11.AL_ORIENTATION, new float[]{look.x(), look.y(), look.z(), up.x(), up.y(), up.z()});
         SoundManager.checkAlError();
         if (soundPos != null) {
+            linearAttenuation(maxDistance);
             AL11.alSourcei(source, AL11.AL_SOURCE_RELATIVE, AL11.AL_FALSE);
             SoundManager.checkAlError();
             AL11.alSource3f(source, AL11.AL_POSITION, (float) soundPos.x, (float) soundPos.y, (float) soundPos.z);
             SoundManager.checkAlError();
         } else {
+            noAttenuation();
             AL11.alSourcei(source, AL11.AL_SOURCE_RELATIVE, AL11.AL_TRUE);
             SoundManager.checkAlError();
             AL11.alSource3f(source, AL11.AL_POSITION, 0F, 0F, 0F);
