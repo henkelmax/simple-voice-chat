@@ -174,7 +174,6 @@ public class DebugReport {
             addLine("Frame size: " + SoundManager.FRAME_SIZE);
             addLine("MTU size: " + connection.getData().getMtuSize());
             addLine("Distance: " + connection.getData().getVoiceChatDistance());
-            addLine("Fade distance: " + connection.getData().getVoiceChatFadeDistance());
             addLine("Crouch distance multiplier: " + connection.getData().getCrouchDistanceMultiplier());
             addLine("Whisper distance multiplier: " + connection.getData().getWhisperDistanceMultiplier());
             addLine("Authenticated: " + connection.isAuthenticated());

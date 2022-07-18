@@ -19,7 +19,6 @@ public class SecretPacket implements Packet<SecretPacket> {
     private ServerConfig.Codec codec;
     private int mtuSize;
     private double voiceChatDistance;
-    private double voiceChatFadeDistance;
     private double crouchDistanceMultiplier;
     private double whisperDistanceMultiplier;
     private int keepAlive;
@@ -38,7 +37,6 @@ public class SecretPacket implements Packet<SecretPacket> {
         this.codec = serverConfig.voiceChatCodec.get();
         this.mtuSize = serverConfig.voiceChatMtuSize.get();
         this.voiceChatDistance = serverConfig.voiceChatDistance.get();
-        this.voiceChatFadeDistance = serverConfig.voiceChatFadeDistance.get();
         this.crouchDistanceMultiplier = serverConfig.crouchDistanceMultiplier.get();
         this.whisperDistanceMultiplier = serverConfig.whisperDistanceMultiplier.get();
         this.keepAlive = serverConfig.keepAlive.get();
@@ -69,10 +67,6 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     public double getVoiceChatDistance() {
         return voiceChatDistance;
-    }
-
-    public double getVoiceChatFadeDistance() {
-        return voiceChatFadeDistance;
     }
 
     public double getCrouchDistanceMultiplier() {
@@ -112,7 +106,6 @@ public class SecretPacket implements Packet<SecretPacket> {
         codec = ServerConfig.Codec.values()[buf.readByte()];
         mtuSize = buf.readInt();
         voiceChatDistance = buf.readDouble();
-        voiceChatFadeDistance = buf.readDouble();
         crouchDistanceMultiplier = buf.readDouble();
         whisperDistanceMultiplier = buf.readDouble();
         keepAlive = buf.readInt();
@@ -130,7 +123,6 @@ public class SecretPacket implements Packet<SecretPacket> {
         buf.writeByte(codec.ordinal());
         buf.writeInt(mtuSize);
         buf.writeDouble(voiceChatDistance);
-        buf.writeDouble(voiceChatFadeDistance);
         buf.writeDouble(crouchDistanceMultiplier);
         buf.writeDouble(whisperDistanceMultiplier);
         buf.writeInt(keepAlive);
