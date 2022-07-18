@@ -55,7 +55,9 @@ public class ClientVoicechatConnection extends Thread {
         try {
             while (running) {
                 NetworkMessage in = NetworkMessage.readPacketClient(socket, this);
-                if (in.getPacket() instanceof AuthenticateAckPacket) {
+                if (in == null) {
+                    continue;
+                } else if (in.getPacket() instanceof AuthenticateAckPacket) {
                     if (!authenticated) {
                         Voicechat.LOGGER.info("Server acknowledged authentication");
                         authenticated = true;
@@ -75,8 +77,7 @@ public class ClientVoicechatConnection extends Thread {
         } catch (InterruptedException ignored) {
         } catch (Exception e) {
             if (running) {
-                Voicechat.LOGGER.error("Failed to process packet from server: {}", e.getMessage());
-                e.printStackTrace();
+                Voicechat.LOGGER.error("Failed to process packet from server: {}", e.getMessage(), e);
             }
         }
     }

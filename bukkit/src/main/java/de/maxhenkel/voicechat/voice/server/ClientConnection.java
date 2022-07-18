@@ -34,8 +34,7 @@ public class ClientConnection {
     }
 
     public void send(Server server, NetworkMessage message) throws Exception {
-        byte[] data = message.write(server.getSecret(playerUUID));
-        server.getSocket().send(data, address);
+        server.getSocket().send(message.writeServer(server, this), address);
     }
 
 }

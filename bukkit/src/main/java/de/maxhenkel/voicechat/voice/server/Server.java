@@ -148,6 +148,10 @@ public class Server extends Thread {
                         continue;
                     }
 
+                    if (message == null) {
+                        continue;
+                    }
+
                     if (System.currentTimeMillis() - message.getTimestamp() > message.getTTL()) {
                         CooldownTimer.run("ttl", () -> {
                             Voicechat.LOGGER.error("Dropping voice chat packets! Your Server might be overloaded!");

@@ -1,1 +1,4 @@
-- Updated to 1.19.1
+- Fixed disconnected state being controlled by the client
+- Reworked voice chat UDP protocol
+- Fixed potential security vulnerability
+- Added debug command line parameter
