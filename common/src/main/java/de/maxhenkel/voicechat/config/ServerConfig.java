@@ -8,7 +8,6 @@ public abstract class ServerConfig {
     public ConfigEntry<Integer> voiceChatPort;
     public ConfigEntry<String> voiceChatBindAddress;
     public ConfigEntry<Double> voiceChatDistance;
-    public ConfigEntry<Double> voiceChatFadeDistance;
     public ConfigEntry<Double> crouchDistanceMultiplier;
     public ConfigEntry<Double> whisperDistanceMultiplier;
     public ConfigEntry<Codec> voiceChatCodec;
