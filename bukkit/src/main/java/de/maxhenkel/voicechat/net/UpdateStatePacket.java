@@ -10,20 +10,14 @@ public class UpdateStatePacket implements Packet<UpdateStatePacket> {
 
     public static final NamespacedKey PLAYER_STATE = NamespacedKeyUtil.voicechat("update_state");
 
-    private boolean disconnected;
     private boolean disabled;
 
     public UpdateStatePacket() {
 
     }
 
-    public UpdateStatePacket(boolean disconnected, boolean disabled) {
-        this.disconnected = disconnected;
+    public UpdateStatePacket(boolean disabled) {
         this.disabled = disabled;
-    }
-
-    public boolean isDisconnected() {
-        return disconnected;
     }
 
     public boolean isDisabled() {
@@ -42,14 +36,12 @@ public class UpdateStatePacket implements Packet<UpdateStatePacket> {
 
     @Override
     public UpdateStatePacket fromBytes(FriendlyByteBuf buf) {
-        disconnected = buf.readBoolean();
         disabled = buf.readBoolean();
         return this;
     }
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeBoolean(disconnected);
         buf.writeBoolean(disabled);
     }
 
