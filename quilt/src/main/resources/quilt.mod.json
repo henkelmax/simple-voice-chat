@@ -60,22 +60,12 @@
         "versions": ">=${modmenu_version}"
       },
       {
-        "id": "sound_physics_remastered",
-        "versions": ">=1.18.2-1.0.5"
-      },
-      {
         "id": "cloth-config2",
         "versions": ">=${cloth_config_version}"
       },
       {
         "id": "fabric-permissions-api-v0",
         "versions": "*"
-      }
-    ],
-    "breaks": [
-      {
-        "id": "sound_physics_remastered",
-        "versions": "<1.18.2-1.0.5"
       }
     ],
     "metadata": {
