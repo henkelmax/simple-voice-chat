@@ -19,6 +19,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.security.InvalidKeyException;
+import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +84,8 @@ public class Server extends Thread {
         if (hasSecret(playerUUID)) {
             return secrets.get(playerUUID);
         } else {
-            UUID secret = UUID.randomUUID();
+            SecureRandom r = new SecureRandom();
+            UUID secret = new UUID(r.nextLong(), r.nextLong());
             secrets.put(playerUUID, secret);
             return secret;
         }
