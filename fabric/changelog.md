@@ -1,3 +1,1 @@
-- Improved service loader compatibility
-- Fixed issues with QuestCraft
-- Fixed disconnected state being controlled by the client
+- Updated to 1.19.1-pre6
