@@ -1,10 +1,7 @@
 package de.maxhenkel.voicechat.gui.volume;
 
-import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.DebouncedSlider;
 import net.minecraft.network.chat.Component;
-
-import java.util.UUID;
 
 public class AdjustVolumeSlider extends DebouncedSlider {
 
@@ -12,14 +9,11 @@ public class AdjustVolumeSlider extends DebouncedSlider {
 
     protected static final float MAXIMUM = 4F;
 
-    protected final UUID player;
+    protected final VolumeConfigEntry volumeConfigEntry;
 
-    public AdjustVolumeSlider(int xIn, int yIn, int widthIn, int heightIn, UUID player) {
-        super(xIn, yIn, widthIn, heightIn, Component.empty(), (player == null ? 1D : VoicechatClient.VOLUME_CONFIG.getVolume(player, 1D)) / MAXIMUM);
-        this.player = player;
-        if (player == null) {
-            visible = false;
-        }
+    public AdjustVolumeSlider(int xIn, int yIn, int widthIn, int heightIn, VolumeConfigEntry volumeConfigEntry) {
+        super(xIn, yIn, widthIn, heightIn, Component.empty(), volumeConfigEntry.get() / MAXIMUM);
+        this.volumeConfigEntry = volumeConfigEntry;
         updateMessage();
     }
 
@@ -35,7 +29,13 @@ public class AdjustVolumeSlider extends DebouncedSlider {
 
     @Override
     public void applyDebounced() {
-        VoicechatClient.VOLUME_CONFIG.setVolume(player, value * MAXIMUM);
-        VoicechatClient.VOLUME_CONFIG.save();
+        volumeConfigEntry.save(value * MAXIMUM);
     }
+
+    public interface VolumeConfigEntry {
+        void save(double value);
+
+        double get();
+    }
+
 }

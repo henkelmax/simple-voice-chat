@@ -20,7 +20,7 @@ public class StaticAudioChannelImpl extends AudioChannelImpl implements StaticAu
 
     @Override
     public void send(byte[] opusData) {
-        broadcast(new GroupSoundPacket(channelId, opusData, sequenceNumber.getAndIncrement()));
+        broadcast(new GroupSoundPacket(channelId, opusData, sequenceNumber.getAndIncrement(), category));
     }
 
     @Override
@@ -30,7 +30,7 @@ public class StaticAudioChannelImpl extends AudioChannelImpl implements StaticAu
 
     @Override
     public void flush() {
-        GroupSoundPacket packet = new GroupSoundPacket(channelId, new byte[0], sequenceNumber.getAndIncrement());
+        GroupSoundPacket packet = new GroupSoundPacket(channelId, new byte[0], sequenceNumber.getAndIncrement(), category);
         broadcast(packet);
     }
 

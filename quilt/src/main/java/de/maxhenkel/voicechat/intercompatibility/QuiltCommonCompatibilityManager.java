@@ -68,6 +68,11 @@ public class QuiltCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
+    public void emitPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
+        ServerVoiceChatEvents.VOICECHAT_COMPATIBILITY_CHECK_SUCCEEDED.invoker().accept(player);
+    }
+
+    @Override
     public void onServerVoiceChatConnected(Consumer<ServerPlayer> onVoiceChatConnected) {
         ServerVoiceChatEvents.VOICECHAT_CONNECTED.register(onVoiceChatConnected);
     }
@@ -95,6 +100,11 @@ public class QuiltCommonCompatibilityManager extends CommonCompatibilityManager 
     @Override
     public void onPlayerLoggedOut(Consumer<ServerPlayer> onPlayerLoggedOut) {
         PlayerEvents.PLAYER_LOGGED_OUT.register(onPlayerLoggedOut);
+    }
+
+    @Override
+    public void onPlayerCompatibilityCheckSucceeded(Consumer<ServerPlayer> onPlayerCompatibilityCheckSucceeded) {
+        ServerVoiceChatEvents.VOICECHAT_COMPATIBILITY_CHECK_SUCCEEDED.register(onPlayerCompatibilityCheckSucceeded);
     }
 
     @Override

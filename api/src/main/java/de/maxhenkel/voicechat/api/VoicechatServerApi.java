@@ -151,7 +151,7 @@ public interface VoicechatServerApi extends VoicechatApi {
     Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Position pos, double range, Predicate<ServerPlayer> filter);
 
     /**
-     * @return the maximum distance, voice chat audio can be heard
+     * @return the maximum distance, voice chat audio can be received
      */
     double getBroadcastRange();
 
@@ -166,5 +166,33 @@ public interface VoicechatServerApi extends VoicechatApi {
     default Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Position pos, double range) {
         return getPlayersInRange(level, pos, range, player -> true);
     }
+
+    /**
+     * Registers a volume category.
+     * This will get synchronized to all connected clients and all future clients that will connect.
+     * A category can be created with {@link VoicechatApi#volumeCategoryBuilder()}.
+     * The category can be unregistered with {@link #unregisterVolumeCategory}.
+     *
+     * @param category the category to register
+     */
+    void registerVolumeCategory(VolumeCategory category);
+
+    /**
+     * Unregisters a category for all connected players.
+     * This will release the texture ID for the icon if one exists on all clients.
+     *
+     * @param category the category to remove
+     */
+    default void unregisterVolumeCategory(VolumeCategory category) {
+        unregisterVolumeCategory(category.getId());
+    }
+
+    /**
+     * Unregisters a category for all connected players.
+     * This will release the texture ID for the icon if one exists on all clients.
+     *
+     * @param categoryId the category ID to remove
+     */
+    void unregisterVolumeCategory(String categoryId);
 
 }

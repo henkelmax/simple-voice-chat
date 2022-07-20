@@ -24,4 +24,35 @@ public interface EntitySoundPacket extends SoundPacket {
      */
     float getDistance();
 
+    /**
+     * A builder to build an entity sound packet.
+     *
+     * <b>NOTE</b>: Some values are required to be set.
+     *
+     * @param <T> the builder itself
+     */
+    public interface Builder<T extends Builder<T>> extends SoundPacket.Builder<T, EntitySoundPacket> {
+
+        /**
+         * This is required to be set!
+         *
+         * @param entityUuid the UUID of the entity
+         * @return the builder
+         */
+        T entityUuid(UUID entityUuid);
+
+        /**
+         * @param whispering if the entity should be whispering
+         * @return the builder
+         */
+        T whispering(boolean whispering);
+
+        /**
+         * @param distance the distance, this packet can be heard
+         * @return the builder
+         */
+        T distance(float distance);
+
+    }
+
 }

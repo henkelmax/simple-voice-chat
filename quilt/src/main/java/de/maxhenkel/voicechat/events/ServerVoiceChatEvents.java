@@ -20,4 +20,10 @@ public class ServerVoiceChatEvents {
         }
     });
 
+    public static final Event<Consumer<ServerPlayer>> VOICECHAT_COMPATIBILITY_CHECK_SUCCEEDED = Event.create(Consumer.class, (listeners) -> (player) -> {
+        for (Consumer<ServerPlayer> listener : listeners) {
+            listener.accept(player);
+        }
+    });
+
 }

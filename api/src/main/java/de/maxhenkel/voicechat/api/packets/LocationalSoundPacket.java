@@ -18,4 +18,29 @@ public interface LocationalSoundPacket extends SoundPacket {
      */
     float getDistance();
 
+    /**
+     * A builder to build a locational sound packet.
+     *
+     * <b>NOTE</b>: Some values are required to be set.
+     *
+     * @param <T> the builder itself
+     */
+    public interface Builder<T extends Builder<T>> extends SoundPacket.Builder<T, LocationalSoundPacket> {
+
+        /**
+         * This is required to be set!
+         *
+         * @param position the position of the sound
+         * @return the builder
+         */
+        T position(Position position);
+
+        /**
+         * @param distance the distance, this packet can be heard
+         * @return the builder
+         */
+        T distance(float distance);
+
+    }
+
 }

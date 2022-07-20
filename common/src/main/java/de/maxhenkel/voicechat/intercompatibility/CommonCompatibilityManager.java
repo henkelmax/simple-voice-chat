@@ -5,7 +5,6 @@ import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.service.Service;
-import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,6 +28,8 @@ public abstract class CommonCompatibilityManager {
 
     public abstract void emitServerVoiceChatDisconnectedEvent(UUID clientID);
 
+    public abstract void emitPlayerCompatibilityCheckSucceeded(ServerPlayer player);
+
     public abstract void onServerVoiceChatConnected(Consumer<ServerPlayer> onVoiceChatConnected);
 
     public abstract void onServerVoiceChatDisconnected(Consumer<UUID> onVoiceChatDisconnected);
@@ -40,6 +41,8 @@ public abstract class CommonCompatibilityManager {
     public abstract void onPlayerLoggedIn(Consumer<ServerPlayer> onPlayerLoggedIn);
 
     public abstract void onPlayerLoggedOut(Consumer<ServerPlayer> onPlayerLoggedOut);
+
+    public abstract void onPlayerCompatibilityCheckSucceeded(Consumer<ServerPlayer> onPlayerCompatibilityCheckSucceeded);
 
     public abstract void onRegisterServerCommands(Consumer<CommandDispatcher<CommandSourceStack>> onRegisterServerCommands);
 
