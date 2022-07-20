@@ -6,3 +6,4 @@
 - Improved recording quality
 - Removed minimum distance config option
 - Added custom volume categories
+- Added adjust volumes button to the voice chat menu

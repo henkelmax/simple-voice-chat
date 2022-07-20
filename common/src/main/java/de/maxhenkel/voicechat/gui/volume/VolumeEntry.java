@@ -21,10 +21,10 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
     protected static final int PLAYER_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
 
     protected final Minecraft minecraft;
-    protected final PlayerVolumesScreen screen;
+    protected final AdjustVolumesScreen screen;
     protected final AdjustVolumeSlider volumeSlider;
 
-    public VolumeEntry(PlayerVolumesScreen screen, AdjustVolumeSlider.VolumeConfigEntry entry) {
+    public VolumeEntry(AdjustVolumesScreen screen, AdjustVolumeSlider.VolumeConfigEntry entry) {
         this.minecraft = Minecraft.getInstance();
         this.screen = screen;
         this.volumeSlider = new AdjustVolumeSlider(0, 0, 100, 20, entry);
