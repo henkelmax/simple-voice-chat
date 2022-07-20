@@ -2,54 +2,32 @@ package de.maxhenkel.voicechat.gui.volume;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
-import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
+import java.util.UUID;
 
-public class PlayerVolumeEntry extends ListScreenEntryBase<PlayerVolumeEntry> {
+public class PlayerVolumeEntry extends VolumeEntry {
 
-    protected static final TranslatableComponent OTHER_VOLUME = new TranslatableComponent("message.voicechat.other_volume");
-    protected static final TranslatableComponent OTHER_VOLUME_DESCRIPTION = new TranslatableComponent("message.voicechat.other_volume.description");
-    protected static final ResourceLocation OTHER_VOLUME_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/other_volume.png");
-
-    protected static final int SKIN_SIZE = 24;
-    protected static final int PADDING = 4;
-    protected static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
-    protected static final int PLAYER_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
-
-    protected final Minecraft minecraft;
     @Nullable
     protected final PlayerState state;
-    protected final PlayerVolumesScreen screen;
-    protected final AdjustVolumeSlider volumeSlider;
 
     public PlayerVolumeEntry(@Nullable PlayerState state, PlayerVolumesScreen screen) {
-        this.minecraft = Minecraft.getInstance();
+        super(screen, new PlayerVolumeConfigEntry(state != null ? state.getUuid() : Util.NIL_UUID));
         this.state = state;
-        this.screen = screen;
-        this.volumeSlider = new AdjustVolumeSlider(0, 0, 100, 20, state != null ? state.getUuid() : Util.NIL_UUID);
-        this.children.add(volumeSlider);
+    }
+
+    @Nullable
+    public PlayerState getState() {
+        return state;
     }
 
     @Override
-    public void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
-        int skinX = left + PADDING;
-        int skinY = top + (height - SKIN_SIZE) / 2;
-        int textX = skinX + SKIN_SIZE + PADDING;
-        int textY = top + (height - minecraft.font.lineHeight) / 2;
-
-        GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL);
-
+    public void renderElement(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
         if (state != null) {
             RenderSystem.setShaderTexture(0, GameProfileUtils.getSkin(state.getUuid()));
             GuiComponent.blit(poseStack, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 8, 8, 8, 8, 64, 64);
@@ -63,18 +41,30 @@ public class PlayerVolumeEntry extends ListScreenEntryBase<PlayerVolumeEntry> {
             minecraft.font.draw(poseStack, OTHER_VOLUME, (float) textX, (float) textY, PLAYER_NAME_COLOR);
             if (hovered) {
                 screen.postRender(() -> {
-                    screen.renderTooltip(poseStack, Collections.singletonList(OTHER_VOLUME_DESCRIPTION.getVisualOrderText()), mouseX, mouseY);
+                    screen.renderTooltip(poseStack, OTHER_VOLUME_DESCRIPTION, mouseX, mouseY);
                 });
             }
         }
-
-        volumeSlider.x = left + (width - volumeSlider.getWidth() - PADDING);
-        volumeSlider.y = top + (height - volumeSlider.getHeight()) / 2;
-        volumeSlider.render(poseStack, mouseX, mouseY, delta);
     }
 
-    @Nullable
-    public PlayerState getState() {
-        return state;
+    public static class PlayerVolumeConfigEntry implements AdjustVolumeSlider.VolumeConfigEntry {
+
+        private final UUID playerUUID;
+
+        public PlayerVolumeConfigEntry(UUID playerUUID) {
+            this.playerUUID = playerUUID;
+        }
+
+        @Override
+        public void save(double value) {
+            VoicechatClient.VOLUME_CONFIG.setPlayerVolume(playerUUID, value);
+            VoicechatClient.VOLUME_CONFIG.save();
+        }
+
+        @Override
+        public double get() {
+            return VoicechatClient.VOLUME_CONFIG.getPlayerVolume(playerUUID);
+        }
     }
+
 }

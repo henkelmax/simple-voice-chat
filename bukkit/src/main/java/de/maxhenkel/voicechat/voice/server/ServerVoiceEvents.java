@@ -79,6 +79,7 @@ public class ServerVoiceEvents implements Listener {
             return;
         }
         server.getPlayerStateManager().onPlayerCompatibilityCheckSucceeded(player);
+        server.getCategoryManager().onPlayerCompatibilityCheckSucceeded(player);
 
         if (!player.hasPermission(PermissionManager.CONNECT_PERMISSION)) {
             Voicechat.LOGGER.info("Player {} has no permission to connect to the voice chat", player.getName());

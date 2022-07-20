@@ -6,7 +6,8 @@ import de.maxhenkel.voicechat.voice.server.Server;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 public class VoicechatExpansion extends PlaceholderExpansion {
 

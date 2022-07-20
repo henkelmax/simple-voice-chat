@@ -57,17 +57,17 @@ public class EntityAudioChannelImpl extends AudioChannelImpl implements EntityAu
 
     @Override
     public void send(byte[] opusData) {
-        broadcast(new PlayerSoundPacket(channelId, opusData, sequenceNumber.getAndIncrement(), whispering, distance));
+        broadcast(new PlayerSoundPacket(channelId, opusData, sequenceNumber.getAndIncrement(), whispering, distance, category));
     }
 
     @Override
     public void send(MicrophonePacket microphonePacket) {
-        broadcast(new PlayerSoundPacket(channelId, microphonePacket.getOpusEncodedData(), sequenceNumber.getAndIncrement(), whispering, distance));
+        broadcast(new PlayerSoundPacket(channelId, microphonePacket.getOpusEncodedData(), sequenceNumber.getAndIncrement(), whispering, distance, category));
     }
 
     @Override
     public void flush() {
-        broadcast(new PlayerSoundPacket(channelId, new byte[0], sequenceNumber.getAndIncrement(), whispering, distance));
+        broadcast(new PlayerSoundPacket(channelId, new byte[0], sequenceNumber.getAndIncrement(), whispering, distance, category));
     }
 
     private void broadcast(PlayerSoundPacket packet) {

@@ -32,6 +32,7 @@ public class ClientManager {
     @Nullable
     private ClientVoicechat client;
     private final ClientPlayerStateManager playerStateManager;
+    private final ClientCategoryManager categoryManager;
     private final PTTKeyHandler pttKeyHandler;
     private final RenderEvents renderEvents;
     private final KeyEvents keyEvents;
@@ -39,6 +40,7 @@ public class ClientManager {
 
     private ClientManager() {
         playerStateManager = new ClientPlayerStateManager();
+        categoryManager = new ClientCategoryManager();
         pttKeyHandler = new PTTKeyHandler();
         renderEvents = new RenderEvents();
         keyEvents = new KeyEvents();
@@ -168,6 +170,10 @@ public class ClientManager {
 
     public static ClientPlayerStateManager getPlayerStateManager() {
         return instance().playerStateManager;
+    }
+
+    public static ClientCategoryManager getCategoryManager() {
+        return instance().categoryManager;
     }
 
     public static PTTKeyHandler getPttKeyHandler() {

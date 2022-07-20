@@ -20,7 +20,7 @@ public class ClientEntityAudioChannelImpl extends ClientAudioChannelImpl impleme
 
     @Override
     protected SoundPacket<?> createSoundPacket(short[] rawAudio) {
-        return new PlayerSoundPacket(id, rawAudio, whispering, distance);
+        return new PlayerSoundPacket(id, rawAudio, whispering, distance, category);
     }
 
     @Override

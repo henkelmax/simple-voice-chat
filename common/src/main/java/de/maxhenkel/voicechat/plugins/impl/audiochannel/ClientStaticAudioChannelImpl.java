@@ -14,7 +14,7 @@ public class ClientStaticAudioChannelImpl extends ClientAudioChannelImpl impleme
 
     @Override
     protected SoundPacket<?> createSoundPacket(short[] rawAudio) {
-        return new GroupSoundPacket(id, rawAudio);
+        return new GroupSoundPacket(id, rawAudio, category);
     }
 
 }
