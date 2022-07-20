@@ -3,7 +3,7 @@ buildscript {
         maven { url = "https://repo.u-team.info" }
     }
     dependencies {
-        classpath "info.u-team.curse_gradle_uploader:curse_gradle_uploader:1.5.0"
+        classpath "info.u-team.curse_gradle_uploader:curse_gradle_uploader:1.5.1"
     }
 }
 
