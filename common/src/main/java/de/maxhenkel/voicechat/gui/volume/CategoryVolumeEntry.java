@@ -12,7 +12,7 @@ public class CategoryVolumeEntry extends VolumeEntry {
 
     protected final VolumeCategoryImpl category;
 
-    public CategoryVolumeEntry(VolumeCategoryImpl category, PlayerVolumesScreen screen) {
+    public CategoryVolumeEntry(VolumeCategoryImpl category, AdjustVolumesScreen screen) {
         super(screen, new CategoryVolumeConfigEntry(category.getId()));
         this.category = category;
     }
