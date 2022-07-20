@@ -4,3 +4,4 @@
 - Added debug command line parameter
 - Removed minimum distance config option
 - Added custom volume categories
+- Added adjust volumes button to the voice chat menu

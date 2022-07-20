@@ -20,7 +20,7 @@ public class PlayerVolumeEntry extends VolumeEntry {
     @Nullable
     protected final PlayerState state;
 
-    public PlayerVolumeEntry(@Nullable PlayerState state, PlayerVolumesScreen screen) {
+    public PlayerVolumeEntry(@Nullable PlayerState state, AdjustVolumesScreen screen) {
         super(screen, new PlayerVolumeConfigEntry(state != null ? state.getUuid() : Util.NIL_UUID));
         this.state = state;
     }

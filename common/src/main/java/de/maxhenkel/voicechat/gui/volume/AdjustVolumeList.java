@@ -13,11 +13,11 @@ import java.util.*;
 
 public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
 
-    protected PlayerVolumesScreen screen;
+    protected AdjustVolumesScreen screen;
     protected final List<VolumeEntry> entries;
     protected String filter;
 
-    public AdjustVolumeList(int width, int height, int x, int y, int size, PlayerVolumesScreen screen) {
+    public AdjustVolumeList(int width, int height, int x, int y, int size, AdjustVolumesScreen screen) {
         super(width, height, x, y, size);
         this.screen = screen;
         this.entries = Lists.newArrayList();
@@ -28,7 +28,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
     }
 
     public static void update() {
-        if (Minecraft.getInstance().screen instanceof PlayerVolumesScreen volumesScreen) {
+        if (Minecraft.getInstance().screen instanceof AdjustVolumesScreen volumesScreen) {
             volumesScreen.volumeList.updateEntryList();
         }
     }

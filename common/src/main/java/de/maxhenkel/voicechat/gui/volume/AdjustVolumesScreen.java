@@ -13,9 +13,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Locale;
 
-public class PlayerVolumesScreen extends ListScreenBase {
+public class AdjustVolumesScreen extends ListScreenBase {
 
-    protected static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_player_volumes.png");
+    protected static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_volumes.png");
     protected static final ITextComponent TITLE = new TranslationTextComponent("gui.voicechat.adjust_volume.title");
     protected static final ITextComponent SEARCH_HINT = new TranslationTextComponent("message.voicechat.search_hint").withStyle(TextFormatting.ITALIC).withStyle(TextFormatting.GRAY);
     protected static final ITextComponent EMPTY_SEARCH = new TranslationTextComponent("message.voicechat.search_empty").withStyle(TextFormatting.GRAY);
@@ -31,7 +31,7 @@ public class PlayerVolumesScreen extends ListScreenBase {
     protected String lastSearch;
     protected int units;
 
-    public PlayerVolumesScreen() {
+    public AdjustVolumesScreen() {
         super(TITLE, 236, 0);
         this.lastSearch = "";
     }
