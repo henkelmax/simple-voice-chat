@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.api.ForgeVoicechatPlugin;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.events.ServerVoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.events.ServerVoiceChatDisconnectedEvent;
+import de.maxhenkel.voicechat.events.VoiceChatCompatibilityCheckSucceededEvent;
 import de.maxhenkel.voicechat.net.ForgeNetManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.ForgePermissionManager;
@@ -41,6 +42,7 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     private final List<Consumer<ServerPlayerEntity>> playerLoggedInEvents;
     private final List<Consumer<ServerPlayerEntity>> playerLoggedOutEvents;
     private final List<Consumer<ServerPlayerEntity>> voicechatConnectEvents;
+    private final List<Consumer<ServerPlayerEntity>> voicechatCompatibilityCheckSucceededEvents;
     private final List<Consumer<UUID>> voicechatDisconnectEvents;
 
     public ForgeCommonCompatibilityManager() {
@@ -50,6 +52,7 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
         playerLoggedInEvents = new ArrayList<>();
         playerLoggedOutEvents = new ArrayList<>();
         voicechatConnectEvents = new ArrayList<>();
+        voicechatCompatibilityCheckSucceededEvents = new ArrayList<>();
         voicechatDisconnectEvents = new ArrayList<>();
     }
 
@@ -112,6 +115,12 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
+    public void emitPlayerCompatibilityCheckSucceeded(ServerPlayerEntity player) {
+        voicechatCompatibilityCheckSucceededEvents.forEach(consumer -> consumer.accept(player));
+        MinecraftForge.EVENT_BUS.post(new VoiceChatCompatibilityCheckSucceededEvent(player));
+    }
+
+    @Override
     public void onServerVoiceChatConnected(Consumer<ServerPlayerEntity> onVoiceChatConnected) {
         voicechatConnectEvents.add(onVoiceChatConnected);
     }
@@ -139,6 +148,11 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     @Override
     public void onPlayerLoggedOut(Consumer<ServerPlayerEntity> onPlayerLoggedOut) {
         playerLoggedOutEvents.add(onPlayerLoggedOut);
+    }
+
+    @Override
+    public void onPlayerCompatibilityCheckSucceeded(Consumer<ServerPlayerEntity> onPlayerCompatibilityCheckSucceeded) {
+        voicechatCompatibilityCheckSucceededEvents.add(onPlayerCompatibilityCheckSucceeded);
     }
 
     @Override

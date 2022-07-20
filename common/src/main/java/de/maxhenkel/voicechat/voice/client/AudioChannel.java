@@ -169,18 +169,20 @@ public class AudioChannel extends Thread {
         recorder.flushChunkThreaded(uuid);
     }
 
-    private void writeToSpeaker(Packet<?> packet, short[] monoData) {
+    private void writeToSpeaker(SoundPacket<?> packet, short[] monoData) {
         @Nullable PlayerEntity player = minecraft.level.getPlayerByUUID(uuid);
 
-        float playerVolume;
+        float channelVolume;
 
         if (VoicechatClient.USERNAME_CACHE.has(uuid)) {
-            playerVolume = (float) VoicechatClient.VOLUME_CONFIG.getVolume(uuid);
+            channelVolume = (float) VoicechatClient.VOLUME_CONFIG.getPlayerVolume(uuid);
+        } else if (packet.getCategory() != null) {
+            channelVolume = (float) VoicechatClient.VOLUME_CONFIG.getCategoryVolume(packet.getCategory());
         } else {
-            playerVolume = (float) VoicechatClient.VOLUME_CONFIG.getVolume(Util.NIL_UUID);
+            channelVolume = (float) VoicechatClient.VOLUME_CONFIG.getPlayerVolume(Util.NIL_UUID);
         }
 
-        float volume = VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * playerVolume;
+        float volume = VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * channelVolume;
 
         if (packet instanceof GroupSoundPacket) {
             short[] processedMonoData = PluginManager.instance().onReceiveStaticClientSound(uuid, monoData);

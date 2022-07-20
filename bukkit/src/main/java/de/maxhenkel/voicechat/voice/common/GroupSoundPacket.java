@@ -2,12 +2,13 @@ package de.maxhenkel.voicechat.voice.common;
 
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class GroupSoundPacket extends SoundPacket<GroupSoundPacket> {
 
-    public GroupSoundPacket(UUID sender, byte[] data, long sequenceNumber) {
-        super(sender, data, sequenceNumber);
+    public GroupSoundPacket(UUID sender, byte[] data, long sequenceNumber, @Nullable String category) {
+        super(sender, data, sequenceNumber, category);
     }
 
     public GroupSoundPacket() {
@@ -20,6 +21,11 @@ public class GroupSoundPacket extends SoundPacket<GroupSoundPacket> {
         soundPacket.sender = buf.readUUID();
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
+
+        byte data = buf.readByte();
+        if (hasFlag(data, HAS_CATEGORY_MASK)) {
+            soundPacket.category = buf.readUtf(16);
+        }
         return soundPacket;
     }
 
@@ -28,6 +34,15 @@ public class GroupSoundPacket extends SoundPacket<GroupSoundPacket> {
         buf.writeUUID(sender);
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);
+
+        byte data = 0b0;
+        if (category != null) {
+            data = setFlag(data, HAS_CATEGORY_MASK);
+        }
+        buf.writeByte(data);
+        if (category != null) {
+            buf.writeUtf(category, 16);
+        }
     }
 
 }

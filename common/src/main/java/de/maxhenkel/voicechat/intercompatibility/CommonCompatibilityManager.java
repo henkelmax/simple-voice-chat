@@ -28,6 +28,8 @@ public abstract class CommonCompatibilityManager {
 
     public abstract void emitServerVoiceChatDisconnectedEvent(UUID clientID);
 
+    public abstract void emitPlayerCompatibilityCheckSucceeded(ServerPlayerEntity player);
+
     public abstract void onServerVoiceChatConnected(Consumer<ServerPlayerEntity> onVoiceChatConnected);
 
     public abstract void onServerVoiceChatDisconnected(Consumer<UUID> onVoiceChatDisconnected);
@@ -39,6 +41,8 @@ public abstract class CommonCompatibilityManager {
     public abstract void onPlayerLoggedIn(Consumer<ServerPlayerEntity> onPlayerLoggedIn);
 
     public abstract void onPlayerLoggedOut(Consumer<ServerPlayerEntity> onPlayerLoggedOut);
+
+    public abstract void onPlayerCompatibilityCheckSucceeded(Consumer<ServerPlayerEntity> onPlayerCompatibilityCheckSucceeded);
 
     public abstract void onRegisterServerCommands(Consumer<CommandDispatcher<CommandSource>> onRegisterServerCommands);
 

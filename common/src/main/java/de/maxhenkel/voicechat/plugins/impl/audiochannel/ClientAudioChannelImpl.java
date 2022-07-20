@@ -5,11 +5,14 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public abstract class ClientAudioChannelImpl implements ClientAudioChannel {
 
     protected UUID id;
+    @Nullable
+    protected String category;
 
     public ClientAudioChannelImpl(UUID id) {
         this.id = id;
@@ -28,5 +31,16 @@ public abstract class ClientAudioChannelImpl implements ClientAudioChannel {
         if (client != null) {
             client.processSoundPacket(createSoundPacket(rawAudio));
         }
+    }
+
+    @Nullable
+    @Override
+    public String getCategory() {
+        return category;
+    }
+
+    @Override
+    public void setCategory(@Nullable String category) {
+        this.category = category;
     }
 }

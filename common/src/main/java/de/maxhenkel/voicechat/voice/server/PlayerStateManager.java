@@ -27,6 +27,7 @@ public class PlayerStateManager {
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::onPlayerLoggedOut);
         CommonCompatibilityManager.INSTANCE.onServerVoiceChatConnected(this::onPlayerVoicechatConnect);
         CommonCompatibilityManager.INSTANCE.onServerVoiceChatDisconnected(this::onPlayerVoicechatDisconnect);
+        CommonCompatibilityManager.INSTANCE.onPlayerCompatibilityCheckSucceeded(this::onPlayerCompatibilityCheckSucceeded);
 
         CommonCompatibilityManager.INSTANCE.getNetManager().updateStateChannel.setServerListener((server, player, handler, packet) -> {
             PlayerState state = states.get(player.getUUID());
@@ -49,7 +50,7 @@ public class PlayerStateManager {
         voicechatServer.getServer().getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
-    public void onPlayerCompatibilityCheckSucceeded(ServerPlayerEntity player) {
+    private void onPlayerCompatibilityCheckSucceeded(ServerPlayerEntity player) {
         PlayerStatesPacket packet = new PlayerStatesPacket(states);
         NetManager.sendToClient(player, packet);
         Voicechat.logDebug("Sending initial states to {}", player.getDisplayName().getString());

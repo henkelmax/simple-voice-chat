@@ -1,8 +1,10 @@
 package de.maxhenkel.voicechat.api.audiochannel;
 
 import de.maxhenkel.voicechat.api.ServerPlayer;
+import de.maxhenkel.voicechat.api.VolumeCategory;
 import de.maxhenkel.voicechat.api.packets.MicrophonePacket;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -45,5 +47,19 @@ public interface AudioChannel {
      * @return the ID of the audio channel
      */
     UUID getId();
+
+    /**
+     * @return the category ID of the audio channel
+     */
+    @Nullable
+    String getCategory();
+
+    /**
+     * Make sure you registered your category before using it.
+     * See {@link de.maxhenkel.voicechat.api.VoicechatServerApi#registerVolumeCategory(VolumeCategory)}.
+     *
+     * @param category the category ID of the audio channel
+     */
+    void setCategory(@Nullable String category);
 
 }

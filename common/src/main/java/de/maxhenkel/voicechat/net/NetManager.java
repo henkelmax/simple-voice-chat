@@ -22,6 +22,8 @@ public abstract class NetManager {
     public Channel<CreateGroupPacket> createGroupChannel;
     public Channel<LeaveGroupPacket> leaveGroupChannel;
     public Channel<JoinedGroupPacket> joinedGroupChannel;
+    public Channel<AddCategoryPacket> addCategoryChannel;
+    public Channel<RemoveCategoryPacket> removeCategoryChannel;
 
     public void init() {
         updateStateChannel = registerReceiver(UpdateStatePacket.class, false, true);
@@ -33,6 +35,8 @@ public abstract class NetManager {
         createGroupChannel = registerReceiver(CreateGroupPacket.class, false, true);
         leaveGroupChannel = registerReceiver(LeaveGroupPacket.class, false, true);
         joinedGroupChannel = registerReceiver(JoinedGroupPacket.class, true, false);
+        addCategoryChannel = registerReceiver(AddCategoryPacket.class, true, false);
+        removeCategoryChannel = registerReceiver(RemoveCategoryPacket.class, true, false);
     }
 
     public abstract <T extends Packet<T>> Channel<T> registerReceiver(Class<T> packetType, boolean toClient, boolean toServer);

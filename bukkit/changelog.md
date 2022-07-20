@@ -3,3 +3,4 @@
 - Fixed potential security vulnerability
 - Added debug command line parameter
 - Removed minimum distance config option
+- Added custom volume categories

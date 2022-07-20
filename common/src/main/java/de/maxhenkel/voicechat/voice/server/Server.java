@@ -37,6 +37,7 @@ public class Server extends Thread {
     private final PingManager pingManager;
     private final PlayerStateManager playerStateManager;
     private final GroupManager groupManager;
+    private final ServerCategoryManager categoryManager;
 
     public Server(MinecraftServer server) {
         if (server instanceof DedicatedServer) {
@@ -58,6 +59,7 @@ public class Server extends Thread {
         pingManager = new PingManager(this);
         playerStateManager = new PlayerStateManager(this);
         groupManager = new GroupManager(this);
+        categoryManager = new ServerCategoryManager(this);
         setDaemon(true);
         setName("VoiceChatServerThread");
         processThread = new ProcessThread();
@@ -260,7 +262,7 @@ public class Server extends Thread {
         if (group == null) {
             return;
         }
-        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber());
+        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
         NetworkMessage soundMessage = new NetworkMessage(groupSoundPacket);
         for (PlayerState state : playerStateManager.getStates()) {
             if (!group.equals(state.getGroup())) {
@@ -299,7 +301,7 @@ public class Server extends Thread {
                         if (connection == null) {
                             return;
                         }
-                        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber());
+                        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
                         if (!PluginManager.instance().onSoundPacket(sender, senderState, spectatingPlayer, receiverState, groupSoundPacket, SoundPacketEvent.SOURCE_SPECTATOR)) {
                             connection.send(this, new NetworkMessage(groupSoundPacket));
                         }
@@ -308,13 +310,13 @@ public class Server extends Thread {
                 }
             }
             if (Voicechat.SERVER_CONFIG.spectatorInteraction.get()) {
-                soundPacket = new LocationSoundPacket(sender.getUUID(), sender.getEyePosition(1F), packet.getData(), packet.getSequenceNumber(), Utils.getDefaultDistance());
+                soundPacket = new LocationSoundPacket(sender.getUUID(), sender.getEyePosition(1F), packet.getData(), packet.getSequenceNumber(), Utils.getDefaultDistance(), null);
                 source = SoundPacketEvent.SOURCE_SPECTATOR;
             }
         }
 
         if (soundPacket == null) {
-            soundPacket = new PlayerSoundPacket(sender.getUUID(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering(), Utils.getDefaultDistance());
+            soundPacket = new PlayerSoundPacket(sender.getUUID(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering(), Utils.getDefaultDistance(), null);
             source = SoundPacketEvent.SOURCE_PROXIMITY;
         }
 
@@ -414,6 +416,10 @@ public class Server extends Thread {
 
     public GroupManager getGroupManager() {
         return groupManager;
+    }
+
+    public ServerCategoryManager getCategoryManager() {
+        return categoryManager;
     }
 
     public MinecraftServer getServer() {

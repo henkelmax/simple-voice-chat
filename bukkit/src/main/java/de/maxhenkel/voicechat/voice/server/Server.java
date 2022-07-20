@@ -40,6 +40,7 @@ public class Server extends Thread {
     private final PingManager pingManager;
     private final PlayerStateManager playerStateManager;
     private final GroupManager groupManager;
+    private final ServerCategoryManager categoryManager;
 
     public Server(org.bukkit.Server server) {
         int configPort = Voicechat.SERVER_CONFIG.voiceChatPort.get();
@@ -57,6 +58,7 @@ public class Server extends Thread {
         pingManager = new PingManager(this);
         playerStateManager = new PlayerStateManager();
         groupManager = new GroupManager();
+        categoryManager = new ServerCategoryManager();
         setDaemon(true);
         setName("VoiceChatServerThread");
         processThread = new ProcessThread();
@@ -244,12 +246,12 @@ public class Server extends Thread {
         if (group == null) {
             return;
         }
-        NetworkMessage soundMessage = new NetworkMessage(new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber()));
+        NetworkMessage soundMessage = new NetworkMessage(new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null));
         for (PlayerState state : playerStateManager.getStates()) {
             if (!group.equals(state.getGroup())) {
                 continue;
             }
-            GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber());
+            GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
             if (senderState.getUuid().equals(state.getUuid())) {
                 continue;
             }
@@ -283,7 +285,7 @@ public class Server extends Thread {
                         if (connection == null) {
                             return;
                         }
-                        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber());
+                        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
                         if (!PluginManager.instance().onSoundPacket(sender, senderState, spectatingPlayer, receiverState, groupSoundPacket, SoundPacketEvent.SOURCE_SPECTATOR)) {
                             connection.send(this, new NetworkMessage(groupSoundPacket));
                         }
@@ -292,13 +294,13 @@ public class Server extends Thread {
                 }
             }
             if (Voicechat.SERVER_CONFIG.spectatorInteraction.get()) {
-                soundPacket = new LocationSoundPacket(sender.getUniqueId(), sender.getLocation(), packet.getData(), packet.getSequenceNumber(), Utils.getDefaultDistance());
+                soundPacket = new LocationSoundPacket(sender.getUniqueId(), sender.getLocation(), packet.getData(), packet.getSequenceNumber(), Utils.getDefaultDistance(), null);
                 source = SoundPacketEvent.SOURCE_SPECTATOR;
             }
         }
 
         if (soundPacket == null) {
-            soundPacket = new PlayerSoundPacket(sender.getUniqueId(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering(), Utils.getDefaultDistance());
+            soundPacket = new PlayerSoundPacket(sender.getUniqueId(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering(), Utils.getDefaultDistance(), null);
             source = SoundPacketEvent.SOURCE_PROXIMITY;
         }
 
@@ -394,6 +396,10 @@ public class Server extends Thread {
 
     public GroupManager getGroupManager() {
         return groupManager;
+    }
+
+    public ServerCategoryManager getCategoryManager() {
+        return categoryManager;
     }
 
 }

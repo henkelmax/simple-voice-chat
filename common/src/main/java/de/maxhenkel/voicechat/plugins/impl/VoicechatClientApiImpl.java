@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.plugins.impl;
 import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.api.VoicechatClientApi;
+import de.maxhenkel.voicechat.api.VolumeCategory;
 import de.maxhenkel.voicechat.api.audiochannel.ClientEntityAudioChannel;
 import de.maxhenkel.voicechat.api.audiochannel.ClientLocationalAudioChannel;
 import de.maxhenkel.voicechat.api.audiochannel.ClientStaticAudioChannel;
@@ -55,5 +56,18 @@ public class VoicechatClientApiImpl extends VoicechatApiImpl implements Voicecha
     @Override
     public ClientStaticAudioChannel createStaticAudioChannel(UUID uuid) {
         return new ClientStaticAudioChannelImpl(uuid);
+    }
+
+    @Override
+    public void unregisterClientVolumeCategory(String categoryId) {
+        ClientManager.getCategoryManager().removeCategory(categoryId);
+    }
+
+    @Override
+    public void registerClientVolumeCategory(VolumeCategory category) {
+        if (!(category instanceof VolumeCategoryImpl c)) {
+            throw new IllegalArgumentException("VolumeCategory is not an instance of VolumeCategoryImpl");
+        }
+        ClientManager.getCategoryManager().addCategory(c);
     }
 }

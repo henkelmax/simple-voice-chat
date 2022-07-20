@@ -5,3 +5,4 @@
 - Changed distance model to linear
 - Improved recording quality
 - Removed minimum distance config option
+- Added custom volume categories

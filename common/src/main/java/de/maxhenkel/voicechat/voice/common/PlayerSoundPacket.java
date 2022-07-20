@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.common;
 
 import net.minecraft.network.PacketBuffer;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
@@ -9,14 +10,14 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
     protected boolean whispering;
     protected float distance;
 
-    public PlayerSoundPacket(UUID sender, byte[] data, long sequenceNumber, boolean whispering, float distance) {
-        super(sender, data, sequenceNumber);
+    public PlayerSoundPacket(UUID sender, byte[] data, long sequenceNumber, boolean whispering, float distance, @Nullable String category) {
+        super(sender, data, sequenceNumber, category);
         this.whispering = whispering;
         this.distance = distance;
     }
 
-    public PlayerSoundPacket(UUID sender, short[] data, boolean whispering, float distance) {
-        super(sender, data);
+    public PlayerSoundPacket(UUID sender, short[] data, boolean whispering, float distance, @Nullable String category) {
+        super(sender, data, category);
         this.whispering = whispering;
         this.distance = distance;
     }
@@ -43,8 +44,13 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
         soundPacket.sender = buf.readUUID();
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
-        soundPacket.whispering = buf.readBoolean();
         soundPacket.distance = buf.readFloat();
+
+        byte data = buf.readByte();
+        soundPacket.whispering = hasFlag(data, WHISPER_MASK);
+        if (hasFlag(data, HAS_CATEGORY_MASK)) {
+            soundPacket.category = buf.readUtf(16);
+        }
         return soundPacket;
     }
 
@@ -53,8 +59,19 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
         buf.writeUUID(sender);
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);
-        buf.writeBoolean(whispering);
         buf.writeFloat(distance);
+
+        byte data = 0b0;
+        if (whispering) {
+            data = setFlag(data, WHISPER_MASK);
+        }
+        if (category != null) {
+            data = setFlag(data, HAS_CATEGORY_MASK);
+        }
+        buf.writeByte(data);
+        if (category != null) {
+            buf.writeUtf(category, 16);
+        }
     }
 
 }

@@ -168,7 +168,29 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
 
     @Override
     public double getBroadcastRange() {
+        //TODO rework
         return Voicechat.SERVER_CONFIG.voiceChatDistance.get();
+    }
+
+    @Override
+    public void registerVolumeCategory(VolumeCategory category) {
+        if (!(category instanceof VolumeCategoryImpl c)) {
+            throw new IllegalArgumentException("VolumeCategory is not an instance of VolumeCategoryImpl");
+        }
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return;
+        }
+        server.getCategoryManager().addCategory(c);
+    }
+
+    @Override
+    public void unregisterVolumeCategory(String categoryId) {
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return;
+        }
+        server.getCategoryManager().removeCategory(categoryId);
     }
 
 }
