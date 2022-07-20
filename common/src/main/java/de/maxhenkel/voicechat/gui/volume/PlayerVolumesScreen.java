@@ -41,7 +41,6 @@ public class PlayerVolumesScreen extends ListScreenBase {
     public void tick() {
         super.tick();
         searchBox.tick();
-        volumeList.tick();
     }
 
     @Override

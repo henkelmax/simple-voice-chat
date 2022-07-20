@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.service;
 
 import de.maxhenkel.voicechat.Voicechat;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ServiceLoader;
 
