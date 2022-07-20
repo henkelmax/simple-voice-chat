@@ -3,49 +3,46 @@ package de.maxhenkel.voicechat.gui.volume;
 import com.google.common.collect.Lists;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
+import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 
 import java.util.*;
 
-public class AdjustVolumeList extends ListScreenListBase<PlayerVolumeEntry> {
+public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
 
     protected PlayerVolumesScreen screen;
-    protected final List<PlayerVolumeEntry> players;
+    protected final List<VolumeEntry> entries;
     protected String filter;
 
     public AdjustVolumeList(int width, int height, int x, int y, int size, PlayerVolumesScreen screen) {
         super(width, height, x, y, size);
         this.screen = screen;
-        this.players = Lists.newArrayList();
+        this.entries = Lists.newArrayList();
         this.filter = "";
         setRenderBackground(false);
         setRenderTopAndBottom(false);
-        updatePlayerList(ClientManager.getPlayerStateManager().getPlayerStates(false));
+        updateEntryList();
     }
 
-    public void tick() {
-        List<PlayerState> playerStates = ClientManager.getPlayerStateManager().getPlayerStates(false);
-        if (hasChanged(playerStates)) {
-            updatePlayerList(playerStates);
+    public static void update() {
+        if (Minecraft.getInstance().screen instanceof PlayerVolumesScreen volumesScreen) {
+            volumesScreen.volumeList.updateEntryList();
         }
     }
 
-    private boolean hasChanged(List<PlayerState> playerStates) {
-        for (PlayerState state : playerStates) {
-            boolean match = players.stream().anyMatch(entry -> entry.getState().getUuid().equals(state.getUuid()));
-            if (!match) {
-                return true;
-            }
-        }
-        return false;
-    }
+    public void updateEntryList() {
+        Collection<PlayerState> onlinePlayers = ClientManager.getPlayerStateManager().getPlayerStates(false);
+        entries.clear();
 
-    public void updatePlayerList(Collection<PlayerState> onlinePlayers) {
-        players.clear();
+        for (VolumeCategoryImpl category : ClientManager.getCategoryManager().getCategories()) {
+            entries.add(new CategoryVolumeEntry(category, screen));
+        }
+
         for (PlayerState state : onlinePlayers) {
-            players.add(new PlayerVolumeEntry(state, screen));
+            entries.add(new PlayerVolumeEntry(state, screen));
         }
 
         if (VoicechatClient.CLIENT_CONFIG.offlinePlayerVolumeAdjustment.get()) {
@@ -56,7 +53,7 @@ public class AdjustVolumeList extends ListScreenListBase<PlayerVolumeEntry> {
     }
 
     private void addOfflinePlayers(Collection<PlayerState> onlinePlayers) {
-        for (UUID uuid : VoicechatClient.VOLUME_CONFIG.getVolumes().keySet()) {
+        for (UUID uuid : VoicechatClient.VOLUME_CONFIG.getPlayerVolumes().keySet()) {
             if (uuid.equals(Util.NIL_UUID)) {
                 continue;
             }
@@ -70,21 +67,47 @@ public class AdjustVolumeList extends ListScreenListBase<PlayerVolumeEntry> {
                 continue;
             }
 
-            players.add(new PlayerVolumeEntry(new PlayerState(uuid, name, false, true), screen));
+            entries.add(new PlayerVolumeEntry(new PlayerState(uuid, name, false, true), screen));
         }
     }
 
     public void updateFilter() {
         clearEntries();
-        List<PlayerVolumeEntry> filteredPlayers = new ArrayList<>(players);
+        List<VolumeEntry> filteredEntries = new ArrayList<>(entries);
         if (!filter.isEmpty()) {
-            filteredPlayers.removeIf(playerEntry -> playerEntry.getState() == null || !playerEntry.getState().getName().toLowerCase(Locale.ROOT).contains(filter));
+            filteredEntries.removeIf(volumeEntry -> {
+                if (volumeEntry instanceof PlayerVolumeEntry playerVolumeEntry) {
+                    return playerVolumeEntry.getState() == null || !playerVolumeEntry.getState().getName().toLowerCase(Locale.ROOT).contains(filter);
+                } else if (volumeEntry instanceof CategoryVolumeEntry categoryVolumeEntry) {
+                    return !categoryVolumeEntry.getCategory().getName().toLowerCase(Locale.ROOT).contains(filter);
+                }
+                return true;
+            });
         }
-        filteredPlayers.sort((e1, e2) -> e1.getState().getName().compareToIgnoreCase(e2.getState().getName()));
+        filteredEntries.sort((e1, e2) -> {
+            if (!e1.getClass().equals(e2.getClass())) {
+                if (e1 instanceof PlayerVolumeEntry) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+
+            return volumeEntryToString(e1).compareToIgnoreCase(volumeEntryToString(e2));
+        });
         if (filter.isEmpty()) {
-            filteredPlayers.add(0, new PlayerVolumeEntry(null, screen));
+            filteredEntries.add(0, new PlayerVolumeEntry(null, screen));
         }
-        replaceEntries(filteredPlayers);
+        replaceEntries(filteredEntries);
+    }
+
+    private String volumeEntryToString(VolumeEntry entry) {
+        if (entry instanceof PlayerVolumeEntry playerVolumeEntry) {
+            return playerVolumeEntry.getState() == null ? "" : playerVolumeEntry.getState().getName();
+        } else if (entry instanceof CategoryVolumeEntry categoryVolumeEntry) {
+            return categoryVolumeEntry.getCategory().getName();
+        }
+        return "";
     }
 
     public void setFilter(String filter) {

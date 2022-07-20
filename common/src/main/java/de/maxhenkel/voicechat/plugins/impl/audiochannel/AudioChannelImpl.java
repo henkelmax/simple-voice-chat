@@ -16,6 +16,8 @@ public abstract class AudioChannelImpl implements AudioChannel {
     protected AtomicLong sequenceNumber;
     @Nullable
     protected Predicate<ServerPlayer> filter;
+    @Nullable
+    protected String category;
 
     public AudioChannelImpl(UUID channelId, Server server) {
         this.channelId = channelId;
@@ -36,5 +38,16 @@ public abstract class AudioChannelImpl implements AudioChannel {
     @Override
     public boolean isClosed() {
         return server.isClosed();
+    }
+
+    @Nullable
+    @Override
+    public String getCategory() {
+        return category;
+    }
+
+    @Override
+    public void setCategory(@Nullable String category) {
+        this.category = category;
     }
 }

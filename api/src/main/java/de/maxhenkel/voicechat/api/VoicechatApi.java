@@ -69,4 +69,11 @@ public interface VoicechatApi {
      */
     Position createPosition(double x, double y, double z);
 
+    /**
+     * Don't forget to register your category with {@link VoicechatServerApi#registerVolumeCategory(VolumeCategory)} or {@link VoicechatClientApi#registerClientVolumeCategory(VolumeCategory)}
+     *
+     * @return a builder to build a category
+     */
+    VolumeCategory.Builder volumeCategoryBuilder();
+
 }

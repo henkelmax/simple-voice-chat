@@ -63,4 +63,9 @@ public class VoicechatApiImpl implements VoicechatApi {
         return new PositionImpl(x, y, z);
     }
 
+    @Override
+    public VolumeCategory.Builder volumeCategoryBuilder() {
+        return new VolumeCategoryImpl.BuilderImpl();
+    }
+
 }
