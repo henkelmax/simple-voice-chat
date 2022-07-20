@@ -7,7 +7,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.audiodevice.SelectMicrophoneScreen;
 import de.maxhenkel.voicechat.gui.audiodevice.SelectSpeakerScreen;
 import de.maxhenkel.voicechat.gui.widgets.*;
-import de.maxhenkel.voicechat.gui.volume.PlayerVolumesScreen;
+import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.Denoiser;
@@ -91,7 +91,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         y += 21;
         if (isIngame()) {
             addRenderableWidget(new Button(guiLeft + 10, y, xSize - 20, 20, ADJUST_VOLUMES, button -> {
-                minecraft.setScreen(new PlayerVolumesScreen());
+                minecraft.setScreen(new AdjustVolumesScreen());
             }));
             y += 21;
         }

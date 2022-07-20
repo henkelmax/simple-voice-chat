@@ -10,6 +10,8 @@ import de.maxhenkel.voicechat.gui.tooltips.DisableTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.HideTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.MuteTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.RecordingTooltipSupplier;
+import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
+import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.*;
@@ -27,11 +29,13 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_voicechat.png");
     private static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone_button.png");
     private static final ResourceLocation HIDE = new ResourceLocation(Voicechat.MODID, "textures/icons/hide_button.png");
+    private static final ResourceLocation VOLUMES = new ResourceLocation(Voicechat.MODID, "textures/icons/adjust_volumes.png");
     private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_button.png");
     private static final ResourceLocation RECORD = new ResourceLocation(Voicechat.MODID, "textures/icons/record_button.png");
     private static final Component TITLE = Component.translatable("gui.voicechat.voice_chat.title");
     private static final Component SETTINGS = Component.translatable("message.voicechat.settings");
     private static final Component GROUP = Component.translatable("message.voicechat.group");
+    public static final Component ADJUST_PLAYER_VOLUMES = Component.translatable("message.voicechat.adjust_volumes");
 
     private ToggleImageButton mute;
     private ToggleImageButton disable;
@@ -58,6 +62,13 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
             stateManager.setDisabled(!stateManager.isDisabled());
         }, new DisableTooltipSupplier(this, stateManager));
         addRenderableWidget(disable);
+
+        ImageButton volumes = new ImageButton(guiLeft + 6 + 20 + 2 + 20 + 2, guiTop + ySize - 6 - 20, VOLUMES, button -> {
+            minecraft.setScreen(new AdjustVolumesScreen());
+        }, (button, matrices, mouseX, mouseY) -> {
+            renderTooltip(matrices, ADJUST_PLAYER_VOLUMES, mouseX, mouseY);
+        });
+        addRenderableWidget(volumes);
 
         if (client != null) {
             if (client.getRecorder() != null || (client.getConnection() != null && client.getConnection().getData().allowRecording())) {
@@ -86,7 +97,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         addRenderableWidget(group);
 
         group.active = client != null && client.getConnection() != null && client.getConnection().getData().groupsEnabled();
-        recordingHoverArea = new HoverArea(6 + 20 + 2 + 20 + 2, ySize - 6 - 20, xSize - (6 + 20 + 2 + 20 + 2) * 2, 20);
+        recordingHoverArea = new HoverArea(6 + 20 + 2 + 20 + 2 + 20 + 2, ySize - 6 - 20, xSize - ((6 + 20 + 2 + 20 + 2) * 2 + 20 + 2), 20);
 
         checkButtons();
     }
@@ -136,7 +147,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         if (client != null && client.getRecorder() != null) {
             AudioRecorder recorder = client.getRecorder();
             MutableComponent time = Component.literal(recorder.getDuration());
-            font.draw(poseStack, time.withStyle(ChatFormatting.DARK_RED), (float) (guiLeft + (xSize - font.width(time)) / 2), guiTop + ySize - font.lineHeight - 7, 0);
+            font.draw(poseStack, time.withStyle(ChatFormatting.DARK_RED), guiLeft + recordingHoverArea.getPosX() + recordingHoverArea.getWidth() / 2F - font.width(time) / 2F, guiTop + recordingHoverArea.getPosY() + recordingHoverArea.getHeight() / 2F - font.lineHeight / 2F, 0);
 
             if (recordingHoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
                 renderTooltip(poseStack, Component.translatable("message.voicechat.storage_size", recorder.getStorage()), mouseX, mouseY);

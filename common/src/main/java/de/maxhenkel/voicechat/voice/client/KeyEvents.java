@@ -7,7 +7,7 @@ import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
 import de.maxhenkel.voicechat.gui.group.GroupScreen;
 import de.maxhenkel.voicechat.gui.group.JoinGroupScreen;
-import de.maxhenkel.voicechat.gui.volume.PlayerVolumesScreen;
+import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -80,7 +80,7 @@ public class KeyEvents {
         }
 
         if (KEY_ADJUST_VOLUMES.consumeClick()) {
-            minecraft.setScreen(new PlayerVolumesScreen());
+            minecraft.setScreen(new AdjustVolumesScreen());
         }
 
         if (KEY_PTT.consumeClick()) {
