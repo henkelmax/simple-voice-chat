@@ -76,4 +76,13 @@ public interface VoicechatApi {
      */
     VolumeCategory.Builder volumeCategoryBuilder();
 
+    /**
+     * <b>NOTE</b>: Voice chat plugins can change this.
+     * This is only the default value.
+     * This value might not be correct if you are not connected to a server.
+     *
+     * @return the default distance, audio from voice chat is heard from
+     */
+    double getVoiceChatDistance();
+
 }
