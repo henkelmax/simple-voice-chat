@@ -43,8 +43,8 @@ task packageSources(type: Jar, dependsOn: 'classes') {
 }
 
 javadoc {
-    title "Simple Voice Chat Plugin API Version ${version}"
-    options.windowTitle = "Simple Voice Chat Plugin API"
+    title "Simple Voice Chat API Version ${version}"
+    options.windowTitle = "Simple Voice Chat API"
 }
 
 artifacts {
