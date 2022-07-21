@@ -18,7 +18,7 @@
 |
 [Credits](https://modrepo.de/minecraft/voicechat/credits)
 |
-[Plugin API](api/readme.md)
+[API](api/readme.md)
 
 # Simple Voice Chat
 
@@ -65,7 +65,7 @@ Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki?t=setup) for 
 - 3D sound
 - AES encryption
 - Audio recording with separate audio tracks
-- [Plugin API](api/readme.md)
+- A powerful [API](api/readme.md)
 
 ## Addons
 
