@@ -168,8 +168,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
 
     @Override
     public double getBroadcastRange() {
-        //TODO rework
-        return Voicechat.SERVER_CONFIG.voiceChatDistance.get();
+        return Math.max(Voicechat.SERVER_CONFIG.voiceChatDistance.get(), Voicechat.SERVER_CONFIG.broadcastRange.get());
     }
 
     @Override
