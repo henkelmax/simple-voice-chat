@@ -32,6 +32,7 @@
   "message.voicechat.activation_type.ptt": "Drücken zum sprechen",
   "message.voicechat.activation_type.voice": "Sprachaktivierung",
   "message.voicechat.voice_activation": "Sprachaktivierungsschwelle: %s dB",
+  "message.voicechat.voice_activation.disabled": "0 dB deaktiviert das Mikrofon!",
   "message.voicechat.adjust_volumes": "Lautstärken anpassen",
   "message.voicechat.volume_amplification": "Verstärkung: %s",
   "message.voicechat.muted": "Stumm",
