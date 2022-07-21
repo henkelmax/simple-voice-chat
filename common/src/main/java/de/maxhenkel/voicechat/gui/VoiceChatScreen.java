@@ -67,7 +67,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         }, (button, matrices, mouseX, mouseY) -> {
             renderTooltip(matrices, ADJUST_PLAYER_VOLUMES, mouseX, mouseY);
         });
-        addRenderableWidget(volumes);
+        addButton(volumes);
 
         if (client != null) {
             if (client.getRecorder() != null || (client.getConnection() != null && client.getConnection().getData().allowRecording())) {
