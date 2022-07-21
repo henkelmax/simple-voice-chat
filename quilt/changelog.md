@@ -7,3 +7,4 @@
 - Removed fade distance config option
 - Added custom volume categories
 - Added adjust volumes button to the voice chat menu
+- Added warning when microphone activation threshold is set too high
