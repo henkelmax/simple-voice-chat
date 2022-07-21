@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.voice.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.debug.DebugReport;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
 import de.maxhenkel.voicechat.gui.group.GroupScreen;
@@ -49,12 +48,7 @@ public class KeyEvents {
         ClientVoicechat client = ClientManager.getClient();
         ClientPlayerStateManager playerStateManager = ClientManager.getPlayerStateManager();
         if (KEY_VOICE_CHAT.consumeClick()) {
-            if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_F3)) {
-                minecraft.options.renderDebug = true;
-                DebugReport.generateReport(minecraft.player);
-            } else {
-                minecraft.setScreen(new VoiceChatScreen());
-            }
+            minecraft.setScreen(new VoiceChatScreen());
         }
 
         if (KEY_GROUP.consumeClick()) {

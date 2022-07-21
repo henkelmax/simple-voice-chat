@@ -98,7 +98,7 @@ public class SoundManager {
         long time = System.currentTimeMillis();
         executor.execute(() -> {
             long diff = System.currentTimeMillis() - time;
-            if (diff > 20 || (diff >= 5 && CommonCompatibilityManager.INSTANCE.isDevEnvironment())) {
+            if (diff > 20 || (diff >= 5 && Voicechat.debugMode())) {
                 Voicechat.LOGGER.warn("Sound executor delay: {} ms!", diff);
             }
             if (openContext()) {
