@@ -151,7 +151,10 @@ public interface VoicechatServerApi extends VoicechatApi {
     Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Position pos, double range, Predicate<ServerPlayer> filter);
 
     /**
-     * @return the maximum distance, voice chat audio can be received
+     * The distance at which audio packets are broadcast.
+     * <b>NOTE</b>: This is not the distance it can be heard.
+     *
+     * @return the maximum distance, voice chat audio packets can be received
      */
     double getBroadcastRange();
 
