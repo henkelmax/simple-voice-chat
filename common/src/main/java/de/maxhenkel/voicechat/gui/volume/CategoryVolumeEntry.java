@@ -6,7 +6,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientCategoryManager;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 public class CategoryVolumeEntry extends VolumeEntry {
 
@@ -29,10 +29,10 @@ public class CategoryVolumeEntry extends VolumeEntry {
             RenderSystem.setShaderTexture(0, ClientCategoryManager.getTexture(category.getId()));
         }
         GuiComponent.blit(poseStack, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
-        minecraft.font.draw(poseStack, Component.literal(category.getName()), (float) textX, (float) textY, PLAYER_NAME_COLOR);
+        minecraft.font.draw(poseStack, new TextComponent(category.getName()), (float) textX, (float) textY, PLAYER_NAME_COLOR);
         if (hovered && category.getDescription() != null) {
             screen.postRender(() -> {
-                screen.renderTooltip(poseStack, Component.literal(category.getDescription()), mouseX, mouseY);
+                screen.renderTooltip(poseStack, new TextComponent(category.getDescription()), mouseX, mouseY);
             });
         }
     }
