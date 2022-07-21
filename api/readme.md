@@ -1,6 +1,6 @@
-# Simple Voice Chat Plugin API
+# Simple Voice Chat API
 
-This submodule contains everything related to the Simple Voice Chat Plugin API.
+This submodule contains everything related to the Simple Voice Chat API.
 
 ## Useful Links
 
