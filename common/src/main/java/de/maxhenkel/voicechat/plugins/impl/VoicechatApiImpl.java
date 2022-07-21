@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
 import de.maxhenkel.voicechat.plugins.impl.audio.AudioConverterImpl;
 import de.maxhenkel.voicechat.plugins.impl.opus.OpusManager;
+import de.maxhenkel.voicechat.voice.common.Utils;
 
 public class VoicechatApiImpl implements VoicechatApi {
 
@@ -66,6 +67,11 @@ public class VoicechatApiImpl implements VoicechatApi {
     @Override
     public VolumeCategory.Builder volumeCategoryBuilder() {
         return new VolumeCategoryImpl.BuilderImpl();
+    }
+
+    @Override
+    public double getVoiceChatDistance() {
+        return Utils.getDefaultDistance();
     }
 
 }
