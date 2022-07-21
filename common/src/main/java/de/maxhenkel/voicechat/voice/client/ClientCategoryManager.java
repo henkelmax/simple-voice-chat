@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import com.mojang.blaze3d.platform.NativeImage;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeList;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
@@ -9,7 +8,8 @@ import de.maxhenkel.voicechat.plugins.CategoryManager;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.texture.NativeImage;
+import net.minecraft.util.ResourceLocation;
 
 public class ClientCategoryManager extends CategoryManager {
 

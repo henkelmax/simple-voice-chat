@@ -123,7 +123,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         int titleWidth = font.width(TITLE);
         font.draw(poseStack, TITLE.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, getFontColor());
 
-        Component tooltip = voiceActivationSlider.getTooltip();
+        ITextComponent tooltip = voiceActivationSlider.getTooltip();
         if (tooltip != null && voiceActivationSlider.isHovered()) {
             renderTooltip(poseStack, tooltip, mouseX, mouseY);
         }

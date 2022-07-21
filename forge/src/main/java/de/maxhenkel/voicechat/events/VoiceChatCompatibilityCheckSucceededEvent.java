@@ -1,17 +1,17 @@
 package de.maxhenkel.voicechat.events;
 
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.GenericEvent;
 
 public class VoiceChatCompatibilityCheckSucceededEvent extends GenericEvent<VoiceChatCompatibilityCheckSucceededEvent> {
 
-    private final ServerPlayer player;
+    private final ServerPlayerEntity player;
 
-    public VoiceChatCompatibilityCheckSucceededEvent(ServerPlayer player) {
+    public VoiceChatCompatibilityCheckSucceededEvent(ServerPlayerEntity player) {
         this.player = player;
     }
 
-    public ServerPlayer getPlayer() {
+    public ServerPlayerEntity getPlayer() {
         return player;
     }
 

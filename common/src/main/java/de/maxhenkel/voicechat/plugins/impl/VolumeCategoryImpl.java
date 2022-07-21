@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
 import de.maxhenkel.voicechat.api.VolumeCategory;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 import javax.annotation.Nullable;
 import java.util.regex.Pattern;
@@ -49,7 +49,7 @@ public class VolumeCategoryImpl implements VolumeCategory {
         return icon;
     }
 
-    public static VolumeCategoryImpl fromBytes(FriendlyByteBuf buf) {
+    public static VolumeCategoryImpl fromBytes(PacketBuffer buf) {
         String id = buf.readUtf(16);
         String name = buf.readUtf(16);
         String description = null;
@@ -68,7 +68,7 @@ public class VolumeCategoryImpl implements VolumeCategory {
         return new VolumeCategoryImpl(id, name, description, icon);
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeUtf(id, 16);
         buf.writeUtf(name, 16);
         buf.writeBoolean(description != null);

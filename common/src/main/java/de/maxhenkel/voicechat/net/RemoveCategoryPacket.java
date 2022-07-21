@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 public class RemoveCategoryPacket implements Packet<RemoveCategoryPacket> {
 
@@ -28,13 +28,13 @@ public class RemoveCategoryPacket implements Packet<RemoveCategoryPacket> {
     }
 
     @Override
-    public RemoveCategoryPacket fromBytes(FriendlyByteBuf buf) {
+    public RemoveCategoryPacket fromBytes(PacketBuffer buf) {
         categoryId = buf.readUtf(16);
         return this;
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeUtf(categoryId, 16);
     }
 

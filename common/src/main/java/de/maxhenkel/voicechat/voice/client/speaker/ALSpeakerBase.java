@@ -132,7 +132,7 @@ public abstract class ALSpeakerBase implements Speaker {
         PluginManager.instance().onALSound(source, audioChannelId, position, OpenALSoundEvent.Post.class);
     }
 
-    protected float getVolume(float volume, @Nullable Vec3 position, float maxDistance) {
+    protected float getVolume(float volume, @Nullable Vector3d position, float maxDistance) {
         return volume;
     }
 

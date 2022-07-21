@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 public class VoiceActivationSlider extends DebouncedSlider implements MicTestButton.MicListener {
 
     private static final ResourceLocation SLIDER = new ResourceLocation(Voicechat.MODID, "textures/gui/voice_activation_slider.png");
-    private static final ITextComponent NO_ACTIVATION = new TranslationTextComponent("message.voicechat.voice_activation.disabled").withStyle(ChatFormatting.RED);
+    private static final ITextComponent NO_ACTIVATION = new TranslationTextComponent("message.voicechat.voice_activation.disabled").withStyle(TextFormatting.RED);
 
     private double micValue;
 

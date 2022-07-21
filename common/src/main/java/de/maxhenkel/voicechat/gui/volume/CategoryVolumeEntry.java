@@ -1,12 +1,11 @@
 package de.maxhenkel.voicechat.gui.volume;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientCategoryManager;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.util.text.StringTextComponent;
 
 public class CategoryVolumeEntry extends VolumeEntry {
 
@@ -22,17 +21,17 @@ public class CategoryVolumeEntry extends VolumeEntry {
     }
 
     @Override
-    public void renderElement(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
+    public void renderElement(MatrixStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
         if (category.getIcon() == null) {
-            RenderSystem.setShaderTexture(0, OTHER_VOLUME_ICON);
+            minecraft.getTextureManager().bind(OTHER_VOLUME_ICON);
         } else {
-            RenderSystem.setShaderTexture(0, ClientCategoryManager.getTexture(category.getId()));
+            minecraft.getTextureManager().bind(ClientCategoryManager.getTexture(category.getId()));
         }
-        GuiComponent.blit(poseStack, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
-        minecraft.font.draw(poseStack, new TextComponent(category.getName()), (float) textX, (float) textY, PLAYER_NAME_COLOR);
+        AbstractGui.blit(poseStack, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
+        minecraft.font.draw(poseStack, new StringTextComponent(category.getName()), (float) textX, (float) textY, PLAYER_NAME_COLOR);
         if (hovered && category.getDescription() != null) {
             screen.postRender(() -> {
-                screen.renderTooltip(poseStack, new TextComponent(category.getDescription()), mouseX, mouseY);
+                screen.renderTooltip(poseStack, new StringTextComponent(category.getDescription()), mouseX, mouseY);
             });
         }
     }

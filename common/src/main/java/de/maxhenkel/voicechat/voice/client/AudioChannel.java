@@ -112,7 +112,7 @@ public class AudioChannel extends Thread {
                         PluginManager.instance().onReceiveEntityClientSound(uuid, new short[0], playerSoundPacket.isWhispering(), playerSoundPacket.getDistance());
                     } else if (packet instanceof LocationSoundPacket) {
                         LocationSoundPacket locationSoundPacket = (LocationSoundPacket) packet;
-                        PluginManager.instance().onReceiveLocationalClientSound(uuid, new short[0], locationSoundPacket.getLocation(), playerSoundPacket.getDistance());
+                        PluginManager.instance().onReceiveLocationalClientSound(uuid, new short[0], locationSoundPacket.getLocation(), locationSoundPacket.getDistance());
                     } else if (packet instanceof GroupSoundPacket) {
                         PluginManager.instance().onReceiveStaticClientSound(uuid, new short[0]);
                     }

@@ -84,7 +84,7 @@ public class NetworkMessage {
         socket.receive(packet);
         byte[] data = new byte[packet.getLength()];
         System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
-        FriendlyByteBuf b = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
+        PacketBuffer b = new PacketBuffer(Unpooled.wrappedBuffer(data));
         if (b.readByte() != MAGIC_BYTE) {
             return null;
         }

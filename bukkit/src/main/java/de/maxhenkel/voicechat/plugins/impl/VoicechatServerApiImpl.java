@@ -165,9 +165,10 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
 
     @Override
     public void registerVolumeCategory(VolumeCategory category) {
-        if (!(category instanceof VolumeCategoryImpl c)) {
+        if (!(category instanceof VolumeCategoryImpl)) {
             throw new IllegalArgumentException("VolumeCategory is not an instance of VolumeCategoryImpl");
         }
+        VolumeCategoryImpl c = (VolumeCategoryImpl) category;
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
             return;
