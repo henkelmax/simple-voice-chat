@@ -11,8 +11,6 @@ import de.maxhenkel.voicechat.net.ForgeNetManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.ForgePermissionManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager {
 
@@ -166,32 +163,6 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
             netManager = new ForgeNetManager();
         }
         return netManager;
-    }
-
-    @Override
-    public String listLoadedMods() {
-        StringBuilder sb = new StringBuilder();
-        for (IModInfo mod : ModList.get().getMods()) {
-            sb.append("Mod ID: " + mod.getModId());
-            sb.append("\n");
-            sb.append("Name: " + mod.getDisplayName());
-            sb.append("\n");
-            sb.append("Version: " + mod.getVersion().getQualifier());
-            sb.append("\n");
-            sb.append("Dependencies: " + mod.getDependencies().stream().map(IModInfo.ModVersion::getModId).collect(Collectors.joining(", ")));
-            sb.append("\n\n");
-        }
-        return sb.toString();
-    }
-
-    @Override
-    public String listKeybinds() {
-        StringBuilder sb = new StringBuilder();
-        for (KeyMapping mapping : Minecraft.getInstance().options.keyMappings) {
-            sb.append(mapping.getName() + "(" + mapping.getCategory() + "): " + mapping.getKey().getName() + " (" + mapping.getDefaultKey().getName() + ")");
-            sb.append("\n");
-        }
-        return sb.toString();
     }
 
     @Override

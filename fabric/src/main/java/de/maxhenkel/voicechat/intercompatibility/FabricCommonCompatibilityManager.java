@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.CommandDispatcher;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
@@ -13,19 +12,13 @@ import de.maxhenkel.voicechat.permission.PermissionManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
-import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
-import net.fabricmc.loader.api.metadata.ModDependency;
-import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
@@ -120,43 +113,6 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
             netManager = new FabricNetManager();
         }
         return netManager;
-    }
-
-    @Override
-    public String listLoadedMods() {
-        StringBuilder sb = new StringBuilder();
-        for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
-            ModMetadata metadata = mod.getMetadata();
-            sb.append("Mod ID: " + metadata.getId());
-            sb.append("\n");
-            sb.append("Name: " + metadata.getName());
-            sb.append("\n");
-            sb.append("Version: " + metadata.getVersion());
-            sb.append("\n");
-            sb.append("Dependencies: " + metadata.getDepends().stream().map(ModDependency::getModId).collect(Collectors.joining(", ")));
-            sb.append("\n\n");
-        }
-        return sb.toString();
-    }
-
-    @Override
-    public String listKeybinds() {
-        StringBuilder sb = new StringBuilder();
-        try {
-            Field moddedKeyBindings = KeyBindingRegistryImpl.class.getDeclaredField("moddedKeyBindings");
-            moddedKeyBindings.setAccessible(true);
-            List<KeyMapping> mappings = (List<KeyMapping>) moddedKeyBindings.get(null);
-            for (KeyMapping mapping : mappings) {
-                InputConstants.Key boundKey = ((KeyCodeAccessor) mapping).fabric_getBoundKey();
-                sb.append(mapping.getName() + "(" + mapping.getCategory() + "): " + boundKey.getName() + " (" + mapping.getDefaultKey().getName() + ")");
-                sb.append("\n");
-            }
-            sb.append("\n");
-        } catch (Exception e) {
-            sb.append("Error: " + e.getMessage());
-            sb.append("\n");
-        }
-        return sb.toString();
     }
 
     @Override
