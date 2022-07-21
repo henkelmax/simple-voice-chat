@@ -41,9 +41,13 @@ public abstract class Voicechat {
     }
 
     public static void logDebug(String message, Object... objects) {
-        if (CommonCompatibilityManager.INSTANCE.isDevEnvironment() || System.getProperty("voicechat.debug") != null) {
+        if (debugMode()) {
             LOGGER.info(message, objects);
         }
+    }
+
+    public static boolean debugMode() {
+        return CommonCompatibilityManager.INSTANCE.isDevEnvironment() || System.getProperty("voicechat.debug") != null;
     }
 
     private static int readVersion() throws IOException {
