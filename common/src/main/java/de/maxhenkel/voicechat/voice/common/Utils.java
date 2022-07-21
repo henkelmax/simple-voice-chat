@@ -198,7 +198,7 @@ public class Utils {
     /**
      * Converts a percentage to a dB value (0 - 1) - (-127 - 0)
      *
-     * @param perc the percantage
+     * @param perc the percentage
      * @return the decibel value
      */
     public static double percToDb(double perc) {
