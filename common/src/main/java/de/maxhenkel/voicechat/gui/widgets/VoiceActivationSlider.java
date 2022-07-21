@@ -7,12 +7,17 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+
+import javax.annotation.Nullable;
 
 public class VoiceActivationSlider extends DebouncedSlider implements MicTestButton.MicListener {
 
     private static final ResourceLocation SLIDER = new ResourceLocation(Voicechat.MODID, "textures/gui/voice_activation_slider.png");
+    private static final ITextComponent NO_ACTIVATION = new TranslationTextComponent("message.voicechat.voice_activation.disabled").withStyle(ChatFormatting.RED);
 
     private double micValue;
 
@@ -33,7 +38,25 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     @Override
     protected void updateMessage() {
         long db = Math.round(Utils.percToDb(value));
-        setMessage(new TranslationTextComponent("message.voicechat.voice_activation", db));
+        TranslationTextComponent component = new TranslationTextComponent("message.voicechat.voice_activation", db);
+
+        if (db >= -10L) {
+            component.withStyle(TextFormatting.RED);
+        }
+
+        setMessage(component);
+    }
+
+    @Nullable
+    public ITextComponent getTooltip() {
+        if (value >= 1D) {
+            return NO_ACTIVATION;
+        }
+        return null;
+    }
+
+    public boolean isHovered() {
+        return isHovered;
     }
 
     @Override

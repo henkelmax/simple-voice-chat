@@ -32,6 +32,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
     @Nullable
     private final Screen parent;
+    private VoiceActivationSlider voiceActivationSlider;
 
     public VoiceChatSettingsScreen(@Nullable Screen parent) {
         super(TITLE, 248, 219);
@@ -60,7 +61,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         }
         y += 21;
 
-        VoiceActivationSlider voiceActivationSlider = new VoiceActivationSlider(guiLeft + 10, y + 21, xSize - 20, 20);
+        voiceActivationSlider = new VoiceActivationSlider(guiLeft + 10, y + 21, xSize - 20, 20);
 
         addButton(new MicActivationButton(guiLeft + 10, y, xSize - 20, 20, voiceActivationSlider));
         y += 21;
@@ -121,5 +122,10 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
     public void renderForeground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
         int titleWidth = font.width(TITLE);
         font.draw(poseStack, TITLE.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, getFontColor());
+
+        Component tooltip = voiceActivationSlider.getTooltip();
+        if (tooltip != null && voiceActivationSlider.isHovered()) {
+            renderTooltip(poseStack, tooltip, mouseX, mouseY);
+        }
     }
 }
