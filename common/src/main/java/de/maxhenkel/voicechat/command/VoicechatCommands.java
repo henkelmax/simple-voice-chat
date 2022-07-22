@@ -217,7 +217,7 @@ public class VoicechatCommands {
             if (Voicechat.SERVER.isCompatible(player)) {
                 return false;
             }
-            commandSource.getSource().sendFailure(new TextComponent("You need to have %s installed to use this command".formatted(CommonCompatibilityManager.INSTANCE.getModName())));
+            commandSource.getSource().sendFailure(new TextComponent("You need to have %s installed on your client to use this command".formatted(CommonCompatibilityManager.INSTANCE.getModName())));
             return true;
         } catch (Exception e) {
             commandSource.getSource().sendFailure(new TextComponent("This command can only be executed as a player"));
