@@ -52,7 +52,7 @@ Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki?t=setup) for 
 - [Opus codec](https://opus-codec.org/)
 - [RNNoise](https://jmvalin.ca/demo/rnnoise/) recurrent neural network noise suppression
 - OpenAL audio
-- Cross compatibility between Fabric, Forge, Bukkit, Spigot and Paper
+- Cross compatibility between Fabric, Forge, Quilt, Bukkit, Spigot and Paper
 - Compatibility with [ModMenu](https://www.curseforge.com/minecraft/mc-mods/modmenu) (Use [ClothConfig](https://www.curseforge.com/minecraft/mc-mods/cloth-config) for a better configuration UI)
 - Push to talk
 - Voice activation
