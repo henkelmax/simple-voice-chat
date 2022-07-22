@@ -209,14 +209,11 @@ public class AudioChannel extends Thread {
                 return;
             }
 
-            float crouchMultiplayer = player.isCrouching() ? (float) initializationData.getCrouchDistanceMultiplier() : 1F;
-            float whisperMultiplayer = soundPacket.isWhispering() ? (float) initializationData.getWhisperDistanceMultiplier() : 1F;
-            float multiplier = crouchMultiplayer * whisperMultiplayer;
-            speaker.play(processedMonoData, volume, pos, soundPacket.getDistance() * multiplier);
-            if (PositionalAudioUtils.getDistanceVolume(soundPacket.getDistance(), pos, multiplier) > 0F) {
+            speaker.play(processedMonoData, volume, pos, soundPacket.getDistance());
+            if (PositionalAudioUtils.getDistanceVolume(soundPacket.getDistance(), pos) > 0F) {
                 client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
             }
-            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(soundPacket.getDistance(), pos, processedMonoData, multiplier));
+            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(soundPacket.getDistance(), pos, processedMonoData));
         } else if (packet instanceof LocationSoundPacket) {
             LocationSoundPacket p = (LocationSoundPacket) packet;
             short[] processedMonoData = PluginManager.instance().onReceiveLocationalClientSound(uuid, monoData, p.getLocation(), p.getDistance());

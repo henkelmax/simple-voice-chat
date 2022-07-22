@@ -19,8 +19,6 @@ public class SecretPacket implements Packet<SecretPacket> {
     private ServerConfig.Codec codec;
     private int mtuSize;
     private double voiceChatDistance;
-    private double crouchDistanceMultiplier;
-    private double whisperDistanceMultiplier;
     private int keepAlive;
     private boolean groupsEnabled;
     private String voiceHost;
@@ -37,8 +35,6 @@ public class SecretPacket implements Packet<SecretPacket> {
         this.codec = serverConfig.voiceChatCodec.get();
         this.mtuSize = serverConfig.voiceChatMtuSize.get();
         this.voiceChatDistance = serverConfig.voiceChatDistance.get();
-        this.crouchDistanceMultiplier = serverConfig.crouchDistanceMultiplier.get();
-        this.whisperDistanceMultiplier = serverConfig.whisperDistanceMultiplier.get();
         this.keepAlive = serverConfig.keepAlive.get();
         this.groupsEnabled = serverConfig.groupsEnabled.get();
         this.voiceHost = PluginManager.instance().getVoiceHost(player, serverConfig.voiceHost.get());
@@ -67,14 +63,6 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     public double getVoiceChatDistance() {
         return voiceChatDistance;
-    }
-
-    public double getCrouchDistanceMultiplier() {
-        return crouchDistanceMultiplier;
-    }
-
-    public double getWhisperDistanceMultiplier() {
-        return whisperDistanceMultiplier;
     }
 
     public int getKeepAlive() {
@@ -106,8 +94,6 @@ public class SecretPacket implements Packet<SecretPacket> {
         codec = ServerConfig.Codec.values()[buf.readByte()];
         mtuSize = buf.readInt();
         voiceChatDistance = buf.readDouble();
-        crouchDistanceMultiplier = buf.readDouble();
-        whisperDistanceMultiplier = buf.readDouble();
         keepAlive = buf.readInt();
         groupsEnabled = buf.readBoolean();
         voiceHost = buf.readUtf(32767);
@@ -123,8 +109,6 @@ public class SecretPacket implements Packet<SecretPacket> {
         buf.writeByte(codec.ordinal());
         buf.writeInt(mtuSize);
         buf.writeDouble(voiceChatDistance);
-        buf.writeDouble(crouchDistanceMultiplier);
-        buf.writeDouble(whisperDistanceMultiplier);
         buf.writeInt(keepAlive);
         buf.writeBoolean(groupsEnabled);
         buf.writeUtf(voiceHost);

@@ -287,6 +287,7 @@ public class Server extends Thread {
 
     private void processProximityPacket(PlayerState senderState, ServerPlayerEntity sender, MicPacket packet) throws Exception {
         @Nullable ClientGroup group = senderState.getGroup();
+        float distance = Utils.getDefaultDistance();
 
         SoundPacket<?> soundPacket = null;
         String source = null;
@@ -310,17 +311,21 @@ public class Server extends Thread {
                 }
             }
             if (Voicechat.SERVER_CONFIG.spectatorInteraction.get()) {
-                soundPacket = new LocationSoundPacket(sender.getUUID(), sender.getEyePosition(1F), packet.getData(), packet.getSequenceNumber(), Utils.getDefaultDistance(), null);
+                soundPacket = new LocationSoundPacket(sender.getUUID(), sender.getEyePosition(1F), packet.getData(), packet.getSequenceNumber(), distance, null);
                 source = SoundPacketEvent.SOURCE_SPECTATOR;
             }
         }
 
         if (soundPacket == null) {
-            soundPacket = new PlayerSoundPacket(sender.getUUID(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering(), Utils.getDefaultDistance(), null);
+            float crouchMultiplayer = sender.isCrouching() ? Voicechat.SERVER_CONFIG.crouchDistanceMultiplier.get().floatValue() : 1F;
+            float whisperMultiplayer = packet.isWhispering() ? Voicechat.SERVER_CONFIG.whisperDistanceMultiplier.get().floatValue() : 1F;
+            float multiplier = crouchMultiplayer * whisperMultiplayer;
+            distance = distance * multiplier;
+            soundPacket = new PlayerSoundPacket(sender.getUUID(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering(), distance, null);
             source = SoundPacketEvent.SOURCE_PROXIMITY;
         }
 
-        broadcast(ServerWorldUtils.getPlayersInRange(sender.getLevel(), sender.position(), getBroadcastRange(0F), p -> !p.getUUID().equals(sender.getUUID())), soundPacket, sender, senderState, group, source);
+        broadcast(ServerWorldUtils.getPlayersInRange(sender.getLevel(), sender.position(), getBroadcastRange(distance), p -> !p.getUUID().equals(sender.getUUID())), soundPacket, sender, senderState, group, source);
     }
 
     public double getBroadcastRange(float minRange) {
