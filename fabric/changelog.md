@@ -9,3 +9,4 @@
 - Added adjust volumes button to the voice chat menu
 - Added warning when microphone activation threshold is set too high
 - Removed voice chat debug report
+- Added Argentinian Spanish translation
