@@ -9,7 +9,6 @@
   "key.voice_chat": "음성 채팅 GUI",
   "key.voice_chat_group": "음성 채팅 그룹",
   "key.voice_chat_toggle_recording": "녹음 토글",
-  "key.voice_chat_adjust_volumes": "플레이어 볼륨 조절",
   "gui.voicechat.voice_chat.title": "음성 채팅",
   "gui.voicechat.voice_chat_settings.title": "음성 채팅 설정",
   "gui.voicechat.select_microphone.title": "마이크 선택",
