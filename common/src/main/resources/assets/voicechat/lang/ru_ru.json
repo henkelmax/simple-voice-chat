@@ -9,7 +9,7 @@
   "key.voice_chat": "GUI Голосового чата",
   "key.voice_chat_group": "Группы голосового чата",
   "key.voice_chat_toggle_recording": "Переключить запись",
-  "key.voice_chat_adjust_volumes": "Регулировка громкости игроков",
+  "key.voice_chat_adjust_volumes": "Регулировка громкости",
   "gui.voicechat.voice_chat.title": "Голосовой чат",
   "gui.voicechat.voice_chat_settings.title": "Настройки голосового чата",
   "gui.voicechat.adjust_volume.title": "Регулировка громкости",
