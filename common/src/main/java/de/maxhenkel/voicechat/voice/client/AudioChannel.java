@@ -184,7 +184,7 @@ public class AudioChannel extends Thread {
 
         if (packet instanceof GroupSoundPacket) {
             short[] processedMonoData = PluginManager.instance().onReceiveStaticClientSound(uuid, monoData);
-            speaker.play(processedMonoData, volume, null);
+            speaker.play(processedMonoData, volume, packet.getCategory());
             client.getTalkCache().updateTalking(uuid, false);
             appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData));
         } else if (packet instanceof PlayerSoundPacket soundPacket) {
@@ -193,7 +193,7 @@ public class AudioChannel extends Thread {
             }
             if (player == minecraft.cameraEntity) {
                 short[] processedMonoData = PluginManager.instance().onReceiveStaticClientSound(uuid, monoData);
-                speaker.play(processedMonoData, volume, null);
+                speaker.play(processedMonoData, volume, soundPacket.getCategory());
                 client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
                 appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData));
                 return;
@@ -206,7 +206,7 @@ public class AudioChannel extends Thread {
                 return;
             }
 
-            speaker.play(processedMonoData, volume, pos, soundPacket.getDistance());
+            speaker.play(processedMonoData, volume, pos, soundPacket.getCategory(), soundPacket.getDistance());
             if (PositionalAudioUtils.getDistanceVolume(soundPacket.getDistance(), pos) > 0F) {
                 client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
             }
@@ -216,7 +216,7 @@ public class AudioChannel extends Thread {
             if (p.getLocation().distanceTo(minecraft.gameRenderer.getMainCamera().getPosition()) > p.getDistance() + 1D) {
                 return;
             }
-            speaker.play(processedMonoData, volume, p.getLocation(), p.getDistance());
+            speaker.play(processedMonoData, volume, p.getLocation(), p.getCategory(), p.getDistance());
             client.getTalkCache().updateTalking(uuid, false);
             appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(p.getDistance(), p.getLocation(), processedMonoData));
         }
