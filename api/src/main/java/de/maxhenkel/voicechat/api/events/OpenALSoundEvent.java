@@ -37,6 +37,12 @@ public interface OpenALSoundEvent extends ClientEvent {
     int getSource();
 
     /**
+     * @return the category of the sound
+     */
+    @Nullable
+    String getCategory();
+
+    /**
      * This event is emitted before any OpenAL calls were made by the voice chat.
      */
     public interface Pre extends OpenALSoundEvent {
