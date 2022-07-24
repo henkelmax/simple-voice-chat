@@ -11,9 +11,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class ClientCategoryManager extends CategoryManager {
 
+    protected final Map<String, ResourceLocation> images;
+
     public ClientCategoryManager() {
+        images = new ConcurrentHashMap<>();
         CommonCompatibilityManager.INSTANCE.getNetManager().addCategoryChannel.setClientListener((client, handler, packet) -> {
             addCategory(packet.getCategory());
             Voicechat.logDebug("Added category {}", packet.getCategory().getId());
@@ -48,11 +54,16 @@ public class ClientCategoryManager extends CategoryManager {
     }
 
     private void registerImage(String id, NativeImage image) {
-        Minecraft.getInstance().getEntityRenderDispatcher().textureManager.register(getTexture(id), new DynamicTexture(image));
+        ResourceLocation resourceLocation = Minecraft.getInstance().getEntityRenderDispatcher().textureManager.register(id, new DynamicTexture(image));
+        images.put(id, resourceLocation);
     }
 
     private void unRegisterImage(String id) {
-        Minecraft.getInstance().getEntityRenderDispatcher().textureManager.release(getTexture(id));
+        ResourceLocation resourceLocation = images.get(id);
+        if (resourceLocation != null) {
+            Minecraft.getInstance().getEntityRenderDispatcher().textureManager.release(resourceLocation);
+            images.remove(id);
+        }
     }
 
     private NativeImage fromIntArray(int[][] icon) {
@@ -72,8 +83,8 @@ public class ClientCategoryManager extends CategoryManager {
         return nativeImage;
     }
 
-    public static ResourceLocation getTexture(String id) {
-        return new ResourceLocation(Voicechat.MODID, "texures/voicechat/categories/" + id);
+    public ResourceLocation getTexture(String id, ResourceLocation defaultImage) {
+        return images.getOrDefault(id, defaultImage);
     }
 
 }
