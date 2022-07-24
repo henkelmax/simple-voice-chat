@@ -8,10 +8,10 @@ public interface Speaker {
 
     void open() throws SpeakerException;
 
-    void play(short[] data, float volume, @Nullable Vector3d position, float maxDistance);
+    void play(short[] data, float volume, @Nullable Vector3d position, @Nullable String category, float maxDistance);
 
-    default void play(short[] data, float volume, @Nullable Vector3d position) {
-        play(data, volume, position, 0F);
+    default void play(short[] data, float volume, @Nullable String category) {
+        play(data, volume, null, category, 0F);
     }
 
     void close();

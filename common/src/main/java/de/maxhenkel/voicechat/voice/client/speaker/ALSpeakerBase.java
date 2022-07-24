@@ -76,18 +76,18 @@ public abstract class ALSpeakerBase implements Speaker {
     }
 
     @Override
-    public void play(short[] data, float volume, @Nullable Vector3d position, float maxDistance) {
+    public void play(short[] data, float volume, @Nullable Vector3d position, @Nullable String category, float maxDistance) {
         runInContext(() -> {
             removeProcessedBuffersSync();
             int buffers = getQueuedBuffersSync();
             boolean stopped = getStateSync() == AL11.AL_INITIAL || getStateSync() == AL11.AL_STOPPED || buffers <= 1;
             if (stopped) {
                 for (int i = 0; i < getBufferSize(); i++) {
-                    writeSync(new short[bufferSize], 1F, position, maxDistance);
+                    writeSync(new short[bufferSize], 1F, position, category, maxDistance);
                 }
             }
 
-            writeSync(data, volume, position, maxDistance);
+            writeSync(data, volume, position, category, maxDistance);
 
             if (stopped) {
                 AL11.alSourcePlay(source);
@@ -100,10 +100,10 @@ public abstract class ALSpeakerBase implements Speaker {
         return VoicechatClient.CLIENT_CONFIG.outputBufferSize.get();
     }
 
-    protected void writeSync(short[] data, float volume, @Nullable Vector3d position, float maxDistance) {
-        PluginManager.instance().onALSound(source, audioChannelId, position, OpenALSoundEvent.Pre.class);
+    protected void writeSync(short[] data, float volume, @Nullable Vector3d position, @Nullable String category, float maxDistance) {
+        PluginManager.instance().onALSound(source, audioChannelId, position, category, OpenALSoundEvent.Pre.class);
         setPositionSync(position, maxDistance);
-        PluginManager.instance().onALSound(source, audioChannelId, position, OpenALSoundEvent.class);
+        PluginManager.instance().onALSound(source, audioChannelId, position, category, OpenALSoundEvent.class);
 
         AL11.alSourcef(source, AL11.AL_MAX_GAIN, 6F);
         SoundManager.checkAlError();
@@ -129,7 +129,7 @@ public abstract class ALSpeakerBase implements Speaker {
         SoundManager.checkAlError();
         bufferIndex = (bufferIndex + 1) % buffers.length;
 
-        PluginManager.instance().onALSound(source, audioChannelId, position, OpenALSoundEvent.Post.class);
+        PluginManager.instance().onALSound(source, audioChannelId, position, category, OpenALSoundEvent.Post.class);
     }
 
     protected float getVolume(float volume, @Nullable Vector3d position, float maxDistance) {

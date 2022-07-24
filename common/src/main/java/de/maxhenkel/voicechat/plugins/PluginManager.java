@@ -207,11 +207,12 @@ public class PluginManager {
         return clientSoundEvent.getRawAudio();
     }
 
-    public void onALSound(int source, @Nullable UUID channelId, @Nullable Vector3d pos, Class<? extends OpenALSoundEvent> eventClass) {
+    public void onALSound(int source, @Nullable UUID channelId, @Nullable Vector3d pos, @Nullable String category, Class<? extends OpenALSoundEvent> eventClass) {
         dispatchEvent(eventClass, new OpenALSoundEventImpl(
                 new VoicechatClientApiImpl(),
                 channelId,
                 pos == null ? null : new PositionImpl(pos),
+                category,
                 source
         ));
     }
