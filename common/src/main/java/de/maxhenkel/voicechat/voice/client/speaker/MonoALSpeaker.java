@@ -14,8 +14,8 @@ public class MonoALSpeaker extends ALSpeakerBase {
     }
 
     @Override
-    public void play(short[] data, float volume, @Nullable Vec3 position) {
-        super.play(data, volume, null);
+    public void play(short[] data, float volume, @Nullable Vec3 position, @Nullable String category, float distance) {
+        super.play(data, volume, null, category, distance);
     }
 
     @Override
