@@ -14,12 +14,15 @@ public class OpenALSoundEventImpl extends ClientEventImpl implements OpenALSound
     protected PositionImpl position;
     @Nullable
     protected UUID channelId;
+    @Nullable
+    protected String category;
     protected int source;
 
-    public OpenALSoundEventImpl(VoicechatClientApi api, @Nullable UUID channelId, @Nullable PositionImpl position, int source) {
+    public OpenALSoundEventImpl(VoicechatClientApi api, @Nullable UUID channelId, @Nullable PositionImpl position, @Nullable String category, int source) {
         super(api);
         this.channelId = channelId;
         this.position = position;
+        this.category = category;
         this.source = source;
     }
 
@@ -38,6 +41,11 @@ public class OpenALSoundEventImpl extends ClientEventImpl implements OpenALSound
     @Override
     public int getSource() {
         return source;
+    }
+
+    @Override
+    public String getCategory() {
+        return category;
     }
 
     @Override
