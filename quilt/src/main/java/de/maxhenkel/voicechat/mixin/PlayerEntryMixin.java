@@ -52,7 +52,7 @@ public class PlayerEntryMixin {
     private boolean invited;
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void init(Minecraft minecraft, SocialInteractionsScreen socialInteractionsScreen, UUID uUID, String string, Supplier<ResourceLocation> supplier, CallbackInfo ci) {
+    private void init(Minecraft minecraft, SocialInteractionsScreen socialInteractionsScreen, UUID uUID, String string, Supplier<ResourceLocation> supplier, boolean bl, CallbackInfo ci) {
         screen = socialInteractionsScreen;
     }
 
