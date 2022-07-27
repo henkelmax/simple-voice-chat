@@ -1,1 +1,1 @@
-- Updated to 1.19.1-rc3
+- Updated to 1.19.1
