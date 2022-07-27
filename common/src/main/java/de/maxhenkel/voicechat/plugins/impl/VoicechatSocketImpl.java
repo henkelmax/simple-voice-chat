@@ -40,7 +40,6 @@ public class VoicechatSocketImpl implements VoicechatSocket {
                 Voicechat.LOGGER.error("Failed to bind to address '{}', binding to wildcard IP instead", bindAddress);
                 socket = new DatagramSocket(port);
             }
-            socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
         } catch (BindException e) {
             Voicechat.LOGGER.error("Failed to run voice chat at UDP port {}, make sure no other application is running at that port", port);
             Voicechat.LOGGER.error("Voice chat server error {}", e.getMessage());
