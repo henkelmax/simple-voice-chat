@@ -38,7 +38,11 @@ public class VoicechatSocketImpl implements VoicechatSocket {
                 Voicechat.LOGGER.error("Failed to bind to address '{}', binding to wildcard IP instead", bindAddress);
                 socket = new DatagramSocket(port);
             }
-            socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
+            // IPTOS doesn't play a role in any type of end customer network
+            // DCSPs would be the way forward, but they will not be honored by your ISPs
+            // This socket option is not available on all OSes, e.g., not on FreeBSD
+            // Alternatively, this could be handled via try/catch and just log when it doesn't work
+            // socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
         } catch (BindException e) {
             Voicechat.LOGGER.error("Failed to run voice chat at UDP port {}, make sure no other application is running at that port", port);
             Voicechat.LOGGER.error("Shutting down server");
