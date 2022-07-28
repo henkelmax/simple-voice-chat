@@ -95,6 +95,20 @@ task runServer {
             workingDir = "${projectDir}/run"
             main = "-jar";
             args = [
+                    "${projectDir}/run/craftbukkit.jar",
+                    "nogui"
+            ]
+        }
+    }
+}
+
+task runPaperServer {
+    doLast {
+        javaexec {
+            debug = true
+            workingDir = "${projectDir}/run"
+            main = "-jar";
+            args = [
                     "${projectDir}/run/paper.jar",
                     "nogui"
             ]
@@ -104,6 +118,7 @@ task runServer {
 
 build.dependsOn(shadowJar)
 runServer.dependsOn(build)
+runPaperServer.dependsOn(build)
 
 shadowJar {
     configurations = [project.configurations.shadow]
