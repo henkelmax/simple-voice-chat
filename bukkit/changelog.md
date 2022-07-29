@@ -1,1 +1,1 @@
-- Fixed disconnected state being controlled by the client
+- Updated to 1.19.1
