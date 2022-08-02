@@ -79,6 +79,7 @@ public class NetworkMessage {
         byte[] data = packet.getData();
         FriendlyByteBuf b = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
         if (b.readByte() != MAGIC_BYTE) {
+            Voicechat.logDebug("Received invalid packet from {}", packet.getSocketAddress());
             return null;
         }
         UUID playerID = b.readUUID();
