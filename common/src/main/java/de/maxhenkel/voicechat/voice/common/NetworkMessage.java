@@ -86,6 +86,7 @@ public class NetworkMessage {
         System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
         PacketBuffer b = new PacketBuffer(Unpooled.wrappedBuffer(data));
         if (b.readByte() != MAGIC_BYTE) {
+            Voicechat.logDebug("Received invalid packet from {}", client.getAddress());
             return null;
         }
         return readFromBytes(packet.getSocketAddress(), client.getData().getSecret(), b.readByteArray(), System.currentTimeMillis());
@@ -96,6 +97,7 @@ public class NetworkMessage {
         byte[] data = packet.getData();
         PacketBuffer b = new PacketBuffer(Unpooled.wrappedBuffer(data));
         if (b.readByte() != MAGIC_BYTE) {
+            Voicechat.logDebug("Received invalid packet from {}", packet.getSocketAddress());
             return null;
         }
         UUID playerID = b.readUUID();
