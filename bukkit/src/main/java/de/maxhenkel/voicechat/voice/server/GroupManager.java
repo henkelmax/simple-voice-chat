@@ -28,8 +28,7 @@ public class GroupManager {
             return;
         }
         if (!player.hasPermission(PermissionManager.GROUPS_PERMISSION)) {
-            //TODO change to status bar message
-            NetManager.sendMessage(player, Component.translatable("message.voicechat.no_group_permission"));
+            NetManager.sendStatusMessage(player, Component.translatable("message.voicechat.no_group_permission"));
             return;
         }
         joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
@@ -40,8 +39,7 @@ public class GroupManager {
             return;
         }
         if (!player.hasPermission(PermissionManager.GROUPS_PERMISSION)) {
-            //TODO change to status bar message
-            NetManager.sendMessage(player, Component.translatable("message.voicechat.no_group_permission"));
+            NetManager.sendStatusMessage(player, Component.translatable("message.voicechat.no_group_permission"));
             return;
         }
         Group group = new Group(UUID.randomUUID(), packet.getName(), packet.getPassword());

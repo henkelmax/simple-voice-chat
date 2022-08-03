@@ -201,8 +201,7 @@ public class Server extends Thread {
                         }
                         if (!player.hasPermission(PermissionManager.SPEAK_PERMISSION)) {
                             CooldownTimer.run("muted-" + playerUUID, () -> {
-                                //TODO change to status bar message
-                                NetManager.sendMessage(player, Component.translatable("message.voicechat.no_speak_permission"));
+                                NetManager.sendStatusMessage(player, Component.translatable("message.voicechat.no_speak_permission"));
                             });
                             continue;
                         }
