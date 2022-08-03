@@ -30,11 +30,6 @@
   "message.voicechat.select_speaker": "Selecteer luidspreker",
   "message.voicechat.back": "Terug",
   "message.voicechat.client_not_connected": "Client niet verbonden",
-  "message.voicechat.failed_to_send_packet": "Kan pakket niet verzenden: %s",
-  "message.voicechat.sending_packet": "Pakket verzenden...",
-  "message.voicechat.packet_sent_waiting": "Pakket verzonden. Wachten op antwoord...",
-  "message.voicechat.packet_received": "Pakket ontvangen in %sms",
-  "message.voicechat.packet_timed_out": "Verzoek verlopen",
   "message.voicechat.icons_hidden": "Verborgen pictogrammen voor spraakchat",
   "message.voicechat.icons_visible": "Zichtbare pictogrammen voor spraakchat"
 }

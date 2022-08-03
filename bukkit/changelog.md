@@ -1,1 +1,2 @@
 - Added status messages
+- Improved test command

@@ -10,7 +10,6 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.permission.Permission;
 import de.maxhenkel.voicechat.permission.PermissionManager;
-import de.maxhenkel.voicechat.voice.common.PingPacket;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Group;
@@ -63,22 +62,32 @@ public class VoicechatCommands {
                 return 1;
             }
             try {
-                commandSource.getSource().sendSuccess(Component.translatable("message.voicechat.sending_packet"), false);
-                long timestamp = System.currentTimeMillis();
-                server.getPingManager().sendPing(clientConnection, 5000, new PingManager.PingListener() {
+                commandSource.getSource().sendSuccess(Component.translatable("message.voicechat.sending_ping"), false);
+
+                server.getPingManager().sendPing(clientConnection, 500, 10, new PingManager.PingListener() {
+
                     @Override
-                    public void onPong(PingPacket packet) {
-                        commandSource.getSource().sendSuccess(Component.translatable("message.voicechat.packet_received", (System.currentTimeMillis() - timestamp)), false);
+                    public void onPong(int attempts, long pingMilliseconds) {
+                        if (attempts <= 1) {
+                            commandSource.getSource().sendSuccess(Component.translatable("message.voicechat.ping_received", pingMilliseconds), false);
+                        } else {
+                            commandSource.getSource().sendSuccess(Component.translatable("message.voicechat.ping_received_attempt", attempts, pingMilliseconds), false);
+                        }
                     }
 
                     @Override
-                    public void onTimeout() {
-                        commandSource.getSource().sendSuccess(Component.translatable("message.voicechat.packet_timed_out"), false);
+                    public void onFailedAttempt(int attempts) {
+                        commandSource.getSource().sendSuccess(Component.translatable("message.voicechat.ping_retry"), false);
+                    }
+
+                    @Override
+                    public void onTimeout(int attempts) {
+                        commandSource.getSource().sendSuccess(Component.translatable("message.voicechat.ping_timed_out", attempts), false);
                     }
                 });
-                commandSource.getSource().sendSuccess(Component.translatable("message.voicechat.packet_sent_waiting"), false);
+                commandSource.getSource().sendSuccess(Component.translatable("message.voicechat.ping_sent_waiting"), false);
             } catch (Exception e) {
-                commandSource.getSource().sendSuccess(Component.translatable("message.voicechat.failed_to_send_packet", e.getMessage()), false);
+                commandSource.getSource().sendSuccess(Component.translatable("message.voicechat.failed_to_send_ping", e.getMessage()), false);
                 e.printStackTrace();
                 return 1;
             }
