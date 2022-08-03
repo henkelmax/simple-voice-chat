@@ -96,14 +96,13 @@ public final class Voicechat extends JavaPlugin {
         if (voicechatCommand != null) {
             voicechatCommand.setExecutor(new VoiceChatCommands());
 
-            //TODO add back when commodore is fixed
-            /*if (CommodoreProvider.isSupported()) {
+            if (CommodoreProvider.isSupported()) {
                 Commodore commodore = CommodoreProvider.getCommodore(this);
                 CommodoreCommands.registerCompletions(commodore);
                 LOGGER.info("Successfully initialized commodore command completion");
             } else {
                 LOGGER.warn("Could not initialize commodore command completion");
-            }*/
+            }
         } else {
             LOGGER.error("Failed to register commands");
         }
