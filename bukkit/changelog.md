@@ -1,7 +1,1 @@
-- Fixed disconnected state being controlled by the client
-- Reworked voice chat UDP protocol
-- Fixed potential security vulnerability
-- Added debug command line parameter
-- Removed minimum distance config option
-- Added custom volume categories
-- Added adjust volumes button to the voice chat menu
+- Added status messages
