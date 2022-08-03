@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.command;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
-import de.maxhenkel.voicechat.voice.common.PingPacket;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Group;
@@ -88,22 +87,31 @@ public class VoiceChatCommands implements CommandExecutor {
         }
 
         try {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.sending_packet"));
-            long timestamp = System.currentTimeMillis();
-            Voicechat.SERVER.getServer().getPingManager().sendPing(clientConnection, 5000, new PingManager.PingListener() {
+            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.sending_ping"));
+            Voicechat.SERVER.getServer().getPingManager().sendPing(clientConnection, 500, 10, new PingManager.PingListener() {
+
                 @Override
-                public void onPong(PingPacket packet) {
-                    NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.packet_received", Component.text(System.currentTimeMillis() - timestamp)));
+                public void onPong(int attempts, long pingMilliseconds) {
+                    if (attempts <= 1) {
+                        NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.ping_received", Component.text(pingMilliseconds)));
+                    } else {
+                        NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.ping_received_attempt", Component.text(attempts), Component.text(pingMilliseconds)));
+                    }
                 }
 
                 @Override
-                public void onTimeout() {
-                    NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.packet_timed_out"));
+                public void onFailedAttempt(int attempts) {
+                    NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.ping_retry"));
+                }
+
+                @Override
+                public void onTimeout(int attempts) {
+                    NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.ping_timed_out", Component.text(attempts)));
                 }
             });
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.packet_sent_waiting"));
+            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.ping_sent_waiting"));
         } catch (Exception e) {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.failed_to_send_packet", Component.text(e.getMessage())));
+            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.failed_to_send_ping", Component.text(e.getMessage())));
             e.printStackTrace();
         }
         return true;

@@ -25,7 +25,7 @@ public class PingManager {
         if (ping == null) {
             return;
         }
-        ping.listener.onPong(packet);
+        ping.listener.onPong(ping.attempt, System.currentTimeMillis() - packet.getTimestamp());
     }
 
     public void checkTimeouts() {
@@ -33,40 +33,65 @@ public class PingManager {
             return;
         }
         List<Map.Entry<UUID, Ping>> timedOut = listeners.entrySet().stream().filter(uuidPingEntry -> uuidPingEntry.getValue().isTimedOut()).collect(Collectors.toList());
-        for (Map.Entry<UUID, Ping> ping : timedOut) {
-            ping.getValue().listener.onTimeout();
-            listeners.remove(ping.getKey());
+        for (Map.Entry<UUID, Ping> pingEntry : timedOut) {
+            Ping ping = pingEntry.getValue();
+            if (ping.attempt >= ping.maxAttempts) {
+                listeners.remove(pingEntry.getKey());
+                ping.listener.onTimeout(ping.attempt);
+            } else {
+                ping.listener.onFailedAttempt(ping.attempt);
+                try {
+                    ping.send();
+                } catch (Exception e) {
+                    ping.listener.onTimeout(ping.attempt);
+                    Voicechat.LOGGER.warn("Failed to send ping {} after attempt {}", ping.id, ping.attempt);
+                }
+            }
         }
     }
 
-    public void sendPing(ClientConnection connection, long timeout, PingListener listener) throws Exception {
-        UUID id = UUID.randomUUID();
-        long timestamp = System.currentTimeMillis();
-        listeners.put(id, new Ping(listener, timestamp, timeout));
-        server.sendPacket(new PingPacket(id, timestamp), connection);
-        Voicechat.LOGGER.info("Sent ping {}", id);
+    public void sendPing(ClientConnection connection, long timeout, int attempts, PingListener listener) throws Exception {
+        Ping ping = new Ping(connection, listener, timeout, attempts);
+        listeners.put(ping.id, ping);
+        ping.send();
     }
 
-    private static class Ping {
+    private class Ping {
+        private final UUID id;
+        private final ClientConnection connection;
         private final PingListener listener;
-        private final long timestamp;
+        private long timestamp;
         private final long timeout;
+        private final int maxAttempts;
+        private int attempt;
 
-        public Ping(PingListener listener, long timestamp, long timeout) {
+        public Ping(ClientConnection connection, PingListener listener, long timeout, int maxAttempts) {
+            this.id = UUID.randomUUID();
+            this.connection = connection;
             this.listener = listener;
-            this.timestamp = timestamp;
             this.timeout = timeout;
+            this.maxAttempts = maxAttempts;
+            this.attempt = 0;
         }
 
         public boolean isTimedOut() {
             return (System.currentTimeMillis() - timestamp) >= timeout;
         }
+
+        public void send() throws Exception {
+            timestamp = System.currentTimeMillis();
+            attempt++;
+            server.sendPacket(new PingPacket(id, timestamp), connection);
+            Voicechat.LOGGER.info("Sent ping {} attempt {}", id, attempt);
+        }
     }
 
-    public static interface PingListener {
-        void onPong(PingPacket packet);
+    public interface PingListener {
+        void onPong(int attempts, long pingMilliseconds);
 
-        void onTimeout();
+        void onFailedAttempt(int attempts);
+
+        void onTimeout(int attempts);
     }
 
 }
