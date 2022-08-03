@@ -30,11 +30,6 @@
   "message.voicechat.select_speaker": "Sélectionner l'enceinte",
   "message.voicechat.back": "Retour",
   "message.voicechat.client_not_connected": "Pas de client connecté",
-  "message.voicechat.failed_to_send_packet": "Echec de l'envois du packet: %s",
-  "message.voicechat.sending_packet": "envois du packet...",
-  "message.voicechat.packet_sent_waiting": "Packet envoyer. En attente de la réponse...",
-  "message.voicechat.packet_received": "Packet reçue en %sms",
-  "message.voicechat.packet_timed_out": "Requête expirée",
   "message.voicechat.icons_hidden": "Icône du chat vocal cachée",
   "message.voicechat.icons_visible": "Icône du chat vocal visible"
 }
