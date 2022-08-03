@@ -30,11 +30,6 @@
   "message.voicechat.select_speaker": "Selecciona altaveu",
   "message.voicechat.back": "Enrere",
   "message.voicechat.client_not_connected": "El client no està connectat",
-  "message.voicechat.failed_to_send_packet": "Error en enviar el paquet: %s",
-  "message.voicechat.sending_packet": "Enviant paquet...",
-  "message.voicechat.packet_sent_waiting": "Paquet enviat. Esperant resposta...",
-  "message.voicechat.packet_received": "Paquet rebut en %s ms",
-  "message.voicechat.packet_timed_out": "S'ha esgotat el temps d'espera de la sol·licitud",
   "message.voicechat.icons_hidden": "Icones del xat de veu amagats",
   "message.voicechat.icons_visible": "Icones del xat de veu visibles"
 }
