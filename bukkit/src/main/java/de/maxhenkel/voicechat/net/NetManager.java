@@ -116,4 +116,11 @@ public class NetManager implements Listener {
             player.getHandle().b.a(new PacketPlayOutChat(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(component)), ChatMessageType.b, NUL_UUID));
         }
     }
+
+    public static void sendStatusMessage(Player p, Component component) {
+        if (p instanceof CraftPlayer player) {
+            player.getHandle().b.a(new PacketPlayOutChat(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(component)), ChatMessageType.c, NUL_UUID));
+        }
+    }
+
 }
