@@ -122,7 +122,11 @@ public class NetManager implements Listener {
 
     public static void sendStatusMessage(Player p, Component component) {
         if (p instanceof CraftPlayer player) {
-            player.getHandle().b.a(new ClientboundSystemChatPacket(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(component)), true));
+            if (player.getWorld() instanceof CraftWorld world) {
+                IRegistry<ChatMessageType> registry = world.getHandle().s().d(IRegistry.bI);
+                ChatMessageType messageType = registry.a(ChatMessageType.d);
+                player.getHandle().b.a(new ClientboundSystemChatPacket(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(component)), registry.a(messageType)));
+            }
         }
     }
 
