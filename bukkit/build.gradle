@@ -69,7 +69,8 @@ repositories {
 jar {
     manifest {
         attributes([
-                "Compatibility-Version": mod_compatibility_version
+                "Compatibility-Version": mod_compatibility_version,
+                "Target-Bukkit-Version": target_bukkit_version
         ])
     }
 }

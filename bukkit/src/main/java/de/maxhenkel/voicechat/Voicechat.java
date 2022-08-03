@@ -20,6 +20,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -58,6 +59,12 @@ public final class Voicechat extends JavaPlugin {
     public void onEnable() {
         INSTANCE = this;
 
+        if (!BukkitVersionCheck.matchesTargetVersion()) {
+            LOGGER.fatal("Disabling Simple Voice Chat due to incompatible Bukkit version!");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+
         LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
 
         try {
@@ -72,9 +79,8 @@ public final class Voicechat extends JavaPlugin {
             }
             TRANSLATIONS.save(file);
         } catch (Exception e) {
-            LOGGER.fatal("Failed to load translations");
-            e.printStackTrace();
-            getServer().shutdown();
+            LOGGER.fatal("Failed to load translations! Disabling Simple Voice Chat!", e);
+            Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
@@ -135,7 +141,9 @@ public final class Voicechat extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        netManager.onDisable();
+        if (netManager != null) {
+            netManager.onDisable();
+        }
         getServer().getServicesManager().unregister(apiService);
         if (SERVER != null) {
             SERVER.getServer().close();
@@ -153,15 +161,24 @@ public final class Voicechat extends JavaPlugin {
     }
 
     private static int readVersion() throws IOException {
+        String ver = readMetaInf("Compatibility-Version");
+        if (ver != null) {
+            return Integer.parseInt(ver);
+        }
+        throw new IOException("Could not read MANIFEST.MF");
+    }
+
+    @Nullable
+    public static String readMetaInf(String key) throws IOException {
         Enumeration<URL> resources = Voicechat.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
         while (resources.hasMoreElements()) {
             Manifest manifest = new Manifest(resources.nextElement().openStream());
-            String version = manifest.getMainAttributes().getValue("Compatibility-Version");
-            if (version != null) {
-                return Integer.parseInt(version);
+            String value = manifest.getMainAttributes().getValue(key);
+            if (value != null) {
+                return value;
             }
         }
-        throw new IOException("Could not read MANIFEST.MF");
+        return null;
     }
 
 }
