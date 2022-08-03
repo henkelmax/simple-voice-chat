@@ -92,7 +92,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
             minecraft.setScreen(null);
             return true;
         }
-        return groupName.keyPressed(keyCode, scanCode, modifiers) | password.keyPressed(keyCode, scanCode, modifiers) | super.keyPressed(keyCode, scanCode, modifiers); //TODO check
+        return groupName.keyPressed(keyCode, scanCode, modifiers) | password.keyPressed(keyCode, scanCode, modifiers) | super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
