@@ -1,10 +1,7 @@
 package de.maxhenkel.voicechat.plugins;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.api.VoicechatConnection;
-import de.maxhenkel.voicechat.api.VoicechatPlugin;
-import de.maxhenkel.voicechat.api.VoicechatServerApi;
-import de.maxhenkel.voicechat.api.VoicechatSocket;
+import de.maxhenkel.voicechat.api.*;
 import de.maxhenkel.voicechat.api.events.*;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.impl.*;
@@ -85,9 +82,22 @@ public class PluginManager {
         VoicechatSocket socket = event.getSocketImplementation();
         if (socket == null) {
             socket = new VoicechatSocketImpl();
-            Voicechat.LOGGER.info("Using default voicechat socket implementation");
+            Voicechat.logDebug("Using default voicechat socket implementation");
         } else {
             Voicechat.LOGGER.info("Using custom voicechat socket implementation: {}", socket.getClass().getName());
+        }
+        return socket;
+    }
+
+    public ClientVoicechatSocket getClientSocketImplementation() {
+        ClientVoicechatInitializationEventImpl event = new ClientVoicechatInitializationEventImpl(new VoicechatClientApiImpl());
+        dispatchEvent(ClientVoicechatInitializationEvent.class, event);
+        ClientVoicechatSocket socket = event.getSocketImplementation();
+        if (socket == null) {
+            socket = new ClientVoicechatSocketImpl();
+            Voicechat.logDebug("Using default voicechat client socket implementation");
+        } else {
+            Voicechat.LOGGER.info("Using custom voicechat client socket implementation: {}", socket.getClass().getName());
         }
         return socket;
     }

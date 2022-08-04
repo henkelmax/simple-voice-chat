@@ -1,1 +1,1 @@
-- Improved test command
+- Added custom client socket to API

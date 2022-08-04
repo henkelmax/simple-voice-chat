@@ -15,8 +15,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.SocketAddress;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -79,11 +77,8 @@ public class NetworkMessage {
     }
 
     @Nullable
-    public static NetworkMessage readPacketClient(DatagramSocket socket, ClientVoicechatConnection client) throws IllegalAccessException, InstantiationException, IOException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvocationTargetException, NoSuchMethodException {
-        DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
-        socket.receive(packet);
-        byte[] data = new byte[packet.getLength()];
-        System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
+    public static NetworkMessage readPacketClient(RawUdpPacket packet, ClientVoicechatConnection client) throws IllegalAccessException, InstantiationException, IOException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvocationTargetException, NoSuchMethodException {
+        byte[] data = packet.getData();
         PacketBuffer b = new PacketBuffer(Unpooled.wrappedBuffer(data));
         if (b.readByte() != MAGIC_BYTE) {
             Voicechat.logDebug("Received invalid packet from {}", client.getAddress());
