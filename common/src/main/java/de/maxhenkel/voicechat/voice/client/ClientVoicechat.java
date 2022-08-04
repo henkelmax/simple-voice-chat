@@ -11,7 +11,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -52,7 +51,7 @@ public class ClientVoicechat {
         }
     }
 
-    public void connect(InitializationData data) throws IOException {
+    public void connect(InitializationData data) throws Exception {
         Voicechat.LOGGER.info("Connecting to server: '" + data.getServerIP() + ":" + data.getServerPort() + "'");
         connection = new ClientVoicechatConnection(this, data);
         connection.start();

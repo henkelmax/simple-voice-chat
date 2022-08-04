@@ -1,37 +1,37 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.ClientVoicechatSocket;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.*;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
 public class ClientVoicechatConnection extends Thread {
 
     private ClientVoicechat client;
     private final InitializationData data;
-    private final DatagramSocket socket;
+    private final ClientVoicechatSocket socket;
     private final InetAddress address;
     private boolean running;
     private boolean authenticated;
     private final AuthThread authThread;
     private long lastKeepAlive;
 
-    public ClientVoicechatConnection(ClientVoicechat client, InitializationData data) throws IOException {
+    public ClientVoicechatConnection(ClientVoicechat client, InitializationData data) throws Exception {
         this.client = client;
         this.data = data;
         this.address = InetAddress.getByName(data.getServerIP());
-        this.socket = new DatagramSocket();
-        this.socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
+        this.socket = PluginManager.instance().getClientSocketImplementation();
         this.lastKeepAlive = -1;
         this.running = true;
         this.authThread = new AuthThread();
         this.authThread.start();
         setDaemon(true);
         setName("VoiceChatConnectionThread");
+        this.socket.open();
     }
 
     public InitializationData getData() {
@@ -42,7 +42,7 @@ public class ClientVoicechatConnection extends Thread {
         return address;
     }
 
-    public DatagramSocket getSocket() {
+    public ClientVoicechatSocket getSocket() {
         return socket;
     }
 
@@ -54,7 +54,7 @@ public class ClientVoicechatConnection extends Thread {
     public void run() {
         try {
             while (running) {
-                NetworkMessage in = NetworkMessage.readPacketClient(socket, this);
+                NetworkMessage in = NetworkMessage.readPacketClient(socket.read(), this);
                 if (in == null) {
                     continue;
                 } else if (in.getPacket() instanceof AuthenticateAckPacket) {
@@ -98,8 +98,7 @@ public class ClientVoicechatConnection extends Thread {
         if (!isConnected()) {
             return; // Ignore sending packets when connection is closed
         }
-        byte[] bytes = message.writeClient(this);
-        socket.send(new DatagramPacket(bytes, bytes.length, address, data.getServerPort()));
+        socket.send(message.writeClient(this), new InetSocketAddress(address, data.getServerPort()));
     }
 
     public void checkTimeout() {
