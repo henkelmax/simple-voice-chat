@@ -33,7 +33,7 @@ public class ServerVoiceEvents implements Listener {
 
         server = new Server(mcServer);
         server.start();
-        PluginManager.instance().onServerStarted(mcServer);
+        PluginManager.instance().onServerStarted();
     }
 
     public void onRequestSecretPacket(Player player, RequestSecretPacket packet) {

@@ -15,7 +15,6 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.UpdateStatePacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
-import de.maxhenkel.voicechat.plugins.impl.VoicechatClientApiImpl;
 import de.maxhenkel.voicechat.plugins.impl.events.ClientVoicechatConnectionEventImpl;
 import de.maxhenkel.voicechat.plugins.impl.events.MicrophoneMuteEventImpl;
 import de.maxhenkel.voicechat.plugins.impl.events.VoicechatDisableEventImpl;
@@ -88,7 +87,7 @@ public class ClientPlayerStateManager {
     public void onVoiceChatDisconnected() {
         disconnected = true;
         syncOwnState();
-        PluginManager.instance().dispatchEvent(ClientVoicechatConnectionEvent.class, new ClientVoicechatConnectionEventImpl(new VoicechatClientApiImpl(), false));
+        PluginManager.instance().dispatchEvent(ClientVoicechatConnectionEvent.class, new ClientVoicechatConnectionEventImpl(false));
     }
 
     /**
@@ -97,7 +96,7 @@ public class ClientPlayerStateManager {
     public void onVoiceChatConnected(ClientVoicechatConnection client) {
         disconnected = false;
         syncOwnState();
-        PluginManager.instance().dispatchEvent(ClientVoicechatConnectionEvent.class, new ClientVoicechatConnectionEventImpl(new VoicechatClientApiImpl(), true));
+        PluginManager.instance().dispatchEvent(ClientVoicechatConnectionEvent.class, new ClientVoicechatConnectionEventImpl(true));
     }
 
     private void onDisconnect() {
@@ -146,7 +145,7 @@ public class ClientPlayerStateManager {
     public void setDisabled(boolean disabled) {
         VoicechatClient.CLIENT_CONFIG.disabled.set(disabled).save();
         syncOwnState();
-        PluginManager.instance().dispatchEvent(VoicechatDisableEvent.class, new VoicechatDisableEventImpl(new VoicechatClientApiImpl(), disabled));
+        PluginManager.instance().dispatchEvent(VoicechatDisableEvent.class, new VoicechatDisableEventImpl(disabled));
     }
 
     public boolean isDisconnected() {
@@ -159,7 +158,7 @@ public class ClientPlayerStateManager {
 
     public void setMuted(boolean muted) {
         VoicechatClient.CLIENT_CONFIG.muted.set(muted).save();
-        PluginManager.instance().dispatchEvent(MicrophoneMuteEvent.class, new MicrophoneMuteEventImpl(new VoicechatClientApiImpl(), muted));
+        PluginManager.instance().dispatchEvent(MicrophoneMuteEvent.class, new MicrophoneMuteEventImpl(muted));
     }
 
     public boolean isInGroup() {

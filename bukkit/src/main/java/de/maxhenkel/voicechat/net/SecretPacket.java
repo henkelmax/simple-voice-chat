@@ -37,7 +37,7 @@ public class SecretPacket implements Packet<SecretPacket> {
         this.voiceChatDistance = serverConfig.voiceChatDistance.get();
         this.keepAlive = serverConfig.keepAlive.get();
         this.groupsEnabled = serverConfig.groupsEnabled.get();
-        this.voiceHost = PluginManager.instance().getVoiceHost(player, serverConfig.voiceHost.get());
+        this.voiceHost = PluginManager.instance().getVoiceHost(serverConfig.voiceHost.get());
         this.allowRecording = serverConfig.allowRecording.get();
     }
 

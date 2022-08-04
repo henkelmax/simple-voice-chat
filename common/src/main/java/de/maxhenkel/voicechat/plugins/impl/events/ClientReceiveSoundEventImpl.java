@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.plugins.impl.events;
 
 import de.maxhenkel.voicechat.api.Position;
-import de.maxhenkel.voicechat.api.VoicechatClientApi;
 import de.maxhenkel.voicechat.api.events.ClientReceiveSoundEvent;
 
 import javax.annotation.Nullable;
@@ -12,8 +11,7 @@ public class ClientReceiveSoundEventImpl extends ClientEventImpl implements Clie
     private UUID id;
     private short[] rawAudio;
 
-    public ClientReceiveSoundEventImpl(VoicechatClientApi api, UUID id, short[] rawAudio) {
-        super(api);
+    public ClientReceiveSoundEventImpl(UUID id, short[] rawAudio) {
         this.id = id;
         this.rawAudio = rawAudio;
 
@@ -44,8 +42,8 @@ public class ClientReceiveSoundEventImpl extends ClientEventImpl implements Clie
         private boolean whispering;
         private float distance;
 
-        public EntitySoundImpl(VoicechatClientApi api, UUID id, short[] rawAudio, boolean whispering, float distance) {
-            super(api, id, rawAudio);
+        public EntitySoundImpl(UUID id, short[] rawAudio, boolean whispering, float distance) {
+            super(id, rawAudio);
             this.whispering = whispering;
             this.distance = distance;
         }
@@ -65,8 +63,8 @@ public class ClientReceiveSoundEventImpl extends ClientEventImpl implements Clie
         private Position position;
         private float distance;
 
-        public LocationalSoundImpl(VoicechatClientApi api, UUID id, short[] rawAudio, Position position, float distance) {
-            super(api, id, rawAudio);
+        public LocationalSoundImpl(UUID id, short[] rawAudio, Position position, float distance) {
+            super(id, rawAudio);
             this.position = position;
             this.distance = distance;
         }
@@ -84,8 +82,8 @@ public class ClientReceiveSoundEventImpl extends ClientEventImpl implements Clie
 
     public static class StaticSoundImpl extends ClientReceiveSoundEventImpl implements ClientReceiveSoundEvent.StaticSound {
 
-        public StaticSoundImpl(VoicechatClientApi api, UUID id, short[] rawAudio) {
-            super(api, id, rawAudio);
+        public StaticSoundImpl(UUID id, short[] rawAudio) {
+            super(id, rawAudio);
         }
 
     }
