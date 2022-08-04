@@ -1,1 +1,1 @@
-- Improved test command
+- Updated to 1.19.2-rc1
