@@ -1,1 +1,1 @@
-- Updated to 1.19.2
+- Added custom client socket to API
