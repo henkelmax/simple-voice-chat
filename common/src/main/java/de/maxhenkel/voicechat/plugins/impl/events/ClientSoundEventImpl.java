@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.plugins.impl.events;
 
-import de.maxhenkel.voicechat.api.VoicechatClientApi;
 import de.maxhenkel.voicechat.api.events.ClientSoundEvent;
 
 public class ClientSoundEventImpl extends ClientEventImpl implements ClientSoundEvent {
@@ -8,8 +7,7 @@ public class ClientSoundEventImpl extends ClientEventImpl implements ClientSound
     private short[] rawAudio;
     private boolean whispering;
 
-    public ClientSoundEventImpl(VoicechatClientApi api, short[] rawAudio, boolean whispering) {
-        super(api);
+    public ClientSoundEventImpl(short[] rawAudio, boolean whispering) {
         this.rawAudio = rawAudio;
         this.whispering = whispering;
     }

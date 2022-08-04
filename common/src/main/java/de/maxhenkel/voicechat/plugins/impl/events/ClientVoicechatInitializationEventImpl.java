@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.plugins.impl.events;
 
 import de.maxhenkel.voicechat.api.ClientVoicechatSocket;
-import de.maxhenkel.voicechat.api.VoicechatClientApi;
 import de.maxhenkel.voicechat.api.events.ClientVoicechatInitializationEvent;
 
 import javax.annotation.Nullable;
@@ -10,10 +9,6 @@ public class ClientVoicechatInitializationEventImpl extends ClientEventImpl impl
 
     @Nullable
     private ClientVoicechatSocket socketImplementation;
-
-    public ClientVoicechatInitializationEventImpl(VoicechatClientApi api) {
-        super(api);
-    }
 
     @Override
     public void setSocketImplementation(ClientVoicechatSocket socket) {

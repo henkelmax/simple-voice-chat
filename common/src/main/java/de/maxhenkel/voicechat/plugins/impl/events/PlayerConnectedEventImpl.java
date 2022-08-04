@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.plugins.impl.events;
 
 import de.maxhenkel.voicechat.api.VoicechatConnection;
-import de.maxhenkel.voicechat.api.VoicechatServerApi;
 import de.maxhenkel.voicechat.api.events.PlayerConnectedEvent;
 import de.maxhenkel.voicechat.plugins.impl.VoicechatConnectionImpl;
 
@@ -9,8 +8,7 @@ public class PlayerConnectedEventImpl extends ServerEventImpl implements PlayerC
 
     protected VoicechatConnectionImpl connection;
 
-    public PlayerConnectedEventImpl(VoicechatServerApi api, VoicechatConnectionImpl connection) {
-        super(api);
+    public PlayerConnectedEventImpl(VoicechatConnectionImpl connection) {
         this.connection = connection;
     }
 

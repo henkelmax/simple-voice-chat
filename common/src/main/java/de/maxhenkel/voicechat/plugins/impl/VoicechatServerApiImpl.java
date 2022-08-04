@@ -19,7 +19,6 @@ import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import de.maxhenkel.voicechat.voice.server.ServerWorldUtils;
-import net.minecraft.server.MinecraftServer;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -30,10 +29,14 @@ import java.util.stream.Collectors;
 
 public class VoicechatServerApiImpl extends VoicechatApiImpl implements VoicechatServerApi {
 
-    private final MinecraftServer server;
+    private static final VoicechatServerApiImpl INSTANCE = new VoicechatServerApiImpl();
 
-    public VoicechatServerApiImpl(MinecraftServer server) {
-        this.server = server;
+    private VoicechatServerApiImpl() {
+
+    }
+
+    public static VoicechatServerApiImpl instance() {
+        return INSTANCE;
     }
 
     @Override
@@ -127,7 +130,11 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
     @Nullable
     @Override
     public VoicechatConnection getConnectionOf(UUID playerUuid) {
-        net.minecraft.server.level.ServerPlayer player = server.getPlayerList().getPlayer(playerUuid);
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return null;
+        }
+        net.minecraft.server.level.ServerPlayer player = server.getServer().getPlayerList().getPlayer(playerUuid);
         if (player == null) {
             return null;
         }

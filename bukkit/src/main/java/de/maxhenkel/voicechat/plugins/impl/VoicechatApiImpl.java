@@ -10,7 +10,7 @@ import de.maxhenkel.voicechat.plugins.impl.opus.OpusManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import org.bukkit.World;
 
-public class VoicechatApiImpl implements VoicechatApi {
+public abstract class VoicechatApiImpl implements VoicechatApi {
 
     private static final AudioConverter AUDIO_CONVERTER = new AudioConverterImpl();
 
