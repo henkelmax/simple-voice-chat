@@ -7,7 +7,7 @@ import org.bukkit.Bukkit;
 
 import java.net.*;
 
-public class VoicechatSocketImpl implements VoicechatSocket {
+public class VoicechatSocketImpl extends VoicechatSocketBase implements VoicechatSocket {
 
     private DatagramSocket socket;
 
@@ -66,7 +66,7 @@ public class VoicechatSocketImpl implements VoicechatSocket {
         if (socket == null) {
             throw new IllegalStateException("Socket not opened yet");
         }
-        return RawUdpPacketImpl.read(socket);
+        return read(socket);
     }
 
     @Override
