@@ -34,7 +34,7 @@ public class PluginManager {
         Voicechat.LOGGER.info("Initializing plugins");
         for (VoicechatPlugin plugin : plugins) {
             try {
-                plugin.initialize(new VoicechatApiImpl());
+                plugin.initialize(VoicechatServerApiImpl.instance());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -77,7 +77,7 @@ public class PluginManager {
     }
 
     public VoicechatSocket getSocketImplementation(MinecraftServer server) {
-        VoicechatServerStartingEventImpl event = new VoicechatServerStartingEventImpl(new VoicechatServerApiImpl(server));
+        VoicechatServerStartingEventImpl event = new VoicechatServerStartingEventImpl();
         dispatchEvent(VoicechatServerStartingEvent.class, event);
         VoicechatSocket socket = event.getSocketImplementation();
         if (socket == null) {
@@ -90,7 +90,7 @@ public class PluginManager {
     }
 
     public ClientVoicechatSocket getClientSocketImplementation() {
-        ClientVoicechatInitializationEventImpl event = new ClientVoicechatInitializationEventImpl(new VoicechatClientApiImpl());
+        ClientVoicechatInitializationEventImpl event = new ClientVoicechatInitializationEventImpl();
         dispatchEvent(ClientVoicechatInitializationEvent.class, event);
         ClientVoicechatSocket socket = event.getSocketImplementation();
         if (socket == null) {
@@ -102,56 +102,54 @@ public class PluginManager {
         return socket;
     }
 
-    public String getVoiceHost(ServerPlayerEntity player, String voiceHost) {
-        VoiceHostEventImpl event = new VoiceHostEventImpl(new VoicechatServerApiImpl(player.server), voiceHost);
+    public String getVoiceHost(String voiceHost) {
+        VoiceHostEventImpl event = new VoiceHostEventImpl(voiceHost);
         dispatchEvent(VoiceHostEvent.class, event);
         return event.getVoiceHost();
     }
 
-    public void onServerStarted(MinecraftServer server) {
-        dispatchEvent(VoicechatServerStartedEvent.class, new VoicechatServerStartedEventImpl(new VoicechatServerApiImpl(server)));
+    public void onServerStarted() {
+        dispatchEvent(VoicechatServerStartedEvent.class, new VoicechatServerStartedEventImpl());
     }
 
-    public void onServerStopped(MinecraftServer server) {
-        dispatchEvent(VoicechatServerStoppedEvent.class, new VoicechatServerStoppedEventImpl(new VoicechatServerApiImpl(server)));
+    public void onServerStopped() {
+        dispatchEvent(VoicechatServerStoppedEvent.class, new VoicechatServerStoppedEventImpl());
     }
 
     public void onPlayerConnected(ServerPlayerEntity player) {
-        dispatchEvent(PlayerConnectedEvent.class, new PlayerConnectedEventImpl(new VoicechatServerApiImpl(player.server), VoicechatConnectionImpl.fromPlayer(player)));
+        dispatchEvent(PlayerConnectedEvent.class, new PlayerConnectedEventImpl(VoicechatConnectionImpl.fromPlayer(player)));
     }
 
-    public void onPlayerDisconnected(MinecraftServer server, UUID player) {
-        dispatchEvent(PlayerDisconnectedEvent.class, new PlayerDisconnectedEventImpl(new VoicechatServerApiImpl(server), player));
+    public void onPlayerDisconnected(UUID player) {
+        dispatchEvent(PlayerDisconnectedEvent.class, new PlayerDisconnectedEventImpl(player));
     }
 
     public boolean onJoinGroup(ServerPlayerEntity player, @Nullable Group group) {
         if (group == null) {
             return onLeaveGroup(player);
         }
-        return dispatchEvent(JoinGroupEvent.class, new JoinGroupEventImpl(new VoicechatServerApiImpl(player.server), new GroupImpl(group), VoicechatConnectionImpl.fromPlayer(player)));
+        return dispatchEvent(JoinGroupEvent.class, new JoinGroupEventImpl(new GroupImpl(group), VoicechatConnectionImpl.fromPlayer(player)));
     }
 
     public boolean onCreateGroup(ServerPlayerEntity player, Group group) {
         if (group == null) {
             return onLeaveGroup(player);
         }
-        return dispatchEvent(CreateGroupEvent.class, new CreateGroupEventImpl(new VoicechatServerApiImpl(player.server), new GroupImpl(group), VoicechatConnectionImpl.fromPlayer(player)));
+        return dispatchEvent(CreateGroupEvent.class, new CreateGroupEventImpl(new GroupImpl(group), VoicechatConnectionImpl.fromPlayer(player)));
     }
 
     public boolean onLeaveGroup(ServerPlayerEntity player) {
-        return dispatchEvent(LeaveGroupEvent.class, new LeaveGroupEventImpl(new VoicechatServerApiImpl(player.server), null, VoicechatConnectionImpl.fromPlayer(player)));
+        return dispatchEvent(LeaveGroupEvent.class, new LeaveGroupEventImpl(null, VoicechatConnectionImpl.fromPlayer(player)));
     }
 
     public boolean onMicPacket(ServerPlayerEntity player, PlayerState state, MicPacket packet) {
         return dispatchEvent(MicrophonePacketEvent.class, new MicrophonePacketEventImpl(
-                new VoicechatServerApiImpl(player.server),
                 new MicrophonePacketImpl(packet, player.getUUID()),
                 new VoicechatConnectionImpl(player, state)
         ));
     }
 
     public boolean onSoundPacket(@Nullable ServerPlayerEntity sender, @Nullable PlayerState senderState, ServerPlayerEntity receiver, PlayerState receiverState, SoundPacket<?> p, String source) {
-        VoicechatServerApi api = new VoicechatServerApiImpl(receiver.server);
         VoicechatConnection senderConnection = null;
         if (sender != null && senderState != null) {
             senderConnection = new VoicechatConnectionImpl(sender, senderState);
@@ -161,7 +159,6 @@ public class PluginManager {
         if (p instanceof LocationSoundPacket) {
             LocationSoundPacket packet = (LocationSoundPacket) p;
             return dispatchEvent(LocationalSoundPacketEvent.class, new LocationalSoundPacketEventImpl(
-                    api,
                     new LocationalSoundPacketImpl(packet),
                     senderConnection,
                     receiverConnection,
@@ -170,7 +167,6 @@ public class PluginManager {
         } else if (p instanceof PlayerSoundPacket) {
             PlayerSoundPacket packet = (PlayerSoundPacket) p;
             return dispatchEvent(EntitySoundPacketEvent.class, new EntitySoundPacketEventImpl(
-                    api,
                     new EntitySoundPacketImpl(packet),
                     senderConnection,
                     receiverConnection,
@@ -179,7 +175,6 @@ public class PluginManager {
         } else if (p instanceof GroupSoundPacket) {
             GroupSoundPacket packet = (GroupSoundPacket) p;
             return dispatchEvent(StaticSoundPacketEvent.class, new StaticSoundPacketEventImpl(
-                    api,
                     new StaticSoundPacketImpl(packet),
                     senderConnection,
                     receiverConnection,
@@ -191,7 +186,7 @@ public class PluginManager {
 
     @Nullable
     public short[] onClientSound(short[] rawAudio, boolean whispering) {
-        ClientSoundEventImpl clientSoundEvent = new ClientSoundEventImpl(new VoicechatClientApiImpl(), rawAudio, whispering);
+        ClientSoundEventImpl clientSoundEvent = new ClientSoundEventImpl(rawAudio, whispering);
         boolean cancelled = dispatchEvent(ClientSoundEvent.class, clientSoundEvent);
         if (cancelled) {
             return null;
@@ -200,26 +195,25 @@ public class PluginManager {
     }
 
     public short[] onReceiveEntityClientSound(UUID id, short[] rawAudio, boolean whispering, float distance) {
-        ClientReceiveSoundEventImpl.EntitySoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.EntitySoundImpl(new VoicechatClientApiImpl(), id, rawAudio, whispering, distance);
+        ClientReceiveSoundEventImpl.EntitySoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.EntitySoundImpl(id, rawAudio, whispering, distance);
         dispatchEvent(ClientReceiveSoundEvent.EntitySound.class, clientSoundEvent);
         return clientSoundEvent.getRawAudio();
     }
 
     public short[] onReceiveLocationalClientSound(UUID id, short[] rawAudio, Vector3d pos, float distance) {
-        ClientReceiveSoundEventImpl.LocationalSoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.LocationalSoundImpl(new VoicechatClientApiImpl(), id, rawAudio, new PositionImpl(pos), distance);
+        ClientReceiveSoundEventImpl.LocationalSoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.LocationalSoundImpl(id, rawAudio, new PositionImpl(pos), distance);
         dispatchEvent(ClientReceiveSoundEvent.LocationalSound.class, clientSoundEvent);
         return clientSoundEvent.getRawAudio();
     }
 
     public short[] onReceiveStaticClientSound(UUID id, short[] rawAudio) {
-        ClientReceiveSoundEventImpl.StaticSoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.StaticSoundImpl(new VoicechatClientApiImpl(), id, rawAudio);
+        ClientReceiveSoundEventImpl.StaticSoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.StaticSoundImpl(id, rawAudio);
         dispatchEvent(ClientReceiveSoundEvent.StaticSound.class, clientSoundEvent);
         return clientSoundEvent.getRawAudio();
     }
 
     public void onALSound(int source, @Nullable UUID channelId, @Nullable Vector3d pos, @Nullable String category, Class<? extends OpenALSoundEvent> eventClass) {
         dispatchEvent(eventClass, new OpenALSoundEventImpl(
-                new VoicechatClientApiImpl(),
                 channelId,
                 pos == null ? null : new PositionImpl(pos),
                 category,
@@ -229,7 +223,6 @@ public class PluginManager {
 
     public void onCreateALContext(long context, long device) {
         dispatchEvent(CreateOpenALContextEvent.class, new CreateOpenALContextEventImpl(
-                new VoicechatClientApiImpl(),
                 context,
                 device
         ));
@@ -237,7 +230,6 @@ public class PluginManager {
 
     public void onDestroyALContext(long context, long device) {
         dispatchEvent(DestroyOpenALContextEvent.class, new DestroyOpenALContextEventImpl(
-                new VoicechatClientApiImpl(),
                 context,
                 device
         ));

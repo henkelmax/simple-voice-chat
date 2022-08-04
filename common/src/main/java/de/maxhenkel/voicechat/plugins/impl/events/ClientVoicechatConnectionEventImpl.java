@@ -1,14 +1,12 @@
 package de.maxhenkel.voicechat.plugins.impl.events;
 
-import de.maxhenkel.voicechat.api.VoicechatClientApi;
 import de.maxhenkel.voicechat.api.events.ClientVoicechatConnectionEvent;
 
 public class ClientVoicechatConnectionEventImpl extends ClientEventImpl implements ClientVoicechatConnectionEvent {
 
     private final boolean connected;
 
-    public ClientVoicechatConnectionEventImpl(VoicechatClientApi api, boolean connected) {
-        super(api);
+    public ClientVoicechatConnectionEventImpl(boolean connected) {
         this.connected = connected;
     }
 

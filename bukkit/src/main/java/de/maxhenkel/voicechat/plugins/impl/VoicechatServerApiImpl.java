@@ -19,6 +19,7 @@ import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import de.maxhenkel.voicechat.voice.server.ServerWorldUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import javax.annotation.Nullable;
@@ -30,11 +31,16 @@ import java.util.stream.Collectors;
 
 public class VoicechatServerApiImpl extends VoicechatApiImpl implements VoicechatServerApi {
 
-    private final org.bukkit.Server server;
+    private static final VoicechatServerApiImpl INSTANCE = new VoicechatServerApiImpl();
 
-    public VoicechatServerApiImpl(org.bukkit.Server server) {
-        this.server = server;
+    private VoicechatServerApiImpl() {
+
     }
+
+    public static VoicechatServerApiImpl instance() {
+        return INSTANCE;
+    }
+
 
     @Override
     public void sendEntitySoundPacketTo(VoicechatConnection connection, EntitySoundPacket p) {
@@ -127,7 +133,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
     @Nullable
     @Override
     public VoicechatConnection getConnectionOf(UUID playerUuid) {
-        org.bukkit.entity.Player player = server.getPlayer(playerUuid);
+        org.bukkit.entity.Player player = Bukkit.getPlayer(playerUuid);
         if (player == null) {
             return null;
         }
