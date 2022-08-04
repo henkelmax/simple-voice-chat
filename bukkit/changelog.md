@@ -1,5 +1,1 @@
-- Added status messages
-- Improved test command
-- Added Bukkit version check
-- Don't stop the server if the voice chat port is already in use
-- Re added Commodore command completion
+- Improved memory consumption
