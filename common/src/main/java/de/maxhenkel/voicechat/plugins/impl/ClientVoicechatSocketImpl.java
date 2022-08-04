@@ -7,7 +7,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
 
-public class ClientVoicechatSocketImpl implements ClientVoicechatSocket {
+public class ClientVoicechatSocketImpl extends VoicechatSocketBase implements ClientVoicechatSocket {
 
     private DatagramSocket socket;
 
@@ -21,7 +21,7 @@ public class ClientVoicechatSocketImpl implements ClientVoicechatSocket {
         if (socket == null) {
             throw new IllegalStateException("Socket not opened yet");
         }
-        return RawUdpPacketImpl.read(socket);
+        return read(socket);
     }
 
     @Override
