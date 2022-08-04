@@ -20,6 +20,7 @@ import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import de.maxhenkel.voicechat.voice.server.ServerWorldUtils;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
