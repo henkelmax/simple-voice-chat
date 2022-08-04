@@ -8,7 +8,7 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import javax.annotation.Nullable;
 import java.net.*;
 
-public class VoicechatSocketImpl implements VoicechatSocket {
+public class VoicechatSocketImpl extends VoicechatSocketBase implements VoicechatSocket {
 
     @Nullable
     private DatagramSocket socket;
@@ -69,7 +69,7 @@ public class VoicechatSocketImpl implements VoicechatSocket {
         if (socket == null) {
             throw new IllegalStateException("Socket not opened yet");
         }
-        return RawUdpPacketImpl.read(socket);
+        return read(socket);
     }
 
     @Override
