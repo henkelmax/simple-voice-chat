@@ -1,1 +1,1 @@
-- Updated to 1.19.2
+- Improved memory consumption
