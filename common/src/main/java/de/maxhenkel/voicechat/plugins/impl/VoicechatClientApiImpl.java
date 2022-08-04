@@ -18,6 +18,16 @@ import java.util.UUID;
 
 public class VoicechatClientApiImpl extends VoicechatApiImpl implements VoicechatClientApi {
 
+    private static final VoicechatClientApiImpl INSTANCE = new VoicechatClientApiImpl();
+
+    private VoicechatClientApiImpl() {
+
+    }
+
+    public static VoicechatClientApiImpl instance() {
+        return INSTANCE;
+    }
+
     @Override
     public boolean isMuted() {
         return ClientManager.getPlayerStateManager().isMuted();

@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.plugins.impl.events;
 
 import de.maxhenkel.voicechat.api.VoicechatConnection;
-import de.maxhenkel.voicechat.api.VoicechatServerApi;
 import de.maxhenkel.voicechat.api.events.PacketEvent;
 import de.maxhenkel.voicechat.api.packets.Packet;
 
@@ -15,8 +14,7 @@ public class PacketEventImpl<T extends Packet> extends ServerEventImpl implement
     @Nullable
     private final VoicechatConnection senderConnection;
 
-    public PacketEventImpl(VoicechatServerApi api, T packet, @Nullable VoicechatConnection senderConnection, @Nullable VoicechatConnection receiverConnection) {
-        super(api);
+    public PacketEventImpl(T packet, @Nullable VoicechatConnection senderConnection, @Nullable VoicechatConnection receiverConnection) {
         this.packet = packet;
         this.senderConnection = senderConnection;
         this.receiverConnection = receiverConnection;
