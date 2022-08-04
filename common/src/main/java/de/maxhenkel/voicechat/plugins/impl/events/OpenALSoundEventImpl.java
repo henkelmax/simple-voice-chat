@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.plugins.impl.events;
 
 import de.maxhenkel.voicechat.api.Position;
-import de.maxhenkel.voicechat.api.VoicechatClientApi;
 import de.maxhenkel.voicechat.api.events.OpenALSoundEvent;
 import de.maxhenkel.voicechat.plugins.impl.PositionImpl;
 
@@ -18,8 +17,7 @@ public class OpenALSoundEventImpl extends ClientEventImpl implements OpenALSound
     protected String category;
     protected int source;
 
-    public OpenALSoundEventImpl(VoicechatClientApi api, @Nullable UUID channelId, @Nullable PositionImpl position, @Nullable String category, int source) {
-        super(api);
+    public OpenALSoundEventImpl(@Nullable UUID channelId, @Nullable PositionImpl position, @Nullable String category, int source) {
         this.channelId = channelId;
         this.position = position;
         this.category = category;

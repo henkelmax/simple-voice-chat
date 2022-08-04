@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.plugins.impl.events;
 
-import de.maxhenkel.voicechat.api.VoicechatClientApi;
 import de.maxhenkel.voicechat.api.events.DestroyOpenALContextEvent;
 
 public class DestroyOpenALContextEventImpl extends ClientEventImpl implements DestroyOpenALContextEvent {
@@ -8,8 +7,7 @@ public class DestroyOpenALContextEventImpl extends ClientEventImpl implements De
     protected long context;
     protected long device;
 
-    public DestroyOpenALContextEventImpl(VoicechatClientApi api, long context, long device) {
-        super(api);
+    public DestroyOpenALContextEventImpl(long context, long device) {
         this.context = context;
         this.device = device;
     }

@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.plugins.impl.events;
 
-import de.maxhenkel.voicechat.api.VoicechatClientApi;
 import de.maxhenkel.voicechat.api.events.CreateOpenALContextEvent;
 
 public class CreateOpenALContextEventImpl extends ClientEventImpl implements CreateOpenALContextEvent {
@@ -8,8 +7,7 @@ public class CreateOpenALContextEventImpl extends ClientEventImpl implements Cre
     protected long context;
     protected long device;
 
-    public CreateOpenALContextEventImpl(VoicechatClientApi api, long context, long device) {
-        super(api);
+    public CreateOpenALContextEventImpl(long context, long device) {
         this.context = context;
         this.device = device;
     }
