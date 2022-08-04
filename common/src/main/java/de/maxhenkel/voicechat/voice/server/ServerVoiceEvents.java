@@ -86,7 +86,7 @@ public class ServerVoiceEvents {
         try {
             server = new Server(mcServer);
             server.start();
-            PluginManager.instance().onServerStarted(mcServer);
+            PluginManager.instance().onServerStarted();
         } catch (Exception e) {
             e.printStackTrace();
         }

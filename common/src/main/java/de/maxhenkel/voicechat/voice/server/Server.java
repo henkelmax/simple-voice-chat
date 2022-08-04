@@ -119,14 +119,14 @@ public class Server extends Thread {
     public void disconnectClient(UUID playerUUID) {
         connections.remove(playerUUID);
         secrets.remove(playerUUID);
-        PluginManager.instance().onPlayerDisconnected(server, playerUUID);
+        PluginManager.instance().onPlayerDisconnected(playerUUID);
     }
 
     public void close() {
         socket.close();
         processThread.close();
 
-        PluginManager.instance().onServerStopped(server);
+        PluginManager.instance().onServerStopped();
     }
 
     public boolean isClosed() {
@@ -374,7 +374,7 @@ public class Server extends Thread {
                     Voicechat.LOGGER.warn("Reconnecting player {} failed (Could not find player)", connection.getPlayerUUID());
                 }
                 CommonCompatibilityManager.INSTANCE.emitServerVoiceChatDisconnectedEvent(connection.getPlayerUUID());
-                PluginManager.instance().onPlayerDisconnected(server, connection.getPlayerUUID());
+                PluginManager.instance().onPlayerDisconnected(connection.getPlayerUUID());
                 return true;
             }
             return false;
