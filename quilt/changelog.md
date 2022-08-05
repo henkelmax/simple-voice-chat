@@ -1,2 +1,3 @@
 - Added custom client socket to API
 - Improved memory consumption
+- Updated Korean translation
