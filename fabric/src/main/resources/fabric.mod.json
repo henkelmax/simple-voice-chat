@@ -51,6 +51,12 @@
       "links": {
         "modmenu.discord": "https://discord.gg/4dH2zwTmyX"
       }
+    },
+    "multiconnect": {
+      "custom_payloads": {
+        "allowed_clientbound": "voicechat:*",
+        "allowed_serverbound": "voicechat:*"
+      }
     }
   }
 }
