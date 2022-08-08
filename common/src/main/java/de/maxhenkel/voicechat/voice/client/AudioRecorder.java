@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.plugins.impl.mp3.Mp3EncoderImpl;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -25,8 +26,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -267,17 +270,15 @@ public class AudioRecorder {
 
             File userDir = location.resolve(directory).toFile();
             File[] files = userDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".wav"));
-            RandomAccessAudio audio = convertFiles(files, p -> progress.accept(progressPerc + p * (1F / (float) directories.length)));
-            if (audio == null) {
-                return;
-            }
-            writeWav(Utils.shortsToBytes(audio.getShorts()), audio.getAudioFormat(), location.resolve(lookupName(uuid) + ".wav").toFile());
+            Mp3EncoderImpl encoder = new Mp3EncoderImpl(stereoFormat, 320, 2, Files.newOutputStream(location.resolve(lookupName(uuid) + ".mp3"), StandardOpenOption.CREATE_NEW));
+            convertFiles(files, encoder, p -> progress.accept(progressPerc + p * (1F / (float) directories.length)));
+            encoder.close();
             FileUtils.deleteDirectory(userDir);
         }
     }
 
-    @Nullable
-    private RandomAccessAudio convertFiles(File[] files, Consumer<Float> progress) throws UnsupportedAudioFileException, IOException {
+    private boolean convertFiles(File[] files, Mp3EncoderImpl encoder, Consumer<Float> progress) throws UnsupportedAudioFileException, IOException {
+        boolean hasAudio = false;
         List<Tuple<File, Long>> audioSnippets = Arrays.stream(files)
                 .map(file -> {
                     String[] split = file.getName().split("\\.");
@@ -292,26 +293,51 @@ public class AudioRecorder {
                     }
                 })
                 .filter(Objects::nonNull)
+                .sorted(Comparator.comparingLong(Tuple::getB))
                 .collect(Collectors.toList());
 
-        RandomAccessAudio audio = null;
+        long lastTimestamp = timestamp;
+
         for (int i = 0; i < audioSnippets.size(); i++) {
             Tuple<File, Long> snippet = audioSnippets.get(i);
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(snippet.getA());
-            if (audio == null) {
-                audio = new RandomAccessAudio(audioInputStream.getFormat());
-            } else if (!audioInputStream.getFormat().matches(audio.getAudioFormat())) {
+            if (!audioInputStream.getFormat().matches(stereoFormat)) {
                 Voicechat.LOGGER.warn("Audio snippet {} has the wrong audio format.", snippet.getA().getName());
                 continue;
             }
 
-            int ts = (int) (snippet.getB() - timestamp);
-            audio.insertAt(Utils.bytesToShorts(IOUtils.toByteArray(audioInputStream)), ts);
+            long relativeTime = snippet.getB() - lastTimestamp;
+
+            if (relativeTime < -100L) {
+                Voicechat.LOGGER.warn("Audio snippet {} overlaps more than 100ms with previous snippet.", snippet.getA().getName());
+                continue;
+            } else if (relativeTime < 0L) {
+                Voicechat.LOGGER.warn("Audio {} overlaps with previous snippet.", snippet.getA().getName());
+                relativeTime = 0L;
+            }
+
+            int silenceShorts = (int) (relativeTime * getSamplesPerMs() * stereoFormat.getChannels());
+
+            short[] silence = new short[silenceShorts];
+            encoder.encode(silence);
+            short[] audio = Utils.bytesToShorts(IOUtils.toByteArray(audioInputStream));
+            encoder.encode(audio);
+            hasAudio = true;
+
+            lastTimestamp = snippet.getB() + getAudioTimeMillis(audio.length);
+
             audioInputStream.close();
             progress.accept(((float) i + 1F) / (float) audioSnippets.size());
         }
+        return hasAudio;
+    }
 
-        return audio;
+    private int getAudioTimeMillis(int audioShortLength) {
+        return (audioShortLength / stereoFormat.getChannels()) / getSamplesPerMs();
+    }
+
+    private int getSamplesPerMs() {
+        return ((int) stereoFormat.getSampleRate() / 1000);
     }
 
     private class AudioChunk {
@@ -339,70 +365,6 @@ public class AudioRecorder {
 
         public long getEndTimestamp() {
             return lastTimestamp;
-        }
-    }
-
-    private static class RandomAccessAudio {
-
-        private final AudioFormat audioFormat;
-        private final DynamicShortArray data;
-
-        public RandomAccessAudio(AudioFormat audioFormat) {
-            this.audioFormat = audioFormat;
-            this.data = new DynamicShortArray();
-        }
-
-        public void insertAt(short[] shorts, int offsetMilliseconds) throws UnsupportedAudioFileException {
-            if (audioFormat.getFrameSize() == AudioSystem.NOT_SPECIFIED) {
-                throw new UnsupportedAudioFileException("Frame size not specified");
-            }
-            if (audioFormat.getChannels() == AudioSystem.NOT_SPECIFIED) {
-                throw new UnsupportedAudioFileException("Channel count not specified");
-            }
-            if (audioFormat.getSampleRate() == AudioSystem.NOT_SPECIFIED) {
-                throw new UnsupportedAudioFileException("Sample rate not specified");
-            }
-            int shortsPerMs = ((int) audioFormat.getSampleRate() / 1000);
-            data.add(shorts, offsetMilliseconds * shortsPerMs * audioFormat.getChannels());
-        }
-
-        public AudioFormat getAudioFormat() {
-            return audioFormat;
-        }
-
-        public short[] getShorts() {
-            return data.getShorts();
-        }
-    }
-
-    private static class DynamicShortArray {
-        private short[] data;
-
-        public DynamicShortArray() {
-            this(0);
-        }
-
-        public DynamicShortArray(int initialLength) {
-            data = new short[initialLength];
-        }
-
-        public DynamicShortArray(short[] initialData) {
-            data = initialData;
-        }
-
-        public void add(short[] shorts, int offset) {
-            int max = shorts.length + offset;
-            if (max > data.length) {
-                short[] newData = new short[max];
-                System.arraycopy(data, 0, newData, 0, data.length);
-                data = newData;
-            }
-
-            System.arraycopy(shorts, 0, data, offset, shorts.length);
-        }
-
-        public short[] getShorts() {
-            return data;
         }
     }
 

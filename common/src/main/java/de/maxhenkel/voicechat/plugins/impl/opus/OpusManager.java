@@ -118,7 +118,7 @@ public class OpusManager {
         }
     }
 
-    private static boolean useNatives() {
+    public static boolean useNatives() {
         if (VoicechatClient.CLIENT_CONFIG == null) {
             return true;
         }
