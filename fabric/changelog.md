@@ -1,3 +1,3 @@
-- Added custom client socket to API
-- Improved memory consumption
-- Updated Korean translation
+- Added mp3 encoder and decoder to API
+- Voice chat recording now produces mp3 files
+- Fixed out of memory errors when processing very long recordings
