@@ -44,6 +44,7 @@ public class AudioRecorder {
 
     private final GameProfile ownProfile;
     private final Map<UUID, AudioChunk> chunks;
+    private final Set<UUID> uniquePlayersRecorded;
 
     private final AudioFormat stereoFormat;
 
@@ -54,6 +55,7 @@ public class AudioRecorder {
         this.location = location;
         location.toFile().mkdirs();
         chunks = new ConcurrentHashMap<>();
+        uniquePlayersRecorded = new HashSet<>();
         ownProfile = Minecraft.getInstance().getUser().getGameProfile();
 
         stereoFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, SoundManager.SAMPLE_RATE, 16, 2, 4, SoundManager.SAMPLE_RATE, false);
@@ -84,7 +86,7 @@ public class AudioRecorder {
     }
 
     public int getRecordedPlayerCount() {
-        return chunks.size();
+        return uniquePlayersRecorded.size();
     }
 
     public String getDuration() {
@@ -126,6 +128,7 @@ public class AudioRecorder {
             flushChunkThreaded(uuid);
             return;
         }
+        uniquePlayersRecorded.add(uuid);
         AudioChunk chunk = getChunk(uuid, timestamp);
         long passedTime = timestamp - chunk.getEndTimestamp();
         long threshold = VoicechatClient.CLIENT_CONFIG.outputBufferSize.get() * 20L;
@@ -268,7 +271,11 @@ public class AudioRecorder {
             Mp3EncoderImpl encoder = new Mp3EncoderImpl(stereoFormat, 320, 2, Files.newOutputStream(location.resolve(lookupName(uuid) + ".mp3"), StandardOpenOption.CREATE_NEW));
             convertFiles(files, encoder, p -> progress.accept(progressPerc + p * (1F / (float) directories.length)));
             encoder.close();
-            FileUtils.deleteDirectory(userDir);
+            try {
+                FileUtils.deleteDirectory(userDir);
+            } catch (IOException e) {
+                Voicechat.LOGGER.warn("Failed to delete temporary recording data: {}", e.getMessage());
+            }
         }
     }
 
@@ -295,34 +302,34 @@ public class AudioRecorder {
 
         for (int i = 0; i < audioSnippets.size(); i++) {
             Tuple<File, Long> snippet = audioSnippets.get(i);
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(snippet.getA());
-            if (!audioInputStream.getFormat().matches(stereoFormat)) {
-                Voicechat.LOGGER.warn("Audio snippet {} has the wrong audio format.", snippet.getA().getName());
-                continue;
+            try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(snippet.getA())) {
+                if (!audioInputStream.getFormat().matches(stereoFormat)) {
+                    Voicechat.LOGGER.warn("Audio snippet {} has the wrong audio format.", snippet.getA().getName());
+                    continue;
+                }
+
+                long relativeTime = snippet.getB() - lastTimestamp;
+
+                if (relativeTime < -100L) {
+                    Voicechat.LOGGER.warn("Audio snippet {} overlaps more than 100ms with previous snippet.", snippet.getA().getName());
+                    continue;
+                } else if (relativeTime < 0L) {
+                    Voicechat.LOGGER.warn("Audio {} overlaps with previous snippet.", snippet.getA().getName());
+                    relativeTime = 0L;
+                }
+
+                int silenceShorts = (int) (relativeTime * getSamplesPerMs() * stereoFormat.getChannels());
+
+                short[] silence = new short[silenceShorts];
+                encoder.encode(silence);
+                short[] audio = Utils.bytesToShorts(audioInputStream.readAllBytes());
+                encoder.encode(audio);
+                hasAudio = true;
+
+                lastTimestamp = snippet.getB() + getAudioTimeMillis(audio.length);
+
+                progress.accept(((float) i + 1F) / (float) audioSnippets.size());
             }
-
-            long relativeTime = snippet.getB() - lastTimestamp;
-
-            if (relativeTime < -100L) {
-                Voicechat.LOGGER.warn("Audio snippet {} overlaps more than 100ms with previous snippet.", snippet.getA().getName());
-                continue;
-            } else if (relativeTime < 0L) {
-                Voicechat.LOGGER.warn("Audio {} overlaps with previous snippet.", snippet.getA().getName());
-                relativeTime = 0L;
-            }
-
-            int silenceShorts = (int) (relativeTime * getSamplesPerMs() * stereoFormat.getChannels());
-
-            short[] silence = new short[silenceShorts];
-            encoder.encode(silence);
-            short[] audio = Utils.bytesToShorts(audioInputStream.readAllBytes());
-            encoder.encode(audio);
-            hasAudio = true;
-
-            lastTimestamp = snippet.getB() + getAudioTimeMillis(audio.length);
-
-            audioInputStream.close();
-            progress.accept(((float) i + 1F) / (float) audioSnippets.size());
         }
         return hasAudio;
     }
