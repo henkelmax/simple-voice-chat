@@ -98,6 +98,9 @@ dependencies {
     implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
     shadow "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
 
+    implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
+    shadow "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
+
     implementation project(path: ':macos', configuration: 'shadow')
     shadow project(path: ':macos', configuration: 'shadow')
     macos(project(':macos')) {
@@ -243,6 +246,7 @@ shadowJar {
     relocate 'de.maxhenkel.opus4j', "de.maxhenkel.${mod_id}.opus4j"
     relocate 'org.concentus', "de.maxhenkel.${mod_id}.concentus"
     relocate 'de.maxhenkel.rnnoise4j', "de.maxhenkel.${mod_id}.rnnoise4j"
+    relocate 'de.maxhenkel.lame4j', "de.maxhenkel.${mod_id}.lame4j"
     relocate 'com.dd.plist', "de.maxhenkel.${mod_id}.com.dd.plist"
     dependencies {
         exclude(dependency('net.java.dev.jna:jna'))
