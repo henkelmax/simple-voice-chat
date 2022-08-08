@@ -72,7 +72,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         });
         addRenderableWidget(volumes);
 
-        if (client != null) {
+        if (client != null && VoicechatClient.CLIENT_CONFIG.useNatives.get()) {
             if (client.getRecorder() != null || (client.getConnection() != null && client.getConnection().getData().allowRecording())) {
                 ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> ClientManager.getClient() != null && ClientManager.getClient().getRecorder() != null, button -> toggleRecording(), new RecordingTooltipSupplier(this));
                 addRenderableWidget(record);
