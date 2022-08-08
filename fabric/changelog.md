@@ -1,3 +1,4 @@
 - Added mp3 encoder and decoder to API
 - Voice chat recording now produces mp3 files
 - Fixed out of memory errors when processing very long recordings
+- Fixed recording storage size not displaying correctly
