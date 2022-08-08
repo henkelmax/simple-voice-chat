@@ -137,13 +137,18 @@ public class ClientVoicechat {
         }
     }
 
-    public void toggleRecording() {
-        setRecording(recorder == null);
+    public boolean toggleRecording() {
+        return setRecording(recorder == null);
     }
 
-    public void setRecording(boolean recording) {
+    public boolean setRecording(boolean recording) {
+        if (!VoicechatClient.CLIENT_CONFIG.useNatives.get()) {
+            Voicechat.LOGGER.warn("Tried to start a recording with natives being disabled");
+            return false;
+        }
+
         if (recording == (recorder != null)) {
-            return;
+            return false;
         }
         LocalPlayer player = Minecraft.getInstance().player;
         if (recording) {
@@ -151,13 +156,13 @@ public class ClientVoicechat {
                 if (player != null) {
                     player.displayClientMessage(new TranslatableComponent("message.voicechat.recording_disabled"), true);
                 }
-                return;
+                return false;
             }
             recorder = AudioRecorder.create();
             if (player != null) {
                 player.displayClientMessage(new TranslatableComponent("message.voicechat.recording_started").withStyle(ChatFormatting.DARK_RED), true);
             }
-            return;
+            return true;
         }
 
         AudioRecorder rec = recorder;
@@ -166,6 +171,7 @@ public class ClientVoicechat {
             player.displayClientMessage(new TranslatableComponent("message.voicechat.recording_stopped").withStyle(ChatFormatting.DARK_RED), true);
         }
         rec.saveAndClose();
+        return true;
     }
 
     @Nullable
