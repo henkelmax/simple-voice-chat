@@ -126,6 +126,13 @@ public class ForgeClientConfig extends ClientConfig {
                 .comment("The location where recordings should be saved", "Leave empty for default location")
                 .define("recording_destination", "")
         );
+        recordingQuality = wrapConfigEntry(builder
+                .comment(
+                        "The quality of the recorded audio",
+                        "0 = highest quality, 9 = lowest quality"
+                )
+                .defineInRange("recording_quality", 2, 0, 9)
+        );
         denoiser = wrapConfigEntry(builder
                 .comment("If noise cancellation should be enabled")
                 .define("denoiser", false)
