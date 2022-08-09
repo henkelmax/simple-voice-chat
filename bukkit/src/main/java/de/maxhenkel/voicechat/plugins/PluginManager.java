@@ -30,7 +30,7 @@ public class PluginManager {
     private List<VoicechatPlugin> plugins;
     private Map<Class<? extends Event>, List<Consumer<? extends Event>>> events;
 
-    public void init(Plugin p) {
+    public void init() {
         Voicechat.LOGGER.info("Loading plugins");
         plugins = Voicechat.apiService.getPlugins();
         Voicechat.LOGGER.info("Loaded {} plugin(s)", plugins.size());
