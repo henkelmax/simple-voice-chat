@@ -22,17 +22,23 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ServerVoiceEvents implements Listener {
 
     private final Map<UUID, Integer> clientCompatibilities;
-    private final Server server;
+    private Server server;
 
-    public ServerVoiceEvents(org.bukkit.Server mcServer) {
+    public ServerVoiceEvents() {
         clientCompatibilities = new ConcurrentHashMap<>();
+    }
 
-        if (!mcServer.getOnlineMode()) {
+    public void init() {
+        if (server != null) {
+            return;
+        }
+        if (!Bukkit.getOnlineMode()) {
             Voicechat.LOGGER.warn("Running in offline mode - Voice chat encryption is not secure!");
         }
 
-        server = new Server(mcServer);
+        server = new Server();
         server.start();
+
         PluginManager.instance().onServerStarted();
     }
 
