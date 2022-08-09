@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.plugins.impl.mp3;
 
+import de.maxhenkel.lame4j.Lame;
 import de.maxhenkel.lame4j.LameEncoder;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.mp3.Mp3Encoder;
@@ -15,6 +16,7 @@ public class Mp3EncoderImpl implements Mp3Encoder, AutoCloseable {
     private final LameEncoder encoder;
 
     public Mp3EncoderImpl(AudioFormat audioFormat, int bitrate, int quality, OutputStream outputStream) throws IOException {
+        Voicechat.logDebug("Initializing LAME encoder version {}", Lame.INSTANCE.get_lame_version());
         encoder = new LameEncoder(audioFormat.getChannels(), (int) audioFormat.getSampleRate(), bitrate, quality, outputStream);
     }
 

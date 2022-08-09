@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.plugins.impl.mp3;
 
+import de.maxhenkel.lame4j.Lame;
 import de.maxhenkel.lame4j.LameDecoder;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.mp3.Mp3Decoder;
@@ -20,6 +21,7 @@ public class Mp3DecoderImpl implements Mp3Decoder {
     private AudioFormat audioFormat;
 
     public Mp3DecoderImpl(InputStream inputStream) {
+        Voicechat.logDebug("Initializing LAME decoder version {}", Lame.INSTANCE.get_lame_version());
         decoder = new LameDecoder(inputStream);
     }
 
