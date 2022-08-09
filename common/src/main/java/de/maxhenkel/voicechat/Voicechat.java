@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat;
 import de.maxhenkel.voicechat.command.VoicechatCommands;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,6 +38,7 @@ public abstract class Voicechat {
         LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
         CommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
+        PluginManager.instance().init();
         CommonCompatibilityManager.INSTANCE.onRegisterServerCommands(VoicechatCommands::register);
     }
 

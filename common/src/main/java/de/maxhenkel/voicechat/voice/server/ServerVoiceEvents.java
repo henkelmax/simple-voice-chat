@@ -27,7 +27,6 @@ public class ServerVoiceEvents {
 
     public ServerVoiceEvents() {
         clientCompatibilities = new ConcurrentHashMap<>();
-        PluginManager.instance().init();
         CommonCompatibilityManager.INSTANCE.onServerStarting(this::serverStarting);
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedIn(this::playerLoggedIn);
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::playerLoggedOut);
