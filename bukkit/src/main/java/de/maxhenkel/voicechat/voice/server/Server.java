@@ -10,6 +10,7 @@ import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -42,15 +43,15 @@ public class Server extends Thread {
     private final GroupManager groupManager;
     private final ServerCategoryManager categoryManager;
 
-    public Server(org.bukkit.Server server) {
+    public Server() {
         int configPort = Voicechat.SERVER_CONFIG.voiceChatPort.get();
         if (configPort < 0) {
             Voicechat.LOGGER.info("Using the Minecraft servers port as voice chat port");
-            port = server.getPort();
+            port = Bukkit.getPort();
         } else {
             port = configPort;
         }
-        this.server = server;
+        this.server = Bukkit.getServer();
         socket = PluginManager.instance().getSocketImplementation();
         connections = new HashMap<>();
         secrets = new HashMap<>();
