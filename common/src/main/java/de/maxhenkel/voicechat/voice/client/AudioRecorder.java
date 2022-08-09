@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.client;
 import com.mojang.authlib.GameProfile;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.api.mp3.Mp3Encoder;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.impl.mp3.Mp3EncoderImpl;
 import de.maxhenkel.voicechat.voice.common.Utils;
@@ -268,7 +269,10 @@ public class AudioRecorder {
 
             File userDir = location.resolve(directory).toFile();
             File[] files = userDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".wav"));
-            Mp3EncoderImpl encoder = new Mp3EncoderImpl(stereoFormat, 320, 2, Files.newOutputStream(location.resolve(lookupName(uuid) + ".mp3"), StandardOpenOption.CREATE_NEW));
+            Mp3Encoder encoder = Mp3EncoderImpl.createEncoder(stereoFormat, 320, 2, Files.newOutputStream(location.resolve(lookupName(uuid) + ".mp3"), StandardOpenOption.CREATE_NEW));
+            if (encoder == null) {
+                throw new IOException("Failed to load mp3 encoder");
+            }
             convertFiles(files, encoder, p -> progress.accept(progressPerc + p * (1F / (float) directories.length)));
             encoder.close();
             try {
@@ -279,7 +283,7 @@ public class AudioRecorder {
         }
     }
 
-    private boolean convertFiles(File[] files, Mp3EncoderImpl encoder, Consumer<Float> progress) throws UnsupportedAudioFileException, IOException {
+    private boolean convertFiles(File[] files, Mp3Encoder encoder, Consumer<Float> progress) throws UnsupportedAudioFileException, IOException {
         boolean hasAudio = false;
         List<Tuple<File, Long>> audioSnippets = Arrays.stream(files)
                 .map(file -> {
