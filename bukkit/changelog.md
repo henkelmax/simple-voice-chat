@@ -1,1 +1,1 @@
-- Update voice chat API
+- Fixed errors with voice chat API
