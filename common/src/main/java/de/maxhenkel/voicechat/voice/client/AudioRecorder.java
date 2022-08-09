@@ -39,6 +39,8 @@ public class AudioRecorder {
 
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
 
+    private static final int MP3_BITRATE = 320;
+
     private final long timestamp;
     private final Path location;
 
@@ -105,7 +107,9 @@ public class AudioRecorder {
     }
 
     public String getStorage(long currentTime) {
-        return FileUtils.byteCountToDisplaySize((currentTime - timestamp) * (long) stereoFormat.getFrameSize() * ((long) stereoFormat.getFrameRate() / 1000L) * getRecordedPlayerCount());
+        long durationSeconds = (currentTime - timestamp) / 1000L;
+        long size = durationSeconds * MP3_BITRATE * 1000L / 8L * getRecordedPlayerCount();
+        return FileUtils.byteCountToDisplaySize(size);
     }
 
     private String lookupName(UUID uuid) {
@@ -268,7 +272,7 @@ public class AudioRecorder {
 
             File userDir = location.resolve(directory).toFile();
             File[] files = userDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".wav"));
-            Mp3Encoder encoder = Mp3EncoderImpl.createEncoder(stereoFormat, 320, 2, Files.newOutputStream(location.resolve(lookupName(uuid) + ".mp3"), StandardOpenOption.CREATE_NEW));
+            Mp3Encoder encoder = Mp3EncoderImpl.createEncoder(stereoFormat, MP3_BITRATE, 2, Files.newOutputStream(location.resolve(lookupName(uuid) + ".mp3"), StandardOpenOption.CREATE_NEW));
             if (encoder == null) {
                 throw new IOException("Failed to load mp3 encoder");
             }
