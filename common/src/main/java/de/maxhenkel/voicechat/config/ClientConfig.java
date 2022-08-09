@@ -29,6 +29,7 @@ public abstract class ClientConfig {
     public ConfigEntry<Integer> hudIconPosY;
     public ConfigEntry<Double> hudIconScale;
     public ConfigEntry<String> recordingDestination;
+    public ConfigEntry<Integer> recordingQuality;
     public ConfigEntry<Boolean> denoiser;
     public ConfigEntry<Boolean> runLocalServer;
     public ConfigEntry<Boolean> javaMicrophoneImplementation;
