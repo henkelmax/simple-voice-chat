@@ -142,7 +142,7 @@ public class ClientVoicechat {
     }
 
     public boolean setRecording(boolean recording) {
-        if (!VoicechatClient.CLIENT_CONFIG.useNatives.get()) {
+        if (recording && !VoicechatClient.CLIENT_CONFIG.useNatives.get()) {
             Voicechat.LOGGER.warn("Tried to start a recording with natives being disabled");
             return false;
         }

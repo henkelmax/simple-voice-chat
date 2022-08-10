@@ -231,7 +231,7 @@ public class AudioChannel extends Thread {
             try {
                 client.getRecorder().appendChunk(uuid, System.currentTimeMillis(), stereo.get());
             } catch (IOException e) {
-                e.printStackTrace();
+                Voicechat.LOGGER.error("Failed to record audio", e);
             }
         }
     }
