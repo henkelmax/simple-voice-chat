@@ -3,3 +3,4 @@
 - Improve memory consumption while recording
 - Fix broken audio files on long recordings
 - Fix no recording files when recording fails
+- Fix recording quality config option not working
