@@ -1,8 +1,13 @@
 package de.maxhenkel.voicechat.api.mp3;
 
+import de.maxhenkel.voicechat.api.VoicechatApi;
+
 import javax.sound.sampled.AudioFormat;
 import java.io.IOException;
 
+/**
+ * You can obtain an instance of this class by calling {@link VoicechatApi#createMp3Decoder}.
+ */
 public interface Mp3Decoder {
 
     /**
