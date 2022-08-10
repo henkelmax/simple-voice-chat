@@ -248,7 +248,7 @@ public class MicThread extends Thread {
                 client.getRecorder().appendChunk(Minecraft.getInstance().getUser().getGameProfile().getId(), System.currentTimeMillis(), PositionalAudioUtils.convertToStereo(audio));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Voicechat.LOGGER.error("Failed to record audio", e);
         }
     }
 
