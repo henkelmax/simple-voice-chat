@@ -124,7 +124,7 @@ public class AudioRecorder {
         }
 
         if (!encoders.containsKey(uuid)) {
-            Mp3Encoder encoder = Mp3EncoderImpl.createEncoder(stereoFormat, MP3_BITRATE, 2, Files.newOutputStream(location.resolve(lookupName(uuid) + ".mp3"), StandardOpenOption.CREATE_NEW));
+            Mp3Encoder encoder = Mp3EncoderImpl.createEncoder(stereoFormat, MP3_BITRATE, VoicechatClient.CLIENT_CONFIG.recordingQuality.get(), Files.newOutputStream(location.resolve(lookupName(uuid) + ".mp3"), StandardOpenOption.CREATE_NEW));
             encoders.put(uuid, new EncoderData(encoder, timestamp));
             if (encoder == null) {
                 throw new IOException("Failed to load mp3 encoder");
@@ -258,6 +258,8 @@ public class AudioRecorder {
                         } catch (IOException e) {
                             error = e;
                         }
+                    } else {
+                        error = new IOException("Failed to load mp3 encoder");
                     }
                 }
                 if (error != null) {

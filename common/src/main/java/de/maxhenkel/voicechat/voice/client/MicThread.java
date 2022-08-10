@@ -249,6 +249,7 @@ public class MicThread extends Thread {
             }
         } catch (IOException e) {
             Voicechat.LOGGER.error("Failed to record audio", e);
+            client.setRecording(false);
         }
     }
 
