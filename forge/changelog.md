@@ -1,6 +1,1 @@
-- Reduce storage size usage while recording
-- Reduce recording processing time
-- Improve memory consumption while recording
-- Fix broken audio files on long recordings
-- Fix no recording files when recording fails
-- Fix recording quality config option not working
+- Fixed audio not fading with 3D sound set to off
