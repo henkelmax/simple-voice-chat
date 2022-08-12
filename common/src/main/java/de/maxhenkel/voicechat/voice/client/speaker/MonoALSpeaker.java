@@ -27,17 +27,17 @@ public class MonoALSpeaker extends ALSpeakerBase {
     }
 
     @Override
-    protected void setPositionSync(@Nullable Vec3 soundPos, float maxDistance) {
+    protected void setPositionSync(@Nullable Vector3d soundPos, float maxDistance) {
 
     }
 
     @Override
-    protected short[] convert(short[] data, @Nullable Vec3 position) {
+    protected short[] convert(short[] data, @Nullable Vector3d position) {
         return data;
     }
 
     @Override
-    protected float getVolume(float volume, @Nullable Vec3 position, float maxDistance) {
+    protected float getVolume(float volume, @Nullable Vector3d position, float maxDistance) {
         if (position == null) {
             return super.getVolume(volume, position, maxDistance);
         }
