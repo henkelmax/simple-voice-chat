@@ -13,6 +13,7 @@ plugins {
 }
 
 apply plugin: "info.u_team.curse_gradle_uploader"
+apply plugin: 'com.modrinth.minotaur'
 
 sourceCompatibility = JavaLanguageVersion.of(java_version as int)
 targetCompatibility = JavaLanguageVersion.of(java_version as int)
@@ -134,3 +135,23 @@ curseforge {
         }
     }
 }
+
+tasks.modrinth.configure({
+    group = 'upload'
+})
+
+modrinth {
+    token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
+    projectId = modrinth_id
+    versionNumber = "bukkit-${mod_version}"
+    versionName = "[BUKKIT/SPIGOT/PAPER][${minecraft_version}] ${mod_name} ${mod_version}"
+    uploadFile = shadowJar
+    versionType = release_type.toUpperCase()
+    changelog = file("changelog.md").text
+    gameVersions = [minecraft_version]
+    loaders = ['bukkit', 'spigot', 'paper', 'purpur']
+    dependencies {
+        // optional.project "Vebnzrzj" // LuckPerms //TODO add dependency
+    }
+}
+tasks.modrinth.dependsOn(build)
