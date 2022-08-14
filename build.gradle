@@ -18,7 +18,8 @@ task publishBukkit(type: GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':bukkit:clean',
-            ':bukkit:curseforge'
+            ':bukkit:curseforge',
+            ':bukkit:modrinth'
     ]
 }
 
