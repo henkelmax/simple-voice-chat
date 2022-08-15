@@ -206,7 +206,7 @@ modrinth {
     token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
     projectId = modrinth_id
     versionNumber = "quilt-${mod_version}"
-    versionName = "[QUILT][${minecraft_version}] ${mod_name} ${mod_version}"
+    versionName = "${mod_name} ${mod_version}"
     uploadFile = remapJar
     versionType = release_type.toUpperCase()
     changelog = file("changelog.md").text

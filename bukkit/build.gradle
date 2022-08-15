@@ -159,7 +159,7 @@ modrinth {
     token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
     projectId = modrinth_id
     versionNumber = "bukkit-${mod_version}"
-    versionName = "[BUKKIT/SPIGOT/PAPER][${minecraft_version}] ${mod_name} ${mod_version}"
+    versionName = "${mod_name} ${mod_version}"
     uploadFile = shadowJar
     versionType = release_type.toUpperCase()
     changelog = file("changelog.md").text
