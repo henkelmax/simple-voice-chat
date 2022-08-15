@@ -1,1 +1,8 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Wiki
+    about: Useful information about configuring and setting up the mod
+    url: https://modrepo.de/minecraft/voicechat/wiki
+  - name: Discord
+    about: Get support on our Discord Server
+    url: https://discord.gg/4dH2zwTmyX
