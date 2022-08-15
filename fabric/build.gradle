@@ -197,7 +197,7 @@ modrinth {
     token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
     projectId = modrinth_id
     versionNumber = "fabric-${mod_version}"
-    versionName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
+    versionName = "${mod_name} ${mod_version}"
     uploadFile = remapJar
     versionType = release_type.toUpperCase()
     changelog = file("changelog.md").text
