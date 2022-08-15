@@ -7,7 +7,7 @@ assignees: henkelmax
 
 ---
 
-**Please read the [FAQ](https://modrepo.de/minecraft/voicechat/faq) before submitting a bug report!**
+**Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki) before submitting a bug report!**
 
 **Bug description**
 A clear and concise description of what the bug is.
