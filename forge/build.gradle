@@ -190,7 +190,7 @@ modrinth {
     token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
     projectId = modrinth_id
     versionNumber = "forge-${mod_version}"
-    versionName = "[FORGE][${minecraft_version}] ${mod_name} ${mod_version}"
+    versionName = "${mod_name} ${mod_version}"
     uploadFile = jar
     versionType = release_type.toUpperCase()
     changelog = file("changelog.md").text
