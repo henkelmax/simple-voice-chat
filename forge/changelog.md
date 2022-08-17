@@ -1,1 +1,1 @@
-- Fixed audio not fading with 3D sound set to off
+- Updated Brazilian Portuguese language
