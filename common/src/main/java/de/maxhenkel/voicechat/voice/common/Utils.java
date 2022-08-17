@@ -216,7 +216,7 @@ public class Utils {
                 });
             }
             obj.set(supplier.get());
-        });
+        }, "NativeInitializationThread");
         t.start();
 
         try {
