@@ -1,1 +1,1 @@
-- Updated Brazilian Portuguese language
+- Updated Brazilian Portuguese translation
