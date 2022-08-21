@@ -54,9 +54,4 @@ public class FakeALSpeaker extends ALSpeakerBase {
     protected void linearAttenuation(float maxDistance) {
 
     }
-
-    @Override
-    protected void noAttenuation() {
-
-    }
 }
