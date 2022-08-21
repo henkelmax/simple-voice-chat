@@ -144,11 +144,6 @@ public abstract class ALSpeakerBase implements Speaker {
         SoundManager.checkAlError();
     }
 
-    protected void noAttenuation() {
-        AL11.alDistanceModel(AL11.AL_NONE);
-        SoundManager.checkAlError();
-    }
-
     protected abstract int getFormat();
 
     protected short[] convert(short[] data, @Nullable Vec3 position) {
@@ -171,7 +166,7 @@ public abstract class ALSpeakerBase implements Speaker {
             AL11.alSource3f(source, AL11.AL_POSITION, (float) soundPos.x, (float) soundPos.y, (float) soundPos.z);
             SoundManager.checkAlError();
         } else {
-            noAttenuation();
+            linearAttenuation(48F);
             AL11.alSourcei(source, AL11.AL_SOURCE_RELATIVE, AL11.AL_TRUE);
             SoundManager.checkAlError();
             AL11.alSource3f(source, AL11.AL_POSITION, 0F, 0F, 0F);
