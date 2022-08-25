@@ -1,2 +1,1 @@
-- Updated Brazilian Portuguese translation
-- Fixed glitching 3D sound when in a group
+- Fixed crash with EssentialAddons
