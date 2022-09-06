@@ -1,1 +1,2 @@
-- Fixed crash with EssentialAddons
+- Added Mexican Spanish translation
+- Updated loom
