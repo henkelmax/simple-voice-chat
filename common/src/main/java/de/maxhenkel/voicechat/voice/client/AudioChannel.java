@@ -198,6 +198,9 @@ public class AudioChannel extends Thread {
                 appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData));
                 return;
             }
+
+            float deathVolume = Math.min(Math.max((20F - (float) player.deathTime) / 20F, 0F), 1F);
+            volume *= deathVolume;
             Vec3 pos = player.getEyePosition();
 
             short[] processedMonoData = PluginManager.instance().onReceiveEntityClientSound(uuid, monoData, soundPacket.isWhispering(), soundPacket.getDistance());
@@ -210,7 +213,7 @@ public class AudioChannel extends Thread {
             if (PositionalAudioUtils.getDistanceVolume(soundPacket.getDistance(), pos) > 0F) {
                 client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
             }
-            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(soundPacket.getDistance(), pos, processedMonoData));
+            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(soundPacket.getDistance(), pos, processedMonoData, deathVolume));
         } else if (packet instanceof LocationSoundPacket p) {
             short[] processedMonoData = PluginManager.instance().onReceiveLocationalClientSound(uuid, monoData, p.getLocation(), p.getDistance());
             if (p.getLocation().distanceTo(minecraft.gameRenderer.getMainCamera().getPosition()) > p.getDistance() + 1D) {
