@@ -160,8 +160,16 @@ public class PositionalAudioUtils {
         return convertToStereoForRecording(maxDistance, mc.gameRenderer.getMainCamera().getPosition(), mc.gameRenderer.getMainCamera().getYRot(), pos, monoData);
     }
 
+    public static short[] convertToStereoForRecording(float maxDistance, Vec3 pos, short[] monoData, float volume) {
+        return convertToStereoForRecording(maxDistance, mc.gameRenderer.getMainCamera().getPosition(), mc.gameRenderer.getMainCamera().getYRot(), pos, monoData, volume);
+    }
+
     public static short[] convertToStereoForRecording(float maxDistance, Vec3 cameraPos, float yRot, Vec3 pos, short[] monoData) {
-        float distanceVolume = getDistanceVolume(maxDistance, cameraPos, pos);
+        return convertToStereoForRecording(maxDistance, cameraPos, yRot, pos, monoData, 1F);
+    }
+
+    public static short[] convertToStereoForRecording(float maxDistance, Vec3 cameraPos, float yRot, Vec3 pos, short[] monoData, float volume) {
+        float distanceVolume = getDistanceVolume(maxDistance, cameraPos, pos) * volume;
         if (!VoicechatClient.CLIENT_CONFIG.audioType.get().equals(AudioType.OFF)) {
             float[] stereoVolume = getStereoVolume(cameraPos, yRot, pos);
             return convertToStereo(monoData, distanceVolume * stereoVolume[0], distanceVolume * stereoVolume[1]);

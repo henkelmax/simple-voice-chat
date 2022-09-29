@@ -1,2 +1,1 @@
-- Added Mexican Spanish translation
-- Updated loom
+- Fade players volume when dying
