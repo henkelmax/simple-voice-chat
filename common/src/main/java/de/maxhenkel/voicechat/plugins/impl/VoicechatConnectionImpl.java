@@ -26,7 +26,10 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
     }
 
     @Nullable
-    public static VoicechatConnectionImpl fromPlayer(ServerPlayerEntity player) {
+    public static VoicechatConnectionImpl fromPlayer(@Nullable ServerPlayerEntity player) {
+        if (player == null) {
+            return null;
+        }
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
             return null;

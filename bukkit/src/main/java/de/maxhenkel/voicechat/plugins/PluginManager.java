@@ -124,8 +124,11 @@ public class PluginManager {
         return dispatchEvent(JoinGroupEvent.class, new JoinGroupEventImpl(new GroupImpl(group), VoicechatConnectionImpl.fromPlayer(player)));
     }
 
-    public boolean onCreateGroup(Player player, Group group) {
+    public boolean onCreateGroup(@Nullable Player player, @Nullable Group group) {
         if (group == null) {
+            if (player == null) {
+                return false;
+            }
             return onLeaveGroup(player);
         }
         return dispatchEvent(CreateGroupEvent.class, new CreateGroupEventImpl(new GroupImpl(group), VoicechatConnectionImpl.fromPlayer(player)));
