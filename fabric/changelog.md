@@ -1,2 +1,1 @@
-- Updated to 22w42a
-- Made voice chat resource pack names translatable
+- Change permission nodes to be consistent with Bukkit and Forge

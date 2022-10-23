@@ -1,1 +1,1 @@
-- Fade players volume when dying
+- Change permission nodes to be consistent with Bukkit and Forge
