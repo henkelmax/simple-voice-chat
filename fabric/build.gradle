@@ -13,7 +13,7 @@ plugins {
     id 'fabric-loom' version '1.0-SNAPSHOT'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id 'com.github.johnrengelman.shadow' version '7.1.0'
-    id 'io.github.juuxel.loom-quiltflower' version '1.6.0'
+    id 'io.github.juuxel.loom-quiltflower' version '1.7.4'
 }
 
 apply plugin: 'forge-update'
