@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.resources.ResourcePack;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponent;
 
 import javax.annotation.Nullable;
 import java.io.FileNotFoundException;
@@ -25,9 +26,9 @@ import java.util.stream.Collectors;
 public class VoiceChatResourcePack extends ResourcePack {
 
     protected String path;
-    protected String name;
+    protected TextComponent name;
 
-    public VoiceChatResourcePack(String name, String path) {
+    public VoiceChatResourcePack(String path, TextComponent name) {
         super(null);
         this.path = path;
         this.name = name;
@@ -35,7 +36,7 @@ public class VoiceChatResourcePack extends ResourcePack {
 
     @Override
     public String getName() {
-        return name;
+        return name.getString();
     }
 
     private String getPath() {

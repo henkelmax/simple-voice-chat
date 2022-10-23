@@ -9,6 +9,7 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IPackNameDecorator;
 import net.minecraft.resources.ResourcePackInfo;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,9 +35,9 @@ public abstract class VoicechatClient {
         //Load instance
         ClientManager.instance();
 
-        CLASSIC_ICONS = new VoiceChatResourcePack("Classic Icons", "classic_icons");
-        WHITE_ICONS = new VoiceChatResourcePack("White Icons", "white_icons");
-        BLACK_ICONS = new VoiceChatResourcePack("Black Icons", "black_icons");
+        CLASSIC_ICONS = new VoiceChatResourcePack("classic_icons", new TranslationTextComponent("resourcepack.voicechat.classic_icons"));
+        WHITE_ICONS = new VoiceChatResourcePack("white_icons", new TranslationTextComponent("resourcepack.voicechat.white_icons"));
+        BLACK_ICONS = new VoiceChatResourcePack("black_icons", new TranslationTextComponent("resourcepack.voicechat.black_icons"));
 
         ClientCompatibilityManager.INSTANCE.addResourcePackSource(Minecraft.getInstance().getResourcePackRepository(), (Consumer<ResourcePackInfo> consumer, ResourcePackInfo.IFactory packConstructor) -> {
             consumer.accept(ResourcePackInfo.create(CLASSIC_ICONS.getName(), false, () -> CLASSIC_ICONS, packConstructor, ResourcePackInfo.Priority.TOP, IPackNameDecorator.BUILT_IN));

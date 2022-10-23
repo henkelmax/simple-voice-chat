@@ -1,6 +1,11 @@
 {
-	"pack": {
-		"pack_format": 6,
-		"description": [{"text":"White Voice Chat Icons","color":"light_gray"}]
-	}
+  "pack": {
+    "pack_format": 6,
+    "description": [
+      {
+        "translate": "resourcepack.voicechat.white_icons.description",
+        "color": "light_gray"
+      }
+    ]
+  }
 }
