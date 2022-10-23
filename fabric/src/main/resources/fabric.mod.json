@@ -42,7 +42,7 @@
     "fabric-permissions-api-v0": "*"
   },
   "breaks": {
-    "fabric": "<${min_fabric_version}"
+    "fabric-api": "<${min_fabric_version}"
   },
   "custom": {
     "modmenu": {

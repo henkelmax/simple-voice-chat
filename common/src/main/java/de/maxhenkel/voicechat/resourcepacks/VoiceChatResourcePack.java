@@ -1,44 +1,45 @@
 package de.maxhenkel.voicechat.resourcepacks;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import de.maxhenkel.voicechat.Voicechat;
+import net.minecraft.SharedConstants;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.AbstractPackResources;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.server.packs.resources.IoSupplier;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.flag.FeatureFlags;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.Locale;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class VoiceChatResourcePack extends AbstractPackResources {
 
-    protected String path;
-    protected String name;
-
-    public VoiceChatResourcePack(String name, String path) {
-        super(null);
-        this.path = path;
-        this.name = name;
+    public VoiceChatResourcePack(String id) {
+        super(id);
     }
 
-    @Override
-    public String getName() {
-        return name;
+    public Pack toPack(Component name) {
+        Pack.ResourcesSupplier resourcesSupplier = (s) -> this;
+        Pack.Info info = Pack.readPackInfo("", resourcesSupplier);
+        if (info == null) {
+            info = new Pack.Info(name, PackType.CLIENT_RESOURCES.getVersion(SharedConstants.getCurrentVersion()), FeatureFlagSet.of(FeatureFlags.VANILLA));
+        }
+        return Pack.create(this.packId(), name, false, resourcesSupplier, info, PackType.CLIENT_RESOURCES, Pack.Position.TOP, false, PackSource.BUILT_IN);
     }
 
     private String getPath() {
-        return "/packs/" + path + "/";
+        return "/packs/" + packId() + "/";
     }
 
     @Nullable
@@ -46,48 +47,53 @@ public class VoiceChatResourcePack extends AbstractPackResources {
         return Voicechat.class.getResourceAsStream(getPath() + name);
     }
 
+    @Nullable
     @Override
-    protected InputStream getResource(String name) throws IOException {
-        InputStream resourceAsStream = get(name);
+    public IoSupplier<InputStream> getRootResource(String... strings) {
+        return getResource(String.join("/", strings));
+    }
+
+    private static String getPathFromLocation(PackType packType, ResourceLocation resourceLocation) {
+        return String.format(Locale.ROOT, "%s/%s/%s", packType.getDirectory(), resourceLocation.getNamespace(), resourceLocation.getPath());
+    }
+
+    @Nullable
+    @Override
+    public IoSupplier<InputStream> getResource(PackType packType, ResourceLocation resourceLocation) {
+        return getResource(getPathFromLocation(packType, resourceLocation));
+    }
+
+    @Nullable
+    private IoSupplier<InputStream> getResource(String path) {
+        InputStream resourceAsStream = get(path);
         if (resourceAsStream == null) {
-            throw new IOException("Resource " + name + " does not exist");
+            return null;
         }
-        return resourceAsStream;
+        return () -> resourceAsStream;
     }
 
     @Override
-    protected boolean hasResource(String name) {
-        try {
-            return get(name) != null;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    @Override
-    public Collection<ResourceLocation> getResources(PackType type, String namespace, String prefix, Predicate<ResourceLocation> pathFilter) {
+    public void listResources(PackType type, String namespace, String prefix, ResourceOutput resourceOutput) {
         try {
             URL url = Voicechat.class.getResource(getPath());
+            if (url == null) {
+                return;
+            }
             Path resPath = Paths.get(url.toURI());
-            List<Path> files = Files.walk(resPath).collect(Collectors.toList());
 
-            List<ResourceLocation> list = Lists.newArrayList();
             String absolutePath = type.getDirectory() + "/" + namespace + "/";
             String absolutePrefixPath = absolutePath + prefix + "/";
 
-            for (Path path : files) {
-                if (!Files.isDirectory(path)) {
+            try (Stream<Path> files = Files.walk(resPath)) {
+                files.filter(path -> !Files.isDirectory(path)).forEach(path -> {
                     String name = path.getFileName().toString();
                     if (!name.endsWith(".mcmeta") && name.startsWith(absolutePrefixPath)) {
-                        list.add(new ResourceLocation(namespace, name.substring(absolutePath.length())));
+                        ResourceLocation resourceLocation = new ResourceLocation(namespace, name.substring(absolutePath.length()));
+                        resourceOutput.accept(resourceLocation, getResource(type, resourceLocation));
                     }
-                }
+                });
             }
-
-            return list;
-
-        } catch (Exception e) {
-            return Collections.emptyList();
+        } catch (Exception ignored) {
         }
     }
 

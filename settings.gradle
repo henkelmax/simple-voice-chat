@@ -1,5 +1,6 @@
 pluginManagement {
     repositories {
+        gradlePluginPortal()
         maven {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
@@ -17,10 +18,9 @@ pluginManagement {
             url = 'https://server.bbkr.space/artifactory/libs-release/'
         }
         maven { url = 'https://maven.minecraftforge.net/' }
-        gradlePluginPortal()
         mavenCentral()
     }
 }
 
 rootProject.name = 'voicechat'
-include('api', 'common', 'fabric', 'quilt', 'forge', 'bukkit', 'macos')
+include('api', 'common', 'fabric', /*'quilt', 'forge', 'bukkit', */'macos')

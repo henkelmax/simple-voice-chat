@@ -14,14 +14,12 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.KeyEvents;
 import de.maxhenkel.voicechat.voice.client.MacOSUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.packs.repository.Pack;
-import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.network.chat.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.function.Consumer;
 
 public abstract class VoicechatClient {
 
@@ -45,14 +43,14 @@ public abstract class VoicechatClient {
         //Load instance
         ClientManager.instance();
 
-        CLASSIC_ICONS = new VoiceChatResourcePack("Classic Icons", "classic_icons");
-        WHITE_ICONS = new VoiceChatResourcePack("White Icons", "white_icons");
-        BLACK_ICONS = new VoiceChatResourcePack("Black Icons", "black_icons");
+        CLASSIC_ICONS = new VoiceChatResourcePack("classic_icons");
+        WHITE_ICONS = new VoiceChatResourcePack("white_icons");
+        BLACK_ICONS = new VoiceChatResourcePack("black_icons");
 
-        ClientCompatibilityManager.INSTANCE.addResourcePackSource(Minecraft.getInstance().getResourcePackRepository(), (Consumer<Pack> consumer, Pack.PackConstructor packConstructor) -> {
-            consumer.accept(Pack.create(CLASSIC_ICONS.getName(), false, () -> CLASSIC_ICONS, packConstructor, Pack.Position.TOP, PackSource.BUILT_IN));
-            consumer.accept(Pack.create(WHITE_ICONS.getName(), false, () -> WHITE_ICONS, packConstructor, Pack.Position.TOP, PackSource.BUILT_IN));
-            consumer.accept(Pack.create(BLACK_ICONS.getName(), false, () -> BLACK_ICONS, packConstructor, Pack.Position.TOP, PackSource.BUILT_IN));
+        ClientCompatibilityManager.INSTANCE.addResourcePackSource(Minecraft.getInstance().getResourcePackRepository(), consumer -> {
+            consumer.accept(CLASSIC_ICONS.toPack(Component.translatable("resourcepack.voicechat.classic_icons")));
+            consumer.accept(WHITE_ICONS.toPack(Component.translatable("resourcepack.voicechat.white_icons")));
+            consumer.accept(BLACK_ICONS.toPack(Component.translatable("resourcepack.voicechat.black_icons")));
         });
 
         if (VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get() && Platform.isMac()) {
