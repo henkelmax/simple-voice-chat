@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -50,7 +51,7 @@ public class VoiceChatResourcePack extends ResourcePack {
     protected InputStream getResource(String name) throws IOException {
         InputStream resourceAsStream = get(name);
         if (resourceAsStream == null) {
-            throw new IOException("Resource " + name + " does not exist");
+            throw new FileNotFoundException("Resource " + name + " does not exist");
         }
         return resourceAsStream;
     }
