@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.resourcepacks;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import de.maxhenkel.voicechat.Voicechat;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.AbstractPackResources;
 import net.minecraft.server.packs.PackType;
@@ -25,9 +26,9 @@ import java.util.stream.Collectors;
 public class VoiceChatResourcePack extends AbstractPackResources {
 
     protected String path;
-    protected String name;
+    protected Component name;
 
-    public VoiceChatResourcePack(String name, String path) {
+    public VoiceChatResourcePack(String path, Component name) {
         super(null);
         this.path = path;
         this.name = name;
@@ -35,7 +36,7 @@ public class VoiceChatResourcePack extends AbstractPackResources {
 
     @Override
     public String getName() {
-        return name;
+        return name.getString();
     }
 
     private String getPath() {
