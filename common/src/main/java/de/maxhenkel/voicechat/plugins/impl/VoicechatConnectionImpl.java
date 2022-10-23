@@ -25,7 +25,10 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
     }
 
     @Nullable
-    public static VoicechatConnectionImpl fromPlayer(net.minecraft.server.level.ServerPlayer player) {
+    public static VoicechatConnectionImpl fromPlayer(@Nullable net.minecraft.server.level.ServerPlayer player) {
+        if (player == null) {
+            return null;
+        }
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
             return null;
