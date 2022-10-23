@@ -37,7 +37,8 @@ task publishSnapshot(type: GradleBuild) {
     tasks = [
             ':macos:clean',
             ':fabric:clean',
-            ':fabric:curseforge'
+            ':fabric:curseforge',
+            ':fabric:modrinth'
     ]
 }
 
