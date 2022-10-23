@@ -14,6 +14,7 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.KeyEvents;
 import de.maxhenkel.voicechat.voice.client.MacOSUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 
@@ -45,9 +46,9 @@ public abstract class VoicechatClient {
         //Load instance
         ClientManager.instance();
 
-        CLASSIC_ICONS = new VoiceChatResourcePack("Classic Icons", "classic_icons");
-        WHITE_ICONS = new VoiceChatResourcePack("White Icons", "white_icons");
-        BLACK_ICONS = new VoiceChatResourcePack("Black Icons", "black_icons");
+        CLASSIC_ICONS = new VoiceChatResourcePack("classic_icons", Component.translatable("resourcepack.voicechat.classic_icons"));
+        WHITE_ICONS = new VoiceChatResourcePack("white_icons", Component.translatable("resourcepack.voicechat.white_icons"));
+        BLACK_ICONS = new VoiceChatResourcePack("black_icons", Component.translatable("resourcepack.voicechat.black_icons"));
 
         ClientCompatibilityManager.INSTANCE.addResourcePackSource(Minecraft.getInstance().getResourcePackRepository(), (Consumer<Pack> consumer, Pack.PackConstructor packConstructor) -> {
             consumer.accept(Pack.create(CLASSIC_ICONS.getName(), false, () -> CLASSIC_ICONS, packConstructor, Pack.Position.TOP, PackSource.BUILT_IN));
