@@ -1,1 +1,1 @@
-- Fade players volume when dying
+- Made voice chat resource pack names translatable
