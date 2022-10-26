@@ -1,1 +1,1 @@
-- Made voice chat resource pack names translatable
+- Updated Brazilian Portuguese translation
