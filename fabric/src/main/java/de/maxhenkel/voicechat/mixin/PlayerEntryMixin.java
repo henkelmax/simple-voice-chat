@@ -86,8 +86,7 @@ public class PlayerEntryMixin {
             }
             inviteButton.visible = true;
             inviteButton.active = !invited;
-            inviteButton.x = left + (width - hideButton.getWidth() - 4 - reportButton.getWidth() - 4) - inviteButton.getWidth() - 4;
-            inviteButton.y = top + (height - inviteButton.getHeight()) / 2;
+            inviteButton.setPosition(left + (width - hideButton.getWidth() - 4 - reportButton.getWidth() - 4) - inviteButton.getWidth() - 4, top + (height - inviteButton.getHeight()) / 2);
             inviteButton.render(poseStack, mouseX, mouseY, delta);
         }
     }

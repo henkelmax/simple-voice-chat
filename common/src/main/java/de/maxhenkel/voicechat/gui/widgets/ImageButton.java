@@ -33,7 +33,7 @@ public class ImageButton extends AbstractButton {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, texture);
-        blit(matrices, x + 2, y + 2, 0, 0, 16, 16, 16, 16);
+        blit(matrices, getX() + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.voice.client.speaker;
 
-import com.mojang.math.Vector3f;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.events.OpenALSoundEvent;
@@ -11,6 +10,7 @@ import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 import org.lwjgl.openal.AL11;
 
 import javax.annotation.Nullable;

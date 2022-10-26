@@ -81,8 +81,7 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
 
         if (hovered && !ClientManager.getPlayerStateManager().getOwnID().equals(state.getUuid())) {
             volumeSlider.setWidth(Math.min(width - (PADDING + outlineSize + PADDING + minecraft.font.width(name) + PADDING + PADDING), 100));
-            volumeSlider.x = left + (width - volumeSlider.getWidth() - PADDING);
-            volumeSlider.y = top + (height - volumeSlider.getHeight()) / 2;
+            volumeSlider.setPosition(left + (width - volumeSlider.getWidth() - PADDING), top + (height - volumeSlider.getHeight()) / 2);
             volumeSlider.render(poseStack, mouseX, mouseY, delta);
         }
     }

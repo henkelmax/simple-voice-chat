@@ -43,11 +43,11 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(password);
 
-        joinGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, JOIN_GROUP, button -> {
+        joinGroup = Button.builder(JOIN_GROUP, button -> {
             if (!password.getValue().isEmpty()) {
                 NetManager.sendToServer(new JoinGroupPacket(group.getId(), password.getValue()));
             }
-        });
+        }).bounds(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20).build();
         addRenderableWidget(joinGroup);
     }
 

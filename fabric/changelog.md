@@ -1,1 +1,1 @@
-- Updated Brazilian Portuguese translation
+- Updated to 22w43a

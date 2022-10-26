@@ -91,22 +91,22 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         });
         y += 21;
         if (isIngame()) {
-            addRenderableWidget(new Button(guiLeft + 10, y, xSize - 20, 20, ADJUST_VOLUMES, button -> {
+            addRenderableWidget(Button.builder(ADJUST_VOLUMES, button -> {
                 minecraft.setScreen(new AdjustVolumesScreen());
-            }));
+            }).bounds(guiLeft + 10, y, xSize - 20, 20).build());
             y += 21;
         }
-        addRenderableWidget(new Button(guiLeft + 10, y, xSize / 2 - 15, 20, SELECT_MICROPHONE, button -> {
+        addRenderableWidget(Button.builder(SELECT_MICROPHONE, button -> {
             minecraft.setScreen(new SelectMicrophoneScreen(this));
-        }));
-        addRenderableWidget(new Button(guiLeft + xSize / 2 + 6, y, xSize / 2 - 15, 20, SELECT_SPEAKER, button -> {
+        }).bounds(guiLeft + 10, y, xSize / 2 - 15, 20).build());
+        addRenderableWidget(Button.builder(SELECT_SPEAKER, button -> {
             minecraft.setScreen(new SelectSpeakerScreen(this));
-        }));
+        }).bounds(guiLeft + xSize / 2 + 6, y, xSize / 2 - 15, 20).build());
         y += 21;
         if (!isIngame() && parent != null) {
-            addRenderableWidget(new Button(guiLeft + 10, y, xSize - 20, 20, BACK, button -> {
+            addRenderableWidget(Button.builder(BACK, button -> {
                 minecraft.setScreen(parent);
-            }));
+            }).bounds(guiLeft + 10, y, xSize - 20, 20).build());
         }
     }
 

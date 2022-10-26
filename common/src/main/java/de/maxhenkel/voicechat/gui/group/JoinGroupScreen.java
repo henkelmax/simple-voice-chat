@@ -54,9 +54,9 @@ public class JoinGroupScreen extends ListScreenBase {
         }
         addWidget(groupList);
 
-        createGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 14, 20, CREATE_GROUP, button -> {
+        createGroup = Button.builder(CREATE_GROUP, button -> {
             minecraft.setScreen(new CreateGroupScreen());
-        });
+        }).bounds(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 14, 20).build();
         addRenderableWidget(createGroup);
     }
 

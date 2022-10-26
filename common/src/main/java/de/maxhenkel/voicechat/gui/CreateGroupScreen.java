@@ -47,11 +47,11 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(password);
 
-        createGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, CREATE, button -> {
+        createGroup = Button.builder(CREATE, button -> {
             if (!groupName.getValue().isEmpty()) {
                 NetManager.sendToServer(new CreateGroupPacket(groupName.getValue(), password.getValue().isEmpty() ? null : password.getValue()));
             }
-        });
+        }).bounds(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20).build();
         addRenderableWidget(createGroup);
     }
 

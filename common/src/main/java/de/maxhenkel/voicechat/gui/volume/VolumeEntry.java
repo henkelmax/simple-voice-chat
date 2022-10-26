@@ -42,8 +42,7 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
 
         renderElement(poseStack, index, top, left, width, height, mouseX, mouseY, hovered, delta, skinX, skinY, textX, textY);
 
-        volumeSlider.x = left + (width - volumeSlider.getWidth() - PADDING);
-        volumeSlider.y = top + (height - volumeSlider.getHeight()) / 2;
+        volumeSlider.setPosition(left + (width - volumeSlider.getWidth() - PADDING), top + (height - volumeSlider.getHeight()) / 2);
         volumeSlider.render(poseStack, mouseX, mouseY, delta);
     }
 

@@ -66,9 +66,9 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
         }
         addWidget(deviceList);
 
-        back = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 14, 20, BACK, button -> {
+        back = Button.builder(BACK, button -> {
             minecraft.setScreen(parent);
-        });
+        }).bounds(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 14, 20).build();
         addRenderableWidget(back);
 
         deviceList.replaceEntries(getDevices().stream().map(s -> new AudioDeviceEntry(this, s)).toList());

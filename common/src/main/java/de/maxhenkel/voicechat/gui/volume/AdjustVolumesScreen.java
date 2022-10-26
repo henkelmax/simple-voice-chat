@@ -95,7 +95,7 @@ public class AdjustVolumesScreen extends ListScreenBase {
             drawCenteredString(poseStack, font, EMPTY_SEARCH, width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - font.lineHeight / 2, -1);
         }
         if (!searchBox.isFocused() && searchBox.getValue().isEmpty()) {
-            drawString(poseStack, font, SEARCH_HINT, searchBox.x, searchBox.y, -1);
+            drawString(poseStack, font, SEARCH_HINT, searchBox.getX(), searchBox.getY(), -1);
         } else {
             searchBox.render(poseStack, mouseX, mouseY, delta);
         }

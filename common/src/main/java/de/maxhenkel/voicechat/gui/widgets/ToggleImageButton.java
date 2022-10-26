@@ -23,9 +23,9 @@ public class ToggleImageButton extends ImageButton {
         RenderSystem.setShaderTexture(0, texture);
 
         if (stateSupplier.get()) {
-            blit(matrices, x + 2, y + 2, 16, 0, 16, 16, 32, 32);
+            blit(matrices, getX() + 2, getY() + 2, 16, 0, 16, 16, 32, 32);
         } else {
-            blit(matrices, x + 2, y + 2, 0, 0, 16, 16, 32, 32);
+            blit(matrices, getX() + 2, getY() + 2, 0, 0, 16, 16, 32, 32);
         }
     }
 
