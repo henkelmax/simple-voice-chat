@@ -1,1 +1,1 @@
-- Change permission nodes to be consistent with Bukkit and Forge
+- Updated Brazilian Portuguese translation

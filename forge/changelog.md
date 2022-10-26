@@ -1,1 +1,1 @@
-- Fade players volume when dying
+- Updated Brazilian Portuguese translation
