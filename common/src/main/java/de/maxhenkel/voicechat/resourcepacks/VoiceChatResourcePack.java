@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 public class VoiceChatResourcePack extends AbstractPackResources {
 
     public VoiceChatResourcePack(String id) {
-        super(id);
+        super(id, true);
     }
 
     public Pack toPack(Component name) {
