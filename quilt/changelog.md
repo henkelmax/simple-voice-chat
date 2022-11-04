@@ -1,1 +1,1 @@
-- Updated Brazilian Portuguese translation
+- Added debug mode log message
