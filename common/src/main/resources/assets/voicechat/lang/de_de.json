@@ -110,6 +110,7 @@
   "message.voicechat.recording.disabled": "Klicke um die Aufzeichnung zu starten",
   "message.voicechat.recording.enabled": "Klicke um die Aufzeichnung zu beenden",
   "message.voicechat.no_speak_permission": "Sie haben keine Berechtigung zu sprechen",
+  "message.voicechat.no_listen_permission": "Sie haben keine Berechtigung den voice chat zu hören",
   "message.voicechat.no_group_permission": "Sie haben keine Berechtigung Gruppen beizutreten",
   "message.voicechat.search_hint": "Suchen...",
   "message.voicechat.search_empty": "Keine Spieler mit diesem namen gefunden",

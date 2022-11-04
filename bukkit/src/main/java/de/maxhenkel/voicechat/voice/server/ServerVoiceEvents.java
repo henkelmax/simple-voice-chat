@@ -4,7 +4,6 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
-import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -86,11 +85,6 @@ public class ServerVoiceEvents implements Listener {
         }
         server.getPlayerStateManager().onPlayerCompatibilityCheckSucceeded(player);
         server.getCategoryManager().onPlayerCompatibilityCheckSucceeded(player);
-
-        if (!player.hasPermission(PermissionManager.CONNECT_PERMISSION)) {
-            Voicechat.LOGGER.info("Player {} has no permission to connect to the voice chat", player.getName());
-            return;
-        }
 
         UUID secret = server.getSecret(player.getUniqueId());
         NetManager.sendToClient(player, new SecretPacket(player, secret, Voicechat.SERVER_CONFIG));
