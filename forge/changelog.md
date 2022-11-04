@@ -1,1 +1,2 @@
 - Added debug mode log message
+- Replaced connect permission with listen permission
