@@ -35,6 +35,10 @@ public abstract class Voicechat {
     public static final Pattern GROUP_REGEX = Pattern.compile("^[^\"\\n\\r\\t\\s][^\"\\n\\r\\t]{0,15}$");
 
     public void initialize() {
+        if (debugMode()) {
+            LOGGER.warn("Running in debug mode - Don't leave this enabled in production!");
+        }
+
         LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
         CommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
