@@ -1,1 +1,2 @@
-- Fixed error when port is already in use
+- Added debug mode log message
+- Replaced connect permission with listen permission
