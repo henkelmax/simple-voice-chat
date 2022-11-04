@@ -10,7 +10,7 @@ public abstract class PermissionManager {
 
     public static PermissionManager INSTANCE = CommonCompatibilityManager.INSTANCE.createPermissionManager();
 
-    public final Permission CONNECT_PERMISSION;
+    public final Permission LISTEN_PERMISSION;
     public final Permission SPEAK_PERMISSION;
     public final Permission GROUPS_PERMISSION;
     public final Permission ADMIN_PERMISSION;
@@ -18,7 +18,7 @@ public abstract class PermissionManager {
     protected List<Permission> permissions = new ArrayList<>();
 
     public PermissionManager() {
-        CONNECT_PERMISSION = createPermission(Voicechat.MODID, "connect", PermissionType.EVERYONE);
+        LISTEN_PERMISSION = createPermission(Voicechat.MODID, "listen", PermissionType.EVERYONE);
         SPEAK_PERMISSION = createPermission(Voicechat.MODID, "speak", PermissionType.EVERYONE);
         GROUPS_PERMISSION = createPermission(Voicechat.MODID, "groups", PermissionType.EVERYONE);
         ADMIN_PERMISSION = createPermission(Voicechat.MODID, "admin", PermissionType.OPS);
