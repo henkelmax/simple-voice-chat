@@ -1,1 +1,1 @@
-- Updated to 22w44a
+- Added debug mode log message
