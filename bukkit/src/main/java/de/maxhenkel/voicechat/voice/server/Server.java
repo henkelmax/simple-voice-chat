@@ -201,7 +201,7 @@ public class Server extends Thread {
                             continue;
                         }
                         if (!player.hasPermission(PermissionManager.SPEAK_PERMISSION)) {
-                            CooldownTimer.run("muted-" + playerUUID, () -> {
+                            CooldownTimer.run("no-speak-" + playerUUID, () -> {
                                 NetManager.sendStatusMessage(player, Component.translatable("message.voicechat.no_speak_permission"));
                             });
                             continue;
@@ -288,7 +288,7 @@ public class Server extends Thread {
                         }
                         GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
                         if (!PluginManager.instance().onSoundPacket(sender, senderState, spectatingPlayer, receiverState, groupSoundPacket, SoundPacketEvent.SOURCE_SPECTATOR)) {
-                            connection.send(this, new NetworkMessage(groupSoundPacket));
+                            sendSoundPacket(spectatingPlayer, connection, groupSoundPacket);
                         }
                         return;
                     }
@@ -310,6 +310,16 @@ public class Server extends Thread {
         }
 
         broadcast(ServerWorldUtils.getPlayersInRange(sender.getWorld(), sender.getLocation(), getBroadcastRange(distance), p -> !p.getUniqueId().equals(sender.getUniqueId())), soundPacket, sender, senderState, group, source);
+    }
+
+    public void sendSoundPacket(Player player, ClientConnection connection, SoundPacket<?> soundPacket) throws Exception {
+        if (!player.hasPermission(PermissionManager.LISTEN_PERMISSION)) {
+            CooldownTimer.run("no-listen-" + player.getUniqueId(), 30_000L, () -> {
+                NetManager.sendStatusMessage(player, Component.translatable("message.voicechat.no_listen_permission"));
+            });
+            return;
+        }
+        connection.send(this, new NetworkMessage(soundPacket));
     }
 
     public double getBroadcastRange(float minRange) {
@@ -338,7 +348,7 @@ public class Server extends Thread {
             }
             try {
                 if (!PluginManager.instance().onSoundPacket(sender, senderState, player, state, packet, source)) {
-                    connection.send(this, new NetworkMessage(packet));
+                    sendSoundPacket(player, connection, packet);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

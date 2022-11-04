@@ -10,11 +10,15 @@ public class CooldownTimer {
         cooldowns = new ConcurrentHashMap<>();
     }
 
-    public static void run(String id, Runnable runnable) {
-        if (System.currentTimeMillis() - cooldowns.getOrDefault(id, 0L) > 10_000) {
+    public static void run(String id, long time, Runnable runnable) {
+        if (System.currentTimeMillis() - cooldowns.getOrDefault(id, 0L) > time) {
             cooldowns.put(id, System.currentTimeMillis());
             runnable.run();
         }
+    }
+
+    public static void run(String id, Runnable runnable) {
+        run(id, 10_000L, runnable);
     }
 
 }
