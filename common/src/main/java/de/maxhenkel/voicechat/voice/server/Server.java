@@ -328,7 +328,7 @@ public class Server extends Thread {
         broadcast(ServerWorldUtils.getPlayersInRange(sender.getLevel(), sender.position(), getBroadcastRange(distance), p -> !p.getUUID().equals(sender.getUUID())), soundPacket, sender, senderState, group, source);
     }
 
-    public void sendSoundPacket(ServerPlayer player, ClientConnection connection, SoundPacket<?> soundPacket) throws Exception {
+    public void sendSoundPacket(ServerPlayerEntity player, ClientConnection connection, SoundPacket<?> soundPacket) throws Exception {
         if (!PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(player)) {
             CooldownTimer.run("no-listen-" + player.getUUID(), 30_000L, () -> {
                 player.displayClientMessage(new TranslationTextComponent("message.voicechat.no_listen_permission"), true);
