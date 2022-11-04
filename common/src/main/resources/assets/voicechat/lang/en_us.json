@@ -110,6 +110,7 @@
   "message.voicechat.recording.disabled": "Press to start recording",
   "message.voicechat.recording.enabled": "Press to stop recording",
   "message.voicechat.no_speak_permission": "You do not have permission to speak",
+  "message.voicechat.no_listen_permission": "You do not have permission to hear the voice chat",
   "message.voicechat.no_group_permission": "You do not have permission to join groups",
   "message.voicechat.search_hint": "Search...",
   "message.voicechat.search_empty": "Couldn't find any players with that name",
