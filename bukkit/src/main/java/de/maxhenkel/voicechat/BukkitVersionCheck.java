@@ -9,8 +9,7 @@ import java.util.regex.Pattern;
 
 public class BukkitVersionCheck {
 
-    public static final Pattern BUKKIT_PACKAGE_REGEX = Pattern.compile("^org\\.bukkit\\.craftbukkit\\.v(?<major>\\d+)_(?<minor>\\d+)(?:_?(?<patch>\\d+))?_R(?<revision>\\d+)$");
-    public static final Pattern BUKKIT_VERSION_REGEX = Pattern.compile("^(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.?(?<patch>\\d+))?-R(?<revision>\\d+)$");
+    public static final Pattern BUKKIT_VERSION_REGEX = Pattern.compile("^(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?-R(?<revision>[\\d.-]+)(?:-SNAPSHOT)?$");
 
     public static boolean matchesTargetVersion() {
         BukkitVersion version = getVersion();
@@ -42,10 +41,15 @@ public class BukkitVersionCheck {
             return null;
         }
 
-        Matcher targetMatcher = BUKKIT_VERSION_REGEX.matcher(targetVersion);
+        return parseBukkitVersion(targetVersion);
+    }
+
+    @Nullable
+    public static BukkitVersion parseBukkitVersion(String bukkitVersion) {
+        Matcher targetMatcher = BUKKIT_VERSION_REGEX.matcher(bukkitVersion);
 
         if (!targetMatcher.matches()) {
-            Voicechat.LOGGER.fatal("Failed to parse target Bukkit version: {}", targetVersion);
+            Voicechat.LOGGER.fatal("Failed to parse target Bukkit version: {}", bukkitVersion);
             return null;
         }
 
@@ -54,25 +58,16 @@ public class BukkitVersionCheck {
 
     @Nullable
     public static BukkitVersion getVersion() {
-        String bukkitPackage = Bukkit.getServer().getClass().getPackage().getName();
-
-        Matcher matcher = BUKKIT_PACKAGE_REGEX.matcher(bukkitPackage);
-
-        if (!matcher.matches()) {
-            Voicechat.LOGGER.fatal("Failed to parse Bukkit version: {}", bukkitPackage);
-            return null;
-        }
-
-        return BukkitVersion.fromRegex(matcher);
+        return parseBukkitVersion(Bukkit.getBukkitVersion());
     }
 
     public static class BukkitVersion {
         private final int major;
         private final int minor;
         private final int patch;
-        private final int revision;
+        private final String revision;
 
-        public BukkitVersion(int major, int minor, int patch, int revision) {
+        public BukkitVersion(int major, int minor, int patch, String revision) {
             this.major = major;
             this.minor = minor;
             this.patch = patch;
@@ -87,7 +82,7 @@ public class BukkitVersionCheck {
             if (patch == null || patch.isEmpty()) {
                 patch = "0";
             }
-            return new BukkitVersion(Integer.parseInt(major), Integer.parseInt(minor), Integer.parseInt(patch), Integer.parseInt(revision));
+            return new BukkitVersion(Integer.parseInt(major), Integer.parseInt(minor), Integer.parseInt(patch), revision);
         }
 
         @Override
@@ -110,7 +105,7 @@ public class BukkitVersionCheck {
             if (patch != that.patch) {
                 return false;
             }
-            return revision == that.revision;
+            return revision.equals(that.revision);
         }
 
         @Override
