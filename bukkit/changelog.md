@@ -1,2 +1,1 @@
-- Added debug mode log message
-- Replaced connect permission with listen permission
+- Improved Bukkit version compatibility check
