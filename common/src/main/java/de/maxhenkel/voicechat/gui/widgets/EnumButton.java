@@ -36,7 +36,7 @@ public abstract class EnumButton<T extends Enum<T>> extends AbstractButton {
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narration) {
-        defaultButtonNarrationText(narration);
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+        defaultButtonNarrationText(narrationElementOutput);
     }
 }

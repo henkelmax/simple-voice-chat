@@ -8,20 +8,27 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 public class ImageButton extends AbstractButton {
 
     protected Minecraft mc;
     protected ResourceLocation texture;
     protected PressAction onPress;
+    // TODO replace tooltip supplier with builtin button tooltip
+    @Nullable
     protected TooltipSupplier tooltipSupplier;
 
-    public ImageButton(int x, int y, ResourceLocation texture, PressAction onPress, TooltipSupplier tooltipSupplier) {
+    public ImageButton(int x, int y, ResourceLocation texture, PressAction onPress, @Nullable TooltipSupplier tooltipSupplier) {
         super(x, y, 20, 20, Component.empty());
         mc = Minecraft.getInstance();
         this.texture = texture;
         this.onPress = onPress;
         this.tooltipSupplier = tooltipSupplier;
+    }
+
+    public ImageButton(int x, int y, ResourceLocation texture, PressAction onPress) {
+        this(x, y, texture, onPress, null);
     }
 
     @Override
@@ -47,12 +54,15 @@ public class ImageButton extends AbstractButton {
     }
 
     public void renderToolTip(PoseStack matrices, int mouseX, int mouseY) {
-        this.tooltipSupplier.onTooltip(this, matrices, mouseX, mouseY);
+        if (tooltipSupplier == null) {
+            return;
+        }
+        tooltipSupplier.onTooltip(this, matrices, mouseX, mouseY);
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
-        this.defaultButtonNarrationText(narrationElementOutput);
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+        defaultButtonNarrationText(narrationElementOutput);
     }
 
     public interface TooltipSupplier {

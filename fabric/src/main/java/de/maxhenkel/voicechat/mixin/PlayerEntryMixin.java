@@ -8,8 +8,8 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.social.PlayerEntry;
-import net.minecraft.client.gui.screens.social.SocialInteractionsScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Final;
@@ -22,7 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 @Mixin(PlayerEntry.class)
 public class PlayerEntryMixin {
@@ -39,41 +38,23 @@ public class PlayerEntryMixin {
     @Final
     private String playerName;
     @Shadow
-    float tooltipHoverTime;
-    @Shadow
     @Final
     private Minecraft minecraft;
     @Shadow
     @Final
     private UUID id;
 
-    private SocialInteractionsScreen screen;
     private ImageButton inviteButton;
     private boolean invited;
-
-    @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void init(Minecraft minecraft, SocialInteractionsScreen socialInteractionsScreen, UUID uUID, String string, Supplier<ResourceLocation> supplier, boolean bl, CallbackInfo ci) {
-        screen = socialInteractionsScreen;
-    }
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList;of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;"))
     private ImmutableList<?> children(Object o1, Object o2, Object o3) {
         inviteButton = new ImageButton(0, 0, GROUP_ICON, button -> {
             minecraft.player.connection.sendUnsignedCommand("voicechat invite %s".formatted(playerName));
             invited = true;
-        }, (button, matrices, mouseX, mouseY) -> {
-            if (screen == null || invited) {
-                return;
-            }
-            tooltipHoverTime += minecraft.getDeltaFrameTime();
-            if (tooltipHoverTime < 10F) {
-                return;
-            }
-            screen.setPostRenderRunnable(() -> {
-                screen.renderTooltip(matrices, Component.translatable("message.voicechat.invite_player", playerName), mouseX, mouseY);
-                screen.setPostRenderRunnable(null);
-            });
         });
+        inviteButton.setTooltip(Tooltip.create(Component.translatable("message.voicechat.invite_player", playerName)));
+        inviteButton.setTooltipDelay(10);
         return ImmutableList.of(o1, o2, o3, inviteButton);
     }
 
