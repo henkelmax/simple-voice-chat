@@ -58,6 +58,10 @@ This will cause the microphone permission popup to work.
 The downside of this is that you need to do this everytime you want to launch Minecraft.
 It will also not work with all launchers.
 
+Example for the Vanilla Mineraft Launcher: `open /Applications/Minecraft.app/Contents/MacOS/launcher`
+
+Example for MultiMC: `open /Applications/MultiMC.app/Contents/MacOS/MultiMC`
+
 ### Standalone Version
 
 There is also a [standalone version](https://github.com/henkelmax/simple-voice-chat/files/7926761/simple-voice-chat-macos-workaround.zip) of the workaround.
