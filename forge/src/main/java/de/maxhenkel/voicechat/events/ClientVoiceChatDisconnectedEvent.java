@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.events;
 
-import net.minecraftforge.eventbus.api.GenericEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class ClientVoiceChatDisconnectedEvent extends GenericEvent<ClientVoiceChatDisconnectedEvent> {
+public class ClientVoiceChatDisconnectedEvent extends Event {
 
     @Override
     public boolean isCancelable() {

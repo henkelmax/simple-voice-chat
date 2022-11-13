@@ -29,12 +29,12 @@ public class ClientGroup {
     }
 
     public static ClientGroup fromBytes(PacketBuffer buf) {
-        return new ClientGroup(buf.readUUID(), buf.readUtf(512), buf.readBoolean());
+        return new ClientGroup(buf.readUniqueId(), buf.readString(512), buf.readBoolean());
     }
 
     public void toBytes(PacketBuffer buf) {
-        buf.writeUUID(id);
-        buf.writeUtf(name, 512);
+        buf.writeUniqueId(id);
+        buf.writeString(name);
         buf.writeBoolean(hasPassword);
     }
 

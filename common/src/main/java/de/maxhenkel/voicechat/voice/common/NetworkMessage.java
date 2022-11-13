@@ -95,7 +95,7 @@ public class NetworkMessage {
             Voicechat.logDebug("Received invalid packet from {}", packet.getSocketAddress());
             return null;
         }
-        UUID playerID = b.readUUID();
+        UUID playerID = b.readUniqueId();
         if (!server.hasSecret(playerID)) {
             // Ignore packets if they are not from a player that has a secret
             Voicechat.logDebug("Player " + playerID + " does not have a secret");
@@ -147,7 +147,7 @@ public class NetworkMessage {
         byte[] payload = write(client.getData().getSecret());
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(1 + 16 + payload.length));
         buffer.writeByte(MAGIC_BYTE);
-        buffer.writeUUID(client.getData().getPlayerUUID());
+        buffer.writeUniqueId(client.getData().getPlayerUUID());
         buffer.writeByteArray(payload);
 
         byte[] bytes = new byte[buffer.readableBytes()];

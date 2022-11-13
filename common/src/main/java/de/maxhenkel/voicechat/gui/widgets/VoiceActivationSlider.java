@@ -1,50 +1,49 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 
 public class VoiceActivationSlider extends DebouncedSlider implements MicTestButton.MicListener {
 
     private static final ResourceLocation SLIDER = new ResourceLocation(Voicechat.MODID, "textures/gui/voice_activation_slider.png");
-    private static final ITextComponent NO_ACTIVATION = new TranslationTextComponent("message.voicechat.voice_activation.disabled").withStyle(TextFormatting.RED);
+    private static final ITextComponent NO_ACTIVATION = new TextComponentTranslation("message.voicechat.voice_activation.disabled").setStyle(new Style().setColor(TextFormatting.RED));
 
     private double micValue;
 
-    public VoiceActivationSlider(int x, int y, int width, int height) {
-        super(x, y, width, height, new StringTextComponent(""), Utils.dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
+    public VoiceActivationSlider(int id, int x, int y, int width, int height) {
+        super(id, x, y, width, height, Utils.dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
         updateMessage();
     }
 
     @Override
-    protected void renderBg(MatrixStack poseStack, Minecraft minecraft, int i, int j) {
-        minecraft.getTextureManager().bind(SLIDER);
-        RenderSystem.color4f(1F, 1F, 1F, 1F);
+    public void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
+        super.mouseDragged(mc, mouseX, mouseY);
+        mc.getTextureManager().bindTexture(SLIDER);
+        GlStateManager.color(1F, 1F, 1F, 1F);
         int width = (int) (226D * micValue);
-        blit(poseStack, x + 1, y + 1, 0, 0, width, 18);
-        super.renderBg(poseStack, minecraft, i, j);
+        drawTexturedModalRect(x + 1, y + 1, 0, 0, width, 18);
     }
 
     @Override
     protected void updateMessage() {
         long db = Math.round(Utils.percToDb(value));
-        TranslationTextComponent component = new TranslationTextComponent("message.voicechat.voice_activation", db);
+        TextComponentTranslation component = new TextComponentTranslation("message.voicechat.voice_activation", db);
 
         if (db >= -10L) {
-            component.withStyle(TextFormatting.RED);
+            component.setStyle(new Style().setColor(TextFormatting.RED));
         }
 
-        setMessage(component);
+        displayString = component.getFormattedText();
     }
 
     @Nullable
@@ -53,10 +52,6 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
             return NO_ACTIVATION;
         }
         return null;
-    }
-
-    public boolean isHovered() {
-        return isHovered;
     }
 
     @Override

@@ -8,16 +8,22 @@ import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.AL11;
 
 import javax.annotation.Nullable;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@Deprecated
 public abstract class ALSpeakerBase implements Speaker {
 
     protected final Minecraft mc;
@@ -27,20 +33,20 @@ public abstract class ALSpeakerBase implements Speaker {
     protected int bufferSampleSize;
     protected int source;
     protected volatile int bufferIndex;
-    protected final int[] buffers;
+    protected final IntBuffer buffers;
     protected final ExecutorService executor;
 
     @Nullable
     protected UUID audioChannelId;
 
     public ALSpeakerBase(SoundManager soundManager, int sampleRate, int bufferSize, @Nullable UUID audioChannelId) {
-        mc = Minecraft.getInstance();
+        mc = Minecraft.getMinecraft();
         this.soundManager = soundManager;
         this.sampleRate = sampleRate;
         this.bufferSize = bufferSize;
         this.bufferSampleSize = bufferSize;
         this.audioChannelId = audioChannelId;
-        this.buffers = new int[32];
+        this.buffers = BufferUtils.createIntBuffer(32);
         String threadName;
         if (audioChannelId == null) {
             threadName = "SoundSourceThread";
@@ -59,28 +65,28 @@ public abstract class ALSpeakerBase implements Speaker {
         if (hasValidSourceSync()) {
             return;
         }
-        source = AL11.alGenSources();
+        source = AL10.alGenSources();
         SoundManager.checkAlError();
-        AL11.alSourcei(source, AL11.AL_LOOPING, AL11.AL_FALSE);
-        SoundManager.checkAlError();
-
-        AL11.alDistanceModel(AL11.AL_LINEAR_DISTANCE);
-        SoundManager.checkAlError();
-        AL11.alSourcef(source, AL11.AL_MAX_DISTANCE, Utils.getDefaultDistance());
-        SoundManager.checkAlError();
-        AL11.alSourcef(source, AL11.AL_REFERENCE_DISTANCE, 0F);
+        AL10.alSourcei(source, AL10.AL_LOOPING, AL10.AL_FALSE);
         SoundManager.checkAlError();
 
-        AL11.alGenBuffers(buffers);
+        AL10.alDistanceModel(AL11.AL_LINEAR_DISTANCE);
+        SoundManager.checkAlError();
+        AL10.alSourcef(source, AL10.AL_MAX_DISTANCE, Utils.getDefaultDistance());
+        SoundManager.checkAlError();
+        AL10.alSourcef(source, AL10.AL_REFERENCE_DISTANCE, 0F);
+        SoundManager.checkAlError();
+
+        AL10.alGenBuffers(buffers);
         SoundManager.checkAlError();
     }
 
     @Override
-    public void play(short[] data, float volume, @Nullable Vector3d position, @Nullable String category, float maxDistance) {
+    public void play(short[] data, float volume, @Nullable Vec3d position, @Nullable String category, float maxDistance) {
         runInContext(() -> {
             removeProcessedBuffersSync();
             int buffers = getQueuedBuffersSync();
-            boolean stopped = getStateSync() == AL11.AL_INITIAL || getStateSync() == AL11.AL_STOPPED || buffers <= 1;
+            boolean stopped = getStateSync() == AL10.AL_INITIAL || getStateSync() == AL10.AL_STOPPED || buffers <= 1;
             if (stopped) {
                 for (int i = 0; i < getBufferSize(); i++) {
                     writeSync(new short[bufferSize], 1F, position, category, maxDistance);
@@ -90,7 +96,7 @@ public abstract class ALSpeakerBase implements Speaker {
             writeSync(data, volume, position, category, maxDistance);
 
             if (stopped) {
-                AL11.alSourcePlay(source);
+                AL10.alSourcePlay(source);
                 SoundManager.checkAlError();
             }
         });
@@ -100,78 +106,97 @@ public abstract class ALSpeakerBase implements Speaker {
         return VoicechatClient.CLIENT_CONFIG.outputBufferSize.get();
     }
 
-    protected void writeSync(short[] data, float volume, @Nullable Vector3d position, @Nullable String category, float maxDistance) {
+    protected void writeSync(short[] data, float volume, @Nullable Vec3d position, @Nullable String category, float maxDistance) {
         PluginManager.instance().onALSound(source, audioChannelId, position, category, OpenALSoundEvent.Pre.class);
         setPositionSync(position, maxDistance);
         PluginManager.instance().onALSound(source, audioChannelId, position, category, OpenALSoundEvent.class);
 
-        AL11.alSourcef(source, AL11.AL_MAX_GAIN, 6F);
+        AL10.alSourcef(source, AL10.AL_MAX_GAIN, 6F);
         SoundManager.checkAlError();
-        AL11.alSourcef(source, AL11.AL_GAIN, getVolume(volume, position, maxDistance));
+        AL10.alSourcef(source, AL10.AL_GAIN, getVolume(volume, position, maxDistance));
         SoundManager.checkAlError();
-        AL11.alListenerf(AL11.AL_GAIN, 1F);
+        AL10.alListenerf(AL10.AL_GAIN, 1F);
         SoundManager.checkAlError();
 
         int queuedBuffers = getQueuedBuffersSync();
-        if (queuedBuffers >= buffers.length) {
-            Voicechat.LOGGER.warn("Full playback buffer: {}/{}", queuedBuffers, buffers.length);
-            int sampleOffset = AL11.alGetSourcei(source, AL11.AL_SAMPLE_OFFSET);
+        if (queuedBuffers >= buffers.capacity()) {
+            Voicechat.LOGGER.warn("Full playback buffer: {}/{}", queuedBuffers, buffers.capacity());
+            int sampleOffset = AL10.alGetSourcei(source, AL11.AL_SAMPLE_OFFSET);
             SoundManager.checkAlError();
             int buffersToSkip = queuedBuffers - getBufferSize();
-            AL11.alSourcei(source, AL11.AL_SAMPLE_OFFSET, sampleOffset + buffersToSkip * bufferSampleSize);
+            AL10.alSourcei(source, AL11.AL_SAMPLE_OFFSET, sampleOffset + buffersToSkip * bufferSampleSize);
             SoundManager.checkAlError();
             removeProcessedBuffersSync();
         }
 
-        AL11.alBufferData(buffers[bufferIndex], getFormat(), convert(data, position), sampleRate);
+        AL10.alBufferData(buffers.get(bufferIndex), getFormat(), convert(data, position), sampleRate);
         SoundManager.checkAlError();
-        AL11.alSourceQueueBuffers(source, buffers[bufferIndex]);
+        AL10.alSourceQueueBuffers(source, buffers.get(bufferIndex));
         SoundManager.checkAlError();
-        bufferIndex = (bufferIndex + 1) % buffers.length;
+        bufferIndex = (bufferIndex + 1) % buffers.capacity();
 
         PluginManager.instance().onALSound(source, audioChannelId, position, category, OpenALSoundEvent.Post.class);
     }
 
-    protected float getVolume(float volume, @Nullable Vector3d position, float maxDistance) {
+    protected float getVolume(float volume, @Nullable Vec3d position, float maxDistance) {
         return volume;
     }
 
     protected void linearAttenuation(float maxDistance) {
-        AL11.alDistanceModel(AL11.AL_LINEAR_DISTANCE);
+        AL10.alDistanceModel(AL11.AL_LINEAR_DISTANCE);
         SoundManager.checkAlError();
 
-        AL11.alSourcef(source, AL11.AL_MAX_DISTANCE, maxDistance);
+        AL10.alSourcef(source, AL10.AL_MAX_DISTANCE, maxDistance);
         SoundManager.checkAlError();
     }
 
     protected abstract int getFormat();
 
-    protected short[] convert(short[] data, @Nullable Vector3d position) {
-        return data;
+    protected ShortBuffer convert(short[] data, @Nullable Vec3d position) {
+        return toShortBuffer(data);
     }
 
-    protected void setPositionSync(@Nullable Vector3d soundPos, float maxDistance) {
-        ActiveRenderInfo camera = mc.gameRenderer.getMainCamera();
-        Vector3d position = camera.getPosition();
-        Vector3f look = camera.getLookVector();
-        Vector3f up = camera.getUpVector();
-        AL11.alListener3f(AL11.AL_POSITION, (float) position.x, (float) position.y, (float) position.z);
+    protected static ShortBuffer toShortBuffer(short[] data) {
+        return BufferUtils.createShortBuffer(data.length).put(data);
+    }
+
+    protected void setPositionSync(@Nullable Vec3d soundPos, float maxDistance) {
+        RenderManager renderManager = mc.getRenderManager();
+        Vec3d position = new Vec3d(renderManager.viewerPosX, renderManager.viewerPosY, renderManager.viewerPosZ);
+        Vec3d look = getVectorForRotation(renderManager.playerViewX, renderManager.playerViewY);
+        // Vector3f up = camera.getUpVector();
+        AL10.alListener3f(AL10.AL_POSITION, (float) position.x, (float) position.y, (float) position.z);
         SoundManager.checkAlError();
-        AL11.alListenerfv(AL11.AL_ORIENTATION, new float[]{look.x(), look.y(), look.z(), up.x(), up.y(), up.z()});
+        // TODO check
+        Vec3d up = look.rotatePitch(-90F);
+        FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(7);
+        floatBuffer.put(new float[]{(float) look.x, (float) look.y, (float) look.z, (float) up.x, (float) up.y, (float) up.z});
+        floatBuffer.flip();
+        AL10.alListener(AL10.AL_ORIENTATION, floatBuffer);
+        // AL10.alListenerfv(AL10.AL_ORIENTATION, new float[]{look.x(), look.y(), look.z(), up.x(), up.y(), up.z()});
         SoundManager.checkAlError();
         if (soundPos != null) {
             linearAttenuation(maxDistance);
-            AL11.alSourcei(source, AL11.AL_SOURCE_RELATIVE, AL11.AL_FALSE);
+            AL10.alSourcei(source, AL10.AL_SOURCE_RELATIVE, AL10.AL_FALSE);
             SoundManager.checkAlError();
-            AL11.alSource3f(source, AL11.AL_POSITION, (float) soundPos.x, (float) soundPos.y, (float) soundPos.z);
+            AL10.alSource3f(source, AL10.AL_POSITION, (float) soundPos.x, (float) soundPos.y, (float) soundPos.z);
             SoundManager.checkAlError();
         } else {
             linearAttenuation(48F);
-            AL11.alSourcei(source, AL11.AL_SOURCE_RELATIVE, AL11.AL_TRUE);
+            AL10.alSourcei(source, AL10.AL_SOURCE_RELATIVE, AL10.AL_TRUE);
             SoundManager.checkAlError();
-            AL11.alSource3f(source, AL11.AL_POSITION, 0F, 0F, 0F);
+            AL10.alSource3f(source, AL10.AL_POSITION, 0F, 0F, 0F);
             SoundManager.checkAlError();
         }
+    }
+
+    //TODO check
+    protected final Vec3d getVectorForRotation(float pitch, float yaw) {
+        float f = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
+        float f1 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
+        float f2 = -MathHelper.cos(-pitch * 0.017453292F);
+        float f3 = MathHelper.sin(-pitch * 0.017453292F);
+        return new Vec3d((double) (f1 * f2), (double) f3, (double) (f * f2));
     }
 
     @Override
@@ -181,14 +206,14 @@ public abstract class ALSpeakerBase implements Speaker {
 
     protected void closeSync() {
         if (hasValidSourceSync()) {
-            if (getStateSync() == AL11.AL_PLAYING) {
-                AL11.alSourceStop(source);
+            if (getStateSync() == AL10.AL_PLAYING) {
+                AL10.alSourceStop(source);
                 SoundManager.checkAlError();
             }
 
-            AL11.alDeleteSources(source);
+            AL10.alDeleteSources(source);
             SoundManager.checkAlError();
-            AL11.alDeleteBuffers(buffers);
+            AL10.alDeleteBuffers(buffers);
             SoundManager.checkAlError();
         }
         source = 0;
@@ -197,35 +222,35 @@ public abstract class ALSpeakerBase implements Speaker {
 
     public void checkBufferEmpty(Runnable onEmpty) {
         runInContext(() -> {
-            if (getStateSync() == AL11.AL_STOPPED || getQueuedBuffersSync() <= 0) {
+            if (getStateSync() == AL10.AL_STOPPED || getQueuedBuffersSync() <= 0) {
                 onEmpty.run();
             }
         });
     }
 
     protected void removeProcessedBuffersSync() {
-        int processed = AL11.alGetSourcei(source, AL11.AL_BUFFERS_PROCESSED);
+        int processed = AL10.alGetSourcei(source, AL10.AL_BUFFERS_PROCESSED);
         SoundManager.checkAlError();
         for (int i = 0; i < processed; i++) {
-            AL11.alSourceUnqueueBuffers(source);
+            AL10.alSourceUnqueueBuffers(source);
             SoundManager.checkAlError();
         }
     }
 
     protected int getStateSync() {
-        int state = AL11.alGetSourcei(source, AL11.AL_SOURCE_STATE);
+        int state = AL10.alGetSourcei(source, AL10.AL_SOURCE_STATE);
         SoundManager.checkAlError();
         return state;
     }
 
     protected int getQueuedBuffersSync() {
-        int buffers = AL11.alGetSourcei(source, AL11.AL_BUFFERS_QUEUED);
+        int buffers = AL10.alGetSourcei(source, AL10.AL_BUFFERS_QUEUED);
         SoundManager.checkAlError();
         return buffers;
     }
 
     protected boolean hasValidSourceSync() {
-        boolean validSource = AL11.alIsSource(source);
+        boolean validSource = AL10.alIsSource(source);
         SoundManager.checkAlError();
         return validSource;
     }

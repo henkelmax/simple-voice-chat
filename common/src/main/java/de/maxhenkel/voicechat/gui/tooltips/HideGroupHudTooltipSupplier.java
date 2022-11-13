@@ -1,34 +1,32 @@
 package de.maxhenkel.voicechat.gui.tooltips;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HideGroupHudTooltipSupplier implements ImageButton.TooltipSupplier {
 
-    private final Screen screen;
+    private final GuiScreen screen;
 
-    public HideGroupHudTooltipSupplier(Screen screen) {
+    public HideGroupHudTooltipSupplier(GuiScreen screen) {
         this.screen = screen;
     }
 
     @Override
-    public void onTooltip(ImageButton button, MatrixStack matrices, int mouseX, int mouseY) {
-        List<IReorderingProcessor> tooltip = new ArrayList<>();
+    public void onTooltip(ImageButton button, int mouseX, int mouseY) {
+        List<String> tooltip = new ArrayList<>();
 
         if (VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()) {
-            tooltip.add(new TranslationTextComponent("message.voicechat.show_group_hud.enabled").getVisualOrderText());
+            tooltip.add(new TextComponentTranslation("message.voicechat.show_group_hud.enabled").getUnformattedComponentText());
         } else {
-            tooltip.add(new TranslationTextComponent("message.voicechat.show_group_hud.disabled").getVisualOrderText());
+            tooltip.add(new TextComponentTranslation("message.voicechat.show_group_hud.disabled").getUnformattedComponentText());
         }
 
-        screen.renderTooltip(matrices, tooltip, mouseX, mouseY);
+        screen.drawHoveringText(tooltip, mouseX, mouseY);
     }
 
 }

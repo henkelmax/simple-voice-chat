@@ -1,38 +1,36 @@
 package de.maxhenkel.voicechat.gui.tooltips;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
 
-    private final Screen screen;
+    private final GuiScreen screen;
     private final ClientPlayerStateManager stateManager;
 
-    public DisableTooltipSupplier(Screen screen, ClientPlayerStateManager stateManager) {
+    public DisableTooltipSupplier(GuiScreen screen, ClientPlayerStateManager stateManager) {
         this.screen = screen;
         this.stateManager = stateManager;
     }
 
     @Override
-    public void onTooltip(ImageButton button, MatrixStack matrices, int mouseX, int mouseY) {
-        List<IReorderingProcessor> tooltip = new ArrayList<>();
+    public void onTooltip(ImageButton button, int mouseX, int mouseY) {
+        List<String> tooltip = new ArrayList<>();
 
         if (!stateManager.canEnable()) {
-            tooltip.add(new TranslationTextComponent("message.voicechat.disable.no_speaker").getVisualOrderText());
+            tooltip.add(new TextComponentTranslation("message.voicechat.disable.no_speaker").getUnformattedComponentText());
         } else if (stateManager.isDisabled()) {
-            tooltip.add(new TranslationTextComponent("message.voicechat.disable.enabled").getVisualOrderText());
+            tooltip.add(new TextComponentTranslation("message.voicechat.disable.enabled").getUnformattedComponentText());
         } else {
-            tooltip.add(new TranslationTextComponent("message.voicechat.disable.disabled").getVisualOrderText());
+            tooltip.add(new TextComponentTranslation("message.voicechat.disable.disabled").getUnformattedComponentText());
         }
 
-        screen.renderTooltip(matrices, tooltip, mouseX, mouseY);
+        screen.drawHoveringText(tooltip, mouseX, mouseY);
     }
 
 }

@@ -15,8 +15,9 @@ public class JoinGroupList extends ListScreenListBase<JoinGroupEntry> {
     public JoinGroupList(ListScreenBase parent, int width, int height, int x, int y, int size) {
         super(width, height, x, y, size);
         this.parent = parent;
-        setRenderBackground(false);
-        setRenderTopAndBottom(false);
+        // TODO Remove dirt background
+        // setRenderBackground(false);
+        // setRenderTopAndBottom(false);
         tick();
     }
 

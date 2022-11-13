@@ -3,12 +3,12 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.play.ClientPlayNetHandler;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.ServerPlayNetHandler;
-import net.minecraft.network.play.client.CCustomPayloadPacket;
-import net.minecraft.network.play.server.SCustomPayloadPlayPacket;
+import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
 
 public abstract class NetManager {
@@ -44,27 +44,27 @@ public abstract class NetManager {
     public static void sendToServer(Packet<?> packet) {
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
         packet.toBytes(buffer);
-        ClientPlayNetHandler connection = Minecraft.getInstance().getConnection();
+        NetHandlerPlayClient connection = Minecraft.getMinecraft().getConnection();
         if (connection != null) {
-            connection.send(new CCustomPayloadPacket(packet.getIdentifier(), buffer));
+            connection.sendPacket(new CPacketCustomPayload(packet.getIdentifier().toString(), buffer));
         }
     }
 
-    public static void sendToClient(ServerPlayerEntity player, Packet<?> packet) {
+    public static void sendToClient(EntityPlayerMP player, Packet<?> packet) {
         if (!Voicechat.SERVER.isCompatible(player)) {
             return;
         }
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
         packet.toBytes(buffer);
-        player.connection.send(new SCustomPayloadPlayPacket(packet.getIdentifier(), buffer));
+        player.connection.sendPacket(new SPacketCustomPayload(packet.getIdentifier().toString(), buffer));
     }
 
     public interface ServerReceiver<T extends Packet<T>> {
-        void onPacket(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetHandler handler, T packet);
+        void onPacket(MinecraftServer server, EntityPlayerMP player, NetHandlerPlayServer handler, T packet);
     }
 
     public interface ClientReceiver<T extends Packet<T>> {
-        void onPacket(Minecraft client, ClientPlayNetHandler handler, T packet);
+        void onPacket(Minecraft client, NetHandlerPlayClient handler, T packet);
     }
 
 }

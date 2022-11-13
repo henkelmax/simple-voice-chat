@@ -1,37 +1,27 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import net.minecraft.client.gui.widget.AbstractSlider;
-import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.client.Minecraft;
 
-public abstract class DebouncedSlider extends AbstractSlider {
+public abstract class DebouncedSlider extends Slider {
 
     private boolean dragged;
     private double lastValue;
 
-    public DebouncedSlider(int i, int j, int k, int l, ITextComponent component, double d) {
-        super(i, j, k, l, component, d);
-        lastValue = d;
+    public DebouncedSlider(int buttonId, int x, int y, int width, int height, double value) {
+        super(buttonId, x, y, width, height, value);
+        lastValue = value;
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int j, int k) {
-        boolean result = super.keyPressed(keyCode, j, k);
-        if (keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT) {
-            applyDebouncedInternal();
-        }
-        return result;
-    }
-
-    @Override
-    public void onClick(double d, double e) {
-        super.onClick(d, e);
+    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+        boolean b = super.mousePressed(mc, mouseX, mouseY);
         applyDebouncedInternal();
+        return b;
     }
 
     @Override
-    protected void onDrag(double d, double e, double f, double g) {
-        super.onDrag(d, e, f, g);
+    public void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
+        super.mouseDragged(mc, mouseX, mouseY);
         dragged = true;
         if (value >= 1D || value <= 0D) {
             applyDebouncedInternal();
@@ -40,8 +30,8 @@ public abstract class DebouncedSlider extends AbstractSlider {
     }
 
     @Override
-    public void onRelease(double d, double e) {
-        super.onRelease(d, e);
+    public void mouseReleased(int mouseX, int mouseY) {
+        super.mouseReleased(mouseX, mouseY);
         if (dragged) {
             applyDebouncedInternal();
             dragged = false;
@@ -58,8 +48,4 @@ public abstract class DebouncedSlider extends AbstractSlider {
 
     public abstract void applyDebounced();
 
-    @Override
-    protected void applyValue() {
-
-    }
 }

@@ -1,51 +1,66 @@
 package de.maxhenkel.voicechat;
 
+import de.maxhenkel.configbuilder.ConfigBuilder;
+import de.maxhenkel.voicechat.command.VoicechatCommand;
 import de.maxhenkel.voicechat.config.ForgeServerConfig;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.ForgeCommonCompatibilityManager;
 import de.maxhenkel.voicechat.permission.ForgePermissionManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ExtensionPoint;
-import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import net.minecraftforge.fml.common.event.*;
 
-import java.util.Objects;
-import java.util.function.Function;
+import javax.annotation.Nullable;
 
-@Mod(ForgeVoicechatMod.MODID)
+@Mod(modid = ForgeVoicechatMod.MODID, acceptedMinecraftVersions = "[1.12.2]", updateJSON = "https://maxhenkel.de/update/voicechat.json", guiFactory = "de.maxhenkel.voicechat.VoicechatGuiFactory")
 public class ForgeVoicechatMod extends Voicechat {
 
+    public static ForgeVoicechatMod INSTANCE;
+    @Nullable
+    private static ForgeVoicechatClientMod CLIENT_MOD;
+
+    private final ForgeCommonCompatibilityManager compatibilityManager;
+
     public ForgeVoicechatMod() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
+        INSTANCE = this;
+        compatibilityManager = ((ForgeCommonCompatibilityManager) CommonCompatibilityManager.INSTANCE);
 
-        SERVER_CONFIG = registerConfig(ModConfig.Type.SERVER, ForgeServerConfig::new);
-
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ForgeVoicechatClientMod::new);
+        SERVER_CONFIG = ConfigBuilder.build(Loader.instance().getConfigDir().toPath().resolve(MODID).resolve("voicechat-server.properties"), true, ForgeServerConfig::new);
     }
 
-    public void commonSetup(FMLCommonSetupEvent event) {
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+        if (event.getSide().isClient()) {
+            CLIENT_MOD = new ForgeVoicechatClientMod(event);
+        }
+        compatibilityManager.preInit(event);
+    }
+
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent event) {
         initialize();
-        MinecraftForge.EVENT_BUS.register(CommonCompatibilityManager.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(compatibilityManager);
         ((ForgePermissionManager) PermissionManager.INSTANCE).registerPermissions();
-        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> {
-            return new ImmutablePair<>(() -> String.valueOf(Voicechat.COMPATIBILITY_VERSION), (incoming, isNetwork) -> {
-                return Objects.equals(incoming, String.valueOf(Voicechat.COMPATIBILITY_VERSION));
-            });
-        });
+        if (CLIENT_MOD != null) {
+            CLIENT_MOD.clientSetup(event);
+        }
     }
 
-    public static <T> T registerConfig(ModConfig.Type type, Function<ForgeConfigSpec.Builder, T> consumer) {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        T config = consumer.apply(builder);
-        ForgeConfigSpec spec = builder.build();
-        ModLoadingContext.get().registerConfig(type, spec);
-        return config;
+    @Mod.EventHandler
+    public void serverStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new VoicechatCommand());
     }
+
+    @Mod.EventHandler
+    public void serverStarting(FMLServerStartedEvent event) {
+        compatibilityManager.serverStarted(event);
+    }
+
+    @Mod.EventHandler
+    public void serverStopping(FMLServerStoppingEvent event) {
+        compatibilityManager.serverStopping(event);
+    }
+
 }

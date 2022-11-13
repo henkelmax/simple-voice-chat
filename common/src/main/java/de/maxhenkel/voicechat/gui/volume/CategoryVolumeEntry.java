@@ -1,12 +1,10 @@
 package de.maxhenkel.voicechat.gui.volume;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
-import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
 
 public class CategoryVolumeEntry extends VolumeEntry {
 
@@ -24,13 +22,13 @@ public class CategoryVolumeEntry extends VolumeEntry {
     }
 
     @Override
-    public void renderElement(MatrixStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
-        minecraft.getTextureManager().bind(texture);
-        AbstractGui.blit(poseStack, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
-        minecraft.font.draw(poseStack, new StringTextComponent(category.getName()), (float) textX, (float) textY, PLAYER_NAME_COLOR);
-        if (hovered && category.getDescription() != null) {
+    public void renderElement(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks, int skinX, int skinY, int textX, int textY) {
+        minecraft.getTextureManager().bindTexture(texture);
+        GuiScreen.drawScaledCustomSizeModalRect(skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
+        minecraft.fontRenderer.drawString(category.getName(), textX, textY, PLAYER_NAME_COLOR);
+        if (isSelected && category.getDescription() != null) {
             screen.postRender(() -> {
-                screen.renderTooltip(poseStack, new StringTextComponent(category.getDescription()), mouseX, mouseY);
+                screen.drawHoveringText(category.getDescription(), mouseX, mouseY);
             });
         }
     }

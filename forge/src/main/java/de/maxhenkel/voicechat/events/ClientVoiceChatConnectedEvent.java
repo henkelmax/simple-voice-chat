@@ -1,9 +1,9 @@
 package de.maxhenkel.voicechat.events;
 
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
-import net.minecraftforge.eventbus.api.GenericEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class ClientVoiceChatConnectedEvent extends GenericEvent<ClientVoiceChatConnectedEvent> {
+public class ClientVoiceChatConnectedEvent extends Event {
 
     private final ClientVoicechatConnection client;
 

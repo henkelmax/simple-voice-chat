@@ -1,13 +1,14 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import org.lwjgl.openal.*;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -21,37 +22,38 @@ public class SoundManager {
 
     @Nullable
     private final String deviceName;
-    private long device;
-    private long context;
+    private ALCdevice device;
+    private ALCcontext context;
 
+    @Deprecated
     public SoundManager(@Nullable String deviceName) throws SpeakerException {
         this.deviceName = deviceName;
 
         device = openSpeaker(deviceName);
-        context = ALC11.alcCreateContext(device, (IntBuffer) null);
+        context = ALC10.alcCreateContext(device, (IntBuffer) null);
 
-        PluginManager.instance().onCreateALContext(context, device);
+        PluginManager.instance().onCreateALContext(getContextAddress(context), getDeviceAddress(device));
     }
 
     public void close() {
-        PluginManager.instance().onDestroyALContext(context, device);
-        if (context != 0L) {
-            ALC11.alcDestroyContext(context);
+        PluginManager.instance().onDestroyALContext(getContextAddress(context), getDeviceAddress(device));
+        if (context != null) {
+            ALC10.alcDestroyContext(context);
             checkAlcError(device);
         }
-        if (device != 0L) {
-            ALC11.alcCloseDevice(device);
+        if (device != null) {
+            ALC10.alcCloseDevice(device);
             checkAlcError(device);
         }
-        context = 0;
-        device = 0;
+        context = null;
+        device = null;
     }
 
     public boolean isClosed() {
-        return context == 0 || device == 0;
+        return context == null || device == null;
     }
 
-    private long openSpeaker(@Nullable String name) throws SpeakerException {
+    private ALCdevice openSpeaker(@Nullable String name) throws SpeakerException {
         try {
             return tryOpenSpeaker(name);
         } catch (SpeakerException e) {
@@ -66,9 +68,9 @@ public class SoundManager {
         }
     }
 
-    private long tryOpenSpeaker(@Nullable String string) throws SpeakerException {
-        long l = ALC11.alcOpenDevice(string);
-        if (l == 0L) {
+    private ALCdevice tryOpenSpeaker(@Nullable String string) throws SpeakerException {
+        ALCdevice l = ALC10.alcOpenDevice(string);
+        if (l == null) {
             throw new SpeakerException("Failed to open audio device: Audio device not found");
         }
         checkAlcError(device);
@@ -80,8 +82,8 @@ public class SoundManager {
         if (!canEnumerate()) {
             return null;
         }
-        String defaultSpeaker = ALC11.alcGetString(0L, ALC11.ALC_ALL_DEVICES_SPECIFIER);
-        checkAlcError(0L);
+        String defaultSpeaker = ALC10.alcGetString(null, ALC11.ALC_ALL_DEVICES_SPECIFIER);
+        checkAlcError(null);
         return defaultSpeaker;
     }
 
@@ -89,8 +91,9 @@ public class SoundManager {
         if (!canEnumerate()) {
             return Collections.emptyList();
         }
-        List<String> devices = ALUtil.getStringList(0L, ALC11.ALC_ALL_DEVICES_SPECIFIER);
-        checkAlcError(0L);
+        //TODO Fix audio devices
+        List<String> devices = new ArrayList<>();//ALUtil.getStringList(0L, ALC11.ALC_ALL_DEVICES_SPECIFIER);
+        checkAlcError(null);
         return devices == null ? Collections.emptyList() : devices;
     }
 
@@ -109,22 +112,24 @@ public class SoundManager {
     }
 
     public boolean openContext() {
-        if (context == 0) {
+        if (context == null) {
             return false;
         }
-        boolean success = EXTThreadLocalContext.alcSetThreadContext(context);
-        checkAlcError(device);
+        // TODO Fix threaded AL audio
+        boolean success = true;/*EXTThreadLocalContext.alcSetThreadContext(context);
+        checkAlcError(device);*/
         return success;
     }
 
     public void closeContext() {
-        EXTThreadLocalContext.alcSetThreadContext(0L);
+        // TODO Fix threaded AL audio
+        // EXTThreadLocalContext.alcSetThreadContext(0L);
         checkAlcError(device);
     }
 
     public static boolean checkAlError() {
-        int error = AL11.alGetError();
-        if (error == AL11.AL_NO_ERROR) {
+        int error = AL10.alGetError();
+        if (error == AL10.AL_NO_ERROR) {
             return false;
         }
         StackTraceElement stack = Thread.currentThread().getStackTrace()[2];
@@ -132,9 +137,9 @@ public class SoundManager {
         return true;
     }
 
-    public static boolean checkAlcError(long device) {
-        int error = ALC11.alcGetError(device);
-        if (error == ALC11.ALC_NO_ERROR) {
+    public static boolean checkAlcError(@Nullable ALCdevice device) {
+        int error = ALC10.alcGetError(device);
+        if (error == ALC10.ALC_NO_ERROR) {
             return false;
         }
         StackTraceElement stack = Thread.currentThread().getStackTrace()[2];
@@ -144,15 +149,15 @@ public class SoundManager {
 
     private static String getAlError(int i) {
         switch (i) {
-            case AL11.AL_INVALID_NAME:
+            case AL10.AL_INVALID_NAME:
                 return "Invalid name";
-            case AL11.AL_INVALID_ENUM:
+            case AL10.AL_INVALID_ENUM:
                 return "Invalid enum ";
-            case AL11.AL_INVALID_VALUE:
+            case AL10.AL_INVALID_VALUE:
                 return "Invalid value";
-            case AL11.AL_INVALID_OPERATION:
+            case AL10.AL_INVALID_OPERATION:
                 return "Invalid operation";
-            case AL11.AL_OUT_OF_MEMORY:
+            case AL10.AL_OUT_OF_MEMORY:
                 return "Out of memory";
             default:
                 return "Unknown error";
@@ -161,15 +166,15 @@ public class SoundManager {
 
     public static String getAlcError(int i) {
         switch (i) {
-            case ALC11.ALC_INVALID_DEVICE:
+            case ALC10.ALC_INVALID_DEVICE:
                 return "Invalid device";
-            case ALC11.ALC_INVALID_CONTEXT:
+            case ALC10.ALC_INVALID_CONTEXT:
                 return "Invalid context";
-            case ALC11.ALC_INVALID_ENUM:
+            case ALC10.ALC_INVALID_ENUM:
                 return "Invalid enum";
-            case ALC11.ALC_INVALID_VALUE:
+            case ALC10.ALC_INVALID_VALUE:
                 return "Invalid value";
-            case ALC11.ALC_OUT_OF_MEMORY:
+            case ALC10.ALC_OUT_OF_MEMORY:
                 return "Out of memory";
             default:
                 return "Unknown error";
@@ -187,9 +192,33 @@ public class SoundManager {
     }
 
     public static boolean canEnumerate() {
-        boolean present = ALC11.alcIsExtensionPresent(0L, "ALC_ENUMERATE_ALL_EXT");
-        checkAlcError(0L);
-        return present;
+        //TODO Fix device enumeration
+        /*boolean present = ALC10.alcIsExtensionPresent(null, "ALC_ENUMERATE_ALL_EXT");
+        checkAlcError(null);
+        return present;*/
+        return false;
+    }
+
+    public static long getContextAddress(ALCcontext context) {
+        try {
+            Field c = context.getClass().getDeclaredField("context");
+            c.setAccessible(true);
+            return (long) c.get(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0L;
+        }
+    }
+
+    public static long getDeviceAddress(ALCdevice device) {
+        try {
+            Field c = device.getClass().getDeclaredField("device");
+            c.setAccessible(true);
+            return (long) c.get(device);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0L;
+        }
     }
 
 }

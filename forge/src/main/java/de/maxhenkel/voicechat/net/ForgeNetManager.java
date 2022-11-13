@@ -2,12 +2,8 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.event.EventNetworkChannel;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ForgeNetManager extends NetManager {
 
@@ -16,47 +12,42 @@ public class ForgeNetManager extends NetManager {
         Channel<T> c = new Channel<>();
         try {
             T dummyPacket = packetType.getDeclaredConstructor().newInstance();
-            EventNetworkChannel channel = NetworkRegistry.newEventChannel(
-                    dummyPacket.getIdentifier(),
-                    () -> NetworkRegistry.ACCEPTVANILLA,
-                    NetworkRegistry.ACCEPTVANILLA::equals,
-                    NetworkRegistry.ACCEPTVANILLA::equals
-            );
-            channel.addListener(event -> {
-                if (event.getPayload() == null) {
-                    return;
-                }
-                NetworkEvent.Context context = event.getSource().get();
-                if (toServer && context.getDirection().equals(NetworkDirection.PLAY_TO_SERVER)) {
+
+            if (toServer) {
+                ForgeNetworkEvents.registerServerPacket(dummyPacket.getIdentifier(), (packet, player) -> {
                     try {
-                        if (!Voicechat.SERVER.isCompatible(context.getSender()) && !packetType.equals(RequestSecretPacket.class)) {
+                        if (!Voicechat.SERVER.isCompatible(player) && !packetType.equals(RequestSecretPacket.class)) {
                             return;
                         }
-                        T packet = packetType.getDeclaredConstructor().newInstance();
-                        packet.fromBytes(event.getPayload());
-                        c.onServerPacket(context.getSender().server, context.getSender(), context.getSender().connection, packet);
+                        T vcPacket = packetType.getDeclaredConstructor().newInstance();
+                        vcPacket.fromBytes(packet.getBufferData());
+                        c.onServerPacket(player.mcServer, player, player.connection, vcPacket);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else {
+                });
+            }
+
+            if (toClient) {
+                ForgeNetworkEvents.registerClientPacket(dummyPacket.getIdentifier(), payload -> {
                     try {
                         T packet = packetType.getDeclaredConstructor().newInstance();
-                        packet.fromBytes(event.getPayload());
+                        packet.fromBytes(payload.getBufferData());
                         onClientPacket(c, packet);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
-            });
+                });
+            }
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
         return c;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @SideOnly(Side.CLIENT)
     private <T extends Packet<T>> void onClientPacket(Channel<T> channel, T packet) {
-        channel.onClientPacket(Minecraft.getInstance(), Minecraft.getInstance().getConnection(), packet);
+        channel.onClientPacket(Minecraft.getMinecraft(), Minecraft.getMinecraft().getConnection(), packet);
     }
 
 }

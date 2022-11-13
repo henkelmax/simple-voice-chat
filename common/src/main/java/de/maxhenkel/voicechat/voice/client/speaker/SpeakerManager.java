@@ -9,19 +9,20 @@ import java.util.UUID;
 public class SpeakerManager {
 
     public static Speaker createSpeaker(SoundManager soundManager, @Nullable UUID audioChannel) throws SpeakerException {
-        ALSpeakerBase speaker;
+        Speaker speaker;
+
         switch (VoicechatClient.CLIENT_CONFIG.audioType.get()) {
             case NORMAL:
-            default:
-                speaker = new ALSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, audioChannel);
-                break;
             case REDUCED:
-                speaker = new FakeALSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, audioChannel);
+            default:
+                speaker = new JavaSpeaker();
                 break;
             case OFF:
-                speaker = new MonoALSpeaker(soundManager, SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, audioChannel);
+                // TODO Add mono support
+                speaker = new JavaSpeaker();
                 break;
         }
+
         speaker.open();
         return speaker;
     }

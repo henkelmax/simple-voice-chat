@@ -9,13 +9,9 @@ import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.channel.local.LocalAddress;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.network.play.ClientPlayNetHandler;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponentUtils;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.HoverEvent;
 
 import javax.annotation.Nullable;
@@ -39,7 +35,7 @@ public class ClientManager {
         pttKeyHandler = new PTTKeyHandler();
         renderEvents = new RenderEvents();
         keyEvents = new KeyEvents();
-        minecraft = Minecraft.getInstance();
+        minecraft = Minecraft.getMinecraft();
 
         ClientCompatibilityManager.INSTANCE.onJoinWorld(this::onJoinWorld);
         ClientCompatibilityManager.INSTANCE.onDisconnect(this::onDisconnect);
@@ -68,10 +64,10 @@ public class ClientManager {
         if (client.getConnection() != null) {
             ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
         }
-        ClientPlayNetHandler connection = minecraft.getConnection();
+        NetHandlerPlayClient connection = minecraft.getConnection();
         if (connection != null) {
             try {
-                SocketAddress socketAddress = ClientCompatibilityManager.INSTANCE.getSocketAddress(connection.getConnection());
+                SocketAddress socketAddress = ClientCompatibilityManager.INSTANCE.getSocketAddress(connection.getNetworkManager());
                 if (socketAddress instanceof InetSocketAddress) {
                     InetSocketAddress address = (InetSocketAddress) socketAddress;
                     client.connect(new InitializationData(address.getHostString(), secretPacket));
@@ -95,22 +91,24 @@ public class ClientManager {
     }
 
     public static void sendPlayerError(String translationKey, @Nullable Exception e) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (player == null) {
             return;
         }
+        Style style = new Style().setColor(TextFormatting.RED);
+        if (e != null) {
+            style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(e.getMessage()).setStyle(new Style().setColor(TextFormatting.RED))));
+        }
         player.sendMessage(
-                TextComponentUtils.wrapInSquareBrackets(new StringTextComponent(CommonCompatibilityManager.INSTANCE.getModName()))
-                        .withStyle(TextFormatting.GREEN)
-                        .append(" ")
-                        .append(new TranslationTextComponent(translationKey).withStyle(TextFormatting.RED))
-                        .withStyle(style -> {
-                            if (e != null) {
-                                return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(e.getMessage()).withStyle(TextFormatting.RED)));
-                            }
-                            return style;
-                        })
-                , Util.NIL_UUID);
+                wrapInSquareBrackets(new TextComponentString(CommonCompatibilityManager.INSTANCE.getModName()))
+                        .setStyle(new Style().setColor(TextFormatting.GREEN))
+                        .appendText(" ")
+                        .appendSibling(new TextComponentTranslation(translationKey).setStyle(style))
+        );
+    }
+
+    private static ITextComponent wrapInSquareBrackets(ITextComponent component) {
+        return new TextComponentString("[").appendSibling(component).appendText("]");
     }
 
     private void onDisconnect() {
@@ -138,11 +136,11 @@ public class ClientManager {
                 }
             }
             NetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
-            Minecraft.getInstance().gui.getChat().addMessage(new TranslationTextComponent("message.voicechat.server_port", server.getPort()));
+            Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("message.voicechat.server_port", server.getPort()));
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to change voice chat port: {}", e.getMessage());
         }
-        Minecraft.getInstance().gui.getChat().addMessage(new TranslationTextComponent("message.voicechat.server_port", server.getPort()));
+        Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("message.voicechat.server_port", server.getPort()));
     }
 
     @Nullable

@@ -8,8 +8,9 @@ public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
 
     public AudioDeviceList(int width, int height, int x, int y, int size) {
         super(width, height, x, y, size);
-        setRenderBackground(false);
-        setRenderTopAndBottom(false);
+        // TODO Remove dirt background
+        // setRenderBackground(false);
+        // setRenderTopAndBottom(false);
     }
 
     @Override

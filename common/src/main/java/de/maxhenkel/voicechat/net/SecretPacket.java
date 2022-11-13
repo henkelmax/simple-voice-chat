@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.plugins.PluginManager;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
@@ -28,10 +28,10 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     }
 
-    public SecretPacket(ServerPlayerEntity player, UUID secret, int port, ServerConfig serverConfig) {
+    public SecretPacket(EntityPlayerMP player, UUID secret, int port, ServerConfig serverConfig) {
         this.secret = secret;
         this.serverPort = port;
-        this.playerUUID = player.getUUID();
+        this.playerUUID = player.getUniqueID();
         this.codec = serverConfig.voiceChatCodec.get();
         this.mtuSize = serverConfig.voiceChatMtuSize.get();
         this.voiceChatDistance = serverConfig.voiceChatDistance.get();
@@ -88,30 +88,30 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     @Override
     public SecretPacket fromBytes(PacketBuffer buf) {
-        secret = buf.readUUID();
+        secret = buf.readUniqueId();
         serverPort = buf.readInt();
-        playerUUID = buf.readUUID();
+        playerUUID = buf.readUniqueId();
         codec = ServerConfig.Codec.values()[buf.readByte()];
         mtuSize = buf.readInt();
         voiceChatDistance = buf.readDouble();
         keepAlive = buf.readInt();
         groupsEnabled = buf.readBoolean();
-        voiceHost = buf.readUtf(32767);
+        voiceHost = buf.readString(32767);
         allowRecording = buf.readBoolean();
         return this;
     }
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUUID(secret);
+        buf.writeUniqueId(secret);
         buf.writeInt(serverPort);
-        buf.writeUUID(playerUUID);
+        buf.writeUniqueId(playerUUID);
         buf.writeByte(codec.ordinal());
         buf.writeInt(mtuSize);
         buf.writeDouble(voiceChatDistance);
         buf.writeInt(keepAlive);
         buf.writeBoolean(groupsEnabled);
-        buf.writeUtf(voiceHost);
+        buf.writeString(voiceHost);
         buf.writeBoolean(allowRecording);
     }
 

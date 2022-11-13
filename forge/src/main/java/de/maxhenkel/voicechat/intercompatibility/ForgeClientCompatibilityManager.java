@@ -1,24 +1,24 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.events.ClientVoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.events.ClientVoiceChatDisconnectedEvent;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.resources.IPackFinder;
-import net.minecraft.resources.ResourcePackList;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.net.SocketAddress;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     private final List<Consumer<Integer>> publishServerEvents;
 
     public ForgeClientCompatibilityManager() {
-        minecraft = Minecraft.getInstance();
+        minecraft = Minecraft.getMinecraft();
         renderNameplateEvents = new ArrayList<>();
         renderHUDEvents = new ArrayList<>();
         keyboardEvents = new ArrayList<>();
@@ -56,13 +56,13 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         publishServerEvents = new ArrayList<>();
     }
 
-    @SubscribeEvent
-    public void onRenderName(net.minecraftforge.client.event.RenderNameplateEvent event) {
-        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getEntity(), event.getContent(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight()));
-        if (minecraft.player == null || event.getEntity().isInvisibleTo(minecraft.player)) {
+    public void onRenderName(Entity entity, String str, double x, double y, double z, int maxDistance) {
+        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(entity, str, x, y, z, maxDistance));
+        //TODO Check if player can be seen
+        if (minecraft.player == null /*|| entity.isInvisibleTo(minecraft.player)*/) {
             return;
         }
-        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getEntity(), event.getContent(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getPackedLight()));
+        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(entity, str, x, y, z, maxDistance));
     }
 
     @SubscribeEvent
@@ -70,17 +70,15 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         if (!event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) {
             return;
         }
-        renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(event.getMatrixStack(), event.getPartialTicks()));
+        renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(event.getPartialTicks()));
     }
 
-    @SubscribeEvent
-    public void onKey(InputEvent.KeyInputEvent event) {
-        keyboardEvents.forEach(keyboardEvent -> keyboardEvent.onKeyboardEvent(minecraft.getWindow().getWindow(), event.getKey(), event.getScanCode()));
+    public void onTickKey() {
+        keyboardEvents.forEach(KeyboardEvent::onKeyboardEvent);
     }
 
-    @SubscribeEvent
-    public void onMouse(InputEvent.RawMouseEvent event) {
-        mouseEvents.forEach(mouseEvent -> mouseEvent.onMouseEvent(minecraft.getWindow().getWindow(), event.getButton(), event.getAction(), event.getMods()));
+    public void onTickMouse() {
+        mouseEvents.forEach(MouseEvent::onMouseEvent);
     }
 
     @SubscribeEvent
@@ -91,14 +89,14 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @SubscribeEvent
     public void onDisconnect(WorldEvent.Unload event) {
         // Not just changing the world - Disconnecting
-        if (minecraft.gameMode == null) {
+        if (minecraft.creativeSettings == null) {
             disconnectEvents.forEach(Runnable::run);
         }
     }
 
     @SubscribeEvent
-    public void onJoinServer(ClientPlayerNetworkEvent.LoggedInEvent event) {
-        if (event.getPlayer() != minecraft.player) {
+    public void onJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.player != minecraft.player) {
             return;
         }
         joinServerEvents.forEach(Runnable::run);
@@ -106,8 +104,8 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @SubscribeEvent
-    public void onJoinWorld(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getPlayer() != minecraft.player) {
+    public void onJoinWorld(EntityJoinWorldEvent event) {
+        if (event.getEntity() != minecraft.player) {
             return;
         }
         joinWorldEvents.forEach(Runnable::run);
@@ -120,15 +118,20 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         if (!event.phase.equals(TickEvent.Phase.END)) {
             return;
         }
-        IntegratedServer server = Minecraft.getInstance().getSingleplayerServer();
+        IntegratedServer server = Minecraft.getMinecraft().getIntegratedServer();
         if (server == null) {
             return;
         }
 
-        boolean published = server.isPublished();
+        boolean published = server.getPublic();
 
         if (published && !wasPublished) {
-            publishServerEvents.forEach(portConsumer -> portConsumer.accept(server.getPort()));
+            try {
+                Integer serverPort = ObfuscationReflectionHelper.<Integer, MinecraftServer>getPrivateValue(MinecraftServer.class, server, "serverPort");
+                publishServerEvents.forEach(portConsumer -> portConsumer.accept(serverPort));
+            } catch (Exception e) {
+                Voicechat.LOGGER.error("Failed to get integrated server port", e);
+            }
         }
 
         wasPublished = published;
@@ -155,8 +158,8 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @Override
-    public InputMappings.Input getBoundKeyOf(KeyBinding keyBinding) {
-        return keyBinding.getKey();
+    public int getBoundKeyOf(KeyBinding keyBinding) {
+        return keyBinding.getKeyCode();
     }
 
     @Override
@@ -217,8 +220,4 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         return connection.channel().remoteAddress();
     }
 
-    @Override
-    public void addResourcePackSource(ResourcePackList packRepository, IPackFinder repositorySource) {
-        packRepository.addPackFinder(repositorySource);
-    }
 }

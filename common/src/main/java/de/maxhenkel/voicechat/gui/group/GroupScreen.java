@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.gui.group;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.tooltips.DisableTooltipSupplier;
@@ -18,10 +17,7 @@ import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-
-import java.util.Collections;
+import net.minecraft.util.text.TextComponentTranslation;
 
 public class GroupScreen extends ListScreenBase {
 
@@ -30,8 +26,8 @@ public class GroupScreen extends ListScreenBase {
     protected static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone_button.png");
     protected static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_button.png");
     protected static final ResourceLocation GROUP_HUD = new ResourceLocation(Voicechat.MODID, "textures/icons/group_hud_button.png");
-    protected static final ITextComponent TITLE = new TranslationTextComponent("gui.voicechat.group.title");
-    protected static final ITextComponent LEAVE_GROUP = new TranslationTextComponent("message.voicechat.leave_group");
+    protected static final ITextComponent TITLE = new TextComponentTranslation("gui.voicechat.group.title");
+    protected static final ITextComponent LEAVE_GROUP = new TextComponentTranslation("message.voicechat.leave_group");
 
     protected static final int HEADER_SIZE = 16;
     protected static final int FOOTER_SIZE = 32;
@@ -53,8 +49,8 @@ public class GroupScreen extends ListScreenBase {
     }
 
     @Override
-    protected void init() {
-        super.init();
+    public void initGui() {
+        super.initGui();
         guiLeft = guiLeft + 2;
         guiTop = 32;
         int minUnits = MathHelper.ceil((float) (CELL_HEIGHT + 4) / (float) UNIT_SIZE);
@@ -68,31 +64,31 @@ public class GroupScreen extends ListScreenBase {
         } else {
             groupList = new GroupList(this, width, height, guiTop + HEADER_SIZE, guiTop + HEADER_SIZE + units * UNIT_SIZE, CELL_HEIGHT);
         }
-        addWidget(groupList);
+        setList(groupList);
 
         int buttonY = guiTop + ySize - 20 - 7;
         int buttonSize = 20;
 
-        mute = new ToggleImageButton(guiLeft + 7, buttonY, MICROPHONE, stateManager::isMuted, button -> {
+        mute = new ToggleImageButton(0, guiLeft + 7, buttonY, MICROPHONE, stateManager::isMuted, button -> {
             stateManager.setMuted(!stateManager.isMuted());
         }, new MuteTooltipSupplier(this, stateManager));
         addButton(mute);
 
-        disable = new ToggleImageButton(guiLeft + 7 + buttonSize + 3, buttonY, SPEAKER, stateManager::isDisabled, button -> {
+        disable = new ToggleImageButton(1, guiLeft + 7 + buttonSize + 3, buttonY, SPEAKER, stateManager::isDisabled, button -> {
             stateManager.setDisabled(!stateManager.isDisabled());
         }, new DisableTooltipSupplier(this, stateManager));
         addButton(disable);
 
-        showHUD = new ToggleImageButton(guiLeft + 7 + (buttonSize + 3) * 2, buttonY, GROUP_HUD, VoicechatClient.CLIENT_CONFIG.showGroupHUD::get, button -> {
+        showHUD = new ToggleImageButton(2, guiLeft + 7 + (buttonSize + 3) * 2, buttonY, GROUP_HUD, VoicechatClient.CLIENT_CONFIG.showGroupHUD::get, button -> {
             VoicechatClient.CLIENT_CONFIG.showGroupHUD.set(!VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()).save();
         }, new HideGroupHudTooltipSupplier(this));
         addButton(showHUD);
 
-        leave = new ImageButton(guiLeft + xSize - buttonSize - 7, buttonY, LEAVE, button -> {
+        leave = new ImageButton(3, guiLeft + xSize - buttonSize - 7, buttonY, LEAVE, button -> {
             NetManager.sendToServer(new LeaveGroupPacket());
-            minecraft.setScreen(new JoinGroupScreen());
-        }, (button, matrices, mouseX, mouseY) -> {
-            renderTooltip(matrices, Collections.singletonList(LEAVE_GROUP.getVisualOrderText()), mouseX, mouseY);
+            mc.displayGuiScreen(new JoinGroupScreen());
+        }, (button, mouseX, mouseY) -> {
+            drawHoveringText(LEAVE_GROUP.getUnformattedComponentText(), mouseX, mouseY);
         });
         addButton(leave);
 
@@ -100,34 +96,34 @@ public class GroupScreen extends ListScreenBase {
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void updateScreen() {
+        super.updateScreen();
         checkButtons();
         groupList.tick();
     }
 
     private void checkButtons() {
-        mute.active = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE);
-        showHUD.active = !VoicechatClient.CLIENT_CONFIG.hideIcons.get();
+        mute.enabled = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE);
+        showHUD.enabled = !VoicechatClient.CLIENT_CONFIG.hideIcons.get();
     }
 
     @Override
-    public void renderBackground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
-        minecraft.getTextureManager().bind(TEXTURE);
-        blit(poseStack, guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE);
+    public void renderBackground(int mouseX, int mouseY, float delta) {
+        mc.getTextureManager().bindTexture(TEXTURE);
+        drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE);
         for (int i = 0; i < units; i++) {
-            blit(poseStack, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * i, 0, HEADER_SIZE, xSize, UNIT_SIZE);
+            drawTexturedModalRect(guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * i, 0, HEADER_SIZE, xSize, UNIT_SIZE);
         }
-        blit(poseStack, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * units, 0, HEADER_SIZE + UNIT_SIZE, xSize, FOOTER_SIZE);
-        blit(poseStack, guiLeft + 10, guiTop + HEADER_SIZE + 6 - 2, xSize, 0, 12, 12);
+        drawTexturedModalRect(guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * units, 0, HEADER_SIZE + UNIT_SIZE, xSize, FOOTER_SIZE);
+        drawTexturedModalRect(guiLeft + 10, guiTop + HEADER_SIZE + 6 - 2, xSize, 0, 12, 12);
     }
 
     @Override
-    public void renderForeground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
-        StringTextComponent title = new StringTextComponent(group.getName());
-        font.draw(poseStack, title, guiLeft + xSize / 2 - font.width(title) / 2, guiTop + 5, FONT_COLOR);
+    public void renderForeground(int mouseX, int mouseY, float delta) {
+        fontRenderer.drawString(group.getName(), guiLeft + xSize / 2 - fontRenderer.getStringWidth(group.getName()) / 2, guiTop + 5, FONT_COLOR);
 
-        groupList.render(poseStack, mouseX, mouseY, delta);
+        // TODO Check for other calls to avoid duplicate renders
+        // groupList.render(poseStack, mouseX, mouseY, delta);
     }
 
 }

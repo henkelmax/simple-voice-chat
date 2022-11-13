@@ -1,23 +1,23 @@
 package de.maxhenkel.voicechat.voice.common;
 
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
 
-    protected Vector3d location;
+    protected Vec3d location;
     protected float distance;
 
-    public LocationSoundPacket(UUID sender, Vector3d location, byte[] data, long sequenceNumber, float distance, @Nullable String category) {
+    public LocationSoundPacket(UUID sender, Vec3d location, byte[] data, long sequenceNumber, float distance, @Nullable String category) {
         super(sender, data, sequenceNumber, category);
         this.location = location;
         this.distance = distance;
     }
 
-    public LocationSoundPacket(UUID sender, short[] data, Vector3d location, float distance, @Nullable String category) {
+    public LocationSoundPacket(UUID sender, short[] data, Vec3d location, float distance, @Nullable String category) {
         super(sender, data, category);
         this.location = location;
         this.distance = distance;
@@ -27,7 +27,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
 
     }
 
-    public Vector3d getLocation() {
+    public Vec3d getLocation() {
         return location;
     }
 
@@ -38,15 +38,15 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
     @Override
     public LocationSoundPacket fromBytes(PacketBuffer buf) {
         LocationSoundPacket soundPacket = new LocationSoundPacket();
-        soundPacket.sender = buf.readUUID();
-        soundPacket.location = new Vector3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
+        soundPacket.sender = buf.readUniqueId();
+        soundPacket.location = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
         soundPacket.distance = buf.readFloat();
 
         byte data = buf.readByte();
         if (hasFlag(data, HAS_CATEGORY_MASK)) {
-            soundPacket.category = buf.readUtf(16);
+            soundPacket.category = buf.readString(16);
         }
 
         return soundPacket;
@@ -54,7 +54,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUUID(sender);
+        buf.writeUniqueId(sender);
         buf.writeDouble(location.x);
         buf.writeDouble(location.y);
         buf.writeDouble(location.z);
@@ -68,7 +68,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
         }
         buf.writeByte(data);
         if (category != null) {
-            buf.writeUtf(category, 16);
+            buf.writeString(category);
         }
     }
 }

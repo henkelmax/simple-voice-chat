@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle'
 java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
 
 minecraft {
-    mappings channel: 'official', version: minecraft_version
+    mappings channel: 'snapshot', version: '20171003-1.12'
 }
 
 repositories {
@@ -49,4 +49,12 @@ dependencies {
     implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
 
     implementation project(':api')
+}
+
+sourceSets {
+    main {
+        java {
+            exclude 'de/maxhenkel/voicechat/resourcepacks/*/**'
+        }
+    }
 }

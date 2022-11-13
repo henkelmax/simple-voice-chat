@@ -29,14 +29,14 @@ public class AuthenticatePacket implements Packet<AuthenticatePacket> {
     @Override
     public AuthenticatePacket fromBytes(PacketBuffer buf) {
         AuthenticatePacket packet = new AuthenticatePacket();
-        packet.playerUUID = buf.readUUID();
-        packet.secret = buf.readUUID();
+        packet.playerUUID = buf.readUniqueId();
+        packet.secret = buf.readUniqueId();
         return packet;
     }
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUUID(playerUUID);
-        buf.writeUUID(secret);
+        buf.writeUniqueId(playerUUID);
+        buf.writeUniqueId(secret);
     }
 }

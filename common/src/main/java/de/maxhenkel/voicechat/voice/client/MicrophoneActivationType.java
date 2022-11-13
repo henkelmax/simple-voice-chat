@@ -1,11 +1,11 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 
 public enum MicrophoneActivationType {
 
-    PTT(new TranslationTextComponent("message.voicechat.activation_type.ptt")), VOICE(new TranslationTextComponent("message.voicechat.activation_type.voice"));
+    PTT(new TextComponentTranslation("message.voicechat.activation_type.ptt")), VOICE(new TextComponentTranslation("message.voicechat.activation_type.voice"));
 
     private final ITextComponent component;
 

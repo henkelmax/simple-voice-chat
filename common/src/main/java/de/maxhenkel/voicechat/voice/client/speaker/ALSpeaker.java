@@ -1,11 +1,12 @@
 package de.maxhenkel.voicechat.voice.client.speaker;
 
 import de.maxhenkel.voicechat.voice.client.SoundManager;
-import org.lwjgl.openal.AL11;
+import org.lwjgl.openal.AL10;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
+@Deprecated
 public class ALSpeaker extends ALSpeakerBase {
 
     public ALSpeaker(SoundManager soundManager, int sampleRate, int bufferSize, @Nullable UUID audioChannelId) {
@@ -14,7 +15,7 @@ public class ALSpeaker extends ALSpeakerBase {
 
     @Override
     protected int getFormat() {
-        return AL11.AL_FORMAT_MONO16;
+        return AL10.AL_FORMAT_MONO16;
     }
 
 }

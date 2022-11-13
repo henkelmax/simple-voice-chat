@@ -185,7 +185,7 @@ public class MicThread extends Thread {
         if (recorder == null) {
             return;
         }
-        recorder.flushChunkThreaded(Minecraft.getInstance().getUser().getGameProfile().getId());
+        recorder.flushChunkThreaded(Minecraft.getMinecraft().getSession().getProfile().getId());
     }
 
     public boolean isTalking() {
@@ -245,7 +245,7 @@ public class MicThread extends Thread {
         }
         try {
             if (client != null && client.getRecorder() != null) {
-                client.getRecorder().appendChunk(Minecraft.getInstance().getUser().getGameProfile().getId(), System.currentTimeMillis(), PositionalAudioUtils.convertToStereo(audio));
+                client.getRecorder().appendChunk(Minecraft.getMinecraft().getSession().getProfile().getId(), System.currentTimeMillis(), PositionalAudioUtils.convertToStereo(audio));
             }
         } catch (IOException e) {
             Voicechat.LOGGER.error("Failed to record audio", e);

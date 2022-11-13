@@ -17,8 +17,9 @@ public class GroupList extends ListScreenListBase<GroupEntry> {
     public GroupList(ListScreenBase parent, int width, int height, int x, int y, int size) {
         super(width, height, x, y, size);
         this.parent = parent;
-        setRenderBackground(false);
-        setRenderTopAndBottom(false);
+        // TODO Remove dirt background
+        // setRenderBackground(false);
+        // setRenderTopAndBottom(false);
         tick();
     }
 
@@ -27,7 +28,7 @@ public class GroupList extends ListScreenListBase<GroupEntry> {
         ClientGroup group = ClientManager.getPlayerStateManager().getGroup();
         if (group == null) {
             clearEntries();
-            minecraft.setScreen(null);
+            mc.displayGuiScreen(null);
             return;
         }
         boolean changed = false;

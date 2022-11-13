@@ -7,19 +7,12 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.mp3.Mp3Encoder;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.impl.mp3.Mp3EncoderImpl;
-import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.util.Tuple;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nullable;
 import javax.sound.sampled.AudioFormat;
@@ -58,7 +51,7 @@ public class AudioRecorder {
         location.toFile().mkdirs();
         chunks = new ConcurrentHashMap<>();
         encoders = new ConcurrentHashMap<>();
-        ownProfile = Minecraft.getInstance().getUser().getGameProfile();
+        ownProfile = Minecraft.getMinecraft().getSession().getProfile();
 
         stereoFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, SoundManager.SAMPLE_RATE, 16, 2, 4, SoundManager.SAMPLE_RATE, false);
 
@@ -246,7 +239,7 @@ public class AudioRecorder {
 
     private void save() {
         threadPool.execute(() -> {
-            send(new TranslationTextComponent("message.voicechat.processing_recording_session"));
+            send(new TextComponentTranslation("message.voicechat.processing_recording_session"));
             try {
                 Exception error = null;
                 sendProgress(0F);
@@ -272,34 +265,35 @@ public class AudioRecorder {
                     throw error;
                 }
                 sendProgress(1F);
-                send(new TranslationTextComponent("message.voicechat.save_session",
-                        new StringTextComponent(location.normalize().toString())
-                                .withStyle(TextFormatting.GRAY)
-                                .withStyle(style -> style
-                                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("message.voicechat.open_folder")))
-                                        .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, location.normalize().toString()))))
-                );
+                send(new TextComponentTranslation("message.voicechat.save_session",
+                        new TextComponentString(location.normalize().toString())
+                                .setStyle(new Style()
+                                        .setColor(TextFormatting.GRAY)
+                                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentTranslation("message.voicechat.open_folder")))
+                                        .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, location.normalize().toString()))
+                                )
+                ));
             } catch (Exception e) {
                 Voicechat.LOGGER.error("Failed to save recording session", e);
-                send(new TranslationTextComponent("message.voicechat.save_session_failed", e.getMessage()));
+                send(new TextComponentTranslation("message.voicechat.save_session_failed", e.getMessage()));
             }
         });
     }
 
     private void sendProgress(float progress) {
-        send(new TranslationTextComponent("message.voicechat.processing_progress",
-                new StringTextComponent(String.valueOf((int) (progress * 100F)))
-                        .withStyle(TextFormatting.GRAY))
+        send(new TextComponentTranslation("message.voicechat.processing_progress",
+                new TextComponentString(String.valueOf((int) (progress * 100F)))
+                        .setStyle(new Style().setColor(TextFormatting.GRAY)))
         );
     }
 
     private void send(ITextComponent msg) {
-        Minecraft mc = Minecraft.getInstance();
-        ClientPlayerEntity player = mc.player;
-        if (player != null && mc.level != null) {
-            player.sendMessage(msg, Util.NIL_UUID);
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayerSP player = mc.player;
+        if (player != null && mc.world != null) {
+            player.sendMessage(msg);
         } else {
-            Voicechat.LOGGER.info(msg.getString());
+            Voicechat.LOGGER.info(msg.getUnformattedComponentText());
         }
     }
 

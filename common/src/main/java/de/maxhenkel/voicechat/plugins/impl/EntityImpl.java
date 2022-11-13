@@ -15,7 +15,7 @@ public class EntityImpl implements Entity {
 
     @Override
     public UUID getUuid() {
-        return entity.getUUID();
+        return entity.getUniqueID();
     }
 
     @Override
@@ -25,7 +25,7 @@ public class EntityImpl implements Entity {
 
     @Override
     public Position getPosition() {
-        return new PositionImpl(entity.position());
+        return new PositionImpl(entity.getPositionVector());
     }
 
     public net.minecraft.entity.Entity getRealEntity() {

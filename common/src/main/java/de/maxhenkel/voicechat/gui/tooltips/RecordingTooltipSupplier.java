@@ -1,40 +1,38 @@
 package de.maxhenkel.voicechat.gui.tooltips;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RecordingTooltipSupplier implements ImageButton.TooltipSupplier {
 
-    private final Screen screen;
+    private final GuiScreen screen;
 
-    public RecordingTooltipSupplier(Screen screen) {
+    public RecordingTooltipSupplier(GuiScreen screen) {
         this.screen = screen;
     }
 
     @Override
-    public void onTooltip(ImageButton button, MatrixStack matrices, int mouseX, int mouseY) {
+    public void onTooltip(ImageButton button, int mouseX, int mouseY) {
         ClientVoicechat client = ClientManager.getClient();
         if (client == null) {
             return;
         }
 
-        List<IReorderingProcessor> tooltip = new ArrayList<>();
+        List<String> tooltip = new ArrayList<>();
 
         if (client.getRecorder() == null) {
-            tooltip.add(new TranslationTextComponent("message.voicechat.recording.disabled").getVisualOrderText());
+            tooltip.add(new TextComponentTranslation("message.voicechat.recording.disabled").getUnformattedComponentText());
         } else {
-            tooltip.add(new TranslationTextComponent("message.voicechat.recording.enabled").getVisualOrderText());
+            tooltip.add(new TextComponentTranslation("message.voicechat.recording.enabled").getUnformattedComponentText());
         }
 
-        screen.renderTooltip(matrices, tooltip, mouseX, mouseY);
+        screen.drawHoveringText(tooltip, mouseX, mouseY);
     }
 
 }

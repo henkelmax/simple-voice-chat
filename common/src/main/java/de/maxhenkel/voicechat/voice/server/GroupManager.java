@@ -8,8 +8,8 @@ import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -31,7 +31,7 @@ public class GroupManager {
                 return;
             }
             if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
-                player.displayClientMessage(new TranslationTextComponent("message.voicechat.no_group_permission"), true);
+                player.sendStatusMessage(new TextComponentTranslation("message.voicechat.no_group_permission"), true);
                 return;
             }
             joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
@@ -41,7 +41,7 @@ public class GroupManager {
                 return;
             }
             if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
-                player.displayClientMessage(new TranslationTextComponent("message.voicechat.no_group_permission"), true);
+                player.sendStatusMessage(new TextComponentTranslation("message.voicechat.no_group_permission"), true);
                 return;
             }
             addGroup(new Group(UUID.randomUUID(), packet.getName(), packet.getPassword()), player);
@@ -55,7 +55,7 @@ public class GroupManager {
         return server.getPlayerStateManager();
     }
 
-    public void addGroup(Group group, ServerPlayerEntity player) {
+    public void addGroup(Group group, EntityPlayerMP player) {
         if (PluginManager.instance().onCreateGroup(player, group)) {
             return;
         }
@@ -67,7 +67,7 @@ public class GroupManager {
         NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
     }
 
-    public void joinGroup(@Nullable Group group, ServerPlayerEntity player, @Nullable String password) {
+    public void joinGroup(@Nullable Group group, EntityPlayerMP player, @Nullable String password) {
         if (PluginManager.instance().onJoinGroup(player, group)) {
             return;
         }
@@ -88,7 +88,7 @@ public class GroupManager {
         NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
     }
 
-    public void leaveGroup(ServerPlayerEntity player) {
+    public void leaveGroup(EntityPlayerMP player) {
         if (PluginManager.instance().onLeaveGroup(player)) {
             return;
         }
@@ -115,8 +115,8 @@ public class GroupManager {
     }
 
     @Nullable
-    public Group getPlayerGroup(ServerPlayerEntity player) {
-        PlayerState state = server.getPlayerStateManager().getState(player.getUUID());
+    public Group getPlayerGroup(EntityPlayerMP player) {
+        PlayerState state = server.getPlayerStateManager().getState(player.getUniqueID());
         if (state == null) {
             return null;
         }

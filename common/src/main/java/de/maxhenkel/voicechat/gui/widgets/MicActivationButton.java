@@ -3,14 +3,14 @@ package de.maxhenkel.voicechat.gui.widgets;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 
 public class MicActivationButton extends EnumButton<MicrophoneActivationType> {
 
     private final VoiceActivationSlider voiceActivationSlider;
 
-    public MicActivationButton(int xIn, int yIn, int widthIn, int heightIn, VoiceActivationSlider voiceActivationSlider) {
-        super(xIn, yIn, widthIn, heightIn, VoicechatClient.CLIENT_CONFIG.microphoneActivationType);
+    public MicActivationButton(int id, int xIn, int yIn, int widthIn, int heightIn, VoiceActivationSlider voiceActivationSlider) {
+        super(id, xIn, yIn, widthIn, heightIn, VoicechatClient.CLIENT_CONFIG.microphoneActivationType);
         this.voiceActivationSlider = voiceActivationSlider;
         updateText();
         setVisibility();
@@ -18,7 +18,7 @@ public class MicActivationButton extends EnumButton<MicrophoneActivationType> {
 
     @Override
     protected ITextComponent getText(MicrophoneActivationType type) {
-        return new TranslationTextComponent("message.voicechat.activation_type", type.getText());
+        return new TextComponentTranslation("message.voicechat.activation_type", type.getText());
     }
 
     @Override

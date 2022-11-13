@@ -28,11 +28,11 @@ public class TalkCache {
     }
 
     public boolean isTalking(Entity entity) {
-        return isTalking(entity.getUUID());
+        return isTalking(entity.getUniqueID());
     }
 
     public boolean isWhispering(Entity entity) {
-        return isWhispering(entity.getUUID());
+        return isWhispering(entity.getUniqueID());
     }
 
     public boolean isTalking(UUID entity) {

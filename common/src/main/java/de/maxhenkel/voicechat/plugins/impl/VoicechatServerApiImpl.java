@@ -19,8 +19,8 @@ import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import de.maxhenkel.voicechat.voice.server.ServerWorldUtils;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -123,7 +123,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (state == null) {
             return;
         }
-        if (PluginManager.instance().onSoundPacket(null, null, (ServerPlayerEntity) receiver.getPlayer().getPlayer(), state, s, SoundPacketEvent.SOURCE_PLUGIN)) {
+        if (PluginManager.instance().onSoundPacket(null, null, (EntityPlayerMP) receiver.getPlayer().getPlayer(), state, s, SoundPacketEvent.SOURCE_PLUGIN)) {
             return;
         }
         ClientConnection c = server.getConnections().get(receiver.getPlayer().getUuid());
@@ -141,7 +141,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (server == null) {
             return null;
         }
-        ServerPlayerEntity player = server.getServer().getPlayerList().getPlayer(playerUuid);
+        EntityPlayerMP player = server.getServer().getPlayerList().getPlayerByUUID(playerUuid);
         if (player == null) {
             return null;
         }
@@ -167,7 +167,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
     public Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Position pos, double range, Predicate<ServerPlayer> filter) {
         if (pos instanceof PositionImpl) {
             PositionImpl p = (PositionImpl) pos;
-            return ServerWorldUtils.getPlayersInRange((ServerWorld) level.getServerLevel(), p.getPosition(), range, player -> filter.test(new ServerPlayerImpl(player))).stream().map(ServerPlayerImpl::new).collect(Collectors.toList());
+            return ServerWorldUtils.getPlayersInRange((WorldServer) level.getServerLevel(), p.getPosition(), range, player -> filter.test(new ServerPlayerImpl(player))).stream().map(ServerPlayerImpl::new).collect(Collectors.toList());
         } else {
             throw new IllegalArgumentException("Position is not an instance of PositionImpl");
         }

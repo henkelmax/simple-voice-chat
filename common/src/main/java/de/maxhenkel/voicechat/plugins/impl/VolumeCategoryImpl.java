@@ -50,11 +50,11 @@ public class VolumeCategoryImpl implements VolumeCategory {
     }
 
     public static VolumeCategoryImpl fromBytes(PacketBuffer buf) {
-        String id = buf.readUtf(16);
-        String name = buf.readUtf(16);
+        String id = buf.readString(16);
+        String name = buf.readString(16);
         String description = null;
         if (buf.readBoolean()) {
-            description = buf.readUtf(32767);
+            description = buf.readString(32767);
         }
         int[][] icon = null;
         if (buf.readBoolean()) {
@@ -69,11 +69,11 @@ public class VolumeCategoryImpl implements VolumeCategory {
     }
 
     public void toBytes(PacketBuffer buf) {
-        buf.writeUtf(id, 16);
-        buf.writeUtf(name, 16);
+        buf.writeString(id);
+        buf.writeString(name);
         buf.writeBoolean(description != null);
         if (description != null) {
-            buf.writeUtf(description, 32767);
+            buf.writeString(description);
         }
         buf.writeBoolean(icon != null);
         if (icon != null) {

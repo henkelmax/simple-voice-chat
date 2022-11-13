@@ -9,7 +9,7 @@ import de.maxhenkel.voicechat.voice.common.PlayerSoundPacket;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import de.maxhenkel.voicechat.voice.server.Server;
 import de.maxhenkel.voicechat.voice.server.ServerWorldUtils;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.WorldServer;
 
 import java.util.UUID;
 
@@ -73,8 +73,8 @@ public class EntityAudioChannelImpl extends AudioChannelImpl implements EntityAu
 
     private void broadcast(PlayerSoundPacket packet) {
         if (entity.getEntity() instanceof net.minecraft.entity.Entity) {
-            net.minecraft.entity.Entity entity = ((net.minecraft.entity.Entity) this.entity.getEntity()).getEntity();
-            server.broadcast(ServerWorldUtils.getPlayersInRange((ServerWorld) entity.level, entity.getEyePosition(1F), server.getBroadcastRange(distance), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
+            net.minecraft.entity.Entity entity = ((net.minecraft.entity.Entity) this.entity.getEntity());
+            server.broadcast(ServerWorldUtils.getPlayersInRange((WorldServer) entity.world, entity.getPositionEyes(1F), server.getBroadcastRange(distance), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
         }
     }
 

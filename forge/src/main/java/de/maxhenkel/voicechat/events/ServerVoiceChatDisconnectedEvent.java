@@ -1,10 +1,10 @@
 package de.maxhenkel.voicechat.events;
 
-import net.minecraftforge.eventbus.api.GenericEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.util.UUID;
 
-public class ServerVoiceChatDisconnectedEvent extends GenericEvent<ServerVoiceChatDisconnectedEvent> {
+public class ServerVoiceChatDisconnectedEvent extends Event {
 
     private final UUID playerID;
 

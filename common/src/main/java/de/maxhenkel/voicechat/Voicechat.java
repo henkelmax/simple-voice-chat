@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat;
 
-import de.maxhenkel.voicechat.command.VoicechatCommands;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
@@ -43,7 +42,6 @@ public abstract class Voicechat {
         CommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
         PluginManager.instance().init();
-        CommonCompatibilityManager.INSTANCE.onRegisterServerCommands(VoicechatCommands::register);
     }
 
     public static void logDebug(String message, Object... objects) {

@@ -1,7 +1,8 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
-import net.minecraft.client.util.InputMappings;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 public class PTTKeyHandler {
 
@@ -13,27 +14,21 @@ public class PTTKeyHandler {
         ClientCompatibilityManager.INSTANCE.onMouseEvent(this::onMouseEvent);
     }
 
-    public void onKeyboardEvent(long window, int key, int scancode) {
-        InputMappings.Input pttKey = ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_PTT);
-        if (pttKey.getValue() != -1 && !pttKey.getType().equals(InputMappings.Type.MOUSE)) {
-            pttKeyDown = InputMappings.isKeyDown(window, pttKey.getValue());
+    public void onKeyboardEvent() {
+        if (KeyEvents.KEY_PTT.getKeyCode() > 0 && KeyEvents.KEY_PTT.getKeyCode() < 256) {
+            pttKeyDown = Keyboard.isKeyDown(KeyEvents.KEY_PTT.getKeyCode());
         }
-
-        InputMappings.Input whisperKey = ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_WHISPER);
-        if (whisperKey.getValue() != -1 && !whisperKey.getType().equals(InputMappings.Type.MOUSE)) {
-            whisperKeyDown = InputMappings.isKeyDown(window, whisperKey.getValue());
+        if (KeyEvents.KEY_WHISPER.getKeyCode() > 0 && KeyEvents.KEY_PTT.getKeyCode() < 256) {
+            whisperKeyDown = Keyboard.isKeyDown(KeyEvents.KEY_WHISPER.getKeyCode());
         }
     }
 
-    public void onMouseEvent(long window, int button, int action, int mods) {
-        InputMappings.Input pttKey = ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_PTT);
-        if (pttKey.getValue() != -1 && pttKey.getType().equals(InputMappings.Type.MOUSE) && pttKey.getValue() == button) {
-            pttKeyDown = action != 0;
+    public void onMouseEvent() {
+        if (KeyEvents.KEY_PTT.getKeyCode() < 0) {
+            pttKeyDown = Mouse.isButtonDown(KeyEvents.KEY_PTT.getKeyCode() + 100);
         }
-
-        InputMappings.Input whisperKey = ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_WHISPER);
-        if (whisperKey.getValue() != -1 && whisperKey.getType().equals(InputMappings.Type.MOUSE) && whisperKey.getValue() == button) {
-            whisperKeyDown = action != 0;
+        if (KeyEvents.KEY_WHISPER.getKeyCode() < 0) {
+            whisperKeyDown = Mouse.isButtonDown(KeyEvents.KEY_WHISPER.getKeyCode() + 100);
         }
     }
 

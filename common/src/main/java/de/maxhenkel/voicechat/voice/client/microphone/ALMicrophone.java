@@ -3,11 +3,12 @@ package de.maxhenkel.voicechat.voice.client.microphone;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.client.MicrophoneException;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
-import org.lwjgl.openal.AL11;
-import org.lwjgl.openal.ALC11;
-import org.lwjgl.openal.ALUtil;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.openal.*;
 
 import javax.annotation.Nullable;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,14 +17,16 @@ public class ALMicrophone implements Microphone {
     private final int sampleRate;
     @Nullable
     private final String deviceName;
-    private long device;
+    private ALCdevice device;
     private final int bufferSize;
     private boolean started;
+    private final ByteBuffer buffer;
 
     public ALMicrophone(int sampleRate, int bufferSize, @Nullable String deviceName) {
         this.sampleRate = sampleRate;
         this.deviceName = deviceName;
         this.bufferSize = bufferSize;
+        this.buffer = BufferUtils.createByteBuffer(bufferSize * 2);
     }
 
     @Override
@@ -64,8 +67,9 @@ public class ALMicrophone implements Microphone {
         started = false;
 
         int available = available();
-        short[] data = new short[available];
-        ALC11.alcCaptureSamples(device, data, data.length);
+
+        buffer.reset();
+        ALC11.alcCaptureSamples(device, buffer, available);
         SoundManager.checkAlcError(device);
         Voicechat.LOGGER.debug("Clearing {} samples", available);
     }
@@ -78,12 +82,12 @@ public class ALMicrophone implements Microphone {
         stop();
         ALC11.alcCaptureCloseDevice(device);
         SoundManager.checkAlcError(device);
-        device = 0;
+        device = null;
     }
 
     @Override
     public boolean isOpen() {
-        return device != 0;
+        return device != null;
     }
 
     @Override
@@ -93,9 +97,10 @@ public class ALMicrophone implements Microphone {
 
     @Override
     public int available() {
-        int samples = ALC11.alcGetInteger(device, ALC11.ALC_CAPTURE_SAMPLES);
+        IntBuffer buffer = BufferUtils.createIntBuffer(1);
+        ALC10.alcGetInteger(device, ALC11.ALC_CAPTURE_SAMPLES, buffer);
         SoundManager.checkAlcError(device);
-        return samples;
+        return buffer.get();
     }
 
     @Override
@@ -105,12 +110,15 @@ public class ALMicrophone implements Microphone {
             throw new IllegalStateException(String.format("Failed to read from microphone: Capacity %s, available %s", bufferSize, available));
         }
         short[] buff = new short[bufferSize];
-        ALC11.alcCaptureSamples(device, buff, buff.length);
+        buffer.clear();
+        ALC11.alcCaptureSamples(device, buffer, buff.length);
         SoundManager.checkAlcError(device);
+        buffer.rewind();
+        buffer.asShortBuffer().get(buff); //TODO Fix crackling mic audio
         return buff;
     }
 
-    private long openMic(@Nullable String name) throws MicrophoneException {
+    private ALCdevice openMic(@Nullable String name) throws MicrophoneException {
         try {
             return tryOpenMic(name);
         } catch (MicrophoneException e) {
@@ -125,10 +133,10 @@ public class ALMicrophone implements Microphone {
         }
     }
 
-    private long tryOpenMic(@Nullable String string) throws MicrophoneException {
-        long l = ALC11.alcCaptureOpenDevice(string, sampleRate, AL11.AL_FORMAT_MONO16, bufferSize);
-        if (l == 0L) {
-            SoundManager.checkAlcError(0L);
+    private ALCdevice tryOpenMic(@Nullable String string) throws MicrophoneException {
+        ALCdevice l = ALC11.alcCaptureOpenDevice(string, sampleRate, AL10.AL_FORMAT_MONO16, bufferSize);
+        if (l == null) {
+            SoundManager.checkAlcError(null);
             throw new MicrophoneException(String.format("Failed to open microphone: %s", SoundManager.getAlcError(0)));
         }
         SoundManager.checkAlcError(l);
@@ -140,8 +148,8 @@ public class ALMicrophone implements Microphone {
         if (!SoundManager.canEnumerate()) {
             return null;
         }
-        String mic = ALC11.alcGetString(0L, ALC11.ALC_CAPTURE_DEVICE_SPECIFIER);
-        SoundManager.checkAlcError(0L);
+        String mic = ALC10.alcGetString(null, ALC11.ALC_CAPTURE_DEVICE_SPECIFIER);
+        SoundManager.checkAlcError(null);
         return mic;
     }
 
@@ -149,8 +157,10 @@ public class ALMicrophone implements Microphone {
         if (!SoundManager.canEnumerate()) {
             return Collections.emptyList();
         }
-        List<String> devices = ALUtil.getStringList(0L, ALC11.ALC_CAPTURE_DEVICE_SPECIFIER);
-        SoundManager.checkAlcError(0L);
-        return devices == null ? Collections.emptyList() : devices;
+        // TODO Fix getting all microphones
+        // List<String> devices = ALUtil.getStringList(0L, ALC11.ALC_CAPTURE_DEVICE_SPECIFIER);
+        // SoundManager.checkAlcError(0L);
+        // return devices == null ? Collections.emptyList() : devices;
+        return Collections.emptyList();
     }
 }

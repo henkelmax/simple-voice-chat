@@ -41,7 +41,7 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
     @Override
     public PlayerSoundPacket fromBytes(PacketBuffer buf) {
         PlayerSoundPacket soundPacket = new PlayerSoundPacket();
-        soundPacket.sender = buf.readUUID();
+        soundPacket.sender = buf.readUniqueId();
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
         soundPacket.distance = buf.readFloat();
@@ -49,14 +49,14 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
         byte data = buf.readByte();
         soundPacket.whispering = hasFlag(data, WHISPER_MASK);
         if (hasFlag(data, HAS_CATEGORY_MASK)) {
-            soundPacket.category = buf.readUtf(16);
+            soundPacket.category = buf.readString(16);
         }
         return soundPacket;
     }
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUUID(sender);
+        buf.writeUniqueId(sender);
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);
         buf.writeFloat(distance);
@@ -70,7 +70,7 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
         }
         buf.writeByte(data);
         if (category != null) {
-            buf.writeUtf(category, 16);
+            buf.writeString(category);
         }
     }
 

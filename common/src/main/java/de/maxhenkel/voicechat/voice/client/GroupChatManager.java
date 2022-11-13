@@ -1,14 +1,14 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
@@ -20,72 +20,74 @@ public class GroupChatManager {
     private static final ResourceLocation TALK_OUTLINE = new ResourceLocation(Voicechat.MODID, "textures/icons/talk_outline.png");
     private static final ResourceLocation SPEAKER_OFF_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_small_off.png");
 
-    public static void renderIcons(MatrixStack matrixStack) {
+    public static void renderIcons() {
         ClientVoicechat client = ClientManager.getClient();
 
         if (client == null) {
             return;
         }
-        Minecraft mc = Minecraft.getInstance();
+        Minecraft mc = Minecraft.getMinecraft();
+        ScaledResolution scaledResolution = new ScaledResolution(mc);
 
         List<PlayerState> groupMembers = getGroupMembers(VoicechatClient.CLIENT_CONFIG.showOwnGroupIcon.get());
 
-        matrixStack.pushPose();
+        GlStateManager.pushMatrix();
         int posX = VoicechatClient.CLIENT_CONFIG.groupPlayerIconPosX.get();
         int posY = VoicechatClient.CLIENT_CONFIG.groupPlayerIconPosY.get();
         if (posX < 0) {
-            matrixStack.translate(mc.getWindow().getGuiScaledWidth(), 0D, 0D);
+            GlStateManager.translate(scaledResolution.getScaledWidth(), 0D, 0D);
         }
         if (posY < 0) {
-            matrixStack.translate(0D, mc.getWindow().getGuiScaledHeight(), 0D);
+            GlStateManager.translate(0D, scaledResolution.getScaledHeight(), 0D);
         }
-        matrixStack.translate(posX, posY, 0D);
+        GlStateManager.translate(posX, posY, 0D);
 
         float scale = VoicechatClient.CLIENT_CONFIG.groupHudIconScale.get().floatValue();
-        matrixStack.scale(scale, scale, 1F);
+        GlStateManager.scale(scale, scale, 1F);
 
         boolean vertical = VoicechatClient.CLIENT_CONFIG.groupPlayerIconOrientation.get().equals(GroupPlayerIconOrientation.VERTICAL);
 
         for (int i = 0; i < groupMembers.size(); i++) {
             PlayerState state = groupMembers.get(i);
-            matrixStack.pushPose();
+            GlStateManager.pushMatrix();
             if (vertical) {
                 if (posY < 0) {
-                    matrixStack.translate(0D, i * -11D, 0D);
+                    GlStateManager.translate(0D, i * -11D, 0D);
                 } else {
-                    matrixStack.translate(0D, i * 11D, 0D);
+                    GlStateManager.translate(0D, i * 11D, 0D);
                 }
             } else {
                 if (posX < 0) {
-                    matrixStack.translate(i * -11D, 0D, 0D);
+                    GlStateManager.translate(i * -11D, 0D, 0D);
                 } else {
-                    matrixStack.translate(i * 11D, 0D, 0D);
+                    GlStateManager.translate(i * 11D, 0D, 0D);
                 }
             }
 
             if (client.getTalkCache().isTalking(state.getUuid())) {
-                mc.getTextureManager().bind(TALK_OUTLINE);
-                Screen.blit(matrixStack, posX < 0 ? -10 : 0, posY < 0 ? -10 : 0, 0, 0, 10, 10, 16, 16);
+                mc.getTextureManager().bindTexture(TALK_OUTLINE);
+                GuiScreen.drawModalRectWithCustomSizedTexture(posX < 0 ? -10 : 0, posY < 0 ? -10 : 0, 0, 0, 10, 10, 16, 16);
             }
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            mc.getTextureManager().bind(GameProfileUtils.getSkin(state.getUuid()));
-            Screen.blit(matrixStack, posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
-            Screen.blit(matrixStack, posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 40, 8, 8, 8, 64, 64);
+            GlStateManager.enableBlend();
+            // TODO check if transparent skins work
+            // GlStateManager.defaultBlendFunc();
+            mc.getTextureManager().bindTexture(GameProfileUtils.getSkin(state.getUuid()));
+            GuiScreen.drawModalRectWithCustomSizedTexture(posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
+            GuiScreen.drawModalRectWithCustomSizedTexture(posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 40, 8, 8, 8, 64, 64);
 
             if (state.isDisabled()) {
-                matrixStack.pushPose();
-                matrixStack.translate((posX < 0 ? -1D - 8D : 1D), posY < 0 ? -1D - 8D : 1D, 0D);
-                matrixStack.scale(0.5F, 0.5F, 1F);
-                mc.getTextureManager().bind(SPEAKER_OFF_ICON);
-                Screen.blit(matrixStack, 0, 0, 0, 0, 16, 16, 16, 16);
-                matrixStack.popPose();
+                GlStateManager.pushMatrix();
+                GlStateManager.translate((posX < 0 ? -1D - 8D : 1D), posY < 0 ? -1D - 8D : 1D, 0D);
+                GlStateManager.scale(0.5F, 0.5F, 1F);
+                mc.getTextureManager().bindTexture(SPEAKER_OFF_ICON);
+                GuiScreen.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                GlStateManager.popMatrix();
             }
 
-            matrixStack.popPose();
+            GlStateManager.popMatrix();
         }
 
-        matrixStack.popPose();
+        GlStateManager.popMatrix();
     }
 
     public static List<PlayerState> getGroupMembers() {

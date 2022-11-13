@@ -6,9 +6,10 @@ import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -17,8 +18,8 @@ import java.util.UUID;
 
 public class ClientVoicechat {
 
-    @Nullable
-    private SoundManager soundManager;
+    // @Nullable
+    // private SoundManager soundManager;
     private final Map<UUID, AudioChannel> audioChannels;
     private final TalkCache talkCache;
     @Nullable
@@ -87,10 +88,10 @@ public class ClientVoicechat {
     }
 
     public void reloadSoundManager() throws SpeakerException {
-        if (soundManager != null) {
-            soundManager.close();
-        }
-        soundManager = new SoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
+        // if (soundManager != null) {
+        //     soundManager.close();
+        // }
+        // soundManager = new SoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
     }
 
     public void reloadAudio() {
@@ -150,17 +151,17 @@ public class ClientVoicechat {
         if (recording == (recorder != null)) {
             return false;
         }
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (recording) {
             if (connection == null || !connection.getData().allowRecording()) {
                 if (player != null) {
-                    player.displayClientMessage(new TranslationTextComponent("message.voicechat.recording_disabled"), true);
+                    player.sendStatusMessage(new TextComponentTranslation("message.voicechat.recording_disabled"), true);
                 }
                 return false;
             }
             recorder = AudioRecorder.create();
             if (player != null) {
-                player.displayClientMessage(new TranslationTextComponent("message.voicechat.recording_started").withStyle(TextFormatting.DARK_RED), true);
+                player.sendStatusMessage(new TextComponentTranslation("message.voicechat.recording_started").setStyle(new Style().setColor(TextFormatting.DARK_RED)), true);
             }
             return true;
         }
@@ -168,7 +169,7 @@ public class ClientVoicechat {
         AudioRecorder rec = recorder;
         recorder = null;
         if (player != null) {
-            player.displayClientMessage(new TranslationTextComponent("message.voicechat.recording_stopped").withStyle(TextFormatting.DARK_RED), true);
+            player.sendStatusMessage(new TextComponentTranslation("message.voicechat.recording_stopped").setStyle(new Style().setColor(TextFormatting.DARK_RED)), true);
         }
         rec.saveAndClose();
         return true;
@@ -184,10 +185,10 @@ public class ClientVoicechat {
         return connection;
     }
 
-    @Nullable
-    public SoundManager getSoundManager() {
-        return soundManager;
-    }
+    // @Nullable
+    // public SoundManager getSoundManager() {
+    //     return soundManager;
+    // }
 
     public TalkCache getTalkCache() {
         return talkCache;
@@ -205,9 +206,9 @@ public class ClientVoicechat {
             audioChannels.clear();
         }
 
-        if (soundManager != null) {
-            soundManager.close();
-        }
+        // if (soundManager != null) {
+        //     soundManager.close();
+        // }
 
         closeMicThread();
 

@@ -80,8 +80,8 @@ public class PlayerState {
     public static PlayerState fromBytes(PacketBuffer buf) {
         boolean disabled = buf.readBoolean();
         boolean disconnected = buf.readBoolean();
-        UUID uuid = buf.readUUID();
-        String name = buf.readUtf(32767);
+        UUID uuid = buf.readUniqueId();
+        String name = buf.readString(32767);
 
         PlayerState state = new PlayerState(uuid, name, disabled, disconnected);
 
@@ -95,8 +95,8 @@ public class PlayerState {
     public void toBytes(PacketBuffer buf) {
         buf.writeBoolean(disabled);
         buf.writeBoolean(disconnected);
-        buf.writeUUID(uuid);
-        buf.writeUtf(name);
+        buf.writeUniqueId(uuid);
+        buf.writeString(name);
         buf.writeBoolean(hasGroup());
         if (hasGroup()) {
             group.toBytes(buf);

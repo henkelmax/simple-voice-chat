@@ -1,53 +1,53 @@
 package de.maxhenkel.voicechat.gui.volume;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.util.ColorHelper;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 
-public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
+public abstract class VolumeEntry extends ListScreenEntryBase {
 
-    protected static final ITextComponent OTHER_VOLUME = new TranslationTextComponent("message.voicechat.other_volume");
-    protected static final ITextComponent OTHER_VOLUME_DESCRIPTION = new TranslationTextComponent("message.voicechat.other_volume.description");
+    protected static final ITextComponent OTHER_VOLUME = new TextComponentTranslation("message.voicechat.other_volume");
+    protected static final ITextComponent OTHER_VOLUME_DESCRIPTION = new TextComponentTranslation("message.voicechat.other_volume.description");
     protected static final ResourceLocation OTHER_VOLUME_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/other_volume.png");
 
     protected static final int SKIN_SIZE = 24;
     protected static final int PADDING = 4;
-    protected static final int BG_FILL = ColorHelper.PackedColor.color(255, 74, 74, 74);
-    protected static final int PLAYER_NAME_COLOR = ColorHelper.PackedColor.color(255, 255, 255, 255);
+    protected static final int BG_FILL = VoiceChatScreenBase.color(255, 74, 74, 74);
+    protected static final int PLAYER_NAME_COLOR = VoiceChatScreenBase.color(255, 255, 255, 255);
 
     protected final Minecraft minecraft;
     protected final AdjustVolumesScreen screen;
     protected final AdjustVolumeSlider volumeSlider;
 
     public VolumeEntry(AdjustVolumesScreen screen, AdjustVolumeSlider.VolumeConfigEntry entry) {
-        this.minecraft = Minecraft.getInstance();
+        this.minecraft = Minecraft.getMinecraft();
         this.screen = screen;
-        this.volumeSlider = new AdjustVolumeSlider(0, 0, 100, 20, entry);
+        this.volumeSlider = new AdjustVolumeSlider(0, 0, 0, 100, 20, entry);
         this.children.add(volumeSlider);
     }
 
     @Override
-    public void render(MatrixStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
-        int skinX = left + PADDING;
-        int skinY = top + (height - SKIN_SIZE) / 2;
+    public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
+        super.drawEntry(slotIndex, x, y, listWidth, slotHeight, mouseX, mouseY, isSelected, partialTicks);
+        int skinX = x + PADDING;
+        int skinY = y + (slotHeight - SKIN_SIZE) / 2;
         int textX = skinX + SKIN_SIZE + PADDING;
-        int textY = top + (height - minecraft.font.lineHeight) / 2;
+        int textY = y + (slotHeight - minecraft.fontRenderer.FONT_HEIGHT) / 2;
 
-        AbstractGui.fill(poseStack, left, top, left + width, top + height, BG_FILL);
+        GuiScreen.drawRect(x, y, x + listWidth, y + slotHeight, BG_FILL);
 
-        renderElement(poseStack, index, top, left, width, height, mouseX, mouseY, hovered, delta, skinX, skinY, textX, textY);
+        renderElement(slotIndex, x, y, listWidth, slotHeight, mouseX, mouseY, isSelected, partialTicks, skinX, skinY, textX, textY);
 
-        volumeSlider.x = left + (width - volumeSlider.getWidth() - PADDING);
-        volumeSlider.y = top + (height - volumeSlider.getHeight()) / 2;
-        volumeSlider.render(poseStack, mouseX, mouseY, delta);
+        volumeSlider.x = x + (listWidth - volumeSlider.width - PADDING);
+        volumeSlider.y = y + (slotHeight - volumeSlider.height) / 2;
+        volumeSlider.drawButton(minecraft, mouseX, mouseY, partialTicks);
     }
 
-    public abstract void renderElement(MatrixStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY);
+    public abstract void renderElement(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks, int skinX, int skinY, int textX, int textY);
 
 }

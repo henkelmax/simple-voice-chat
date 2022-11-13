@@ -3,11 +3,13 @@ buildscript {
         mavenCentral()
         maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://maven.maxhenkel.de/repository/public' }
+        maven { url = 'https://repo.spongepowered.org/maven' }
         mavenLocal()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.4'
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
 
@@ -20,6 +22,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'forge-update'
 apply plugin: 'com.modrinth.minotaur'
+apply plugin: 'org.spongepowered.mixin'
 
 archivesBaseName = project.archives_base_name
 version = mod_version
@@ -28,7 +31,7 @@ group = mod_packagename
 java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
 
 minecraft {
-    mappings channel: 'official', version: minecraft_version
+    mappings channel: 'snapshot', version: '20171003-1.12'
 
     runs {
         all {
@@ -41,6 +44,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.console.level', 'debug'
             args = ['--username', "henkelmax${new Random().nextInt(1000)}"]
+            arg '-torg.spongepowered.asm.launch.MixinTweaker'
             source sourceSets.main
             source project(":common").sourceSets.main
             mods {
@@ -54,6 +58,7 @@ minecraft {
             workingDirectory project.file('run/server').canonicalPath
             property 'forge.logging.console.level', 'debug'
             arg "--nogui"
+            arg '-torg.spongepowered.asm.launch.MixinTweaker'
             source sourceSets.main
             source project(":common").sourceSets.main
             mods {
@@ -69,6 +74,7 @@ minecraft {
 repositories {
     mavenCentral()
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
+    maven { url = 'https://repo.spongepowered.org/maven' }
     mavenLocal()
 }
 
@@ -78,6 +84,16 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     implementation(project(':common')) {
+        transitive false
+    }
+
+    annotationProcessor('org.spongepowered:mixin:0.8.3-SNAPSHOT:processor') {
+        transitive false
+    }
+    implementation('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
+        transitive false
+    }
+    shadow('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
         transitive false
     }
 
@@ -102,16 +118,18 @@ dependencies {
     shadow project(':api')
 }
 
+mixin {
+    add sourceSets.main, "voicechat.refmap.json"
+    config "voicechat.mixins.json"
+}
+
 processResources {
-    filesMatching("**/*.toml") {
+    filesMatching("**/*.info") {
         expand 'mod_id': mod_id,
                 'mod_version': mod_version,
                 'mod_name': mod_name,
-                'forge_loader_requirement': forge_loader_requirement,
-                'forge_requirement': forge_requirement,
                 'minecraft_version': minecraft_version
     }
-    from("${project(':common').projectDir}/src/main/resources")
 }
 
 tasks.withType(JavaCompile) {
@@ -132,7 +150,10 @@ jar {
                     "Implementation-Version"  : mod_version,
                     "Implementation-Vendor"   : mod_vendor,
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                    "Compatibility-Version"   : mod_compatibility_version
+                    "Compatibility-Version"   : mod_compatibility_version,
+                    "ForceLoadAsMod"          : "true",
+                    "TweakClass"              : "org.spongepowered.asm.launch.MixinTweaker",
+                    "TweakOrder"              : "0"
         ])
     }
     from configurations.shadow.collect { it.isDirectory() ? it : zipTree(it) }
@@ -218,3 +239,22 @@ reobf {
 artifacts {
     archives deobfJar
 }
+
+// https://stackoverflow.com/a/70151634/9889252
+apply plugin: 'idea'
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+}
+subprojects {
+    apply plugin: 'idea'
+}
+
+task prepareAssets(type: Copy) {
+    group = 'build'
+    from project(":common").file('src/main/resources')
+    into project.file('build/classes/java/main')
+}
+
+classes.dependsOn(prepareAssets)

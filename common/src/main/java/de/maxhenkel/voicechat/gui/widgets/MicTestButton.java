@@ -1,23 +1,22 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.*;
 import de.maxhenkel.voicechat.voice.client.speaker.*;
 import de.maxhenkel.voicechat.voice.common.Utils;
-import net.minecraft.client.gui.widget.button.AbstractButton;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
 
-public class MicTestButton extends AbstractButton {
+public class MicTestButton extends ButtonBase {
 
-    private static final ITextComponent TEST_UNAVAILABLE = new TranslationTextComponent("message.voicechat.mic_test_unavailable");
-    private static final ITextComponent TEST_ON = new TranslationTextComponent("message.voicechat.mic_test_on");
-    private static final ITextComponent TEST_OFF = new TranslationTextComponent("message.voicechat.mic_test_off");
+    private static final ITextComponent TEST_UNAVAILABLE = new TextComponentTranslation("message.voicechat.mic_test_unavailable");
+    private static final ITextComponent TEST_ON = new TextComponentTranslation("message.voicechat.mic_test_on");
+    private static final ITextComponent TEST_OFF = new TextComponentTranslation("message.voicechat.mic_test_off");
 
     private boolean micActive;
     @Nullable
@@ -26,29 +25,29 @@ public class MicTestButton extends AbstractButton {
     @Nullable
     private final ClientVoicechat client;
 
-    public MicTestButton(int xIn, int yIn, int widthIn, int heightIn, MicListener micListener) {
-        super(xIn, yIn, widthIn, heightIn, new StringTextComponent(""));
+    public MicTestButton(int id, int xIn, int yIn, int widthIn, int heightIn, MicListener micListener) {
+        super(id, xIn, yIn, widthIn, heightIn, new TextComponentString(""));
         this.micListener = micListener;
         this.client = ClientManager.getClient();
-        active = client == null || client.getSoundManager() != null;
+        // enabled = client == null || client.getSoundManager() != null;
         updateText();
     }
 
     private void updateText() {
-        if (!active) {
-            setMessage(TEST_UNAVAILABLE);
+        if (!enabled) {
+            displayString = TEST_UNAVAILABLE.getUnformattedComponentText();
             return;
         }
         if (micActive) {
-            setMessage(TEST_ON);
+            displayString = TEST_ON.getUnformattedComponentText();
         } else {
-            setMessage(TEST_OFF);
+            displayString = TEST_OFF.getUnformattedComponentText();
         }
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int x, int y, float partialTicks) {
-        super.render(matrixStack, x, y, partialTicks);
+    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+        super.drawButton(mc, mouseX, mouseY, partialTicks);
         if (voiceThread != null) {
             voiceThread.updateLastRender();
         }
@@ -69,7 +68,7 @@ public class MicTestButton extends AbstractButton {
                 voiceThread.start();
             } catch (Exception e) {
                 setMicActive(false);
-                active = false;
+                enabled = false;
                 e.printStackTrace();
             }
         } else {
@@ -97,8 +96,8 @@ public class MicTestButton extends AbstractButton {
         private long lastRender;
         private MicThread micThread;
         private boolean usesOwnMicThread;
-        @Nullable
-        private SoundManager ownSoundManager;
+        // @Nullable
+        // private SoundManager ownSoundManager;
 
         public VoiceThread() throws SpeakerException, MicrophoneException, NativeDependencyException {
             this.running = true;
@@ -111,19 +110,19 @@ public class MicTestButton extends AbstractButton {
                 usesOwnMicThread = true;
             }
 
-            SoundManager soundManager;
-            if (client == null) {
-                soundManager = new SoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
-                ownSoundManager = soundManager;
-            } else {
-                soundManager = client.getSoundManager();
-            }
+            // SoundManager soundManager;
+            // if (client == null) {
+            //     soundManager = new SoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
+            //     ownSoundManager = soundManager;
+            // } else {
+            //     soundManager = client.getSoundManager();
+            // }
 
-            if (soundManager == null) {
-                throw new SpeakerException("No sound manager");
-            }
+            // if (soundManager == null) {
+            //     throw new SpeakerException("No sound manager");
+            // }
 
-            speaker = SpeakerManager.createSpeaker(soundManager, null);
+            speaker = SpeakerManager.createSpeaker(null/*soundManager*/, null);
 
             updateLastRender();
             setMicLocked(true);
@@ -150,9 +149,9 @@ public class MicTestButton extends AbstractButton {
             if (usesOwnMicThread) {
                 micThread.close();
             }
-            if (ownSoundManager != null) {
-                ownSoundManager.close();
-            }
+            // if (ownSoundManager != null) {
+            //     ownSoundManager.close();
+            // }
             Voicechat.LOGGER.info("Mic test audio channel closed");
         }
 

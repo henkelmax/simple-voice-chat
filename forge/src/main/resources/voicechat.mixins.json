@@ -1,0 +1,8 @@
+{
+  "compatibilityLevel": "JAVA_8",
+  "package": "de.maxhenkel.voicechat.mixin",
+  "refmap": "voicechat.refmap.json",
+  "mixins": ["NetHandlerPlayServerMixin", "CPacketCustomPayloadMixin"],
+  "client": ["NetHandlerPlayClientMixin", "SPacketCustomPayloadMixin", "RenderMixin", "MinecraftMixin"],
+  "server": []
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "${mod_id}",
+    "name": "${mod_name}",
+    "description": "A working voice chat in Minecraft!",
+    "version": "${mod_version}",
+    "mcversion": "${minecraft_version}",
+    "url": "https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat",
+    "updateUrl": "https://maxhenkel.de/update/voicechat.json",
+    "authorList": ["Max Henkel"],
+    "credits": "",
+    "logoFile": "icon.png",
+    "screenshots": [],
+    "dependencies": []
+  }
+]

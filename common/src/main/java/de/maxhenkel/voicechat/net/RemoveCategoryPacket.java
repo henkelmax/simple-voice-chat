@@ -29,13 +29,13 @@ public class RemoveCategoryPacket implements Packet<RemoveCategoryPacket> {
 
     @Override
     public RemoveCategoryPacket fromBytes(PacketBuffer buf) {
-        categoryId = buf.readUtf(16);
+        categoryId = buf.readString(16);
         return this;
     }
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUtf(categoryId, 16);
+        buf.writeString(categoryId);
     }
 
 }

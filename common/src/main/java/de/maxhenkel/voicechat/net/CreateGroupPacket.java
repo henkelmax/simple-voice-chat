@@ -39,20 +39,20 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
 
     @Override
     public CreateGroupPacket fromBytes(PacketBuffer buf) {
-        name = buf.readUtf(512);
+        name = buf.readString(512);
         password = null;
         if (buf.readBoolean()) {
-            password = buf.readUtf(512);
+            password = buf.readString(512);
         }
         return this;
     }
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUtf(name, 512);
+        buf.writeString(name);
         buf.writeBoolean(password != null);
         if (password != null) {
-            buf.writeUtf(password, 512);
+            buf.writeString(password);
         }
     }
 

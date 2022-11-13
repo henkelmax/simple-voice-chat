@@ -6,7 +6,6 @@ import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 
 import java.util.*;
@@ -22,14 +21,15 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
         this.screen = screen;
         this.entries = Lists.newArrayList();
         this.filter = "";
-        setRenderBackground(false);
-        setRenderTopAndBottom(false);
+        // TODO Remove dirt background
+        // setRenderBackground(false);
+        // setRenderTopAndBottom(false);
         updateEntryList();
     }
 
     public static void update() {
-        if (Minecraft.getInstance().screen instanceof AdjustVolumesScreen) {
-            ((AdjustVolumesScreen) Minecraft.getInstance().screen).volumeList.updateEntryList();
+        if (Minecraft.getMinecraft().currentScreen instanceof AdjustVolumesScreen) {
+            ((AdjustVolumesScreen) Minecraft.getMinecraft().currentScreen).volumeList.updateEntryList();
         }
     }
 
@@ -54,7 +54,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
 
     private void addOfflinePlayers(Collection<PlayerState> onlinePlayers) {
         for (UUID uuid : VoicechatClient.VOLUME_CONFIG.getPlayerVolumes().keySet()) {
-            if (uuid.equals(Util.NIL_UUID)) {
+            if (uuid.equals(new UUID(0L, 0L))) {
                 continue;
             }
             if (onlinePlayers.stream().anyMatch(state -> uuid.equals(state.getUuid()))) {
