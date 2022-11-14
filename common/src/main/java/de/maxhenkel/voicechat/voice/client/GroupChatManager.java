@@ -69,8 +69,6 @@ public class GroupChatManager {
                 GuiScreen.drawModalRectWithCustomSizedTexture(posX < 0 ? -10 : 0, posY < 0 ? -10 : 0, 0, 0, 10, 10, 16, 16);
             }
             GlStateManager.enableBlend();
-            // TODO check if transparent skins work
-            // GlStateManager.defaultBlendFunc();
             mc.getTextureManager().bindTexture(GameProfileUtils.getSkin(state.getUuid()));
             GuiScreen.drawModalRectWithCustomSizedTexture(posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
             GuiScreen.drawModalRectWithCustomSizedTexture(posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 40, 8, 8, 8, 64, 64);
