@@ -103,11 +103,9 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
 
     @Override
     public void onResize(Minecraft minecraft, int width, int height) {
-        super.onResize(minecraft, width, height);
-        // TODO Fix resizing
         String groupNameText = groupName.getText();
         String passwordText = password.getText();
-        initGui();
+        super.onResize(minecraft, width, height);
         groupName.setText(groupNameText);
         password.setText(passwordText);
     }

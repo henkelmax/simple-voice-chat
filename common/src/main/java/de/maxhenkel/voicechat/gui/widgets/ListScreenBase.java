@@ -63,7 +63,6 @@ public abstract class ListScreenBase extends VoiceChatScreenBase {
     @Override
     public void onResize(Minecraft mcIn, int w, int h) {
         super.onResize(mcIn, w, h);
-        initGui();
     }
 
     public void setList(ListScreenListBase<?> list) {

@@ -95,9 +95,8 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
 
     @Override
     public void onResize(Minecraft minecraft, int width, int height) {
-        super.onResize(minecraft, width, height);
         String passwordText = password.getText();
-        initGui();
+        super.onResize(minecraft, width, height);
         password.setText(passwordText);
     }
 }
