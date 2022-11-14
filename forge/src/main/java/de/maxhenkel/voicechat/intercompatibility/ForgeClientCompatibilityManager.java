@@ -86,12 +86,8 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         inputEvents.forEach(Runnable::run);
     }
 
-    @SubscribeEvent
-    public void onDisconnect(WorldEvent.Unload event) {
-        // Not just changing the world - Disconnecting
-        if (minecraft.creativeSettings == null) {
-            disconnectEvents.forEach(Runnable::run);
-        }
+    public void onDisconnect() {
+        disconnectEvents.forEach(Runnable::run);
     }
 
     @SubscribeEvent
