@@ -22,19 +22,13 @@ public abstract class Slider extends GuiButton {
 
     @Override
     protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
-        if (visible) {
-            if (dragging) {
-                updateSliderValue(mouseX, mouseY);
-            }
-        }
-    }
-
-    @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-        super.drawButton(mc, mouseX, mouseY, partialTicks);
         if (!visible) {
             return;
         }
+        if (dragging) {
+            updateSliderValue(mouseX, mouseY);
+        }
+
         mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
         GlStateManager.color(1F, 1F, 1F, 1F);
         drawTexturedModalRect(x + (int) (value * (float) (width - 8)), y, 0, 66, 4, 20);
