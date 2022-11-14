@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.RawUdpPacket;
 import de.maxhenkel.voicechat.api.VoicechatSocket;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nullable;
 import java.net.*;
@@ -45,7 +46,7 @@ public class VoicechatSocketImpl extends VoicechatSocketBase implements Voicecha
             Voicechat.LOGGER.error("Voice chat server error {}", e.getMessage());
             if (CommonCompatibilityManager.INSTANCE.isDedicatedServer()) {
                 Voicechat.LOGGER.error("Shutting down server");
-                System.exit(1);
+                FMLCommonHandler.instance().exitJava(1, false);
             }
             throw e;
         }
@@ -58,7 +59,7 @@ public class VoicechatSocketImpl extends VoicechatSocketBase implements Voicecha
                 new URI("voicechat://" + host);
             } catch (URISyntaxException e) {
                 Voicechat.LOGGER.warn("Failed to parse voice host: {}", e.getMessage());
-                System.exit(1);
+                FMLCommonHandler.instance().exitJava(1, false);
                 throw e;
             }
         }
