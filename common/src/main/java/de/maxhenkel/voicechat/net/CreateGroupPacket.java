@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
@@ -8,7 +7,7 @@ import javax.annotation.Nullable;
 
 public class CreateGroupPacket implements Packet<CreateGroupPacket> {
 
-    public static final ResourceLocation CREATE_GROUP = new ResourceLocation(Voicechat.MODID, "create_group");
+    public static final ResourceLocation CREATE_GROUP = new ResourceLocation(NetManager.CHANNEL, "create_group");
 
     private String name;
     @Nullable

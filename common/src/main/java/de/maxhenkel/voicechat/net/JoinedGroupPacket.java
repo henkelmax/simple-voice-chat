@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
@@ -9,7 +8,7 @@ import javax.annotation.Nullable;
 
 public class JoinedGroupPacket implements Packet<JoinedGroupPacket> {
 
-    public static final ResourceLocation JOINED_GROUP = new ResourceLocation(Voicechat.MODID, "joined_group");
+    public static final ResourceLocation JOINED_GROUP = new ResourceLocation(NetManager.CHANNEL, "joined_group");
 
     @Nullable
     private ClientGroup group;

@@ -1,2 +1,1 @@
-- Added debug mode log message
-- Replaced connect permission with listen permission
+- Backport to 1.12.2

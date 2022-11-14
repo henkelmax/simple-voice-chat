@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
@@ -13,7 +12,7 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
 
     private Map<UUID, PlayerState> playerStates;
 
-    public static final ResourceLocation PLAYER_STATES = new ResourceLocation(Voicechat.MODID, "player_states");
+    public static final ResourceLocation PLAYER_STATES = new ResourceLocation(NetManager.CHANNEL, "player_states");
 
     public PlayerStatesPacket() {
 

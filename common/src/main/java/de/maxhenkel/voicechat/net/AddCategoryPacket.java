@@ -1,13 +1,12 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
 public class AddCategoryPacket implements Packet<AddCategoryPacket> {
 
-    public static final ResourceLocation ADD_CATEGORY = new ResourceLocation(Voicechat.MODID, "add_category");
+    public static final ResourceLocation ADD_CATEGORY = new ResourceLocation(NetManager.CHANNEL, "add_category");
 
     private VolumeCategoryImpl category;
 

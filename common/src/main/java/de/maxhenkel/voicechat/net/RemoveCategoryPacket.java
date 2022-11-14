@@ -1,12 +1,11 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
 public class RemoveCategoryPacket implements Packet<RemoveCategoryPacket> {
 
-    public static final ResourceLocation REMOVE_CATEGORY = new ResourceLocation(Voicechat.MODID, "remove_category");
+    public static final ResourceLocation REMOVE_CATEGORY = new ResourceLocation(NetManager.CHANNEL, "remove_category");
 
     private String categoryId;
 

@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -11,7 +10,7 @@ import java.util.UUID;
 
 public class SecretPacket implements Packet<SecretPacket> {
 
-    public static final ResourceLocation SECRET = new ResourceLocation(Voicechat.MODID, "secret");
+    public static final ResourceLocation SECRET = new ResourceLocation(NetManager.CHANNEL, "secret");
 
     private UUID secret;
     private int serverPort;

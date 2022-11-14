@@ -1,1 +1,1 @@
-- Improved Bukkit version compatibility check
+- Backport to 1.12.2

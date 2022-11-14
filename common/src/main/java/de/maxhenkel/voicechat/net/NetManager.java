@@ -13,6 +13,8 @@ import net.minecraft.server.MinecraftServer;
 
 public abstract class NetManager {
 
+    public static final String CHANNEL = "vc";
+
     public Channel<UpdateStatePacket> updateStateChannel;
     public Channel<PlayerStatePacket> playerStateChannel;
     public Channel<PlayerStatesPacket> playerStatesChannel;

@@ -1,12 +1,11 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
 public class RequestSecretPacket implements Packet<RequestSecretPacket> {
 
-    public static final ResourceLocation REQUEST_SECRET = new ResourceLocation(Voicechat.MODID, "request_secret");
+    public static final ResourceLocation REQUEST_SECRET = new ResourceLocation(NetManager.CHANNEL, "request_secret");
 
     private int compatibilityVersion;
 

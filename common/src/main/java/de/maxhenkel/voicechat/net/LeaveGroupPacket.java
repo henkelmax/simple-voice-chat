@@ -1,12 +1,11 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
 public class LeaveGroupPacket implements Packet<LeaveGroupPacket> {
 
-    public static final ResourceLocation LEAVE_GROUP = new ResourceLocation(Voicechat.MODID, "leave_group");
+    public static final ResourceLocation LEAVE_GROUP = new ResourceLocation(NetManager.CHANNEL, "leave_group");
 
     public LeaveGroupPacket() {
 

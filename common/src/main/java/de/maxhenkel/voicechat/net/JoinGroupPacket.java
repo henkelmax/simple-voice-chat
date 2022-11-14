@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
@@ -9,7 +8,7 @@ import java.util.UUID;
 
 public class JoinGroupPacket implements Packet<JoinGroupPacket> {
 
-    public static final ResourceLocation SET_GROUP = new ResourceLocation(Voicechat.MODID, "set_group");
+    public static final ResourceLocation SET_GROUP = new ResourceLocation(NetManager.CHANNEL, "set_group");
 
     private UUID group;
     @Nullable

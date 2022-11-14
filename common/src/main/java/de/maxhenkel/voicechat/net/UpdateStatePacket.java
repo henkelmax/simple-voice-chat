@@ -1,12 +1,11 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
 public class UpdateStatePacket implements Packet<UpdateStatePacket> {
 
-    public static final ResourceLocation PLAYER_STATE = new ResourceLocation(Voicechat.MODID, "update_state");
+    public static final ResourceLocation PLAYER_STATE = new ResourceLocation(NetManager.CHANNEL, "update_state");
 
     private boolean disabled;
 

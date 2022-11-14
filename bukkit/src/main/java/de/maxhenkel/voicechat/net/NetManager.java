@@ -5,11 +5,11 @@ import de.maxhenkel.voicechat.util.FriendlyByteBuf;
 import io.netty.buffer.Unpooled;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.minecraft.server.v1_16_R3.ChatMessageType;
-import net.minecraft.server.v1_16_R3.PacketPlayOutChat;
+import net.minecraft.server.v1_12_R1.ChatMessageType;
+import net.minecraft.server.v1_12_R1.IChatBaseComponent;
+import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R3.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,9 +19,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
-import java.util.UUID;
 
 public class NetManager implements Listener {
+
+    public static final String CHANNEL = "vc";
 
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, Voicechat.INSTANCE);
@@ -111,17 +112,15 @@ public class NetManager implements Listener {
         }
     }
 
-    public static final UUID NUL_UUID = new UUID(0L, 0L);
-
     public static void sendMessage(Player p, Component component) {
         if (p instanceof CraftPlayer) {
-            ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(component)), ChatMessageType.CHAT, NUL_UUID));
+            ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(GsonComponentSerializer.gson().serialize(component)), ChatMessageType.CHAT));
         }
     }
 
     public static void sendStatusMessage(Player p, Component component) {
         if (p instanceof CraftPlayer) {
-            ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(component)), ChatMessageType.GAME_INFO, NUL_UUID));
+            ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(GsonComponentSerializer.gson().serialize(component)), ChatMessageType.GAME_INFO));
         }
     }
 
