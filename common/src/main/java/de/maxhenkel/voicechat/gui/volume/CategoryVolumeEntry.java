@@ -3,7 +3,8 @@ package de.maxhenkel.voicechat.gui.volume;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 public class CategoryVolumeEntry extends VolumeEntry {
@@ -23,8 +24,9 @@ public class CategoryVolumeEntry extends VolumeEntry {
 
     @Override
     public void renderElement(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks, int skinX, int skinY, int textX, int textY) {
+        GlStateManager.color(1F, 1F, 1F, 1F);
         minecraft.getTextureManager().bindTexture(texture);
-        GuiScreen.drawScaledCustomSizeModalRect(skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
+        Gui.drawScaledCustomSizeModalRect(skinX, skinY, 16, 16, 16, 16, SKIN_SIZE, SKIN_SIZE, 16, 16);
         minecraft.fontRenderer.drawString(category.getName(), textX, textY, PLAYER_NAME_COLOR);
         if (isSelected && category.getDescription() != null) {
             screen.postRender(() -> {
