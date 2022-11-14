@@ -98,4 +98,9 @@ public abstract class ListScreenListBase<T extends ListScreenEntryBase> extends 
     protected void overlayBackground(int startY, int endY, int startAlpha, int endAlpha) {
 
     }
+
+    @Override
+    protected int getContentHeight() {
+        return Math.max(super.getContentHeight(), 1);
+    }
 }
