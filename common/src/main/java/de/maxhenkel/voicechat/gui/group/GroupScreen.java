@@ -121,9 +121,6 @@ public class GroupScreen extends ListScreenBase {
     @Override
     public void renderForeground(int mouseX, int mouseY, float delta) {
         fontRenderer.drawString(group.getName(), guiLeft + xSize / 2 - fontRenderer.getStringWidth(group.getName()) / 2, guiTop + 5, FONT_COLOR);
-
-        // TODO Check for other calls to avoid duplicate renders
-        // groupList.render(poseStack, mouseX, mouseY, delta);
     }
 
 }

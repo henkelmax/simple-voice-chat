@@ -43,8 +43,6 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
         password = new GuiTextField(0, fontRenderer, guiLeft + 7, guiTop + 7 + (fontRenderer.FONT_HEIGHT + 5) * 2 - 5 + 2, xSize - 7 * 2, 10);
         password.setMaxStringLength(16);
         password.setValidator(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
-        // TODO Fix rendering text box
-        // addButton(password);
 
         joinGroup = new ButtonBase(1, guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, JOIN_GROUP) {
             @Override
@@ -60,8 +58,7 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
     @Override
     public void updateScreen() {
         super.updateScreen();
-        // TODO Fix rendering text box
-        // password.tick();
+        password.updateCursorCounter();
         joinGroup.enabled = !password.getText().isEmpty();
     }
 
@@ -79,27 +76,28 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderForeground(int mouseX, int mouseY, float delta) {
+        password.drawTextBox();
         fontRenderer.drawString(ENTER_GROUP_PASSWORD.getUnformattedComponentText(), guiLeft + xSize / 2 - fontRenderer.getStringWidth(ENTER_GROUP_PASSWORD.getUnformattedComponentText()) / 2, guiTop + 7, FONT_COLOR);
         fontRenderer.drawString(PASSWORD.getUnformattedComponentText(), guiLeft + 8, guiTop + 7 + fontRenderer.FONT_HEIGHT + 5, FONT_COLOR);
     }
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        // TODO Check if GUI closes with ESC
-        /*if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            minecraft.setScreen(null);
-            return true;
-        }*/
         password.textboxKeyTyped(typedChar, keyCode);
         super.keyTyped(typedChar, keyCode);
     }
 
     @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        password.mouseClicked(mouseX, mouseY, mouseButton);
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
     public void onResize(Minecraft minecraft, int width, int height) {
         super.onResize(minecraft, width, height);
-        // TODO Fix resizing
-        // String passwordText = password.getValue();
-        // init(client, width, height);
-        // password.setValue(passwordText);
+        String passwordText = password.getText();
+        initGui();
+        password.setText(passwordText);
     }
 }

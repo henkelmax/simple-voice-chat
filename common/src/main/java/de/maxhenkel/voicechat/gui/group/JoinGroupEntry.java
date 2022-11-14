@@ -50,6 +50,7 @@ public class JoinGroupEntry extends ListScreenEntryBase {
         boolean hasPassword = group.group.hasPassword();
 
         if (hasPassword) {
+            GlStateManager.color(1F, 1F, 1F, 1F);
             minecraft.getTextureManager().bindTexture(LOCK);
             GuiScreen.drawModalRectWithCustomSizedTexture(x + PADDING, y + slotHeight / 2 - 8, 0, 0, 16, 16, 16, 16);
         }
@@ -75,6 +76,7 @@ public class JoinGroupEntry extends ListScreenEntryBase {
             int headPosY = y + slotHeight / 2 - ((SKIN_SIZE * 2 + 2) / 2) + ((SKIN_SIZE * 2 + 2) / 2) * headYIndex;
 
             GlStateManager.pushMatrix();
+            GlStateManager.color(1F, 1F, 1F, 1F);
             minecraft.getTextureManager().bindTexture(GameProfileUtils.getSkin(state.getUuid()));
             GlStateManager.translate(headPosX, headPosY, 0);
             float scale = (float) SKIN_SIZE / 8F;

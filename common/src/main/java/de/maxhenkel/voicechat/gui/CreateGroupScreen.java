@@ -89,11 +89,6 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        // TODO Check if GUI closes with ESC
-        /*if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            mc.setScreen(null);
-            return;
-        }*/
         groupName.textboxKeyTyped(typedChar, keyCode);
         password.textboxKeyTyped(typedChar, keyCode);
         super.keyTyped(typedChar, keyCode);
