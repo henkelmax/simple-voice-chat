@@ -5,10 +5,10 @@ import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
 
-public class JavaSpeaker extends JavaSpeakerBase {
+public class MonoJavaSpeaker extends JavaSpeakerBase {
 
     @Override
     protected short[] convertToStereo(short[] data, @Nullable Vec3d position) {
-        return PositionalAudioUtils.convertToStereo(data, position);
+        return PositionalAudioUtils.convertToStereo(data);
     }
 }

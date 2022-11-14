@@ -18,8 +18,7 @@ public class SpeakerManager {
                 speaker = new JavaSpeaker();
                 break;
             case OFF:
-                // TODO Add mono support
-                speaker = new JavaSpeaker();
+                speaker = new MonoJavaSpeaker();
                 break;
         }
 
