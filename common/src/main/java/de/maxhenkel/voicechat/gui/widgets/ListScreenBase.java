@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.text.ITextComponent;
 
@@ -57,6 +58,12 @@ public abstract class ListScreenBase extends VoiceChatScreenBase {
         if (list != null) {
             list.mouseReleased(mouseX, mouseY, mouseButton);
         }
+    }
+
+    @Override
+    public void onResize(Minecraft mcIn, int w, int h) {
+        super.onResize(mcIn, w, h);
+        initGui();
     }
 
     public void setList(ListScreenListBase<?> list) {

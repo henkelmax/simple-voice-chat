@@ -56,11 +56,8 @@ public class AdjustVolumesScreen extends ListScreenBase {
         ySize = HEADER_SIZE + units * UNIT_SIZE + FOOTER_SIZE;
 
         Keyboard.enableRepeatEvents(true);
-        if (volumeList != null) {
-            volumeList.updateSize(width, height, guiTop + HEADER_SIZE + SEARCH_HEIGHT, guiTop + HEADER_SIZE + units * UNIT_SIZE);
-        } else {
-            volumeList = new AdjustVolumeList(width, height, guiTop + HEADER_SIZE + SEARCH_HEIGHT, guiTop + HEADER_SIZE + units * UNIT_SIZE, CELL_HEIGHT, this);
-        }
+
+        volumeList = new AdjustVolumeList(width, height, guiTop + HEADER_SIZE + SEARCH_HEIGHT, guiTop + HEADER_SIZE + units * UNIT_SIZE, CELL_HEIGHT, this);
         String string = searchBox != null ? searchBox.getText() : "";
         searchBox = new GuiTextField(0, fontRenderer, guiLeft + 28, guiTop + HEADER_SIZE + 6, 196, SEARCH_HEIGHT);
         searchBox.setMaxStringLength(16);
