@@ -50,11 +50,3 @@ dependencies {
 
     implementation project(':api')
 }
-
-sourceSets {
-    main {
-        java {
-            exclude 'de/maxhenkel/voicechat/resourcepacks/*/**'
-        }
-    }
-}

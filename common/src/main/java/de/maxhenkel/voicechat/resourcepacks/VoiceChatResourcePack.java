@@ -1,46 +1,40 @@
 package de.maxhenkel.voicechat.resourcepacks;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import de.maxhenkel.voicechat.Voicechat;
-import net.minecraft.resources.ResourcePack;
-import net.minecraft.resources.ResourcePackType;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.resources.IResourcePack;
+import net.minecraft.client.resources.data.IMetadataSection;
+import net.minecraft.client.resources.data.MetadataSerializer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.ITextComponent;
+import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nullable;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
-public class VoiceChatResourcePack extends ResourcePack {
+public class VoiceChatResourcePack implements IResourcePack {
 
     protected String path;
-    protected TextComponent name;
+    protected ITextComponent name;
 
-    public VoiceChatResourcePack(String path, TextComponent name) {
-        super(null);
+    public VoiceChatResourcePack(String path, ITextComponent name) {
         this.path = path;
         this.name = name;
     }
 
-    @Override
-    public String getName() {
-        return name.getString();
-    }
-
     private String getPath() {
         return "/packs/" + path + "/";
+    }
+
+    private String getAssetsPath() {
+        return "/packs/" + path + "/assets/" + Voicechat.MODID + "/";
     }
 
     @Nullable
@@ -48,65 +42,76 @@ public class VoiceChatResourcePack extends ResourcePack {
         return Voicechat.class.getResourceAsStream(getPath() + name);
     }
 
+    @Nullable
+    private InputStream getAsset(String name) {
+        return Voicechat.class.getResourceAsStream(getAssetsPath() + name);
+    }
+
     @Override
-    protected InputStream getResource(String name) throws IOException {
-        InputStream resourceAsStream = get(name);
+    public InputStream getInputStream(ResourceLocation location) throws IOException {
+        if (!location.getResourceDomain().equals(Voicechat.MODID)) {
+            throw new FileNotFoundException("Resource " + location + " does not exist");
+        }
+        InputStream resourceAsStream = getAsset(location.getResourcePath());
         if (resourceAsStream == null) {
-            throw new FileNotFoundException("Resource " + name + " does not exist");
+            throw new FileNotFoundException("Resource " + location + " does not exist");
         }
         return resourceAsStream;
     }
 
     @Override
-    protected boolean hasResource(String name) {
+    public boolean resourceExists(ResourceLocation location) {
+        if (!location.getResourceDomain().equals(Voicechat.MODID)) {
+            return false;
+        }
         try {
-            return get(name) != null;
+            return getAsset(location.getResourcePath()) != null;
         } catch (Exception e) {
             return false;
         }
     }
 
     @Override
-    public Collection<ResourceLocation> getResources(ResourcePackType type, String namespace, String prefix, int maxDepth, Predicate<String> pathFilter) {
+    public Set<String> getResourceDomains() {
+        return ImmutableSet.of(Voicechat.MODID);
+    }
+
+    private static <T extends IMetadataSection> T readMetadata(MetadataSerializer metadataSerializer, InputStream inputStream, String sectionName) {
+        JsonObject jsonobject;
+        BufferedReader bufferedreader = null;
         try {
-            URL url = Voicechat.class.getResource(getPath());
-            Path resPath = Paths.get(url.toURI());
-            List<Path> files = Files.walk(resPath).collect(Collectors.toList());
-
-            List<ResourceLocation> list = Lists.newArrayList();
-            String absolutePath = type.getDirectory() + "/" + namespace + "/";
-            String absolutePrefixPath = absolutePath + prefix + "/";
-
-            for (Path path : files) {
-                if (!Files.isDirectory(path)) {
-                    String name = path.getFileName().toString();
-                    if (!name.endsWith(".mcmeta") && name.startsWith(absolutePrefixPath)) {
-                        String resourcePath = name.substring(absolutePath.length());
-                        String[] splitPath = resourcePath.split("/");
-                        if (splitPath.length >= maxDepth + 1 && pathFilter.test(splitPath[splitPath.length - 1])) {
-                            list.add(new ResourceLocation(namespace, resourcePath));
-                        }
-                    }
-                }
-            }
-
-            return list;
-
-        } catch (Exception e) {
-            return Collections.emptyList();
+            bufferedreader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            jsonobject = (new JsonParser()).parse(bufferedreader).getAsJsonObject();
+        } catch (RuntimeException runtimeexception) {
+            throw new JsonParseException(runtimeexception);
+        } finally {
+            IOUtils.closeQuietly(bufferedreader);
         }
+        return metadataSerializer.parseMetadataSection(sectionName, jsonobject);
+    }
+
+    @Nullable
+    @Override
+    public <T extends IMetadataSection> T getPackMetadata(MetadataSerializer metadataSerializer, String metadataSectionName) throws IOException {
+        InputStream inputStream = get("pack.mcmeta");
+        if (inputStream == null) {
+            throw new FileNotFoundException("pack.mcmeta does not exist");
+        }
+        return readMetadata(metadataSerializer, inputStream, metadataSectionName);
     }
 
     @Override
-    public Set<String> getNamespaces(ResourcePackType packType) {
-        if (packType == ResourcePackType.CLIENT_RESOURCES) {
-            return ImmutableSet.of(Voicechat.MODID);
+    public BufferedImage getPackImage() throws IOException {
+        InputStream inputStream = get("pack.png");
+        if (inputStream == null) {
+            throw new FileNotFoundException("pack.png does not exist");
         }
-        return ImmutableSet.of();
+        return TextureUtil.readBufferedImage(inputStream);
     }
 
     @Override
-    public void close() {
-
+    public String getPackName() {
+        return name.getFormattedText();
     }
+
 }
