@@ -3,6 +3,9 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
+import de.maxhenkel.voicechat.gui.group.GroupScreen;
+import de.maxhenkel.voicechat.gui.group.JoinGroupScreen;
+import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -50,11 +53,9 @@ public class KeyEvents {
         if (KEY_GROUP.isPressed()) {
             if (client != null && client.getConnection() != null && client.getConnection().getData().groupsEnabled()) {
                 if (playerStateManager.isInGroup()) {
-                    // TODO Fix list GUIs
-                    // minecraft.displayGuiScreen(new GroupScreen(playerStateManager.getGroup()));
+                    minecraft.displayGuiScreen(new GroupScreen(playerStateManager.getGroup()));
                 } else {
-                    // TODO Fix list GUIs
-                    // minecraft.displayGuiScreen(new JoinGroupScreen());
+                    minecraft.displayGuiScreen(new JoinGroupScreen());
                 }
             } else {
                 minecraft.player.sendStatusMessage(new TextComponentTranslation("message.voicechat.groups_disabled"), true);
@@ -66,8 +67,7 @@ public class KeyEvents {
         }
 
         if (KEY_ADJUST_VOLUMES.isPressed()) {
-            // TODO Fix list GUIs
-            // minecraft.displayGuiScreen(new AdjustVolumesScreen());
+            minecraft.displayGuiScreen(new AdjustVolumesScreen());
         }
 
         if (KEY_PTT.isPressed()) {

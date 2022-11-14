@@ -11,6 +11,7 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -35,7 +36,6 @@ public class GroupEntry extends ListScreenEntryBase {
         this.state = state;
         this.volumeSlider = new AdjustVolumeSlider(0, 0, 0, 100, 20, new PlayerVolumeEntry.PlayerVolumeConfigEntry(state.getUuid()));
         this.children.add(volumeSlider);
-
     }
 
     @Override
@@ -50,6 +50,8 @@ public class GroupEntry extends ListScreenEntryBase {
         float scale = outlineSize / 10F;
         GlStateManager.scale(scale, scale, scale);
 
+        GlStateManager.color(1F, 1F, 1F, 1F);
+
         if (!state.isDisabled()) {
             ClientVoicechat client = ClientManager.getClient();
             if (client != null && client.getTalkCache().isTalking(state.getUuid())) {
@@ -59,9 +61,10 @@ public class GroupEntry extends ListScreenEntryBase {
         }
 
         minecraft.getTextureManager().bindTexture(GameProfileUtils.getSkin(state.getUuid()));
-        GuiScreen.drawScaledCustomSizeModalRect(1, 1, 8, 8, 8, 8, 8, 8, 64, 64);
+
+        Gui.drawScaledCustomSizeModalRect(1, 1, 8F, 8F, 8, 8, 8, 8, 64F, 64F);
         GlStateManager.enableBlend();
-        GuiScreen.drawScaledCustomSizeModalRect(1, 1, 8, 8, 40, 8, 8, 8, 64, 64);
+        Gui.drawScaledCustomSizeModalRect(1, 1, 40F, 8F, 8, 8, 8, 8, 64F, 64F);
         GlStateManager.disableBlend();
 
         if (state.isDisabled()) {

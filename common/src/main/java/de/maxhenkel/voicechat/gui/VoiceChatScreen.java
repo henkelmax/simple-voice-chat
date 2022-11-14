@@ -96,10 +96,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
             }
         };
         addButton(group);
-
-        //TODO Fix list GUIs
-        group.enabled = false;
-        // group.enabled = client != null && client.getConnection() != null && client.getConnection().getData().groupsEnabled();
+        group.enabled = client != null && client.getConnection() != null && client.getConnection().getData().groupsEnabled();
         recordingHoverArea = new HoverArea(6 + 20 + 2 + 20 + 2 + 20 + 2, ySize - 6 - 20, xSize - ((6 + 20 + 2 + 20 + 2) * 2 + 20 + 2), 20);
 
         checkButtons();

@@ -21,9 +21,6 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
         this.screen = screen;
         this.entries = Lists.newArrayList();
         this.filter = "";
-        // TODO Remove dirt background
-        // setRenderBackground(false);
-        // setRenderTopAndBottom(false);
         updateEntryList();
     }
 

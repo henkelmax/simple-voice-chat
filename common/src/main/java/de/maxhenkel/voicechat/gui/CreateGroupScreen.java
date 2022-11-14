@@ -42,14 +42,10 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         groupName = new GuiTextField(0, fontRenderer, guiLeft + 7, guiTop + 7 + (fontRenderer.FONT_HEIGHT + 5) * 2 - 5 + 2, xSize - 7 * 2, 10);
         groupName.setMaxStringLength(16);
         groupName.setValidator(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
-        // TODO Fix rendering text boxes
-        // addButton(groupName);
 
         password = new GuiTextField(1, fontRenderer, guiLeft + 7, guiTop + 7 + (fontRenderer.FONT_HEIGHT + 5) * 3 - 5 + 10 + 2 * 2, xSize - 7 * 2, 10);
         password.setMaxStringLength(16);
         password.setValidator(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
-        // TODO Fix rendering text boxes
-        // addButton(password);
 
         createGroup = new ButtonBase(2, guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, CREATE) {
             @Override
@@ -65,9 +61,8 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
     @Override
     public void updateScreen() {
         super.updateScreen();
-        // TODO Fix rendering text boxes
-        // groupName.tick();
-        // password.tick();
+        groupName.updateCursorCounter();
+        password.updateCursorCounter();
         createGroup.enabled = !groupName.getText().isEmpty();
     }
 
@@ -85,6 +80,8 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderForeground(int mouseX, int mouseY, float delta) {
+        groupName.drawTextBox();
+        password.drawTextBox();
         fontRenderer.drawString(CREATE_GROUP.getUnformattedComponentText(), guiLeft + xSize / 2 - fontRenderer.getStringWidth(CREATE_GROUP.getUnformattedComponentText()) / 2, guiTop + 7, FONT_COLOR);
         fontRenderer.drawString(GROUP_NAME.getUnformattedComponentText(), guiLeft + 8, guiTop + 7 + fontRenderer.FONT_HEIGHT + 5, FONT_COLOR);
         fontRenderer.drawString(OPTIONAL_PASSWORD.getUnformattedComponentText(), guiLeft + 8, guiTop + 7 + (fontRenderer.FONT_HEIGHT + 5) * 2 + 10 + 2, FONT_COLOR);
@@ -103,14 +100,21 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
     }
 
     @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        groupName.mouseClicked(mouseX, mouseY, mouseButton);
+        password.mouseClicked(mouseX, mouseY, mouseButton);
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
     public void onResize(Minecraft minecraft, int width, int height) {
         super.onResize(minecraft, width, height);
         // TODO Fix resizing
-        // String groupNameText = groupName.getValue();
-        // String passwordText = password.getValue();
-        // initGui();
-        // groupName.setValue(groupNameText);
-        // password.setValue(passwordText);
+        String groupNameText = groupName.getText();
+        String passwordText = password.getText();
+        initGui();
+        groupName.setText(groupNameText);
+        password.setText(passwordText);
     }
 
 }
