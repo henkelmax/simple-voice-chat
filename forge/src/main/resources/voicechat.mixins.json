@@ -12,6 +12,7 @@
     "NetHandlerPlayClientMixin",
     "SPacketCustomPayloadMixin",
     "RenderMixin",
-    "MinecraftMixin"
+    "MinecraftMixin",
+    "GuiSlotMixin"
   ]
 }
