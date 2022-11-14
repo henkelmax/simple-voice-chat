@@ -43,8 +43,7 @@ public class AdjustVolumesScreen extends ListScreenBase {
     @Override
     public void updateScreen() {
         super.updateScreen();
-        // TODO Fix rendering text boxes
-        // searchBox.tick();
+        searchBox.updateCursorCounter();
     }
 
     @Override
@@ -83,8 +82,6 @@ public class AdjustVolumesScreen extends ListScreenBase {
                 checkSearchStringUpdate(value);
             }
         });
-        // TODO Fix rendering text boxes
-        // addWidget(searchBox);
         setList(volumeList);
     }
 
@@ -116,9 +113,6 @@ public class AdjustVolumesScreen extends ListScreenBase {
         if (!searchBox.isFocused() && searchBox.getText().isEmpty()) {
             drawString(fontRenderer, SEARCH_HINT.getFormattedText(), searchBox.x, searchBox.y, -1);
         } else {
-            // TODO Fix rendering text boxes
-            // searchBox.render(poseStack, mouseX, mouseY, delta);
-            // TODO Check if this is correct
             GlStateManager.disableLighting();
             GlStateManager.disableBlend();
             searchBox.drawTextBox();
@@ -127,11 +121,15 @@ public class AdjustVolumesScreen extends ListScreenBase {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (searchBox.isFocused()) {
-            searchBox.mouseClicked(mouseX, mouseY, mouseButton);
-        }
+        searchBox.mouseClicked(mouseX, mouseY, mouseButton);
         volumeList.mouseClicked(mouseX, mouseY, mouseButton);
         super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        super.keyTyped(typedChar, keyCode);
+        searchBox.textboxKeyTyped(typedChar, keyCode);
     }
 
     private void checkSearchStringUpdate(String string) {

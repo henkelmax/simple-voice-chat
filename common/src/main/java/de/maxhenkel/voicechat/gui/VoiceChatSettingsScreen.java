@@ -89,14 +89,12 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         });
         y += 21;
         if (isIngame()) {
-            ButtonBase adjustVolumesButton = addButton(new ButtonBase(7, guiLeft + 10, y, xSize - 20, 20, ADJUST_VOLUMES) {
+            addButton(new ButtonBase(7, guiLeft + 10, y, xSize - 20, 20, ADJUST_VOLUMES) {
                 @Override
                 public void onPress() {
                     mc.displayGuiScreen(new AdjustVolumesScreen());
                 }
             });
-            //TODO Fix list GUIs
-            adjustVolumesButton.enabled = false;
             y += 21;
         }
         addButton(new ButtonBase(8, guiLeft + 10, y, xSize / 2 - 15, 20, SELECT_MICROPHONE) {

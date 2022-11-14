@@ -63,8 +63,6 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         }, (button, mouseX, mouseY) -> {
             drawHoveringText(ADJUST_PLAYER_VOLUMES.getUnformattedComponentText(), mouseX, mouseY);
         });
-        //TODO Fix list GUIs
-        volumes.enabled = false;
         addButton(volumes);
 
         if (client != null && VoicechatClient.CLIENT_CONFIG.useNatives.get()) {
