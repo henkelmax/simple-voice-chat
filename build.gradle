@@ -5,6 +5,7 @@ plugins {
 task publishAll(type: GradleBuild) {
     group = 'voicechat'
     tasks = [
+            ':common:clean',
             ':forge:clean',
             ':bukkit:clean',
             ':forge:curseforge',
@@ -56,8 +57,8 @@ task forgeServer(type: GradleBuild) {
 task cleanAll(type: GradleBuild) {
     group = 'voicechat'
     tasks = [
-            ':api:clean',
             ':common:clean',
+            ':api:clean',
             ':forge:clean',
             ':bukkit:clean',
     ]

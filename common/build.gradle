@@ -35,6 +35,18 @@ task prepareWorkspace {
 
 }
 
+sourceSets {
+    template {
+        java {
+            srcDir 'src/template/java'
+        }
+    }
+    main {
+        compileClasspath += sourceSets.template.output
+        runtimeClasspath += sourceSets.template.output
+    }
+}
+
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {

@@ -118,6 +118,16 @@ dependencies {
     shadow project(':api')
 }
 
+task generateJava(type: Copy) {
+    from project(':common').file('src/template/java')
+    into "${buildDir}/generated/java"
+    expand 'compatibility_version': mod_compatibility_version
+}
+sourceSets.main.java {
+    srcDir "${buildDir}/generated/java"
+}
+compileJava.dependsOn generateJava
+
 mixin {
     add sourceSets.main, "voicechat.refmap.json"
     config "voicechat.mixins.json"
