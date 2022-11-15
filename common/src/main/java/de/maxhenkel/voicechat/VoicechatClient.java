@@ -32,14 +32,7 @@ public abstract class VoicechatClient {
     public static VoiceChatResourcePack WHITE_ICONS;
     public static VoiceChatResourcePack BLACK_ICONS;
 
-    public void initializeClient() {
-        fixVolumeConfig();
-        VOLUME_CONFIG = new PlayerVolumeConfig(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-volumes.properties"));
-        USERNAME_CACHE = new UsernameCache(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("username-cache.json").toFile());
-
-        //Load instance
-        ClientManager.instance();
-
+    public VoicechatClient() {
         CLASSIC_ICONS = new VoiceChatResourcePack("classic_icons", new TranslatableComponent("resourcepack.voicechat.classic_icons"));
         WHITE_ICONS = new VoiceChatResourcePack("white_icons", new TranslatableComponent("resourcepack.voicechat.white_icons"));
         BLACK_ICONS = new VoiceChatResourcePack("black_icons", new TranslatableComponent("resourcepack.voicechat.black_icons"));
@@ -49,6 +42,15 @@ public abstract class VoicechatClient {
             consumer.accept(WHITE_ICONS.toPack());
             consumer.accept(BLACK_ICONS.toPack());
         });
+    }
+
+    public void initializeClient() {
+        fixVolumeConfig();
+        VOLUME_CONFIG = new PlayerVolumeConfig(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-volumes.properties"));
+        USERNAME_CACHE = new UsernameCache(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("username-cache.json").toFile());
+
+        //Load instance
+        ClientManager.instance();
 
         if (VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get() && Platform.isMac()) {
             if (VersionCheck.isCompatible()) {
