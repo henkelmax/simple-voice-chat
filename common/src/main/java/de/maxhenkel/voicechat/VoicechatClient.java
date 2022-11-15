@@ -7,7 +7,6 @@ import de.maxhenkel.voicechat.profile.UsernameCache;
 import de.maxhenkel.voicechat.resourcepacks.VoiceChatResourcePack;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.IPackNameDecorator;
 import net.minecraft.resources.ResourcePackInfo;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -39,7 +38,7 @@ public abstract class VoicechatClient {
         WHITE_ICONS = new VoiceChatResourcePack("white_icons", new TranslationTextComponent("resourcepack.voicechat.white_icons"));
         BLACK_ICONS = new VoiceChatResourcePack("black_icons", new TranslationTextComponent("resourcepack.voicechat.black_icons"));
 
-        ClientCompatibilityManager.INSTANCE.addResourcePackSource(Minecraft.getInstance().getResourcePackRepository(), (Consumer<Pack> consumer, Pack.PackConstructor packConstructor) -> {
+        ClientCompatibilityManager.INSTANCE.addResourcePackSource(Minecraft.getInstance().getResourcePackRepository(), (Consumer<ResourcePackInfo> consumer, ResourcePackInfo.IFactory packConstructor) -> {
             consumer.accept(CLASSIC_ICONS.toPack());
             consumer.accept(WHITE_ICONS.toPack());
             consumer.accept(BLACK_ICONS.toPack());

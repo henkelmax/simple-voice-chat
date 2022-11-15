@@ -3,8 +3,8 @@ package de.maxhenkel.voicechat.resourcepacks;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import de.maxhenkel.voicechat.Voicechat;
-import net.minecraft.resources.ResourcePack;
-import net.minecraft.resources.ResourcePackType;
+import net.minecraft.resources.*;
+import net.minecraft.resources.data.PackMetadataSection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponent;
 
@@ -35,13 +35,13 @@ public class VoiceChatResourcePack extends ResourcePack {
     }
 
     @Nullable
-    public Pack toPack() {
+    public ResourcePackInfo toPack() {
         try {
             PackMetadataSection packMetadataSection = getMetadataSection(PackMetadataSection.SERIALIZER);
             if (packMetadataSection == null) {
                 return null;
             }
-            return new Pack(path, false, () -> this, name, packMetadataSection.getDescription(), PackCompatibility.forMetadata(packMetadataSection, PackType.CLIENT_RESOURCES), Pack.Position.TOP, false, PackSource.BUILT_IN);
+            return new ResourcePackInfo(path, false, () -> this, name, packMetadataSection.getDescription(), PackCompatibility.COMPATIBLE, ResourcePackInfo.Priority.TOP, false, IPackNameDecorator.BUILT_IN);
         } catch (IOException e) {
             return null;
         }
