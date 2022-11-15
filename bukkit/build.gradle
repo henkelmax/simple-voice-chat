@@ -29,6 +29,18 @@ processResources {
     }
 }
 
+sourceSets {
+    template {
+        java {
+            srcDir 'src/template/java'
+        }
+    }
+    main {
+        compileClasspath += sourceSets.template.output
+        runtimeClasspath += sourceSets.template.output
+    }
+}
+
 dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation "org.bukkit:craftbukkit:${bukkit_version}"
@@ -52,6 +64,17 @@ dependencies {
     shadow project(':api')
 }
 
+task generateJava(type: Copy) {
+    from 'src/template/java'
+    into "${buildDir}/generated/java"
+    expand 'compatibility_version': mod_compatibility_version,
+            'target_bukkit_version': bukkit_version
+}
+sourceSets.main.java {
+    srcDir "${buildDir}/generated/java"
+}
+compileJava.dependsOn generateJava
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -64,15 +87,6 @@ repositories {
     maven {
         name = "placeholderapi"
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
-    }
-}
-
-jar {
-    manifest {
-        attributes([
-                "Compatibility-Version": mod_compatibility_version,
-                "Target-Bukkit-Version": bukkit_version
-        ])
     }
 }
 
