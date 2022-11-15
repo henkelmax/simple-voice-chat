@@ -19,8 +19,15 @@ public class ResourcePackRepositoryMixin {
     @Shadow
     private List<ResourcePackRepository.Entry> repositoryEntriesAll;
 
+    @Inject(method = "updateRepositoryEntriesAll", at = @At("HEAD"))
+    public void updateRepositoryEntriesAllHead(CallbackInfo info) {
+        addResourcePack(VoicechatClient.CLASSIC_ICONS);
+        addResourcePack(VoicechatClient.WHITE_ICONS);
+        addResourcePack(VoicechatClient.BLACK_ICONS);
+    }
+
     @Inject(method = "updateRepositoryEntriesAll", at = @At("RETURN"))
-    public void updateRepositoryEntriesAll(CallbackInfo info) {
+    public void updateRepositoryEntriesAllReturn(CallbackInfo info) {
         addResourcePack(VoicechatClient.CLASSIC_ICONS);
         addResourcePack(VoicechatClient.WHITE_ICONS);
         addResourcePack(VoicechatClient.BLACK_ICONS);
