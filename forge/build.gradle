@@ -113,6 +113,16 @@ dependencies {
     shadow project(':api')
 }
 
+task generateJava(type: Copy) {
+    from project(':common').file('src/template/java')
+    into "${buildDir}/generated/java"
+    expand 'compatibility_version': mod_compatibility_version
+}
+sourceSets.main.java {
+    srcDir "${buildDir}/generated/java"
+}
+compileJava.dependsOn generateJava
+
 processResources {
     filesMatching("**/*.toml") {
         expand 'mod_id': mod_id,
@@ -151,8 +161,7 @@ jar {
                     "Implementation-Title"    : mod_name,
                     "Implementation-Version"  : mod_version,
                     "Implementation-Vendor"   : mod_vendor,
-                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                    "Compatibility-Version"   : mod_compatibility_version
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
     from configurations.shadow.collect { it.isDirectory() ? it : zipTree(it) }

@@ -20,14 +20,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import javax.annotation.Nullable;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.Enumeration;
 import java.util.Map;
-import java.util.jar.Manifest;
 
 public final class Voicechat extends JavaPlugin {
 
@@ -36,16 +31,7 @@ public final class Voicechat extends JavaPlugin {
     public static final String MODID = "voicechat";
     public static final Logger LOGGER = LogManager.getLogger(MODID);
 
-    public static int COMPATIBILITY_VERSION;
-
-    static {
-        try {
-            COMPATIBILITY_VERSION = readVersion();
-        } catch (Exception e) {
-            LOGGER.fatal("Failed to read compatibility version: {}", e.getMessage());
-            COMPATIBILITY_VERSION = -1;
-        }
-    }
+    public static int COMPATIBILITY_VERSION = BuildConstants.COMPATIBILITY_VERSION;
 
     public static ServerConfig SERVER_CONFIG;
     private static YamlConfiguration TRANSLATIONS;
@@ -159,27 +145,6 @@ public final class Voicechat extends JavaPlugin {
         if (System.getProperty("voicechat.debug") != null) {
             LOGGER.info(message, objects);
         }
-    }
-
-    private static int readVersion() throws IOException {
-        String ver = readMetaInf("Compatibility-Version");
-        if (ver != null) {
-            return Integer.parseInt(ver);
-        }
-        throw new IOException("Could not read MANIFEST.MF");
-    }
-
-    @Nullable
-    public static String readMetaInf(String key) throws IOException {
-        Enumeration<URL> resources = Voicechat.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
-        while (resources.hasMoreElements()) {
-            Manifest manifest = new Manifest(resources.nextElement().openStream());
-            String value = manifest.getMainAttributes().getValue(key);
-            if (value != null) {
-                return value;
-            }
-        }
-        return null;
     }
 
 }
