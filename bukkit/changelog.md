@@ -1,1 +1,1 @@
-- Improved Bukkit version compatibility check
+- Fixed server rejecting client connection

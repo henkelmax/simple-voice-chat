@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat;
 import org.bukkit.Bukkit;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,19 +28,7 @@ public class BukkitVersionCheck {
 
     @Nullable
     public static BukkitVersion getTargetVersion() {
-        String targetVersion;
-        try {
-            targetVersion = Voicechat.readMetaInf("Target-Bukkit-Version");
-        } catch (IOException e) {
-            Voicechat.LOGGER.fatal("Failed to read target Bukkit version", e);
-            return null;
-        }
-        if (targetVersion == null) {
-            Voicechat.LOGGER.fatal("Failed to read target Bukkit version");
-            return null;
-        }
-
-        return parseBukkitVersion(targetVersion);
+        return parseBukkitVersion(BuildConstants.TARGET_BUKKIT_VERSION);
     }
 
     @Nullable
