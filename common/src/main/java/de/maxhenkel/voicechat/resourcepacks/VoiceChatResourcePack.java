@@ -7,6 +7,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.AbstractPackResources;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackCompatibility;
+import net.minecraft.server.packs.repository.PackSource;
 
 import javax.annotation.Nullable;
 import java.io.FileNotFoundException;
@@ -34,9 +38,22 @@ public class VoiceChatResourcePack extends AbstractPackResources {
         this.name = name;
     }
 
+    @Nullable
+    public Pack toPack() {
+        try {
+            PackMetadataSection packMetadataSection = getMetadataSection(PackMetadataSection.SERIALIZER);
+            if (packMetadataSection == null) {
+                return null;
+            }
+            return new Pack(path, false, () -> this, name, packMetadataSection.getDescription(), PackCompatibility.forMetadata(packMetadataSection, PackType.CLIENT_RESOURCES), Pack.Position.TOP, false, PackSource.BUILT_IN);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
     @Override
     public String getName() {
-        return name.getString();
+        return path;
     }
 
     private String getPath() {
