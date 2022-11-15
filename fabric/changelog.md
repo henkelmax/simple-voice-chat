@@ -1,2 +1,2 @@
-- Added debug mode log message
-- Replaced connect permission with listen permission
+- Updated Fabric API
+- Fixed selected voice chat resource packs not persistent
