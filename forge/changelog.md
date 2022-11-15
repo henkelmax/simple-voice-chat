@@ -1,1 +1,1 @@
-- Fixed selected voice chat resource packs not persistent
+- Fixed server rejecting client connection
