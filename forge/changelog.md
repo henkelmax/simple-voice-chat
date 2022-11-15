@@ -1,2 +1,1 @@
-- Added debug mode log message
-- Replaced connect permission with listen permission
+- Fixed selected voice chat resource packs not persistent
