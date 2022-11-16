@@ -153,17 +153,18 @@ task prepareWorkspace {
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
-        attributes(["Specification-Title"     : mod_name,
-                    "Specification-Vendor"    : mod_vendor,
-                    "Specification-Version"   : "1",
-                    "Implementation-Title"    : mod_name,
-                    "Implementation-Version"  : mod_version,
-                    "Implementation-Vendor"   : mod_vendor,
-                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                    "Compatibility-Version"   : mod_compatibility_version,
-                    "ForceLoadAsMod"          : "true",
-                    "TweakClass"              : "org.spongepowered.asm.launch.MixinTweaker",
-                    "TweakOrder"              : "0"
+        attributes(["Specification-Title"        : mod_name,
+                    "Specification-Vendor"       : mod_vendor,
+                    "Specification-Version"      : "1",
+                    "Implementation-Title"       : mod_name,
+                    "Implementation-Version"     : mod_version,
+                    "Implementation-Vendor"      : mod_vendor,
+                    "Implementation-Timestamp"   : new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                    "Compatibility-Version"      : mod_compatibility_version,
+                    "FMLCorePluginContainsFMLMod": "true",
+                    "ForceLoadAsMod"             : "true",
+                    "TweakClass"                 : "org.spongepowered.asm.launch.MixinTweaker",
+                    "TweakOrder"                 : "0"
         ])
     }
     from configurations.shadow.collect { it.isDirectory() ? it : zipTree(it) }
