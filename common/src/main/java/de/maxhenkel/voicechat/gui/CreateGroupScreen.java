@@ -35,7 +35,6 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         super.init();
         hoverAreas.clear();
         clearWidgets();
-        minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
         groupName = new EditBox(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 2 - 5 + 2, xSize - 7 * 2, 10, Component.empty());
         groupName.setMaxLength(16);
@@ -61,12 +60,6 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         groupName.tick();
         password.tick();
         createGroup.active = !groupName.getValue().isEmpty();
-    }
-
-    @Override
-    public void onClose() {
-        super.onClose();
-        minecraft.keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override

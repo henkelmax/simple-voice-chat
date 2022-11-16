@@ -51,7 +51,6 @@ public class AdjustVolumesScreen extends ListScreenBase {
         units = Math.max(minUnits, (height - HEADER_SIZE - FOOTER_SIZE - guiTop * 2 - SEARCH_HEIGHT) / UNIT_SIZE);
         ySize = HEADER_SIZE + units * UNIT_SIZE + FOOTER_SIZE;
 
-        minecraft.keyboardHandler.setSendRepeatsToGui(true);
         if (volumeList != null) {
             volumeList.updateSize(width, height, guiTop + HEADER_SIZE + SEARCH_HEIGHT, guiTop + HEADER_SIZE + units * UNIT_SIZE);
         } else {
@@ -67,12 +66,6 @@ public class AdjustVolumesScreen extends ListScreenBase {
         searchBox.setResponder(this::checkSearchStringUpdate);
         addWidget(searchBox);
         addWidget(volumeList);
-    }
-
-    @Override
-    public void onClose() {
-        super.onClose();
-        minecraft.keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override

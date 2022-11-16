@@ -1,1 +1,1 @@
-- Fixed server rejecting client connection
+- Updated to 22w46a
