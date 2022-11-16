@@ -1,6 +1,6 @@
 {
   "required": true,
-  "minVersion": "0.8.3",
+  "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "package": "de.maxhenkel.voicechat.mixin",
   "refmap": "voicechat.refmap.json",
