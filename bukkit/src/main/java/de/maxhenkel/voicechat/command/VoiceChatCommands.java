@@ -67,7 +67,7 @@ public class VoiceChatCommands implements CommandExecutor {
             return false;
         }
 
-        Player player = commandSender.getServer().getPlayer(args[1]);
+        Player player = parsePlayer(commandSender, args[1]);
 
         if (player == null) {
             NetManager.sendMessage(commandSender, Component.translatable("argument.entity.notfound.player"));
