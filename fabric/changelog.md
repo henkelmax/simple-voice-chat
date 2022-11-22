@@ -1,1 +1,1 @@
-- Updated to 22w46a
+- Added ViaVersion 1.12.2 compatibility

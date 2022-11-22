@@ -5,16 +5,32 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.resources.ResourceLocation;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class FabricNetManager extends NetManager {
+
+    private final Set<ResourceLocation> packets;
+
+    public FabricNetManager() {
+        packets = new HashSet<>();
+    }
+
+    public Set<ResourceLocation> getPackets() {
+        return packets;
+    }
 
     @Override
     public <T extends Packet<T>> Channel<T> registerReceiver(Class<T> packetType, boolean toClient, boolean toServer) {
         Channel<T> c = new Channel<>();
         try {
             T dummyPacket = packetType.getDeclaredConstructor().newInstance();
+            ResourceLocation identifier = dummyPacket.getIdentifier();
+            packets.add(identifier);
             if (toServer) {
-                ServerPlayNetworking.registerGlobalReceiver(dummyPacket.getIdentifier(), (server, player, handler, buf, responseSender) -> {
+                ServerPlayNetworking.registerGlobalReceiver(identifier, (server, player, handler, buf, responseSender) -> {
                     try {
                         if (!Voicechat.SERVER.isCompatible(player) && !packetType.equals(RequestSecretPacket.class)) {
                             return;
@@ -28,7 +44,7 @@ public class FabricNetManager extends NetManager {
                 });
             }
             if (toClient && FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT)) {
-                ClientPlayNetworking.registerGlobalReceiver(dummyPacket.getIdentifier(), (client, handler, buf, responseSender) -> {
+                ClientPlayNetworking.registerGlobalReceiver(identifier, (client, handler, buf, responseSender) -> {
                     try {
                         T packet = packetType.getDeclaredConstructor().newInstance();
                         packet.fromBytes(buf);
