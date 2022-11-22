@@ -60,6 +60,8 @@ dependencies {
 
     compileOnly "me.clip:placeholderapi:${placeholder_api_version}"
 
+    compileOnly "com.viaversion:viaversion-bukkit:${viaversion_version}"
+
     implementation project(':api')
     shadow project(':api')
 }
@@ -87,6 +89,10 @@ repositories {
     maven {
         name = "placeholderapi"
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+    maven {
+        name = "viaversion-repo"
+        url = 'https://repo.viaversion.com/'
     }
 }
 
