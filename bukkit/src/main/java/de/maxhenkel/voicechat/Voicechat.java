@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.integration.commodore.CommodoreCommands;
 import de.maxhenkel.voicechat.integration.placeholderapi.VoicechatExpansion;
+import de.maxhenkel.voicechat.integration.viaversion.ViaVersionCompatibility;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.BukkitVoicechatServiceImpl;
@@ -100,6 +101,15 @@ public final class Voicechat extends JavaPlugin {
             }
         } catch (Exception e) {
             LOGGER.error("Failed to register PlaceholderAPI expansion");
+        }
+
+        try {
+            if (Bukkit.getPluginManager().getPlugin("ViaVersion") != null) {
+                ViaVersionCompatibility.register();
+                LOGGER.info("Successfully added ViaVersion mappings");
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to add ViaVersion mappings");
         }
 
         if (System.getProperty("VOICECHAT_RELOADED") != null) {
