@@ -1,1 +1,1 @@
-- Added ViaVersion 1.12.2 compatibility
+- Updated to 1.19.3-pre1
