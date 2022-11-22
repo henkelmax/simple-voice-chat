@@ -1,1 +1,1 @@
-- Fixed server rejecting client connection
+- Added ViaVersion 1.12.2 compatibility

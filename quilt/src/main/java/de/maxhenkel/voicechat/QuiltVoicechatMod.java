@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat;
 
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.QuiltServerConfig;
+import de.maxhenkel.voicechat.integration.ViaVersionCompatibility;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.loader.api.QuiltLoader;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
@@ -13,6 +14,8 @@ public class QuiltVoicechatMod extends Voicechat implements ModInitializer {
         SERVER_CONFIG = ConfigBuilder.build(QuiltLoader.getConfigDir().resolve(MODID).resolve("voicechat-server.properties"), true, QuiltServerConfig::new);
 
         initialize();
+
+        ViaVersionCompatibility.register();
     }
 
 }

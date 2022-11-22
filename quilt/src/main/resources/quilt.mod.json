@@ -66,6 +66,10 @@
       {
         "id": "fabric-permissions-api-v0",
         "versions": "*"
+      },
+      {
+        "id": "viaversion",
+        "versions": "*"
       }
     ],
     "metadata": {
