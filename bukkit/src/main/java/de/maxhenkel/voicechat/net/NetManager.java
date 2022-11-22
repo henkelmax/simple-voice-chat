@@ -20,11 +20,15 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
 import java.util.Set;
 
 public class NetManager implements Listener {
 
+    private final Set<String> packets = new HashSet<>();
+
     public void onEnable() {
+        packets.clear();
         Bukkit.getPluginManager().registerEvents(this, Voicechat.INSTANCE);
         try {
             registerIncomingPacket(UpdateStatePacket.class);
@@ -53,6 +57,11 @@ public class NetManager implements Listener {
         for (String channel : outgoingChannels) {
             Bukkit.getMessenger().unregisterOutgoingPluginChannel(Voicechat.INSTANCE, channel);
         }
+        packets.clear();
+    }
+
+    public Set<String> getPackets() {
+        return packets;
     }
 
     @EventHandler
@@ -75,9 +84,11 @@ public class NetManager implements Listener {
         }
     }
 
-    public static <T extends Packet<?>> void registerIncomingPacket(Class<T> packetClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private <T extends Packet<?>> void registerIncomingPacket(Class<T> packetClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Constructor<T> c = packetClass.getDeclaredConstructor();
-        Bukkit.getMessenger().registerIncomingPluginChannel(Voicechat.INSTANCE, c.newInstance().getID().toString(), (s, player, bytes) -> {
+        String id = c.newInstance().getID().toString();
+        packets.add(id);
+        Bukkit.getMessenger().registerIncomingPluginChannel(Voicechat.INSTANCE, id, (s, player, bytes) -> {
             T packet;
             try {
                 packet = c.newInstance();
@@ -91,8 +102,10 @@ public class NetManager implements Listener {
         });
     }
 
-    public static <T extends Packet<?>> void registerOutgoingPacket(Class<T> packetClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        Bukkit.getMessenger().registerOutgoingPluginChannel(Voicechat.INSTANCE, packetClass.getDeclaredConstructor().newInstance().getID().toString());
+    private <T extends Packet<?>> void registerOutgoingPacket(Class<T> packetClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        String id = packetClass.getDeclaredConstructor().newInstance().getID().toString();
+        packets.add(id);
+        Bukkit.getMessenger().registerOutgoingPluginChannel(Voicechat.INSTANCE, id);
     }
 
     public static void sendToClient(Player player, Packet<?> p) {
