@@ -40,7 +40,8 @@
     "modmenu": ">=${modmenu_version}",
     "sound_physics_remastered": ">=1.18.2-1.0.5",
     "cloth-config2": ">=${cloth_config_version}",
-    "fabric-permissions-api-v0": "*"
+    "fabric-permissions-api-v0": "*",
+    "viaversion": "*"
   },
   "breaks": {
     "fabric": "<${min_fabric_version}",

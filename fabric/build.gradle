@@ -36,6 +36,10 @@ repositories {
         url = 'https://maven.maxhenkel.de/repository/public'
     }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven {
+        name = "viaversion-repo"
+        url = 'https://repo.viaversion.com/'
+    }
     mavenLocal()
 }
 
@@ -74,6 +78,7 @@ dependencies {
     }
 
     modImplementation "me.lucko:fabric-permissions-api:${fabric_permission_api_version}"
+    modCompileOnly "com.viaversion:viaversion-fabric:${viaversion_version}"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'org.jetbrains:annotations:23.0.0'
