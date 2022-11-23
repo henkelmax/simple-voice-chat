@@ -188,6 +188,7 @@ curseforge {
                 optionalDependency 'cloth-config'
                 optionalDependency 'audioplayer'
                 optionalDependency 'luckperms'
+                optionalDependency 'viafabric'
             }
         }
         afterEvaluate {
@@ -217,6 +218,7 @@ modrinth {
         optional.project "mOgUt4GM" // ModMenu
         optional.project "9s6osm5g" // ClothConfig
         optional.project "Vebnzrzj" // LuckPerms
+        optional.project "YlKdE5VK" // ViaFabric
     }
 }
 tasks.modrinth.dependsOn(build)
