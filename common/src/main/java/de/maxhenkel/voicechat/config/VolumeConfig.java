@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.config;
 
-import de.maxhenkel.configbuilder.PropertyConfig;
+import de.maxhenkel.configbuilder.CommentedPropertyConfig;
 
 import java.nio.file.Path;
 import java.util.Collections;
@@ -8,17 +8,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class PlayerVolumeConfig extends PropertyConfig {
+public class VolumeConfig extends CommentedPropertyConfig {
 
     private final Map<UUID, Double> volumes;
     private final Map<String, Double> categoryVolumes;
 
-    public PlayerVolumeConfig(Path path) {
+    public VolumeConfig(Path path) {
         super(path);
-        Map<String, Object> entries = getEntries();
+        Map<String, String> entries = getEntries();
         volumes = new HashMap<>();
         categoryVolumes = new HashMap<>();
-        for (Map.Entry<String, Object> entry : entries.entrySet()) {
+        for (Map.Entry<String, String> entry : entries.entrySet()) {
             double volume = Double.parseDouble(entry.getValue().toString());
             try {
                 volumes.put(UUID.fromString(entry.getKey()), volume);
@@ -42,7 +42,7 @@ public class PlayerVolumeConfig extends PropertyConfig {
 
     public double setPlayerVolume(UUID uuid, double value) {
         volumes.put(uuid, value);
-        properties.put(uuid.toString(), String.valueOf(value));
+        properties.set(uuid.toString(), String.valueOf(value));
         return value;
     }
 
@@ -64,7 +64,7 @@ public class PlayerVolumeConfig extends PropertyConfig {
 
     public double setCategoryVolume(String category, double value) {
         categoryVolumes.put(category, value);
-        properties.put(category, String.valueOf(value));
+        properties.set(category, String.valueOf(value));
         return value;
     }
 
