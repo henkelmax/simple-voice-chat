@@ -53,7 +53,7 @@ public class ClothConfigWrapper {
     }
 
     private static <T> AbstractConfigListEntry<T> fromConfigEntry(ConfigEntryBuilder entryBuilder, Component name, ConfigEntry<T> entry) {
-        if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilder.DoubleConfigEntry e) {
+        if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.DoubleConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startDoubleField(name, e.get())
                     .setMin(e.getMin())
@@ -64,7 +64,7 @@ public class ClothConfigWrapper {
                         e.save();
                     })
                     .build();
-        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilder.IntegerConfigEntry e) {
+        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.IntegerConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startIntField(name, e.get())
                     .setMin(e.getMin())
@@ -72,13 +72,13 @@ public class ClothConfigWrapper {
                     .setDefaultValue(e::getDefault)
                     .setSaveConsumer(d -> e.set(d).save())
                     .build();
-        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilder.BooleanConfigEntry e) {
+        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.BooleanConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startBooleanToggle(name, e.get())
                     .setDefaultValue(e::getDefault)
                     .setSaveConsumer(d -> e.set(d).save())
                     .build();
-        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilder.StringConfigEntry e) {
+        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.StringConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startStrField(name, e.get())
                     .setDefaultValue(e::getDefault)
