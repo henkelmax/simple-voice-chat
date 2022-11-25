@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat;
 
 import de.maxhenkel.voicechat.config.ClientConfig;
-import de.maxhenkel.voicechat.config.PlayerVolumeConfig;
+import de.maxhenkel.voicechat.config.VolumeConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.VersionCheck;
@@ -20,7 +20,7 @@ import java.nio.file.StandardCopyOption;
 public abstract class VoicechatClient {
 
     public static ClientConfig CLIENT_CONFIG;
-    public static PlayerVolumeConfig VOLUME_CONFIG;
+    public static VolumeConfig VOLUME_CONFIG;
     public static UsernameCache USERNAME_CACHE;
 
     public static VoiceChatResourcePack CLASSIC_ICONS;
@@ -43,7 +43,7 @@ public abstract class VoicechatClient {
 
     public void initializeClient() {
         fixVolumeConfig();
-        VOLUME_CONFIG = new PlayerVolumeConfig(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-volumes.properties"));
+        VOLUME_CONFIG = new VolumeConfig(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-volumes.properties"));
         USERNAME_CACHE = new UsernameCache(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("username-cache.json").toFile());
 
         //Load instance
