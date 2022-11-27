@@ -11,7 +11,6 @@ import de.maxhenkel.voicechat.net.ForgeNetManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.ForgePermissionManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -175,7 +174,7 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     @Override
     public boolean isDedicatedServer() {
         try {
-            Minecraft.getMinecraft();
+            Class.forName("net.minecraft.client.Minecraft");
             return false;
         } catch (Exception e) {
             return true;

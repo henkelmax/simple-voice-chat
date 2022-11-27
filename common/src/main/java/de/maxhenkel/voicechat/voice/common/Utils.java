@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.common;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
@@ -242,7 +243,7 @@ public class Utils {
      * @return 48 if the voice chat is not connected
      */
     public static float getDefaultDistance() {
-        if (VoicechatClient.CLIENT_CONFIG == null) {
+        if (CommonCompatibilityManager.INSTANCE.isDedicatedServer() || VoicechatClient.CLIENT_CONFIG == null) {
             return Voicechat.SERVER_CONFIG.voiceChatDistance.get().floatValue();
         }
 
