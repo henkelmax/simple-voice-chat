@@ -1,1 +1,2 @@
-- Updated to 1.19.3-pre3
+- Reworked config system
+- Reworked MacOS microphone permission check
