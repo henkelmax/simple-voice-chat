@@ -57,10 +57,6 @@ repositories {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
-configurations {
-    macos
-}
-
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
@@ -84,16 +80,6 @@ dependencies {
 
     implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
     shadow "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
-
-    implementation(project(path: ':macos', configuration: 'shadow')) {
-        transitive(false)
-    }
-    shadow(project(path: ':macos', configuration: 'shadow')) {
-        transitive(false)
-    }
-    macos(project(':macos')) {
-        transitive(false)
-    }
 
     implementation(project(':api')) {
         transitive false
@@ -123,15 +109,6 @@ processResources {
                 'minecraft_version': minecraft_version
     }
     from("${project(':common').projectDir}/src/main/resources")
-
-    doLast {
-        copy {
-            from(configurations.macos) {
-                rename { 'macos.zip' }
-            }
-            into { "${buildDir}/resources/main" }
-        }
-    }
 }
 
 tasks.withType(JavaCompile) {

@@ -1,9 +1,13 @@
 package de.maxhenkel.voicechat.voice.client;
 
+import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.config.ServerConfig;
+import de.maxhenkel.voicechat.macos.PermissionCheck;
+import de.maxhenkel.voicechat.macos.VersionCheck;
+import de.maxhenkel.voicechat.macos.avfoundation.AVAuthorizationStatus;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.opus.OpusManager;
 import de.maxhenkel.voicechat.voice.client.microphone.Microphone;
@@ -16,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 
 public class MicThread extends Thread {
 
@@ -23,7 +28,7 @@ public class MicThread extends Thread {
     private final ClientVoicechat client;
     @Nullable
     private final ClientVoicechatConnection connection;
-    private final Microphone mic;
+    private Microphone mic;
     private final VolumeManager volumeManager;
     private boolean running;
     private boolean microphoneLocked;
@@ -32,9 +37,12 @@ public class MicThread extends Thread {
     @Nullable
     private Denoiser denoiser;
 
-    public MicThread(@Nullable ClientVoicechat client, @Nullable ClientVoicechatConnection connection) throws MicrophoneException, NativeDependencyException {
+    private final Consumer<MicrophoneException> onError;
+
+    public MicThread(@Nullable ClientVoicechat client, @Nullable ClientVoicechatConnection connection, Consumer<MicrophoneException> onError) {
         this.client = client;
         this.connection = connection;
+        this.onError = onError;
         this.running = true;
         this.encoder = OpusManager.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, connection == null ? 1024 : connection.getData().getMtuSize(), connection == null ? ServerConfig.Codec.VOIP.getOpusValue() : connection.getData().getCodec().getOpusValue());
 
@@ -46,12 +54,21 @@ public class MicThread extends Thread {
 
         setDaemon(true);
         setName("MicrophoneThread");
-
-        mic = MicrophoneManager.createMicrophone();
     }
 
     @Override
     public void run() {
+        if (mic == null) {
+            try {
+                mic = MicrophoneManager.createMicrophone();
+                Minecraft.getInstance().execute(this::checkMicrophonePermissions);
+            } catch (MicrophoneException e) {
+                onError.accept(e);
+                running = false;
+                return;
+            }
+        }
+
         while (running) {
             if (connection != null) {
                 // Checking here for timeouts, because we don't have any other looping thread
@@ -85,6 +102,21 @@ public class MicThread extends Thread {
                 ptt(audio);
             } else if (type.equals(MicrophoneActivationType.VOICE)) {
                 voice(audio);
+            }
+        }
+    }
+
+    public void checkMicrophonePermissions() {
+        if (!VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get()) {
+            return;
+        }
+        if (Platform.isMac() && VersionCheck.isCompatible()) {
+            AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
+            if (status.equals(AVAuthorizationStatus.DENIED)) {
+                ClientManager.sendPlayerError("message.voicechat.macos_no_mic_permission", null);
+                Voicechat.LOGGER.warn("User hasn't granted microphone permissions: {}", status.name());
+            } else if (!status.equals(AVAuthorizationStatus.AUTHORIZED)) {
+                ClientManager.sendPlayerError("message.voicechat.macos_unsupported_launcher", null);
             }
         }
     }

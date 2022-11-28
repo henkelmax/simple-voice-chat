@@ -96,6 +96,7 @@
   "message.voicechat.wrong_password": "Wrong Password",
   "message.voicechat.server_port": "Voice chat server hosted on port %s",
   "message.voicechat.macos_no_mic_permission": "No microphone permission. Please check Security & Privacy settings",
+  "message.voicechat.macos_unsupported_launcher": "Your launcher does not support MacOS microphone permissions",
   "message.voicechat.player_no_voicechat": "%s does not have %s installed",
   "message.voicechat.mute.enabled": "Press to unmute your microphone",
   "message.voicechat.mute.disabled": "Press to mute your microphone",
