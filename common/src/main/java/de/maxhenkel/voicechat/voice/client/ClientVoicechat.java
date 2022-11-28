@@ -120,13 +120,11 @@ public class ClientVoicechat {
         if (micThread != null) {
             micThread.close();
         }
-        try {
-            micThread = new MicThread(this, connection);
-            micThread.start();
-        } catch (Exception e) {
+        micThread = new MicThread(this, connection, e -> {
             Voicechat.LOGGER.error("Failed to start microphone thread: {}", e.getMessage());
             ClientManager.sendPlayerError("message.voicechat.microphone_unavailable", e);
-        }
+        });
+        micThread.start();
     }
 
     public void closeMicThread() {
