@@ -1,18 +1,14 @@
 package de.maxhenkel.voicechat;
 
-import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.config.ClientConfig;
 import de.maxhenkel.voicechat.config.PlayerVolumeConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.macos.PermissionCheck;
 import de.maxhenkel.voicechat.macos.VersionCheck;
-import de.maxhenkel.voicechat.macos.jna.avfoundation.AVAuthorizationStatus;
 import de.maxhenkel.voicechat.profile.UsernameCache;
 import de.maxhenkel.voicechat.resourcepacks.VoiceChatResourcePack;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.KeyEvents;
-import de.maxhenkel.voicechat.voice.client.MacOSUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
@@ -53,17 +49,8 @@ public abstract class VoicechatClient {
         //Load instance
         ClientManager.instance();
 
-        if (VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get() && Platform.isMac()) {
-            if (VersionCheck.isCompatible()) {
-                Voicechat.LOGGER.info("Running MacOS microphone permission check");
-                AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
-                Voicechat.LOGGER.info("MacOS microphone permission: {}", status.name());
-                if (!status.equals(AVAuthorizationStatus.AUTHORIZED)) {
-                    MacOSUtils.checkPermissionInSeparateProcess();
-                }
-            } else {
-                Voicechat.LOGGER.warn("Your MacOS version is incompatible with {}", CommonCompatibilityManager.INSTANCE.getModName());
-            }
+        if (!VersionCheck.isCompatible()) {
+            Voicechat.LOGGER.warn("Your MacOS version is incompatible with {}", CommonCompatibilityManager.INSTANCE.getModName());
         }
     }
 

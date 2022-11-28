@@ -54,6 +54,4 @@ dependencies {
     implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
 
     implementation project(':api')
-
-    implementation project(path: ':macos', configuration: 'shadow')
 }

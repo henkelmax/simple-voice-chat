@@ -6,7 +6,6 @@ task publishAll(type: GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':common:clean',
-            ':macos:clean',
             ':quilt:clean',
             ':forge:clean',
             ':fabric:clean',
@@ -37,7 +36,6 @@ task publishSnapshot(type: GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':common:clean',
-            ':macos:clean',
             ':fabric:clean',
             ':fabric:curseforge',
             ':fabric:modrinth'
@@ -107,7 +105,6 @@ task cleanAll(type: GradleBuild) {
     tasks = [
             ':common:clean',
             ':api:clean',
-            ':macos:clean',
             ':quilt:clean',
             ':fabric:clean',
             ':forge:clean',

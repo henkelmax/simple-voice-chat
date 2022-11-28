@@ -11,6 +11,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
 
 public class MicTestButton extends AbstractButton {
 
@@ -64,7 +65,11 @@ public class MicTestButton extends AbstractButton {
         if (micActive) {
             close();
             try {
-                voiceThread = new VoiceThread();
+                voiceThread = new VoiceThread(e -> {
+                    setMicActive(false);
+                    active = false;
+                    e.printStackTrace();
+                });
                 voiceThread.start();
             } catch (Exception e) {
                 setMicActive(false);
@@ -104,14 +109,14 @@ public class MicTestButton extends AbstractButton {
         @Nullable
         private SoundManager ownSoundManager;
 
-        public VoiceThread() throws SpeakerException, MicrophoneException, NativeDependencyException {
+        public VoiceThread(Consumer<MicrophoneException> onMicError) throws SpeakerException {
             this.running = true;
             setDaemon(true);
             setName("VoiceTestingThread");
 
             micThread = client != null ? client.getMicThread() : null;
             if (micThread == null) {
-                micThread = new MicThread(client, null);
+                micThread = new MicThread(client, null, onMicError);
                 usesOwnMicThread = true;
             }
 
