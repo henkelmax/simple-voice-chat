@@ -19,4 +19,4 @@ permissions:
     description: Allows to join groups
   voicechat.admin:
     description: Allows to test voice chat connections
-softdepend: [PlaceholderAPI]
+softdepend: [PlaceholderAPI, ViaVersion]
