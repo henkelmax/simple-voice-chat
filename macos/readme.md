@@ -1,3 +1,7 @@
+# This is outdated as of Simple Voice Chat version `2.3.17`!
+
+---
+
 # MacOS Microphone Permission Hack
 
 This submodule contains the code to check if microphone permissions are granted.
