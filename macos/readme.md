@@ -1,4 +1,5 @@
-# This is outdated as of Simple Voice Chat version `2.3.17`!
+> **Warning**
+> This is outdated as of Simple Voice Chat version `2.3.17`!
 
 ---
 
