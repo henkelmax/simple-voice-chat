@@ -36,7 +36,7 @@ public abstract class ClientConfig {
     public ConfigEntry<Boolean> denoiser;
     public ConfigEntry<Boolean> runLocalServer;
     public ConfigEntry<Boolean> javaMicrophoneImplementation;
-    public ConfigEntry<Boolean> macosMicrophoneWorkaround;
+    public ConfigEntry<Boolean> macosCheckMicrophonePermission;
     public ConfigEntry<Boolean> showFakePlayersDisconnected;
     public ConfigEntry<Boolean> offlinePlayerVolumeAdjustment;
     public ConfigEntry<AudioType> audioType;
@@ -163,9 +163,9 @@ public abstract class ClientConfig {
                 .booleanEntry("java_microphone_implementation", Platform.isMac(),
                         "Whether to use the Java implementation of microphone capturing instead of OpenAL"
                 );
-        macosMicrophoneWorkaround = builder
-                .booleanEntry("macos_microphone_workaround", true,
-                        "If the microphone workaround hack should be used (MacOS only)"
+        macosCheckMicrophonePermission = builder
+                .booleanEntry("macos_check_microphone_permission", true,
+                        "If the mod should check for microphone permissions (MacOS only)"
                 );
         showFakePlayersDisconnected = builder
                 .booleanEntry("show_fake_players_disconnected", false,
