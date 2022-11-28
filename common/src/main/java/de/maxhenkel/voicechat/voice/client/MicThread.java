@@ -107,7 +107,7 @@ public class MicThread extends Thread {
     }
 
     public void checkMicrophonePermissions() {
-        if (!VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get()) {
+        if (!VoicechatClient.CLIENT_CONFIG.macosCheckMicrophonePermission.get()) {
             return;
         }
         if (Platform.isMac() && VersionCheck.isCompatible()) {
