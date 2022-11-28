@@ -1,13 +1,8 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.macos.PermissionCheck;
-import de.maxhenkel.voicechat.macos.VersionCheck;
-import de.maxhenkel.voicechat.macos.jna.avfoundation.AVAuthorizationStatus;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
@@ -96,16 +91,10 @@ public class ClientManager {
         Voicechat.LOGGER.info("Sending secret request to the server");
         NetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
         client = new ClientVoicechat();
-
-        checkMicrophonePermissions();
     }
 
     public static void sendPlayerError(String translationKey, @Nullable Exception e) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null) {
-            return;
-        }
-        player.sendMessage(
+        sendPlayerMessage(
                 ComponentUtils.wrapInSquareBrackets(new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()))
                         .withStyle(ChatFormatting.GREEN)
                         .append(" ")
@@ -117,6 +106,14 @@ public class ClientManager {
                             return style;
                         })
                 , Util.NIL_UUID);
+    }
+
+    public static void sendPlayerMessage(Component component) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
+        player.sendSystemMessage(component);
     }
 
     private void onDisconnect() {
@@ -148,19 +145,6 @@ public class ClientManager {
             Voicechat.LOGGER.error("Failed to change voice chat port: {}", e.getMessage());
         }
         Minecraft.getInstance().gui.getChat().addMessage(new TranslatableComponent("message.voicechat.server_port", server.getPort()));
-    }
-
-    public void checkMicrophonePermissions() {
-        if (!VoicechatClient.CLIENT_CONFIG.macosMicrophoneWorkaround.get()) {
-            return;
-        }
-        if (Platform.isMac() && VersionCheck.isCompatible()) {
-            AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
-            if (!status.equals(AVAuthorizationStatus.AUTHORIZED)) {
-                sendPlayerError("message.voicechat.macos_no_mic_permission", null);
-                Voicechat.LOGGER.warn("User hasn't granted microphone permissions: {}", status.name());
-            }
-        }
     }
 
     @Nullable
