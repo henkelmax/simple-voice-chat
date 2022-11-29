@@ -1,1 +1,1 @@
-- Added ViaVersion 1.12.2 compatibility
+- Reworked config system
