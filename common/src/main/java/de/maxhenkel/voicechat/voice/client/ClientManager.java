@@ -13,10 +13,7 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.ComponentUtils;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.*;
 
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
@@ -104,8 +101,7 @@ public class ClientManager {
                                 return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED)));
                             }
                             return style;
-                        })
-                , Util.NIL_UUID);
+                        }));
     }
 
     public static void sendPlayerMessage(Component component) {
@@ -113,7 +109,7 @@ public class ClientManager {
         if (player == null) {
             return;
         }
-        player.sendSystemMessage(component);
+        player.sendMessage(component, Util.NIL_UUID);
     }
 
     private void onDisconnect() {
