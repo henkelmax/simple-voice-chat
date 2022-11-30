@@ -93,8 +93,7 @@ public class ForgeConfigBuilderWrapper implements ConfigBuilder {
 
         @Override
         public ConfigEntry<T> reset() {
-            value.set(value.getDefault());
-            return this;
+            throw new UnsupportedOperationException("Can't reset Forge config value");
         }
 
         @Override
@@ -111,7 +110,7 @@ public class ForgeConfigBuilderWrapper implements ConfigBuilder {
 
         @Override
         public T getDefault() {
-            return value.getDefault();
+            throw new UnsupportedOperationException("Can't reset Forge config value");
         }
 
         @Override
