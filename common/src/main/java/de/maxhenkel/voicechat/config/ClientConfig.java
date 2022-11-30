@@ -162,10 +162,6 @@ public abstract class ClientConfig {
                 .booleanEntry("java_microphone_implementation", Platform.isMac(),
                         "Whether to use the Java implementation of microphone capturing instead of OpenAL"
                 );
-        macosMicrophoneWorkaround = builder
-                .booleanEntry("macos_microphone_workaround", true,
-                        "If the microphone workaround hack should be used (MacOS only)"
-                );
         showFakePlayersDisconnected = builder
                 .booleanEntry("show_fake_players_disconnected", false,
                         "If fake players should have the disconnected icon above their head"
