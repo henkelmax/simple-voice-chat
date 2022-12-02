@@ -19,8 +19,8 @@ public class ViaVersionCompatibility {
                 registerMappings();
                 Voicechat.LOGGER.info("Successfully registered ViaVersion mappings");
             }
-        } catch (Exception e) {
-            Voicechat.LOGGER.error("Failed to register ViaVersion mappings", e);
+        } catch (Throwable t) {
+            Voicechat.LOGGER.error("Failed to register ViaVersion mappings", t);
         }
     }
 
