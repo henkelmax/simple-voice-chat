@@ -4,8 +4,8 @@ import com.viaversion.viaversion.protocols.protocol1_13to1_12_2.Protocol1_13To1_
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.QuiltNetManager;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
+import org.quiltmc.loader.api.QuiltLoader;
 
 import java.util.Set;
 
@@ -15,12 +15,12 @@ public class ViaVersionCompatibility {
 
     public static void register() {
         try {
-            if (FabricLoader.getInstance().isModLoaded("viaversion")) {
+            if (QuiltLoader.isModLoaded("viaversion")) {
                 registerMappings();
                 Voicechat.LOGGER.info("Successfully registered ViaVersion mappings");
             }
-        } catch (Exception e) {
-            Voicechat.LOGGER.error("Failed to register ViaVersion mappings", e);
+        } catch (Throwable t) {
+            Voicechat.LOGGER.error("Failed to register ViaVersion mappings", t);
         }
     }
 
