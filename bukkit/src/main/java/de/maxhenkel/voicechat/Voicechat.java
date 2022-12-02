@@ -99,8 +99,8 @@ public final class Voicechat extends JavaPlugin {
                 new VoicechatExpansion().register();
                 LOGGER.info("Successfully registered PlaceholderAPI expansion");
             }
-        } catch (Exception e) {
-            LOGGER.error("Failed to register PlaceholderAPI expansion");
+        } catch (Throwable t) {
+            LOGGER.error("Failed to register PlaceholderAPI expansion", t);
         }
 
         try {
@@ -108,8 +108,8 @@ public final class Voicechat extends JavaPlugin {
                 ViaVersionCompatibility.register();
                 LOGGER.info("Successfully added ViaVersion mappings");
             }
-        } catch (Exception e) {
-            LOGGER.error("Failed to add ViaVersion mappings");
+        } catch (Throwable t) {
+            LOGGER.error("Failed to add ViaVersion mappings", t);
         }
 
         if (System.getProperty("VOICECHAT_RELOADED") != null) {
