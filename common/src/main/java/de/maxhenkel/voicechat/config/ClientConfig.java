@@ -176,7 +176,7 @@ public abstract class ClientConfig {
         useNatives = builder
                 .booleanEntry("use_natives", true,
                         "If the mod should load native libraries",
-                        "If set to false, the Java Opus implementation will be used and the denoiser won't be available" //TODO add mp3 encoder/decoder
+                        "If set to false, the Java Opus implementation will be used, the denoiser won't be available and you won't be able to record audio."
                 );
 
         if (!javaMicrophoneImplementation.get()) {
