@@ -1,2 +1,1 @@
-- Reworked config system
-- Reworked MacOS microphone permission check
+- Updated Brazilian Portuguese translation
