@@ -95,6 +95,7 @@ message.voicechat.password=Senha
 message.voicechat.wrong_password=Senha Incorreta
 message.voicechat.server_port=Servidor do Voice Chat hospedado na porta %s
 message.voicechat.macos_no_mic_permission=Sem permissão para o microfone. Por favor, cheque as configurações de Segurança e Privacidade
+message.voicechat.macos_unsupported_launcher=Seu launcher não suporta permissões de microfone do MacOS
 message.voicechat.player_no_voicechat=%s não tem %s instalado
 message.voicechat.mute.enabled=Ativar microfone
 message.voicechat.mute.disabled=Silenciar microfone
