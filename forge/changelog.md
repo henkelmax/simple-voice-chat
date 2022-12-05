@@ -1,1 +1,1 @@
-- Reworked config system
+- Updated Brazilian Portuguese translation
