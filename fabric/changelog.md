@@ -1,1 +1,1 @@
-- Updated Brazilian Portuguese translation
+- Updated to 1.19.3-rc2
