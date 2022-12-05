@@ -1,1 +1,1 @@
-- Backport to 1.12.2
+- Updated Brazilian Portuguese translation
