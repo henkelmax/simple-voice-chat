@@ -184,10 +184,6 @@ public abstract class ClientConfig {
                         "If the mod should load native libraries",
                         "If set to false, the Java Opus implementation will be used, the denoiser won't be available and you won't be able to record audio."
                 );
-
-        if (Platform.isMac() && !javaMicrophoneImplementation.get()) {
-            javaMicrophoneImplementation.set(true).save();
-        }
     }
 
 }

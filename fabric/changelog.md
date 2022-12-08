@@ -1,1 +1,1 @@
-- Updated to 1.19.3
+- Fixed config issues on MacOS
