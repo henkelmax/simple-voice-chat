@@ -1,1 +1,1 @@
-- Updated Brazilian Portuguese translation
+- Fixed config issues on MacOS
