@@ -1,1 +1,1 @@
-- Fixed config issues on MacOS
+- Updated Korean translation
