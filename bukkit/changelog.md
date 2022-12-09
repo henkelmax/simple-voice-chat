@@ -1,1 +1,1 @@
-- Reworked config system
+- Updated ViaVersion
