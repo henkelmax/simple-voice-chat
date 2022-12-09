@@ -185,11 +185,12 @@ curseforge {
         addGameVersion minecraft_version
         addGameVersion 'Forge'
         addGameVersion "Java ${java_version}"
-        mainArtifact(jar) {
+        mainArtifact(file("${buildDir}/libs/${archivesBaseName}-${version}.jar")) {
             displayName = "[FORGE][${minecraft_version}] ${mod_name} ${mod_version}"
         }
     }
 }
+tasks.curseforge.dependsOn(build)
 
 tasks.modrinth.configure({
     group = 'upload'
@@ -200,7 +201,7 @@ modrinth {
     projectId = modrinth_id
     versionNumber = "forge-${mod_version}"
     versionName = "${mod_name} ${mod_version}"
-    uploadFile = jar
+    uploadFile = file("${buildDir}/libs/${name}-${version}.jar")
     versionType = release_type.toUpperCase()
     changelog = file("changelog.md").text
     gameVersions = [minecraft_version]
