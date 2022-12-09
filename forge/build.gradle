@@ -175,6 +175,7 @@ task deobfJar(type: Jar) {
     from sourceSets.main.output
 }
 
+tasks.curseforge.dependsOn(build)
 curseforge {
     apiKey = file("${rootDir}/curseforge_api_key.txt").exists() ? file("${rootDir}/curseforge_api_key.txt").text : ''
     project {
@@ -190,24 +191,23 @@ curseforge {
         }
     }
 }
-tasks.curseforge.dependsOn(build)
 
 tasks.modrinth.configure({
     group = 'upload'
 })
 
+tasks.modrinth.dependsOn(build)
 modrinth {
     token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
     projectId = modrinth_id
     versionNumber = "forge-${mod_version}"
     versionName = "${mod_name} ${mod_version}"
-    uploadFile = file("${buildDir}/libs/${name}-${version}.jar")
+    uploadFile = file("${buildDir}/libs/${archivesBaseName}-${version}.jar")
     versionType = release_type.toUpperCase()
     changelog = file("changelog.md").text
     gameVersions = [minecraft_version]
     loaders = ['forge']
 }
-tasks.modrinth.dependsOn(build)
 
 forgeUpdate {
     def messages = []
