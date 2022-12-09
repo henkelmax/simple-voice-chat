@@ -1,1 +1,1 @@
-- Updated Korean translation
+- Updated German translation
