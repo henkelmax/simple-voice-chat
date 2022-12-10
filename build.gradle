@@ -2,7 +2,7 @@ plugins {
     id "com.modrinth.minotaur" version "2.+" apply false
 }
 
-task publishAll(type: GradleBuild) {
+/*task publishAll(type: GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':common:clean',
@@ -13,7 +13,7 @@ task publishAll(type: GradleBuild) {
             ':forge:forgeUpdate',
             ':bukkit:build'
     ]
-}
+}*/
 
 task publishBukkit(type: GradleBuild) {
     group = 'voicechat'
