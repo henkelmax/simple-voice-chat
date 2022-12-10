@@ -1,1 +1,1 @@
-- Updated German translation
+- Fixed mixin error
