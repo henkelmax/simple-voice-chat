@@ -1,1 +1,2 @@
 - Fixed mixin error
+- Improved error logging
