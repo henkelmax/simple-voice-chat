@@ -75,7 +75,7 @@ public class ClientManager {
                     client.connect(new InitializationData("127.0.0.1", secretPacket));
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Voicechat.LOGGER.error("Failed to determine server address", e);
             }
         }
     }
