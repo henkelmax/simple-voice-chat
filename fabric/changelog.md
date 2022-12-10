@@ -1,1 +1,1 @@
-- Updated German translation
+- Improved error logging
