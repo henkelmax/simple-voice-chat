@@ -37,4 +37,8 @@ public class VersionCheck {
         }
     }
 
+    public static boolean isCompatible() {
+        return isMinimumVersion(10, 15, 0);
+    }
+
 }
