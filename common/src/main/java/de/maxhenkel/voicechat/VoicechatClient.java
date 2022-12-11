@@ -1,8 +1,11 @@
 package de.maxhenkel.voicechat;
 
+import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.config.ClientConfig;
 import de.maxhenkel.voicechat.config.VolumeConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.macos.VersionCheck;
 import de.maxhenkel.voicechat.profile.UsernameCache;
 import de.maxhenkel.voicechat.resourcepacks.VoiceChatResourcePack;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
@@ -45,6 +48,10 @@ public abstract class VoicechatClient {
 
         //Load instance
         ClientManager.instance();
+
+        if (Platform.isMac() && !VersionCheck.isCompatible()) {
+            Voicechat.LOGGER.warn("Your MacOS version is incompatible with {}", CommonCompatibilityManager.INSTANCE.getModName());
+        }
     }
 
     private void fixVolumeConfig() {
