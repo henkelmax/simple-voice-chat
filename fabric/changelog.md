@@ -1,1 +1,1 @@
-- Improved error logging
+- Fixed MacOS log message on Windows
