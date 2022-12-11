@@ -1,2 +1,1 @@
-- Fixed mixin error
-- Improved error logging
+- Fixed MacOS log message on Windows
