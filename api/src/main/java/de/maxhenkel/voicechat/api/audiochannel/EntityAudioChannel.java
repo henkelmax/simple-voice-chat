@@ -2,6 +2,10 @@ package de.maxhenkel.voicechat.api.audiochannel;
 
 import de.maxhenkel.voicechat.api.Entity;
 
+/**
+ * An audio channel that is bound to an entity.
+ * <b>NOTE</b>: If you are using this for a player, you need to use {@link #updateEntity(Entity)} to update the player after it died.
+ */
 public interface EntityAudioChannel extends AudioChannel {
 
     /**
