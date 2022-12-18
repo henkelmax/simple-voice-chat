@@ -53,7 +53,7 @@ public class PositionalAudioUtils {
      * @return a float array of length 2, containing the left and right volume (0-1)
      */
     private static float[] getStereoVolume(Vec3d soundPos) {
-        return getStereoVolume(getCameraPosition(), ActiveRenderInfo.getRotationXZ(), soundPos);
+        return getStereoVolume(getCameraPosition(), mc.player != null ? mc.player.rotationYaw : 0F, soundPos);
     }
 
     /**

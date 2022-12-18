@@ -1,1 +1,1 @@
-- Fixed MacOS log message on Windows
+- Fixed positional audio not working correctly
