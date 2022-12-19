@@ -1,1 +1,1 @@
-- Fixed MacOS log message on Windows
+- Added multiconnect 1.12.2 compatibility
