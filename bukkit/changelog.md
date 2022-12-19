@@ -1,1 +1,1 @@
-- Updated Adventure API
+- Fixed connection issues on paper
