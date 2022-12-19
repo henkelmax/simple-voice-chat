@@ -110,18 +110,20 @@ public class NetManager implements Listener {
     }
 
     public static void sendToClient(Player player, Packet<?> p) {
-        if (!Voicechat.SERVER.isCompatible(player)) {
-            return;
-        }
-        try {
-            FriendlyByteBuf buf = new FriendlyByteBuf();
-            p.toBytes(buf);
-            byte[] bytes = new byte[buf.readableBytes()];
-            buf.readBytes(bytes);
-            player.sendPluginMessage(Voicechat.INSTANCE, p.getID().toString(), bytes);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Bukkit.getServer().getScheduler().runTask(Voicechat.INSTANCE, () -> {
+            if (!Voicechat.SERVER.isCompatible(player)) {
+                return;
+            }
+            try {
+                FriendlyByteBuf buf = new FriendlyByteBuf();
+                p.toBytes(buf);
+                byte[] bytes = new byte[buf.readableBytes()];
+                buf.readBytes(bytes);
+                player.sendPluginMessage(Voicechat.INSTANCE, p.getID().toString(), bytes);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public static final UUID NUL_UUID = new UUID(0L, 0L);
