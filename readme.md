@@ -150,6 +150,6 @@ You can change every key binding in the Minecraft key binding settings.
 You need to open a port on the server. This is port `24454` `UDP` by default.
 Without opening this port, the voice chat will not work.
 This port can be changed in the server config.
-More information [here](https://modrepo.de/minecraft/voicechat/wiki?t=setup).
+More information [here](https://modrepo.de/minecraft/voicechat/wiki/setup).
 
 The voice chat is encrypted, but we don't guarantee the security of it. Use at your own risk!
