@@ -4,6 +4,7 @@ import com.sun.jna.Platform;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.ConfigEntry;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.macos.VersionCheck;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
@@ -180,7 +181,7 @@ public abstract class ClientConfig {
                         "The 3D audio type"
                 );
         useNatives = builder
-                .booleanEntry("use_natives", true,
+                .booleanEntry("use_natives", !Platform.isMac() || VersionCheck.isMacOSNativeCompatible(),
                         "If the mod should load native libraries",
                         "If set to false, the Java Opus implementation will be used, the denoiser won't be available and you won't be able to record audio."
                 );
