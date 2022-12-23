@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
@@ -110,7 +109,7 @@ public class MicThread extends Thread {
         if (!VoicechatClient.CLIENT_CONFIG.macosCheckMicrophonePermission.get()) {
             return;
         }
-        if (Platform.isMac() && VersionCheck.isCompatible()) {
+        if (VersionCheck.isMacOSNativeCompatible()) {
             AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
             if (status.equals(AVAuthorizationStatus.DENIED)) {
                 ClientManager.sendPlayerError("message.voicechat.macos_no_mic_permission", null);
