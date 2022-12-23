@@ -1,1 +1,1 @@
-- Fixed positional audio not working correctly
+- Disable natives on unsupported MacOS versions
