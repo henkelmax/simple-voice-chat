@@ -4,6 +4,7 @@ import com.sun.jna.Platform;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.FabricClientConfig;
 import de.maxhenkel.voicechat.integration.ClothConfig;
+import de.maxhenkel.voicechat.macos.VersionCheck;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,6 +21,9 @@ public class FabricVoicechatClientMod extends VoicechatClient implements ClientM
 
         if (Platform.isMac() && !CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
             CLIENT_CONFIG.javaMicrophoneImplementation.set(true).save();
+        }
+        if (Platform.isMac() && CLIENT_CONFIG.useNatives.get() && !VersionCheck.isMacOSNativeCompatible()) {
+            CLIENT_CONFIG.useNatives.set(false).save();
         }
     }
 

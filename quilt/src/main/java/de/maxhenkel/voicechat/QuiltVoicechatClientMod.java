@@ -4,6 +4,7 @@ import com.sun.jna.Platform;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.QuiltClientConfig;
 import de.maxhenkel.voicechat.integration.ClothConfig;
+import de.maxhenkel.voicechat.macos.VersionCheck;
 import net.minecraft.client.Minecraft;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
@@ -18,6 +19,9 @@ public class QuiltVoicechatClientMod extends VoicechatClient implements ClientMo
 
         if (Platform.isMac() && !CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
             CLIENT_CONFIG.javaMicrophoneImplementation.set(true).save();
+        }
+        if (Platform.isMac() && CLIENT_CONFIG.useNatives.get() && !VersionCheck.isMacOSNativeCompatible()) {
+            CLIENT_CONFIG.useNatives.set(false).save();
         }
     }
 }
