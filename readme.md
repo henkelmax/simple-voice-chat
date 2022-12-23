@@ -28,7 +28,7 @@ The default PTT key is `CAPS LOCK`, but it can be changed in the key bind settin
 You can access the voice chat settings by pressing the `V` key.
 
 :warning: **NOTE** This mod requires special setup on the server in order to work.
-Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki?t=setup) for more information.
+Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki/setup) for more information.
 
 <p align="center">
     <a href="https://discord.gg/4dH2zwTmyX">
