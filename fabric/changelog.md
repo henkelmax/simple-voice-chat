@@ -1,1 +1,1 @@
-- Added multiconnect 1.12.2 compatibility
+- Disable natives on unsupported MacOS versions
