@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.config;
 
+import com.sun.jna.Platform;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.ConfigEntry;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
@@ -180,8 +181,13 @@ public abstract class ClientConfig {
                         "If set to false, the Java Opus implementation will be used, the denoiser won't be available and you won't be able to record audio."
                 );
 
+
         if (!javaMicrophoneImplementation.get()) {
             javaMicrophoneImplementation.set(true).save();
+        }
+
+        if (Platform.isMac() && useNatives.get() && !VersionCheck.isMacOSNativeCompatible()) {
+            useNatives.set(false).save();
         }
     }
 
