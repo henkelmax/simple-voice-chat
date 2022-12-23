@@ -17,7 +17,7 @@ public class PermissionCheck {
     }
 
     public static AVAuthorizationStatus checkMicrophonePermissions(boolean requestIfNeeded) {
-        if (!VersionCheck.isCompatible()) {
+        if (!VersionCheck.isMacOSNativeCompatible()) {
             return AVAuthorizationStatus.AUTHORIZED;
         }
 

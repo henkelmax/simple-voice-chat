@@ -50,7 +50,7 @@ public abstract class VoicechatClient {
         //Load instance
         ClientManager.instance();
 
-        if (Platform.isMac() && !VersionCheck.isCompatible()) {
+        if (Platform.isMac() && !VersionCheck.isMacOSNativeCompatible()) {
             Voicechat.LOGGER.warn("Your MacOS version is incompatible with {}", CommonCompatibilityManager.INSTANCE.getModName());
         }
     }
