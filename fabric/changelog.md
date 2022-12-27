@@ -1,1 +1,1 @@
-- Disable natives on unsupported MacOS versions
+- Updated Japanese translation
