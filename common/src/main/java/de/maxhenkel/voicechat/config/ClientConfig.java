@@ -61,7 +61,8 @@ public abstract class ClientConfig {
                 );
         microphoneActivationType = builder
                 .enumEntry("microphone_activation_type", MicrophoneActivationType.PTT,
-                        "Microphone activation type"
+                        "Microphone activation type",
+                        "Possible values are 'PTT' and 'VOICE'"
                 );
         outputBufferSize = builder
                 .integerEntry("output_buffer_size", 5, 1, 16,
@@ -71,7 +72,7 @@ public abstract class ClientConfig {
                 );
         audioPacketThreshold = builder
                 .integerEntry("audio_packet_threshold", 3, 0, 16,
-                        "The maximum amount of audio packets that are held back, if a packet arrives out of order or gets dropped",
+                        "The maximum amount of audio packets that are held back if a packet arrives out of order or gets dropped",
                         "This prevents discarding audio packets that are slightly out of order",
                         "Set this to 0 to disable"
                 );
@@ -116,7 +117,8 @@ public abstract class ClientConfig {
                 );
         groupPlayerIconOrientation = builder
                 .enumEntry("group_player_icon_orientation", GroupPlayerIconOrientation.VERTICAL,
-                        "The orientation of the player icons in the group HUD"
+                        "The orientation of the player icons in the group HUD",
+                        "Possible values are 'VERTICAL' and 'HORIZONTAL'"
                 );
         groupPlayerIconPosX = builder
                 .integerEntry("group_player_icon_pos_x", 4, Integer.MIN_VALUE, Integer.MAX_VALUE,
