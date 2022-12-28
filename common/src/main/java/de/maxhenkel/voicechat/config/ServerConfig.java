@@ -45,24 +45,24 @@ public abstract class ServerConfig {
                 );
         crouchDistanceMultiplier = builder
                 .doubleEntry("crouch_distance_multiplier", 1D, 0.01D, 1D,
-                        "The multiplier the voice distance will be reduced by when sneaking"
+                        "The multiplier of the voice distance when crouching"
                 );
         whisperDistanceMultiplier = builder
                 .doubleEntry("whisper_distance_multiplier", 0.5D, 0.01D, 1D,
-                        "The multiplier the voice distance will be reduced by when whispering"
+                        "The multiplier of the voice distance when whispering"
                 );
         voiceChatCodec = builder
                 .enumEntry("codec", Codec.VOIP,
-                        "The opus codec"
+                        "The opus codec",
+                        "Possible values are 'VOIP', 'AUDIO' and 'RESTRICTED_LOWDELAY'"
                 );
         voiceChatMtuSize = builder
                 .integerEntry("mtu_size", 1024, 256, 10000,
-                        "The maximum size in bytes in a voice packet",
-                        "Set this to a lower value if your voice packets don't arrive"
+                        "The maximum size in bytes that voice packets are allowed to have"
                 );
         keepAlive = builder
                 .integerEntry("keep_alive", 1000, 1000, Integer.MAX_VALUE,
-                        "The frequency in which keep alive packets are sent",
+                        "The frequency at which keep alive packets are sent",
                         "Setting this to a higher value may result in timeouts"
                 );
         groupsEnabled = builder
