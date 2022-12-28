@@ -180,7 +180,8 @@ public abstract class ClientConfig {
                 );
         audioType = builder
                 .enumEntry("audio_type", AudioType.NORMAL,
-                        "The 3D audio type"
+                        "The 3D audio type",
+                        "Possible values are 'NORMAL', 'REDUCED' and 'OFF'"
                 );
         useNatives = builder
                 .booleanEntry("use_natives", !Platform.isMac() || VersionCheck.isMacOSNativeCompatible(),
