@@ -2,13 +2,13 @@
 ![](http://cf.way2muchnoise.eu/versions/416089.svg)
 ![](https://img.shields.io/discord/854659575324344340?label=Discord&style=flat&logo=discord&labelColor=2d2d2d)
 
+[Modrinth](https://modrinth.com/mod/simple-voice-chat)
+|
 [CurseForge](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat)
 |
 [CurseForge Bukkit](https://www.curseforge.com/minecraft/bukkit-plugins/simple-voice-chat/files/all)
 |
 [Spigot](https://www.spigotmc.org/resources/simple-voice-chat.93738/)
-|
-[Modrinth](https://modrinth.com/mod/simple-voice-chat)
 |
 [Discord](https://discord.gg/4dH2zwTmyX)
 |
