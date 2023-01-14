@@ -397,6 +397,10 @@ public class Server extends Thread {
         return socket;
     }
 
+    public int getPort() {
+        return socket.getLocalPort();
+    }
+
     public void sendPacket(Packet<?> packet, ClientConnection connection) throws Exception {
         connection.send(this, new NetworkMessage(packet));
     }
