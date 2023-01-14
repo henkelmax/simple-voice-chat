@@ -28,9 +28,9 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     }
 
-    public SecretPacket(Player player, UUID secret, ServerConfig serverConfig) {
+    public SecretPacket(Player player, UUID secret, int port, ServerConfig serverConfig) {
         this.secret = secret;
-        this.serverPort = serverConfig.voiceChatPort.get();
+        this.serverPort = port;
         this.playerUUID = player.getUniqueId();
         this.codec = serverConfig.voiceChatCodec.get();
         this.mtuSize = serverConfig.voiceChatMtuSize.get();
