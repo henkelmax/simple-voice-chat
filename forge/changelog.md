@@ -1,1 +1,1 @@
-- Updated Japanese translation
+- Updated config descriptions
