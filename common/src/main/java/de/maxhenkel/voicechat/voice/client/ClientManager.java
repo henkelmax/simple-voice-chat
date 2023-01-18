@@ -136,7 +136,6 @@ public class ClientManager {
                 }
             }
             NetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
-            Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("message.voicechat.server_port", server.getPort()));
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to change voice chat port: {}", e.getMessage());
         }

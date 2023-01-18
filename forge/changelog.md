@@ -1,1 +1,1 @@
-- Updated config descriptions
+- Fixed error when opening to LAN

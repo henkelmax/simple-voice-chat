@@ -107,30 +107,8 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         joinWorldEvents.forEach(Runnable::run);
     }
 
-    private boolean wasPublished;
-
-    @SubscribeEvent
-    public void onServer(TickEvent.ServerTickEvent event) {
-        if (!event.phase.equals(TickEvent.Phase.END)) {
-            return;
-        }
-        IntegratedServer server = Minecraft.getMinecraft().getIntegratedServer();
-        if (server == null) {
-            return;
-        }
-
-        boolean published = server.getPublic();
-
-        if (published && !wasPublished) {
-            try {
-                Integer serverPort = ObfuscationReflectionHelper.<Integer, MinecraftServer>getPrivateValue(MinecraftServer.class, server, "serverPort");
-                publishServerEvents.forEach(portConsumer -> portConsumer.accept(serverPort));
-            } catch (Exception e) {
-                Voicechat.LOGGER.error("Failed to get integrated server port", e);
-            }
-        }
-
-        wasPublished = published;
+    public void onOpenPort(int port) {
+        publishServerEvents.forEach(consumer -> consumer.accept(port));
     }
 
     @Override
