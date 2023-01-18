@@ -30,10 +30,10 @@ public class ServerVoiceEvents {
         CommonCompatibilityManager.INSTANCE.onServerStopping(this::serverStopping);
 
         CommonCompatibilityManager.INSTANCE.getNetManager().requestSecretChannel.setServerListener((server, player, handler, packet) -> {
-            Voicechat.LOGGER.info("Received secret request of {} ({})", player.getDisplayName().getUnformattedComponentText(), packet.getCompatibilityVersion());
+            Voicechat.LOGGER.info("Received secret request of {} ({})", player.getDisplayNameString(), packet.getCompatibilityVersion());
             clientCompatibilities.put(player.getUniqueID(), packet.getCompatibilityVersion());
             if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
-                Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getDisplayName().getUnformattedComponentText(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
+                Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getDisplayNameString(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
                 player.sendMessage(getIncompatibleMessage(packet.getCompatibilityVersion()));
             } else {
                 initializePlayerConnection(player);
@@ -93,7 +93,7 @@ public class ServerVoiceEvents {
 
         UUID secret = server.getSecret(player.getUniqueID());
         NetManager.sendToClient(player, new SecretPacket(player, secret, server.getPort(), Voicechat.SERVER_CONFIG));
-        Voicechat.LOGGER.info("Sent secret to {}", player.getDisplayName().getUnformattedComponentText());
+        Voicechat.LOGGER.info("Sent secret to {}", player.getDisplayNameString());
     }
 
     public void playerLoggedIn(EntityPlayerMP serverPlayer) {
@@ -131,7 +131,7 @@ public class ServerVoiceEvents {
         }
 
         server.disconnectClient(player.getUniqueID());
-        Voicechat.LOGGER.info("Disconnecting client " + player.getDisplayName().getUnformattedComponentText());
+        Voicechat.LOGGER.info("Disconnecting client {}", player.getDisplayNameString());
     }
 
     @Nullable

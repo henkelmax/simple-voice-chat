@@ -1,1 +1,2 @@
 - Fixed error when opening to LAN
+- Improved log messages

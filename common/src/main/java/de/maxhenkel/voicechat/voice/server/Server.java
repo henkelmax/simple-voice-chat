@@ -382,7 +382,7 @@ public class Server extends Thread {
                 Voicechat.LOGGER.info("Player {} timed out", connection.getPlayerUUID());
                 EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(connection.getPlayerUUID());
                 if (player != null) {
-                    Voicechat.LOGGER.info("Reconnecting player {}", player.getDisplayName().getUnformattedComponentText());
+                    Voicechat.LOGGER.info("Reconnecting player {}", player.getDisplayNameString());
                     Voicechat.SERVER.initializePlayerConnection(player);
                 } else {
                     Voicechat.LOGGER.warn("Reconnecting player {} failed (Could not find player)", connection.getPlayerUUID());
