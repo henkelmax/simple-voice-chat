@@ -139,7 +139,7 @@ public class ServerVoiceEvents {
         }
 
         server.disconnectClient(player.getUUID());
-        Voicechat.LOGGER.info("Disconnecting client " + player.getDisplayName().getString());
+        Voicechat.LOGGER.info("Disconnecting client {}", player.getDisplayName().getString());
     }
 
     @Nullable
