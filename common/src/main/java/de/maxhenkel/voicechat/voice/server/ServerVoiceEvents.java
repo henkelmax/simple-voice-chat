@@ -112,7 +112,7 @@ public class ServerVoiceEvents {
                 if (!serverPlayer.server.isRunning()) {
                     return;
                 }
-                if (!serverPlayer.connection.connection.isConnected()) {
+                if (!serverPlayer.connection.isAcceptingMessages()) {
                     return;
                 }
                 if (!isCompatible(serverPlayer)) {

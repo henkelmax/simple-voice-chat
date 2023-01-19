@@ -33,7 +33,7 @@ public class VoiceChatResourcePack extends AbstractPackResources {
         Pack.ResourcesSupplier resourcesSupplier = (s) -> this;
         Pack.Info info = Pack.readPackInfo("", resourcesSupplier);
         if (info == null) {
-            info = new Pack.Info(name, PackType.CLIENT_RESOURCES.getVersion(SharedConstants.getCurrentVersion()), FeatureFlagSet.of(FeatureFlags.VANILLA));
+            info = new Pack.Info(name, SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES), FeatureFlagSet.of(FeatureFlags.VANILLA));
         }
         return Pack.create(this.packId(), name, false, resourcesSupplier, info, PackType.CLIENT_RESOURCES, Pack.Position.TOP, false, PackSource.BUILT_IN);
     }
