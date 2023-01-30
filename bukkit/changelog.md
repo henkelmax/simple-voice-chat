@@ -1,1 +1,1 @@
-- Fixed voice chat port -1 not working
+- Fixed group sound packet event not providing the correct receiver

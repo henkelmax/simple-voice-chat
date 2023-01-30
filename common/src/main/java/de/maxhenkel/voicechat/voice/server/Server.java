@@ -272,7 +272,7 @@ public class Server extends Thread {
             if (connection == null) {
                 continue;
             }
-            ServerPlayer p = server.getPlayerList().getPlayer(senderState.getUuid());
+            ServerPlayer p = server.getPlayerList().getPlayer(state.getUuid());
             if (p == null) {
                 continue;
             }
