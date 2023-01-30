@@ -1,1 +1,1 @@
-- Updated to 23w04a
+- Fixed group sound packet event not providing the correct receiver
