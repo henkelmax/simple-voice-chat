@@ -275,7 +275,7 @@ public class Server extends Thread {
             if (connection == null) {
                 continue;
             }
-            EntityPlayerMP p = server.getPlayerList().getPlayerByUUID(senderState.getUuid());
+            EntityPlayerMP p = server.getPlayerList().getPlayerByUUID(state.getUuid());
             if (p == null) {
                 continue;
             }

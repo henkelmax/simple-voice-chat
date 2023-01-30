@@ -1,2 +1,1 @@
-- Fixed error when opening to LAN
-- Improved log messages
+- Fixed group sound packet event not providing the correct receiver

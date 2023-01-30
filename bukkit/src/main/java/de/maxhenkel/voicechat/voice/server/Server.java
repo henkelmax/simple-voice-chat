@@ -247,11 +247,11 @@ public class Server extends Thread {
             return;
         }
         NetworkMessage soundMessage = new NetworkMessage(new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null));
+        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
         for (PlayerState state : playerStateManager.getStates()) {
             if (!group.equals(state.getGroup())) {
                 continue;
             }
-            GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
             if (senderState.getUuid().equals(state.getUuid())) {
                 continue;
             }
@@ -259,7 +259,7 @@ public class Server extends Thread {
             if (connection == null) {
                 continue;
             }
-            Player p = server.getPlayer(senderState.getUuid());
+            Player p = server.getPlayer(state.getUuid());
             if (p == null) {
                 continue;
             }
