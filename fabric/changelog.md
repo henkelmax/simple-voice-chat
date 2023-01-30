@@ -1,1 +1,1 @@
-- Updated config descriptions
+- Fixed group sound packet event not providing the correct receiver
