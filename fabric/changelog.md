@@ -1,1 +1,1 @@
-- Fixed group sound packet event not providing the correct receiver
+- Updated to 23w05a

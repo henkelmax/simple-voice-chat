@@ -17,7 +17,7 @@ public class ToggleImageButton extends ImageButton {
     }
 
     @Override
-    protected void renderImage(PoseStack matrices, int mouseX, int mouseY, float delta) {
+    protected void renderImage(PoseStack matrices, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, texture);

@@ -36,7 +36,7 @@ public class ImageButton extends AbstractButton {
         this.onPress.onPress(this);
     }
 
-    protected void renderImage(PoseStack matrices, int mouseX, int mouseY, float delta) {
+    protected void renderImage(PoseStack matrices, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, texture);
@@ -44,9 +44,9 @@ public class ImageButton extends AbstractButton {
     }
 
     @Override
-    public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
-        super.renderButton(matrices, mouseX, mouseY, delta);
-        renderImage(matrices, mouseX, mouseY, delta);
+    public void renderButton(PoseStack matrices, int mouseX, int mouseY) {
+        super.renderButton(matrices, mouseX, mouseY);
+        renderImage(matrices, mouseX, mouseY);
 
         if (isHovered) {
             renderToolTip(matrices, mouseX, mouseY);
