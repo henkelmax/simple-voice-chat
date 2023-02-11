@@ -235,7 +235,7 @@ public class MicThread extends Thread {
         }
 
         try {
-            if (connection != null && connection.isAuthenticated()) {
+            if (connection != null && connection.isInitialized()) {
                 byte[] encoded = encoder.encode(audio);
                 connection.sendToServer(new NetworkMessage(new MicPacket(encoded, whispering, sequenceNumber.getAndIncrement())));
                 stopPacketSent = false;
@@ -258,7 +258,7 @@ public class MicThread extends Thread {
             return;
         }
 
-        if (connection == null || !connection.isAuthenticated()) {
+        if (connection == null || !connection.isInitialized()) {
             return;
         }
         try {

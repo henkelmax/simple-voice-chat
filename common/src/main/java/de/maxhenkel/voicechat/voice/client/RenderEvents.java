@@ -169,7 +169,7 @@ public class RenderEvents {
     }
 
     private boolean shouldShowIcons() {
-        if (ClientManager.getClient() != null && ClientManager.getClient().getConnection() != null && ClientManager.getClient().getConnection().isAuthenticated()) {
+        if (ClientManager.getClient() != null && ClientManager.getClient().getConnection() != null && ClientManager.getClient().getConnection().isInitialized()) {
             return true;
         }
         return minecraft.getIntegratedServer() != null && !minecraft.getIntegratedServer().getPublic();
