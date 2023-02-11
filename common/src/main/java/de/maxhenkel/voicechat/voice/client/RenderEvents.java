@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
-import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -15,6 +14,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.UUID;
 
 public class RenderEvents {
 
@@ -102,7 +103,7 @@ public class RenderEvents {
         if (!minecraft.gameSettings.hideGUI) {
             ClientPlayerStateManager manager = ClientManager.getPlayerStateManager();
             ClientVoicechat client = ClientManager.getClient();
-            ClientGroup group = manager.getGroup(player);
+            UUID groupId = manager.getGroup(player);
 
             if (client != null && client.getTalkCache().isWhispering(player)) {
                 renderPlayerIcon(player, str, x, y, z, maxDistance, WHISPER_SPEAKER_ICON);
@@ -110,7 +111,7 @@ public class RenderEvents {
                 renderPlayerIcon(player, str, x, y, z, maxDistance, SPEAKER_ICON);
             } else if (manager.isPlayerDisconnected(player)) {
                 renderPlayerIcon(player, str, x, y, z, maxDistance, DISCONNECT_ICON);
-            } else if (group != null && !group.equals(manager.getGroup())) {
+            } else if (groupId != null && !groupId.equals(manager.getGroup() == null ? null : manager.getGroup().getId())) { // TODO Change
                 renderPlayerIcon(player, str, x, y, z, maxDistance, GROUP_ICON);
             } else if (manager.isPlayerDisabled(player)) {
                 renderPlayerIcon(player, str, x, y, z, maxDistance, SPEAKER_OFF_ICON);

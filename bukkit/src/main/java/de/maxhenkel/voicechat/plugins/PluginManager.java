@@ -17,7 +17,6 @@ import de.maxhenkel.voicechat.plugins.impl.packets.StaticSoundPacketImpl;
 import de.maxhenkel.voicechat.voice.common.*;
 import de.maxhenkel.voicechat.voice.server.Group;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -136,6 +135,10 @@ public class PluginManager {
 
     public boolean onLeaveGroup(Player player) {
         return dispatchEvent(LeaveGroupEvent.class, new LeaveGroupEventImpl(null, VoicechatConnectionImpl.fromPlayer(player)));
+    }
+
+    public boolean onRemoveGroup(Group group) {
+        return dispatchEvent(RemoveGroupEvent.class, new RemoveGroupEventImpl(new GroupImpl(group)));
     }
 
     public boolean onMicPacket(Player player, PlayerState state, MicPacket packet) {

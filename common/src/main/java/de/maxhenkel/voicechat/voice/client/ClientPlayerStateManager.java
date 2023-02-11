@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.api.events.VoicechatDisableEvent;
 import de.maxhenkel.voicechat.gui.CreateGroupScreen;
 import de.maxhenkel.voicechat.gui.EnterPasswordScreen;
 import de.maxhenkel.voicechat.gui.group.GroupScreen;
+import de.maxhenkel.voicechat.gui.group.JoinGroupList;
 import de.maxhenkel.voicechat.gui.group.JoinGroupScreen;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeList;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 public class ClientPlayerStateManager {
 
     private boolean disconnected;
+    // TODO Maybe change to UUID
     @Nullable
     private ClientGroup group;
 
@@ -50,6 +52,7 @@ public class ClientPlayerStateManager {
             Voicechat.logDebug("Got state for {}: {}", packet.getPlayerState().getName(), packet.getPlayerState());
             VoicechatClient.USERNAME_CACHE.updateUsernameAndSave(packet.getPlayerState().getUuid(), packet.getPlayerState().getName());
             AdjustVolumeList.update();
+            JoinGroupList.update();
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel.setClientListener((client, handler, packet) -> {
             states = packet.getPlayerStates();
@@ -59,6 +62,7 @@ public class ClientPlayerStateManager {
             }
             VoicechatClient.USERNAME_CACHE.save();
             AdjustVolumeList.update();
+            JoinGroupList.update();
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().joinedGroupChannel.setClientListener((client, handler, packet) -> {
             GuiScreen screen = Minecraft.getMinecraft().currentScreen;
@@ -175,7 +179,7 @@ public class ClientPlayerStateManager {
     }
 
     @Nullable
-    public ClientGroup getGroup(EntityPlayer player) {
+    public UUID getGroup(EntityPlayer player) {
         PlayerState state = states.get(player.getUniqueID());
         if (state == null) {
             return null;

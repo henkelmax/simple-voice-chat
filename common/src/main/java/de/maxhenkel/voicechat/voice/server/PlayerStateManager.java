@@ -5,7 +5,6 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.net.PlayerStatesPacket;
-import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -104,7 +103,7 @@ public class PlayerStateManager {
         return new PlayerState(player.getUniqueID(), player.getGameProfile().getName(), false, true);
     }
 
-    public void setGroup(EntityPlayerMP player, @Nullable ClientGroup group) {
+    public void setGroup(EntityPlayerMP player, @Nullable UUID group) {
         PlayerState state = states.get(player.getUniqueID());
         if (state == null) {
             state = PlayerStateManager.defaultDisconnectedState(player);

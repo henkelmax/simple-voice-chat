@@ -21,6 +21,7 @@ public class GroupList extends ListScreenListBase<GroupEntry> {
     }
 
     public void tick() {
+        // TODO Trigger when player state changes
         List<PlayerState> playerStates = ClientManager.getPlayerStateManager().getPlayerStates(true);
         ClientGroup group = ClientManager.getPlayerStateManager().getGroup();
         if (group == null) {
@@ -61,7 +62,7 @@ public class GroupList extends ListScreenListBase<GroupEntry> {
     }
 
     private boolean isInGroup(PlayerState state, ClientGroup group) {
-        return state.hasGroup() && state.getGroup().getId().equals(group.getId());
+        return state.hasGroup() && state.getGroup().equals(group.getId());
     }
 
 }
