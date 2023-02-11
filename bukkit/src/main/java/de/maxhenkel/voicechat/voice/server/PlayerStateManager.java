@@ -5,7 +5,6 @@ import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.net.PlayerStatesPacket;
 import de.maxhenkel.voicechat.net.UpdateStatePacket;
-import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -103,7 +102,7 @@ public class PlayerStateManager implements Listener {
         return new PlayerState(player.getUniqueId(), player.getName(), false, true);
     }
 
-    public void setGroup(Player player, @Nullable ClientGroup group) {
+    public void setGroup(Player player, @Nullable UUID group) {
         PlayerState state = states.get(player.getUniqueId());
         if (state == null) {
             state = PlayerStateManager.defaultDisconnectedState(player);

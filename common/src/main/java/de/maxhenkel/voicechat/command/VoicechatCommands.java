@@ -114,7 +114,7 @@ public class VoicechatCommands {
             }
 
             ServerPlayer player = EntityArgument.getPlayer(commandSource, "target");
-            Group group = server.getGroupManager().getGroup(state.getGroup().getId());
+            Group group = server.getGroupManager().getGroup(state.getGroup());
 
             if (group == null) {
                 return 1;

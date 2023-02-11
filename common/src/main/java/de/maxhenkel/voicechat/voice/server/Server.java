@@ -255,14 +255,14 @@ public class Server extends Thread {
     }
 
     private void processGroupPacket(PlayerState senderState, ServerPlayer sender, MicPacket packet) throws Exception {
-        ClientGroup group = senderState.getGroup();
-        if (group == null) {
+        UUID groupId = senderState.getGroup();
+        if (groupId == null) {
             return;
         }
         GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
         NetworkMessage soundMessage = new NetworkMessage(groupSoundPacket);
         for (PlayerState state : playerStateManager.getStates()) {
-            if (!group.equals(state.getGroup())) {
+            if (!groupId.equals(state.getGroup())) {
                 continue;
             }
             if (senderState.getUuid().equals(state.getUuid())) {
@@ -283,7 +283,7 @@ public class Server extends Thread {
     }
 
     private void processProximityPacket(PlayerState senderState, ServerPlayer sender, MicPacket packet) throws Exception {
-        @Nullable ClientGroup group = senderState.getGroup();
+        @Nullable UUID groupId = senderState.getGroup();
         float distance = Utils.getDefaultDistance();
 
         SoundPacket<?> soundPacket = null;
@@ -321,7 +321,7 @@ public class Server extends Thread {
             source = SoundPacketEvent.SOURCE_PROXIMITY;
         }
 
-        broadcast(ServerWorldUtils.getPlayersInRange(sender.getLevel(), sender.position(), getBroadcastRange(distance), p -> !p.getUUID().equals(sender.getUUID())), soundPacket, sender, senderState, group, source);
+        broadcast(ServerWorldUtils.getPlayersInRange(sender.getLevel(), sender.position(), getBroadcastRange(distance), p -> !p.getUUID().equals(sender.getUUID())), soundPacket, sender, senderState, groupId, source);
     }
 
     public void sendSoundPacket(ServerPlayer player, ClientConnection connection, SoundPacket<?> soundPacket) throws Exception {
@@ -342,7 +342,7 @@ public class Server extends Thread {
         return Math.max(broadcastRange, minRange);
     }
 
-    public void broadcast(Collection<ServerPlayer> players, SoundPacket<?> packet, @Nullable ServerPlayer sender, @Nullable PlayerState senderState, @Nullable ClientGroup group, String source) {
+    public void broadcast(Collection<ServerPlayer> players, SoundPacket<?> packet, @Nullable ServerPlayer sender, @Nullable PlayerState senderState, @Nullable UUID groupId, String source) {
         for (ServerPlayer player : players) {
             PlayerState state = playerStateManager.getState(player.getUUID());
             if (state == null) {
@@ -351,7 +351,7 @@ public class Server extends Thread {
             if (state.isDisabled() || state.isDisconnected()) {
                 continue;
             }
-            if (state.hasGroup() && state.getGroup().equals(group)) {
+            if (state.hasGroup() && state.getGroup().equals(groupId)) {
                 continue;
             }
             ClientConnection connection = getConnection(player.getGameProfile().getId());
