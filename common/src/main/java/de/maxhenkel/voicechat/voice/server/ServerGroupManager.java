@@ -19,13 +19,12 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-// TODO Rename to ServerGroupManager
-public class GroupManager {
+public class ServerGroupManager {
 
     private final Map<UUID, Group> groups;
     private final Server server;
 
-    public GroupManager(Server server) {
+    public ServerGroupManager(Server server) {
         this.server = server;
         groups = new ConcurrentHashMap<>();
         CommonCompatibilityManager.INSTANCE.onPlayerCompatibilityCheckSucceeded(this::onPlayerCompatibilityCheckSucceeded);

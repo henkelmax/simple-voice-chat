@@ -15,12 +15,11 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-// TODO Rename to ServerGroupManager
-public class GroupManager {
+public class ServerGroupManager {
 
     private final Map<UUID, Group> groups;
 
-    public GroupManager() {
+    public ServerGroupManager() {
         groups = new ConcurrentHashMap<>();
     }
 
