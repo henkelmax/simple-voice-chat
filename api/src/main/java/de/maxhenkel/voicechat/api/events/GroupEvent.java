@@ -16,6 +16,7 @@ public interface GroupEvent extends ServerEvent {
     /**
      * @return the connection of the player
      */
+    @Nullable
     VoicechatConnection getConnection();
 
 }
