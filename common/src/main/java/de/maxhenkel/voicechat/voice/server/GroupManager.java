@@ -2,11 +2,12 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.net.AddGroupPacket;
 import de.maxhenkel.voicechat.net.JoinedGroupPacket;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.net.RemoveGroupPacket;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
-import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -18,6 +19,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+// TODO Rename to ServerGroupManager
 public class GroupManager {
 
     private final Map<UUID, Group> groups;
@@ -26,6 +28,7 @@ public class GroupManager {
     public GroupManager(Server server) {
         this.server = server;
         groups = new ConcurrentHashMap<>();
+        CommonCompatibilityManager.INSTANCE.onPlayerCompatibilityCheckSucceeded(this::onPlayerCompatibilityCheckSucceeded);
         CommonCompatibilityManager.INSTANCE.getNetManager().joinGroupChannel.setServerListener((srv, player, handler, packet) -> {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
@@ -51,18 +54,30 @@ public class GroupManager {
         });
     }
 
+    private void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
+        Voicechat.logDebug("Synchronizing {} groups with {}", groups.size(), player.getDisplayName().getString());
+        for (Group category : groups.values()) {
+            broadcastAddGroup(category);
+        }
+    }
+
     private PlayerStateManager getStates() {
         return server.getPlayerStateManager();
     }
 
-    public void addGroup(Group group, ServerPlayerEntity player) {
+    public void addGroup(Group group, @Nullable ServerPlayerEntity player) {
         if (PluginManager.instance().onCreateGroup(player, group)) {
             return;
         }
         groups.put(group.getId(), group);
+        broadcastAddGroup(group);
+
+        if (player == null) {
+            return;
+        }
 
         PlayerStateManager manager = getStates();
-        manager.setGroup(player, group.toClientGroup());
+        manager.setGroup(player, group.getId());
 
         NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
     }
@@ -83,7 +98,7 @@ public class GroupManager {
         }
 
         PlayerStateManager manager = getStates();
-        manager.setGroup(player, group.toClientGroup());
+        manager.setGroup(player, group.getId());
 
         NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
     }
@@ -97,21 +112,52 @@ public class GroupManager {
         manager.setGroup(player, null);
         NetManager.sendToClient(player, new JoinedGroupPacket(null, false));
 
-        cleanEmptyGroups();
+        cleanupGroups();
     }
 
-    public void cleanEmptyGroups() {
+    public void cleanupGroups() {
         PlayerStateManager manager = getStates();
-        List<UUID> usedGroups = manager.getStates().stream().filter(PlayerState::hasGroup).map(state -> state.getGroup().getId()).distinct().collect(Collectors.toList());
-        List<UUID> groupsToRemove = groups.keySet().stream().filter(uuid -> !usedGroups.contains(uuid)).collect(Collectors.toList());
+        List<UUID> usedGroups = manager.getStates().stream().filter(PlayerState::hasGroup).map(PlayerState::getGroup).distinct().collect(Collectors.toList());
+        List<UUID> groupsToRemove = groups.entrySet().stream().filter(entry -> !entry.getValue().isPersistent()).map(Map.Entry::getKey).filter(uuid -> !usedGroups.contains(uuid)).collect(Collectors.toList());
         for (UUID uuid : groupsToRemove) {
-            groups.remove(uuid);
+            removeGroup(uuid);
         }
+    }
+
+    public boolean removeGroup(UUID groupId) {
+        Group group = groups.get(groupId);
+        if (group == null) {
+            return false;
+        }
+
+        PlayerStateManager manager = getStates();
+        if (manager.getStates().stream().anyMatch(state -> state.hasGroup() && state.getGroup().equals(groupId))) {
+            return false;
+        }
+
+        if (PluginManager.instance().onRemoveGroup(group)) {
+            return false;
+        }
+
+        groups.remove(groupId);
+        broadcastRemoveGroup(groupId);
+        // TODO Handle kicking players from group instead of preventing it
+        return true;
     }
 
     @Nullable
     public Group getGroup(UUID groupID) {
         return groups.get(groupID);
+    }
+
+    private void broadcastAddGroup(Group group) {
+        AddGroupPacket packet = new AddGroupPacket(group.toClientGroup());
+        server.getServer().getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
+    }
+
+    private void broadcastRemoveGroup(UUID group) {
+        RemoveGroupPacket packet = new RemoveGroupPacket(group);
+        server.getServer().getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
     @Nullable
@@ -120,11 +166,14 @@ public class GroupManager {
         if (state == null) {
             return null;
         }
-        ClientGroup group = state.getGroup();
-        if (group == null) {
+        UUID groupId = state.getGroup();
+        if (groupId == null) {
             return null;
         }
-        return getGroup(group.getId());
+        return getGroup(groupId);
     }
 
+    public Map<UUID, Group> getGroups() {
+        return groups;
+    }
 }

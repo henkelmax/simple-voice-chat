@@ -56,6 +56,7 @@
   "message.voicechat.incompatible_version": "Your voice chat version is not compatible with the servers version.\nPlease install version %s of %s.",
   "message.voicechat.incompatible": "Your voice chat version is not compatible with the servers version.",
   "message.voicechat.group_members": "Group members",
+  "message.voicechat.no_group_members": "This group is empty",
   "message.voicechat.join_create_group": "Join or Create Group",
   "message.voicechat.group_name": "Group name",
   "message.voicechat.leave_group": "Leave group",

@@ -61,12 +61,6 @@ public class JoinGroupScreen extends ListScreenBase {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        groupList.tick();
-    }
-
-    @Override
     public void renderBackground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
         minecraft.getTextureManager().bind(TEXTURE);
         blit(poseStack, guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE);

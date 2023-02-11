@@ -27,6 +27,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
 
     protected static final ResourceLocation LOCK = new ResourceLocation(Voicechat.MODID, "textures/icons/lock.png");
     protected static final ITextComponent GROUP_MEMBERS = new TranslationTextComponent("message.voicechat.group_members").withStyle(TextFormatting.WHITE);
+    protected static final Component NO_GROUP_MEMBERS = new TranslatableComponent("message.voicechat.no_group_members").withStyle(ChatFormatting.WHITE);
 
     protected static final int SKIN_SIZE = 12;
     protected static final int PADDING = 4;
@@ -92,8 +93,13 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             poseStack.popPose();
         }
 
-        if (hovered) {
-            List<IReorderingProcessor> tooltip = Lists.newArrayList();
+        if (!hovered) {
+            return;
+        }
+        List<IReorderingProcessor> tooltip = Lists.newArrayList();
+        if (group.getMembers().isEmpty()) {
+            tooltip.add(NO_GROUP_MEMBERS.getVisualOrderText());
+        } else {
             tooltip.add(GROUP_MEMBERS.getVisualOrderText());
             int maxMembers = 10;
             for (int i = 0; i < group.getMembers().size(); i++) {
@@ -104,11 +110,11 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
                 PlayerState state = group.getMembers().get(i);
                 tooltip.add(new StringTextComponent("  " + state.getName()).withStyle(TextFormatting.GRAY).getVisualOrderText());
             }
-            parent.postRender(() -> {
-                parent.renderTooltip(poseStack, tooltip, mouseX, mouseY);
-            });
         }
 
+        parent.postRender(() -> {
+            parent.renderTooltip(poseStack, tooltip, mouseX, mouseY);
+        });
     }
 
     public Group getGroup() {

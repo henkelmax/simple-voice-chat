@@ -85,6 +85,7 @@ public class ServerVoiceEvents implements Listener {
         }
         server.getPlayerStateManager().onPlayerCompatibilityCheckSucceeded(player);
         server.getCategoryManager().onPlayerCompatibilityCheckSucceeded(player);
+        server.getGroupManager().onPlayerCompatibilityCheckSucceeded(player);
 
         UUID secret = server.getSecret(player.getUniqueId());
         NetManager.sendToClient(player, new SecretPacket(player, secret, server.getPort(), Voicechat.SERVER_CONFIG));
