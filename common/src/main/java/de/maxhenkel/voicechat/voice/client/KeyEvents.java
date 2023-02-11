@@ -110,7 +110,7 @@ public class KeyEvents {
     }
 
     private boolean checkConnected() {
-        if (ClientManager.getClient() == null || ClientManager.getClient().getConnection() == null || !ClientManager.getClient().getConnection().isAuthenticated()) {
+        if (ClientManager.getClient() == null || ClientManager.getClient().getConnection() == null || !ClientManager.getClient().getConnection().isInitialized()) {
             sendUnavailableMessage();
             return false;
         }
