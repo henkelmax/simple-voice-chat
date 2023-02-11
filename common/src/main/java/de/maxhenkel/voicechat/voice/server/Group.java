@@ -11,11 +11,17 @@ public class Group {
     private String name;
     @Nullable
     private String password;
+    private boolean persistent;
 
-    public Group(UUID id, String name, @Nullable String password) {
+    public Group(UUID id, String name, @Nullable String password, boolean persistent) {
         this.id = id;
         this.name = name;
         this.password = password;
+        this.persistent = persistent;
+    }
+
+    public Group(UUID id, String name, @Nullable String password) {
+        this(id, name, password, false);
     }
 
     public Group(UUID id, String name) {
@@ -39,8 +45,12 @@ public class Group {
         return password;
     }
 
+    public boolean isPersistent() {
+        return persistent;
+    }
+
     public ClientGroup toClientGroup() {
-        return new ClientGroup(id, name, password != null);
+        return new ClientGroup(id, name, password != null, persistent);
     }
 
 }

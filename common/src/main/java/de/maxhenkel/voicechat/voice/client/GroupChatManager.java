@@ -108,7 +108,7 @@ public class GroupChatManager {
         }
 
         for (PlayerState state : ClientManager.getPlayerStateManager().getPlayerStates(includeSelf)) {
-            if (state.hasGroup() && state.getGroup().getId().equals(group.getId())) {
+            if (state.hasGroup() && state.getGroup().equals(group.getId())) {
                 entries.add(state);
             }
         }

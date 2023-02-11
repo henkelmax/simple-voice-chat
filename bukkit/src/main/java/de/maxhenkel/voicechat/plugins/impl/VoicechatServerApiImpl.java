@@ -24,6 +24,7 @@ import org.bukkit.World;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -142,7 +143,48 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
 
     @Override
     public Group createGroup(String name, @Nullable String password) {
-        return new GroupImpl(new de.maxhenkel.voicechat.voice.server.Group(UUID.randomUUID(), name, password));
+        return createGroup(name, password, false);
+    }
+
+    @Override
+    public Group createGroup(String name, @Nullable String password, boolean persistent) {
+        GroupImpl group = new GroupImpl(new de.maxhenkel.voicechat.voice.server.Group(UUID.randomUUID(), name, password, persistent));
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return group;
+        }
+        if (persistent) {
+            server.getGroupManager().addGroup(group.getGroup(), null);
+        }
+        return group;
+    }
+
+    @Override
+    public boolean removeGroup(UUID groupId) {
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return false;
+        }
+        return server.getGroupManager().removeGroup(groupId);
+    }
+
+    @Nullable
+    @Override
+    public Group getGroup(UUID groupId) {
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return null;
+        }
+        return new GroupImpl(server.getGroupManager().getGroup(groupId));
+    }
+
+    @Override
+    public Collection<Group> getGroups() {
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return Collections.emptyList();
+        }
+        return server.getGroupManager().getGroups().values().stream().map(group -> (Group) new GroupImpl(group)).toList();
     }
 
     @Nullable

@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
-import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -17,6 +16,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+
+import java.util.UUID;
 
 public class RenderEvents {
 
@@ -104,7 +105,7 @@ public class RenderEvents {
         if (!minecraft.options.hideGui) {
             ClientPlayerStateManager manager = ClientManager.getPlayerStateManager();
             ClientVoicechat client = ClientManager.getClient();
-            ClientGroup group = manager.getGroup(player);
+            UUID groupId = manager.getGroup(player);
 
             if (client != null && client.getTalkCache().isWhispering(player)) {
                 renderPlayerIcon(player, component, WHISPER_SPEAKER_ICON, stack, vertexConsumers, light);
@@ -112,7 +113,7 @@ public class RenderEvents {
                 renderPlayerIcon(player, component, SPEAKER_ICON, stack, vertexConsumers, light);
             } else if (manager.isPlayerDisconnected(player)) {
                 renderPlayerIcon(player, component, DISCONNECT_ICON, stack, vertexConsumers, light);
-            } else if (group != null && !group.equals(manager.getGroup())) {
+            } else if (groupId != null && !groupId.equals(manager.getGroup() == null ? null : manager.getGroup().getId())) { // TODO Change
                 renderPlayerIcon(player, component, GROUP_ICON, stack, vertexConsumers, light);
             } else if (manager.isPlayerDisabled(player)) {
                 renderPlayerIcon(player, component, SPEAKER_OFF_ICON, stack, vertexConsumers, light);

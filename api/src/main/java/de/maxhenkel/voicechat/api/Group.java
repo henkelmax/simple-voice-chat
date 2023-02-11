@@ -19,4 +19,9 @@ public interface Group {
      */
     UUID getId();
 
+    /**
+     * @return if the group is persistent
+     */
+    boolean isPersistent();
+
 }

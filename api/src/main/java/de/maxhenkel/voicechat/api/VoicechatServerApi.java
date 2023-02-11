@@ -126,6 +126,40 @@ public interface VoicechatServerApi extends VoicechatApi {
     Group createGroup(String name, @Nullable String password);
 
     /**
+     * Creates a new group.
+     *
+     * @param name       the name of the group
+     * @param password   the password of the group - <code>null</code> for no password
+     * @param persistent if the group should be persistent
+     * @return the group
+     */
+    Group createGroup(String name, @Nullable String password, boolean persistent);
+
+    /**
+     * Removes a persistent group.
+     *
+     * <b>NOTE</b>: You can't remove a group that is not persistent or has players in it.
+     *
+     * @param groupId the ID of the group
+     * @return if the group was removed
+     */
+    boolean removeGroup(UUID groupId);
+
+    /**
+     * Gets a group by its ID.
+     *
+     * @param groupId the ID of the group
+     * @return the group or <code>null</code> if the group doesn't exist
+     */
+    @Nullable
+    Group getGroup(UUID groupId);
+
+    /**
+     * @return all groups
+     */
+    Collection<Group> getGroups();
+
+    /**
      * Gets the secret for the user with this <code>userId</code>.
      * Calling this function with a players UUID, that is already connected, this will return the secret of that player.
      * Calling it with a new random UUID this will return a new secret.
