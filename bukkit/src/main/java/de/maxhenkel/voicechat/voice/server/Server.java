@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class Server extends Thread {
 
     private final Map<UUID, ClientConnection> connections;
+    private final Map<UUID, ClientConnection> unCheckedConnections;
     private final Map<UUID, UUID> secrets;
     private final int port;
     private final org.bukkit.Server server;
@@ -54,6 +55,7 @@ public class Server extends Thread {
         this.server = Bukkit.getServer();
         socket = PluginManager.instance().getSocketImplementation();
         connections = new HashMap<>();
+        unCheckedConnections = new HashMap<>();
         secrets = new HashMap<>();
         packetQueue = new LinkedBlockingQueue<>();
         pingManager = new PingManager(this);
@@ -100,6 +102,7 @@ public class Server extends Thread {
 
     public void disconnectClient(UUID playerUUID) {
         connections.remove(playerUUID);
+        unCheckedConnections.remove(playerUUID);
         secrets.remove(playerUUID);
         PluginManager.instance().onPlayerDisconnected(playerUUID);
     }
@@ -168,30 +171,47 @@ public class Server extends Thread {
                     if (message.getPacket() instanceof AuthenticatePacket packet) {
                         UUID secret = secrets.get(packet.getPlayerUUID());
                         if (secret != null && secret.equals(packet.getSecret())) {
-                            ClientConnection connection;
-                            if (!connections.containsKey(packet.getPlayerUUID())) {
+                            ClientConnection connection = unCheckedConnections.get(packet.getPlayerUUID());
+                            if (connection == null) {
+                                connection = connections.get(packet.getPlayerUUID());
+                            }
+                            if (connection == null) {
                                 connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress());
-                                connections.put(packet.getPlayerUUID(), connection);
+                                unCheckedConnections.put(packet.getPlayerUUID(), connection);
                                 Voicechat.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
-                                Player player = server.getPlayer(packet.getPlayerUUID());
-                                if (player != null) {
-                                    playerStateManager.onPlayerVoicechatConnect(player);
-                                    PluginManager.instance().onPlayerConnected(player);
-                                }
-
-                            } else {
-                                connection = getConnection(packet.getPlayerUUID());
                             }
                             sendPacket(new AuthenticateAckPacket(), connection);
                         }
                     }
 
-                    UUID playerUUID = message.getSender(Server.this);
-                    if (playerUUID == null) {
+                    if (message.getPacket() instanceof ConnectionCheckPacket) {
+                        ClientConnection connection = getUnconnectedSender(message);
+                        if (connection == null) {
+                            connection = getSender(message);
+                            if (connection != null) {
+                                sendPacket(new ConnectionCheckAckPacket(), connection);
+                            }
+                            continue;
+                        }
+                        connections.put(connection.getPlayerUUID(), connection);
+                        unCheckedConnections.remove(connection.getPlayerUUID());
+                        Voicechat.LOGGER.info("Successfully validated connection of player {}", connection.getPlayerUUID());
+                        Player player = server.getPlayer(connection.getPlayerUUID());
+                        if (player != null) {
+                            playerStateManager.onPlayerVoicechatConnect(player);
+                            PluginManager.instance().onPlayerConnected(player);
+                            Voicechat.LOGGER.info("Player {} successfully connected to voice chat", player.getName());
+                        }
+                        sendPacket(new ConnectionCheckAckPacket(), connection);
                         continue;
                     }
 
-                    ClientConnection conn = getConnection(playerUUID);
+                    ClientConnection conn = getSender(message);
+                    if (conn == null) {
+                        continue;
+                    }
+
+                    UUID playerUUID = conn.getPlayerUUID();
 
                     if (message.getPacket() instanceof MicPacket packet) {
                         Player player = server.getPlayer(playerUUID);
@@ -378,6 +398,26 @@ public class Server extends Thread {
             sendPacket(new KeepAlivePacket(), connection);
         }
 
+    }
+
+    @Nullable
+    public ClientConnection getSender(NetworkMessage message) {
+        return connections
+                .values()
+                .stream()
+                .filter(connection -> connection.getAddress().equals(message.getAddress()))
+                .findAny()
+                .orElse(null);
+    }
+
+    @Nullable
+    public ClientConnection getUnconnectedSender(NetworkMessage message) {
+        return unCheckedConnections
+                .values()
+                .stream()
+                .filter(connection -> connection.getAddress().equals(message.getAddress()))
+                .findAny()
+                .orElse(null);
     }
 
     public Map<UUID, ClientConnection> getConnections() {
