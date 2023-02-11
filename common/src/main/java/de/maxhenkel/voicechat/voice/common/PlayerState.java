@@ -12,7 +12,7 @@ public class PlayerState {
     private boolean disabled;
     private boolean disconnected;
     @Nullable
-    private ClientGroup group;
+    private UUID group;
 
     public PlayerState(UUID uuid, String name, boolean disabled, boolean disconnected) {
         this.uuid = uuid;
@@ -54,11 +54,11 @@ public class PlayerState {
     }
 
     @Nullable
-    public ClientGroup getGroup() {
+    public UUID getGroup() {
         return group;
     }
 
-    public void setGroup(@Nullable ClientGroup group) {
+    public void setGroup(@Nullable UUID group) {
         this.group = group;
     }
 
@@ -86,7 +86,7 @@ public class PlayerState {
         PlayerState state = new PlayerState(uuid, name, disabled, disconnected);
 
         if (buf.readBoolean()) {
-            state.setGroup(ClientGroup.fromBytes(buf));
+            state.setGroup(buf.readUUID());
         }
 
         return state;
@@ -99,7 +99,7 @@ public class PlayerState {
         buf.writeUtf(name);
         buf.writeBoolean(hasGroup());
         if (hasGroup()) {
-            group.toBytes(buf);
+            buf.writeUUID(group);
         }
     }
 
