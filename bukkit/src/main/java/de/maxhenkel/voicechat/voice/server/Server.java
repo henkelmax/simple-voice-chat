@@ -40,7 +40,7 @@ public class Server extends Thread {
     private final BlockingQueue<RawUdpPacket> packetQueue;
     private final PingManager pingManager;
     private final PlayerStateManager playerStateManager;
-    private final GroupManager groupManager;
+    private final ServerGroupManager groupManager;
     private final ServerCategoryManager categoryManager;
 
     public Server() {
@@ -58,7 +58,7 @@ public class Server extends Thread {
         packetQueue = new LinkedBlockingQueue<>();
         pingManager = new PingManager(this);
         playerStateManager = new PlayerStateManager();
-        groupManager = new GroupManager();
+        groupManager = new ServerGroupManager();
         categoryManager = new ServerCategoryManager();
         setDaemon(true);
         setName("VoiceChatServerThread");
@@ -409,7 +409,7 @@ public class Server extends Thread {
         return playerStateManager;
     }
 
-    public GroupManager getGroupManager() {
+    public ServerGroupManager getGroupManager() {
         return groupManager;
     }
 
