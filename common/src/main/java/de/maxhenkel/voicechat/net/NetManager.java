@@ -18,6 +18,8 @@ public abstract class NetManager {
     public Channel<PlayerStatesPacket> playerStatesChannel;
     public Channel<SecretPacket> secretChannel;
     public Channel<RequestSecretPacket> requestSecretChannel;
+    public Channel<AddGroupPacket> addGroupChannel;
+    public Channel<RemoveGroupPacket> removeGroupChannel;
     public Channel<JoinGroupPacket> joinGroupChannel;
     public Channel<CreateGroupPacket> createGroupChannel;
     public Channel<LeaveGroupPacket> leaveGroupChannel;
@@ -31,6 +33,8 @@ public abstract class NetManager {
         playerStatesChannel = registerReceiver(PlayerStatesPacket.class, true, false);
         secretChannel = registerReceiver(SecretPacket.class, true, false);
         requestSecretChannel = registerReceiver(RequestSecretPacket.class, false, true);
+        addGroupChannel = registerReceiver(AddGroupPacket.class, true, false);
+        removeGroupChannel = registerReceiver(RemoveGroupPacket.class, true, false);
         joinGroupChannel = registerReceiver(JoinGroupPacket.class, false, true);
         createGroupChannel = registerReceiver(CreateGroupPacket.class, false, true);
         leaveGroupChannel = registerReceiver(LeaveGroupPacket.class, false, true);

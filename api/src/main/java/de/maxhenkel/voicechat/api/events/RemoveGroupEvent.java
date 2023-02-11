@@ -5,17 +5,21 @@ import de.maxhenkel.voicechat.api.VoicechatConnection;
 
 import javax.annotation.Nullable;
 
-public interface CreateGroupEvent extends GroupEvent {
+/**
+ * This event is only cancellable if the group is persistent
+ */
+public interface RemoveGroupEvent extends GroupEvent {
 
     /**
-     * @return the group that was created
+     * @return the group that was removed
      */
     Group getGroup();
 
     /**
-     * @return the connection of the player that created the group or <code>null</code> if the group was not created by a player
+     * @return <code>null</code>
      */
     @Nullable
+    @Deprecated
     VoicechatConnection getConnection();
 
 }

@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.plugins.impl;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.Group;
-import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.Server;
 
@@ -32,16 +31,21 @@ public class GroupImpl implements Group {
         return group.getId();
     }
 
+    @Override
+    public boolean isPersistent() {
+        return group.isPersistent();
+    }
+
     public de.maxhenkel.voicechat.voice.server.Group getGroup() {
         return group;
     }
 
     @Nullable
     public static GroupImpl create(PlayerState state) {
-        ClientGroup group = state.getGroup();
+        UUID groupId = state.getGroup();
         Server server = Voicechat.SERVER.getServer();
-        if (server != null && group != null) {
-            de.maxhenkel.voicechat.voice.server.Group g = server.getGroupManager().getGroup(group.getId());
+        if (server != null && groupId != null) {
+            de.maxhenkel.voicechat.voice.server.Group g = server.getGroupManager().getGroup(groupId);
             if (g != null) {
                 return new GroupImpl(g);
             }

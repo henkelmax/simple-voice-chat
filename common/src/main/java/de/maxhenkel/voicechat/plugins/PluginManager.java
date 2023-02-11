@@ -145,6 +145,10 @@ public class PluginManager {
         return dispatchEvent(LeaveGroupEvent.class, new LeaveGroupEventImpl(null, VoicechatConnectionImpl.fromPlayer(player)));
     }
 
+    public boolean onRemoveGroup(Group group) {
+        return dispatchEvent(RemoveGroupEvent.class, new RemoveGroupEventImpl(new GroupImpl(group)));
+    }
+
     public boolean onMicPacket(ServerPlayer player, PlayerState state, MicPacket packet) {
         return dispatchEvent(MicrophonePacketEvent.class, new MicrophonePacketEventImpl(
                 new MicrophonePacketImpl(packet, player.getUUID()),

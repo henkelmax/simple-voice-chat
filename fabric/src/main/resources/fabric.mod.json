@@ -66,6 +66,8 @@
           "voicechat:secret": "vc:secret",
           "voicechat:player_states": "vc:player_states",
           "voicechat:player_state": "vc:player_state",
+          "voicechat:add_group": "vc:add_group",
+          "voicechat:remove_group": "vc:remove_group",
           "voicechat:joined_group": "vc:joined_group",
           "voicechat:add_category": "vc:add_category",
           "voicechat:remove_category": "vc:remove_category"
