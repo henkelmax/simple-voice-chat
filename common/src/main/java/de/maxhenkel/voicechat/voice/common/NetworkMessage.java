@@ -74,6 +74,8 @@ public class NetworkMessage {
         packetRegistry.put((byte) 0x6, AuthenticateAckPacket.class);
         packetRegistry.put((byte) 0x7, PingPacket.class);
         packetRegistry.put((byte) 0x8, KeepAlivePacket.class);
+        packetRegistry.put((byte) 0x9, ConnectionCheckPacket.class);
+        packetRegistry.put((byte) 0xA, ConnectionCheckAckPacket.class);
     }
 
     @Nullable
@@ -128,10 +130,6 @@ public class NetworkMessage {
         message.packet = p.fromBytes(buffer);
 
         return message;
-    }
-
-    public UUID getSender(Server server) {
-        return server.getConnections().values().stream().filter(connection -> connection.getAddress().equals(address)).map(ClientConnection::getPlayerUUID).findAny().orElse(null);
     }
 
     private static byte getPacketType(Packet<? extends Packet> packet) {
