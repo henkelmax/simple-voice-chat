@@ -10,8 +10,7 @@ public class AuthenticateAckPacket implements Packet<AuthenticateAckPacket> {
 
     @Override
     public AuthenticateAckPacket fromBytes(FriendlyByteBuf buf) {
-        AuthenticateAckPacket packet = new AuthenticateAckPacket();
-        return packet;
+        return new AuthenticateAckPacket();
     }
 
     @Override
