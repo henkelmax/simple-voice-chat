@@ -1,12 +1,16 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.net.*;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.net.AddGroupPacket;
+import de.maxhenkel.voicechat.net.JoinedGroupPacket;
+import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.net.RemoveGroupPacket;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -14,54 +18,52 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-// TODO Rename to ServerGroupManager
-public class GroupManager {
+public class ServerGroupManager {
 
     private final Map<UUID, Group> groups;
+    private final Server server;
 
-    public GroupManager() {
+    public ServerGroupManager(Server server) {
+        this.server = server;
         groups = new ConcurrentHashMap<>();
+        CommonCompatibilityManager.INSTANCE.onPlayerCompatibilityCheckSucceeded(this::onPlayerCompatibilityCheckSucceeded);
+        CommonCompatibilityManager.INSTANCE.getNetManager().joinGroupChannel.setServerListener((srv, player, handler, packet) -> {
+            if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
+                return;
+            }
+            if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
+                player.displayClientMessage(Component.translatable("message.voicechat.no_group_permission"), true);
+                return;
+            }
+            joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
+        });
+        CommonCompatibilityManager.INSTANCE.getNetManager().createGroupChannel.setServerListener((srv, player, handler, packet) -> {
+            if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
+                return;
+            }
+            if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
+                player.displayClientMessage(Component.translatable("message.voicechat.no_group_permission"), true);
+                return;
+            }
+            addGroup(new Group(UUID.randomUUID(), packet.getName(), packet.getPassword()), player);
+        });
+        CommonCompatibilityManager.INSTANCE.getNetManager().leaveGroupChannel.setServerListener((srv, player, handler, packet) -> {
+            leaveGroup(player);
+        });
     }
 
-    public void onJoinGroupPacket(Player player, JoinGroupPacket packet) {
-        if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
-            return;
-        }
-        if (!player.hasPermission(PermissionManager.GROUPS_PERMISSION)) {
-            NetManager.sendStatusMessage(player, Component.translatable("message.voicechat.no_group_permission"));
-            return;
-        }
-        joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
-    }
-
-    public void onCreateGroupPacket(Player player, CreateGroupPacket packet) {
-        if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
-            return;
-        }
-        if (!player.hasPermission(PermissionManager.GROUPS_PERMISSION)) {
-            NetManager.sendStatusMessage(player, Component.translatable("message.voicechat.no_group_permission"));
-            return;
-        }
-        Group group = new Group(UUID.randomUUID(), packet.getName(), packet.getPassword());
-        addGroup(group, player);
-    }
-
-    public void onLeaveGroupPacket(Player player, LeaveGroupPacket packet) {
-        leaveGroup(player);
-    }
-
-    public void onPlayerCompatibilityCheckSucceeded(Player player) {
-        Voicechat.logDebug("Synchronizing {} groups with {}", groups.size(), player.getDisplayName());
+    private void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
+        Voicechat.logDebug("Synchronizing {} groups with {}", groups.size(), player.getDisplayName().getString());
         for (Group category : groups.values()) {
             broadcastAddGroup(category);
         }
     }
 
     private PlayerStateManager getStates() {
-        return Voicechat.SERVER.getServer().getPlayerStateManager();
+        return server.getPlayerStateManager();
     }
 
-    public void addGroup(Group group, @Nullable Player player) {
+    public void addGroup(Group group, @Nullable ServerPlayer player) {
         if (PluginManager.instance().onCreateGroup(player, group)) {
             return;
         }
@@ -78,7 +80,7 @@ public class GroupManager {
         NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
     }
 
-    public void joinGroup(@Nullable Group group, Player player, String password) {
+    public void joinGroup(@Nullable Group group, ServerPlayer player, @Nullable String password) {
         if (PluginManager.instance().onJoinGroup(player, group)) {
             return;
         }
@@ -92,13 +94,14 @@ public class GroupManager {
                 return;
             }
         }
+
         PlayerStateManager manager = getStates();
         manager.setGroup(player, group.getId());
 
         NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
     }
 
-    public void leaveGroup(Player player) {
+    public void leaveGroup(ServerPlayer player) {
         if (PluginManager.instance().onLeaveGroup(player)) {
             return;
         }
@@ -147,16 +150,28 @@ public class GroupManager {
 
     private void broadcastAddGroup(Group group) {
         AddGroupPacket packet = new AddGroupPacket(group.toClientGroup());
-        Voicechat.INSTANCE.getServer().getOnlinePlayers().forEach(p -> NetManager.sendToClient(p, packet));
+        server.getServer().getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
     private void broadcastRemoveGroup(UUID group) {
         RemoveGroupPacket packet = new RemoveGroupPacket(group);
-        Voicechat.INSTANCE.getServer().getOnlinePlayers().forEach(p -> NetManager.sendToClient(p, packet));
+        server.getServer().getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
+    }
+
+    @Nullable
+    public Group getPlayerGroup(ServerPlayer player) {
+        PlayerState state = server.getPlayerStateManager().getState(player.getUUID());
+        if (state == null) {
+            return null;
+        }
+        UUID groupId = state.getGroup();
+        if (groupId == null) {
+            return null;
+        }
+        return getGroup(groupId);
     }
 
     public Map<UUID, Group> getGroups() {
         return groups;
     }
-
 }
