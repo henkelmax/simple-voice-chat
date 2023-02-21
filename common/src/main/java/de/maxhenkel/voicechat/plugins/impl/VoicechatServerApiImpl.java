@@ -161,6 +161,11 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
     }
 
     @Override
+    public Group.Builder groupBuilder() {
+        return new GroupImpl.BuilderImpl();
+    }
+
+    @Override
     public boolean removeGroup(UUID groupId) {
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
