@@ -3,4 +3,4 @@
 - Added three different group types
 - Removed global open_groups config option
 - Fixed enter not working in the create group GUI
-
+- Fixed crashes when opening some GUIs
