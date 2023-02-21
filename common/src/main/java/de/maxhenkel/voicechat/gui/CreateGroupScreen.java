@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -24,17 +23,18 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
     private static final ITextComponent CREATE_GROUP = new TranslationTextComponent("message.voicechat.create_group");
     private static final ITextComponent GROUP_NAME = new TranslationTextComponent("message.voicechat.group_name");
     private static final ITextComponent OPTIONAL_PASSWORD = new TranslationTextComponent("message.voicechat.optional_password");
-    private static final Component GROUP_TYPE = new TranslatableComponent("message.voicechat.group_type");
-    private static final Component TYPE_NORMAL = new TranslatableComponent("message.voicechat.group_type.normal");
-    private static final Component DESCRIPTION_TYPE_NORMAL = new TranslatableComponent("message.voicechat.group_type.normal.description");
-    private static final Component TYPE_OPEN = new TranslatableComponent("message.voicechat.group_type.open");
-    private static final Component DESCRIPTION_TYPE_OPEN = new TranslatableComponent("message.voicechat.group_type.open.description");
-    private static final Component TYPE_ISOLATED = new TranslatableComponent("message.voicechat.group_type.isolated");
-    private static final Component DESCRIPTION_TYPE_ISOLATED = new TranslatableComponent("message.voicechat.group_type.isolated.description");
+    private static final ITextComponent GROUP_TYPE = new TranslationTextComponent("message.voicechat.group_type");
+    private static final ITextComponent TYPE_NORMAL = new TranslationTextComponent("message.voicechat.group_type.normal");
+    private static final ITextComponent DESCRIPTION_TYPE_NORMAL = new TranslationTextComponent("message.voicechat.group_type.normal.description");
+    private static final ITextComponent TYPE_OPEN = new TranslationTextComponent("message.voicechat.group_type.open");
+    private static final ITextComponent DESCRIPTION_TYPE_OPEN = new TranslationTextComponent("message.voicechat.group_type.open.description");
+    private static final ITextComponent TYPE_ISOLATED = new TranslationTextComponent("message.voicechat.group_type.isolated");
+    private static final ITextComponent DESCRIPTION_TYPE_ISOLATED = new TranslationTextComponent("message.voicechat.group_type.isolated.description");
 
     private TextFieldWidget groupName;
     private TextFieldWidget password;
     private GroupType groupType;
+    private CycleButton<GroupType> groupTypeButton;
     private Button createGroup;
 
     public CreateGroupScreen() {
@@ -61,11 +61,12 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addButton(password);
 
-        addRenderableWidget(CycleButton.builder(GroupType::getTranslation).withValues(GroupType.values()).withInitialValue(GroupType.NORMAL).withTooltip(object -> {
-            return Tooltip.create(object.getDescription());
+        groupTypeButton = CycleButton.builder(GroupType::getTranslation).withValues(GroupType.values()).withInitialValue(GroupType.NORMAL).withTooltip(object -> {
+            return minecraft.font.split(object.getDescription(), 200);
         }).create(guiLeft + 6, guiTop + 71, xSize - 12, 20, GROUP_TYPE, (button, type) -> {
             groupType = type;
-        }));
+        });
+        addRenderableWidget(groupTypeButton);
 
         createGroup = new Button(guiLeft + 6, guiTop + ySize - 27, xSize - 12, 20, CREATE, button -> {
             createGroup();
@@ -132,6 +133,10 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         font.draw(poseStack, CREATE_GROUP, guiLeft + xSize / 2 - font.width(CREATE_GROUP) / 2, guiTop + 7, FONT_COLOR);
         font.draw(poseStack, GROUP_NAME, guiLeft + 8, guiTop + 7 + font.lineHeight + 5, FONT_COLOR);
         font.draw(poseStack, OPTIONAL_PASSWORD, guiLeft + 8, guiTop + 7 + (font.lineHeight + 5) * 2 + 10 + 2, FONT_COLOR);
+
+        if (mouseX >= groupTypeButton.x && mouseY >= groupTypeButton.y && mouseX < groupTypeButton.x + groupTypeButton.getWidth() && mouseY < groupTypeButton.y + groupTypeButton.getHeight()) {
+            renderTooltip(poseStack, groupTypeButton.getTooltip(), mouseX, mouseY);
+        }
     }
 
     @Override
