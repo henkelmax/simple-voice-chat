@@ -2,8 +2,8 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 public class AddGroupPacket implements Packet<AddGroupPacket> {
 
@@ -29,13 +29,13 @@ public class AddGroupPacket implements Packet<AddGroupPacket> {
     }
 
     @Override
-    public AddGroupPacket fromBytes(FriendlyByteBuf buf) {
+    public AddGroupPacket fromBytes(PacketBuffer buf) {
         group = ClientGroup.fromBytes(buf);
         return this;
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         group.toBytes(buf);
     }
 
