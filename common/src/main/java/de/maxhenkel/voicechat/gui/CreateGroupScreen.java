@@ -65,9 +65,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         }));
 
         createGroup = Button.builder(CREATE, button -> {
-            if (!groupName.getValue().isEmpty()) {
-                NetManager.sendToServer(new CreateGroupPacket(groupName.getValue(), password.getValue().isEmpty() ? null : password.getValue(), groupType.getType()));
-            }
+            createGroup();
         }).bounds(guiLeft + 6, guiTop + ySize - 27, xSize - 12, 20).build();
         addRenderableWidget(createGroup);
     }
@@ -100,6 +98,12 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         }
     }
 
+    private void createGroup() {
+        if (!groupName.getValue().isEmpty()) {
+            NetManager.sendToServer(new CreateGroupPacket(groupName.getValue(), password.getValue().isEmpty() ? null : password.getValue(), groupType.getType()));
+        }
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -129,7 +133,14 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
             minecraft.setScreen(null);
             return true;
         }
-        return groupName.keyPressed(keyCode, scanCode, modifiers) | password.keyPressed(keyCode, scanCode, modifiers) | super.keyPressed(keyCode, scanCode, modifiers);
+        if (groupName.keyPressed(keyCode, scanCode, modifiers) | password.keyPressed(keyCode, scanCode, modifiers) | super.keyPressed(keyCode, scanCode, modifiers)) {
+            return true;
+        }
+        if (keyCode == GLFW.GLFW_KEY_ENTER) {
+            createGroup();
+            return true;
+        }
+        return false;
     }
 
     @Override
