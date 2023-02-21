@@ -8,7 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -24,17 +23,18 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
     private static final ITextComponent CREATE_GROUP = new TextComponentTranslation("message.voicechat.create_group");
     private static final ITextComponent GROUP_NAME = new TextComponentTranslation("message.voicechat.group_name");
     private static final ITextComponent OPTIONAL_PASSWORD = new TextComponentTranslation("message.voicechat.optional_password");
-    private static final Component GROUP_TYPE = new TranslatableComponent("message.voicechat.group_type");
-    private static final Component TYPE_NORMAL = new TranslatableComponent("message.voicechat.group_type.normal");
-    private static final Component DESCRIPTION_TYPE_NORMAL = new TranslatableComponent("message.voicechat.group_type.normal.description");
-    private static final Component TYPE_OPEN = new TranslatableComponent("message.voicechat.group_type.open");
-    private static final Component DESCRIPTION_TYPE_OPEN = new TranslatableComponent("message.voicechat.group_type.open.description");
-    private static final Component TYPE_ISOLATED = new TranslatableComponent("message.voicechat.group_type.isolated");
-    private static final Component DESCRIPTION_TYPE_ISOLATED = new TranslatableComponent("message.voicechat.group_type.isolated.description");
+    private static final ITextComponent GROUP_TYPE = new TranslationTextComponent("message.voicechat.group_type");
+    private static final ITextComponent TYPE_NORMAL = new TranslationTextComponent("message.voicechat.group_type.normal");
+    private static final ITextComponent DESCRIPTION_TYPE_NORMAL = new TranslationTextComponent("message.voicechat.group_type.normal.description");
+    private static final ITextComponent TYPE_OPEN = new TranslationTextComponent("message.voicechat.group_type.open");
+    private static final ITextComponent DESCRIPTION_TYPE_OPEN = new TranslationTextComponent("message.voicechat.group_type.open.description");
+    private static final ITextComponent TYPE_ISOLATED = new TranslationTextComponent("message.voicechat.group_type.isolated");
+    private static final ITextComponent DESCRIPTION_TYPE_ISOLATED = new TranslationTextComponent("message.voicechat.group_type.isolated.description");
 
     private GuiTextField groupName;
     private GuiTextField password;
     private GroupType groupType;
+    private CycleButton<GroupType> groupTypeButton;
     private ButtonBase createGroup;
 
     public CreateGroupScreen() {
@@ -59,11 +59,12 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         password.setMaxStringLength(16);
         password.setValidator(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
 
-        addRenderableWidget(CycleButton.builder(GroupType::getTranslation).withValues(GroupType.values()).withInitialValue(GroupType.NORMAL).withTooltip(object -> {
-            return Tooltip.create(object.getDescription());
+        groupTypeButton = CycleButton.builder(GroupType::getTranslation).withValues(GroupType.values()).withInitialValue(GroupType.NORMAL).withTooltip(object -> {
+            return minecraft.font.split(object.getDescription(), 200);
         }).create(guiLeft + 6, guiTop + 71, xSize - 12, 20, GROUP_TYPE, (button, type) -> {
             groupType = type;
-        }));
+        });
+        addRenderableWidget(groupTypeButton);
 
         createGroup = new ButtonBase(2, guiLeft + 6, guiTop + ySize - 27, xSize - 12, 20, CREATE) {
             @Override
@@ -135,6 +136,10 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         fontRenderer.drawString(CREATE_GROUP.getUnformattedComponentText(), guiLeft + xSize / 2 - fontRenderer.getStringWidth(CREATE_GROUP.getUnformattedComponentText()) / 2, guiTop + 7, FONT_COLOR);
         fontRenderer.drawString(GROUP_NAME.getUnformattedComponentText(), guiLeft + 8, guiTop + 7 + fontRenderer.FONT_HEIGHT + 5, FONT_COLOR);
         fontRenderer.drawString(OPTIONAL_PASSWORD.getUnformattedComponentText(), guiLeft + 8, guiTop + 7 + (fontRenderer.FONT_HEIGHT + 5) * 2 + 10 + 2, FONT_COLOR);
+
+        if (mouseX >= groupTypeButton.x && mouseY >= groupTypeButton.y && mouseX < groupTypeButton.x + groupTypeButton.getWidth() && mouseY < groupTypeButton.y + groupTypeButton.getHeight()) {
+            renderTooltip(poseStack, groupTypeButton.getTooltip(), mouseX, mouseY);
+        }
     }
 
     @Override
@@ -145,7 +150,6 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
 
         if (keyCode == GLFW.GLFW_KEY_ENTER) {
             createGroup();
-            return true;
         }
     }
 
