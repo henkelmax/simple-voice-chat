@@ -1,1 +1,4 @@
-- Updated to 23w07a
+- Added persistent groups to API
+- Improved voice chat protocol handshake
+- Added three different group types
+- Removed global open_groups config option
