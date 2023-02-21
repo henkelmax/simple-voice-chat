@@ -16,7 +16,6 @@ public abstract class ServerConfig {
     public ConfigEntry<Integer> voiceChatMtuSize;
     public ConfigEntry<Integer> keepAlive;
     public ConfigEntry<Boolean> groupsEnabled;
-    public ConfigEntry<Boolean> openGroups;
     public ConfigEntry<String> voiceHost;
     public ConfigEntry<Boolean> allowRecording;
     public ConfigEntry<Boolean> spectatorInteraction;
@@ -68,10 +67,6 @@ public abstract class ServerConfig {
         groupsEnabled = builder
                 .booleanEntry("enable_groups", true,
                         "If group chats are allowed"
-                );
-        openGroups = builder
-                .booleanEntry("open_groups", false,
-                        "If players in group chats can be heard locally"
                 );
         voiceHost = builder
                 .stringEntry("voice_host", "",

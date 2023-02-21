@@ -46,7 +46,7 @@ public class ServerGroupManager {
                 player.sendStatusMessage(new TextComponentTranslation("message.voicechat.no_group_permission"), true);
                 return;
             }
-            addGroup(new Group(UUID.randomUUID(), packet.getName(), packet.getPassword()), player);
+            addGroup(new Group(UUID.randomUUID(), packet.getName(), packet.getPassword(), false, packet.getType()), player);
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().leaveGroupChannel.setServerListener((srv, player, handler, packet) -> {
             leaveGroup(player);

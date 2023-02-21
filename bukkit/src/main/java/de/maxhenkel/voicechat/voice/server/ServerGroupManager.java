@@ -42,7 +42,7 @@ public class ServerGroupManager {
             NetManager.sendStatusMessage(player, Component.translatable("message.voicechat.no_group_permission"));
             return;
         }
-        Group group = new Group(UUID.randomUUID(), packet.getName(), packet.getPassword());
+        Group group = new Group(UUID.randomUUID(), packet.getName(), packet.getPassword(), false, packet.getType());
         addGroup(group, player);
     }
 
