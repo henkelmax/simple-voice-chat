@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 public class ConnectionCheckAckPacket implements Packet<ConnectionCheckAckPacket> {
 
@@ -9,12 +9,12 @@ public class ConnectionCheckAckPacket implements Packet<ConnectionCheckAckPacket
     }
 
     @Override
-    public ConnectionCheckAckPacket fromBytes(FriendlyByteBuf buf) {
+    public ConnectionCheckAckPacket fromBytes(PacketBuffer buf) {
         return new ConnectionCheckAckPacket();
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
 
     }
 }

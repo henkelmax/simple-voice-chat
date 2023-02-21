@@ -7,9 +7,9 @@ import de.maxhenkel.voicechat.net.CreateGroupPacket;
 import de.maxhenkel.voicechat.net.NetManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -34,7 +34,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
     private TextFieldWidget groupName;
     private TextFieldWidget password;
     private GroupType groupType;
-    private CycleButton<GroupType> groupTypeButton;
+    private Button groupTypeButton;
     private Button createGroup;
 
     public CreateGroupScreen() {
@@ -61,12 +61,14 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addButton(password);
 
-        groupTypeButton = CycleButton.builder(GroupType::getTranslation).withValues(GroupType.values()).withInitialValue(GroupType.NORMAL).withTooltip(object -> {
-            return minecraft.font.split(object.getDescription(), 200);
-        }).create(guiLeft + 6, guiTop + 71, xSize - 12, 20, GROUP_TYPE, (button, type) -> {
-            groupType = type;
-        });
-        addRenderableWidget(groupTypeButton);
+        groupTypeButton = new Button(guiLeft + 6, guiTop + 71, xSize - 12, 20, GROUP_TYPE, (button) -> {
+            groupType = GroupType.values()[(groupType.ordinal() + 1) % GroupType.values().length];
+        }) {
+            public ITextComponent getMessage() {
+                return new TranslationTextComponent("message.voicechat.group_type").append(": ").append(groupType.getTranslation());
+            }
+        };
+        addButton(groupTypeButton);
 
         createGroup = new Button(guiLeft + 6, guiTop + ySize - 27, xSize - 12, 20, CREATE, button -> {
             createGroup();
@@ -79,21 +81,21 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         OPEN(TYPE_OPEN, DESCRIPTION_TYPE_OPEN, Group.Type.OPEN),
         ISOLATED(TYPE_ISOLATED, DESCRIPTION_TYPE_ISOLATED, Group.Type.ISOLATED);
 
-        private final Component translation;
-        private final Component description;
+        private final ITextComponent translation;
+        private final ITextComponent description;
         private final Group.Type type;
 
-        GroupType(Component translation, Component description, Group.Type type) {
+        GroupType(ITextComponent translation, ITextComponent description, Group.Type type) {
             this.translation = translation;
             this.description = description;
             this.type = type;
         }
 
-        public Component getTranslation() {
+        public ITextComponent getTranslation() {
             return translation;
         }
 
-        public Component getDescription() {
+        public ITextComponent getDescription() {
             return description;
         }
 
@@ -135,7 +137,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         font.draw(poseStack, OPTIONAL_PASSWORD, guiLeft + 8, guiTop + 7 + (font.lineHeight + 5) * 2 + 10 + 2, FONT_COLOR);
 
         if (mouseX >= groupTypeButton.x && mouseY >= groupTypeButton.y && mouseX < groupTypeButton.x + groupTypeButton.getWidth() && mouseY < groupTypeButton.y + groupTypeButton.getHeight()) {
-            renderTooltip(poseStack, groupTypeButton.getTooltip(), mouseX, mouseY);
+            renderTooltip(poseStack, minecraft.font.split(groupType.getDescription(), 200), mouseX, mouseY);
         }
     }
 

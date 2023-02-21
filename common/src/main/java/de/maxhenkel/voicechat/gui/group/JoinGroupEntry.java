@@ -27,7 +27,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
 
     protected static final ResourceLocation LOCK = new ResourceLocation(Voicechat.MODID, "textures/icons/lock.png");
     protected static final ITextComponent GROUP_MEMBERS = new TranslationTextComponent("message.voicechat.group_members").withStyle(TextFormatting.WHITE);
-    protected static final Component NO_GROUP_MEMBERS = new TranslatableComponent("message.voicechat.no_group_members").withStyle(ChatFormatting.WHITE);
+    protected static final ITextComponent NO_GROUP_MEMBERS = new TranslationTextComponent("message.voicechat.no_group_members").withStyle(TextFormatting.WHITE);
 
     protected static final int SKIN_SIZE = 12;
     protected static final int PADDING = 4;
