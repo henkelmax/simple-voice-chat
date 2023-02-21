@@ -2,3 +2,5 @@
 - Improved voice chat protocol handshake
 - Added three different group types
 - Removed global open_groups config option
+- Fixed enter not working in the create group GUI
+

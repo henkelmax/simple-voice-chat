@@ -68,9 +68,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         createGroup = new ButtonBase(2, guiLeft + 6, guiTop + ySize - 27, xSize - 12, 20, CREATE) {
             @Override
             public void onPress() {
-                if (!groupName.getText().isEmpty()) {
-                    NetManager.sendToServer(new CreateGroupPacket(groupName.getText(), password.getText().isEmpty() ? null : password.getText()));
-                }
+                createGroup();
             }
         };
         addButton(createGroup);
@@ -101,6 +99,12 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
 
         public Group.Type getType() {
             return type;
+        }
+    }
+
+    private void createGroup() {
+        if (!groupName.getValue().isEmpty()) {
+            NetManager.sendToServer(new CreateGroupPacket(groupName.getValue(), password.getValue().isEmpty() ? null : password.getValue(), groupType.getType()));
         }
     }
 
@@ -138,6 +142,11 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         groupName.textboxKeyTyped(typedChar, keyCode);
         password.textboxKeyTyped(typedChar, keyCode);
         super.keyTyped(typedChar, keyCode);
+
+        if (keyCode == GLFW.GLFW_KEY_ENTER) {
+            createGroup();
+            return true;
+        }
     }
 
     @Override
