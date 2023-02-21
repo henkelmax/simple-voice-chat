@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
@@ -8,7 +7,7 @@ import java.util.UUID;
 
 public class RemoveGroupPacket implements Packet<RemoveGroupPacket> {
 
-    public static final ResourceLocation REMOVE_GROUP = new ResourceLocation(Voicechat.MODID, "remove_group");
+    public static final ResourceLocation REMOVE_GROUP = new ResourceLocation(NetManager.CHANNEL, "remove_group");
 
     private UUID groupId;
 
@@ -31,13 +30,13 @@ public class RemoveGroupPacket implements Packet<RemoveGroupPacket> {
 
     @Override
     public RemoveGroupPacket fromBytes(PacketBuffer buf) {
-        groupId = buf.readUUID();
+        groupId = buf.readUniqueId();
         return this;
     }
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUUID(groupId);
+        buf.writeUniqueId(groupId);
     }
 
 }

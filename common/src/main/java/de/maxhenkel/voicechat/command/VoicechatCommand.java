@@ -154,7 +154,7 @@ public class VoicechatCommand extends CommandBase {
             return true;
         }
 
-        Group group = Voicechat.SERVER.getServer().getGroupManager().getGroup(state.getGroup().getId());
+        Group group = Voicechat.SERVER.getServer().getGroupManager().getGroup(state.getGroup());
         if (group == null) {
             return true;
         }

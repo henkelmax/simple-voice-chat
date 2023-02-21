@@ -215,11 +215,11 @@ public class Server extends Thread {
                         connections.put(connection.getPlayerUUID(), connection);
                         unCheckedConnections.remove(connection.getPlayerUUID());
                         Voicechat.LOGGER.info("Successfully validated connection of player {}", connection.getPlayerUUID());
-                        EntityPlayerMP player = server.getPlayerList().getPlayer(connection.getPlayerUUID());
+                        EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(connection.getPlayerUUID());
                         if (player != null) {
                             CommonCompatibilityManager.INSTANCE.emitServerVoiceChatConnectedEvent(player);
                             PluginManager.instance().onPlayerConnected(player);
-                            Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getDisplayName().getString(), connection.getPlayerUUID());
+                            Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getDisplayName().getUnformattedComponentText(), connection.getPlayerUUID());
                         }
                         sendPacket(new ConnectionCheckAckPacket(), connection);
                         continue;

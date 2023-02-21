@@ -58,6 +58,9 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
     @Override
     public void updateScreen() {
         super.updateScreen();
+        if (password == null) {
+            return;
+        }
         password.updateCursorCounter();
         joinGroup.enabled = !password.getText().isEmpty();
     }
@@ -76,21 +79,29 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderForeground(int mouseX, int mouseY, float delta) {
-        password.drawTextBox();
+        if (password != null) {
+            password.drawTextBox();
+        }
         fontRenderer.drawString(ENTER_GROUP_PASSWORD.getUnformattedComponentText(), guiLeft + xSize / 2 - fontRenderer.getStringWidth(ENTER_GROUP_PASSWORD.getUnformattedComponentText()) / 2, guiTop + 7, FONT_COLOR);
         fontRenderer.drawString(PASSWORD.getUnformattedComponentText(), guiLeft + 8, guiTop + 7 + fontRenderer.FONT_HEIGHT + 5, FONT_COLOR);
     }
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        password.textboxKeyTyped(typedChar, keyCode);
         super.keyTyped(typedChar, keyCode);
+        if (password == null) {
+            return;
+        }
+        password.textboxKeyTyped(typedChar, keyCode);
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        password.mouseClicked(mouseX, mouseY, mouseButton);
         super.mouseClicked(mouseX, mouseY, mouseButton);
+        if (password == null) {
+            return;
+        }
+        password.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override

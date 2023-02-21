@@ -89,7 +89,7 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
     @Override
     public void renderForeground(int mouseX, int mouseY, float delta) {
         fontRenderer.drawString(title.getUnformattedComponentText(), width / 2 - fontRenderer.getStringWidth(title.getUnformattedComponentText()) / 2, guiTop + 5, isIngame() ? VoiceChatScreenBase.FONT_COLOR : 0xFFFFFF);
-        if (deviceList.isEmpty()) {
+        if (deviceList == null || deviceList.isEmpty()) {
             drawCenteredString(fontRenderer, getEmptyListComponent().getUnformattedComponentText(), width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - fontRenderer.FONT_HEIGHT / 2, -1);
         }
     }
@@ -97,6 +97,9 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
     @Override
     public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
+        if (deviceList == null) {
+            return;
+        }
         for (AudioDeviceEntry entry : deviceList.children()) {
             if (entry.isSelected()) {
                 if (!getSelectedDevice().equals(entry.getDevice())) {

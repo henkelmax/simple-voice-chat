@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.plugins.impl.GroupImpl;
 import net.minecraft.network.PacketBuffer;

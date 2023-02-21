@@ -86,7 +86,7 @@ public class PlayerState {
         PlayerState state = new PlayerState(uuid, name, disabled, disconnected);
 
         if (buf.readBoolean()) {
-            state.setGroup(buf.readUUID());
+            state.setGroup(buf.readUniqueId());
         }
 
         return state;
@@ -99,7 +99,7 @@ public class PlayerState {
         buf.writeString(name);
         buf.writeBoolean(hasGroup());
         if (hasGroup()) {
-            buf.writeUUID(group);
+            buf.writeUniqueId(group);
         }
     }
 

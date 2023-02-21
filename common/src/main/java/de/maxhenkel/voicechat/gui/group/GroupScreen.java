@@ -95,12 +95,18 @@ public class GroupScreen extends ListScreenBase {
     public void updateScreen() {
         super.updateScreen();
         checkButtons();
-        groupList.tick();
+        if (groupList != null) {
+            groupList.tick();
+        }
     }
 
     private void checkButtons() {
-        mute.enabled = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE);
-        showHUD.enabled = !VoicechatClient.CLIENT_CONFIG.hideIcons.get();
+        if (mute != null) {
+            mute.enabled = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE);
+        }
+        if (showHUD != null) {
+            showHUD.enabled = !VoicechatClient.CLIENT_CONFIG.hideIcons.get();
+        }
     }
 
     @Override

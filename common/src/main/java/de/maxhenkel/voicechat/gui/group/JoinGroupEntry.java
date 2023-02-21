@@ -21,7 +21,7 @@ public class JoinGroupEntry extends ListScreenEntryBase {
 
     protected static final ResourceLocation LOCK = new ResourceLocation(Voicechat.MODID, "textures/icons/lock.png");
     protected static final ITextComponent GROUP_MEMBERS = new TextComponentTranslation("message.voicechat.group_members").setStyle(new Style().setColor(TextFormatting.WHITE));
-    protected static final ITextComponent NO_GROUP_MEMBERS = new TranslationTextComponent("message.voicechat.no_group_members").withStyle(TextFormatting.WHITE);
+    protected static final ITextComponent NO_GROUP_MEMBERS = new TextComponentTranslation("message.voicechat.no_group_members").setStyle(new Style().setColor(TextFormatting.WHITE));
 
     protected static final int SKIN_SIZE = 12;
     protected static final int PADDING = 4;
@@ -92,7 +92,7 @@ public class JoinGroupEntry extends ListScreenEntryBase {
         if (!isSelected) {
             return;
         }
-        List<IReorderingProcessor> tooltip = Lists.newArrayList();
+        List<String> tooltip = Lists.newArrayList();
         if (group.getMembers().isEmpty()) {
             tooltip.add(NO_GROUP_MEMBERS.getUnformattedComponentText());
         } else {

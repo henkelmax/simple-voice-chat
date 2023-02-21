@@ -102,6 +102,11 @@ public class AdjustVolumesScreen extends ListScreenBase {
     @Override
     public void renderForeground(int mouseX, int mouseY, float delta) {
         fontRenderer.drawString(TITLE.getFormattedText(), width / 2 - fontRenderer.getStringWidth(TITLE.getUnformattedComponentText()) / 2, guiTop + 5, VoiceChatScreenBase.FONT_COLOR);
+
+        if (volumeList == null) {
+            return;
+        }
+
         if (!volumeList.isEmpty()) {
             volumeList.drawScreen(mouseX, mouseY, delta);
         } else if (!searchBox.getText().isEmpty()) {
@@ -118,14 +123,20 @@ public class AdjustVolumesScreen extends ListScreenBase {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        if (volumeList == null) {
+            return;
+        }
         searchBox.mouseClicked(mouseX, mouseY, mouseButton);
         volumeList.mouseClicked(mouseX, mouseY, mouseButton);
-        super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
+        if (searchBox == null) {
+            return;
+        }
         searchBox.textboxKeyTyped(typedChar, keyCode);
     }
 

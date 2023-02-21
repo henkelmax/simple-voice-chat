@@ -62,12 +62,6 @@ public class JoinGroupScreen extends ListScreenBase {
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
-        groupList.tick();
-    }
-
-    @Override
     public void renderBackground(int mouseX, int mouseY, float delta) {
         mc.getTextureManager().bindTexture(TEXTURE);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE);
@@ -82,7 +76,7 @@ public class JoinGroupScreen extends ListScreenBase {
     public void renderForeground(int mouseX, int mouseY, float delta) {
         fontRenderer.drawString(JOIN_CREATE_GROUP.getFormattedText(), guiLeft + xSize / 2 - fontRenderer.getStringWidth(JOIN_CREATE_GROUP.getUnformattedComponentText()) / 2, guiTop + 5, FONT_COLOR);
 
-        if (!groupList.isEmpty()) {
+        if (groupList != null && !groupList.isEmpty()) {
             groupList.drawScreen(mouseX, mouseY, delta);
         } else {
             drawCenteredString(fontRenderer, NO_GROUPS.getUnformattedComponentText(), width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - fontRenderer.FONT_HEIGHT / 2, -1);
@@ -92,6 +86,9 @@ public class JoinGroupScreen extends ListScreenBase {
     @Override
     public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
+        if (groupList == null) {
+            return;
+        }
         for (JoinGroupEntry entry : groupList.children()) {
             if (entry.isSelected()) {
                 ClientGroup group = entry.getGroup().getGroup();
