@@ -201,7 +201,7 @@ public class Server extends Thread {
                         if (player != null) {
                             playerStateManager.onPlayerVoicechatConnect(player);
                             PluginManager.instance().onPlayerConnected(player);
-                            Voicechat.LOGGER.info("Player {} successfully connected to voice chat", player.getName());
+                            Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getName(), connection.getPlayerUUID());
                         }
                         sendPacket(new ConnectionCheckAckPacket(), connection);
                         continue;
@@ -252,8 +252,9 @@ public class Server extends Thread {
 
     private void processMicPacket(Player player, PlayerState state, MicPacket packet) throws Exception {
         if (state.hasGroup()) {
+            @Nullable Group group = groupManager.getGroup(state.getGroup());
             processGroupPacket(state, player, packet);
-            if (Voicechat.SERVER_CONFIG.openGroups.get()) {
+            if (group == null || group.isOpen()) {
                 processProximityPacket(state, player, packet);
             }
             return;
@@ -360,6 +361,13 @@ public class Server extends Thread {
                 continue;
             }
             if (state.hasGroup() && state.getGroup().equals(groupId)) {
+                continue;
+            }
+            @Nullable Group receiverGroup = null;
+            if (state.hasGroup()) {
+                receiverGroup = groupManager.getGroup(state.getGroup());
+            }
+            if (receiverGroup != null && receiverGroup.isIsolated()) {
                 continue;
             }
             ClientConnection connection = getConnection(state.getUuid());
