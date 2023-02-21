@@ -136,6 +136,11 @@ public interface VoicechatServerApi extends VoicechatApi {
     Group createGroup(String name, @Nullable String password, boolean persistent);
 
     /**
+     * @return a new group builder
+     */
+    Group.Builder groupBuilder();
+
+    /**
      * Removes a persistent group.
      *
      * <b>NOTE</b>: You can't remove a group that is not persistent or has players in it.

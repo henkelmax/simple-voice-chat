@@ -3,11 +3,14 @@ package de.maxhenkel.voicechat.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.net.CreateGroupPacket;
 import de.maxhenkel.voicechat.net.NetManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -23,13 +26,22 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
     private static final Component CREATE_GROUP = new TranslatableComponent("message.voicechat.create_group");
     private static final Component GROUP_NAME = new TranslatableComponent("message.voicechat.group_name");
     private static final Component OPTIONAL_PASSWORD = new TranslatableComponent("message.voicechat.optional_password");
+    private static final Component GROUP_TYPE = new TranslatableComponent("message.voicechat.group_type");
+    private static final Component TYPE_NORMAL = new TranslatableComponent("message.voicechat.group_type.normal");
+    private static final Component DESCRIPTION_TYPE_NORMAL = new TranslatableComponent("message.voicechat.group_type.normal.description");
+    private static final Component TYPE_OPEN = new TranslatableComponent("message.voicechat.group_type.open");
+    private static final Component DESCRIPTION_TYPE_OPEN = new TranslatableComponent("message.voicechat.group_type.open.description");
+    private static final Component TYPE_ISOLATED = new TranslatableComponent("message.voicechat.group_type.isolated");
+    private static final Component DESCRIPTION_TYPE_ISOLATED = new TranslatableComponent("message.voicechat.group_type.isolated.description");
 
     private EditBox groupName;
     private EditBox password;
+    private GroupType groupType;
     private Button createGroup;
 
     public CreateGroupScreen() {
-        super(TITLE, 195, 100);
+        super(TITLE, 195, 124);
+        groupType = GroupType.NORMAL;
     }
 
     @Override
@@ -39,22 +51,56 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         clearWidgets();
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
-        groupName = new EditBox(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 2 - 5 + 2, xSize - 7 * 2, 10, TextComponent.EMPTY);
+        groupName = new EditBox(font, guiLeft + 7, guiTop + 32, xSize - 7 * 2, 10, TextComponent.EMPTY);
         groupName.setMaxLength(16);
         groupName.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(groupName);
 
-        password = new EditBox(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 3 - 5 + 10 + 2 * 2, xSize - 7 * 2, 10, TextComponent.EMPTY);
+        password = new EditBox(font, guiLeft + 7, guiTop + 58, xSize - 7 * 2, 10, TextComponent.EMPTY);
         password.setMaxLength(16);
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(password);
 
-        createGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, CREATE, button -> {
+        addRenderableWidget(CycleButton.builder(GroupType::getTranslation).withValues(GroupType.values()).withInitialValue(GroupType.NORMAL).withTooltip(object -> {
+            return Tooltip.create(object.getDescription());
+        }).create(guiLeft + 6, guiTop + 71, xSize - 12, 20, GROUP_TYPE, (button, type) -> {
+            groupType = type;
+        }));
+
+        createGroup = new Button(guiLeft + 6, guiTop + ySize - 27, xSize - 12, 20, CREATE, button -> {
             if (!groupName.getValue().isEmpty()) {
-                NetManager.sendToServer(new CreateGroupPacket(groupName.getValue(), password.getValue().isEmpty() ? null : password.getValue()));
+                NetManager.sendToServer(new CreateGroupPacket(groupName.getValue(), password.getValue().isEmpty() ? null : password.getValue(), groupType.getType()));
             }
         });
         addRenderableWidget(createGroup);
+    }
+
+    private enum GroupType {
+        NORMAL(TYPE_NORMAL, DESCRIPTION_TYPE_NORMAL, Group.Type.NORMAL),
+        OPEN(TYPE_OPEN, DESCRIPTION_TYPE_OPEN, Group.Type.OPEN),
+        ISOLATED(TYPE_ISOLATED, DESCRIPTION_TYPE_ISOLATED, Group.Type.ISOLATED);
+
+        private final Component translation;
+        private final Component description;
+        private final Group.Type type;
+
+        GroupType(Component translation, Component description, Group.Type type) {
+            this.translation = translation;
+            this.description = description;
+            this.type = type;
+        }
+
+        public Component getTranslation() {
+            return translation;
+        }
+
+        public Component getDescription() {
+            return description;
+        }
+
+        public Group.Type getType() {
+            return type;
+        }
     }
 
     @Override
