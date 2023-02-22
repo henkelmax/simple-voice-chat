@@ -44,12 +44,12 @@ public class ImageButton extends AbstractButton {
     }
 
     @Override
-    public void renderButton(PoseStack matrices, int mouseX, int mouseY) {
-        super.renderButton(matrices, mouseX, mouseY);
-        renderImage(matrices, mouseX, mouseY);
+    public void renderWidget(PoseStack stack, int mouseX, int mouseY, float f) {
+        super.renderWidget(stack, mouseX, mouseY, f);
+        renderImage(stack, mouseX, mouseY);
 
         if (isHovered) {
-            renderToolTip(matrices, mouseX, mouseY);
+            renderToolTip(stack, mouseX, mouseY);
         }
     }
 

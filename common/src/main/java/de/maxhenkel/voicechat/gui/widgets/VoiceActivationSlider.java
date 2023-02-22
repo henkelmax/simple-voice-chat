@@ -15,7 +15,8 @@ import javax.annotation.Nullable;
 
 public class VoiceActivationSlider extends DebouncedSlider implements MicTestButton.MicListener {
 
-    private static final ResourceLocation SLIDER = new ResourceLocation(Voicechat.MODID, "textures/gui/voice_activation_slider.png");
+    private static final ResourceLocation SLIDER_LOCATION = new ResourceLocation("textures/gui/slider.png");
+    private static final ResourceLocation VOICE_ACTIVATION_SLIDER = new ResourceLocation(Voicechat.MODID, "textures/gui/voice_activation_slider.png");
     private static final Component NO_ACTIVATION = Component.translatable("message.voicechat.voice_activation.disabled").withStyle(ChatFormatting.RED);
 
     private double micValue;
@@ -26,12 +27,29 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, Minecraft minecraft, int i, int j) {
-        RenderSystem.setShaderTexture(0, SLIDER);
+    public void renderWidget(PoseStack poseStack, int i, int j, float f) {
+        Minecraft minecraft = Minecraft.getInstance();
+        RenderSystem.setShaderTexture(0, SLIDER_LOCATION);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        int width = (int) (226D * micValue);
-        blit(poseStack, getX() + 1, getY() + 1, 0, 0, width, 18);
-        super.renderBg(poseStack, minecraft, i, j);
+        blitNineSliced(poseStack, getX(), getY(), getWidth(), getHeight(), 4, 200, 20, 0, getTextureY());
+
+        RenderSystem.setShaderTexture(0, VOICE_ACTIVATION_SLIDER);
+        int micWidth = (int) (226D * micValue);
+        blit(poseStack, getX() + 1, getY() + 1, 0, 0, micWidth, 18);
+
+        RenderSystem.setShaderTexture(0, SLIDER_LOCATION);
+
+        blitNineSliced(poseStack, getX() + (int) (value * (double) (width - 8)), getY(), 8, 20, 4, 200, 20, 0, getHandleTextureY());
+        int color = active ? 16777215 : 10526880;
+        renderScrollingString(poseStack, minecraft.font, 2, color);
+    }
+
+    private int getTextureY() {
+        return (isFocused() && !(isHovered || isFocused()) ? 1 : 0) * 20;
+    }
+
+    private int getHandleTextureY() {
+        return (!isHovered && !isFocused() ? 2 : 3) * 20;
     }
 
     @Override
