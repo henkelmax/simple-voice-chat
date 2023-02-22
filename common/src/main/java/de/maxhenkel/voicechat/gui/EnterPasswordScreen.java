@@ -47,12 +47,16 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
         joinGroup = new ButtonBase(1, guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, JOIN_GROUP) {
             @Override
             public void onPress() {
-                if (!password.getText().isEmpty()) {
-                    NetManager.sendToServer(new JoinGroupPacket(group.getId(), password.getText()));
-                }
+                joinGroup();
             }
         };
         addButton(joinGroup);
+    }
+
+    private void joinGroup() {
+        if (!password.getText().isEmpty()) {
+            NetManager.sendToServer(new JoinGroupPacket(group.getId(), password.getText()));
+        }
     }
 
     @Override
@@ -92,7 +96,13 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
         if (password == null) {
             return;
         }
-        password.textboxKeyTyped(typedChar, keyCode);
+        if (password.textboxKeyTyped(typedChar, keyCode)) {
+            return;
+        }
+
+        if (keyCode == Keyboard.KEY_RETURN) {
+            joinGroup();
+        }
     }
 
     @Override
