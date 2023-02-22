@@ -3,4 +3,4 @@
 - Added three different group types
 - Removed global open_groups config option
 - Fixed enter not working in the create group GUI
-
+- Fixed Forge clients without the mods can't join Forge servers with the mod
