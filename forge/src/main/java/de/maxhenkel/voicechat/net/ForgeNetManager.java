@@ -19,8 +19,8 @@ public class ForgeNetManager extends NetManager {
             EventNetworkChannel channel = NetworkRegistry.newEventChannel(
                     dummyPacket.getIdentifier(),
                     () -> NetworkRegistry.ACCEPTVANILLA,
-                    NetworkRegistry.ACCEPTVANILLA::equals,
-                    NetworkRegistry.ACCEPTVANILLA::equals
+                    NetworkRegistry.acceptMissingOr(NetworkRegistry.ACCEPTVANILLA),
+                    NetworkRegistry.acceptMissingOr(NetworkRegistry.ACCEPTVANILLA)
             );
             channel.addListener(event -> {
                 if (event.getPayload() == null) {
