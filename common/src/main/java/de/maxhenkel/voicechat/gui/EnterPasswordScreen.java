@@ -43,11 +43,15 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
         addRenderableWidget(password);
 
         joinGroup = Button.builder(JOIN_GROUP, button -> {
-            if (!password.getValue().isEmpty()) {
-                NetManager.sendToServer(new JoinGroupPacket(group.getId(), password.getValue()));
-            }
+            joinGroup();
         }).bounds(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20).build();
         addRenderableWidget(joinGroup);
+    }
+
+    private void joinGroup() {
+        if (!password.getValue().isEmpty()) {
+            NetManager.sendToServer(new JoinGroupPacket(group.getId(), password.getValue()));
+        }
     }
 
     @Override
@@ -77,7 +81,14 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
             minecraft.setScreen(null);
             return true;
         }
-        return password.keyPressed(keyCode, scanCode, modifiers) || super.keyPressed(keyCode, scanCode, modifiers);
+        if (password.keyPressed(keyCode, scanCode, modifiers) | super.keyPressed(keyCode, scanCode, modifiers)) {
+            return true;
+        }
+        if (keyCode == GLFW.GLFW_KEY_ENTER) {
+            joinGroup();
+            return true;
+        }
+        return false;
     }
 
     @Override
