@@ -34,7 +34,7 @@ public class UsernameCache {
             }.getType();
             names = gson.fromJson(reader, usernamesType);
         } catch (Exception e) {
-            Voicechat.LOGGER.error("Failed to load username cache: {}", e.getMessage());
+            Voicechat.LOGGER.error("Failed to load username cache", e);
         }
         if (names == null) {
             names = new ConcurrentHashMap<>();
@@ -46,7 +46,7 @@ public class UsernameCache {
         try (Writer writer = new FileWriter(file)) {
             gson.toJson(names, writer);
         } catch (Exception e) {
-            Voicechat.LOGGER.error("Failed to save username cache: {}", e.getMessage());
+            Voicechat.LOGGER.error("Failed to save username cache", e);
         }
     }
 
