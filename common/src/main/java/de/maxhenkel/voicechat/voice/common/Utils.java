@@ -55,10 +55,43 @@ public class Utils {
         return new byte[]{(byte) (s & 0xFF), (byte) ((s >> 8) & 0xFF)};
     }
 
+    private static final float FLOAT_SHORT_SCALE = Short.MAX_VALUE;
+    private static final float FLOAT_CLIP = FLOAT_SHORT_SCALE - 1;
+    private static final float FLOAT_SHORT_SCALING_FACTOR = 1F / FLOAT_SHORT_SCALE;
+
+    public static short[] floatsToShortsNormalized(float[] audioData) {
+        short[] shortAudioData = new short[audioData.length];
+        for (int i = 0; i < audioData.length; i++) {
+            shortAudioData[i] = (short) Math.max(Math.min(audioData[i] * FLOAT_SHORT_SCALE, FLOAT_CLIP), -FLOAT_SHORT_SCALE);
+        }
+        return shortAudioData;
+    }
+
+    public static float[] shortsToFloatsNormalized(short[] audioData) {
+        float[] floatAudioData = new float[audioData.length];
+        for (int i = 0; i < audioData.length; i++) {
+            floatAudioData[i] = (float) audioData[i] * FLOAT_SHORT_SCALING_FACTOR;
+        }
+        return floatAudioData;
+    }
+
     public static short[] floatsToShorts(float[] floats) {
+        float max = Short.MIN_VALUE;
+        float min = Short.MAX_VALUE;
+        for (int i = 0; i < floats.length; i++) {
+            if (floats[i] > max) {
+                max = floats[i];
+            }
+            if (floats[i] < min) {
+                min = floats[i];
+            }
+        }
+
+        float scale = Math.min(1F, FLOAT_CLIP / Math.max(Math.abs(max), Math.abs(min)));
+
         short[] shorts = new short[floats.length];
         for (int i = 0; i < floats.length; i++) {
-            shorts[i] = ((Float) floats[i]).shortValue();
+            shorts[i] = ((Float) (floats[i] * scale)).shortValue();
         }
         return shorts;
     }
