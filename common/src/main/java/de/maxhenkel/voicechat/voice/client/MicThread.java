@@ -247,7 +247,6 @@ public class MicThread extends Thread {
             e.printStackTrace();
         }
 
-        mic.stop();
         mic.close();
         encoder.close();
         if (denoiser != null) {
