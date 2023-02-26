@@ -191,6 +191,13 @@ public class AudioChannel extends Thread {
             appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData));
         } else if (packet instanceof PlayerSoundPacket) {
             PlayerSoundPacket soundPacket = (PlayerSoundPacket) packet;
+            if (VoicechatClient.CLIENT_CONFIG.freecamSupport.get() && getFreecamDistance() >= 8D) {
+                short[] processedMonoData = PluginManager.instance().onReceiveStaticClientSound(uuid, monoData);
+                speaker.play(processedMonoData, volume, soundPacket.getCategory());
+                client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
+                appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData));
+                return;
+            }
             if (player == null) {
                 return;
             }
@@ -227,6 +234,16 @@ public class AudioChannel extends Thread {
             client.getTalkCache().updateTalking(uuid, false);
             appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(p.getDistance(), p.getLocation(), processedMonoData));
         }
+    }
+
+    private double getFreecamDistance() {
+        if (minecraft.player == null) {
+            return 0D;
+        }
+        if (minecraft.player.isSpectator()) {
+            return 0D;
+        }
+        return minecraft.player.getEyePosition().distanceTo(minecraft.gameRenderer.getMainCamera().getPosition());
     }
 
     private void appendRecording(Supplier<short[]> stereo) {
