@@ -3,9 +3,8 @@ package de.maxhenkel.voicechat.voice.client.microphone;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.client.MicrophoneException;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
-import org.lwjgl.openal.AL11;
-import org.lwjgl.openal.ALC11;
-import org.lwjgl.openal.ALUtil;
+import de.maxhenkel.voicechat.voice.common.Utils;
+import org.lwjgl.openal.*;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -64,7 +63,7 @@ public class ALMicrophone implements Microphone {
         started = false;
 
         int available = available();
-        short[] data = new short[available];
+        float[] data = new float[available];
         ALC11.alcCaptureSamples(device, data, data.length);
         SoundManager.checkAlcError(device);
         Voicechat.LOGGER.debug("Clearing {} samples", available);
@@ -104,10 +103,11 @@ public class ALMicrophone implements Microphone {
         if (bufferSize > available) {
             throw new IllegalStateException(String.format("Failed to read from microphone: Capacity %s, available %s", bufferSize, available));
         }
-        short[] buff = new short[bufferSize];
+        float[] buff = new float[bufferSize];
         ALC11.alcCaptureSamples(device, buff, buff.length);
         SoundManager.checkAlcError(device);
-        return buff;
+
+        return Utils.floatsToShortsNormalized(buff);
     }
 
     private long openMic(@Nullable String name) throws MicrophoneException {
@@ -126,13 +126,13 @@ public class ALMicrophone implements Microphone {
     }
 
     private long tryOpenMic(@Nullable String string) throws MicrophoneException {
-        long l = ALC11.alcCaptureOpenDevice(string, sampleRate, AL11.AL_FORMAT_MONO16, bufferSize);
-        if (l == 0L) {
+        long device = ALC11.alcCaptureOpenDevice(string, sampleRate, EXTFloat32.AL_FORMAT_MONO_FLOAT32, bufferSize);
+        if (device == 0L) {
             SoundManager.checkAlcError(0L);
             throw new MicrophoneException(String.format("Failed to open microphone: %s", SoundManager.getAlcError(0)));
         }
-        SoundManager.checkAlcError(l);
-        return l;
+        SoundManager.checkAlcError(device);
+        return device;
     }
 
     @Nullable
