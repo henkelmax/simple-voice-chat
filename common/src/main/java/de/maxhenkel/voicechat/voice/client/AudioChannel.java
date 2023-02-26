@@ -243,7 +243,7 @@ public class AudioChannel extends Thread {
         if (minecraft.player.isSpectator()) {
             return 0D;
         }
-        return minecraft.player.getEyePosition(1F).distanceTo(minecraft.gameRenderer.getMainCamera().getPosition());
+        return minecraft.player.getPositionEyes(1F).distanceTo(PositionalAudioUtils.getCameraPosition());
     }
 
     private void appendRecording(Supplier<short[]> stereo) {
