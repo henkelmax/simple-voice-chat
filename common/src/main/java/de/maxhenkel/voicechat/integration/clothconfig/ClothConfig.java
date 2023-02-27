@@ -40,7 +40,8 @@ public class ClothConfig {
 
     private static void onTick() {
         if (isLoaded()) {
-            if (MC.screen instanceof ClothConfigScreen screen) {
+            if (MC.screen instanceof ClothConfigScreen) {
+                ClothConfigScreen screen = (ClothConfigScreen) MC.screen;
                 if (screen.getSelectedCategory().equals(ClothConfigIntegration.OTHER_SETTINGS)) {
                     screen.selectedCategoryIndex = 0;
                     MC.setScreen(new VoiceChatSettingsScreen(MC.screen));

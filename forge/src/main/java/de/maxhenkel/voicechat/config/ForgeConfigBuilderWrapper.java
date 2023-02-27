@@ -3,10 +3,12 @@ package de.maxhenkel.voicechat.config;
 import de.maxhenkel.configbuilder.Config;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.ConfigEntry;
+import de.maxhenkel.voicechat.integration.clothconfig.ForgeClothConfigIntegration;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Supplier;
 
 public class ForgeConfigBuilderWrapper implements ConfigBuilder {
 
@@ -114,7 +116,7 @@ public class ForgeConfigBuilderWrapper implements ConfigBuilder {
 
         @Override
         public T getDefault() {
-            throw new UnsupportedOperationException("Can't reset Forge config value");
+            return ForgeClothConfigIntegration.getDefault(value);
         }
 
         @Override

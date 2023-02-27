@@ -82,7 +82,7 @@ dependencies {
         transitive false
     }
 
-    implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"));
+    implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"))
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 

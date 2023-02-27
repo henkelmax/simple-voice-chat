@@ -63,7 +63,7 @@ dependencies {
 
     implementation project(':api')
 
-    modApi("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}"){
+    implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")){
         transitive = false
     }
 }

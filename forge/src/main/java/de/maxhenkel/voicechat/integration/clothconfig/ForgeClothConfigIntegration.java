@@ -4,7 +4,7 @@ import de.maxhenkel.configbuilder.ConfigEntry;
 import de.maxhenkel.voicechat.config.ForgeConfigBuilderWrapper;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import net.minecraft.network.chat.Component;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.lang.reflect.Field;
@@ -13,13 +13,15 @@ import java.util.function.Supplier;
 public class ForgeClothConfigIntegration extends ClothConfigIntegration {
 
     @Override
-    protected <T> AbstractConfigListEntry<T> fromConfigEntry(ConfigEntryBuilder entryBuilder, Component name, ConfigEntry<T> entry) {
-        if (!(entry instanceof ForgeConfigBuilderWrapper.ForgeConfigEntry<T> e)) {
-            throw new IllegalArgumentException("Unknown config entry type %s".formatted(entry.getClass().getName()));
+    protected <T> AbstractConfigListEntry<T> fromConfigEntry(ConfigEntryBuilder entryBuilder, ITextComponent name, ConfigEntry<T> entry) {
+        if (!(entry instanceof ForgeConfigBuilderWrapper.ForgeConfigEntry)) {
+            throw new IllegalArgumentException(String.format("Unknown config entry type %s", entry.getClass().getName()));
         }
+        ForgeConfigBuilderWrapper.ForgeConfigEntry<T> e = (ForgeConfigBuilderWrapper.ForgeConfigEntry<T>) entry;
         ForgeConfigSpec.ConfigValue<T> value = e.getValue();
 
-        if (value instanceof ForgeConfigSpec.DoubleValue doubleValue) {
+        if (value instanceof ForgeConfigSpec.DoubleValue) {
+            ForgeConfigSpec.DoubleValue doubleValue = (ForgeConfigSpec.DoubleValue) value;
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startDoubleField(name, doubleValue.get())
                     .setDefaultValue(getDefault(doubleValue))
@@ -28,7 +30,8 @@ public class ForgeClothConfigIntegration extends ClothConfigIntegration {
                         e.save();
                     })
                     .build();
-        } else if (value instanceof ForgeConfigSpec.IntValue intValue) {
+        } else if (value instanceof ForgeConfigSpec.IntValue) {
+            ForgeConfigSpec.IntValue intValue = (ForgeConfigSpec.IntValue) value;
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startIntField(name, intValue.get())
                     .setDefaultValue(getDefault(intValue))
@@ -37,7 +40,8 @@ public class ForgeClothConfigIntegration extends ClothConfigIntegration {
                         e.save();
                     })
                     .build();
-        } else if (value instanceof ForgeConfigSpec.BooleanValue booleanValue) {
+        } else if (value instanceof ForgeConfigSpec.BooleanValue) {
+            ForgeConfigSpec.BooleanValue booleanValue = (ForgeConfigSpec.BooleanValue) value;
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startBooleanToggle(name, booleanValue.get())
                     .setDefaultValue(getDefault(booleanValue))
@@ -57,10 +61,10 @@ public class ForgeClothConfigIntegration extends ClothConfigIntegration {
                     .build();
         }
 
-        throw new IllegalArgumentException("Unknown config entry type %s".formatted(value.getClass().getName()));
+        throw new IllegalArgumentException(String.format("Unknown config entry type %s", value.getClass().getName()));
     }
 
-    private static <T> T getDefault(ForgeConfigSpec.ConfigValue<T> value) {
+    public static <T> T getDefault(ForgeConfigSpec.ConfigValue<T> value) {
         try {
             Field defaultSupplier = ForgeConfigSpec.ConfigValue.class.getDeclaredField("defaultSupplier");
             defaultSupplier.setAccessible(true);
