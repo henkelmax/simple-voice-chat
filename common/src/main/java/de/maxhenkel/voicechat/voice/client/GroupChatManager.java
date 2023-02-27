@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
-import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -15,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 public class GroupChatManager {
 
@@ -101,14 +101,14 @@ public class GroupChatManager {
 
     public static List<PlayerState> getGroupMembers(boolean includeSelf) {
         List<PlayerState> entries = new ArrayList<>();
-        ClientGroup group = ClientManager.getPlayerStateManager().getGroup();
+        UUID group = ClientManager.getPlayerStateManager().getGroupID();
 
         if (group == null) {
             return entries;
         }
 
         for (PlayerState state : ClientManager.getPlayerStateManager().getPlayerStates(includeSelf)) {
-            if (state.hasGroup() && state.getGroup().equals(group.getId())) {
+            if (state.hasGroup() && state.getGroup().equals(group)) {
                 entries.add(state);
             }
         }

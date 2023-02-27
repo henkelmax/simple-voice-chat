@@ -74,7 +74,7 @@ public class ServerGroupManager {
         PlayerStateManager manager = getStates();
         manager.setGroup(player, group.getId());
 
-        NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
+        NetManager.sendToClient(player, new JoinedGroupPacket(group.getId(), false));
     }
 
     public void joinGroup(@Nullable Group group, Player player, String password) {
@@ -94,7 +94,7 @@ public class ServerGroupManager {
         PlayerStateManager manager = getStates();
         manager.setGroup(player, group.getId());
 
-        NetManager.sendToClient(player, new JoinedGroupPacket(group.toClientGroup(), false));
+        NetManager.sendToClient(player, new JoinedGroupPacket(group.getId(), false));
     }
 
     public void leaveGroup(Player player) {
