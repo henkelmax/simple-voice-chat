@@ -13,7 +13,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 
 public class ClothConfigIntegration {
 
-    public static final MutableComponent SETTINGS = new TranslatableComponent("cloth_config.voicechat.settings");
+    public static final TranslatableComponent SETTINGS = new TranslatableComponent("cloth_config.voicechat.settings");
     public static final TranslatableComponent OTHER_SETTINGS = new TranslatableComponent("cloth_config.voicechat.category.other");
 
     public Screen createConfigScreen(Screen parent) {
@@ -29,9 +29,9 @@ public class ClothConfigIntegration {
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.recording_destination"), VoicechatClient.CLIENT_CONFIG.recordingDestination));
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.run_local_server"), VoicechatClient.CLIENT_CONFIG.runLocalServer));
         general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.offline_player_volume_adjustment"), VoicechatClient.CLIENT_CONFIG.offlinePlayerVolumeAdjustment));
-        general.addEntry(fromConfigEntry(entryBuilder, Component.translatable("cloth_config.voicechat.config.freecam_support"), VoicechatClient.CLIENT_CONFIG.freecamSupport));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.freecam_support"), VoicechatClient.CLIENT_CONFIG.freecamSupport));
 
-        ConfigCategory audio = builder.getOrCreateCategory(Component.translatable("cloth_config.voicechat.category.audio"));
+        ConfigCategory audio = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.voicechat.category.audio"));
         audio.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.audio_packet_threshold"), VoicechatClient.CLIENT_CONFIG.audioPacketThreshold));
         audio.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.deactivation_delay"), VoicechatClient.CLIENT_CONFIG.deactivationDelay));
         audio.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.output_buffer_size"), VoicechatClient.CLIENT_CONFIG.outputBufferSize));
