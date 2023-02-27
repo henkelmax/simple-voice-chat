@@ -13,6 +13,7 @@ import de.maxhenkel.voicechat.gui.widgets.ButtonBase;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
 import de.maxhenkel.voicechat.voice.client.*;
+import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.*;
 
@@ -88,8 +89,9 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         ButtonBase group = new ButtonBase(6, guiLeft + xSize - 6 - 75 + 1, guiTop + 6 + 15, 75, 20, GROUP) {
             @Override
             public void onPress() {
-                if (stateManager.isInGroup()) {
-                    mc.displayGuiScreen(new GroupScreen(stateManager.getGroup()));
+                ClientGroup g = stateManager.getGroup();
+                if (g != null) {
+                    mc.displayGuiScreen(new GroupScreen(g));
                 } else {
                     mc.displayGuiScreen(new JoinGroupScreen());
                 }

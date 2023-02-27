@@ -11,6 +11,7 @@ import de.maxhenkel.voicechat.plugins.impl.audiochannel.ClientEntityAudioChannel
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.ClientLocationalAudioChannelImpl;
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.ClientStaticAudioChannelImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
+import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 
 import javax.annotation.Nullable;
@@ -46,7 +47,11 @@ public class VoicechatClientApiImpl extends VoicechatApiImpl implements Voicecha
     @Override
     @Nullable
     public Group getGroup() {
-        ClientGroup group = ClientManager.getPlayerStateManager().getGroup();
+        ClientPlayerStateManager playerStateManager = ClientManager.getPlayerStateManager();
+        if (playerStateManager.getGroupID() == null) {
+            return null;
+        }
+        ClientGroup group = playerStateManager.getGroup();
         if (group == null) {
             return null;
         }

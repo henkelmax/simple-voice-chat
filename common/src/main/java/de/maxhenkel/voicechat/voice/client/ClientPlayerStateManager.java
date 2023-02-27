@@ -35,9 +35,8 @@ import java.util.stream.Collectors;
 public class ClientPlayerStateManager {
 
     private boolean disconnected;
-    // TODO Maybe change to UUID
     @Nullable
-    private ClientGroup group;
+    private UUID group;
 
     private Map<UUID, PlayerState> states;
 
@@ -73,7 +72,12 @@ public class ClientPlayerStateManager {
                 }
                 client.player.sendStatusMessage(new TextComponentTranslation("message.voicechat.wrong_password").setStyle(new Style().setColor(TextFormatting.DARK_RED)), true);
             } else if (group != null && screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
-                Minecraft.getMinecraft().displayGuiScreen(new GroupScreen(group));
+                ClientGroup clientGroup = getGroup();
+                if (clientGroup != null) {
+                    Minecraft.getMinecraft().displayGuiScreen(new GroupScreen(clientGroup));
+                } else {
+                    Voicechat.LOGGER.warn("Received join group packet without group being present");
+                }
             }
         });
         ClientCompatibilityManager.INSTANCE.onVoiceChatConnected(this::onVoiceChatConnected);
@@ -166,10 +170,6 @@ public class ClientPlayerStateManager {
         PluginManager.instance().dispatchEvent(MicrophoneMuteEvent.class, new MicrophoneMuteEventImpl(muted));
     }
 
-    public boolean isInGroup() {
-        return getGroup() != null;
-    }
-
     public boolean isInGroup(EntityPlayer player) {
         PlayerState state = states.get(player.getUniqueID());
         if (state == null) {
@@ -189,6 +189,14 @@ public class ClientPlayerStateManager {
 
     @Nullable
     public ClientGroup getGroup() {
+        if (group == null) {
+            return null;
+        }
+        return ClientManager.getGroupManager().getGroup(group);
+    }
+
+    @Nullable
+    public UUID getGroupID() {
         return group;
     }
 

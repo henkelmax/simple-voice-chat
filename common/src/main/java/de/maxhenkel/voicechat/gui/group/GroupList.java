@@ -3,12 +3,12 @@ package de.maxhenkel.voicechat.gui.group;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
-import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 public class GroupList extends ListScreenListBase<GroupEntry> {
 
@@ -23,7 +23,7 @@ public class GroupList extends ListScreenListBase<GroupEntry> {
     public void tick() {
         // TODO Trigger when player state changes
         List<PlayerState> playerStates = ClientManager.getPlayerStateManager().getPlayerStates(true);
-        ClientGroup group = ClientManager.getPlayerStateManager().getGroup();
+        UUID group = ClientManager.getPlayerStateManager().getGroupID();
         if (group == null) {
             clearEntries();
             mc.displayGuiScreen(null);
@@ -61,8 +61,8 @@ public class GroupList extends ListScreenListBase<GroupEntry> {
         }
     }
 
-    private boolean isInGroup(PlayerState state, ClientGroup group) {
-        return state.hasGroup() && state.getGroup().equals(group.getId());
+    private boolean isInGroup(PlayerState state, UUID group) {
+        return state.hasGroup() && state.getGroup().equals(group);
     }
 
 }
