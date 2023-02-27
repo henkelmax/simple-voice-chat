@@ -126,6 +126,11 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
     }
 
     @Override
+    public boolean isModLoaded(String modId) {
+        return FabricLoader.getInstance().isModLoaded(modId);
+    }
+
+    @Override
     public List<VoicechatPlugin> loadPlugins() {
         return FabricLoader.getInstance().getEntrypointContainers(Voicechat.MODID, VoicechatPlugin.class).stream().map(EntrypointContainer::getEntrypoint).collect(Collectors.toList());
     }

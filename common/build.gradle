@@ -21,6 +21,7 @@ repositories {
         name = "henkelmax.public"
         url = 'https://maven.maxhenkel.de/repository/public'
     }
+    maven { url "https://maven.shedaniel.me/" }
     mavenLocal()
 }
 
@@ -54,4 +55,8 @@ dependencies {
     implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
 
     implementation project(':api')
+
+    modApi("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}"){
+        transitive = false
+    }
 }

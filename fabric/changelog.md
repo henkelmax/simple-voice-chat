@@ -6,3 +6,4 @@
 - Fixed enter not working in the join group GUI
 - Added freecam support
 - Fixed microphone clipping
+- Improved cloth config integration

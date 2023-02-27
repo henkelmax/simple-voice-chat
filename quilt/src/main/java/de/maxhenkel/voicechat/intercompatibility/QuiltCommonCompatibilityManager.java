@@ -127,6 +127,11 @@ public class QuiltCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
+    public boolean isModLoaded(String modId) {
+        return QuiltLoader.isModLoaded(modId);
+    }
+
+    @Override
     public List<VoicechatPlugin> loadPlugins() {
         return QuiltLoader.getEntrypointContainers(Voicechat.MODID, VoicechatPlugin.class).stream().map(EntrypointContainer::getEntrypoint).collect(Collectors.toList());
     }
