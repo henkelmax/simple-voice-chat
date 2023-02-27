@@ -100,9 +100,9 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
         List<FormattedCharSequence> tooltip = Lists.newArrayList();
 
         if (group.getGroup().getType().equals(de.maxhenkel.voicechat.api.Group.Type.NORMAL)) {
-            tooltip.add(Component.translatable("message.voicechat.group_title", Component.literal(group.getGroup().getName())).getVisualOrderText());
+            tooltip.add(new TranslatableComponent("message.voicechat.group_title", new TextComponent(group.getGroup().getName())).getVisualOrderText());
         } else {
-            tooltip.add(Component.translatable("message.voicechat.group_type_title", Component.literal(group.getGroup().getName()), GroupType.fromType(group.getGroup().getType()).getTranslation()).getVisualOrderText());
+            tooltip.add(new TranslatableComponent("message.voicechat.group_type_title", new TextComponent(group.getGroup().getName()), GroupType.fromType(group.getGroup().getType()).getTranslation()).getVisualOrderText());
         }
 
         if (group.getMembers().isEmpty()) {
