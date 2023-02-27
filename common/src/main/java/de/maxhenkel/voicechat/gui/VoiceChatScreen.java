@@ -15,6 +15,7 @@ import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.*;
+import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
@@ -90,8 +91,9 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         addRenderableWidget(settings);
 
         Button group = new Button(guiLeft + xSize - 6 - 75 + 1, guiTop + 6 + 15, 75, 20, GROUP, button -> {
-            if (stateManager.isInGroup()) {
-                minecraft.setScreen(new GroupScreen(stateManager.getGroup()));
+            ClientGroup g = stateManager.getGroup();
+            if (g != null) {
+                minecraft.setScreen(new GroupScreen(g));
             } else {
                 minecraft.setScreen(new JoinGroupScreen());
             }
