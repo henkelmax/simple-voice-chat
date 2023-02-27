@@ -25,3 +25,9 @@ description='''A working voice chat in Minecraft!'''
     versionRange="[${minecraft_version}]"
     ordering="NONE"
     side="BOTH"
+[[dependencies.${mod_id}]]
+    modId="cloth_config"
+    mandatory=false
+    versionRange="[${cloth_config_version},)"
+    ordering="AFTER"
+    side="BOTH"
