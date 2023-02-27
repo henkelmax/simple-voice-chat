@@ -69,6 +69,7 @@ minecraft {
 repositories {
     mavenCentral()
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
+    maven { url "https://maven.shedaniel.me/" }
     mavenLocal()
 }
 
@@ -80,6 +81,8 @@ dependencies {
     implementation(project(':common')) {
         transitive false
     }
+
+    implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"));
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'org.jetbrains:annotations:23.0.0'
@@ -120,7 +123,8 @@ processResources {
                 'mod_name': mod_name,
                 'forge_loader_requirement': forge_loader_requirement,
                 'forge_requirement': forge_requirement,
-                'minecraft_version': minecraft_version
+                'minecraft_version': minecraft_version,
+                'cloth_config_version': cloth_config_version
     }
     from("${project(':common').projectDir}/src/main/resources")
 }
@@ -167,6 +171,7 @@ curseforge {
             displayName = "[FORGE][${minecraft_version}] ${mod_name} ${mod_version}"
             relations {
                 optionalDependency 'sound-physics-remastered'
+                optionalDependency 'cloth-config'
             }
         }
     }
@@ -186,6 +191,9 @@ modrinth {
     changelog = file("changelog.md").text
     gameVersions = [minecraft_version]
     loaders = ['forge']
+    dependencies {
+        optional.project "9s6osm5g" // ClothConfig
+    }
 }
 tasks.modrinth.dependsOn(build)
 

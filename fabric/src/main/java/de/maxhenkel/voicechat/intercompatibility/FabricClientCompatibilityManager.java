@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.events.*;
 import de.maxhenkel.voicechat.mixin.ConnectionAccessor;
 import de.maxhenkel.voicechat.resourcepacks.IPackRepository;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.KeyMapping;
@@ -38,6 +39,11 @@ public class FabricClientCompatibilityManager extends ClientCompatibilityManager
     @Override
     public void onMouseEvent(MouseEvent onMouseEvent) {
         InputEvents.MOUSE_KEY.register(onMouseEvent);
+    }
+
+    @Override
+    public void onClientTick(Runnable onClientTick) {
+        ClientTickEvents.START_CLIENT_TICK.register(client -> onClientTick.run());
     }
 
     @Override

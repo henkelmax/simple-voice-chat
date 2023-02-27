@@ -1,4 +1,4 @@
-package de.maxhenkel.voicechat.integration;
+package de.maxhenkel.voicechat.integration.clothconfig;
 
 import de.maxhenkel.configbuilder.ConfigEntry;
 import de.maxhenkel.voicechat.VoicechatClient;
@@ -11,25 +11,30 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 
-public class ClothConfigWrapper {
+public class ClothConfigIntegration {
 
-    static final TranslatableComponent OTHER_SETTINGS = new TranslatableComponent("cloth_config.voicechat.category.other");
+    public static final MutableComponent SETTINGS = new TranslatableComponent("cloth_config.voicechat.settings");
+    public static final TranslatableComponent OTHER_SETTINGS = new TranslatableComponent("cloth_config.voicechat.category.other");
 
-    public static Screen createConfigScreen(Screen parent) {
+    public Screen createConfigScreen(Screen parent) {
         ConfigBuilder builder = ConfigBuilder
                 .create()
                 .setParentScreen(parent)
-                .setTitle(new TranslatableComponent("cloth_config.voicechat.settings"));
+                .setTitle(SETTINGS);
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-        ConfigCategory audio = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.voicechat.category.audio"));
+        ConfigCategory general = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.voicechat.category.general"));
+
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.recording_destination"), VoicechatClient.CLIENT_CONFIG.recordingDestination));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.run_local_server"), VoicechatClient.CLIENT_CONFIG.runLocalServer));
+        general.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.offline_player_volume_adjustment"), VoicechatClient.CLIENT_CONFIG.offlinePlayerVolumeAdjustment));
+        general.addEntry(fromConfigEntry(entryBuilder, Component.translatable("cloth_config.voicechat.config.freecam_support"), VoicechatClient.CLIENT_CONFIG.freecamSupport));
+
+        ConfigCategory audio = builder.getOrCreateCategory(Component.translatable("cloth_config.voicechat.category.audio"));
         audio.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.audio_packet_threshold"), VoicechatClient.CLIENT_CONFIG.audioPacketThreshold));
         audio.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.deactivation_delay"), VoicechatClient.CLIENT_CONFIG.deactivationDelay));
         audio.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.output_buffer_size"), VoicechatClient.CLIENT_CONFIG.outputBufferSize));
-        audio.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.recording_destination"), VoicechatClient.CLIENT_CONFIG.recordingDestination));
-        audio.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.run_local_server"), VoicechatClient.CLIENT_CONFIG.runLocalServer));
-        audio.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.offline_player_volume_adjustment"), VoicechatClient.CLIENT_CONFIG.offlinePlayerVolumeAdjustment));
 
         ConfigCategory hudIcons = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.voicechat.category.hud_icons"));
         hudIcons.addEntry(fromConfigEntry(entryBuilder, new TranslatableComponent("cloth_config.voicechat.config.hud_icon_scale"), VoicechatClient.CLIENT_CONFIG.hudIconScale));
@@ -52,7 +57,7 @@ public class ClothConfigWrapper {
         return builder.build();
     }
 
-    private static <T> AbstractConfigListEntry<T> fromConfigEntry(ConfigEntryBuilder entryBuilder, Component name, ConfigEntry<T> entry) {
+    protected <T> AbstractConfigListEntry<T> fromConfigEntry(ConfigEntryBuilder entryBuilder, Component name, ConfigEntry<T> entry) {
         if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.DoubleConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startDoubleField(name, e.get())
@@ -86,7 +91,7 @@ public class ClothConfigWrapper {
                     .build();
         }
 
-        return null;
+        throw new IllegalArgumentException("Unknown config entry type %s".formatted(entry.getClass().getName()));
     }
 
 }

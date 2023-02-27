@@ -7,3 +7,4 @@
 - Fixed Forge clients without the mods can't join Forge servers with the mod
 - Added freecam support
 - Fixed microphone clipping
+- Added cloth config integration
