@@ -2,6 +2,8 @@ package de.maxhenkel.voicechat.gui.group;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.api.Group;
+import de.maxhenkel.voicechat.gui.GroupType;
 import de.maxhenkel.voicechat.gui.tooltips.DisableTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.HideGroupHudTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.MuteTooltipSupplier;
@@ -122,6 +124,13 @@ public class GroupScreen extends ListScreenBase {
 
     @Override
     public void renderForeground(int mouseX, int mouseY, float delta) {
+        ITextComponent title;
+        if (group.getType().equals(Group.Type.NORMAL)) {
+            title = new TranslationTextComponent("message.voicechat.group_title", new StringTextComponent(group.getName()));
+        } else {
+            title = new TranslationTextComponent("message.voicechat.group_type_title", new StringTextComponent(group.getName()), GroupType.fromType(group.getType()).getTranslation());
+        }
+
         fontRenderer.drawString(group.getName(), guiLeft + xSize / 2 - fontRenderer.getStringWidth(group.getName()) / 2, guiTop + 5, FONT_COLOR);
     }
 
