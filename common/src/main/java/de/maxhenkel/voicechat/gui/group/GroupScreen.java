@@ -19,6 +19,7 @@ import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -129,9 +130,9 @@ public class GroupScreen extends ListScreenBase {
     public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         MutableComponent title;
         if (group.getType().equals(Group.Type.NORMAL)) {
-            title = new TranslatableComponent("message.voicechat.group_title", Component.literal(group.getName()));
+            title = new TranslatableComponent("message.voicechat.group_title", new TextComponent(group.getName()));
         } else {
-            title = new TranslatableComponent("message.voicechat.group_type_title", Component.literal(group.getName()), GroupType.fromType(group.getType()).getTranslation());
+            title = new TranslatableComponent("message.voicechat.group_type_title", new TextComponent(group.getName()), GroupType.fromType(group.getType()).getTranslation());
         }
 
         font.draw(poseStack, title, guiLeft + xSize / 2 - font.width(title) / 2, guiTop + 5, FONT_COLOR);
