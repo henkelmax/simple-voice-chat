@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.api.events.MicrophoneMuteEvent;
 import de.maxhenkel.voicechat.api.events.VoicechatDisableEvent;
 import de.maxhenkel.voicechat.gui.CreateGroupScreen;
 import de.maxhenkel.voicechat.gui.EnterPasswordScreen;
+import de.maxhenkel.voicechat.gui.group.GroupList;
 import de.maxhenkel.voicechat.gui.group.GroupScreen;
 import de.maxhenkel.voicechat.gui.group.JoinGroupList;
 import de.maxhenkel.voicechat.gui.group.JoinGroupScreen;
@@ -52,6 +53,7 @@ public class ClientPlayerStateManager {
             VoicechatClient.USERNAME_CACHE.updateUsernameAndSave(packet.getPlayerState().getUuid(), packet.getPlayerState().getName());
             AdjustVolumeList.update();
             JoinGroupList.update();
+            GroupList.update();
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel.setClientListener((client, handler, packet) -> {
             states = packet.getPlayerStates();
@@ -62,6 +64,7 @@ public class ClientPlayerStateManager {
             VoicechatClient.USERNAME_CACHE.save();
             AdjustVolumeList.update();
             JoinGroupList.update();
+            GroupList.update();
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().joinedGroupChannel.setClientListener((client, handler, packet) -> {
             GuiScreen screen = Minecraft.getMinecraft().currentScreen;

@@ -98,9 +98,6 @@ public class GroupScreen extends ListScreenBase {
     public void updateScreen() {
         super.updateScreen();
         checkButtons();
-        if (groupList != null) {
-            groupList.tick();
-        }
     }
 
     private void checkButtons() {

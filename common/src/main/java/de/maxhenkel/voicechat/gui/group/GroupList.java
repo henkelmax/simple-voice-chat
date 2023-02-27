@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
+import net.minecraft.client.Minecraft;
 
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -17,11 +18,10 @@ public class GroupList extends ListScreenListBase<GroupEntry> {
     public GroupList(ListScreenBase parent, int width, int height, int x, int y, int size) {
         super(width, height, x, y, size);
         this.parent = parent;
-        tick();
+        updateMembers();
     }
 
-    public void tick() {
-        // TODO Trigger when player state changes
+    public void updateMembers() {
         List<PlayerState> playerStates = ClientManager.getPlayerStateManager().getPlayerStates(true);
         UUID group = ClientManager.getPlayerStateManager().getGroupID();
         if (group == null) {
@@ -58,6 +58,12 @@ public class GroupList extends ListScreenListBase<GroupEntry> {
 
         if (changed) {
             children().sort(Comparator.comparing(o -> o.getState().getName()));
+        }
+    }
+
+    public static void update() {
+        if (Minecraft.getMinecraft().screen instanceof GroupScreen groupScreen) {
+            groupScreen.groupList.updateMembers();
         }
     }
 
