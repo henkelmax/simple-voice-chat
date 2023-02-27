@@ -4,6 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.api.Group;
+import de.maxhenkel.voicechat.gui.GroupType;
 import de.maxhenkel.voicechat.gui.tooltips.DisableTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.HideGroupHudTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.MuteTooltipSupplier;
@@ -124,7 +126,13 @@ public class GroupScreen extends ListScreenBase {
 
     @Override
     public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        MutableComponent title = Component.literal(group.getName());
+        MutableComponent title;
+        if (group.getType().equals(Group.Type.NORMAL)) {
+            title = Component.translatable("message.voicechat.group_title", Component.literal(group.getName()));
+        } else {
+            title = Component.translatable("message.voicechat.group_type_title", Component.literal(group.getName()), GroupType.fromType(group.getType()).getTranslation());
+        }
+
         font.draw(poseStack, title, guiLeft + xSize / 2 - font.width(title) / 2, guiTop + 5, FONT_COLOR);
 
         groupList.render(poseStack, mouseX, mouseY, delta);
