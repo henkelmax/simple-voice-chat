@@ -60,7 +60,7 @@ public class ForgeConfigBuilderWrapper implements ConfigBuilder {
         return String.join(".", pathList);
     }
 
-    private class ForgeConfigEntry<T> implements ConfigEntry<T> {
+    public class ForgeConfigEntry<T> implements ConfigEntry<T> {
 
         private final String[] comments;
         private final ForgeConfigSpec.ConfigValue<T> value;
@@ -68,6 +68,10 @@ public class ForgeConfigBuilderWrapper implements ConfigBuilder {
         public ForgeConfigEntry(String[] comments, ForgeConfigSpec.ConfigValue<T> value) {
             this.comments = comments;
             this.value = value;
+        }
+
+        public ForgeConfigSpec.ConfigValue<T> getValue() {
+            return value;
         }
 
         @Override
