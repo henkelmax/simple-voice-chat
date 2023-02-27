@@ -7,6 +7,9 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.ForgeConfigSpec;
 
+import java.lang.reflect.Field;
+import java.util.function.Supplier;
+
 public class ForgeClothConfigIntegration extends ClothConfigIntegration {
 
     @Override
@@ -19,7 +22,7 @@ public class ForgeClothConfigIntegration extends ClothConfigIntegration {
         if (value instanceof ForgeConfigSpec.DoubleValue doubleValue) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startDoubleField(name, doubleValue.get())
-                    .setDefaultValue(doubleValue::getDefault)
+                    .setDefaultValue(getDefault(doubleValue))
                     .setSaveConsumer(d -> {
                         doubleValue.set(d);
                         e.save();
@@ -28,7 +31,7 @@ public class ForgeClothConfigIntegration extends ClothConfigIntegration {
         } else if (value instanceof ForgeConfigSpec.IntValue intValue) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startIntField(name, intValue.get())
-                    .setDefaultValue(intValue::getDefault)
+                    .setDefaultValue(getDefault(intValue))
                     .setSaveConsumer(d -> {
                         intValue.set(d);
                         e.save();
@@ -37,16 +40,16 @@ public class ForgeClothConfigIntegration extends ClothConfigIntegration {
         } else if (value instanceof ForgeConfigSpec.BooleanValue booleanValue) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startBooleanToggle(name, booleanValue.get())
-                    .setDefaultValue(booleanValue::getDefault)
+                    .setDefaultValue(getDefault(booleanValue))
                     .setSaveConsumer(d -> {
                         booleanValue.set(d);
                         e.save();
                     })
                     .build();
-        } else if (value.getDefault() instanceof String) {
+        } else if (getDefault(value) instanceof String) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startStrField(name, (String) value.get())
-                    .setDefaultValue(() -> (String) value.getDefault())
+                    .setDefaultValue(() -> (String) getDefault(value))
                     .setSaveConsumer(d -> {
                         value.set((T) d);
                         e.save();
@@ -56,4 +59,15 @@ public class ForgeClothConfigIntegration extends ClothConfigIntegration {
 
         throw new IllegalArgumentException("Unknown config entry type %s".formatted(value.getClass().getName()));
     }
+
+    private static <T> T getDefault(ForgeConfigSpec.ConfigValue<T> value) {
+        try {
+            Field defaultSupplier = ForgeConfigSpec.ConfigValue.class.getDeclaredField("defaultSupplier");
+            defaultSupplier.setAccessible(true);
+            return ((Supplier<T>) defaultSupplier.get(value)).get();
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to get default config value", e);
+        }
+    }
+
 }
