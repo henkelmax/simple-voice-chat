@@ -77,7 +77,7 @@ public class PlayerEntryMixin {
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/Button;render(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V", ordinal = 1))
     private void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, CallbackInfo ci) {
         if (inviteButton != null && hideButton != null) {
-            if (!ClientManager.getPlayerStateManager().isInGroup() || !canInvite()) {
+            if (ClientManager.getPlayerStateManager().getGroupID() == null || !canInvite()) {
                 inviteButton.visible = false;
                 return;
             }
