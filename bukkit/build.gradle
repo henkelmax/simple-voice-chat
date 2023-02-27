@@ -186,7 +186,7 @@ modrinth {
     gameVersions = [minecraft_version]
     loaders = ['bukkit', 'spigot', 'paper', 'purpur']
     dependencies {
-        // optional.project "Vebnzrzj" // LuckPerms //TODO add dependency
+        optional.project "Vebnzrzj" // LuckPerms
     }
 }
 tasks.modrinth.dependsOn(build)
