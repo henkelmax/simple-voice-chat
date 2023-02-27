@@ -2,6 +2,9 @@ package de.maxhenkel.voicechat.api;
 
 import java.util.UUID;
 
+/**
+ * Groups can be created using {@link VoicechatServerApi#groupBuilder()}.
+ */
 public interface Group {
 
     /**
