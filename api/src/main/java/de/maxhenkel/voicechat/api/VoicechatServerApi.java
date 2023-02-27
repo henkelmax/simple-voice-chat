@@ -122,7 +122,9 @@ public interface VoicechatServerApi extends VoicechatApi {
      * @param name     the name of the group
      * @param password the password of the group - <code>null</code> for no password
      * @return the group
+     * @deprecated use {@link #groupBuilder()} instead
      */
+    @Deprecated
     Group createGroup(String name, @Nullable String password);
 
     /**
@@ -132,7 +134,9 @@ public interface VoicechatServerApi extends VoicechatApi {
      * @param password   the password of the group - <code>null</code> for no password
      * @param persistent if the group should be persistent
      * @return the group
+     * @deprecated use {@link #groupBuilder()} instead
      */
+    @Deprecated
     Group createGroup(String name, @Nullable String password, boolean persistent);
 
     /**
