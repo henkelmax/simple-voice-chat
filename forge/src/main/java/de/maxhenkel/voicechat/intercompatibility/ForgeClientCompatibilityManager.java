@@ -2,6 +2,8 @@ package de.maxhenkel.voicechat.intercompatibility;
 
 import de.maxhenkel.voicechat.events.ClientVoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.events.ClientVoiceChatDisconnectedEvent;
+import de.maxhenkel.voicechat.integration.clothconfig.ClothConfigIntegration;
+import de.maxhenkel.voicechat.integration.clothconfig.ForgeClothConfigIntegration;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -33,6 +35,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     private final List<RenderHUDEvent> renderHUDEvents;
     private final List<KeyboardEvent> keyboardEvents;
     private final List<MouseEvent> mouseEvents;
+    private final List<Runnable> clientTickEvents;
     private final List<Runnable> inputEvents;
     private final List<Runnable> disconnectEvents;
     private final List<Runnable> joinServerEvents;
@@ -47,6 +50,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         renderHUDEvents = new ArrayList<>();
         keyboardEvents = new ArrayList<>();
         mouseEvents = new ArrayList<>();
+        clientTickEvents = new ArrayList<>();
         inputEvents = new ArrayList<>();
         disconnectEvents = new ArrayList<>();
         joinServerEvents = new ArrayList<>();
@@ -81,6 +85,14 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @SubscribeEvent
     public void onMouse(InputEvent.RawMouseEvent event) {
         mouseEvents.forEach(mouseEvent -> mouseEvent.onMouseEvent(minecraft.getWindow().getWindow(), event.getButton(), event.getAction(), event.getMods()));
+    }
+
+    @SubscribeEvent
+    public void onKeyInput(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) {
+            return;
+        }
+        clientTickEvents.forEach(Runnable::run);
     }
 
     @SubscribeEvent
@@ -155,6 +167,11 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @Override
+    public void onClientTick(Runnable onClientTick) {
+        clientTickEvents.add(onClientTick);
+    }
+
+    @Override
     public InputMappings.Input getBoundKeyOf(KeyBinding keyBinding) {
         return keyBinding.getKey();
     }
@@ -220,5 +237,10 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @Override
     public void addResourcePackSource(ResourcePackList packRepository, IPackFinder repositorySource) {
         packRepository.addPackFinder(repositorySource);
+    }
+
+    @Override
+    public ClothConfigIntegration getClothConfigIntegration() {
+        return new ForgeClothConfigIntegration();
     }
 }

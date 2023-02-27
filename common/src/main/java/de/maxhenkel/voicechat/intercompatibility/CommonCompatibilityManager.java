@@ -52,6 +52,8 @@ public abstract class CommonCompatibilityManager {
 
     public abstract boolean isDedicatedServer();
 
+    public abstract boolean isModLoaded(String modId);
+
     public abstract List<VoicechatPlugin> loadPlugins();
 
     public abstract PermissionManager createPermissionManager();
