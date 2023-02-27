@@ -51,7 +51,8 @@ public class ServerVoiceEvents {
                     .append(Component.literal(CommonCompatibilityManager.INSTANCE.getModName()).withStyle(ChatFormatting.BOLD))
                     .append(".");
         } else {
-            return Component.translatable("message.voicechat.incompatible_version",
+            return Component.translatableWithFallback("message.voicechat.incompatible_version",
+                    "Your voice chat version is not compatible with the servers version.\nPlease install version %s of %s.",
                     Component.literal(CommonCompatibilityManager.INSTANCE.getModVersion()).withStyle(ChatFormatting.BOLD),
                     Component.literal(CommonCompatibilityManager.INSTANCE.getModName()).withStyle(ChatFormatting.BOLD));
         }
