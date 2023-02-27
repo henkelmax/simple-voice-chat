@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.net.CreateGroupPacket;
 import de.maxhenkel.voicechat.net.NetManager;
 import net.minecraft.client.Minecraft;
@@ -24,12 +23,6 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
     private static final ITextComponent GROUP_NAME = new TranslationTextComponent("message.voicechat.group_name");
     private static final ITextComponent OPTIONAL_PASSWORD = new TranslationTextComponent("message.voicechat.optional_password");
     private static final ITextComponent GROUP_TYPE = new TranslationTextComponent("message.voicechat.group_type");
-    private static final ITextComponent TYPE_NORMAL = new TranslationTextComponent("message.voicechat.group_type.normal");
-    private static final ITextComponent DESCRIPTION_TYPE_NORMAL = new TranslationTextComponent("message.voicechat.group_type.normal.description");
-    private static final ITextComponent TYPE_OPEN = new TranslationTextComponent("message.voicechat.group_type.open");
-    private static final ITextComponent DESCRIPTION_TYPE_OPEN = new TranslationTextComponent("message.voicechat.group_type.open.description");
-    private static final ITextComponent TYPE_ISOLATED = new TranslationTextComponent("message.voicechat.group_type.isolated");
-    private static final ITextComponent DESCRIPTION_TYPE_ISOLATED = new TranslationTextComponent("message.voicechat.group_type.isolated.description");
 
     private TextFieldWidget groupName;
     private TextFieldWidget password;
@@ -74,34 +67,6 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
             createGroup();
         });
         addButton(createGroup);
-    }
-
-    private enum GroupType {
-        NORMAL(TYPE_NORMAL, DESCRIPTION_TYPE_NORMAL, Group.Type.NORMAL),
-        OPEN(TYPE_OPEN, DESCRIPTION_TYPE_OPEN, Group.Type.OPEN),
-        ISOLATED(TYPE_ISOLATED, DESCRIPTION_TYPE_ISOLATED, Group.Type.ISOLATED);
-
-        private final ITextComponent translation;
-        private final ITextComponent description;
-        private final Group.Type type;
-
-        GroupType(ITextComponent translation, ITextComponent description, Group.Type type) {
-            this.translation = translation;
-            this.description = description;
-            this.type = type;
-        }
-
-        public ITextComponent getTranslation() {
-            return translation;
-        }
-
-        public ITextComponent getDescription() {
-            return description;
-        }
-
-        public Group.Type getType() {
-            return type;
-        }
     }
 
     private void createGroup() {

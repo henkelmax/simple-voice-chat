@@ -5,6 +5,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
+import de.maxhenkel.voicechat.gui.GroupType;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
@@ -26,8 +27,8 @@ import java.util.List;
 public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
 
     protected static final ResourceLocation LOCK = new ResourceLocation(Voicechat.MODID, "textures/icons/lock.png");
-    protected static final ITextComponent GROUP_MEMBERS = new TranslationTextComponent("message.voicechat.group_members").withStyle(TextFormatting.WHITE);
-    protected static final ITextComponent NO_GROUP_MEMBERS = new TranslationTextComponent("message.voicechat.no_group_members").withStyle(TextFormatting.WHITE);
+    protected static final ITextComponent GROUP_MEMBERS = new TranslationTextComponent("message.voicechat.group_members").withStyle(TextFormatting.GRAY);
+    protected static final ITextComponent NO_GROUP_MEMBERS = new TranslationTextComponent("message.voicechat.no_group_members").withStyle(TextFormatting.GRAY);
 
     protected static final int SKIN_SIZE = 12;
     protected static final int PADDING = 4;
@@ -97,6 +98,12 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             return;
         }
         List<IReorderingProcessor> tooltip = Lists.newArrayList();
+
+        if (group.getGroup().getType().equals(de.maxhenkel.voicechat.api.Group.Type.NORMAL)) {
+            tooltip.add(new TranslationTextComponent("message.voicechat.group_title", new StringTextComponent(group.getGroup().getName())).getVisualOrderText());
+        } else {
+            tooltip.add(new TranslationTextComponent("message.voicechat.group_type_title", new StringTextComponent(group.getGroup().getName()), GroupType.fromType(group.getGroup().getType()).getTranslation()).getVisualOrderText());
+        }
         if (group.getMembers().isEmpty()) {
             tooltip.add(NO_GROUP_MEMBERS.getVisualOrderText());
         } else {
