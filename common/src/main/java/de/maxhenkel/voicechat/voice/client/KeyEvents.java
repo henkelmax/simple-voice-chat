@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.gui.group.GroupScreen;
 import de.maxhenkel.voicechat.gui.group.JoinGroupScreen;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -59,8 +60,9 @@ public class KeyEvents {
 
         if (KEY_GROUP.consumeClick()) {
             if (client != null && client.getConnection() != null && client.getConnection().getData().groupsEnabled()) {
-                if (playerStateManager.isInGroup()) {
-                    minecraft.setScreen(new GroupScreen(playerStateManager.getGroup()));
+                ClientGroup group = playerStateManager.getGroup();
+                if (group != null) {
+                    minecraft.setScreen(new GroupScreen(group));
                 } else {
                     minecraft.setScreen(new JoinGroupScreen());
                 }
