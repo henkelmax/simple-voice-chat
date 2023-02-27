@@ -60,7 +60,7 @@ public class RenderEvents {
             }
         }
 
-        if (manager.isInGroup() && VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()) {
+        if (manager.getGroupID() != null && VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()) {
             GroupChatManager.renderIcons(stack);
         }
     }
@@ -110,7 +110,7 @@ public class RenderEvents {
                 renderPlayerIcon(player, component, SPEAKER_ICON, stack, vertexConsumers, light);
             } else if (manager.isPlayerDisconnected(player)) {
                 renderPlayerIcon(player, component, DISCONNECT_ICON, stack, vertexConsumers, light);
-            } else if (groupId != null && !groupId.equals(manager.getGroup() == null ? null : manager.getGroup().getId())) { // TODO Change
+            } else if (groupId != null && !groupId.equals(manager.getGroupID())) {
                 renderPlayerIcon(player, component, GROUP_ICON, stack, vertexConsumers, light);
             } else if (manager.isPlayerDisabled(player)) {
                 renderPlayerIcon(player, component, SPEAKER_OFF_ICON, stack, vertexConsumers, light);
