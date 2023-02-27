@@ -19,6 +19,7 @@ import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
 public class GroupScreen extends ListScreenBase {
@@ -126,12 +127,12 @@ public class GroupScreen extends ListScreenBase {
     public void renderForeground(int mouseX, int mouseY, float delta) {
         ITextComponent title;
         if (group.getType().equals(Group.Type.NORMAL)) {
-            title = new TranslationTextComponent("message.voicechat.group_title", new StringTextComponent(group.getName()));
+            title = new TextComponentTranslation("message.voicechat.group_title", new TextComponentString(group.getName()));
         } else {
-            title = new TranslationTextComponent("message.voicechat.group_type_title", new StringTextComponent(group.getName()), GroupType.fromType(group.getType()).getTranslation());
+            title = new TextComponentTranslation("message.voicechat.group_type_title", new TextComponentString(group.getName()), GroupType.fromType(group.getType()).getTranslation());
         }
 
-        fontRenderer.drawString(group.getName(), guiLeft + xSize / 2 - fontRenderer.getStringWidth(group.getName()) / 2, guiTop + 5, FONT_COLOR);
+        fontRenderer.drawString(title.getFormattedText(), guiLeft + xSize / 2 - fontRenderer.getStringWidth(title.getUnformattedComponentText()) / 2, guiTop + 5, FONT_COLOR);
     }
 
 }

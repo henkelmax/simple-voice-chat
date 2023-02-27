@@ -2,12 +2,12 @@ package de.maxhenkel.voicechat.gui;
 
 import de.maxhenkel.voicechat.api.Group;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 
 public enum GroupType {
-    NORMAL(new TranslationTextComponent("message.voicechat.group_type.normal"), new TranslationTextComponent("message.voicechat.group_type.normal.description"), Group.Type.NORMAL),
-    OPEN(new TranslationTextComponent("message.voicechat.group_type.open"), new TranslationTextComponent("message.voicechat.group_type.open.description"), Group.Type.OPEN),
-    ISOLATED(new TranslationTextComponent("message.voicechat.group_type.isolated"), new TranslationTextComponent("message.voicechat.group_type.isolated.description"), Group.Type.ISOLATED);
+    NORMAL(new TextComponentTranslation("message.voicechat.group_type.normal"), new TextComponentTranslation("message.voicechat.group_type.normal.description"), Group.Type.NORMAL),
+    OPEN(new TextComponentTranslation("message.voicechat.group_type.open"), new TextComponentTranslation("message.voicechat.group_type.open.description"), Group.Type.OPEN),
+    ISOLATED(new TextComponentTranslation("message.voicechat.group_type.isolated"), new TextComponentTranslation("message.voicechat.group_type.isolated.description"), Group.Type.ISOLATED);
 
     private final ITextComponent translation;
     private final ITextComponent description;

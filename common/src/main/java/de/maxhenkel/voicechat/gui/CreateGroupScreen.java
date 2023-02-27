@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.gui;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.gui.widgets.ButtonBase;
 import de.maxhenkel.voicechat.net.CreateGroupPacket;
 import de.maxhenkel.voicechat.net.NetManager;

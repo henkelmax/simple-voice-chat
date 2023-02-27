@@ -96,14 +96,14 @@ public class JoinGroupEntry extends ListScreenEntryBase {
         List<String> tooltip = Lists.newArrayList();
 
         if (group.getGroup().getType().equals(de.maxhenkel.voicechat.api.Group.Type.NORMAL)) {
-            tooltip.add(new TranslationTextComponent("message.voicechat.group_title", new StringTextComponent(group.getGroup().getName())).getVisualOrderText());
+            tooltip.add(new TextComponentTranslation("message.voicechat.group_title", new TextComponentString(group.getGroup().getName())).getFormattedText());
         } else {
-            tooltip.add(new TranslationTextComponent("message.voicechat.group_type_title", new StringTextComponent(group.getGroup().getName()), GroupType.fromType(group.getGroup().getType()).getTranslation()).getVisualOrderText());
+            tooltip.add(new TextComponentTranslation("message.voicechat.group_type_title", new TextComponentString(group.getGroup().getName()), GroupType.fromType(group.getGroup().getType()).getTranslation()).getFormattedText());
         }
         if (group.getMembers().isEmpty()) {
-            tooltip.add(NO_GROUP_MEMBERS.getUnformattedComponentText());
+            tooltip.add(NO_GROUP_MEMBERS.getFormattedText());
         } else {
-            tooltip.add(GROUP_MEMBERS.getUnformattedComponentText());
+            tooltip.add(GROUP_MEMBERS.getFormattedText());
             int maxMembers = 10;
             for (int i = 0; i < group.getMembers().size(); i++) {
                 if (i >= maxMembers) {
