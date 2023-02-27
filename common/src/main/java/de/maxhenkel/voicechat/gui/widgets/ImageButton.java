@@ -15,7 +15,6 @@ public class ImageButton extends AbstractButton {
     protected Minecraft mc;
     protected ResourceLocation texture;
     protected PressAction onPress;
-    // TODO replace tooltip supplier with builtin button tooltip
     @Nullable
     protected TooltipSupplier tooltipSupplier;
 
