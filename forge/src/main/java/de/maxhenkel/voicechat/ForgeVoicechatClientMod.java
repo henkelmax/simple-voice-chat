@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat;
 import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.config.ForgeClientConfig;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
+import de.maxhenkel.voicechat.integration.clothconfig.ClothConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.ForgeClientCompatibilityManager;
 import de.maxhenkel.voicechat.macos.VersionCheck;
@@ -24,8 +25,13 @@ public class ForgeVoicechatClientMod extends VoicechatClient {
     public void clientSetup(FMLClientSetupEvent event) {
         initializeClient();
         MinecraftForge.EVENT_BUS.register(ClientCompatibilityManager.INSTANCE);
+        ClothConfig.init();
         ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory((client, parent) -> {
-            return new VoiceChatSettingsScreen(parent);
+            if (ClothConfig.isLoaded()) {
+                return ClientCompatibilityManager.INSTANCE.getClothConfigIntegration().createConfigScreen(parent);
+            } else {
+                return new VoiceChatSettingsScreen(parent);
+            }
         }));
 
         if (Platform.isMac() && !CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
@@ -35,4 +41,5 @@ public class ForgeVoicechatClientMod extends VoicechatClient {
             CLIENT_CONFIG.useNatives.set(false).save();
         }
     }
+
 }
