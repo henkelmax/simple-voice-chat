@@ -107,7 +107,6 @@ public class GroupScreen extends ListScreenBase {
     public void tick() {
         super.tick();
         checkButtons();
-        groupList.tick();
     }
 
     private void checkButtons() {
