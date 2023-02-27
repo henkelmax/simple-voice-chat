@@ -1,29 +1,29 @@
 package de.maxhenkel.voicechat.gui;
 
 import de.maxhenkel.voicechat.api.Group;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public enum GroupType {
-    NORMAL(new TranslatableComponent("message.voicechat.group_type.normal"), new TranslatableComponent("message.voicechat.group_type.normal.description"), Group.Type.NORMAL),
-    OPEN(new TranslatableComponent("message.voicechat.group_type.open"), new TranslatableComponent("message.voicechat.group_type.open.description"), Group.Type.OPEN),
-    ISOLATED(new TranslatableComponent("message.voicechat.group_type.isolated"), new TranslatableComponent("message.voicechat.group_type.isolated.description"), Group.Type.ISOLATED);
+    NORMAL(new TranslationTextComponent("message.voicechat.group_type.normal"), new TranslationTextComponent("message.voicechat.group_type.normal.description"), Group.Type.NORMAL),
+    OPEN(new TranslationTextComponent("message.voicechat.group_type.open"), new TranslationTextComponent("message.voicechat.group_type.open.description"), Group.Type.OPEN),
+    ISOLATED(new TranslationTextComponent("message.voicechat.group_type.isolated"), new TranslationTextComponent("message.voicechat.group_type.isolated.description"), Group.Type.ISOLATED);
 
-    private final Component translation;
-    private final Component description;
+    private final ITextComponent translation;
+    private final ITextComponent description;
     private final Group.Type type;
 
-    GroupType(Component translation, Component description, Group.Type type) {
+    GroupType(ITextComponent translation, ITextComponent description, Group.Type type) {
         this.translation = translation;
         this.description = description;
         this.type = type;
     }
 
-    public Component getTranslation() {
+    public ITextComponent getTranslation() {
         return translation;
     }
 
-    public Component getDescription() {
+    public ITextComponent getDescription() {
         return description;
     }
 
