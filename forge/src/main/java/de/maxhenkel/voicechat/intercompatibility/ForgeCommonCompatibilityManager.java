@@ -176,6 +176,11 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
+    public boolean isModLoaded(String modId) {
+        return ModList.get().isLoaded(modId);
+    }
+
+    @Override
     public List<VoicechatPlugin> loadPlugins() {
         List<VoicechatPlugin> plugins = new ArrayList<>();
         ModList.get().getAllScanData().forEach(scan -> {
