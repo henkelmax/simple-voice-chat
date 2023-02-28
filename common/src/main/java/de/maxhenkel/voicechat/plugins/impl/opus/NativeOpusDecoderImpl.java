@@ -33,7 +33,7 @@ public class NativeOpusDecoderImpl implements OpusDecoder {
         if (error.get() != Opus.OPUS_OK && opusDecoder == null) {
             throw new IllegalStateException("Opus decoder error " + error.get());
         }
-        Voicechat.LOGGER.info("Initializing Opus decoder with sample rate " + sampleRate + " Hz, frame size " + frameSize + " bytes and max payload size " + maxPayloadSize + " bytes");
+        Voicechat.LOGGER.info("Initializing Opus decoder with sample rate {} Hz, frame size {} bytes and max payload size {} bytes", sampleRate, frameSize, maxPayloadSize);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class NativeOpusDecoderImpl implements OpusDecoder {
     @Nullable
     public static NativeOpusDecoderImpl createDecoder(int sampleRate, int frameSize, int maxPayloadSize) {
         return Utils.createSafe(() -> new NativeOpusDecoderImpl(sampleRate, frameSize, maxPayloadSize), e -> {
-            Voicechat.LOGGER.warn("Failed to load native Opus decoder: {}", e.getMessage());
+            Voicechat.LOGGER.warn("Failed to load native Opus decoder", e);
         });
     }
 

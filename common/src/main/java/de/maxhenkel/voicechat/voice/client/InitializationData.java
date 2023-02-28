@@ -52,7 +52,7 @@ public class InitializationData {
                 }
 
             } catch (Exception e) {
-                Voicechat.LOGGER.warn("Failed to parse voice host: {}", e.getMessage());
+                Voicechat.LOGGER.warn("Failed to parse voice host", e);
             }
         }
         return new HostData(ip, port);

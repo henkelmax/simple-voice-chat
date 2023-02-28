@@ -36,11 +36,11 @@ public class Mp3EncoderImpl implements Mp3Encoder, AutoCloseable {
             try {
                 return new Mp3EncoderImpl(audioFormat, bitrate, quality, outputStream);
             } catch (IOException e) {
-                Voicechat.LOGGER.error("Failed to initialize LAME encoder: {}", e.getMessage());
+                Voicechat.LOGGER.error("Failed to initialize LAME encoder", e);
                 return null;
             }
         }, e -> {
-            Voicechat.LOGGER.error("Failed to load LAME encoder: {}", e.getMessage());
+            Voicechat.LOGGER.error("Failed to load LAME encoder", e);
         });
     }
 
