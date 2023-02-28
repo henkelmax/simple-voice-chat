@@ -81,7 +81,7 @@ public class Server extends Thread {
                 }
             }
         } catch (Exception e) {
-            Voicechat.LOGGER.error("Voice chat server error {}", e.getMessage());
+            Voicechat.LOGGER.error("Voice chat server error", e);
         }
     }
 

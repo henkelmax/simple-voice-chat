@@ -19,7 +19,7 @@ public class MicrophoneManager {
             try {
                 mic = createALMicrophone();
             } catch (MicrophoneException e) {
-                Voicechat.LOGGER.warn("Failed to use OpenAL microphone implementation: {}", e.getMessage());
+                Voicechat.LOGGER.warn("Failed to use OpenAL microphone implementation", e);
                 Voicechat.LOGGER.warn("Falling back to Java microphone implementation");
                 mic = createJavaMicrophone();
                 fallback = true;
