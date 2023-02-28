@@ -293,7 +293,7 @@ public class AudioRecorder {
         if (player != null && mc.world != null) {
             player.sendMessage(msg);
         } else {
-            Voicechat.LOGGER.info(msg.getUnformattedComponentText());
+            Voicechat.LOGGER.info("{}", msg.getUnformattedComponentText());
         }
     }
 

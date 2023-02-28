@@ -85,7 +85,7 @@ public class ClientVoicechatConnection extends Thread {
         } catch (InterruptedException ignored) {
         } catch (Exception e) {
             if (running) {
-                Voicechat.LOGGER.error("Failed to process packet from server: {}", e.getMessage(), e);
+                Voicechat.LOGGER.error("Failed to process packet from server", e);
             }
         }
     }

@@ -194,10 +194,9 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
                     plugins.add(plugin);
                 }
             } catch (Exception e) {
-                Voicechat.LOGGER.warn("Failed to load plugin '{}': {}", asmData.getClassName(), e.getMessage());
+                Voicechat.LOGGER.warn("Failed to load plugin '{}'", asmData.getClassName(), e);
             }
         }
-
         return plugins;
     }
 

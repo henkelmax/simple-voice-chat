@@ -46,7 +46,7 @@ public abstract class VoicechatClient {
             try {
                 Files.move(oldLocation, newLocation, StandardCopyOption.ATOMIC_MOVE);
             } catch (IOException e) {
-                Voicechat.LOGGER.error("Failed to move volumes config: {}", e.getMessage());
+                Voicechat.LOGGER.error("Failed to move volumes config", e);
             }
         }
     }

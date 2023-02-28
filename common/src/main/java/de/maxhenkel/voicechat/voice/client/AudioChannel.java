@@ -157,7 +157,7 @@ public class AudioChannel extends Thread {
                 speaker.close();
             }
             decoder.close();
-            Voicechat.LOGGER.info("Closed audio channel for " + uuid);
+            Voicechat.LOGGER.info("Closed audio channel for {}", uuid);
         }
     }
 
