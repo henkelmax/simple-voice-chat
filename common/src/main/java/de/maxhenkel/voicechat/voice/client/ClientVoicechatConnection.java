@@ -119,7 +119,10 @@ public class ClientVoicechatConnection extends Thread {
     }
 
     private class AuthThread extends Thread {
+
         private boolean running;
+        private int authLogMessageCount;
+        private int validateLogMessageCount;
 
         public AuthThread() {
             this.running = true;
@@ -134,8 +137,15 @@ public class ClientVoicechatConnection extends Thread {
                     break;
                 }
                 if (!authenticated) {
+                    validateLogMessageCount = 0;
                     try {
-                        Voicechat.LOGGER.info("Trying to authenticate voice chat connection");
+                        if (authLogMessageCount < 10) {
+                            Voicechat.LOGGER.info("Trying to authenticate voice chat connection");
+                            authLogMessageCount++;
+                        } else if (authLogMessageCount == 10) {
+                            Voicechat.LOGGER.warn("Trying to authenticate voice chat connection (this message will not be logged again)");
+                            authLogMessageCount++;
+                        }
                         sendToServer(new NetworkMessage(new AuthenticatePacket(data.getPlayerUUID(), data.getSecret())));
                     } catch (Exception e) {
                         if (!socket.isClosed()) {
@@ -143,8 +153,16 @@ public class ClientVoicechatConnection extends Thread {
                         }
                     }
                 } else {
+                    authLogMessageCount = 0;
                     try {
-                        Voicechat.LOGGER.info("Trying to validate voice chat connection");
+                        if (validateLogMessageCount < 10) {
+                            Voicechat.LOGGER.info("Trying to validate voice chat connection");
+                            validateLogMessageCount++;
+                        } else if (validateLogMessageCount == 10) {
+                            Voicechat.LOGGER.warn("Trying to validate voice chat connection (this message will not be logged again)");
+                            validateLogMessageCount++;
+                        }
+
                         sendToServer(new NetworkMessage(new ConnectionCheckPacket()));
                     } catch (Exception e) {
                         if (!socket.isClosed()) {
