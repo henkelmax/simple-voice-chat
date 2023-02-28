@@ -8,3 +8,4 @@
 - Fixed crashes when opening some GUIs
 - Added freecam support
 - Hide disconnected icon when initially connecting to a server
+- Reduced logging spam when failing to connect to voice chat server
