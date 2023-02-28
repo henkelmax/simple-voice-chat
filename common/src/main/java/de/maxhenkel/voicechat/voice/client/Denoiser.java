@@ -68,7 +68,7 @@ public class Denoiser {
             return null;
         }
         return Utils.createSafe(Denoiser::new, e -> {
-            Voicechat.LOGGER.warn("Failed to load RNNoise: {}", e.getMessage());
+            Voicechat.LOGGER.warn("Failed to load RNNoise", e);
         });
     }
 
