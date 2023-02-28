@@ -211,6 +211,8 @@ public class Server extends Thread {
                             }
                             continue;
                         }
+                        // Refresh keepalive, so players who took longer than the timeout can still connect
+                        connection.setLastKeepAliveResponse(System.currentTimeMillis());
                         connections.put(connection.getPlayerUUID(), connection);
                         unCheckedConnections.remove(connection.getPlayerUUID());
                         Voicechat.LOGGER.info("Successfully validated connection of player {}", connection.getPlayerUUID());
