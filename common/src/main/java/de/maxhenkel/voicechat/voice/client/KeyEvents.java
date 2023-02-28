@@ -80,11 +80,11 @@ public class KeyEvents {
             checkConnected();
         }
 
-        if (KEY_MUTE.isPressed() && checkConnected()) {
+        if (KEY_MUTE.isPressed()) {
             playerStateManager.setMuted(!playerStateManager.isMuted());
         }
 
-        if (KEY_DISABLE.isPressed() && checkConnected()) {
+        if (KEY_DISABLE.isPressed()) {
             playerStateManager.setDisabled(!playerStateManager.isDisabled());
         }
 
