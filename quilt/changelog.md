@@ -7,3 +7,4 @@
 - Added freecam support
 - Fixed microphone clipping
 - Improved cloth config integration
+- Hide disconnected icon when initially connecting to a server
