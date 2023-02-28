@@ -7,3 +7,4 @@
 - Fixed Forge clients without the mods can't join Forge servers with the mod
 - Fixed crashes when opening some GUIs
 - Added freecam support
+- Hide disconnected icon when initially connecting to a server
