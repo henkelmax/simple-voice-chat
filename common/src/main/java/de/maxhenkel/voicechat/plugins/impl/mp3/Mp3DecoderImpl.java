@@ -61,7 +61,7 @@ public class Mp3DecoderImpl implements Mp3Decoder {
     @Nullable
     public static Mp3Decoder createDecoder(InputStream inputStream) {
         return Utils.createSafe(() -> new Mp3DecoderImpl(inputStream), e -> {
-            Voicechat.LOGGER.error("Failed to load LAME decoder: {}", e.getMessage());
+            Voicechat.LOGGER.error("Failed to load LAME decoder", e);
         });
     }
 

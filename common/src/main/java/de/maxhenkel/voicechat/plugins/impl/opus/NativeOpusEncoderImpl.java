@@ -82,7 +82,7 @@ public class NativeOpusEncoderImpl implements OpusEncoder {
     @Nullable
     public static NativeOpusEncoderImpl createEncoder(int sampleRate, int frameSize, int maxPayloadSize, int application) {
         return Utils.createSafe(() -> new NativeOpusEncoderImpl(sampleRate, frameSize, maxPayloadSize, application), e -> {
-            Voicechat.LOGGER.warn("Failed to load native Opus encoder: {}", e.getMessage());
+            Voicechat.LOGGER.warn("Failed to load native Opus encoder", e);
         });
     }
 
