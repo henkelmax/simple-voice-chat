@@ -87,11 +87,11 @@ public class KeyEvents {
             checkConnected();
         }
 
-        if (KEY_MUTE.consumeClick() && checkConnected()) {
+        if (KEY_MUTE.consumeClick()) {
             playerStateManager.setMuted(!playerStateManager.isMuted());
         }
 
-        if (KEY_DISABLE.consumeClick() && checkConnected()) {
+        if (KEY_DISABLE.consumeClick()) {
             playerStateManager.setDisabled(!playerStateManager.isDisabled());
         }
 
