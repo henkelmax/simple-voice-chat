@@ -27,8 +27,10 @@ public class ClientVoicechat {
     private ClientVoicechatConnection connection;
     @Nullable
     private AudioRecorder recorder;
+    private long startTime;
 
     public ClientVoicechat() {
+        this.startTime = System.currentTimeMillis();
         this.talkCache = new TalkCache();
         try {
             reloadSoundManager();
@@ -196,6 +198,10 @@ public class ClientVoicechat {
     @Nullable
     public AudioRecorder getRecorder() {
         return recorder;
+    }
+
+    public long getStartTime() {
+        return startTime;
     }
 
     public void close() {
