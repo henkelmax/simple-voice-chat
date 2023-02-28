@@ -9,3 +9,4 @@
 - Fixed microphone clipping
 - Added cloth config integration
 - Hide disconnected icon when initially connecting to a server
+- Reduced logging spam when failing to connect to voice chat server
