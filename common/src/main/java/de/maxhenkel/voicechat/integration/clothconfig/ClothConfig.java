@@ -26,7 +26,7 @@ public class ClothConfig {
                 Voicechat.LOGGER.info("Using Cloth Config GUI");
                 return true;
             } catch (Exception e) {
-                Voicechat.LOGGER.warn("Failed to load Cloth Config: {}", e.getMessage());
+                Voicechat.LOGGER.warn("Failed to load Cloth Config", e);
             }
         }
         return false;

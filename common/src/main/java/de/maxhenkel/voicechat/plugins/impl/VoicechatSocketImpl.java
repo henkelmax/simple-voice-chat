@@ -42,7 +42,7 @@ public class VoicechatSocketImpl extends VoicechatSocketBase implements Voicecha
             }
         } catch (BindException e) {
             Voicechat.LOGGER.error("Failed to run voice chat at UDP port {}, make sure no other application is running at that port", port);
-            Voicechat.LOGGER.error("Voice chat server error {}", e.getMessage());
+            Voicechat.LOGGER.error("Voice chat server error", e);
             if (CommonCompatibilityManager.INSTANCE.isDedicatedServer()) {
                 Voicechat.LOGGER.error("Shutting down server");
                 System.exit(1);
@@ -57,7 +57,7 @@ public class VoicechatSocketImpl extends VoicechatSocketBase implements Voicecha
             try {
                 new URI("voicechat://" + host);
             } catch (URISyntaxException e) {
-                Voicechat.LOGGER.warn("Failed to parse voice host: {}", e.getMessage());
+                Voicechat.LOGGER.warn("Failed to parse voice host", e);
                 System.exit(1);
                 throw e;
             }

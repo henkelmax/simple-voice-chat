@@ -292,7 +292,7 @@ public class AudioRecorder {
         if (player != null && mc.level != null) {
             player.sendMessage(msg, Util.NIL_UUID);
         } else {
-            Voicechat.LOGGER.info(msg.getString());
+            Voicechat.LOGGER.info("{}", msg.getString());
         }
     }
 
