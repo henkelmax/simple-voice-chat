@@ -57,7 +57,7 @@ public class ClientPlayerStateManager {
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel.setClientListener((client, handler, packet) -> {
             states = packet.getPlayerStates();
-            Voicechat.logDebug("Received {} states", states.size());
+            Voicechat.logDebug("Received {} state(s)", states.size());
             for (PlayerState state : states.values()) {
                 VoicechatClient.USERNAME_CACHE.updateUsername(state.getUuid(), state.getName());
             }
