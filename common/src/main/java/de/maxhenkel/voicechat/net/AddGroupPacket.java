@@ -7,7 +7,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class AddGroupPacket implements Packet<AddGroupPacket> {
 
-    public static final ResourceLocation ADD_ADD_GROUP = new ResourceLocation(Voicechat.MODID, "add_group");
+    public static final ResourceLocation ADD_ADD_GROUP = new ResourceLocation(NetManager.CHANNEL, "add_group");
 
     private ClientGroup group;
 
