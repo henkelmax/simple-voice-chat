@@ -32,7 +32,7 @@ public abstract class Voicechat {
 
         LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
 
-        TRANSLATIONS = ConfigBuilder.build(Path.of(".").resolve(MODID).resolve("translations.properties"), true, Translations::new);
+        TRANSLATIONS = ConfigBuilder.build(Path.of(".").resolve("config").resolve(MODID).resolve("translations.properties"), true, Translations::new);
 
         CommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
