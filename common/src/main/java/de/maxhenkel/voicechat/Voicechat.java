@@ -1,13 +1,16 @@
 package de.maxhenkel.voicechat;
 
+import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.command.VoicechatCommands;
 import de.maxhenkel.voicechat.config.ServerConfig;
+import de.maxhenkel.voicechat.config.Translations;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.nio.file.Path;
 import java.util.regex.Pattern;
 
 public abstract class Voicechat {
@@ -16,6 +19,7 @@ public abstract class Voicechat {
     public static final Logger LOGGER = LogManager.getLogger(MODID);
     public static ServerVoiceEvents SERVER;
     public static ServerConfig SERVER_CONFIG;
+    public static Translations TRANSLATIONS;
 
     public static int COMPATIBILITY_VERSION = BuildConstants.COMPATIBILITY_VERSION;
 
@@ -27,6 +31,9 @@ public abstract class Voicechat {
         }
 
         LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
+
+        TRANSLATIONS = ConfigBuilder.build(Path.of(".").resolve(MODID).resolve("translations.properties"), true, Translations::new);
+
         CommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
         PluginManager.instance().init();

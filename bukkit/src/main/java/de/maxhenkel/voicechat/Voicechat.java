@@ -4,6 +4,7 @@ import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.api.BukkitVoicechatService;
 import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.config.ServerConfig;
+import de.maxhenkel.voicechat.config.Translations;
 import de.maxhenkel.voicechat.integration.commodore.CommodoreCommands;
 import de.maxhenkel.voicechat.integration.placeholderapi.VoicechatExpansion;
 import de.maxhenkel.voicechat.integration.viaversion.ViaVersionCompatibility;
@@ -17,13 +18,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
-import java.io.InputStreamReader;
-import java.util.Map;
 
 public final class Voicechat extends JavaPlugin {
 
@@ -35,8 +31,7 @@ public final class Voicechat extends JavaPlugin {
     public static int COMPATIBILITY_VERSION = BuildConstants.COMPATIBILITY_VERSION;
 
     public static ServerConfig SERVER_CONFIG;
-    private static YamlConfiguration TRANSLATIONS;
-    private static YamlConfiguration DEFAULT_TRANSLATIONS;
+    public static Translations TRANSLATIONS;
     public static ServerVoiceEvents SERVER;
 
     public static BukkitVoicechatServiceImpl apiService;
@@ -54,27 +49,11 @@ public final class Voicechat extends JavaPlugin {
 
         LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
 
-        try {
-            LOGGER.info("Loading translations");
-            DEFAULT_TRANSLATIONS = YamlConfiguration.loadConfiguration(new InputStreamReader(getResource("translations.yml")));
-            File file = new File(getDataFolder(), "translations.yml");
-            if (file.exists()) {
-                TRANSLATIONS = YamlConfiguration.loadConfiguration(file);
-                mergeConfigs(TRANSLATIONS, DEFAULT_TRANSLATIONS);
-            } else {
-                TRANSLATIONS = DEFAULT_TRANSLATIONS;
-            }
-            TRANSLATIONS.save(file);
-        } catch (Exception e) {
-            LOGGER.fatal("Failed to load translations! Disabling Simple Voice Chat!", e);
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
+        SERVER_CONFIG = ConfigBuilder.build(getDataFolder().toPath().resolve("voicechat-server.properties"), true, ServerConfig::new);
+        TRANSLATIONS = ConfigBuilder.build(getDataFolder().toPath().resolve("translations.properties"), true, Translations::new);
 
         netManager = new NetManager();
         netManager.onEnable();
-
-        SERVER_CONFIG = ConfigBuilder.build(getDataFolder().toPath().resolve("voicechat-server.properties"), true, ServerConfig::new);
 
         apiService = new BukkitVoicechatServiceImpl();
         getServer().getServicesManager().register(BukkitVoicechatService.class, apiService, this, ServicePriority.Normal);
@@ -127,15 +106,6 @@ public final class Voicechat extends JavaPlugin {
         });
     }
 
-    private static void mergeConfigs(YamlConfiguration base, YamlConfiguration add) {
-        Map<String, Object> values = add.getValues(true);
-        for (Map.Entry<String, Object> entry : values.entrySet()) {
-            if (!base.contains(entry.getKey())) {
-                base.set(entry.getKey(), entry.getValue());
-            }
-        }
-    }
-
     @Override
     public void onDisable() {
         if (netManager != null) {
@@ -145,10 +115,6 @@ public final class Voicechat extends JavaPlugin {
         if (SERVER != null) {
             SERVER.getServer().close();
         }
-    }
-
-    public static String translate(String key) {
-        return (String) TRANSLATIONS.get(key);
     }
 
     public static void logDebug(String message, Object... objects) {

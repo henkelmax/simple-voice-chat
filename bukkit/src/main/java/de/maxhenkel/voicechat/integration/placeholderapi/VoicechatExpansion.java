@@ -38,9 +38,9 @@ public class VoicechatExpansion extends PlaceholderExpansion {
         }
 
         if (params.equalsIgnoreCase("prefix_uses_voicechat")) {
-            return Voicechat.SERVER.isCompatible(player) ? Voicechat.translate("placeholder_api_prefix_uses_voicechat") : "";
+            return Voicechat.SERVER.isCompatible(player) ? Voicechat.TRANSLATIONS.placeholderUsesVoicechat.get() : "";
         } else if (params.equalsIgnoreCase("prefix_no_voicechat")) {
-            return !Voicechat.SERVER.isCompatible(player) ? Voicechat.translate("placeholder_api_prefix_no_voicechat") : "";
+            return !Voicechat.SERVER.isCompatible(player) ? Voicechat.TRANSLATIONS.placeholderNoVoicechat.get() : "";
         } else if (params.equalsIgnoreCase("prefix_disabled")) {
             Server server = Voicechat.SERVER.getServer();
             if (server == null) {
@@ -53,7 +53,7 @@ public class VoicechatExpansion extends PlaceholderExpansion {
             if (!state.isDisabled()) {
                 return "";
             }
-            return Voicechat.translate("placeholder_api_prefix_disabled");
+            return Voicechat.TRANSLATIONS.placeholderVoicechatDisabled.get();
         }
 
         return super.onPlaceholderRequest(player, params);
