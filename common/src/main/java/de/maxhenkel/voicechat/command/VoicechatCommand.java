@@ -262,9 +262,9 @@ public class VoicechatCommand extends CommandBase {
             if (Voicechat.SERVER.isCompatible(player)) {
                 return false;
             }
-            commandSender.sendMessage(new TextComponentString("You need to have " + CommonCompatibilityManager.INSTANCE.getModName() + " installed on your client to use this command"));
+            commandSender.sendMessage(new TextComponentString(String.format(Voicechat.TRANSLATIONS.voicechatNeededForCommandMessage.get(), CommonCompatibilityManager.INSTANCE.getModName())));
         } else {
-            commandSender.sendMessage(new TextComponentString("This command can only be executed as a player"));
+            commandSender.sendMessage(new TextComponentString(Voicechat.TRANSLATIONS.playerCommandMessage.get()));
         }
         return true;
     }
