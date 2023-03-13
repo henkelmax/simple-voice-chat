@@ -43,11 +43,7 @@ public class ServerVoiceEvents {
 
     public ITextComponent getIncompatibleMessage(int clientCompatibilityVersion) {
         if (clientCompatibilityVersion <= 6) {
-            return new TextComponentString("Your voice chat version is not compatible with the servers version.\nPlease install version ")
-                    .appendSibling(new TextComponentString(CommonCompatibilityManager.INSTANCE.getModVersion()).setStyle((new Style()).setColor(TextFormatting.BOLD)))
-                    .appendText(" of ")
-                    .appendSibling(new TextComponentString(CommonCompatibilityManager.INSTANCE.getModName()).setStyle((new Style()).setColor(TextFormatting.BOLD)))
-                    .appendText(".");
+            return new TextComponentString(Voicechat.TRANSLATIONS.voicechatNotCompatibleMessage.get().formatted(CommonCompatibilityManager.INSTANCE.getModVersion(), CommonCompatibilityManager.INSTANCE.getModName()));
         } else {
             return new TextComponentTranslation("message.voicechat.incompatible_version",
                     new TextComponentString(CommonCompatibilityManager.INSTANCE.getModVersion()).setStyle((new Style()).setColor(TextFormatting.BOLD)),
@@ -116,7 +112,10 @@ public class ServerVoiceEvents {
                 if (!isCompatible(serverPlayer)) {
                     serverPlayer.mcServer.addScheduledTask(() -> {
                         serverPlayer.connection.disconnect(
-                                new TextComponentString("You need " + CommonCompatibilityManager.INSTANCE.getModName() + " " + CommonCompatibilityManager.INSTANCE.getModVersion() + " to play on this server")
+                                new TextComponentString(Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get().formatted(
+                                        CommonCompatibilityManager.INSTANCE.getModName(),
+                                        CommonCompatibilityManager.INSTANCE.getModVersion()
+                                ))
                         );
                     });
                 }
