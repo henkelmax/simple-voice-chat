@@ -227,7 +227,7 @@ public class VoicechatCommands {
             if (Voicechat.SERVER.isCompatible(player)) {
                 return false;
             }
-            commandSource.getSource().sendFailure(new StringTextComponent(Voicechat.TRANSLATIONS.voicechatNeededForCommandMessage.get().formatted(CommonCompatibilityManager.INSTANCE.getModName())));
+            commandSource.getSource().sendFailure(new StringTextComponent(String.format(Voicechat.TRANSLATIONS.voicechatNeededForCommandMessage.get(), CommonCompatibilityManager.INSTANCE.getModName())));
             return true;
         } catch (Exception e) {
             commandSource.getSource().sendFailure(new StringTextComponent(Voicechat.TRANSLATIONS.playerCommandMessage.get()));

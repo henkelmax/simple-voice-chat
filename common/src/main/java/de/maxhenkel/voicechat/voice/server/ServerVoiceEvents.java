@@ -48,7 +48,7 @@ public class ServerVoiceEvents {
 
     public ITextComponent getIncompatibleMessage(int clientCompatibilityVersion) {
         if (clientCompatibilityVersion <= 6) {
-            return new StringTextComponent(Voicechat.TRANSLATIONS.voicechatNotCompatibleMessage.get().formatted(CommonCompatibilityManager.INSTANCE.getModVersion(), CommonCompatibilityManager.INSTANCE.getModName()));
+            return new StringTextComponent(String.format(Voicechat.TRANSLATIONS.voicechatNotCompatibleMessage.get(), CommonCompatibilityManager.INSTANCE.getModVersion(), CommonCompatibilityManager.INSTANCE.getModName()));
         } else {
             return new TranslationTextComponent("message.voicechat.incompatible_version",
                     new StringTextComponent(CommonCompatibilityManager.INSTANCE.getModVersion()).withStyle(TextFormatting.BOLD),
@@ -117,7 +117,8 @@ public class ServerVoiceEvents {
                 if (!isCompatible(serverPlayer)) {
                     serverPlayer.server.execute(() -> {
                         serverPlayer.connection.disconnect(
-                                new StringTextComponent(Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get().formatted(
+                                new StringTextComponent(String.format(
+                                        Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get(),
                                         CommonCompatibilityManager.INSTANCE.getModName(),
                                         CommonCompatibilityManager.INSTANCE.getModVersion()
                                 ))

@@ -10,7 +10,7 @@ import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.regex.Pattern;
 
 public abstract class Voicechat {
@@ -32,7 +32,7 @@ public abstract class Voicechat {
 
         LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
 
-        TRANSLATIONS = ConfigBuilder.build(Path.of(".").resolve(MODID).resolve("translations.properties"), true, Translations::new);
+        TRANSLATIONS = ConfigBuilder.build(Paths.get(".").resolve("config").resolve(MODID).resolve("translations.properties"), true, Translations::new);
 
         CommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
