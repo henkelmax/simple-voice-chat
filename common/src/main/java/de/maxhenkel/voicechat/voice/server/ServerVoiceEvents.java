@@ -48,11 +48,7 @@ public class ServerVoiceEvents {
 
     public Component getIncompatibleMessage(int clientCompatibilityVersion) {
         if (clientCompatibilityVersion <= 6) {
-            return new TextComponent("Your voice chat version is not compatible with the servers version.\nPlease install version ")
-                    .append(new TextComponent(CommonCompatibilityManager.INSTANCE.getModVersion()).withStyle(ChatFormatting.BOLD))
-                    .append(" of ")
-                    .append(new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()).withStyle(ChatFormatting.BOLD))
-                    .append(".");
+            return new TextComponent(Voicechat.TRANSLATIONS.voicechatNotCompatibleMessage.get().formatted(CommonCompatibilityManager.INSTANCE.getModVersion(), CommonCompatibilityManager.INSTANCE.getModName()));
         } else {
             return new TranslatableComponent("message.voicechat.incompatible_version",
                     new TextComponent(CommonCompatibilityManager.INSTANCE.getModVersion()).withStyle(ChatFormatting.BOLD),
@@ -121,7 +117,7 @@ public class ServerVoiceEvents {
                 if (!isCompatible(serverPlayer)) {
                     serverPlayer.server.execute(() -> {
                         serverPlayer.connection.disconnect(
-                                new TextComponent("You need %s %s to play on this server".formatted(
+                                new TextComponent(Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get().formatted(
                                         CommonCompatibilityManager.INSTANCE.getModName(),
                                         CommonCompatibilityManager.INSTANCE.getModVersion()
                                 ))
