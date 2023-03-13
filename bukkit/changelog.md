@@ -2,3 +2,4 @@
 - Improved voice chat protocol handshake
 - Added three different group types
 - Removed global open_groups config option
+- Replaced translations.yml with translations.properties

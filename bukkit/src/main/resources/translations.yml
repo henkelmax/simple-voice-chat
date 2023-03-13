@@ -1,7 +1,0 @@
-not_compatible: "Your voice chat version is not compatible with the servers version.\nPlease install version %s of %s."
-voicechat_needed_command: "You need to have %s installed on your client to use this command"
-command_as_player: "This command can only be executed as a player"
-
-placeholder_api_prefix_uses_voicechat: "§a"
-placeholder_api_prefix_no_voicechat: "§c"
-placeholder_api_prefix_disabled: "§c"

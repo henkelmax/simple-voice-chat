@@ -70,7 +70,7 @@ public class ServerVoiceEvents implements Listener {
     public static Component getIncompatibleMessage(int clientCompatibilityVersion) {
         if (clientCompatibilityVersion <= 6) {
             // Send a literal string, as we don't know if the translations exist on these versions
-            return Component.text(String.format(Voicechat.translate("not_compatible"), Voicechat.INSTANCE.getDescription().getVersion(), "Simple Voice Chat"));
+            return Component.text(String.format(Voicechat.TRANSLATIONS.voicechatNotCompatibleMessage.get(), Voicechat.INSTANCE.getDescription().getVersion(), "Simple Voice Chat"));
         } else {
             // This translation key is only available for compatibility version 7+
             return Component.translatable("message.voicechat.incompatible_version",
@@ -104,7 +104,7 @@ public class ServerVoiceEvents implements Listener {
                 return;
             }
             if (!isCompatible(player)) {
-                player.kickPlayer("You need %s %s to play on this server".formatted(
+                player.kickPlayer(Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get().formatted(
                         "Simple Voice Chat",
                         Voicechat.INSTANCE.getDescription().getVersion()
                 ));
