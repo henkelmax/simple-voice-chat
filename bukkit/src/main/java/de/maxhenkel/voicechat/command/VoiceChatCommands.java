@@ -241,9 +241,9 @@ public class VoiceChatCommands implements CommandExecutor {
             if (Voicechat.SERVER.isCompatible(player)) {
                 return false;
             }
-            commandSender.sendMessage(Voicechat.translate("voicechat_needed_command").formatted("Simple Voice Chat"));
+            commandSender.sendMessage(Voicechat.TRANSLATIONS.voicechatNeededForCommandMessage.get().formatted("Simple Voice Chat"));
         } else {
-            commandSender.sendMessage(Voicechat.translate("command_as_player"));
+            commandSender.sendMessage(Voicechat.TRANSLATIONS.playerCommandMessage.get());
         }
         return true;
     }
