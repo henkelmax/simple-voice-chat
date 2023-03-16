@@ -70,12 +70,7 @@ public abstract class JavaSpeakerBase implements Speaker {
 
     @Override
     public void close() {
-        try {
-            speakerWatchdogThread.interrupt();
-            speakerWatchdogThread.join(20);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        speakerWatchdogThread.close();
         synchronized (speaker) {
             speaker.stop();
             speaker.flush();
@@ -85,13 +80,16 @@ public abstract class JavaSpeakerBase implements Speaker {
 
     private class SpeakerWatchdogThread extends Thread {
 
+        private boolean running;
+
         public SpeakerWatchdogThread() {
             super("Speaker Watchdog");
+            running = true;
         }
 
         @Override
         public void run() {
-            while (true) {
+            while (running) {
                 try {
                     Thread.sleep(20);
                 } catch (InterruptedException e) {
@@ -104,6 +102,20 @@ public abstract class JavaSpeakerBase implements Speaker {
                 }
             }
         }
+
+        public void close() {
+            if (!running) {
+                return;
+            }
+            running = false;
+
+            try {
+                join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
 }
