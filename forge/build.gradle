@@ -65,7 +65,9 @@ dependencies {
         transitive false
     }
 
-    implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"));
+    // implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"));
+    // TODO Update version when released
+    implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:9.0.94"));
 
     implementation 'org.jetbrains:annotations:23.0.0'
 
