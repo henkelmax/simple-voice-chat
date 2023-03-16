@@ -194,7 +194,7 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
                             VoicechatPlugin plugin = (VoicechatPlugin) clazz.getDeclaredConstructor().newInstance();
                             plugins.add(plugin);
                         }
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         Voicechat.LOGGER.warn("Failed to load plugin '{}'", annotationData.getMemberName(), e);
                     }
                 }
