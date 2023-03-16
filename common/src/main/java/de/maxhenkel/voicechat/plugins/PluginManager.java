@@ -35,8 +35,8 @@ public class PluginManager {
         for (VoicechatPlugin plugin : plugins) {
             try {
                 plugin.initialize(VoicechatServerApiImpl.instance());
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Throwable e) {
+                Voicechat.LOGGER.warn("Failed to initialize plugin '{}'", plugin.getPluginId(), e);
             }
         }
         Voicechat.LOGGER.info("Initialized {} plugin(s)", plugins.size());
@@ -50,8 +50,8 @@ public class PluginManager {
             Voicechat.LOGGER.info("Registering events for {}", plugin.getPluginId());
             try {
                 plugin.registerEvents(registration);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Throwable e) {
+                Voicechat.LOGGER.warn("Failed to register events for plugin '{}'", plugin.getPluginId(), e);
             }
         }
         events = eventBuilder.build();
@@ -69,8 +69,8 @@ public class PluginManager {
                 if (event.isCancelled()) {
                     break;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Throwable e) {
+                Voicechat.LOGGER.warn("Failed to dispatch event '{}'", event.getClass().getSimpleName(), e);
             }
         }
         return event.isCancelled();
