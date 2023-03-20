@@ -227,7 +227,6 @@ shadowJar {
     configurations = [project.configurations.shadow]
     classifier 'shadow-dev'
     relocate 'de.maxhenkel.configbuilder', "de.maxhenkel.${mod_id}.configbuilder"
-    relocate 'de.maxhenkel.opus4j', "de.maxhenkel.${mod_id}.opus4j"
     relocate 'de.maxhenkel.lame4j', "de.maxhenkel.${mod_id}.lame4j"
     relocate 'org.concentus', "de.maxhenkel.${mod_id}.concentus"
     relocate 'de.maxhenkel.rnnoise4j', "de.maxhenkel.${mod_id}.rnnoise4j"
