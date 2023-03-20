@@ -41,7 +41,7 @@ public class AudioChannel extends Thread {
         this.packetBuffer = new AudioPacketBuffer(VoicechatClient.CLIENT_CONFIG.audioPacketThreshold.get());
         this.lastPacketTime = System.currentTimeMillis();
         this.stopped = false;
-        this.decoder = OpusManager.createDecoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, initializationData.getMtuSize());
+        this.decoder = OpusManager.createDecoder();
         this.lastSequenceNumber = -1L;
         this.minecraft = Minecraft.getMinecraft();
         setDaemon(true);

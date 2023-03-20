@@ -2,7 +2,8 @@ package de.maxhenkel.voicechat.config;
 
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.ConfigEntry;
-import de.maxhenkel.opus4j.Opus;
+import de.maxhenkel.opus4j.OpusEncoder;
+import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 
 public abstract class ServerConfig {
@@ -102,16 +103,22 @@ public abstract class ServerConfig {
     }
 
     public static enum Codec {
-        VOIP(Opus.OPUS_APPLICATION_VOIP), AUDIO(Opus.OPUS_APPLICATION_AUDIO), RESTRICTED_LOWDELAY(Opus.OPUS_APPLICATION_RESTRICTED_LOWDELAY);
+        VOIP(OpusEncoder.Application.VOIP, OpusEncoderMode.VOIP), AUDIO(OpusEncoder.Application.AUDIO, OpusEncoderMode.AUDIO), RESTRICTED_LOWDELAY(OpusEncoder.Application.LOW_DELAY, OpusEncoderMode.RESTRICTED_LOWDELAY);
 
-        private final int value;
+        private final OpusEncoder.Application application;
+        private final OpusEncoderMode mode;
 
-        Codec(int value) {
-            this.value = value;
+        Codec(OpusEncoder.Application application, OpusEncoderMode mode) {
+            this.application = application;
+            this.mode = mode;
         }
 
-        public int getOpusValue() {
-            return value;
+        public OpusEncoder.Application getApplication() {
+            return application;
+        }
+
+        public OpusEncoderMode getMode() {
+            return mode;
         }
     }
 

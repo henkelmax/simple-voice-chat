@@ -19,6 +19,7 @@ public class SoundManager {
 
     public static final int SAMPLE_RATE = 48000;
     public static final int FRAME_SIZE = (SAMPLE_RATE / 1000) * 20;
+    public static final int MAX_PAYLOAD_SIZE = 1024;
 
     @Nullable
     private final String deviceName;

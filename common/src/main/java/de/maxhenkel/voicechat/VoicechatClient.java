@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.config.ClientConfig;
 import de.maxhenkel.voicechat.config.VolumeConfig;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.VersionCheck;
+import de.maxhenkel.voicechat.plugins.impl.opus.OpusManager;
 import de.maxhenkel.voicechat.profile.UsernameCache;
 import de.maxhenkel.voicechat.resourcepacks.VoiceChatResourcePack;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
@@ -33,6 +34,8 @@ public abstract class VoicechatClient {
 
         //Load instance
         ClientManager.instance();
+
+        OpusManager.opusNativeCheck();
 
         if (Platform.isMac() && !VersionCheck.isMacOSNativeCompatible()) {
             Voicechat.LOGGER.warn("Your MacOS version is incompatible with {}", CommonCompatibilityManager.INSTANCE.getModName());

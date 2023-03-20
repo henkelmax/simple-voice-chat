@@ -36,7 +36,7 @@ public class MicThread extends Thread {
         this.client = client;
         this.connection = connection;
         this.running = true;
-        this.encoder = OpusManager.createEncoder(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, connection == null ? 1024 : connection.getData().getMtuSize(), connection == null ? ServerConfig.Codec.VOIP.getOpusValue() : connection.getData().getCodec().getOpusValue());
+        this.encoder = OpusManager.createEncoder(connection == null ? ServerConfig.Codec.VOIP.getMode() : connection.getData().getCodec().getMode());
 
         this.denoiser = Denoiser.createDenoiser();
         if (denoiser == null) {
