@@ -11,7 +11,6 @@ import net.minecraft.world.phys.Vec2;
 import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class Utils {
 
@@ -239,7 +238,7 @@ public class Utils {
     }
 
     @Nullable
-    public static <T> T createSafe(Supplier<T> supplier, @Nullable Consumer<Throwable> onError) {
+    public static <T> T createSafe(SafeSupplier<T> supplier, @Nullable Consumer<Throwable> onError, long waitTime) {
         AtomicReference<Throwable> exception = new AtomicReference<>();
         AtomicReference<T> obj = new AtomicReference<>();
         Thread t = new Thread(() -> {
@@ -248,12 +247,16 @@ public class Utils {
                     exception.set(e);
                 });
             }
-            obj.set(supplier.get());
+            try {
+                obj.set(supplier.get());
+            } catch (Throwable e) {
+                exception.set(e);
+            }
         }, "NativeInitializationThread");
         t.start();
 
         try {
-            t.join(1000);
+            t.join(waitTime);
         } catch (InterruptedException e) {
             return null;
         }
@@ -265,7 +268,12 @@ public class Utils {
     }
 
     @Nullable
-    public static <T> T createSafe(Supplier<T> supplier) {
+    public static <T> T createSafe(SafeSupplier<T> supplier, @Nullable Consumer<Throwable> onError) {
+        return createSafe(supplier, onError, 1000);
+    }
+
+    @Nullable
+    public static <T> T createSafe(SafeSupplier<T> supplier) {
         return createSafe(supplier, null);
     }
 
@@ -290,4 +298,8 @@ public class Utils {
         return (float) connection.getData().getVoiceChatDistance();
     }
 
+    @FunctionalInterface
+    public interface SafeSupplier<T> {
+        T get() throws Throwable;
+    }
 }
