@@ -37,19 +37,13 @@ public abstract class VoicechatApiImpl implements VoicechatApi {
     @Nullable
     @Override
     public Mp3Encoder createMp3Encoder(AudioFormat audioFormat, int bitrate, int quality, OutputStream outputStream) {
-        if (OpusManager.useNatives()) {
-            return Mp3EncoderImpl.createEncoder(audioFormat, bitrate, quality, outputStream);
-        }
-        return null;
+        return Mp3EncoderImpl.createEncoder(audioFormat, bitrate, quality, outputStream);
     }
 
     @Nullable
     @Override
     public Mp3Decoder createMp3Decoder(InputStream inputStream) {
-        if (OpusManager.useNatives()) {
-            return Mp3DecoderImpl.createDecoder(inputStream);
-        }
-        return null;
+        return Mp3DecoderImpl.createDecoder(inputStream);
     }
 
     @Override
