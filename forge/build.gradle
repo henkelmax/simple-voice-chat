@@ -208,7 +208,6 @@ shadowJar {
     configurations = [project.configurations.shadowMc]
     classifier ''
     relocate 'de.maxhenkel.configbuilder', "de.maxhenkel.${mod_id}.configbuilder"
-    relocate 'de.maxhenkel.lame4j', "de.maxhenkel.${mod_id}.lame4j"
     relocate 'org.concentus', "de.maxhenkel.${mod_id}.concentus"
     relocate 'com.dd.plist', "de.maxhenkel.${mod_id}.com.dd.plist"
     dependencies {
