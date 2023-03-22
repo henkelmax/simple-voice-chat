@@ -99,7 +99,7 @@ dependencies {
     minecraftLibrary "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
     shadowMc "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
 
-    implementation project(':api')
+    minecraftLibrary project(':api')
     shadowMc project(':api')
 }
 
