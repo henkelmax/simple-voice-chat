@@ -16,7 +16,6 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.0"
 }
 
-apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'forge-update'
 apply plugin: 'com.modrinth.minotaur'
 
@@ -30,12 +29,6 @@ minecraft {
     mappings channel: 'official', version: minecraft_version
 
     runs {
-        all {
-            lazyToken('minecraft_classpath') {
-                configurations.shadow.copyRecursive().resolve().collect { it.absolutePath }.join(File.pathSeparator)
-            }
-            environment 'COMPATIBILITY_VERSION', mod_compatibility_version
-        }
         client {
             workingDirectory project.file('run')
             property 'forge.logging.console.level', 'debug'
@@ -58,6 +51,10 @@ repositories {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+configurations {
+    shadowMc.extendsFrom minecraftLibrary
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
@@ -69,25 +66,25 @@ dependencies {
 
     implementation 'org.jetbrains:annotations:23.0.0'
 
-    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
-    shadow "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
+    minecraftLibrary "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
+    shadowMc "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
 
-    implementation "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
-    shadow "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
+    minecraftLibrary "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
+    shadowMc "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
 
-    implementation "org.concentus:Concentus:${concentus_version}"
-    shadow "org.concentus:Concentus:${concentus_version}"
+    minecraftLibrary "org.concentus:Concentus:${concentus_version}"
+    shadowMc "org.concentus:Concentus:${concentus_version}"
 
-    implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
-    shadow "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
+    minecraftLibrary "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
+    shadowMc "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
 
-    implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
-    shadow "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
+    minecraftLibrary "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
+    shadowMc "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
 
-    implementation(project(':api')) {
+    minecraftLibrary(project(':api')) {
         transitive false
     }
-    shadow(project(':api')) {
+    shadowMc(project(':api')) {
         transitive false
     }
 }
@@ -208,7 +205,7 @@ forgeUpdate {
 jar.finalizedBy('reobfJar')
 
 shadowJar {
-    configurations = [project.configurations.shadow]
+    configurations = [project.configurations.shadowMc]
     classifier ''
     relocate 'de.maxhenkel.configbuilder', "de.maxhenkel.${mod_id}.configbuilder"
     relocate 'de.maxhenkel.opus4j', "de.maxhenkel.${mod_id}.opus4j"
