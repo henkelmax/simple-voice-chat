@@ -88,10 +88,10 @@ dependencies {
     annotationProcessor('org.spongepowered:mixin:0.8.3-SNAPSHOT:processor') {
         transitive false
     }
-    implementation('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
+    minecraftLibrary('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
         transitive false
     }
-    shadow('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
+    shadowMc('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
         transitive false
     }
 
