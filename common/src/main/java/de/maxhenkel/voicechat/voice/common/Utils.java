@@ -269,7 +269,7 @@ public class Utils {
 
     @Nullable
     public static <T> T createSafe(SafeSupplier<T> supplier, @Nullable Consumer<Throwable> onError) {
-        return createSafe(supplier, onError, 1000);
+        return createSafe(supplier, onError, 5000);
     }
 
     @Nullable
