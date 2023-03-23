@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
@@ -68,11 +69,13 @@ public class OpusManager {
 
     public static OpusEncoder createEncoder(OpusEncoderMode mode) {
         int mtuSize = SoundManager.MAX_PAYLOAD_SIZE;
-        ClientVoicechat client = ClientManager.getClient();
-        if (client != null) {
-            ClientVoicechatConnection connection = client.getConnection();
-            if (connection != null) {
-                mtuSize = connection.getData().getMtuSize();
+        if (!CommonCompatibilityManager.INSTANCE.isDedicatedServer()) {
+            ClientVoicechat client = ClientManager.getClient();
+            if (client != null) {
+                ClientVoicechatConnection connection = client.getConnection();
+                if (connection != null) {
+                    mtuSize = connection.getData().getMtuSize();
+                }
             }
         }
 
