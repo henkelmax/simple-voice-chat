@@ -40,7 +40,7 @@ public class OpusManager {
             return true;
         }, e -> {
             Voicechat.LOGGER.warn("Failed to load native Opus implementation", e);
-        }, 5000);
+        });
         if (success == null || !success) {
             Voicechat.LOGGER.warn("Failed to load native Opus encoder - Falling back to Java Opus implementation");
             nativeOpusCompatible = false;
