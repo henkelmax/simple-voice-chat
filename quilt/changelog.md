@@ -11,3 +11,6 @@
 - Reduced logging spam when failing to connect to voice chat server
 - Fixed not being able to mute or disable voice chat while disconnected
 - Added translation file for server side messages
+- Updated opus4j
+- Updated rnnoise4j
+- Updated lame4j
