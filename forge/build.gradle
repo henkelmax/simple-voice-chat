@@ -74,6 +74,8 @@ repositories {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+sourceSets.all { it.output.resourcesDir = it.output.classesDirs.getFiles().iterator().next() }
+
 configurations {
     shadowMc.extendsFrom minecraftLibrary
 }
