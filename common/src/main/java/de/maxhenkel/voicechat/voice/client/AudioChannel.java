@@ -3,9 +3,11 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.opus.OpusDecoder;
+import de.maxhenkel.voicechat.integration.freecam.FreecamUtil;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.opus.OpusManager;
-import de.maxhenkel.voicechat.voice.client.speaker.*;
+import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
+import de.maxhenkel.voicechat.voice.client.speaker.SpeakerManager;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -188,13 +190,6 @@ public class AudioChannel extends Thread {
             client.getTalkCache().updateTalking(uuid, false);
             appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData));
         } else if (packet instanceof PlayerSoundPacket soundPacket) {
-            if (VoicechatClient.CLIENT_CONFIG.freecamSupport.get() && getFreecamDistance() >= 8D) {
-                short[] processedMonoData = PluginManager.instance().onReceiveStaticClientSound(uuid, monoData);
-                speaker.play(processedMonoData, volume, soundPacket.getCategory());
-                client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
-                appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData));
-                return;
-            }
             if (player == null) {
                 return;
             }
@@ -212,34 +207,38 @@ public class AudioChannel extends Thread {
 
             short[] processedMonoData = PluginManager.instance().onReceiveEntityClientSound(uuid, monoData, soundPacket.isWhispering(), soundPacket.getDistance());
 
-            if (pos.distanceTo(minecraft.gameRenderer.getMainCamera().getPosition()) > soundPacket.getDistance() + 1D) {
+            if (FreecamUtil.getDistanceTo(pos) > soundPacket.getDistance() + 1D) {
+                return;
+            }
+
+            float distanceVolume = FreecamUtil.getDistanceVolume(soundPacket.getDistance(), pos);
+
+            if (FreecamUtil.isFreecamEnabled()) {
+                // Static, but with volume adjusted for distance
+                volume *= distanceVolume;
+                speaker.play(processedMonoData, volume, soundPacket.getCategory());
+                if (distanceVolume > 0F) {
+                    client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
+                }
+                float[] volumes = {volume, volume};
+                appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData, volumes));
                 return;
             }
 
             speaker.play(processedMonoData, volume, pos, soundPacket.getCategory(), soundPacket.getDistance());
-            if (PositionalAudioUtils.getDistanceVolume(soundPacket.getDistance(), pos) > 0F) {
+            if (distanceVolume > 0F) {
                 client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
             }
             appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(soundPacket.getDistance(), pos, processedMonoData, deathVolume));
         } else if (packet instanceof LocationSoundPacket p) {
             short[] processedMonoData = PluginManager.instance().onReceiveLocationalClientSound(uuid, monoData, p.getLocation(), p.getDistance());
-            if (p.getLocation().distanceTo(minecraft.gameRenderer.getMainCamera().getPosition()) > p.getDistance() + 1D) {
+            if (FreecamUtil.getDistanceTo(p.getLocation()) > p.getDistance() + 1D) {
                 return;
             }
             speaker.play(processedMonoData, volume, p.getLocation(), p.getCategory(), p.getDistance());
             client.getTalkCache().updateTalking(uuid, false);
             appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(p.getDistance(), p.getLocation(), processedMonoData));
         }
-    }
-
-    private double getFreecamDistance() {
-        if (minecraft.player == null) {
-            return 0D;
-        }
-        if (minecraft.player.isSpectator()) {
-            return 0D;
-        }
-        return minecraft.player.getEyePosition().distanceTo(minecraft.gameRenderer.getMainCamera().getPosition());
     }
 
     private void appendRecording(Supplier<short[]> stereo) {
