@@ -152,7 +152,7 @@ public class PositionalAudioUtils {
      * @param volumes a float array of length 2 containing the left and right volume
      * @return the adjusted audio
      */
-    private static short[] convertToStereo(short[] audio, float[] volumes) {
+    public static short[] convertToStereo(short[] audio, float[] volumes) {
         return convertToStereo(audio, volumes[0], volumes[1]);
     }
 
