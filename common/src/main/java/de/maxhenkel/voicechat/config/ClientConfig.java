@@ -190,7 +190,7 @@ public abstract class ClientConfig {
                         "If set to false, the Java Opus implementation will be used, the denoiser won't be available and you won't be able to record audio."
                 );
         freecamSupport = builder
-                .booleanEntry("freecam_support", false,
+                .booleanEntry("freecam_support", true,
                         "This lets you hear players near your player even though you are further away with your freecam"
                 );
     }
