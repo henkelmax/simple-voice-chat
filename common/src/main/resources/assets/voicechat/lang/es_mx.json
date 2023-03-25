@@ -146,7 +146,6 @@
   "cloth_config.voicechat.category.audio": "Audio",
   "cloth_config.voicechat.category.hud_icons": "Íconos del HUD",
   "cloth_config.voicechat.category.group_chat_icons": "Íconos del chat grupal",
-  "cloth_config.voicechat.config.freecam_support": "Soporte para Freecam",
   "cloth_config.voicechat.config.audio_packet_threshold": "Umbral de paquetes de audio",
   "cloth_config.voicechat.config.deactivation_delay": "Retraso de desactivación",
   "cloth_config.voicechat.config.output_buffer_size": "Tamaño de salida de búfer",

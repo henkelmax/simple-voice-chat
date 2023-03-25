@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.integration.freecam;
 
-import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.PositionalAudioUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
@@ -13,9 +12,7 @@ public class FreecamUtil {
      * @return whether freecam is currently in use
      */
     public static boolean isFreecamEnabled() {
-        // FIXME once testing is complete, remove `freecamSupport` config option
-        return VoicechatClient.CLIENT_CONFIG.freecamSupport.get() &&
-                !(mc.player.isSpectator() || mc.player.equals(mc.getCameraEntity()));
+        return !(mc.player.isSpectator() || mc.player.equals(mc.getCameraEntity()));
     }
 
     /**

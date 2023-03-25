@@ -29,7 +29,6 @@ public class ClothConfigIntegration {
         general.addEntry(fromConfigEntry(entryBuilder, Component.translatable("cloth_config.voicechat.config.recording_destination"), VoicechatClient.CLIENT_CONFIG.recordingDestination));
         general.addEntry(fromConfigEntry(entryBuilder, Component.translatable("cloth_config.voicechat.config.run_local_server"), VoicechatClient.CLIENT_CONFIG.runLocalServer));
         general.addEntry(fromConfigEntry(entryBuilder, Component.translatable("cloth_config.voicechat.config.offline_player_volume_adjustment"), VoicechatClient.CLIENT_CONFIG.offlinePlayerVolumeAdjustment));
-        general.addEntry(fromConfigEntry(entryBuilder, Component.translatable("cloth_config.voicechat.config.freecam_support"), VoicechatClient.CLIENT_CONFIG.freecamSupport));
 
         ConfigCategory audio = builder.getOrCreateCategory(Component.translatable("cloth_config.voicechat.category.audio"));
         audio.addEntry(fromConfigEntry(entryBuilder, Component.translatable("cloth_config.voicechat.config.audio_packet_threshold"), VoicechatClient.CLIENT_CONFIG.audioPacketThreshold));

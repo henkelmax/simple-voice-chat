@@ -42,7 +42,6 @@ public abstract class ClientConfig {
     public ConfigEntry<Boolean> offlinePlayerVolumeAdjustment;
     public ConfigEntry<AudioType> audioType;
     public ConfigEntry<Boolean> useNatives;
-    public ConfigEntry<Boolean> freecamSupport;
 
     public ClientConfig(ConfigBuilder builder) {
 
@@ -188,10 +187,6 @@ public abstract class ClientConfig {
                 .booleanEntry("use_natives", !Platform.isMac() || VersionCheck.isMacOSNativeCompatible(),
                         "If the mod should load native libraries",
                         "If set to false, the Java Opus implementation will be used, the denoiser won't be available and you won't be able to record audio."
-                );
-        freecamSupport = builder
-                .booleanEntry("freecam_support", true,
-                        "This lets you hear players near your player even though you are further away with your freecam"
                 );
     }
 
