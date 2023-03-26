@@ -95,7 +95,7 @@
   "message.voicechat.optional_password": "Passwort (Optional)",
   "message.voicechat.group_type": "Guppentyp",
   "message.voicechat.group_type.normal": "Normal",
-  "message.voicechat.group_type.normal.description": "Spieler, die nicht in Ihrer Gruppe sind, können Sie nicht hören, aber Sie können sie hören.",
+  "message.voicechat.group_type.normal.description": "Spieler, die nicht in Ihrer Gruppe sind, können Sie nicht hören, aber Sie können sie hören",
   "message.voicechat.group_type.open": "Offen",
   "message.voicechat.group_type.open.description": "Spieler, die nicht in Ihrer Gruppe sind, können Sie hören und Sie können sie hören",
   "message.voicechat.group_type.isolated": "Isoliert",
