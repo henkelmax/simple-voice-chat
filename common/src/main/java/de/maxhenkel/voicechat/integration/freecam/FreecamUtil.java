@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.integration.freecam;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.PositionalAudioUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class FreecamUtil {
 
@@ -24,11 +24,11 @@ public class FreecamUtil {
      *
      * @return the position distances should be measured from
      */
-    public static Vec3 getReferencePoint() {
+    public static Vector3d getReferencePoint() {
         if (mc.player == null) {
-            return Vec3.ZERO;
+            return Vector3d.ZERO;
         }
-        return isFreecamEnabled() ? mc.player.getEyePosition() : mc.gameRenderer.getMainCamera().getPosition();
+        return isFreecamEnabled() ? mc.player.getEyePosition(1F) : mc.gameRenderer.getMainCamera().getPosition();
     }
 
     /**
@@ -39,7 +39,7 @@ public class FreecamUtil {
      * @param pos the position to be measured
      * @return the distance to the position
      */
-    public static double getDistanceTo(Vec3 pos) {
+    public static double getDistanceTo(Vector3d pos) {
         return getReferencePoint().distanceTo(pos);
     }
 
@@ -52,7 +52,7 @@ public class FreecamUtil {
      * @param pos         the position of the audio
      * @return the resulting audio volume
      */
-    public static float getDistanceVolume(float maxDistance, Vec3 pos) {
+    public static float getDistanceVolume(float maxDistance, Vector3d pos) {
         return PositionalAudioUtils.getDistanceVolume(maxDistance, getReferencePoint(), pos);
     }
 }
