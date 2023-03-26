@@ -151,8 +151,19 @@ public class PositionalAudioUtils {
      * @param volumes a float array of length 2 containing the left and right volume
      * @return the adjusted audio
      */
-    public static short[] convertToStereo(short[] audio, float[] volumes) {
+    private static short[] convertToStereo(short[] audio, float[] volumes) {
         return convertToStereo(audio, volumes[0], volumes[1]);
+    }
+
+    /**
+     * Converts 16 bit mono audio to stereo
+     *
+     * @param audio  the audio data
+     * @param volume the volume
+     * @return the adjusted audio
+     */
+    public static short[] convertToStereo(short[] audio, float volume) {
+        return convertToStereo(audio, volume, volume);
     }
 
     public static short[] convertToStereoForRecording(float maxDistance, Vec3d pos, short[] monoData) {
