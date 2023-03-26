@@ -13,9 +13,10 @@ public class FreecamUtil {
      * @return whether freecam is currently in use
      */
     public static boolean isFreecamEnabled() {
-        // FIXME once testing is complete, remove `freecamSupport` config option
-        return VoicechatClient.CLIENT_CONFIG.freecamSupport.get() &&
-                !(mc.player.isSpectator() || mc.player.equals(mc.getCameraEntity()));
+        if (mc.player == null) {
+            return false;
+        }
+        return VoicechatClient.CLIENT_CONFIG.freecamSupport.get() && !(mc.player.isSpectator() || mc.player.equals(mc.getCameraEntity()));
     }
 
     /**
@@ -24,13 +25,15 @@ public class FreecamUtil {
      * @return the position distances should be measured from
      */
     public static Vec3 getReferencePoint() {
-        return isFreecamEnabled() ?
-                mc.player.getEyePosition() : mc.gameRenderer.getMainCamera().getPosition();
+        if (mc.player == null) {
+            return Vec3.ZERO;
+        }
+        return isFreecamEnabled() ? mc.player.getEyePosition() : mc.gameRenderer.getMainCamera().getPosition();
     }
 
     /**
      * Measures the distance to the provided position.
-     *
+     * <p>
      * Distance is relative to either the player or camera, depending on whether freecam is enabled.
      *
      * @param pos the position to be measured
@@ -42,7 +45,7 @@ public class FreecamUtil {
 
     /**
      * Gets the volume for the provided distance.
-     *
+     * <p>
      * Distance is relative to either the player or camera, depending on whether freecam is enabled.
      *
      * @param maxDistance the maximum distance of the sound
