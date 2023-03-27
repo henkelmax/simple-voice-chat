@@ -6,8 +6,8 @@ import de.maxhenkel.configbuilder.ConfigBuilderImpl;
 import de.maxhenkel.configbuilder.ConfigEntry;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.storage.LevelResource;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.FolderName;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -19,7 +19,7 @@ import java.nio.file.Path;
 public class ConfigMigrator {
 
     private static final String MOVED_CONFIG_KEY = "moved";
-    private static final LevelResource SERVERCONFIG = new LevelResource("serverconfig");
+    private static final FolderName SERVERCONFIG = new FolderName("serverconfig");
 
     public static void migrateClientConfig() {
         migrateConfig(
@@ -33,9 +33,10 @@ public class ConfigMigrator {
 
     @SubscribeEvent
     public void onLoadLevel(WorldEvent.Load event) {
-        if (!(event.getWorld() instanceof ServerLevel serverLevel)) {
+        if (!(event.getWorld() instanceof ServerWorld)) {
             return;
         }
+        ServerWorld serverLevel = (ServerWorld) event.getWorld();
         migrateConfig(
                 ServerConfig.class,
                 Voicechat.SERVER_CONFIG,
@@ -88,7 +89,8 @@ public class ConfigMigrator {
             try {
                 field.setAccessible(true);
                 Object configEntry = field.get(config);
-                if (configEntry instanceof ConfigEntry entry) {
+                if (configEntry instanceof ConfigEntry) {
+                    ConfigEntry entry = (ConfigEntry) configEntry;
                     if (randomEntry == null) {
                         randomEntry = entry;
                     }
