@@ -3,3 +3,4 @@
 - Added three different group types
 - Removed global open_groups config option
 - Replaced translations.yml with translations.properties
+- Fixed config entries not in fixed order
