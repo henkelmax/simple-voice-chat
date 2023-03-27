@@ -16,7 +16,7 @@ public class ClothConfigIntegration {
     public static final MutableComponent SETTINGS = Component.translatable("cloth_config.voicechat.settings");
     public static final MutableComponent OTHER_SETTINGS = Component.translatable("cloth_config.voicechat.category.other");
 
-    public Screen createConfigScreen(Screen parent) {
+    public static Screen createConfigScreen(Screen parent) {
         ConfigBuilder builder = ConfigBuilder
                 .create()
                 .setParentScreen(parent)
@@ -57,7 +57,7 @@ public class ClothConfigIntegration {
         return builder.build();
     }
 
-    protected <T> AbstractConfigListEntry<T> fromConfigEntry(ConfigEntryBuilder entryBuilder, Component name, ConfigEntry<T> entry) {
+    protected static <T> AbstractConfigListEntry<T> fromConfigEntry(ConfigEntryBuilder entryBuilder, Component name, ConfigEntry<T> entry) {
         if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.DoubleConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startDoubleField(name, e.get())
