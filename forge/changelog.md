@@ -15,3 +15,7 @@
 - Updated opus4j
 - Updated rnnoise4j
 - Updated lame4j
+- Fixed config entries not in fixed order
+- Moved server config from '<world>/serverconfig/voicechat-server.toml' to 'config/voicechat/voicechat-server.properties'
+- Moved client config from 'config/voicechat-client.toml' to 'config/voicechat/voicechat-client.properties'
+- Added automatic config migration
