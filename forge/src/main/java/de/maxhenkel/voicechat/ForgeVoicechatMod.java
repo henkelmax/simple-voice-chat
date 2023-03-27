@@ -1,14 +1,11 @@
 package de.maxhenkel.voicechat;
 
-import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.command.VoicechatCommand;
-import de.maxhenkel.voicechat.config.ConfigMigrator;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.ForgeCommonCompatibilityManager;
 import de.maxhenkel.voicechat.permission.ForgePermissionManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 
@@ -26,8 +23,6 @@ public class ForgeVoicechatMod extends Voicechat {
     public ForgeVoicechatMod() {
         INSTANCE = this;
         compatibilityManager = ((ForgeCommonCompatibilityManager) CommonCompatibilityManager.INSTANCE);
-
-        SERVER_CONFIG = ConfigBuilder.build(Loader.instance().getConfigDir().toPath().resolve(MODID).resolve("voicechat-server.properties"), true, ForgeServerConfig::new);
     }
 
     @Mod.EventHandler
