@@ -10,6 +10,7 @@ import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
 
