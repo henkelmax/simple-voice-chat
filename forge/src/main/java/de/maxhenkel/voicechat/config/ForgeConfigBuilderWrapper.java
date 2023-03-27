@@ -26,32 +26,32 @@ public class ForgeConfigBuilderWrapper implements ConfigBuilder {
 
     @Override
     public ConfigEntry<Boolean> booleanEntry(String key, boolean def, String... comments) {
-        return new ForgeConfigEntry<>(comments, builder.comment(comments).worldRestart().define(makePath(key), def));
+        return new ForgeConfigEntry<>(key, comments, builder.comment(comments).worldRestart().define(makePath(key), def));
     }
 
     @Override
     public ConfigEntry<Integer> integerEntry(String key, int def, int min, int max, String... comments) {
-        return new ForgeConfigEntry<>(comments, builder.comment(comments).worldRestart().defineInRange(makePath(key), def, min, max));
+        return new ForgeConfigEntry<>(key, comments, builder.comment(comments).worldRestart().defineInRange(makePath(key), def, min, max));
     }
 
     @Override
     public ConfigEntry<Double> doubleEntry(String key, double def, double min, double max, String... comments) {
-        return new ForgeConfigEntry<>(comments, builder.comment(comments).worldRestart().defineInRange(makePath(key), def, min, max));
+        return new ForgeConfigEntry<>(key, comments, builder.comment(comments).worldRestart().defineInRange(makePath(key), def, min, max));
     }
 
     @Override
     public ConfigEntry<String> stringEntry(String key, String def, String... comments) {
-        return new ForgeConfigEntry<>(comments, builder.comment(comments).worldRestart().define(makePath(key), def));
+        return new ForgeConfigEntry<>(key, comments, builder.comment(comments).worldRestart().define(makePath(key), def));
     }
 
     @Override
     public ConfigEntry<List<Integer>> integerListEntry(String key, List<Integer> def, String... comments) {
-        return new ForgeConfigEntry<>(comments, builder.comment(comments).worldRestart().define(makePath(key), def));
+        return new ForgeConfigEntry<>(key, comments, builder.comment(comments).worldRestart().define(makePath(key), def));
     }
 
     @Override
     public <E extends Enum<E>> ConfigEntry<E> enumEntry(String key, E def, String... comments) {
-        return new ForgeConfigEntry<>(comments, builder.comment(comments).worldRestart().defineEnum(makePath(key), def));
+        return new ForgeConfigEntry<>(key, comments, builder.comment(comments).worldRestart().defineEnum(makePath(key), def));
     }
 
     private String makePath(String key) {
@@ -64,8 +64,10 @@ public class ForgeConfigBuilderWrapper implements ConfigBuilder {
 
         private final String[] comments;
         private final ForgeConfigSpec.ConfigValue<T> value;
+        private final String key;
 
-        public ForgeConfigEntry(String[] comments, ForgeConfigSpec.ConfigValue<T> value) {
+        public ForgeConfigEntry(String key, String[] comments, ForgeConfigSpec.ConfigValue<T> value) {
+            this.key = key;
             this.comments = comments;
             this.value = value;
         }
@@ -93,6 +95,11 @@ public class ForgeConfigBuilderWrapper implements ConfigBuilder {
         public ConfigEntry<T> set(T value) {
             this.value.set(value);
             return this;
+        }
+
+        @Override
+        public String getKey() {
+            return key;
         }
 
         @Override
