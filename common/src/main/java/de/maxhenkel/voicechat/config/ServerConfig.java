@@ -6,7 +6,7 @@ import de.maxhenkel.opus4j.OpusEncoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 
-public abstract class ServerConfig {
+public class ServerConfig {
 
     public ConfigEntry<Integer> voiceChatPort;
     public ConfigEntry<String> voiceChatBindAddress;

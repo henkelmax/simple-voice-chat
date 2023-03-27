@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat;
 
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.command.VoicechatCommand;
-import de.maxhenkel.voicechat.config.ForgeServerConfig;
+import de.maxhenkel.voicechat.config.ConfigMigrator;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.ForgeCommonCompatibilityManager;
 import de.maxhenkel.voicechat.permission.ForgePermissionManager;
