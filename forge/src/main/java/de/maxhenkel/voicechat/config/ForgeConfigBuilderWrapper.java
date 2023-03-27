@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.config;
 import de.maxhenkel.configbuilder.Config;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.ConfigEntry;
-import de.maxhenkel.voicechat.integration.clothconfig.ForgeClothConfigIntegration;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.lang.reflect.Field;
@@ -123,12 +122,22 @@ public class ForgeConfigBuilderWrapper implements ConfigBuilder {
 
         @Override
         public T getDefault() {
-            return ForgeClothConfigIntegration.getDefault(value);
+            return ForgeConfigBuilderWrapper.getDefault(value);
         }
 
         @Override
         public Config getConfig() {
             return fromBuilder(builder);
+        }
+    }
+
+    public static <T> T getDefault(ForgeConfigSpec.ConfigValue<T> value) {
+        try {
+            Field defaultSupplier = ForgeConfigSpec.ConfigValue.class.getDeclaredField("defaultSupplier");
+            defaultSupplier.setAccessible(true);
+            return ((Supplier<T>) defaultSupplier.get(value)).get();
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to get default config value", e);
         }
     }
 
