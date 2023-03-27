@@ -186,7 +186,7 @@ public class ClientConfig {
                 );
         freecamSupport = builder
                 .booleanEntry("freecam_support", true,
-                        "This lets you hear players near your player even though you are further away with your freecam"
+                        "This lets you hear players near you, even though you are further away with your freecam"
                 );
     }
 
