@@ -1,11 +1,7 @@
 package de.maxhenkel.voicechat;
 
-import de.maxhenkel.configbuilder.ConfigBuilder;
-import de.maxhenkel.voicechat.config.ForgeClientConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
-import net.minecraftforge.client.ConfigGuiHandler;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
