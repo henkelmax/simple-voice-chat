@@ -4,7 +4,7 @@ import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
 import de.maxhenkel.voicechat.integration.clothconfig.ClothConfig;
-import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.integration.clothconfig.ClothConfigIntegration;
 
 public class ModMenu implements ModMenuApi {
 
@@ -18,7 +18,7 @@ public class ModMenu implements ModMenuApi {
     }
 
     private ConfigScreenFactory<?> getClothConfigFactory() {
-        return screen -> ClientCompatibilityManager.INSTANCE.getClothConfigIntegration().createConfigScreen(screen);
+        return ClothConfigIntegration::createConfigScreen;
     }
 
 }
