@@ -14,3 +14,4 @@
 - Updated opus4j
 - Updated rnnoise4j
 - Updated lame4j
+- Fixed config entries not in fixed order
