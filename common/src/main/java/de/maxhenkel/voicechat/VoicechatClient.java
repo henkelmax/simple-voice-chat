@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat;
 
 import com.sun.jna.Platform;
+import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.ClientConfig;
 import de.maxhenkel.voicechat.config.VolumeConfig;
 import de.maxhenkel.voicechat.integration.clothconfig.ClothConfig;
@@ -46,10 +47,15 @@ public abstract class VoicechatClient {
         });
     }
 
-    public void initializeClient() {
+    public void initializeConfigs() {
         fixVolumeConfig();
-        VOLUME_CONFIG = new VolumeConfig(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-volumes.properties"));
-        USERNAME_CACHE = new UsernameCache(Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("username-cache.json").toFile());
+        CLIENT_CONFIG = ConfigBuilder.build(Voicechat.getModConfigFolder().resolve("voicechat-client.properties"), true, ClientConfig::new);
+        VOLUME_CONFIG = new VolumeConfig(Voicechat.getModConfigFolder().resolve("voicechat-volumes.properties"));
+        USERNAME_CACHE = new UsernameCache(Voicechat.getModConfigFolder().resolve("username-cache.json").toFile());
+    }
+
+    public void initializeClient() {
+        initializeConfigs();
 
         //Load instance
         ClientManager.instance();
@@ -58,14 +64,22 @@ public abstract class VoicechatClient {
 
         OpusManager.opusNativeCheck();
 
-        if (Platform.isMac() && !VersionCheck.isMacOSNativeCompatible()) {
-            Voicechat.LOGGER.warn("Your MacOS version is incompatible with {}", CommonCompatibilityManager.INSTANCE.getModName());
+        if (Platform.isMac()) {
+            if (!VersionCheck.isMacOSNativeCompatible()) {
+                Voicechat.LOGGER.warn("Your MacOS version is incompatible with {}", CommonCompatibilityManager.INSTANCE.getModName());
+            }
+            if (!CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
+                CLIENT_CONFIG.javaMicrophoneImplementation.set(true).save();
+            }
+            if (CLIENT_CONFIG.useNatives.get() && !VersionCheck.isMacOSNativeCompatible()) {
+                CLIENT_CONFIG.useNatives.set(false).save();
+            }
         }
     }
 
     private void fixVolumeConfig() {
-        Path oldLocation = Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve("voicechat-volumes.properties");
-        Path newLocation = Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve(Voicechat.MODID).resolve("voicechat-volumes.properties");
+        Path oldLocation = Voicechat.getConfigFolder().resolve("voicechat-volumes.properties");
+        Path newLocation = Voicechat.getModConfigFolder().resolve("voicechat-volumes.properties");
         if (!newLocation.toFile().exists() && oldLocation.toFile().exists()) {
             try {
                 Files.move(oldLocation, newLocation, StandardCopyOption.ATOMIC_MOVE);
