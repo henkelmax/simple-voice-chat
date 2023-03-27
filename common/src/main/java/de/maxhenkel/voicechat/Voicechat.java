@@ -32,12 +32,17 @@ public abstract class Voicechat {
 
         LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
 
-        TRANSLATIONS = ConfigBuilder.build(Path.of(".").resolve("config").resolve(MODID).resolve("translations.properties"), true, Translations::new);
+        initializeConfigs();
 
         CommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
         PluginManager.instance().init();
         CommonCompatibilityManager.INSTANCE.onRegisterServerCommands(VoicechatCommands::register);
+    }
+
+    public void initializeConfigs() {
+        SERVER_CONFIG = ConfigBuilder.build(getModConfigFolder().resolve("voicechat-server.properties"), true, ServerConfig::new);
+        TRANSLATIONS = ConfigBuilder.build(getModConfigFolder().resolve("translations.properties"), true, Translations::new);
     }
 
     public static void logDebug(String message, Object... objects) {
@@ -48,6 +53,14 @@ public abstract class Voicechat {
 
     public static boolean debugMode() {
         return CommonCompatibilityManager.INSTANCE.isDevEnvironment() || System.getProperty("voicechat.debug") != null;
+    }
+
+    public static Path getModConfigFolder() {
+        return getConfigFolder().resolve(MODID);
+    }
+
+    public static Path getConfigFolder() {
+        return Path.of(".").resolve("config");
     }
 
 }
