@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import de.maxhenkel.voicechat.integration.clothconfig.ClothConfigIntegration;
 import de.maxhenkel.voicechat.service.Service;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -55,10 +54,6 @@ public abstract class ClientCompatibilityManager {
     public abstract SocketAddress getSocketAddress(NetworkManager connection);
 
     public abstract void addResourcePackSource(ResourcePackList packRepository, IPackFinder repositorySource);
-
-    public ClothConfigIntegration getClothConfigIntegration() {
-        return new ClothConfigIntegration();
-    }
 
     public interface RenderNameplateEvent {
         void render(Entity entity, ITextComponent component, MatrixStack stack, IRenderTypeBuffer bufferSource, int light);

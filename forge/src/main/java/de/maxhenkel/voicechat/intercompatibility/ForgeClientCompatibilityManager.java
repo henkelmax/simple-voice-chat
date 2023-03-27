@@ -2,8 +2,6 @@ package de.maxhenkel.voicechat.intercompatibility;
 
 import de.maxhenkel.voicechat.events.ClientVoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.events.ClientVoiceChatDisconnectedEvent;
-import de.maxhenkel.voicechat.integration.clothconfig.ClothConfigIntegration;
-import de.maxhenkel.voicechat.integration.clothconfig.ForgeClothConfigIntegration;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -237,10 +235,5 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @Override
     public void addResourcePackSource(ResourcePackList packRepository, IPackFinder repositorySource) {
         packRepository.addPackFinder(repositorySource);
-    }
-
-    @Override
-    public ClothConfigIntegration getClothConfigIntegration() {
-        return new ForgeClothConfigIntegration();
     }
 }
