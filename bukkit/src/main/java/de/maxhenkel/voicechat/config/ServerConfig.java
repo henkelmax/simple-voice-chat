@@ -29,7 +29,7 @@ public class ServerConfig {
         voiceChatPort = builder
                 .integerEntry("port", 24454, -1, 65535,
                         "The port of the voice chat server",
-                        "Setting this to \"-1\" sets the port to the Minecraft servers port"
+                        "Setting this to \"-1\" sets the port to the Minecraft servers port (Not recommended)"
                 );
         voiceChatBindAddress = builder
                 .stringEntry("bind_address", "",
