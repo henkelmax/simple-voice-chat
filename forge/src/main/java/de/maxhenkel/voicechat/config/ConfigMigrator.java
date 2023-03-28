@@ -52,12 +52,10 @@ public class ConfigMigrator {
     }
 
     public static <T> void migrateConfig(Class<T> configClass, T modConfig, Path forgeConfig, boolean copyValues, String newPath, @Nullable String configKey) {
-        if (!Files.isRegularFile(forgeConfig)) {
-            return;
-        }
-
         try (CommentedFileConfig commentedConfig = CommentedFileConfig.builder(forgeConfig).build()) {
-            commentedConfig.load();
+            if (Files.isRegularFile(forgeConfig)) {
+                commentedConfig.load();
+            }
 
             Boolean migrated = commentedConfig.get(MOVED_CONFIG_KEY);
             if (migrated != null && migrated) {
@@ -65,11 +63,7 @@ public class ConfigMigrator {
             }
 
             CommentedConfig config = configKey == null ? commentedConfig : commentedConfig.get(configKey);
-            if (config == null) {
-                return;
-            }
-
-            if (copyValues) {
+            if (config != null && copyValues) {
                 migrateConfigValues(configClass, modConfig, config);
             }
 
