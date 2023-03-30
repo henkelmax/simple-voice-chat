@@ -24,7 +24,7 @@ public abstract class Voicechat {
 
     public static int COMPATIBILITY_VERSION = BuildConstants.COMPATIBILITY_VERSION;
 
-    public static final Pattern GROUP_REGEX = Pattern.compile("^[^\"\\n\\r\\t\\s][^\"\\n\\r\\t]{0,15}$");
+    public static final Pattern GROUP_REGEX = Pattern.compile("^[^\\n\\r\\t\\s][^\\n\\r\\t]{0,23}$");
 
     public void initialize() {
         if (debugMode()) {

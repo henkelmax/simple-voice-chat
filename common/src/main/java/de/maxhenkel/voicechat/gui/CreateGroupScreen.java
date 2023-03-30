@@ -45,12 +45,12 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
         groupName = new TextFieldWidget(font, guiLeft + 7, guiTop + 32, xSize - 7 * 2, 10, new StringTextComponent(""));
-        groupName.setMaxLength(16);
+        groupName.setMaxLength(24);
         groupName.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addButton(groupName);
 
         password = new TextFieldWidget(font, guiLeft + 7, guiTop + 58, xSize - 7 * 2, 10, new StringTextComponent(""));
-        password.setMaxLength(16);
+        password.setMaxLength(32);
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addButton(password);
 
