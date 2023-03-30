@@ -149,15 +149,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
 
     @Override
     public Group createGroup(String name, @Nullable String password, boolean persistent) {
-        GroupImpl group = new GroupImpl(new de.maxhenkel.voicechat.voice.server.Group(UUID.randomUUID(), name, password, persistent));
-        Server server = Voicechat.SERVER.getServer();
-        if (server == null) {
-            return group;
-        }
-        if (persistent) {
-            server.getGroupManager().addGroup(group.getGroup(), null);
-        }
-        return group;
+        return groupBuilder().setName(name).setPassword(password).setPersistent(persistent).build();
     }
 
     @Override
