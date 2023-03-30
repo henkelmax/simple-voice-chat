@@ -42,6 +42,10 @@ public class ServerGroupManager {
             NetManager.sendStatusMessage(player, Component.translatable("message.voicechat.no_group_permission"));
             return;
         }
+        if (!Voicechat.GROUP_REGEX.matcher(packet.getName()).matches()) {
+            Voicechat.LOGGER.warn("Player {} tried to create a group with an invalid name: {}", player.getDisplayName(), packet.getName());
+            return;
+        }
         Group group = new Group(UUID.randomUUID(), packet.getName(), packet.getPassword(), false, packet.getType());
         addGroup(group, player);
     }

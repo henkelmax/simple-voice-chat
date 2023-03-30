@@ -41,7 +41,7 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
         Keyboard.enableRepeatEvents(true);
 
         password = new GuiTextField(0, fontRenderer, guiLeft + 7, guiTop + 7 + (fontRenderer.FONT_HEIGHT + 5) * 2 - 5 + 2, xSize - 7 * 2, 10);
-        password.setMaxStringLength(16);
+        password.setMaxStringLength(32);
         password.setValidator(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
 
         joinGroup = new ButtonBase(1, guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, JOIN_GROUP) {

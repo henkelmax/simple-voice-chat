@@ -18,3 +18,5 @@
 - Moved server config from '<world>/serverconfig/voicechat-server.toml' to 'config/voicechat/voicechat-server.properties'
 - Moved client config from 'config/voicechat-client.toml' to 'config/voicechat/voicechat-client.properties'
 - Added automatic config migration
+- Increased maximum group name length from 16 to 24 characters
+- Increased maximum group password length from 16 to 32 characters

@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.api;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 /**
@@ -56,6 +57,8 @@ public interface Group {
     public interface Builder {
 
         /**
+         * <b>NOTE</b>: The name might be stripped of special characters and whitespace
+         *
          * @param name the name of the group
          * @return the builder
          */
@@ -65,7 +68,7 @@ public interface Group {
          * @param password the group password
          * @return the builder
          */
-        Builder setPassword(String password);
+        Builder setPassword(@Nullable String password);
 
         /**
          * @param persistent if the group should be persistent
