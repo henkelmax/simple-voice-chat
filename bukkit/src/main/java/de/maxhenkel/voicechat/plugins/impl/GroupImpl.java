@@ -73,7 +73,19 @@ public class GroupImpl implements Group {
         @Override
         public Group.Builder setName(String name) {
             this.name = name;
+            this.name = convertGroupName(name);
             return this;
+        }
+
+        private static String convertGroupName(String name) {
+            name = name.replaceAll("[\\n\\r\\t]", "");
+            if (name.matches("^\\s.*")) {
+                name = name.replaceFirst("^\\s+", "");
+            }
+            if (name.length() > 16) {
+                return name.substring(0, 16);
+            }
+            return name;
         }
 
         @Override
@@ -97,7 +109,10 @@ public class GroupImpl implements Group {
         @Override
         public Group build() {
             if (name == null) {
-                throw new IllegalStateException("name missing");
+                throw new IllegalStateException("Group is missing a name");
+            }
+            if (!Voicechat.GROUP_REGEX.matcher(name).matches()) {
+                throw new IllegalStateException(String.format("Invalid group name: %s", name));
             }
             GroupImpl group = new GroupImpl(new de.maxhenkel.voicechat.voice.server.Group(UUID.randomUUID(), name, password, persistent, type));
             Server server = Voicechat.SERVER.getServer();
