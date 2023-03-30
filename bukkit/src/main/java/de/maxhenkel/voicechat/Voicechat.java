@@ -21,6 +21,8 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.regex.Pattern;
+
 public final class Voicechat extends JavaPlugin {
 
     public static Voicechat INSTANCE;
@@ -36,6 +38,8 @@ public final class Voicechat extends JavaPlugin {
 
     public static BukkitVoicechatServiceImpl apiService;
     public static NetManager netManager;
+
+    public static final Pattern GROUP_REGEX = Pattern.compile("^[^\\n\\r\\t\\s][^\\n\\r\\t]{0,23}$");
 
     @Override
     public void onEnable() {

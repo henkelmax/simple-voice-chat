@@ -15,3 +15,5 @@
 - Updated rnnoise4j
 - Updated lame4j
 - Fixed config entries not in fixed order
+- Increased maximum group name length from 16 to 24 characters
+- Increased maximum group password length from 16 to 32 characters
