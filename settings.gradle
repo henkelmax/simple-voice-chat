@@ -17,10 +17,11 @@ pluginManagement {
             name = 'Cotton'
             url = 'https://server.bbkr.space/artifactory/libs-release/'
         }
+        maven { url = "https://papermc.io/repo/repository/maven-public/" }
         maven { url = 'https://maven.minecraftforge.net/' }
         mavenCentral()
     }
 }
 
 rootProject.name = 'voicechat'
-include('api', 'common', 'fabric', 'quilt', 'forge', 'bukkit')
+include('api', 'common', 'fabric', 'quilt', 'forge', 'bukkit', 'folia')

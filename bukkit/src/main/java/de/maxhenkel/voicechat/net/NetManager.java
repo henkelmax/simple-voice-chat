@@ -108,7 +108,7 @@ public class NetManager implements Listener {
     }
 
     public static void sendToClient(Player player, Packet<?> p) {
-        Bukkit.getServer().getScheduler().runTask(Voicechat.INSTANCE, () -> {
+        Bukkit.getGlobalRegionScheduler().run(Voicechat.INSTANCE, (task) -> {
             if (!Voicechat.SERVER.isCompatible(player)) {
                 return;
             }

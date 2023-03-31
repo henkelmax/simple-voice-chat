@@ -10,6 +10,7 @@ task publishAll(type: GradleBuild) {
             ':forge:clean',
             ':fabric:clean',
             ':bukkit:clean',
+            ':folia:clean',
             ':quilt:curseforge',
             ':quilt:modrinth',
             ':quilt:forgeUpdate',
@@ -19,7 +20,8 @@ task publishAll(type: GradleBuild) {
             ':fabric:curseforge',
             ':fabric:modrinth',
             ':fabric:forgeUpdate',
-            ':bukkit:build'
+            ':bukkit:build',
+            ':folia:build'
     ]
 }
 
@@ -109,5 +111,6 @@ task cleanAll(type: GradleBuild) {
             ':fabric:clean',
             ':forge:clean',
             ':bukkit:clean',
+            ':forge:clean'
     ]
 }

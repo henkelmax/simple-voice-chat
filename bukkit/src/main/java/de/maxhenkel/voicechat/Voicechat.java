@@ -45,12 +45,6 @@ public final class Voicechat extends JavaPlugin {
     public void onEnable() {
         INSTANCE = this;
 
-        if (!BukkitVersionCheck.matchesTargetVersion()) {
-            LOGGER.fatal("Disabling Simple Voice Chat due to incompatible Bukkit version!");
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
-
         LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
 
         SERVER_CONFIG = ConfigBuilder.build(getDataFolder().toPath().resolve("voicechat-server.properties"), true, ServerConfig::new);
@@ -100,7 +94,7 @@ public final class Voicechat extends JavaPlugin {
         }
         System.setProperty("VOICECHAT_RELOADED", "true");
 
-        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        Bukkit.getGlobalRegionScheduler().run(this, (task) -> {
             SERVER = new ServerVoiceEvents();
             PluginManager.instance().init();
             SERVER.init();

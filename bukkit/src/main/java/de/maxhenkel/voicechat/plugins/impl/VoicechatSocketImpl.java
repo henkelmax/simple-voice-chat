@@ -41,7 +41,7 @@ public class VoicechatSocketImpl extends VoicechatSocketBase implements Voicecha
             socket.setTrafficClass(0x04); // IPTOS_RELIABILITY
         } catch (BindException e) {
             Voicechat.LOGGER.fatal("Failed to run voice chat at UDP port {}, make sure no other application is running at that port", port);
-            Bukkit.getScheduler().runTask(Voicechat.INSTANCE, () -> {
+            Bukkit.getGlobalRegionScheduler().run(Voicechat.INSTANCE, (task) -> {
                 Voicechat.LOGGER.fatal("Disabling Simple Voice Chat");
                 Bukkit.getPluginManager().disablePlugin(Voicechat.INSTANCE);
             });

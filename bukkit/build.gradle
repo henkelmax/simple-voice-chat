@@ -62,6 +62,8 @@ dependencies {
 
     compileOnly "com.viaversion:viaversion-bukkit:${viaversion_version}"
 
+    compileOnly("dev.folia:folia-api:1.19.4-R0.1-SNAPSHOT")
+
     implementation project(':api')
     shadow project(':api')
 }
