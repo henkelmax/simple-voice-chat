@@ -71,7 +71,18 @@ public class Server extends Thread {
     @Override
     public void run() {
         try {
-            socket.open(port, Voicechat.SERVER_CONFIG.voiceChatBindAddress.get());
+            String bindAddress = Voicechat.SERVER_CONFIG.voiceChatBindAddress.get();
+
+            if (bindAddress.trim().equals("*")) {
+                bindAddress = "";
+            } else if (bindAddress.trim().equals("")) {
+                if (server instanceof DedicatedServer) {
+                    bindAddress = ((DedicatedServer) server).getProperties().serverIp;
+                    Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
+                }
+            }
+
+            socket.open(port, bindAddress);
             Voicechat.LOGGER.info("Server started at port {}", socket.getLocalPort());
 
             while (!socket.isClosed()) {

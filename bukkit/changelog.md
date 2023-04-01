@@ -1,6 +1,1 @@
-- Added persistent groups to API
-- Improved voice chat protocol handshake
-- Added three different group types
-- Removed global open_groups config option
-- Replaced translations.yml with translations.properties
-- Fixed config entries not in fixed order
+- Use server-ip of server.properties as bind_address by default
