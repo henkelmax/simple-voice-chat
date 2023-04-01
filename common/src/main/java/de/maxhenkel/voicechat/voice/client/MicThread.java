@@ -56,6 +56,9 @@ public class MicThread extends Thread {
             if (connection != null) {
                 // Checking here for timeouts, because we don't have any other looping thread
                 connection.checkTimeout();
+                if (!running) {
+                    break;
+                }
             }
             if (microphoneLocked || ClientManager.getPlayerStateManager().isDisabled()) {
                 activating = false;
@@ -210,10 +213,12 @@ public class MicThread extends Thread {
         }
         running = false;
 
-        try {
-            join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (Thread.currentThread() != this) {
+            try {
+                join(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         mic.close();
