@@ -12,6 +12,7 @@ import de.maxhenkel.voicechat.voice.common.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -71,7 +72,22 @@ public class Server extends Thread {
     @Override
     public void run() {
         try {
-            socket.open(port, Voicechat.SERVER_CONFIG.voiceChatBindAddress.get());
+            String bindAddress = Voicechat.SERVER_CONFIG.voiceChatBindAddress.get();
+
+            if (bindAddress.trim().equals("*")) {
+                bindAddress = "";
+            } else if (bindAddress.trim().equals("")) {
+                try {
+                    if (server instanceof CraftServer) {
+                        bindAddress = ((CraftServer) server).getServer().a().c;
+                        Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
+                    }
+                } catch (Throwable t) {
+                    Voicechat.LOGGER.warn("Failed to get server-ip from server.properties - binding to wildcard address", t);
+                }
+            }
+
+            socket.open(port, bindAddress);
             Voicechat.LOGGER.info("Server started at port {}", socket.getLocalPort());
 
             while (!socket.isClosed()) {
