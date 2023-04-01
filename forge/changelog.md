@@ -1,1 +1,1 @@
-- Fixed microphone not working after reconnect when using `java_microphone_implementation`
+- Use server-ip of server.properties as bind_address by default
