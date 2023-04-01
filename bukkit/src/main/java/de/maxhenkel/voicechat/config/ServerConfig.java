@@ -34,7 +34,8 @@ public class ServerConfig {
         voiceChatBindAddress = builder
                 .stringEntry("bind_address", "",
                         "The IP address to bind the voice chat server on",
-                        "Leave empty to bind to an IP address chosen by the kernel"
+                        "Leave empty to use 'server-ip' of server.properties",
+                        "To bind to the wildcard address, use '*'"
                 );
         voiceChatDistance = builder
                 .doubleEntry("max_voice_distance", 48D, 1D, 1_000_000D,
