@@ -77,7 +77,7 @@ public class Server extends Thread {
                 bindAddress = "";
             } else if (bindAddress.trim().equals("")) {
                 if (server instanceof DedicatedServer) {
-                    bindAddress = ((DedicatedServer) server).getProperties().serverIp;
+                    bindAddress = ((DedicatedServer) server).getStringProperty("server-ip", "");
                     Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
                 }
             }
