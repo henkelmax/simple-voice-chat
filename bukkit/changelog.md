@@ -1,1 +1,2 @@
 - Improve Bukkit multi version support
+- Added support for Folia
