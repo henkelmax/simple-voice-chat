@@ -184,7 +184,7 @@ modrinth {
     versionType = release_type.toUpperCase()
     changelog = file("changelog.md").text
     gameVersions = minecraft_versions.split(',').collect { it.trim() }
-    loaders = ['bukkit', 'spigot', 'paper', 'purpur']
+    loaders = ['bukkit', 'spigot', 'paper', 'purpur', 'folia']
     dependencies {
         optional.project "Vebnzrzj" // LuckPerms
     }
