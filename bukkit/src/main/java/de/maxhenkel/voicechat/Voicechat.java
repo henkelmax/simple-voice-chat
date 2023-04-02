@@ -87,7 +87,7 @@ public final class Voicechat extends JavaPlugin {
                 }
             } catch (Throwable t) {
                 //TODO Support versions 1.16 and older
-                LOGGER.warn("Failed to initialize commodore command completion");
+                LOGGER.warn("Failed to initialize commodore command completion", t);
             }
         } else {
             LOGGER.error("Failed to register commands");

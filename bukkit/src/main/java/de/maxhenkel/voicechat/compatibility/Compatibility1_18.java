@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.compatibility;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import de.maxhenkel.voicechat.BukkitVersion;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -33,6 +34,16 @@ public class Compatibility1_18 extends BaseCompatibility {
         Class<?> chatMessageTypeClass = getClass("net.minecraft.network.chat.ChatMessageType");
         Object b = getField(chatMessageTypeClass, "c");
         send(player, component, b);
+    }
+
+    @Override
+    public ArgumentType<?> playerArgument() {
+        return Compatibility1_19.INSTANCE.playerArgument();
+    }
+
+    @Override
+    public ArgumentType<?> uuidArgument() {
+        return Compatibility1_19.INSTANCE.uuidArgument();
     }
 
     private static final UUID NUL_UUID = new UUID(0L, 0L);

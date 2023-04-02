@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.compatibility;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import de.maxhenkel.voicechat.BukkitVersion;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -33,8 +34,8 @@ public class Compatibility1_16 extends BaseCompatibility {
                 "net.minecraft.server.v1_16_R2.ChatMessageType",
                 "net.minecraft.server.v1_16_R1.ChatMessageType"
         );
-        Object b = getField(chatMessageTypeClass, "CHAT");
-        send(player, component, b);
+        Object chat = getField(chatMessageTypeClass, "CHAT");
+        send(player, component, chat);
     }
 
     @Override
@@ -44,8 +45,28 @@ public class Compatibility1_16 extends BaseCompatibility {
                 "net.minecraft.server.v1_16_R2.ChatMessageType",
                 "net.minecraft.server.v1_16_R1.ChatMessageType"
         );
-        Object b = getField(chatMessageTypeClass, "GAME_INFO");
-        send(player, component, b);
+        Object gameInfo = getField(chatMessageTypeClass, "GAME_INFO");
+        send(player, component, gameInfo);
+    }
+
+    @Override
+    public ArgumentType<?> playerArgument() {
+        Class<?> argumentEntity = getClass(
+                "net.minecraft.server.v1_16_R3.ArgumentEntity",
+                "net.minecraft.server.v1_16_R2.ArgumentEntity",
+                "net.minecraft.server.v1_16_R1.ArgumentEntity"
+        );
+        return callMethod(argumentEntity, "c");
+    }
+
+    @Override
+    public ArgumentType<?> uuidArgument() {
+        Class<?> argumentEntity = getClass(
+                "net.minecraft.server.v1_16_R3.ArgumentUUID",
+                "net.minecraft.server.v1_16_R2.ArgumentUUID",
+                "net.minecraft.server.v1_16_R1.ArgumentUUID"
+        );
+        return callMethod(argumentEntity, "a");
     }
 
     private static final UUID NUL_UUID = new UUID(0L, 0L);
@@ -60,10 +81,10 @@ public class Compatibility1_16 extends BaseCompatibility {
                 "net.minecraft.server.v1_16_R2.Packet",
                 "net.minecraft.server.v1_16_R1.Packet"
         );
-        Class<?> craftChatMessage = getClass(
-                "org.bukkit.craftbukkit.v1_16_R3.util.CraftChatMessage",
-                "org.bukkit.craftbukkit.v1_16_R2.util.CraftChatMessage",
-                "org.bukkit.craftbukkit.v1_16_R1.util.CraftChatMessage"
+        Class<?> chatSerializer = getClass(
+                "net.minecraft.server.v1_16_R3.IChatBaseComponent$ChatSerializer",
+                "net.minecraft.server.v1_16_R2.IChatBaseComponent$ChatSerializer",
+                "net.minecraft.server.v1_16_R1.IChatBaseComponent$ChatSerializer"
         );
 
         Class<?> iChatBaseComponentClass = getClass(
@@ -71,7 +92,8 @@ public class Compatibility1_16 extends BaseCompatibility {
                 "net.minecraft.server.v1_16_R2.IChatBaseComponent",
                 "net.minecraft.server.v1_16_R1.IChatBaseComponent"
         );
-        Object iChatBaseComponent = callMethod(craftChatMessage, "fromJSON", new Class[]{String.class}, json);
+
+        Object iChatBaseComponent = callMethod(chatSerializer, "a", new Class[]{String.class}, json);
 
         Class<?> packetPlayOutChatClass = getClass(
                 "net.minecraft.server.v1_16_R3.PacketPlayOutChat",
