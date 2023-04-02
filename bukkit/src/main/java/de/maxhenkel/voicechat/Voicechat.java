@@ -116,7 +116,7 @@ public final class Voicechat extends JavaPlugin {
         }
         System.setProperty("VOICECHAT_RELOADED", "true");
 
-        getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        compatibility.runTask(() -> {
             SERVER = new ServerVoiceEvents();
             PluginManager.instance().init();
             SERVER.init();
