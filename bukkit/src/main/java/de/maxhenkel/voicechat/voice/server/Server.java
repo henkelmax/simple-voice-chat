@@ -12,7 +12,7 @@ import de.maxhenkel.voicechat.voice.common.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
