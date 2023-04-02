@@ -1,9 +1,14 @@
 package de.maxhenkel.voicechat.compatibility;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public interface Compatibility {
 
@@ -21,6 +26,10 @@ public interface Compatibility {
 
     void runTask(Runnable runnable);
 
+    ArgumentType<?> playerArgument();
+
+    ArgumentType<?> uuidArgument();
+
     default <T> T callMethod(Object object, String methodName) {
         return callMethod(object, methodName, new Class[]{});
     }
@@ -35,7 +44,9 @@ public interface Compatibility {
 
     default <T> T callMethod(Class<?> clazz, Object object, String methodName, Class<?>[] parameterTypes, Object... args) {
         try {
-            return (T) clazz.getDeclaredMethod(methodName, parameterTypes).invoke(object, args);
+            Method method = clazz.getDeclaredMethod(methodName, parameterTypes);
+            method.setAccessible(true);
+            return (T) method.invoke(object, args);
         } catch (Throwable t) {
             throw new IllegalStateException(t);
         }
@@ -55,7 +66,9 @@ public interface Compatibility {
 
     default <T> T callConstructor(Class<?> object, Class<?>[] parameterTypes, Object... args) {
         try {
-            return (T) object.getDeclaredConstructor(parameterTypes).newInstance(args);
+            Constructor<?> constructor = object.getDeclaredConstructor(parameterTypes);
+            constructor.setAccessible(true);
+            return (T) constructor.newInstance(args);
         } catch (Throwable t) {
             throw new IllegalStateException(t);
         }
@@ -63,7 +76,9 @@ public interface Compatibility {
 
     default <T> T getField(Object object, String fieldName) {
         try {
-            return (T) object.getClass().getDeclaredField(fieldName).get(object);
+            Field field = object.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return (T) field.get(object);
         } catch (Throwable t) {
             throw new IllegalStateException(t);
         }
@@ -71,7 +86,9 @@ public interface Compatibility {
 
     default <T> T getField(Class<?> object, String fieldName) {
         try {
-            return (T) object.getDeclaredField(fieldName).get(null);
+            Field field = object.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return (T) field.get(null);
         } catch (Throwable t) {
             throw new IllegalStateException(t);
         }
