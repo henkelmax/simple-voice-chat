@@ -1,1 +1,1 @@
-- Use server-ip of server.properties as bind_address by default
+- Improve Bukkit multi version support

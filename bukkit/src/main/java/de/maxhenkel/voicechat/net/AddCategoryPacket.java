@@ -1,13 +1,13 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import de.maxhenkel.voicechat.util.NamespacedKeyUtil;
 import org.bukkit.NamespacedKey;
 
 public class AddCategoryPacket implements Packet<AddCategoryPacket> {
 
-    public static final NamespacedKey ADD_CATEGORY = NamespacedKeyUtil.voicechat("add_category");
+    public static final NamespacedKey ADD_CATEGORY = Voicechat.compatibility.createNamespacedKey("add_category");
 
     private VolumeCategoryImpl category;
 
