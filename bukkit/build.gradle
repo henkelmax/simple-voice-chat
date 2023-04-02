@@ -15,8 +15,8 @@ plugins {
 apply plugin: "info.u_team.curse_gradle_uploader"
 apply plugin: 'com.modrinth.minotaur'
 
-sourceCompatibility = JavaLanguageVersion.of(java_version as int)
-targetCompatibility = JavaLanguageVersion.of(java_version as int)
+sourceCompatibility = JavaLanguageVersion.of(8)
+targetCompatibility = JavaLanguageVersion.of(8)
 
 archivesBaseName = archives_base_name
 version = mod_version
@@ -164,9 +164,9 @@ curseforge {
         changelogType = 'markdown'
         changelog = file("changelog.md")
         releaseType = release_type
-        addGameVersion curseforge_minecraft_version
+        addGameVersion curseforge_minecraft_versions.split(',').collect { it.trim() }
         mainArtifact(shadowJar) {
-            displayName = "[BUKKIT/SPIGOT/PAPER][${minecraft_version}] ${mod_name} ${mod_version}"
+            displayName = "[BUKKIT/SPIGOT/PAPER] ${mod_name} ${mod_version}"
         }
     }
 }
@@ -183,7 +183,7 @@ modrinth {
     uploadFile = shadowJar
     versionType = release_type.toUpperCase()
     changelog = file("changelog.md").text
-    gameVersions = [minecraft_version]
+    gameVersions = minecraft_versions.split(',').collect { it.trim() }
     loaders = ['bukkit', 'spigot', 'paper', 'purpur']
     dependencies {
         optional.project "Vebnzrzj" // LuckPerms

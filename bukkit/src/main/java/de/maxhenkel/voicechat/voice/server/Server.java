@@ -12,7 +12,6 @@ import de.maxhenkel.voicechat.voice.common.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -76,10 +75,10 @@ public class Server extends Thread {
 
             if (bindAddress.trim().equals("*")) {
                 bindAddress = "";
-            } else if (bindAddress.trim().equals("")) {
+            } else if (bindAddress.trim().isEmpty()) {
                 try {
-                    if (server instanceof CraftServer) {
-                        bindAddress = ((CraftServer) server).getServer().a().c;
+                    bindAddress = Voicechat.compatibility.getServerIp(server);
+                    if (!bindAddress.trim().isEmpty()) {
                         Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
                     }
                 } catch (Throwable t) {
@@ -184,7 +183,8 @@ public class Server extends Thread {
                         continue;
                     }
 
-                    if (message.getPacket() instanceof AuthenticatePacket packet) {
+                    if (message.getPacket() instanceof AuthenticatePacket) {
+                        AuthenticatePacket packet = (AuthenticatePacket) message.getPacket();
                         UUID secret = secrets.get(packet.getPlayerUUID());
                         if (secret != null && secret.equals(packet.getSecret())) {
                             ClientConnection connection = unCheckedConnections.get(packet.getPlayerUUID());
@@ -231,7 +231,8 @@ public class Server extends Thread {
 
                     UUID playerUUID = conn.getPlayerUUID();
 
-                    if (message.getPacket() instanceof MicPacket packet) {
+                    if (message.getPacket() instanceof MicPacket) {
+                        MicPacket packet = (MicPacket) message.getPacket();
                         Player player = server.getPlayer(playerUUID);
                         if (player == null) {
                             continue;
@@ -249,7 +250,8 @@ public class Server extends Thread {
                         if (!PluginManager.instance().onMicPacket(player, state, packet)) {
                             processMicPacket(player, state, packet);
                         }
-                    } else if (message.getPacket() instanceof PingPacket packet) {
+                    } else if (message.getPacket() instanceof PingPacket) {
+                        PingPacket packet = (PingPacket) message.getPacket();
                         pingManager.onPongPacket(packet);
                     } else if (message.getPacket() instanceof KeepAlivePacket) {
                         conn.setLastKeepAliveResponse(System.currentTimeMillis());
@@ -314,7 +316,8 @@ public class Server extends Thread {
         if (sender.getGameMode().equals(GameMode.SPECTATOR)) {
             if (Voicechat.SERVER_CONFIG.spectatorPlayerPossession.get()) {
                 Entity camera = sender.getSpectatorTarget();
-                if (camera instanceof Player spectatingPlayer) {
+                if (camera instanceof Player) {
+                    Player spectatingPlayer = (Player) camera;
                     if (spectatingPlayer != sender) {
                         PlayerState receiverState = playerStateManager.getState(spectatingPlayer.getUniqueId());
                         ClientConnection connection = getConnection(receiverState.getUuid());
