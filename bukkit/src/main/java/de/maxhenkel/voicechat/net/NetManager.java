@@ -100,7 +100,7 @@ public class NetManager implements Listener {
     }
 
     public static void sendToClient(Player player, Packet<?> p) {
-        Bukkit.getServer().getScheduler().runTask(Voicechat.INSTANCE, () -> {
+        Voicechat.compatibility.runTask(() -> {
             if (!Voicechat.SERVER.isCompatible(player)) {
                 return;
             }

@@ -6,6 +6,7 @@ prefix: voicechat
 authors: [ "Max Henkel", "Matthew Wells" ]
 description: A working voice chat in Minecraft
 website: https://modrepo.de
+folia-supported: true
 commands:
   voicechat:
     description: Manage voice chat

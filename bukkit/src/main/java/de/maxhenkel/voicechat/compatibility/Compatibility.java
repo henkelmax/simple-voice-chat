@@ -19,6 +19,8 @@ public interface Compatibility {
 
     void sendStatusMessage(Player player, Component component);
 
+    void runTask(Runnable runnable);
+
     default <T> T callMethod(Object object, String methodName) {
         return callMethod(object, methodName, new Class[]{});
     }
@@ -83,6 +85,26 @@ public interface Compatibility {
             }
         }
         throw new IllegalStateException(String.format("Could not find any of the following classes: %s", String.join(", ", classNames)));
+    }
+
+    default boolean doesClassExist(String... classNames) {
+        for (String className : classNames) {
+            try {
+                Class.forName(className);
+                return true;
+            } catch (Throwable ignored) {
+            }
+        }
+        return false;
+    }
+
+    default boolean doesMethodExist(Class<?> clazz, String methodName, Class<?>... parameterTypes) {
+        try {
+            clazz.getDeclaredMethod(methodName, parameterTypes);
+            return true;
+        } catch (Throwable ignored) {
+        }
+        return false;
     }
 
 }
