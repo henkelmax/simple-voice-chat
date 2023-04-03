@@ -39,6 +39,9 @@ public class ForgeNetManager extends NetManager {
                         e.printStackTrace();
                     }
                 } else {
+                    if (isSameThread()) {
+                        return;
+                    }
                     try {
                         T packet = packetType.getDeclaredConstructor().newInstance();
                         packet.fromBytes(event.getPayload());
@@ -57,6 +60,11 @@ public class ForgeNetManager extends NetManager {
     @OnlyIn(Dist.CLIENT)
     private <T extends Packet<T>> void onClientPacket(Channel<T> channel, T packet) {
         channel.onClientPacket(Minecraft.getInstance(), Minecraft.getInstance().getConnection(), packet);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private boolean isSameThread() {
+        return Minecraft.getInstance().isSameThread();
     }
 
 }
