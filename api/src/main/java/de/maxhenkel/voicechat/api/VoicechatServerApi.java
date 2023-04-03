@@ -1,6 +1,8 @@
 package de.maxhenkel.voicechat.api;
 
 import de.maxhenkel.voicechat.api.audiochannel.*;
+import de.maxhenkel.voicechat.api.audiolistener.AudioListener;
+import de.maxhenkel.voicechat.api.audiolistener.PlayerAudioListener;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
 import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
@@ -95,6 +97,41 @@ public interface VoicechatServerApi extends VoicechatApi {
      * @return the audio player
      */
     AudioPlayer createAudioPlayer(AudioChannel audioChannel, OpusEncoder encoder, short[] audio);
+
+    /**
+     * @return a {@link PlayerAudioListener} builder
+     */
+    PlayerAudioListener.Builder playerAudioListenerBuilder();
+
+    /**
+     * Registers a new {@link AudioListener}.
+     * <br/>
+     * Returns false if the listener is already registered.
+     *
+     * @param listener the listener to register
+     * @return if the listener was registered
+     */
+    boolean registerAudioListener(AudioListener listener);
+
+    /**
+     * Unregisters an {@link AudioListener}.
+     * <br/>
+     * Returns false if the listener is already unregistered.
+     *
+     * @param listener the listener to unregister
+     * @return if the listener was unregistered
+     */
+    boolean unregisterAudioListener(AudioListener listener);
+
+    /**
+     * Unregisters an {@link AudioListener}.
+     * <br/>
+     * Returns false if the listener is already unregistered.
+     *
+     * @param listenerId the {@link AudioListener#getListenerId()} of the listener to unregister
+     * @return if the listener was unregistered
+     */
+    boolean unregisterAudioListener(UUID listenerId);
 
     /**
      * Gets the connection of the player with this UUID.
