@@ -3,6 +3,8 @@ package de.maxhenkel.voicechat.plugins.impl;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.*;
 import de.maxhenkel.voicechat.api.audiochannel.*;
+import de.maxhenkel.voicechat.api.audiolistener.AudioListener;
+import de.maxhenkel.voicechat.api.audiolistener.PlayerAudioListener;
 import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
@@ -10,10 +12,10 @@ import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
 import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.*;
+import de.maxhenkel.voicechat.plugins.impl.audiolistener.PlayerAudioListenerImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.EntitySoundPacketImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.LocationalSoundPacketImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.StaticSoundPacketImpl;
-import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
@@ -115,21 +117,42 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         return new AudioPlayerImpl(audioChannel, encoder, new AudioSupplier(audio));
     }
 
-    public static void sendPacket(VoicechatConnection receiver, SoundPacket<?> s) {
+    @Override
+    public PlayerAudioListener.Builder playerAudioListenerBuilder() {
+        return new PlayerAudioListenerImpl.BuilderImpl();
+    }
+
+    @Override
+    public boolean registerAudioListener(AudioListener listener) {
+        return PluginManager.instance().registerAudioListener(listener);
+    }
+
+    @Override
+    public boolean unregisterAudioListener(AudioListener listener) {
+        return unregisterAudioListener(listener.getListenerId());
+    }
+
+    @Override
+    public boolean unregisterAudioListener(UUID listenerId) {
+        return PluginManager.instance().unregisterAudioListener(listenerId);
+    }
+
+    public static void sendPacket(VoicechatConnection receiver, SoundPacket<?> soundPacket) {
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
             return;
         }
+
         PlayerState state = server.getPlayerStateManager().getState(receiver.getPlayer().getUuid());
         if (state == null) {
             return;
         }
-        if (PluginManager.instance().onSoundPacket(null, null, (ServerPlayerEntity) receiver.getPlayer().getPlayer(), state, s, SoundPacketEvent.SOURCE_PLUGIN)) {
-            return;
-        }
-        ClientConnection c = server.getConnections().get(receiver.getPlayer().getUuid());
+
+        net.minecraft.server.level.ServerPlayer player = (ServerPlayerEntity) receiver.getPlayer().getPlayer();
+
+        @Nullable ClientConnection c = server.getConnections().get(receiver.getPlayer().getUuid());
         try {
-            c.send(server, new NetworkMessage(s));
+            server.sendSoundPacket(null, null, player, state, c, soundPacket, SoundPacketEvent.SOURCE_PLUGIN);
         } catch (Exception e) {
             e.printStackTrace();
         }
