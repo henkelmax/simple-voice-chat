@@ -81,6 +81,7 @@ public class ClientPlayerStateManager {
                     Voicechat.LOGGER.warn("Received join group packet without group being present");
                 }
             }
+            GroupList.update();
         });
         ClientCompatibilityManager.INSTANCE.onVoiceChatConnected(this::onVoiceChatConnected);
         ClientCompatibilityManager.INSTANCE.onVoiceChatDisconnected(this::onVoiceChatDisconnected);
