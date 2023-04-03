@@ -285,7 +285,6 @@ public class Server extends Thread {
         if (groupId == null) {
             return;
         }
-        NetworkMessage soundMessage = new NetworkMessage(new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null));
         GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
         for (PlayerState state : playerStateManager.getStates()) {
             if (!groupId.equals(state.getGroup())) {
@@ -294,17 +293,12 @@ public class Server extends Thread {
             if (senderState.getUuid().equals(state.getUuid())) {
                 continue;
             }
-            ClientConnection connection = getConnection(state.getUuid());
-            if (connection == null) {
-                continue;
-            }
             Player p = server.getPlayer(state.getUuid());
             if (p == null) {
                 continue;
             }
-            if (!PluginManager.instance().onSoundPacket(sender, senderState, p, state, groupSoundPacket, SoundPacketEvent.SOURCE_GROUP)) {
-                connection.send(this, soundMessage);
-            }
+            @Nullable ClientConnection connection = getConnection(state.getUuid());
+            sendSoundPacket(sender, senderState, p, state, connection, groupSoundPacket, SoundPacketEvent.SOURCE_GROUP);
         }
     }
 
@@ -321,14 +315,12 @@ public class Server extends Thread {
                     Player spectatingPlayer = (Player) camera;
                     if (spectatingPlayer != sender) {
                         PlayerState receiverState = playerStateManager.getState(spectatingPlayer.getUniqueId());
-                        ClientConnection connection = getConnection(receiverState.getUuid());
-                        if (connection == null) {
+                        if (receiverState == null) {
                             return;
                         }
                         GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
-                        if (!PluginManager.instance().onSoundPacket(sender, senderState, spectatingPlayer, receiverState, groupSoundPacket, SoundPacketEvent.SOURCE_SPECTATOR)) {
-                            sendSoundPacket(spectatingPlayer, connection, groupSoundPacket);
-                        }
+                        @Nullable ClientConnection connection = getConnection(receiverState.getUuid());
+                        sendSoundPacket(sender, senderState, spectatingPlayer, receiverState, connection, groupSoundPacket, SoundPacketEvent.SOURCE_SPECTATOR);
                         return;
                     }
                 }
@@ -361,6 +353,26 @@ public class Server extends Thread {
         connection.send(this, new NetworkMessage(soundPacket));
     }
 
+    public void sendSoundPacket(@Nullable Player sender, @Nullable PlayerState senderState, Player receiver, PlayerState receiverState, @Nullable ClientConnection connection, SoundPacket<?> soundPacket, String source) throws Exception {
+        PluginManager.instance().onListenerAudio(receiver.getUniqueId(), soundPacket);
+
+        if (connection == null) {
+            return;
+        }
+
+        if (PluginManager.instance().onSoundPacket(sender, senderState, receiver, receiverState, soundPacket, source)) {
+            return;
+        }
+
+        if (!receiver.hasPermission(PermissionManager.LISTEN_PERMISSION)) {
+            CooldownTimer.run(String.format("no-listen-%s", receiver.getUniqueId()), 30_000L, () -> {
+                NetManager.sendStatusMessage(receiver, Component.translatable("message.voicechat.no_listen_permission"));
+            });
+            return;
+        }
+        sendPacket(soundPacket, connection);
+    }
+
     public double getBroadcastRange(float minRange) {
         double broadcastRange = Voicechat.SERVER_CONFIG.broadcastRange.get();
         if (broadcastRange < 0D) {
@@ -388,14 +400,9 @@ public class Server extends Thread {
             if (receiverGroup != null && receiverGroup.isIsolated()) {
                 continue;
             }
-            ClientConnection connection = getConnection(state.getUuid());
-            if (connection == null) {
-                continue;
-            }
+            @Nullable ClientConnection connection = getConnection(state.getUuid());
             try {
-                if (!PluginManager.instance().onSoundPacket(sender, senderState, player, state, packet, source)) {
-                    sendSoundPacket(player, connection, packet);
-                }
+                sendSoundPacket(sender, senderState, player, state, connection, packet, source);
             } catch (Exception e) {
                 e.printStackTrace();
             }

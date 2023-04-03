@@ -301,7 +301,6 @@ public class Server extends Thread {
             return;
         }
         GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
-        NetworkMessage soundMessage = new NetworkMessage(groupSoundPacket);
         for (PlayerState state : playerStateManager.getStates()) {
             if (!groupId.equals(state.getGroup())) {
                 continue;
@@ -309,17 +308,12 @@ public class Server extends Thread {
             if (senderState.getUuid().equals(state.getUuid())) {
                 continue;
             }
-            ClientConnection connection = getConnection(state.getUuid());
-            if (connection == null) {
-                continue;
-            }
             EntityPlayerMP p = server.getPlayerList().getPlayerByUUID(state.getUuid());
             if (p == null) {
                 continue;
             }
-            if (!PluginManager.instance().onSoundPacket(sender, senderState, p, state, groupSoundPacket, SoundPacketEvent.SOURCE_GROUP)) {
-                connection.send(this, soundMessage);
-            }
+            @Nullable ClientConnection connection = getConnection(state.getUuid());
+            sendSoundPacket(sender, senderState, p, state, connection, groupSoundPacket, SoundPacketEvent.SOURCE_GROUP);
         }
     }
 
@@ -336,14 +330,12 @@ public class Server extends Thread {
                     EntityPlayerMP spectatingPlayer = (EntityPlayerMP) camera;
                     if (spectatingPlayer != sender) {
                         PlayerState receiverState = playerStateManager.getState(spectatingPlayer.getUniqueID());
-                        ClientConnection connection = getConnection(receiverState.getUuid());
-                        if (connection == null) {
+                        if (receiverState == null) {
                             return;
                         }
                         GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
-                        if (!PluginManager.instance().onSoundPacket(sender, senderState, spectatingPlayer, receiverState, groupSoundPacket, SoundPacketEvent.SOURCE_SPECTATOR)) {
-                            sendSoundPacket(spectatingPlayer, connection, groupSoundPacket);
-                        }
+                        @Nullable ClientConnection connection = getConnection(receiverState.getUuid());
+                        sendSoundPacket(sender, senderState, spectatingPlayer, receiverState, connection, groupSoundPacket, SoundPacketEvent.SOURCE_SPECTATOR);
                         return;
                     }
                 }
@@ -366,14 +358,24 @@ public class Server extends Thread {
         broadcast(ServerWorldUtils.getPlayersInRange(sender.getServerWorld(), sender.getPositionVector(), getBroadcastRange(distance), p -> !p.getUniqueID().equals(sender.getUniqueID())), soundPacket, sender, senderState, groupId, source);
     }
 
-    public void sendSoundPacket(EntityPlayerMP player, ClientConnection connection, SoundPacket<?> soundPacket) throws Exception {
-        if (!PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(player)) {
-            CooldownTimer.run("no-listen-" + player.getUniqueID(), 30_000L, () -> {
-                player.sendStatusMessage(new TextComponentTranslation("message.voicechat.no_listen_permission"), true);
+    public void sendSoundPacket(@Nullable EntityPlayerMP sender, @Nullable PlayerState senderState, EntityPlayerMP receiver, PlayerState receiverState, @Nullable ClientConnection connection, SoundPacket<?> soundPacket, String source) throws Exception {
+        PluginManager.instance().onListenerAudio(receiver.getUniqueID(), soundPacket);
+
+        if (connection == null) {
+            return;
+        }
+
+        if (PluginManager.instance().onSoundPacket(sender, senderState, receiver, receiverState, soundPacket, source)) {
+            return;
+        }
+
+        if (!PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(receiver)) {
+            CooldownTimer.run(String.format("no-listen-%s", receiver.getUniqueID()), 30_000L, () -> {
+                receiver.sendStatusMessage(new TextComponentTranslation("message.voicechat.no_listen_permission"), true);
             });
             return;
         }
-        connection.send(this, new NetworkMessage(soundPacket));
+        sendPacket(soundPacket, connection);
     }
 
     public double getBroadcastRange(float minRange) {
@@ -403,14 +405,9 @@ public class Server extends Thread {
             if (receiverGroup != null && receiverGroup.isIsolated()) {
                 continue;
             }
-            ClientConnection connection = getConnection(player.getGameProfile().getId());
-            if (connection == null) {
-                continue;
-            }
+            @Nullable ClientConnection connection = getConnection(state.getUuid());
             try {
-                if (!PluginManager.instance().onSoundPacket(sender, senderState, player, state, packet, source)) {
-                    sendSoundPacket(player, connection, packet);
-                }
+                sendSoundPacket(sender, senderState, player, state, connection, packet, source);
             } catch (Exception e) {
                 e.printStackTrace();
             }
