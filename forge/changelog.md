@@ -1,1 +1,2 @@
-- Use server-ip of server.properties as bind_address by default
+- Hide bind log message on server start
+- Fixed voice chat not connecting with Forge clients
