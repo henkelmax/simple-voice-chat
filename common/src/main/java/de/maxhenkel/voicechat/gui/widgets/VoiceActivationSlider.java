@@ -31,7 +31,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         Minecraft minecraft = Minecraft.getInstance();
         RenderSystem.setShaderTexture(0, SLIDER_LOCATION);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        blitNineSliced(poseStack, getX(), getY(), getWidth(), getHeight(), 4, 200, 20, 0, getTextureY());
+        blitNineSliced(poseStack, getX(), getY(), getWidth(), getHeight(), 4, 200, 20, 0, getYTexturePos());
 
         RenderSystem.setShaderTexture(0, VOICE_ACTIVATION_SLIDER);
         int micWidth = (int) (226D * micValue);
@@ -39,16 +39,16 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
 
         RenderSystem.setShaderTexture(0, SLIDER_LOCATION);
 
-        blitNineSliced(poseStack, getX() + (int) (value * (double) (width - 8)), getY(), 8, 20, 4, 200, 20, 0, getHandleTextureY());
+        blitNineSliced(poseStack, getX() + (int) (value * (double) (width - 8)), getY(), 8, 20, 4, 200, 20, 0, getYtexturePosHandle());
         int color = active ? 16777215 : 10526880;
         renderScrollingString(poseStack, minecraft.font, 2, color);
     }
 
-    private int getTextureY() {
+    private int getYTexturePos() {
         return (isFocused() && !(isHovered || isFocused()) ? 1 : 0) * 20;
     }
 
-    private int getHandleTextureY() {
+    private int getYtexturePosHandle() {
         return (!isHovered && !isFocused() ? 2 : 3) * 20;
     }
 
