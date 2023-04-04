@@ -12,10 +12,10 @@ commands:
     description: Manage voice chat
     usage: Invalid command syntax
 permissions:
-  voicechat.connect:
-    description: Allows to connect to the voice chat
+  voicechat.listen:
+    description: Allows to listen to voice chat
   voicechat.speak:
-    description: Allows to speak in the voice chat
+    description: Allows to speak in voice chat
   voicechat.groups:
     description: Allows to join groups
   voicechat.admin:
