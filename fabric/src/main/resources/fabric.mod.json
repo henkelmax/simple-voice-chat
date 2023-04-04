@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "A working voice chat in Minecraft!",
+  "authors": [
+    "${mod_vendor}"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat",
+    "issues": "https://github.com/henkelmax/simple-voice-chat/issues",
+    "sources": "https://github.com/henkelmax/simple-voice-chat",
+    "email": "info@modrepo.de",
+    "discord": "https://discord.gg/4dH2zwTmyX"
+  },
+  "license": "All Rights Reserved",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "de.maxhenkel.voicechat.FabricVoicechatClientMod"
+    ],
+    "main": [
+      "de.maxhenkel.voicechat.FabricVoicechatMod"
+    ],
+    "modmenu": [
+      "de.maxhenkel.voicechat.integration.ModMenu"
+    ]
+  },
+  "mixins": [
+    "voicechat.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": "${minecraft_dependency}",
+    "java": ">=${java_version}"
+  },
+  "suggests": {
+    "modmenu": ">=${modmenu_version}",
+    "sound_physics_remastered": ">=1.17.1-1.0.5",
+    "cloth-config2": ">=${cloth_config_version}",
+    "fabric-permissions-api-v0": "*",
+    "viaversion": "*"
+  },
+  "breaks": {
+    "fabric": "<${min_fabric_version}",
+    "sound_physics_remastered": "<1.17.1-1.0.5"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/4dH2zwTmyX"
+      }
+    },
+    "multiconnect": {
+      "custom_payloads": {
+        "allowed_clientbound": "voicechat:*",
+        "allowed_serverbound": "voicechat:*",
+        "clientbound_112_names": {
+          "voicechat:update_state": "vc:update_state",
+          "voicechat:request_secret": "vc:request_secret",
+          "voicechat:create_group": "vc:create_group",
+          "voicechat:set_group": "vc:set_group",
+          "voicechat:leave_group": "vc:leave_group"
+        },
+        "serverbound_112_names": {
+          "voicechat:secret": "vc:secret",
+          "voicechat:player_states": "vc:player_states",
+          "voicechat:player_state": "vc:player_state",
+          "voicechat:add_group": "vc:add_group",
+          "voicechat:remove_group": "vc:remove_group",
+          "voicechat:joined_group": "vc:joined_group",
+          "voicechat:add_category": "vc:add_category",
+          "voicechat:remove_category": "vc:remove_category"
+        }
+      }
+    }
+  }
+}

@@ -7,10 +7,14 @@ task publishAll(type: GradleBuild) {
     tasks = [
             ':common:clean',
             ':forge:clean',
+            ':fabric:clean',
             ':bukkit:clean',
             ':forge:curseforge',
             ':forge:modrinth',
             ':forge:forgeUpdate',
+            ':fabric:curseforge',
+            ':fabric:modrinth',
+            ':fabric:forgeUpdate',
             ':bukkit:build'
     ]
 }
@@ -21,6 +25,16 @@ task publishBukkit(type: GradleBuild) {
             ':bukkit:clean',
             ':bukkit:curseforge',
             ':bukkit:modrinth'
+    ]
+}
+
+task publishSnapshot(type: GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':common:clean',
+            ':fabric:clean',
+            ':fabric:curseforge',
+            ':fabric:modrinth'
     ]
 }
 
@@ -40,10 +54,24 @@ task publishAPILocal(type: GradleBuild) {
     ]
 }
 
+task fabricClient(type: GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':fabric:runClient'
+    ]
+}
+
 task forgeClient(type: GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':forge:runClient'
+    ]
+}
+
+task fabricServer(type: GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':fabric:runServer'
     ]
 }
 
@@ -59,6 +87,7 @@ task cleanAll(type: GradleBuild) {
     tasks = [
             ':common:clean',
             ':api:clean',
+            ':fabric:clean',
             ':forge:clean',
             ':bukkit:clean',
     ]
