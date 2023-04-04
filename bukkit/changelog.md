@@ -1,2 +1,5 @@
 - Improve Bukkit multi version support
 - Added support for Folia
+- Improve commands
+- Improve command tab completion
+- Update permissions in plugin.yml
