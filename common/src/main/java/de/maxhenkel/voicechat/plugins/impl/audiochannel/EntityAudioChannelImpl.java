@@ -73,7 +73,7 @@ public class EntityAudioChannelImpl extends AudioChannelImpl implements EntityAu
 
     private void broadcast(PlayerSoundPacket packet) {
         if (entity.getEntity() instanceof net.minecraft.entity.Entity) {
-            net.minecraft.entity.Entity entity = ((net.minecraft.entity.Entity) this.entity.getEntity()).getEntity();
+            net.minecraft.entity.Entity entity = ((net.minecraft.entity.Entity) this.entity.getEntity());
             server.broadcast(ServerWorldUtils.getPlayersInRange((ServerWorld) entity.level, entity.getEyePosition(1F), server.getBroadcastRange(distance), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
         }
     }
