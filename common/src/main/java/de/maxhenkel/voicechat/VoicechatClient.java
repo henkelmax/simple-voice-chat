@@ -68,9 +68,6 @@ public abstract class VoicechatClient {
             if (!CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
                 CLIENT_CONFIG.javaMicrophoneImplementation.set(true).save();
             }
-            if (CLIENT_CONFIG.useNatives.get() && !VersionCheck.isMacOSNativeCompatible()) {
-                CLIENT_CONFIG.useNatives.set(false).save();
-            }
         }
     }
 
