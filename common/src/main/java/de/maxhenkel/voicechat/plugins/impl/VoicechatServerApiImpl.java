@@ -148,7 +148,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
             return;
         }
 
-        net.minecraft.server.level.ServerPlayer player = (ServerPlayerEntity) receiver.getPlayer().getPlayer();
+        ServerPlayerEntity player = (ServerPlayerEntity) receiver.getPlayer().getPlayer();
 
         @Nullable ClientConnection c = server.getConnections().get(receiver.getPlayer().getUuid());
         try {
