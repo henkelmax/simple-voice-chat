@@ -46,6 +46,8 @@ public class VoiceChatCommands implements CommandExecutor, TabCompleter {
             } else if (args[0].equalsIgnoreCase("test")) {
                 if (commandSender.hasPermission(PermissionManager.ADMIN_PERMISSION)) {
                     return testCommand(sender, command, label, args);
+                } else {
+                    return true;
                 }
             } else if (args[0].equalsIgnoreCase("invite")) {
                 return inviteCommand(sender, command, label, args);
