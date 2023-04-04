@@ -15,12 +15,18 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-public class VoiceChatCommands implements CommandExecutor {
+public class VoiceChatCommands implements CommandExecutor, TabCompleter {
 
     public static final String VOICECHAT_COMMAND = "voicechat";
 
@@ -50,6 +56,36 @@ public class VoiceChatCommands implements CommandExecutor {
             }
         }
         return helpCommand(sender, command, label, args);
+    }
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (args.length == 1) {
+            return tabCompleteList(args[0], Arrays.asList("help", "test", "invite", "join", "leave"));
+        }
+
+        if (args.length == 2) {
+            String arg = args[0];
+            if (arg.equals("test") || arg.equals("invite")) {
+                return null;
+            } else if (arg.startsWith("join")) {
+                return Collections.emptyList();
+            }
+        }
+
+        if (args.length == 3) {
+            String arg = args[0];
+            if (arg.startsWith("join")) {
+                return Collections.emptyList();
+            }
+        }
+
+        return Collections.emptyList();
+    }
+
+    private List<String> tabCompleteList(String arg, List<String> list) {
+        return list.stream().filter(s -> s.startsWith(arg)).collect(Collectors.toList());
     }
 
     private boolean helpCommand(Player commandSender, Command command, String label, String[] args) {
@@ -263,5 +299,4 @@ public class VoiceChatCommands implements CommandExecutor {
             return null;
         }
     }
-
 }
