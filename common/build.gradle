@@ -11,7 +11,7 @@ buildscript {
 }
 
 plugins {
-    id "java"
+    id 'java'
 }
 
 apply plugin: 'net.minecraftforge.gradle'
@@ -25,10 +25,10 @@ minecraft {
 repositories {
     mavenCentral()
     maven {
-        name = "henkelmax.public"
+        name = 'henkelmax.public'
         url = 'https://maven.maxhenkel.de/repository/public'
     }
-    maven { url "https://maven.shedaniel.me/" }
+    maven { url 'https://maven.shedaniel.me/' }
     mavenLocal()
 }
 
