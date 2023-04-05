@@ -12,11 +12,11 @@ buildscript {
 plugins {
     id 'org.quiltmc.loom' version '1.0.+'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id 'com.github.johnrengelman.shadow' version '7.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "com.modrinth.minotaur" version "2.+"
 }
 
 apply plugin: 'forge-update'
-apply plugin: 'com.modrinth.minotaur'
 
 sourceCompatibility = JavaLanguageVersion.of(java_version as int)
 targetCompatibility = JavaLanguageVersion.of(java_version as int)
