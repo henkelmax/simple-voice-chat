@@ -217,8 +217,6 @@ shadowJar {
     relocate 'de.maxhenkel.configbuilder', "de.maxhenkel.${mod_id}.configbuilder"
     relocate 'org.concentus', "de.maxhenkel.${mod_id}.concentus"
     dependencies {
-        exclude(dependency('net.java.dev.jna:jna'))
-        exclude(dependency('net.java.dev.jna:jna-platform'))
         exclude(dependency('com.google.code.findbugs:jsr305'))
     }
 }
