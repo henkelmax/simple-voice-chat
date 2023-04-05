@@ -7,11 +7,11 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class VoiceActivationSlider extends DebouncedSlider implements MicTestButton.MicListener {
 
@@ -65,9 +65,10 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     }
 
     @Nullable
-    public Component getTooltip() {
+    @Override
+    public Tooltip getTooltip() {
         if (value >= 1D) {
-            return NO_ACTIVATION;
+            return Tooltip.create(NO_ACTIVATION);
         }
         return null;
     }

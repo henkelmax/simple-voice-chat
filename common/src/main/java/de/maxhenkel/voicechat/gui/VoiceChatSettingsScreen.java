@@ -13,6 +13,7 @@ import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.Denoiser;
 import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -125,9 +126,9 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         int titleWidth = font.width(TITLE);
         font.draw(poseStack, TITLE.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, getFontColor());
 
-        Component tooltip = voiceActivationSlider.getTooltip();
+        Tooltip tooltip = voiceActivationSlider.getTooltip();
         if (tooltip != null && voiceActivationSlider.isHovered()) {
-            renderTooltip(poseStack, tooltip, mouseX, mouseY);
+            renderTooltip(poseStack, tooltip.toCharSequence(minecraft), mouseX, mouseY);
         }
     }
 }
