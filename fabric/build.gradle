@@ -11,9 +11,9 @@ buildscript {
 
 plugins {
     id 'fabric-loom' version '1.0-SNAPSHOT'
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id "com.modrinth.minotaur" version "2.+"
+    id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
+    id 'com.github.johnrengelman.shadow' version "${shadow_version}"
+    id 'com.modrinth.minotaur' version "${minotaur_version}"
 }
 
 apply plugin: 'forge-update'
@@ -29,14 +29,14 @@ repositories {
     mavenCentral()
     maven { url = 'https://maven.fabricmc.net/' }
     maven { url = 'https://maven.terraformersmc.com/' }
-    maven { url "https://maven.shedaniel.me/" }
+    maven { url 'https://maven.shedaniel.me/' }
     maven {
         name = 'henkelmax.public'
         url = 'https://maven.maxhenkel.de/repository/public'
     }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven {
-        name = "viaversion-repo"
+        name = 'viaversion-repo'
         url = 'https://repo.viaversion.com/'
     }
     mavenLocal()
@@ -52,12 +52,12 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
 
     Set<String> apiModules = [
-            "fabric-api-base",
-            "fabric-command-api-v1",
-            "fabric-lifecycle-events-v1",
-            "fabric-networking-api-v1",
-            "fabric-resource-loader-v0",
-            "fabric-key-binding-api-v1"
+            'fabric-api-base',
+            'fabric-command-api-v1',
+            'fabric-lifecycle-events-v1',
+            'fabric-networking-api-v1',
+            'fabric-resource-loader-v0',
+            'fabric-key-binding-api-v1'
     ]
 
     apiModules.forEach {
@@ -108,7 +108,7 @@ sourceSets.main.java {
 compileJava.dependsOn generateJava
 
 processResources {
-    filesMatching("fabric.mod.json") {
+    filesMatching('fabric.mod.json') {
         expand 'mod_id': mod_id,
                 'mod_name': mod_name,
                 'mod_vendor': mod_vendor,
@@ -128,7 +128,7 @@ tasks.withType(JavaCompile) {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.encoding = "UTF-8"
+    it.options.encoding = 'UTF-8'
     it.options.release = java_version as int
 }
 
@@ -142,20 +142,12 @@ jar {
     }
 }
 
-tasks.runClient.doFirst {
-    environment 'COMPATIBILITY_VERSION', mod_compatibility_version
-}
-
-tasks.runServer.doFirst {
-    environment 'COMPATIBILITY_VERSION', mod_compatibility_version
-}
-
 curseforge {
     apiKey = file("${rootDir}/curseforge_api_key.txt").exists() ? file("${rootDir}/curseforge_api_key.txt").text : ''
     project {
         id = curse_id
         changelogType = 'markdown'
-        changelog = file("changelog.md")
+        changelog = file('changelog.md')
         releaseType = release_type
         addGameVersion curseforge_minecraft_version
         addGameVersion 'Fabric'
@@ -191,21 +183,21 @@ modrinth {
     versionName = "${mod_name} ${mod_version}"
     uploadFile = remapJar
     versionType = release_type.toUpperCase()
-    changelog = file("changelog.md").text
+    changelog = file('changelog.md').text
     gameVersions = [minecraft_version]
     loaders = ['fabric']
     dependencies {
-        optional.project "mOgUt4GM" // ModMenu
-        optional.project "9s6osm5g" // ClothConfig
-        optional.project "Vebnzrzj" // LuckPerms
-        optional.project "YlKdE5VK" // ViaFabric
+        optional.project 'mOgUt4GM' // ModMenu
+        optional.project '9s6osm5g' // ClothConfig
+        optional.project 'Vebnzrzj' // LuckPerms
+        optional.project 'YlKdE5VK' // ViaFabric
     }
 }
 tasks.modrinth.dependsOn(build)
 
 forgeUpdate {
     def messages = []
-    file("changelog.md").eachLine { String line ->
+    file('changelog.md').eachLine { String line ->
         if (line.trim().startsWith('-')) {
             messages.add(line.replaceFirst('-', '').trim())
         }
