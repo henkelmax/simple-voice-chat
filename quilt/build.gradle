@@ -241,8 +241,6 @@ shadowJar {
     relocate 'org.concentus', "de.maxhenkel.${mod_id}.concentus"
     relocate 'com.dd.plist', "de.maxhenkel.${mod_id}.com.dd.plist"
     dependencies {
-        exclude(dependency('net.java.dev.jna:jna'))
-        exclude(dependency('net.java.dev.jna:jna-platform'))
         exclude(dependency('com.google.code.findbugs:jsr305'))
     }
 }
