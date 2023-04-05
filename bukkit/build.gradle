@@ -1,19 +1,19 @@
 buildscript {
     repositories {
-        maven { url = "https://repo.u-team.info" }
+        maven { url = 'https://repo.u-team.info' }
     }
     dependencies {
-        classpath "info.u-team.curse_gradle_uploader:curse_gradle_uploader:1.5.1"
+        classpath 'info.u-team.curse_gradle_uploader:curse_gradle_uploader:1.5.1'
     }
 }
 
 plugins {
     id 'java'
-    id "com.github.johnrengelman.shadow" version "7.1.2"
-    id "com.modrinth.minotaur" version "2.+"
+    id 'com.github.johnrengelman.shadow' version "${shadow_version}"
+    id 'com.modrinth.minotaur' version "${minotaur_version}"
 }
 
-apply plugin: "info.u_team.curse_gradle_uploader"
+apply plugin: 'info.u_team.curse_gradle_uploader'
 
 sourceCompatibility = JavaLanguageVersion.of(java_version as int)
 targetCompatibility = JavaLanguageVersion.of(java_version as int)
@@ -23,9 +23,9 @@ version = mod_version
 group = maven_group
 
 processResources {
-    filesMatching("plugin.yml") {
-        expand "version": version,
-                "bukkit_api_version": bukkit_api_version
+    filesMatching('plugin.yml') {
+        expand 'version': version,
+                'bukkit_api_version': bukkit_api_version
     }
 }
 
@@ -80,18 +80,18 @@ compileJava.dependsOn generateJava
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url "https://papermc.io/repo/repository/maven-public/" }
-    maven { url "https://libraries.minecraft.net/" }
+    maven { url 'https://papermc.io/repo/repository/maven-public/' }
+    maven { url 'https://libraries.minecraft.net/' }
     maven {
-        name = "henkelmax.public"
+        name = 'henkelmax.public'
         url = 'https://maven.maxhenkel.de/repository/public'
     }
     maven {
-        name = "placeholderapi"
+        name = 'placeholderapi'
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
     maven {
-        name = "viaversion-repo"
+        name = 'viaversion-repo'
         url = 'https://repo.viaversion.com/'
     }
 }
@@ -115,10 +115,10 @@ task runServer {
         javaexec {
             debug = true
             workingDir = "${projectDir}/run"
-            main = "-jar";
+            main = '-jar';
             args = [
                     "${projectDir}/run/craftbukkit.jar",
-                    "nogui"
+                    'nogui'
             ]
         }
     }
@@ -129,10 +129,10 @@ task runPaperServer {
         javaexec {
             debug = true
             workingDir = "${projectDir}/run"
-            main = "-jar";
+            main = '-jar';
             args = [
                     "${projectDir}/run/paper.jar",
-                    "nogui"
+                    'nogui'
             ]
         }
     }
@@ -145,11 +145,11 @@ runPaperServer.dependsOn(build)
 shadowJar {
     configurations = [project.configurations.shadow]
     classifier ''
-    relocate 'net.kyori', "de.maxhenkel.voicechat.net.kyori"
-    relocate 'com.google.gson', "de.maxhenkel.voicechat.gson"
-    relocate 'me.lucko.commodore', "de.maxhenkel.voicechat.commodore"
-    relocate 'de.maxhenkel.configbuilder', "de.maxhenkel.voicechat.configbuilder"
-    relocate 'org.concentus', "de.maxhenkel.voicechat.concentus"
+    relocate 'net.kyori', 'de.maxhenkel.voicechat.net.kyori'
+    relocate 'com.google.gson', 'de.maxhenkel.voicechat.gson'
+    relocate 'me.lucko.commodore', 'de.maxhenkel.voicechat.commodore'
+    relocate 'de.maxhenkel.configbuilder', 'de.maxhenkel.voicechat.configbuilder'
+    relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'
     dependencies {
         exclude(dependency('com.mojang:brigadier:.*'))
         exclude(dependency('com.google.code.findbugs:jsr305:.*'))
@@ -157,12 +157,12 @@ shadowJar {
 }
 
 curseforge {
-    apiBaseUrl = "https://dev.bukkit.org"
+    apiBaseUrl = 'https://dev.bukkit.org'
     apiKey = file("${rootDir}/curseforge_api_key.txt").exists() ? file("${rootDir}/curseforge_api_key.txt").text : ''
     project {
         id = curse_id
         changelogType = 'markdown'
-        changelog = file("changelog.md")
+        changelog = file('changelog.md')
         releaseType = release_type
         addGameVersion curseforge_minecraft_version
         mainArtifact(shadowJar) {
@@ -182,11 +182,11 @@ modrinth {
     versionName = "${mod_name} ${mod_version}"
     uploadFile = shadowJar
     versionType = release_type.toUpperCase()
-    changelog = file("changelog.md").text
+    changelog = file('changelog.md').text
     gameVersions = [minecraft_version]
     loaders = ['bukkit', 'spigot', 'paper', 'purpur']
     dependencies {
-        optional.project "Vebnzrzj" // LuckPerms
+        optional.project 'Vebnzrzj' // LuckPerms
     }
 }
 tasks.modrinth.dependsOn(build)
