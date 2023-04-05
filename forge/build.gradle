@@ -14,9 +14,9 @@ buildscript {
 
 plugins {
     id 'net.minecraftforge.gradle' version '5.+'
-    id "com.matthewprenger.cursegradle" version "1.4.0"
-    id "com.github.johnrengelman.shadow" version "7.1.2"
-    id "com.modrinth.minotaur" version "2.+"
+    id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
+    id 'com.github.johnrengelman.shadow' version "${shadow_version}"
+    id 'com.modrinth.minotaur' version "${minotaur_version}"
 }
 
 apply plugin: 'forge-update'
@@ -50,16 +50,7 @@ minecraft {
         server {
             workingDirectory project.file('run/server').canonicalPath
             property 'forge.logging.console.level', 'debug'
-            arg "--nogui"
-            arg '-torg.spongepowered.asm.launch.MixinTweaker'
-            source sourceSets.main
-            source project(":common").sourceSets.main
-            mods {
-                voicechat {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
-                }
-            }
+            arg '--nogui'
         }
     }
 }
@@ -133,7 +124,7 @@ mixin {
 }
 
 processResources {
-    filesMatching("**/*.info") {
+    filesMatching('**/*.info') {
         expand 'mod_id': mod_id,
                 'mod_version': mod_version,
                 'mod_name': mod_name,
@@ -152,13 +143,13 @@ task prepareWorkspace {
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
-        attributes(["Specification-Title"        : mod_name,
-                    "Specification-Vendor"       : mod_vendor,
-                    "Specification-Version"      : "1",
-                    "Implementation-Title"       : mod_name,
-                    "Implementation-Version"     : mod_version,
-                    "Implementation-Vendor"      : mod_vendor,
-                    "Implementation-Timestamp"   : new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+        attributes(['Specification-Title'        : mod_name,
+                    'Specification-Vendor'       : mod_vendor,
+                    'Specification-Version'      : "1",
+                    'Implementation-Title'       : mod_name,
+                    'Implementation-Version'     : mod_version,
+                    'Implementation-Vendor'      : mod_vendor,
+                    'Implementation-Timestamp'   : new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                     "Compatibility-Version"      : mod_compatibility_version,
                     "FMLCorePluginContainsFMLMod": "true",
                     "ForceLoadAsMod"             : "true",
@@ -180,7 +171,7 @@ curseforge {
     project {
         id = curse_id
         changelogType = 'markdown'
-        changelog = file("changelog.md")
+        changelog = file('changelog.md')
         releaseType = release_type
         addGameVersion minecraft_version
         addGameVersion 'Forge'
@@ -203,14 +194,14 @@ modrinth {
     versionName = "${mod_name} ${mod_version}"
     uploadFile = file("${buildDir}/libs/${archivesBaseName}-${version}.jar")
     versionType = release_type.toUpperCase()
-    changelog = file("changelog.md").text
+    changelog = file('changelog.md').text
     gameVersions = [minecraft_version]
     loaders = ['forge']
 }
 
 forgeUpdate {
     def messages = []
-    file("changelog.md").eachLine { String line ->
+    file('changelog.md').eachLine { String line ->
         if (line.trim().startsWith('-')) {
             messages.add(line.replaceFirst('-', '').trim())
         }
