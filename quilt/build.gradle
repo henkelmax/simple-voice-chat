@@ -10,7 +10,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.quiltmc.loom' version '1.0.+'
+    id 'org.quiltmc.loom' version '1.1.+'
     id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
     id 'com.github.johnrengelman.shadow' version "${shadow_version}"
     id 'com.modrinth.minotaur' version "${minotaur_version}"
@@ -27,25 +27,13 @@ group = maven_group
 
 repositories {
     mavenCentral()
-    maven {
-        name = 'Quilt'
-        url = 'https://maven.quiltmc.org/repository/release'
-    }
-    maven {
-        name = 'Quilt Snapshots'
-        url = 'https://maven.quiltmc.org/repository/snapshot'
-    }
+    maven { url = 'https://maven.quiltmc.org/repository/release' }
+    maven { url = 'https://maven.quiltmc.org/repository/snapshot' }
     maven { url = 'https://maven.terraformersmc.com/' }
-    maven { url 'https://maven.shedaniel.me/' }
-    maven {
-        name = 'henkelmax.public'
-        url = 'https://maven.maxhenkel.de/repository/public'
-    }
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    maven {
-        name = 'viaversion-repo'
-        url = 'https://repo.viaversion.com/'
-    }
+    maven { url = 'https://maven.shedaniel.me/' }
+    maven { url = 'https://maven.maxhenkel.de/repository/public' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url = 'https://repo.viaversion.com/' }
     mavenLocal()
 }
 
@@ -62,6 +50,7 @@ dependencies {
     include(modImplementation('org.quiltmc.quilted-fabric-api:fabric-key-binding-api-v1:5.0.0-alpha.3+0.68.1-1.19.3'))
 
     include(modImplementation("org.quiltmc.qsl.core:qsl_base:${qsl_version}"))
+    include(modImplementation("org.quiltmc.qsl.core:registry:${qsl_version}"))
     include(modImplementation("org.quiltmc.qsl.core:lifecycle_events:${qsl_version}"))
     include(modImplementation("org.quiltmc.qsl.core:networking:${qsl_version}"))
     include(modImplementation("org.quiltmc.qsl.core:resource_loader:${qsl_version}"))
@@ -237,10 +226,7 @@ shadowJar {
     }
 }
 
-prepareRemapJar {
-    dependsOn shadowJar
-}
-
 remapJar {
+    dependsOn shadowJar
     input = shadowJar.archiveFile.get()
 }
