@@ -10,7 +10,7 @@ buildscript {
 }
 
 plugins {
-    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id 'common-loom' version '1.1-SNAPSHOT'
     id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
     id 'com.github.johnrengelman.shadow' version "${shadow_version}"
     id 'com.modrinth.minotaur' version "${minotaur_version}"
@@ -29,16 +29,10 @@ repositories {
     mavenCentral()
     maven { url = 'https://maven.fabricmc.net/' }
     maven { url = 'https://maven.terraformersmc.com/' }
-    maven { url 'https://maven.shedaniel.me/' }
-    maven {
-        name = 'henkelmax.public'
-        url = 'https://maven.maxhenkel.de/repository/public'
-    }
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    maven {
-        name = 'viaversion-repo'
-        url = 'https://repo.viaversion.com/'
-    }
+    maven { url = 'https://maven.shedaniel.me/' }
+    maven { url = 'https://maven.maxhenkel.de/repository/public' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url = 'https://repo.viaversion.com/' }
     mavenLocal()
 }
 
@@ -225,10 +219,7 @@ shadowJar {
     }
 }
 
-prepareRemapJar {
-    dependsOn shadowJar
-}
-
 remapJar {
+    dependsOn shadowJar
     inputFile = shadowJar.archiveFile.get()
 }
