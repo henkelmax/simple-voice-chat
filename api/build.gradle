@@ -21,10 +21,7 @@ group = maven_group
 repositories {
     mavenCentral()
     maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-    maven {
-        name = "henkelmax.public"
-        url = 'https://maven.maxhenkel.de/repository/public'
-    }
+    maven { url = 'https://maven.maxhenkel.de/repository/public' }
     mavenLocal()
 }
 
