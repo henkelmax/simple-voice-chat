@@ -8,7 +8,7 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id 'common-loom' version '1.1-SNAPSHOT'
 }
 
 sourceCompatibility = JavaLanguageVersion.of(java_version as int)
@@ -17,16 +17,9 @@ targetCompatibility = JavaLanguageVersion.of(java_version as int)
 repositories {
     mavenCentral()
     maven { url = 'https://maven.fabricmc.net/' }
-    maven {
-        name = 'henkelmax.public'
-        url = 'https://maven.maxhenkel.de/repository/public'
-    }
-    maven { url 'https://maven.shedaniel.me/' }
+    maven { url = 'https://maven.maxhenkel.de/repository/public' }
+    maven { url = 'https://maven.shedaniel.me/' }
     mavenLocal()
-}
-
-task prepareWorkspace {
-
 }
 
 sourceSets {
