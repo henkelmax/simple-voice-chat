@@ -1,21 +1,10 @@
 pluginManagement {
     repositories {
-        maven {
-            name = 'Fabric'
-            url = 'https://maven.fabricmc.net/'
-        }
-        maven {
-            name = 'Quilt'
-            url = 'https://maven.quiltmc.org/repository/release'
-        }
-        maven {
-            name = 'Quilt Snapshots'
-            url = 'https://maven.quiltmc.org/repository/snapshot'
-        }
-        maven {
-            name = 'Cotton'
-            url = 'https://server.bbkr.space/artifactory/libs-release/'
-        }
+        maven { url = 'https://maven.fabricmc.net/' }
+        maven { url = 'https://maven.quiltmc.org/repository/release' }
+        maven { url = 'https://maven.quiltmc.org/repository/snapshot' }
+        maven { url = 'https://server.bbkr.space/artifactory/libs-release/' }
+        maven { url = 'https://maven.maxhenkel.de/repository/public' }
         gradlePluginPortal()
         mavenCentral()
     }
