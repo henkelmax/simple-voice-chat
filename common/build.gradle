@@ -24,16 +24,9 @@ minecraft {
 
 repositories {
     mavenCentral()
-    maven {
-        name = 'henkelmax.public'
-        url = 'https://maven.maxhenkel.de/repository/public'
-    }
-    maven { url 'https://maven.shedaniel.me/' }
+    maven { url = 'https://maven.maxhenkel.de/repository/public' }
+    maven { url = 'https://maven.shedaniel.me/' }
     mavenLocal()
-}
-
-task prepareWorkspace {
-
 }
 
 sourceSets {
