@@ -1,20 +1,7 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://maven.maxhenkel.de/repository/public' }
-        mavenLocal()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-    }
-}
-
 plugins {
     id 'java'
+    id 'net.minecraftforge.gradle' version '5.+'
 }
-
-apply plugin: 'net.minecraftforge.gradle'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
 
