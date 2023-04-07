@@ -26,7 +26,7 @@ public class AudioPlayerImpl extends Thread implements AudioPlayer {
         this.encoder = encoder;
         this.audioSupplier = audioSupplier;
         setDaemon(true);
-        setName("AudioPlayer-" + audioChannel.getId());
+        setName(String.format("AudioPlayer-%s", audioChannel.getId()));
     }
 
     @Override

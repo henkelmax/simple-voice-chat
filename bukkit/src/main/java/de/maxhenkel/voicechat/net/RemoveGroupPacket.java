@@ -1,14 +1,14 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import de.maxhenkel.voicechat.util.NamespacedKeyUtil;
 import org.bukkit.NamespacedKey;
 
 import java.util.UUID;
 
 public class RemoveGroupPacket implements Packet<RemoveGroupPacket> {
 
-    public static final NamespacedKey REMOVE_GROUP = NamespacedKeyUtil.voicechat("remove_group");
+    public static final NamespacedKey REMOVE_GROUP = Voicechat.compatibility.createNamespacedKey("remove_group");
 
     private UUID groupId;
 

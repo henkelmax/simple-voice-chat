@@ -1,13 +1,13 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import de.maxhenkel.voicechat.util.NamespacedKeyUtil;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import org.bukkit.NamespacedKey;
 
 public class AddGroupPacket implements Packet<AddGroupPacket> {
 
-    public static final NamespacedKey ADD_ADD_GROUP = NamespacedKeyUtil.voicechat("add_group");
+    public static final NamespacedKey ADD_ADD_GROUP = Voicechat.compatibility.createNamespacedKey("add_group");
 
     private ClientGroup group;
 

@@ -78,11 +78,9 @@ public class SoundPacketImpl implements SoundPacket {
 
     private float getDistance() {
         if (this instanceof EntitySoundPacket) {
-            EntitySoundPacket p = (EntitySoundPacket) this;
-            return p.getDistance();
+            return ((EntitySoundPacket) this).getDistance();
         } else if (this instanceof LocationalSoundPacket) {
-            LocationalSoundPacket p = (LocationalSoundPacket) this;
-            return p.getDistance();
+            return ((LocationalSoundPacket) this).getDistance();
         }
         return Utils.getDefaultDistance();
     }

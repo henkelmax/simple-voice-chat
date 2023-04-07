@@ -87,7 +87,7 @@ public class NetworkMessage {
         UUID playerID = b.readUUID();
         if (!server.hasSecret(playerID)) {
             // Ignore packets if they are not from a player that has a secret
-            Voicechat.logDebug("Player " + playerID + " does not have a secret", playerID);
+            Voicechat.logDebug("Player {} does not have a secret", playerID);
             return null;
         }
         return readFromBytes(packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray(), packet.getTimestamp());
@@ -107,7 +107,7 @@ public class NetworkMessage {
         byte packetType = buffer.readByte();
         Class<? extends Packet> packetClass = packetRegistry.get(packetType);
         if (packetClass == null) {
-            Voicechat.logDebug("Got invalid packet ID " + packetType);
+            Voicechat.logDebug("Got invalid packet ID {}", packetType);
             return null;
         }
         Packet<? extends Packet<?>> p = packetClass.getDeclaredConstructor().newInstance();

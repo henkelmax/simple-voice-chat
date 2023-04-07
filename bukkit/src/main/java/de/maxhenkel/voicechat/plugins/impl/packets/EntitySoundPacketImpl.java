@@ -50,8 +50,7 @@ public class EntitySoundPacketImpl extends SoundPacketImpl implements EntitySoun
                 whispering = p.isWhispering();
                 distance = p.getDistance();
             } else if (soundPacket instanceof LocationalSoundPacketImpl) {
-                LocationalSoundPacketImpl p = (LocationalSoundPacketImpl) soundPacket;
-                distance = p.getDistance();
+                distance = ((LocationalSoundPacketImpl) soundPacket).getDistance();
             } else {
                 distance = Utils.getDefaultDistance();
             }

@@ -12,7 +12,6 @@ import de.maxhenkel.voicechat.voice.common.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -76,10 +75,10 @@ public class Server extends Thread {
 
             if (bindAddress.trim().equals("*")) {
                 bindAddress = "";
-            } else if (bindAddress.trim().equals("")) {
+            } else if (bindAddress.trim().isEmpty()) {
                 try {
-                    if (server instanceof CraftServer) {
-                        bindAddress = ((CraftServer) server).getServer().getServerIp();
+                    bindAddress = Voicechat.compatibility.getServerIp(server);
+                    if (!bindAddress.trim().isEmpty()) {
                         Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
                     }
                 } catch (Throwable t) {
