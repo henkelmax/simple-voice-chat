@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://maven.maxhenkel.de/repository/public' }
         mavenLocal()
     }
