@@ -2,13 +2,12 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import de.maxhenkel.voicechat.util.NamespacedKeyUtil;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
 public class UpdateStatePacket implements Packet<UpdateStatePacket> {
 
-    public static final NamespacedKey PLAYER_STATE = NamespacedKeyUtil.voicechat("update_state");
+    public static final NamespacedKey PLAYER_STATE = Voicechat.compatibility.createNamespacedKey("update_state");
 
     private boolean disabled;
 
