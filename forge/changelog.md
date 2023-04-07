@@ -1,2 +1,3 @@
 - Use server-ip of server.properties as bind_address by default
 - Improved native library handling
+- Fixed voice chat not working in singleplayer
