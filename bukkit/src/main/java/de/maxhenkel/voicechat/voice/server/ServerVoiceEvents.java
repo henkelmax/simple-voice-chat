@@ -104,7 +104,8 @@ public class ServerVoiceEvents implements Listener {
                 return;
             }
             if (!isCompatible(player)) {
-                player.kickPlayer(Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get().formatted(
+                player.kickPlayer(String.format(
+                        Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get(),
                         "Simple Voice Chat",
                         Voicechat.INSTANCE.getDescription().getVersion()
                 ));

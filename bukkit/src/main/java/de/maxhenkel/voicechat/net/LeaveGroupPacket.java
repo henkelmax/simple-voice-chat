@@ -2,13 +2,12 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import de.maxhenkel.voicechat.util.NamespacedKeyUtil;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
 public class LeaveGroupPacket implements Packet<LeaveGroupPacket> {
 
-    public static final NamespacedKey LEAVE_GROUP = NamespacedKeyUtil.voicechat("leave_group");
+    public static final NamespacedKey LEAVE_GROUP = Voicechat.compatibility.createNamespacedKey("leave_group");
 
     public LeaveGroupPacket() {
 
