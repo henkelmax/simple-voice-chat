@@ -3,7 +3,7 @@ buildscript {
         maven { url = 'https://repo.u-team.info' }
     }
     dependencies {
-        classpath 'info.u-team.curse_gradle_uploader:curse_gradle_uploader:1.5.1'
+        classpath "info.u-team.curse_gradle_uploader:curse_gradle_uploader:${curse_gradle_uploader_version}"
     }
 }
 
@@ -72,9 +72,11 @@ task generateJava(type: Copy) {
     expand 'compatibility_version': mod_compatibility_version,
             'target_bukkit_version': bukkit_version
 }
+
 sourceSets.main.java {
     srcDir "${buildDir}/generated/java"
 }
+
 compileJava.dependsOn generateJava
 
 repositories {
