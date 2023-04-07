@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class RemoveGroupPacket implements Packet<RemoveGroupPacket> {
 
-    public static final NamespacedKey REMOVE_GROUP = new NamespacedKey(Voicechat.MODID, "remove_group");
+    public static final NamespacedKey REMOVE_GROUP = Voicechat.compatibility.createNamespacedKey("remove_group");
 
     private UUID groupId;
 

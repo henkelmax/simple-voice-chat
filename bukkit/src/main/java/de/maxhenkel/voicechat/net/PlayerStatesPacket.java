@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import de.maxhenkel.voicechat.util.NamespacedKeyUtil;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import org.bukkit.NamespacedKey;
 
@@ -13,7 +13,7 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
 
     private Map<UUID, PlayerState> playerStates;
 
-    public static final NamespacedKey PLAYER_STATES = NamespacedKeyUtil.voicechat("player_states");
+    public static final NamespacedKey PLAYER_STATES = Voicechat.compatibility.createNamespacedKey("player_states");
 
     public PlayerStatesPacket() {
 

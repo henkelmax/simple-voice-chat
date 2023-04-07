@@ -4,10 +4,9 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import me.lucko.commodore.Commodore;
-import net.minecraft.commands.arguments.ArgumentEntity;
-import net.minecraft.commands.arguments.ArgumentUUID;
 
 public class CommodoreCommands {
 
@@ -24,12 +23,11 @@ public class CommodoreCommands {
     }
 
     private static ArgumentType<?> playerArgument() {
-        // return new ArgumentEntity(true, true);
-        return ArgumentEntity.c();
+        return Voicechat.compatibility.playerArgument();
     }
 
     private static ArgumentType<?> uuidArgument() {
-        return ArgumentUUID.a();
+        return Voicechat.compatibility.uuidArgument();
     }
 
 }

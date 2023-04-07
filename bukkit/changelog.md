@@ -1,1 +1,5 @@
-- Use server-ip of server.properties as bind_address by default
+- Improve Bukkit multi version support
+- Added support for Folia
+- Improve commands
+- Improve command tab completion
+- Update permissions in plugin.yml
