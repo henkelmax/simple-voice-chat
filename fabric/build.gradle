@@ -10,7 +10,7 @@ buildscript {
 }
 
 plugins {
-    id 'common-loom' version '1.1-SNAPSHOT'
+    id 'fabric-loom' version '1.1-SNAPSHOT'
     id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
     id 'com.github.johnrengelman.shadow' version "${shadow_version}"
     id 'com.modrinth.minotaur' version "${minotaur_version}"
