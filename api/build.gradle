@@ -61,3 +61,7 @@ publishing {
         }
     }
 }
+
+task prepareWorkspace {
+
+}
