@@ -2,13 +2,12 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import de.maxhenkel.voicechat.util.NamespacedKeyUtil;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
 public class RequestSecretPacket implements Packet<RequestSecretPacket> {
 
-    public static final NamespacedKey REQUEST_SECRET = NamespacedKeyUtil.voicechat("request_secret");
+    public static final NamespacedKey REQUEST_SECRET = Voicechat.compatibility.createNamespacedKey("request_secret");
 
     private int compatibilityVersion;
 

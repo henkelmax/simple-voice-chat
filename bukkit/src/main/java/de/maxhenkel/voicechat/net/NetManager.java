@@ -4,14 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
 import io.netty.buffer.Unpooled;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.minecraft.core.IRegistry;
-import net.minecraft.network.chat.ChatMessageType;
-import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_19_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -68,21 +61,17 @@ public class NetManager implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (event.getPlayer() instanceof CraftPlayer player) {
-            Set<String> outgoingChannels = Bukkit.getMessenger().getOutgoingChannels(Voicechat.INSTANCE);
-            for (String channel : outgoingChannels) {
-                player.addChannel(channel);
-            }
+        Set<String> outgoingChannels = Bukkit.getMessenger().getOutgoingChannels(Voicechat.INSTANCE);
+        for (String channel : outgoingChannels) {
+            Voicechat.compatibility.addChannel(event.getPlayer(), channel);
         }
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        if (event.getPlayer() instanceof CraftPlayer player) {
-            Set<String> outgoingChannels = Bukkit.getMessenger().getOutgoingChannels(Voicechat.INSTANCE);
-            for (String channel : outgoingChannels) {
-                player.removeChannel(channel);
-            }
+        Set<String> outgoingChannels = Bukkit.getMessenger().getOutgoingChannels(Voicechat.INSTANCE);
+        for (String channel : outgoingChannels) {
+            Voicechat.compatibility.removeChannel(event.getPlayer(), channel);
         }
     }
 
@@ -111,7 +100,7 @@ public class NetManager implements Listener {
     }
 
     public static void sendToClient(Player player, Packet<?> p) {
-        Bukkit.getServer().getScheduler().runTask(Voicechat.INSTANCE, () -> {
+        Voicechat.compatibility.runTask(() -> {
             if (!Voicechat.SERVER.isCompatible(player)) {
                 return;
             }
@@ -127,24 +116,12 @@ public class NetManager implements Listener {
         });
     }
 
-    public static void sendMessage(Player p, Component component) {
-        if (p instanceof CraftPlayer player) {
-            if (player.getWorld() instanceof CraftWorld world) {
-                IRegistry<ChatMessageType> registry = world.getHandle().s().d(IRegistry.bI);
-                ChatMessageType messageType = registry.a(ChatMessageType.c);
-                player.getHandle().b.a(new ClientboundSystemChatPacket(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(component)), registry.a(messageType)));
-            }
-        }
+    public static void sendMessage(Player player, Component component) {
+        Voicechat.compatibility.sendMessage(player, component);
     }
 
-    public static void sendStatusMessage(Player p, Component component) {
-        if (p instanceof CraftPlayer player) {
-            if (player.getWorld() instanceof CraftWorld world) {
-                IRegistry<ChatMessageType> registry = world.getHandle().s().d(IRegistry.bI);
-                ChatMessageType messageType = registry.a(ChatMessageType.d);
-                player.getHandle().b.a(new ClientboundSystemChatPacket(CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(component)), registry.a(messageType)));
-            }
-        }
+    public static void sendStatusMessage(Player player, Component component) {
+        Voicechat.compatibility.sendStatusMessage(player, component);
     }
 
 }

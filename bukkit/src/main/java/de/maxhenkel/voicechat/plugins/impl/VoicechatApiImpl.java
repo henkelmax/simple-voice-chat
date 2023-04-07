@@ -54,8 +54,8 @@ public abstract class VoicechatApiImpl implements VoicechatApi {
 
     @Override
     public Entity fromEntity(Object entity) {
-        if (entity instanceof org.bukkit.entity.Entity e) {
-            return new EntityImpl(e);
+        if (entity instanceof org.bukkit.entity.Entity) {
+            return new EntityImpl((org.bukkit.entity.Entity) entity);
         } else {
             throw new IllegalArgumentException("entity is not an instance of Entity");
         }
@@ -63,8 +63,8 @@ public abstract class VoicechatApiImpl implements VoicechatApi {
 
     @Override
     public ServerLevel fromServerLevel(Object serverLevel) {
-        if (serverLevel instanceof World l) {
-            return new ServerLevelImpl(l);
+        if (serverLevel instanceof World) {
+            return new ServerLevelImpl((World) serverLevel);
         } else {
             throw new IllegalArgumentException("serverLevel is not an instance of World");
         }
@@ -72,8 +72,8 @@ public abstract class VoicechatApiImpl implements VoicechatApi {
 
     @Override
     public ServerPlayer fromServerPlayer(Object serverPlayer) {
-        if (serverPlayer instanceof org.bukkit.entity.Player p) {
-            return new ServerPlayerImpl(p);
+        if (serverPlayer instanceof org.bukkit.entity.Player) {
+            return new ServerPlayerImpl((org.bukkit.entity.Player) serverPlayer);
         } else {
             throw new IllegalArgumentException("serverPlayer is not an instance of Player");
         }
