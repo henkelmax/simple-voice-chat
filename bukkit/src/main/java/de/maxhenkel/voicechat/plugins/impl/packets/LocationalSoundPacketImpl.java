@@ -47,8 +47,7 @@ public class LocationalSoundPacketImpl extends SoundPacketImpl implements Locati
                 position = p.position;
                 distance = p.getDistance();
             } else if (soundPacket instanceof EntitySoundPacketImpl) {
-                EntitySoundPacketImpl p = (EntitySoundPacketImpl) soundPacket;
-                distance = p.getDistance();
+                distance = ((EntitySoundPacketImpl) soundPacket).getDistance();
             } else {
                 distance = Utils.getDefaultDistance();
             }
