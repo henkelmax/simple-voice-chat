@@ -28,6 +28,10 @@ repositories {
     mavenLocal()
 }
 
+task prepareWorkspace {
+
+}
+
 sourceSets {
     template {
         java {
