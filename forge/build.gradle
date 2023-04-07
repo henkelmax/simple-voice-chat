@@ -12,7 +12,7 @@ buildscript {
 }
 
 plugins {
-    id 'net.minecraftforge.gradle' version '5.+'
+    id 'net.minecraftforge.gradle' version '5.1.69'
     id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
     id 'com.github.johnrengelman.shadow' version "${shadow_version}"
     id 'com.modrinth.minotaur' version "${minotaur_version}"
@@ -41,7 +41,8 @@ minecraft {
         server {
             workingDirectory project.file('run/server').canonicalPath
             property 'forge.logging.console.level', 'debug'
-            arg '--nogui'
+            arg "--nogui"
+            arg '-torg.spongepowered.asm.launch.MixinTweaker'
         }
     }
 }
