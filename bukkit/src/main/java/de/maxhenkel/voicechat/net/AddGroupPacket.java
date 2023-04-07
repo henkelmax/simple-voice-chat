@@ -7,7 +7,7 @@ import org.bukkit.NamespacedKey;
 
 public class AddGroupPacket implements Packet<AddGroupPacket> {
 
-    public static final NamespacedKey ADD_ADD_GROUP = new NamespacedKey(Voicechat.MODID, "add_group");
+    public static final NamespacedKey ADD_ADD_GROUP = Voicechat.compatibility.createNamespacedKey("add_group");
 
     private ClientGroup group;
 
