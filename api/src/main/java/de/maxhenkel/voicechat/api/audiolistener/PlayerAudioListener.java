@@ -20,21 +20,21 @@ public interface PlayerAudioListener extends AudioListener {
          *
          * @param player the player that should be listened to
          */
-        void setPlayer(ServerPlayer player);
+        Builder setPlayer(ServerPlayer player);
 
         /**
          * <b>Note</b>: It is required to either set a player with this method or with {@link #setPlayer(ServerPlayer)}
          *
          * @param playerUuid the player UUID that should be listened to
          */
-        void setPlayer(UUID playerUuid);
+        Builder setPlayer(UUID playerUuid);
 
         /**
          * <b>Note</b>: It is required to set a listener
          *
          * @param listener the listener
          */
-        void setPacketListener(Consumer<SoundPacket> listener);
+        Builder setPacketListener(Consumer<SoundPacket> listener);
 
         /**
          * @return the built listener
