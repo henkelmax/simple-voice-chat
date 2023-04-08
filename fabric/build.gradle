@@ -1,22 +1,10 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url = 'https://maven.maxhenkel.de/repository/public' }
-        mavenLocal()
-    }
-    dependencies {
-        classpath group: 'de.maxhenkel.forge-update', name: 'forge-update', version: '1.0.4'
-    }
-}
-
 plugins {
     id 'common-loom' version '1.1-SNAPSHOT'
     id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
     id 'com.github.johnrengelman.shadow' version "${shadow_version}"
     id 'com.modrinth.minotaur' version "${minotaur_version}"
+    id 'mod-update' version "${mod_update_version}"
 }
-
-apply plugin: 'forge-update'
 
 sourceCompatibility = JavaLanguageVersion.of(java_version as int)
 targetCompatibility = JavaLanguageVersion.of(java_version as int)
@@ -189,21 +177,13 @@ modrinth {
 }
 tasks.modrinth.dependsOn(build)
 
-forgeUpdate {
-    def messages = []
-    file('changelog.md').eachLine { String line ->
-        if (line.trim().startsWith('-')) {
-            messages.add(line.replaceFirst('-', '').trim())
-        }
-    }
-
+modUpdate {
     serverURL = 'https://update.maxhenkel.de/'
-    apiKey = file("${rootDir}/forge_update_api_key.txt").exists() ? file("${rootDir}/forge_update_api_key.txt").text : ''
     modID = mod_id
     gameVersion = minecraft_version
     modLoader = 'fabric'
     modVersion = mod_version
-    updateMessages = messages
+    changelogFile = file('changelog.md')
     releaseType = release_type
     tags = recommended == 'true' ? ['recommended'] : []
 }
