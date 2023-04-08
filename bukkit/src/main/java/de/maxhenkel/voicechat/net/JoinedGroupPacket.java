@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import de.maxhenkel.voicechat.util.NamespacedKeyUtil;
 import org.bukkit.NamespacedKey;
 
 import javax.annotation.Nullable;
@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class JoinedGroupPacket implements Packet<JoinedGroupPacket> {
 
-    public static final NamespacedKey JOINED_GROUP = NamespacedKeyUtil.voicechat("joined_group");
+    public static final NamespacedKey JOINED_GROUP = Voicechat.compatibility.createNamespacedKey("joined_group");
 
     @Nullable
     private UUID group;

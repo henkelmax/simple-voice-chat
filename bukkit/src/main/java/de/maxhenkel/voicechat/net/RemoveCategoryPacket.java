@@ -1,12 +1,12 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import de.maxhenkel.voicechat.util.NamespacedKeyUtil;
 import org.bukkit.NamespacedKey;
 
 public class RemoveCategoryPacket implements Packet<RemoveCategoryPacket> {
 
-    public static final NamespacedKey REMOVE_CATEGORY = NamespacedKeyUtil.voicechat("remove_category");
+    public static final NamespacedKey REMOVE_CATEGORY = Voicechat.compatibility.createNamespacedKey("remove_category");
 
     private String categoryId;
 
