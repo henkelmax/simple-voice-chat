@@ -22,7 +22,7 @@ minecraft {
             args = ['--username', "henkelmax${new Random().nextInt(1000)}"]
         }
         server {
-            workingDirectory project.file('run/server').canonicalPath
+            workingDirectory project.file('run/server')
             property 'forge.logging.console.level', 'debug'
             arg '--nogui'
         }
