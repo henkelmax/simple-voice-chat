@@ -19,7 +19,6 @@ plugins {
 }
 
 apply plugin: 'forge-update'
-apply plugin: 'com.modrinth.minotaur'
 apply plugin: 'org.spongepowered.mixin'
 
 archivesBaseName = project.archives_base_name
@@ -96,8 +95,12 @@ dependencies {
     minecraftLibrary "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
     shadowMc "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
 
-    minecraftLibrary project(':api')
-    shadowMc project(':api')
+    minecraftLibrary(project(':api')) {
+        transitive false
+    }
+    shadowMc(project(':api')) {
+        transitive false
+    }
 }
 
 task generateJava(type: Copy) {
@@ -128,6 +131,10 @@ tasks.withType(JavaCompile) {
     source(project(':common').sourceSets.main.allSource)
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
 task prepareWorkspace {
 
 }
@@ -142,7 +149,6 @@ jar {
                     'Implementation-Version'     : mod_version,
                     'Implementation-Vendor'      : mod_vendor,
                     'Implementation-Timestamp'   : new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                    "Compatibility-Version"      : mod_compatibility_version,
                     "FMLCorePluginContainsFMLMod": "true",
                     "ForceLoadAsMod"             : "true",
                     "TweakClass"                 : "org.spongepowered.asm.launch.MixinTweaker",
