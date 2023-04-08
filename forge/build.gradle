@@ -35,7 +35,7 @@ minecraft {
             arg '-torg.spongepowered.asm.launch.MixinTweaker'
         }
         server {
-            workingDirectory project.file('run/server').canonicalPath
+            workingDirectory project.file('run/server')
             property 'forge.logging.console.level', 'debug'
             arg "--nogui"
             arg '-torg.spongepowered.asm.launch.MixinTweaker'
