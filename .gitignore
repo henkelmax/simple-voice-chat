@@ -118,7 +118,7 @@ run/
 !gradle-wrapper.jar
 
 curseforge_api_key.txt
-forge_update_api_key.txt
+mod_update_api_key.txt
 modrinth_token.txt
 
 /forge/src/main/resources/natives/
