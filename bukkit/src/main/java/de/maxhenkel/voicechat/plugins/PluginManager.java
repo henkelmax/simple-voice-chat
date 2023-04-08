@@ -99,6 +99,9 @@ public class PluginManager {
     }
 
     public void onListenerAudio(UUID playerUuid, SoundPacket<?> packet) {
+        if (playerUuid.equals(packet.getSender())) {
+            return;
+        }
         List<PlayerAudioListener> listeners = getPlayerAudioListeners(playerUuid);
         if (listeners.isEmpty()) {
             return;
