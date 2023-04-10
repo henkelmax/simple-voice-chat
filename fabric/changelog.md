@@ -1,3 +1,4 @@
 - Backport for Fabric 1.16.5
 - Use server-ip of server.properties as bind_address by default
 - Improved native library handling
+- Don't use server-ip as bind address if it's a loopback address
