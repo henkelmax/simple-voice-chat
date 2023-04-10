@@ -8,13 +8,13 @@ task publishAll(type: GradleBuild) {
             ':bukkit:clean',
             ':quilt:curseforge',
             ':quilt:modrinth',
-            ':quilt:forgeUpdate',
+            ':quilt:modUpdate',
             ':forge:curseforge',
             ':forge:modrinth',
-            ':forge:forgeUpdate',
+            ':forge:modUpdate',
             ':fabric:curseforge',
             ':fabric:modrinth',
-            ':fabric:forgeUpdate',
+            ':fabric:modUpdate',
             ':bukkit:build'
     ]
 }
