@@ -16,6 +16,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nullable;
+import java.net.InetAddress;
 import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.HashMap;
@@ -78,7 +79,19 @@ public class Server extends Thread {
             } else if (bindAddress.trim().equals("")) {
                 if (server instanceof DedicatedServer) {
                     bindAddress = ((DedicatedServer) server).getProperties().serverIp;
-                    Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
+                    if (!bindAddress.trim().isEmpty()) {
+                        try {
+                            InetAddress address = InetAddress.getByName(bindAddress);
+                            if (address.isLoopbackAddress()) {
+                                bindAddress = "";
+                            } else {
+                                Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
+                            }
+                        } catch (Exception e) {
+                            Voicechat.LOGGER.warn("Invalid server-ip", e);
+                            bindAddress = "";
+                        }
+                    }
                 }
             }
 
