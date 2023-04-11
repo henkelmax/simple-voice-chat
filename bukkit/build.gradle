@@ -157,7 +157,9 @@ curseforge {
         changelogType = 'markdown'
         changelog = file('changelog.md')
         releaseType = release_type
-        addGameVersion curseforge_minecraft_versions.split(',').collect { it.trim() }
+        curseforge_minecraft_versions.split(',').collect({ it.trim() }).forEach {
+            addGameVersion it
+        }
         mainArtifact(shadowJar) {
             displayName = "[BUKKIT/SPIGOT/PAPER] ${mod_name} ${mod_version}"
         }
