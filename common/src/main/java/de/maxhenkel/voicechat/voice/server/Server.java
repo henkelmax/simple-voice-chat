@@ -372,6 +372,10 @@ public class Server extends Thread {
             return;
         }
 
+        if (receiverState.isDisabled() || receiverState.isDisconnected()) {
+            return;
+        }
+
         if (PluginManager.instance().onSoundPacket(sender, senderState, receiver, receiverState, soundPacket, source)) {
             return;
         }
@@ -397,9 +401,6 @@ public class Server extends Thread {
         for (ServerPlayer player : players) {
             PlayerState state = playerStateManager.getState(player.getUUID());
             if (state == null) {
-                continue;
-            }
-            if (state.isDisabled() || state.isDisconnected()) {
                 continue;
             }
             if (state.hasGroup() && state.getGroup().equals(groupId)) {
