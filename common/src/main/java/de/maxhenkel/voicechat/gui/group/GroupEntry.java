@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.gui.group;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeSlider;
@@ -12,8 +11,7 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
@@ -42,47 +40,45 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
     }
 
     @Override
-    public void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
-        GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL);
+    public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+        guiGraphics.fill(left, top, left + width, top + height, BG_FILL);
 
-        poseStack.pushPose();
+        guiGraphics.pose().pushPose();
         int outlineSize = height - PADDING * 2;
 
-        poseStack.translate(left + PADDING, top + PADDING, 0D);
+        guiGraphics.pose().translate(left + PADDING, top + PADDING, 0D);
         float scale = outlineSize / 10F;
-        poseStack.scale(scale, scale, scale);
+        guiGraphics.pose().scale(scale, scale, scale);
 
         if (!state.isDisabled()) {
             ClientVoicechat client = ClientManager.getClient();
             if (client != null && client.getTalkCache().isTalking(state.getUuid())) {
-                RenderSystem.setShaderTexture(0, TALK_OUTLINE);
-                Screen.blit(poseStack, 0, 0, 0, 0, 10, 10, 16, 16);
+                guiGraphics.blit(TALK_OUTLINE, 0, 0, 0, 0, 10, 10, 16, 16);
             }
         }
 
-        RenderSystem.setShaderTexture(0, GameProfileUtils.getSkin(state.getUuid()));
-        GuiComponent.blit(poseStack, 1, 1, 8, 8, 8, 8, 8, 8, 64, 64);
+        ResourceLocation skin = GameProfileUtils.getSkin(state.getUuid());
+        guiGraphics.blit(skin, 1, 1, 8, 8, 8, 8, 8, 8, 64, 64);
         RenderSystem.enableBlend();
-        GuiComponent.blit(poseStack, 1, 1, 8, 8, 40, 8, 8, 8, 64, 64);
+        guiGraphics.blit(skin, 1, 1, 8, 8, 40, 8, 8, 8, 64, 64);
         RenderSystem.disableBlend();
 
         if (state.isDisabled()) {
-            poseStack.pushPose();
-            poseStack.translate(1D, 1D, 0D);
-            poseStack.scale(0.5F, 0.5F, 1F);
-            RenderSystem.setShaderTexture(0, SPEAKER_OFF);
-            Screen.blit(poseStack, 0, 0, 0, 0, 16, 16, 16, 16);
-            poseStack.popPose();
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(1D, 1D, 0D);
+            guiGraphics.pose().scale(0.5F, 0.5F, 1F);
+            guiGraphics.blit(SPEAKER_OFF, 0, 0, 0, 0, 16, 16, 16, 16);
+            guiGraphics.pose().popPose();
         }
-        poseStack.popPose();
+        guiGraphics.pose().popPose();
 
         Component name = Component.literal(state.getName());
-        minecraft.font.draw(poseStack, name, left + PADDING + outlineSize + PADDING, top + height / 2 - minecraft.font.lineHeight / 2, PLAYER_NAME_COLOR);
+        guiGraphics.drawString(minecraft.font, name, left + PADDING + outlineSize + PADDING, top + height / 2 - minecraft.font.lineHeight / 2, PLAYER_NAME_COLOR, false);
 
         if (hovered && !ClientManager.getPlayerStateManager().getOwnID().equals(state.getUuid())) {
             volumeSlider.setWidth(Math.min(width - (PADDING + outlineSize + PADDING + minecraft.font.width(name) + PADDING + PADDING), 100));
             volumeSlider.setPosition(left + (width - volumeSlider.getWidth() - PADDING), top + (height - volumeSlider.getHeight()) / 2);
-            volumeSlider.render(poseStack, mouseX, mouseY, delta);
+            volumeSlider.render(guiGraphics, mouseX, mouseY, delta);
         }
     }
 

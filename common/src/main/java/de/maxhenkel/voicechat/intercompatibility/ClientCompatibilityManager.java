@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.service.Service;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
@@ -60,7 +61,7 @@ public abstract class ClientCompatibilityManager {
     }
 
     public interface RenderHUDEvent {
-        void render(PoseStack stack, float tickDelta);
+        void render(GuiGraphics guiGraphics, float tickDelta);
     }
 
     public interface KeyboardEvent {

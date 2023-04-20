@@ -1,8 +1,9 @@
 package de.maxhenkel.voicechat.gui.tooltips;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -19,7 +20,7 @@ public class HideTooltipSupplier implements ImageButton.TooltipSupplier {
     }
 
     @Override
-    public void onTooltip(ImageButton button, PoseStack matrices, int mouseX, int mouseY) {
+    public void onTooltip(ImageButton button, GuiGraphics guiGraphics, Font font, int mouseX, int mouseY) {
         List<FormattedCharSequence> tooltip = new ArrayList<>();
 
         if (VoicechatClient.CLIENT_CONFIG.hideIcons.get()) {
@@ -28,7 +29,7 @@ public class HideTooltipSupplier implements ImageButton.TooltipSupplier {
             tooltip.add(Component.translatable("message.voicechat.hide_icons.disabled").getVisualOrderText());
         }
 
-        screen.renderTooltip(matrices, tooltip, mouseX, mouseY);
+        guiGraphics.renderTooltip(font, tooltip, mouseX, mouseY);
     }
 
 }

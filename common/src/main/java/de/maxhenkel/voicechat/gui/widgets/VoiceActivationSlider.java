@@ -1,12 +1,12 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -27,21 +27,17 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int i, int j, float f) {
+    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
         Minecraft minecraft = Minecraft.getInstance();
-        RenderSystem.setShaderTexture(0, SLIDER_LOCATION);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        blitNineSliced(poseStack, getX(), getY(), getWidth(), getHeight(), 4, 200, 20, 0, getYTexturePos());
+        guiGraphics.blitNineSliced(SLIDER_LOCATION, getX(), getY(), getWidth(), getHeight(), 4, 200, 20, 0, getYTexturePos());
 
-        RenderSystem.setShaderTexture(0, VOICE_ACTIVATION_SLIDER);
         int micWidth = (int) (226D * micValue);
-        blit(poseStack, getX() + 1, getY() + 1, 0, 0, micWidth, 18);
+        guiGraphics.blit(VOICE_ACTIVATION_SLIDER, getX() + 1, getY() + 1, 0, 0, micWidth, 18);
 
-        RenderSystem.setShaderTexture(0, SLIDER_LOCATION);
-
-        blitNineSliced(poseStack, getX() + (int) (value * (double) (width - 8)), getY(), 8, 20, 4, 200, 20, 0, getYtexturePosHandle());
+        guiGraphics.blitNineSliced(SLIDER_LOCATION, getX() + (int) (value * (double) (width - 8)), getY(), 8, 20, 4, 200, 20, 0, getYtexturePosHandle());
         int color = active ? 16777215 : 10526880;
-        renderScrollingString(poseStack, minecraft.font, 2, color);
+        renderScrollingString(guiGraphics, minecraft.font, 2, color);
     }
 
     private int getYTexturePos() {

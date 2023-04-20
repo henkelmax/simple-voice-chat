@@ -1,9 +1,10 @@
 package de.maxhenkel.voicechat.gui.tooltips;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -20,7 +21,7 @@ public class RecordingTooltipSupplier implements ImageButton.TooltipSupplier {
     }
 
     @Override
-    public void onTooltip(ImageButton button, PoseStack matrices, int mouseX, int mouseY) {
+    public void onTooltip(ImageButton button, GuiGraphics guiGraphics, Font font, int mouseX, int mouseY) {
         ClientVoicechat client = ClientManager.getClient();
         if (client == null) {
             return;
@@ -34,7 +35,7 @@ public class RecordingTooltipSupplier implements ImageButton.TooltipSupplier {
             tooltip.add(Component.translatable("message.voicechat.recording.enabled").getVisualOrderText());
         }
 
-        screen.renderTooltip(matrices, tooltip, mouseX, mouseY);
+        guiGraphics.renderTooltip(font, tooltip, mouseX, mouseY);
     }
 
 }

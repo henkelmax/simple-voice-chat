@@ -1,11 +1,9 @@
 package de.maxhenkel.voicechat.gui.audiodevice;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
@@ -32,33 +30,31 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
     }
 
     @Override
-    public void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+    public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
         boolean selected = parent.getSelectedDevice().equals(device);
         if (selected) {
-            GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL_SELECTED);
+            guiGraphics.fill(left, top, left + width, top + height, BG_FILL_SELECTED);
         } else if (hovered) {
-            GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL_HOVERED);
+            guiGraphics.fill(left, top, left + width, top + height, BG_FILL_HOVERED);
         } else {
-            GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL);
+            guiGraphics.fill(left, top, left + width, top + height, BG_FILL);
         }
 
-        RenderSystem.setShaderTexture(0, parent.getIcon(device));
-        GuiComponent.blit(poseStack, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
+        guiGraphics.blit(parent.getIcon(device), left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
         if (selected) {
-            RenderSystem.setShaderTexture(0, SELECTED);
-            GuiComponent.blit(poseStack, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
+            guiGraphics.blit(SELECTED, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
         }
 
         float deviceWidth = minecraft.font.width(visibleDeviceName);
         float space = width - PADDING - 16 - PADDING - PADDING;
         float scale = Math.min(space / deviceWidth, 1F);
 
-        poseStack.pushPose();
-        poseStack.translate(left + PADDING + 16 + PADDING, top + height / 2 - (minecraft.font.lineHeight * scale) / 2, 0D);
-        poseStack.scale(scale, scale, 1F);
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(left + PADDING + 16 + PADDING, top + height / 2 - (minecraft.font.lineHeight * scale) / 2, 0D);
+        guiGraphics.pose().scale(scale, scale, 1F);
 
-        minecraft.font.draw(poseStack, visibleDeviceName, 0, 0, DEVICE_NAME_COLOR);
-        poseStack.popPose();
+        guiGraphics.drawString(minecraft.font, visibleDeviceName, 0, 0, DEVICE_NAME_COLOR, false);
+        guiGraphics.pose().popPose();
     }
 
     public String getDevice() {

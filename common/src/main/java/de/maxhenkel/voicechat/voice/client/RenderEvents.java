@@ -7,7 +7,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -38,7 +38,7 @@ public class RenderEvents {
         ClientCompatibilityManager.INSTANCE.onRenderHUD(this::onRenderHUD);
     }
 
-    private void onRenderHUD(PoseStack stack, float tickDelta) {
+    private void onRenderHUD(GuiGraphics guiGraphics, float tickDelta) {
         if (!shouldShowIcons()) {
             return;
         }
@@ -54,21 +54,21 @@ public class RenderEvents {
         }
 
         if (manager.isDisconnected()) {
-            renderIcon(stack, DISCONNECT_ICON);
+            renderIcon(guiGraphics, DISCONNECT_ICON);
         } else if (manager.isDisabled()) {
-            renderIcon(stack, SPEAKER_OFF_ICON);
+            renderIcon(guiGraphics, SPEAKER_OFF_ICON);
         } else if (manager.isMuted() && VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE)) {
-            renderIcon(stack, MICROPHONE_OFF_ICON);
+            renderIcon(guiGraphics, MICROPHONE_OFF_ICON);
         } else if (client != null && client.getMicThread() != null) {
             if (client.getMicThread().isWhispering()) {
-                renderIcon(stack, WHISPER_MICROPHONE_ICON);
+                renderIcon(guiGraphics, WHISPER_MICROPHONE_ICON);
             } else if (client.getMicThread().isTalking()) {
-                renderIcon(stack, MICROPHONE_ICON);
+                renderIcon(guiGraphics, MICROPHONE_ICON);
             }
         }
 
         if (manager.getGroupID() != null && VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()) {
-            GroupChatManager.renderIcons(stack);
+            GroupChatManager.renderIcons(guiGraphics);
         }
     }
 
@@ -77,25 +77,24 @@ public class RenderEvents {
         return client != null && (System.currentTimeMillis() - client.getStartTime()) < 5000;
     }
 
-    private void renderIcon(PoseStack matrixStack, ResourceLocation texture) {
-        matrixStack.pushPose();
+    private void renderIcon(GuiGraphics guiGraphics, ResourceLocation texture) {
+        guiGraphics.pose().pushPose();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, texture);
         int posX = VoicechatClient.CLIENT_CONFIG.hudIconPosX.get();
         int posY = VoicechatClient.CLIENT_CONFIG.hudIconPosY.get();
         if (posX < 0) {
-            matrixStack.translate(minecraft.getWindow().getGuiScaledWidth(), 0D, 0D);
+            guiGraphics.pose().translate(minecraft.getWindow().getGuiScaledWidth(), 0D, 0D);
         }
         if (posY < 0) {
-            matrixStack.translate(0D, minecraft.getWindow().getGuiScaledHeight(), 0D);
+            guiGraphics.pose().translate(0D, minecraft.getWindow().getGuiScaledHeight(), 0D);
         }
-        matrixStack.translate(posX, posY, 0D);
+        guiGraphics.pose().translate(posX, posY, 0D);
         float scale = VoicechatClient.CLIENT_CONFIG.hudIconScale.get().floatValue();
-        matrixStack.scale(scale, scale, 1F);
+        guiGraphics.pose().scale(scale, scale, 1F);
 
-        Screen.blit(matrixStack, posX < 0 ? -16 : 0, posY < 0 ? -16 : 0, 0, 0, 16, 16, 16, 16);
-        matrixStack.popPose();
+        guiGraphics.blit(texture, posX < 0 ? -16 : 0, posY < 0 ? -16 : 0, 0, 0, 16, 16, 16, 16);
+        guiGraphics.pose().popPose();
     }
 
     private void onRenderName(Entity entity, Component component, PoseStack stack, MultiBufferSource vertexConsumers, int light) {

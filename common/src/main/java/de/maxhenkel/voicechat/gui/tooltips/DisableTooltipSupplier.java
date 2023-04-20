@@ -1,8 +1,9 @@
 package de.maxhenkel.voicechat.gui.tooltips;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -21,7 +22,7 @@ public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
     }
 
     @Override
-    public void onTooltip(ImageButton button, PoseStack matrices, int mouseX, int mouseY) {
+    public void onTooltip(ImageButton button, GuiGraphics guiGraphics, Font font, int mouseX, int mouseY) {
         List<FormattedCharSequence> tooltip = new ArrayList<>();
 
         if (!stateManager.canEnable()) {
@@ -32,7 +33,7 @@ public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
             tooltip.add(Component.translatable("message.voicechat.disable.disabled").getVisualOrderText());
         }
 
-        screen.renderTooltip(matrices, tooltip, mouseX, mouseY);
+        guiGraphics.renderTooltip(font, tooltip, mouseX, mouseY);
     }
 
 }

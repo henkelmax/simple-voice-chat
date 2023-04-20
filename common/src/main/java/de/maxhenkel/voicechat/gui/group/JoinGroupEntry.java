@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.gui.group;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.gui.GroupType;
@@ -12,8 +11,7 @@ import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -46,22 +44,21 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
     }
 
     @Override
-    public void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+    public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
         if (hovered) {
-            GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL_SELECTED);
+            guiGraphics.fill(left, top, left + width, top + height, BG_FILL_SELECTED);
         } else {
-            GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL);
+            guiGraphics.fill(left, top, left + width, top + height, BG_FILL);
         }
 
         boolean hasPassword = group.group.hasPassword();
 
         if (hasPassword) {
-            RenderSystem.setShaderTexture(0, LOCK);
-            Screen.blit(poseStack, left + PADDING, top + height / 2 - 8, 0, 0, 16, 16, 16, 16);
+            guiGraphics.blit(LOCK, left + PADDING, top + height / 2 - 8, 0, 0, 16, 16, 16, 16);
         }
 
         MutableComponent groupName = Component.literal(group.group.getName());
-        minecraft.font.draw(poseStack, groupName, left + PADDING + (hasPassword ? 16 + PADDING : 0), top + height / 2 - minecraft.font.lineHeight / 2, PLAYER_NAME_COLOR);
+        guiGraphics.drawString(minecraft.font, groupName, left + PADDING + (hasPassword ? 16 + PADDING : 0), top + height / 2 - minecraft.font.lineHeight / 2, PLAYER_NAME_COLOR, false);
 
         int textWidth = minecraft.font.width(groupName) + (hasPassword ? 16 + PADDING : 0);
 
@@ -81,16 +78,16 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             int headPosX = left + width - SKIN_SIZE - PADDING - headXIndex * (SKIN_SIZE + 1);
             int headPosY = top + height / 2 - ((SKIN_SIZE * 2 + 2) / 2) + ((SKIN_SIZE * 2 + 2) / 2) * headYIndex;
 
-            poseStack.pushPose();
-            RenderSystem.setShaderTexture(0, GameProfileUtils.getSkin(state.getUuid()));
-            poseStack.translate(headPosX, headPosY, 0);
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(headPosX, headPosY, 0);
             float scale = (float) SKIN_SIZE / 8F;
-            poseStack.scale(scale, scale, scale);
-            Screen.blit(poseStack, 0, 0, 8, 8, 8, 8, 64, 64);
+            guiGraphics.pose().scale(scale, scale, scale);
+            ResourceLocation skin = GameProfileUtils.getSkin(state.getUuid());
+            guiGraphics.blit(skin, 0, 0, 8, 8, 8, 8, 64, 64);
             RenderSystem.enableBlend();
-            Screen.blit(poseStack, 0, 0, 40, 8, 8, 8, 64, 64);
+            guiGraphics.blit(skin, 0, 0, 40, 8, 8, 8, 64, 64);
             RenderSystem.disableBlend();
-            poseStack.popPose();
+            guiGraphics.pose().popPose();
         }
 
         if (!hovered) {
@@ -120,7 +117,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
         }
 
         parent.postRender(() -> {
-            parent.renderTooltip(poseStack, tooltip, mouseX, mouseY);
+            guiGraphics.renderTooltip(minecraft.font, tooltip, mouseX, mouseY);
         });
     }
 

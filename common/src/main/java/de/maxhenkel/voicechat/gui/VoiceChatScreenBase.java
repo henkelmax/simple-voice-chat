@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -38,18 +38,18 @@ public abstract class VoiceChatScreenBase extends Screen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
-        renderBackground(poseStack);
-        renderBackground(poseStack, mouseX, mouseY, delta);
-        super.render(poseStack, mouseX, mouseY, delta);
-        renderForeground(poseStack, mouseX, mouseY, delta);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        renderBackground(guiGraphics);
+        renderBackground(guiGraphics, mouseX, mouseY, delta);
+        super.render(guiGraphics, mouseX, mouseY, delta);
+        renderForeground(guiGraphics, mouseX, mouseY, delta);
     }
 
-    public void renderBackground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
 
     }
 
-    public void renderForeground(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
 
     }
 
@@ -69,10 +69,10 @@ public abstract class VoiceChatScreenBase extends Screen {
         return isIngame() ? FONT_COLOR : ChatFormatting.WHITE.getColor();
     }
 
-    public void drawHoverAreas(PoseStack matrixStack, int mouseX, int mouseY) {
+    public void drawHoverAreas(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         for (HoverArea hoverArea : hoverAreas) {
             if (hoverArea.tooltip != null && hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
-                renderTooltip(matrixStack, hoverArea.tooltip.get(), mouseX - guiLeft, mouseY - guiTop);
+                guiGraphics.renderTooltip(minecraft.font, hoverArea.tooltip.get(), mouseX - guiLeft, mouseY - guiTop);
             }
         }
     }

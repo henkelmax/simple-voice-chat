@@ -1,14 +1,16 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 public class ImageButton extends AbstractButton {
 
@@ -35,28 +37,27 @@ public class ImageButton extends AbstractButton {
         this.onPress.onPress(this);
     }
 
-    protected void renderImage(PoseStack matrices, int mouseX, int mouseY) {
+    protected void renderImage(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, texture);
-        blit(matrices, getX() + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
+        guiGraphics.blit(texture, getX() + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
     }
 
     @Override
-    public void renderWidget(PoseStack stack, int mouseX, int mouseY, float f) {
-        super.renderWidget(stack, mouseX, mouseY, f);
-        renderImage(stack, mouseX, mouseY);
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
+        super.renderWidget(guiGraphics, mouseX, mouseY, f);
+        renderImage(guiGraphics, mouseX, mouseY);
 
         if (isHovered) {
-            renderToolTip(stack, mouseX, mouseY);
+            renderToolTip(guiGraphics, mc.font, mouseX, mouseY);
         }
     }
 
-    public void renderToolTip(PoseStack matrices, int mouseX, int mouseY) {
+    public void renderToolTip(GuiGraphics guiGraphics, Font font, int mouseX, int mouseY) {
         if (tooltipSupplier == null) {
             return;
         }
-        tooltipSupplier.onTooltip(this, matrices, mouseX, mouseY);
+        tooltipSupplier.onTooltip(this, guiGraphics, font, mouseX, mouseY);
     }
 
     @Override
@@ -65,7 +66,7 @@ public class ImageButton extends AbstractButton {
     }
 
     public interface TooltipSupplier {
-        void onTooltip(ImageButton button, PoseStack matrices, int mouseX, int mouseY);
+        void onTooltip(ImageButton button, GuiGraphics guiGraphics, Font font, int mouseX, int mouseY);
     }
 
     public interface PressAction {
