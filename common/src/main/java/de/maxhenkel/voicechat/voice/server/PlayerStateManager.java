@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.net.PlayerStatesPacket;
+import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -43,9 +44,10 @@ public class PlayerStateManager {
         });
     }
 
-    private void broadcastState(PlayerState state) {
+    public void broadcastState(PlayerState state) {
         PlayerStatePacket packet = new PlayerStatePacket(state);
         voicechatServer.getServer().getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
+        PluginManager.instance().onPlayerStateChanged(state);
     }
 
     private void onPlayerCompatibilityCheckSucceeded(EntityPlayerMP player) {
