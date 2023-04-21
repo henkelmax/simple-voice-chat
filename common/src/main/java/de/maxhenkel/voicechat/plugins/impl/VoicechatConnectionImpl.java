@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
+import de.maxhenkel.voicechat.voice.server.PlayerStateManager;
 import de.maxhenkel.voicechat.voice.server.Server;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
@@ -74,8 +75,54 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
     }
 
     @Override
+    public boolean isConnected() {
+        return !state.isDisconnected();
+    }
+
+    @Override
+    public void setConnected(boolean connected) {
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return;
+        }
+        PlayerStateManager manager = server.getPlayerStateManager();
+        PlayerState actualState = manager.getState(state.getUuid());
+        if (actualState == null) {
+            return;
+        }
+        if (actualState.isDisconnected() != connected) {
+            return;
+        }
+        actualState.setDisconnected(!connected);
+        manager.broadcastState(actualState);
+    }
+
+    @Override
     public boolean isDisabled() {
         return state.isDisabled();
+    }
+
+    @Override
+    public void setDisabled(boolean disabled) {
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return;
+        }
+        PlayerStateManager manager = server.getPlayerStateManager();
+        PlayerState actualState = manager.getState(state.getUuid());
+        if (actualState == null) {
+            return;
+        }
+        if (actualState.isDisabled() == disabled) {
+            return;
+        }
+        actualState.setDisabled(disabled);
+        manager.broadcastState(actualState);
+    }
+
+    @Override
+    public boolean isInstalled() {
+        return Voicechat.SERVER.isCompatible(serverPlayer);
     }
 
     @Override

@@ -180,6 +180,10 @@ public class PluginManager {
         dispatchEvent(PlayerDisconnectedEvent.class, new PlayerDisconnectedEventImpl(player));
     }
 
+    public void onPlayerStateChanged(PlayerState state) {
+        dispatchEvent(PlayerStateChangedEvent.class, new PlayerStateChangedEventImpl(state));
+    }
+
     public boolean onJoinGroup(ServerPlayerEntity player, @Nullable Group group) {
         if (group == null) {
             return onLeaveGroup(player);
