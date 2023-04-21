@@ -1,7 +1,3 @@
-![](http://cf.way2muchnoise.eu/full_416089_downloads.svg)
-![](http://cf.way2muchnoise.eu/versions/416089.svg)
-![](https://img.shields.io/discord/854659575324344340?label=Discord&style=flat&logo=discord&labelColor=2d2d2d)
-
 [Modrinth](https://modrinth.com/mod/simple-voice-chat)
 |
 [CurseForge](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat)
@@ -69,27 +65,26 @@ Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki/setup) for mo
 
 ## Addons
 
-| Name                              | Description                                                    | Links                                                                                                                                                                                                                                                                                            |
-|-----------------------------------|----------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| AudioPlayer                       | Allows putting custom audio files on music discs               | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/audioplayer), [Modrinth](https://modrinth.com/mod/audioplayer), [Third party Paper port](https://github.com/Navoei/CustomDiscs)                                                                                                        |
-| Voice Chat Interaction            | Voice chat skulk sensor activation and warden detection        | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/voice-chat-interaction), [Modrinth](https://modrinth.com/mod/voice-chat-interaction), [GitHub](https://github.com/henkelmax/voicechat-interaction), [Third party Paper port](https://github.com/iGalaxyYT/voicechat-interaction-paper) |
-| Sound Physics Remastered          | Sound Physics for Simple Voice Chat                            | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/sound-physics-remastered), [Modrinth](https://modrinth.com/mod/sound-physics-remastered)                                                                                                                                               |
-| Replay Voice Chat                 | A compatibility mod to record Simple Voice Chat with ReplayMod | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/replay-voice-chat), [Modrinth](https://modrinth.com/mod/replay-voice-chat)                                                                                                                                                             |
-| Voice Chat Broadcast              | Broadcast your voice to everyone                               | [GitHub](https://github.com/henkelmax/voicechat-broadcast-plugin)                                                                                                                                                                                                                                |
-| Simple Voice Chat Enhanced Groups | Various improvements to voice chat groups                      | [GitHub](https://github.com/henkelmax/enhanced-groups)                                                                                                                                                                                                                                           |
-
+| Name                              | Description                                                    | Links                                                                                                                                                                                                                              |
+|-----------------------------------|----------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| AudioPlayer                       | Allows putting custom audio files on music discs               | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/audioplayer), [Modrinth](https://modrinth.com/mod/audioplayer), [Third party Paper port](https://github.com/Navoei/CustomDiscs)                                          |
+| Voice Chat Interaction            | Voice chat skulk sensor activation and warden detection        | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/voice-chat-interaction), [Modrinth](https://modrinth.com/mod/voice-chat-interaction), [Third party Paper port](https://github.com/iGalaxyYT/voicechat-interaction-paper) |
+| Sound Physics Remastered          | Sound Physics for Simple Voice Chat                            | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/sound-physics-remastered), [Modrinth](https://modrinth.com/mod/sound-physics-remastered)                                                                                 |
+| Replay Voice Chat                 | A compatibility mod to record Simple Voice Chat with ReplayMod | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/replay-voice-chat), [Modrinth](https://modrinth.com/mod/replay-voice-chat)                                                                                               |
+| Voice Chat Broadcast              | Broadcast your voice to everyone                               | [GitHub](https://github.com/henkelmax/voicechat-broadcast-plugin)                                                                                                                                                                  |
+| Simple Voice Chat Enhanced Groups | Various improvements to voice chat groups                      | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/enhanced-groups), [Modrinth](https://modrinth.com/mod/enhanced-groups)                                                                                                   |
 
 ## Icons
 
-|                  Icon                   | Description                                           |
-|:---------------------------------------:|-------------------------------------------------------|
-|  ![](https://i.imgur.com/FZD3ohs.png)   | You are talking                                       |
-|  ![](https://i.imgur.com/BJt2YAL.png)   | You are whispering                                    |
-|  ![](https://i.imgur.com/lmN6ydy.png)   | Player is talking                                     |
-|  ![](https://i.imgur.com/Felj73b.png)   | Player is whispering                                  |
-|  ![](https://i.imgur.com/dI3pfmA.png)   | Microphone muted                                      |
-|  ![](https://i.imgur.com/MZRBqra.png)   | Voice chat disabled                                   |
-|  ![](https://i.imgur.com/Lv3K6tC.png)   | Voice chat not connected<br/>Voice chat not installed |
+|                 Icon                 | Description                                           |
+|:------------------------------------:|-------------------------------------------------------|
+| ![](https://i.imgur.com/FZD3ohs.png) | You are talking                                       |
+| ![](https://i.imgur.com/BJt2YAL.png) | You are whispering                                    |
+| ![](https://i.imgur.com/lmN6ydy.png) | Player is talking                                     |
+| ![](https://i.imgur.com/Felj73b.png) | Player is whispering                                  |
+| ![](https://i.imgur.com/dI3pfmA.png) | Microphone muted                                      |
+| ![](https://i.imgur.com/MZRBqra.png) | Voice chat disabled                                   |
+| ![](https://i.imgur.com/Lv3K6tC.png) | Voice chat not connected<br/>Voice chat not installed |
 
 ## The GUI
 
