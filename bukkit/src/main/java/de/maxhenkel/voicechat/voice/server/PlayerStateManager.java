@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.net.PlayerStatesPacket;
 import de.maxhenkel.voicechat.net.UpdateStatePacket;
+import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -55,9 +56,10 @@ public class PlayerStateManager implements Listener {
         Voicechat.logDebug("Setting default state of {}: {}", event.getPlayer().getName(), state);
     }
 
-    private void broadcastState(PlayerState state) {
+    public void broadcastState(PlayerState state) {
         PlayerStatePacket packet = new PlayerStatePacket(state);
         Voicechat.INSTANCE.getServer().getOnlinePlayers().forEach(p -> NetManager.sendToClient(p, packet));
+        PluginManager.instance().onPlayerStateChanged(state);
     }
 
     public void onPlayerCompatibilityCheckSucceeded(Player player) {
