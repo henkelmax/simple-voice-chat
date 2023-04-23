@@ -11,6 +11,7 @@ plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version "${shadow_version}"
     id 'com.modrinth.minotaur' version "${minotaur_version}"
+    id 'io.papermc.hangar-publish-plugin' version "${hangar_publish_version}"
 }
 
 apply plugin: 'info.u_team.curse_gradle_uploader'
@@ -185,3 +186,31 @@ modrinth {
     }
 }
 tasks.modrinth.dependsOn(build)
+
+import io.papermc.hangarpublishplugin.model.Platforms
+
+tasks.publishAllPublicationsToHangar.configure({
+    group = 'upload'
+})
+
+hangarPublish {
+    def apiKeyString = file("${rootDir}/hangar_api_key.txt").exists() ? file("${rootDir}/hangar_api_key.txt").text : ''
+    def changelogString = file('changelog.md').text
+    def releaseString = release_type.capitalize()
+    publications.register('plugin') {
+        version.set(mod_version)
+        namespace('henkelmax', 'SimpleVoiceChat')
+        channel.set(releaseString)
+        changelog.set(changelogString)
+        apiKey.set(apiKeyString)
+        platforms {
+            register(Platforms.PAPER) {
+                jar.set(tasks.shadowJar.archiveFile)
+                platformVersions.set(minecraft_versions.split(',').collect { it.trim() })
+                dependencies.hangar("ViaVersion", "ViaVersion")
+                dependencies.hangar("ViaVersion", "ViaBackwards")
+            }
+        }
+    }
+}
+tasks.publishAllPublicationsToHangar.dependsOn(build)
