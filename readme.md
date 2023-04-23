@@ -6,6 +6,8 @@
 |
 [Spigot](https://www.spigotmc.org/resources/simple-voice-chat.93738/)
 |
+[Hangar](https://hangar.papermc.io/henkelmax/SimpleVoiceChat)
+|
 [Discord](https://discord.gg/4dH2zwTmyX)
 |
 [Wiki](https://modrepo.de/minecraft/voicechat/wiki)
