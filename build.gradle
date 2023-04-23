@@ -3,7 +3,8 @@ task publishBukkit(type: GradleBuild) {
     tasks = [
             ':bukkit:clean',
             ':bukkit:curseforge',
-            ':bukkit:modrinth'
+            ':bukkit:modrinth',
+            ':bukkit:publishAllPublicationsToHangar',
     ]
 }
 
