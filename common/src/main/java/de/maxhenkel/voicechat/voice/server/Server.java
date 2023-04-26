@@ -362,7 +362,7 @@ public class Server extends Thread {
             source = SoundPacketEvent.SOURCE_PROXIMITY;
         }
 
-        broadcast(ServerWorldUtils.getPlayersInRange(sender.getLevel(), sender.position(), getBroadcastRange(distance), p -> !p.getUUID().equals(sender.getUUID())), soundPacket, sender, senderState, groupId, source);
+        broadcast(ServerWorldUtils.getPlayersInRange(sender.serverLevel(), sender.position(), getBroadcastRange(distance), p -> !p.getUUID().equals(sender.getUUID())), soundPacket, sender, senderState, groupId, source);
     }
 
     public void sendSoundPacket(@Nullable ServerPlayer sender, @Nullable PlayerState senderState, ServerPlayer receiver, PlayerState receiverState, @Nullable ClientConnection connection, SoundPacket<?> soundPacket, String source) throws Exception {

@@ -15,6 +15,6 @@ public class ServerPlayerImpl extends PlayerImpl implements ServerPlayer {
 
     @Override
     public ServerLevel getServerLevel() {
-        return new ServerLevelImpl((net.minecraft.server.level.ServerLevel) entity.level);
+        return new ServerLevelImpl((net.minecraft.server.level.ServerLevel) entity.level());
     }
 }
