@@ -10,6 +10,8 @@ import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
+import javax.annotation.Nullable;
+
 public class ServerCategoryManager extends CategoryManager {
 
     private final Server server;
@@ -34,10 +36,12 @@ public class ServerCategoryManager extends CategoryManager {
     }
 
     @Override
-    public void removeCategory(String categoryId) {
-        super.removeCategory(categoryId);
+    @Nullable
+    public VolumeCategoryImpl removeCategory(String categoryId) {
+        VolumeCategoryImpl volumeCategory = super.removeCategory(categoryId);
         Voicechat.logDebug("Removing volume category {} for all players", categoryId);
         broadcastRemoveCategory(server.getServer(), categoryId);
+        return volumeCategory;
     }
 
     private void broadcastAddCategory(MinecraftServer server, VolumeCategoryImpl category) {

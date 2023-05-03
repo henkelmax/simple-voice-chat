@@ -8,6 +8,8 @@ import de.maxhenkel.voicechat.plugins.CategoryManager;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nullable;
+
 public class ServerCategoryManager extends CategoryManager {
 
     public void onPlayerCompatibilityCheckSucceeded(Player player) {
@@ -25,10 +27,12 @@ public class ServerCategoryManager extends CategoryManager {
     }
 
     @Override
-    public void removeCategory(String categoryId) {
-        super.removeCategory(categoryId);
+    @Nullable
+    public VolumeCategoryImpl removeCategory(String categoryId) {
+        VolumeCategoryImpl volumeCategory = super.removeCategory(categoryId);
         Voicechat.logDebug("Removing volume category {} for all players", categoryId);
         broadcastRemoveCategory(categoryId);
+        return volumeCategory;
     }
 
     private void broadcastAddCategory(VolumeCategoryImpl category) {
