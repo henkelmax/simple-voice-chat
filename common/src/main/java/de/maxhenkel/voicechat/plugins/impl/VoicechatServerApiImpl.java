@@ -242,6 +242,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
             return;
         }
         server.getCategoryManager().addCategory(c);
+        PluginManager.instance().onRegisterVolumeCategory(category);
     }
 
     @Override
@@ -250,7 +251,19 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (server == null) {
             return;
         }
-        server.getCategoryManager().removeCategory(categoryId);
+        VolumeCategoryImpl category = server.getCategoryManager().removeCategory(categoryId);
+        if (category != null) {
+            PluginManager.instance().onUnregisterVolumeCategory(category);
+        }
+    }
+
+    @Override
+    public Collection<VolumeCategory> getVolumeCategories() {
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return Collections.emptyList();
+        }
+        return server.getCategoryManager().getCategories().stream().map(VolumeCategory.class::cast).toList();
     }
 
 }
