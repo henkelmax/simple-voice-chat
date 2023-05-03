@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -42,10 +43,12 @@ public class ClientCategoryManager extends CategoryManager {
     }
 
     @Override
-    public void removeCategory(String categoryId) {
-        super.removeCategory(categoryId);
+    @Nullable
+    public VolumeCategoryImpl removeCategory(String categoryId) {
+        VolumeCategoryImpl volumeCategory = super.removeCategory(categoryId);
         unRegisterImage(categoryId);
         AdjustVolumeList.update();
+        return volumeCategory;
     }
 
     public void clear() {
