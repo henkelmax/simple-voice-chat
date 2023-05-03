@@ -278,4 +278,9 @@ public interface VoicechatServerApi extends VoicechatApi {
      */
     void unregisterVolumeCategory(String categoryId);
 
+    /**
+     * @return all registered volume categories
+     */
+    Collection<VolumeCategory> getVolumeCategories();
+
 }

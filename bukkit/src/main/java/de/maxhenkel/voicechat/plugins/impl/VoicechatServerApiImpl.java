@@ -16,7 +16,6 @@ import de.maxhenkel.voicechat.plugins.impl.audiolistener.PlayerAudioListenerImpl
 import de.maxhenkel.voicechat.plugins.impl.packets.EntitySoundPacketImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.LocationalSoundPacketImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.StaticSoundPacketImpl;
-import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
@@ -241,6 +240,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
             return;
         }
         server.getCategoryManager().addCategory((VolumeCategoryImpl) category);
+        PluginManager.instance().onRegisterVolumeCategory(category);
     }
 
     @Override
@@ -249,7 +249,19 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (server == null) {
             return;
         }
-        server.getCategoryManager().removeCategory(categoryId);
+        VolumeCategoryImpl category = server.getCategoryManager().removeCategory(categoryId);
+        if (category != null) {
+            PluginManager.instance().onUnregisterVolumeCategory(category);
+        }
+    }
+
+    @Override
+    public Collection<VolumeCategory> getVolumeCategories() {
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return Collections.emptyList();
+        }
+        return server.getCategoryManager().getCategories().stream().map(VolumeCategory.class::cast).toList();
     }
 
 }
