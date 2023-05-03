@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.plugins;
 
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,8 +19,9 @@ public class CategoryManager {
         categories.put(category.getId(), category);
     }
 
-    public void removeCategory(String categoryId) {
-        categories.remove(categoryId);
+    @Nullable
+    public VolumeCategoryImpl removeCategory(String categoryId) {
+        return categories.remove(categoryId);
     }
 
     public Collection<VolumeCategoryImpl> getCategories() {
