@@ -164,6 +164,14 @@ public class PluginManager {
         return event.getVoiceHost();
     }
 
+    public void onRegisterVolumeCategory(VolumeCategory category) {
+        dispatchEvent(RegisterVolumeCategoryEvent.class, new RegisterVolumeCategoryEventImpl(category));
+    }
+
+    public void onUnregisterVolumeCategory(VolumeCategory category) {
+        dispatchEvent(UnregisterVolumeCategoryEvent.class, new UnregisterVolumeCategoryEventImpl(category));
+    }
+
     public void onServerStarted() {
         dispatchEvent(VoicechatServerStartedEvent.class, new VoicechatServerStartedEventImpl());
     }

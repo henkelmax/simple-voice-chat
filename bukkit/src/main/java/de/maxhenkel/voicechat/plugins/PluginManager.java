@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.api.VoicechatSocket;
+import de.maxhenkel.voicechat.api.VolumeCategory;
 import de.maxhenkel.voicechat.api.audiolistener.AudioListener;
 import de.maxhenkel.voicechat.api.audiolistener.PlayerAudioListener;
 import de.maxhenkel.voicechat.api.events.*;
@@ -58,6 +59,7 @@ public class PluginManager {
         }
         events = eventBuilder.build();
     }
+
     public boolean registerAudioListener(AudioListener l) {
         if (!(l instanceof PlayerAudioListener)) {
             return false;
@@ -150,6 +152,14 @@ public class PluginManager {
         VoiceHostEventImpl event = new VoiceHostEventImpl(voiceHost);
         dispatchEvent(VoiceHostEvent.class, event);
         return event.getVoiceHost();
+    }
+
+    public void onRegisterVolumeCategory(VolumeCategory category) {
+        dispatchEvent(RegisterVolumeCategoryEvent.class, new RegisterVolumeCategoryEventImpl(category));
+    }
+
+    public void onUnregisterVolumeCategory(VolumeCategory category) {
+        dispatchEvent(UnregisterVolumeCategoryEvent.class, new UnregisterVolumeCategoryEventImpl(category));
     }
 
     public void onServerStarted() {
