@@ -4,9 +4,6 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.config.ServerConfig;
-import de.maxhenkel.voicechat.macos.PermissionCheck;
-import de.maxhenkel.voicechat.macos.VersionCheck;
-import de.maxhenkel.voicechat.macos.avfoundation.AVAuthorizationStatus;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.opus.OpusManager;
 import de.maxhenkel.voicechat.voice.client.microphone.Microphone;
@@ -60,7 +57,7 @@ public class MicThread extends Thread {
         if (mic == null) {
             try {
                 mic = MicrophoneManager.createMicrophone();
-                Minecraft.getInstance().execute(this::checkMicrophonePermissions);
+                Minecraft.getInstance().execute(ClientManager.instance()::checkMicrophonePermissions);
             } catch (MicrophoneException e) {
                 onError.accept(e);
                 running = false;
@@ -104,21 +101,6 @@ public class MicThread extends Thread {
                 ptt(audio);
             } else if (type.equals(MicrophoneActivationType.VOICE)) {
                 voice(audio);
-            }
-        }
-    }
-
-    public void checkMicrophonePermissions() {
-        if (!VoicechatClient.CLIENT_CONFIG.macosCheckMicrophonePermission.get()) {
-            return;
-        }
-        if (VersionCheck.isMacOSNativeCompatible()) {
-            AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
-            if (status.equals(AVAuthorizationStatus.DENIED)) {
-                ClientManager.sendPlayerError("message.voicechat.macos_no_mic_permission", null);
-                Voicechat.LOGGER.warn("User hasn't granted microphone permissions: {}", status.name());
-            } else if (!status.equals(AVAuthorizationStatus.AUTHORIZED)) {
-                ClientManager.sendPlayerError("message.voicechat.macos_unsupported_launcher", null);
             }
         }
     }
