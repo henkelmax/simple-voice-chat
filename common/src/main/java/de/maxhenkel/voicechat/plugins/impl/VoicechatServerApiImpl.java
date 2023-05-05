@@ -272,7 +272,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (server == null) {
             return Collections.emptyList();
         }
-        return server.getCategoryManager().getCategories().stream().map(VolumeCategory.class::cast).toList();
+        return server.getCategoryManager().getCategories().stream().map(VolumeCategory.class::cast).collect(Collectors.toList());
     }
 
 }
