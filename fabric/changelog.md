@@ -1,1 +1,2 @@
-- Updated to 23w18a
+- Improved voice chat API
+- Only show MacOS permissions message after joining a world
