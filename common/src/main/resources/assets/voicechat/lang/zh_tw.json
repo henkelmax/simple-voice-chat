@@ -129,9 +129,9 @@
     "message.voicechat.other_volume.description": "任何未列在以下聲音中的音量",
     "message.voicechat.more_members": "和其他 %s 人...",
     "message.voicechat.no_groups": "沒有存在的群組",
-    "message.voicechat.audio_type": "3D audio: %s",
+    "message.voicechat.audio_type": "3D 音訊：%s",
     "message.voicechat.audio_type.normal": "一般",
-    "message.voicechat.audio_type.reduced": "Reduced",
+    "message.voicechat.audio_type.reduced": "降低",
     "message.voicechat.audio_type.off": "關閉",
     "message.voicechat.invite_player": "邀請 %s 到你的群組",
     "resourcepack.voicechat.classic_icons": "經典圖示",
@@ -161,4 +161,4 @@
     "cloth_config.voicechat.config.group_player_icon_pos_x": "群組圖示 X 軸位置",
     "cloth_config.voicechat.config.group_player_icon_pos_y": "群組圖示 Y 軸位置",
     "cloth_config.voicechat.config.show_own_group_icon": "顯示自己群組 HUD 圖示"
-  }
+}
