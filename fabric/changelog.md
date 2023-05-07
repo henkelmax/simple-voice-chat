@@ -1,1 +1,2 @@
 - Fixed issues with the audio listener API
+- Added Chinese Traditional translation
