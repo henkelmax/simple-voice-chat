@@ -105,7 +105,18 @@ public class PluginManager {
         if (listeners.isEmpty()) {
             return;
         }
-        SoundPacketImpl soundPacket = new SoundPacketImpl(packet);
+
+        SoundPacketImpl soundPacket;
+        if (packet instanceof GroupSoundPacket) {
+            soundPacket = new StaticSoundPacketImpl((GroupSoundPacket) packet);
+        } else if (packet instanceof PlayerSoundPacket) {
+            soundPacket = new EntitySoundPacketImpl((PlayerSoundPacket) packet);
+        } else if (packet instanceof LocationSoundPacket) {
+            soundPacket = new LocationalSoundPacketImpl((LocationSoundPacket) packet);
+        } else {
+            soundPacket = new SoundPacketImpl(packet);
+        }
+
         for (PlayerAudioListener l : listeners) {
             if (l instanceof PlayerAudioListenerImpl) {
                 ((PlayerAudioListenerImpl) l).getListener().accept(soundPacket);
