@@ -79,6 +79,9 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
 
     @Override
     public void setConnected(boolean connected) {
+        if (isInstalled()) {
+            return;
+        }
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
             return;
@@ -102,6 +105,9 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
 
     @Override
     public void setDisabled(boolean disabled) {
+        if (isInstalled()) {
+            return;
+        }
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
             return;
