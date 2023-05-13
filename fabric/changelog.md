@@ -1,1 +1,1 @@
-- Updated to 1.20-pre2
+- Added audio senders to the voice chat API
