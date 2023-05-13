@@ -1,5 +1,5 @@
 plugins {
-    id 'common-loom' version '1.1-SNAPSHOT'
+    id 'common-loom' version "${common_loom_version}"
     id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
     id 'com.github.johnrengelman.shadow' version "${shadow_version}"
     id 'com.modrinth.minotaur' version "${minotaur_version}"
@@ -80,7 +80,7 @@ dependencies {
     shadow project(':api')
 }
 
-task generateJava(type: Copy) {
+tasks.register('generateJava', Copy) {
     from project(':common').file('src/template/java')
     into "${buildDir}/generated/java"
     expand 'compatibility_version': mod_compatibility_version
@@ -89,6 +89,7 @@ sourceSets.main.java {
     srcDir "${buildDir}/generated/java"
 }
 compileJava.dependsOn generateJava
+generateJava.dependsOn('sourcesJar')
 
 processResources {
     filesMatching('fabric.mod.json') {
@@ -106,7 +107,7 @@ processResources {
     from project(":common").sourceSets.main.resources
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     source(project(':common').sourceSets.main.allSource)
 }
 
@@ -191,7 +192,7 @@ modUpdate {
 
 shadowJar {
     configurations = [project.configurations.shadow]
-    classifier 'shadow-dev'
+    archiveClassifier = 'shadow-dev'
     relocate 'de.maxhenkel.configbuilder', "de.maxhenkel.${mod_id}.configbuilder"
     relocate 'org.concentus', "de.maxhenkel.${mod_id}.concentus"
     dependencies {
