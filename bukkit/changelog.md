@@ -1,1 +1,1 @@
-- Fixed issues with the audio listener API
+- Added audio senders to the voice chat API
