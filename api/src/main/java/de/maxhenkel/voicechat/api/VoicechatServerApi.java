@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.api;
 import de.maxhenkel.voicechat.api.audiochannel.*;
 import de.maxhenkel.voicechat.api.audiolistener.AudioListener;
 import de.maxhenkel.voicechat.api.audiolistener.PlayerAudioListener;
+import de.maxhenkel.voicechat.api.audiosender.AudioSender;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
 import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
@@ -97,6 +98,35 @@ public interface VoicechatServerApi extends VoicechatApi {
      * @return the audio player
      */
     AudioPlayer createAudioPlayer(AudioChannel audioChannel, OpusEncoder encoder, short[] audio);
+
+    /**
+     * Creates a new audio sender.
+     * <br/>
+     * This can be used to simulate a player sending microphone packets.
+     * This needs to be registered using {@link #registerAudioSender(AudioSender)} and unregistered using {@link #unregisterAudioSender(AudioSender)}.
+     *
+     * @param connection the connection of the player
+     * @return the audio sender
+     */
+    AudioSender createAudioSender(VoicechatConnection connection);
+
+    /**
+     * <b>NOTE</b>: Only one instance of this can exist per player. This will return <code>false</code> if an audio sender for this player already exists.
+     * <br/>
+     * <b>NOTE</b>: The audio sender will only work for players that are connected to the server and don't have the mod installed. Otherwise, it will return <code>false</code>.
+     *
+     * @param sender the sender to register
+     * @return if the sender was registered
+     */
+    boolean registerAudioSender(AudioSender sender);
+
+    /**
+     * Unregisters an audio sender.
+     *
+     * @param sender the sender to unregister
+     * @return <code>false</code> if the audio sender was not registered.
+     */
+    boolean unregisterAudioSender(AudioSender sender);
 
     /**
      * @return a {@link PlayerAudioListener} builder

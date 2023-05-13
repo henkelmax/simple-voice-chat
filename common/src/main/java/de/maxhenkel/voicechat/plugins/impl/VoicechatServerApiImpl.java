@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.api.*;
 import de.maxhenkel.voicechat.api.audiochannel.*;
 import de.maxhenkel.voicechat.api.audiolistener.AudioListener;
 import de.maxhenkel.voicechat.api.audiolistener.PlayerAudioListener;
+import de.maxhenkel.voicechat.api.audiosender.AudioSender;
 import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
@@ -13,6 +14,7 @@ import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.*;
 import de.maxhenkel.voicechat.plugins.impl.audiolistener.PlayerAudioListenerImpl;
+import de.maxhenkel.voicechat.plugins.impl.audiosender.AudioSenderImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.EntitySoundPacketImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.LocationalSoundPacketImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.StaticSoundPacketImpl;
@@ -115,6 +117,27 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
     @Override
     public AudioPlayer createAudioPlayer(AudioChannel audioChannel, OpusEncoder encoder, short[] audio) {
         return new AudioPlayerImpl(audioChannel, encoder, new AudioSupplier(audio));
+    }
+
+    @Override
+    public AudioSender createAudioSender(VoicechatConnection connection) {
+        return new AudioSenderImpl(connection.getPlayer().getUuid());
+    }
+
+    @Override
+    public boolean registerAudioSender(AudioSender sender) {
+        if (!(sender instanceof AudioSenderImpl)) {
+            return false;
+        }
+        return AudioSenderImpl.registerAudioSender((AudioSenderImpl) sender);
+    }
+
+    @Override
+    public boolean unregisterAudioSender(AudioSender sender) {
+        if (!(sender instanceof AudioSenderImpl)) {
+            return false;
+        }
+        return AudioSenderImpl.unregisterAudioSender((AudioSenderImpl) sender);
     }
 
     @Override

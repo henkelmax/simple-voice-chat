@@ -256,27 +256,9 @@ public class Server extends Thread {
                         continue;
                     }
 
-                    UUID playerUUID = conn.getPlayerUUID();
-
                     if (message.getPacket() instanceof MicPacket) {
                         MicPacket packet = (MicPacket) message.getPacket();
-                        ServerPlayerEntity player = server.getPlayerList().getPlayer(playerUUID);
-                        if (player == null) {
-                            continue;
-                        }
-                        if (!PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player)) {
-                            CooldownTimer.run("no-speak-" + playerUUID, 30_000L, () -> {
-                                player.displayClientMessage(new TranslationTextComponent("message.voicechat.no_speak_permission"), true);
-                            });
-                            continue;
-                        }
-                        PlayerState state = playerStateManager.getState(player.getUUID());
-                        if (state == null) {
-                            continue;
-                        }
-                        if (!PluginManager.instance().onMicPacket(player, state, packet)) {
-                            processMicPacket(player, state, packet);
-                        }
+                        onMicPacket(conn.getPlayerUUID(), packet);
                     } else if (message.getPacket() instanceof PingPacket) {
                         PingPacket packet = (PingPacket) message.getPacket();
                         pingManager.onPongPacket(packet);
@@ -291,6 +273,26 @@ public class Server extends Thread {
 
         public void close() {
             running = false;
+        }
+    }
+
+    public void onMicPacket(UUID playerUuid, MicPacket packet) throws Exception {
+        ServerPlayerEntity player = server.getPlayerList().getPlayer(playerUuid);
+        if (player == null) {
+            return;
+        }
+        if (!PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player)) {
+            CooldownTimer.run("no-speak-" + playerUuid, 30_000L, () -> {
+                player.displayClientMessage(new TranslationTextComponent("message.voicechat.no_speak_permission"), true);
+            });
+            return;
+        }
+        PlayerState state = playerStateManager.getState(player.getUUID());
+        if (state == null) {
+            return;
+        }
+        if (!PluginManager.instance().onMicPacket(player, state, packet)) {
+            processMicPacket(player, state, packet);
         }
     }
 
