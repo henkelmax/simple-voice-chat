@@ -2,7 +2,7 @@
 |
 [CurseForge](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat)
 |
-[CurseForge Bukkit](https://www.curseforge.com/minecraft/bukkit-plugins/simple-voice-chat/files/all)
+[CurseForge Bukkit](https://www.curseforge.com/minecraft/bukkit-plugins/simple-voice-chat)
 |
 [Spigot](https://www.spigotmc.org/resources/simple-voice-chat.93738/)
 |
