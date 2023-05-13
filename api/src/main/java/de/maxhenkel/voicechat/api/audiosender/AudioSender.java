@@ -3,13 +3,30 @@ package de.maxhenkel.voicechat.api.audiosender;
 public interface AudioSender {
 
     /**
-     * This can be reused.
-     * <br/>
-     * Invoking this method multiple times, will always return the same instance.
-     *
-     * @return a microphone packet sender
+     * @param whispering if the player should whisper
+     * @return the audio sender itself
      */
-    MicrophonePacketSender microphonePacketSender();
+    AudioSender whispering(boolean whispering);
+
+    /**
+     * @return if the player is whispering
+     */
+    boolean isWhispering();
+
+    /**
+     * Sets the sequence number of the packet.
+     * <br/>
+     * Setting this will override the automatic sequence numbering.
+     * <br/>
+     * If you set this value, consequent calls to {@link AudioSender#send(byte[])} will increase this number by 1.
+     * If you don't intend this, you need to set the sequence number every time before calling {@link AudioSender#send(byte[])}.
+     * <br/>
+     * Calling {@link AudioSender#reset()} will also reset the sequence number to start with <code>0</code> again.
+     *
+     * @param sequenceNumber the sequence number (Must be >= 0)
+     * @return the audio sender itself
+     */
+    AudioSender sequenceNumber(long sequenceNumber);
 
     /**
      * @return if a microphone packet can be sent. This will return false if the player has the mod installed or the {@link AudioSender} is not registered.
@@ -17,53 +34,19 @@ public interface AudioSender {
     boolean canSend();
 
     /**
-     * This sender can be reused.
-     * <br/>
-     * <b>NOTE</b>: Some values are required to be set.
+     * Acts as if the player has sent a microphone packet.
+     *
+     * @param opusEncodedAudioData the opus encoded audio data
+     * @return <code>true</code> if the packet was sent, <code>false</code> if the sender does have the mod installed or the {@link AudioSender} is not registered
      */
-    public interface MicrophonePacketSender {
-        /**
-         * This is required to be set!
-         *
-         * @param data the opus encoded audio data from the player
-         * @return the builder
-         */
-        MicrophonePacketSender opusEncodedData(byte[] data);
+    boolean send(byte[] opusEncodedAudioData);
 
-        /**
-         * @param whispering if the player should whisper
-         * @return the builder
-         */
-        MicrophonePacketSender whispering(boolean whispering);
-
-        /**
-         * Sets the sequence number of the packet.
-         * <br/>
-         * Setting this will override the automatic sequence numbering of the {@link AudioSender}.
-         *
-         * @param sequenceNumber the sequence number (Must be >= 0)
-         * @return the builder
-         */
-        MicrophonePacketSender sequenceNumber(long sequenceNumber);
-
-        /**
-         * Acts as if the player has sent a microphone packet.
-         * <br/>
-         * <b>NOTE</b>: Calling this method will reset all values, meaning you need to set all required values again.
-         *
-         * @return <code>true</code> if the packet was sent, <code>false</code> if the sender does have the mod installed or the {@link AudioSender} is not registered
-         */
-        boolean send();
-
-        /**
-         * Resets the sequence number and indicates to clients that the current audio stream is paused/stopped.
-         * <br/>
-         * This method should be called when the sending of audio is paused or stopped.
-         * You can still send audio after this method is called.
-         * <br/>
-         * <b>NOTE</b>: Calling this method will reset all values, meaning you need to set all required values again.
-         */
-        boolean reset();
-    }
+    /**
+     * Resets the sequence number and indicates to clients that the current audio stream is paused/stopped.
+     * <br/>
+     * This method should be called when the sending of audio is paused or stopped.
+     * You can still send audio after this method is called.
+     */
+    boolean reset();
 
 }
