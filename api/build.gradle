@@ -18,14 +18,16 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
-task packageJavadoc(type: Jar, dependsOn: 'javadoc') {
+tasks.register('packageJavadoc', Jar) {
+    dependsOn 'javadoc'
     from javadoc.destinationDir
-    classifier 'javadoc'
+    archiveClassifier = 'javadoc'
 }
 
-task packageSources(type: Jar, dependsOn: 'classes') {
+tasks.register('packageSources', Jar) {
+    dependsOn 'classes'
     from sourceSets.main.allSource
-    classifier 'sources'
+    archiveClassifier = 'sources'
 }
 
 javadoc {
