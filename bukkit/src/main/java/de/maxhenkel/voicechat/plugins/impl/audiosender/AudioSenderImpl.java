@@ -15,9 +15,11 @@ public class AudioSenderImpl implements AudioSender {
 
     private final UUID uuid;
     private long lastSequenceNumber;
+    private final MicrophonePacketSenderImpl sender;
 
     public AudioSenderImpl(UUID uuid) {
         this.uuid = uuid;
+        this.sender = new MicrophonePacketSenderImpl(this);
     }
 
     public static boolean registerAudioSender(AudioSenderImpl audioSender) {
@@ -56,8 +58,8 @@ public class AudioSenderImpl implements AudioSender {
     }
 
     @Override
-    public MicrophonePacketBuilder microphonePacketBuilder() {
-        return new MicrophonePacketBuilderImpl(this);
+    public MicrophonePacketSender microphonePacketSender() {
+        return sender;
     }
 
     @Override
@@ -65,38 +67,38 @@ public class AudioSenderImpl implements AudioSender {
         return !Voicechat.SERVER.isCompatible(uuid) && AUDIO_SENDERS.get(uuid) == this;
     }
 
-    @Override
-    public void flush() {
-        sendMicrophonePacket(new byte[0], false, -1L);
-        lastSequenceNumber = 0L;
-    }
-
-    public static class MicrophonePacketBuilderImpl implements MicrophonePacketBuilder {
+    public static class MicrophonePacketSenderImpl implements MicrophonePacketSender {
 
         private final AudioSenderImpl audioSender;
         private byte[] data;
         private boolean whispering;
         private long sequenceNumber;
 
-        public MicrophonePacketBuilderImpl(AudioSenderImpl audioSender) {
+        public MicrophonePacketSenderImpl(AudioSenderImpl audioSender) {
             this.audioSender = audioSender;
-            this.sequenceNumber = -1L;
+            resetState();
+        }
+
+        private void resetState() {
+            data = null;
+            whispering = false;
+            sequenceNumber = -1L;
         }
 
         @Override
-        public MicrophonePacketBuilder opusEncodedData(byte[] data) {
+        public MicrophonePacketSender opusEncodedData(byte[] data) {
             this.data = data;
             return this;
         }
 
         @Override
-        public MicrophonePacketBuilder whispering(boolean whispering) {
+        public MicrophonePacketSender whispering(boolean whispering) {
             this.whispering = whispering;
             return this;
         }
 
         @Override
-        public MicrophonePacketBuilder sequenceNumber(long sequenceNumber) {
+        public MicrophonePacketSender sequenceNumber(long sequenceNumber) {
             if (sequenceNumber < 0L) {
                 throw new IllegalArgumentException("Sequence number must be positive");
             }
@@ -106,7 +108,17 @@ public class AudioSenderImpl implements AudioSender {
 
         @Override
         public boolean send() {
-            return audioSender.sendMicrophonePacket(data, whispering, sequenceNumber);
+            boolean success = audioSender.sendMicrophonePacket(data, whispering, sequenceNumber);
+            resetState();
+            return success;
+        }
+
+        @Override
+        public boolean reset() {
+            boolean success = audioSender.sendMicrophonePacket(new byte[0], false, -1L);
+            audioSender.lastSequenceNumber = 0L;
+            resetState();
+            return success;
         }
     }
 
