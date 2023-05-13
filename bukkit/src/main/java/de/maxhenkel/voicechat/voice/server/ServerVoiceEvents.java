@@ -64,7 +64,11 @@ public class ServerVoiceEvents implements Listener {
     }
 
     public boolean isCompatible(Player player) {
-        return clientCompatibilities.getOrDefault(player.getUniqueId(), -1) == Voicechat.COMPATIBILITY_VERSION;
+        return isCompatible(player.getUniqueId());
+    }
+
+    public boolean isCompatible(UUID playerUuid) {
+        return clientCompatibilities.getOrDefault(playerUuid, -1) == Voicechat.COMPATIBILITY_VERSION;
     }
 
     public static Component getIncompatibleMessage(int clientCompatibilityVersion) {
