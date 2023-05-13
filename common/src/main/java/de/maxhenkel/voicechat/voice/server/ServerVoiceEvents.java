@@ -52,7 +52,11 @@ public class ServerVoiceEvents {
     }
 
     public boolean isCompatible(EntityPlayerMP player) {
-        return clientCompatibilities.getOrDefault(player.getUniqueID(), -1) == Voicechat.COMPATIBILITY_VERSION;
+        return isCompatible(player.getUniqueID());
+    }
+
+    public boolean isCompatible(UUID playerUuid) {
+        return clientCompatibilities.getOrDefault(playerUuid, -1) == Voicechat.COMPATIBILITY_VERSION;
     }
 
     public void serverStarting(MinecraftServer mcServer) {
