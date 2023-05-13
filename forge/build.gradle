@@ -76,7 +76,7 @@ dependencies {
     }
 }
 
-task generateJava(type: Copy) {
+tasks.register('generateJava', Copy) {
     from project(':common').file('src/template/java')
     into "${buildDir}/generated/java"
     expand 'compatibility_version': mod_compatibility_version
@@ -99,16 +99,12 @@ processResources {
     from("${project(':common').projectDir}/src/main/resources")
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     source(project(':common').sourceSets.main.allSource)
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-}
-
-task prepareWorkspace {
-
 }
 
 jar {
@@ -126,8 +122,8 @@ jar {
     from configurations.shadow.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
-task deobfJar(type: Jar) {
-    classifier 'deobf'
+tasks.register('deobfJar', Jar) {
+    archiveClassifier = 'deobf'
     from sourceSets.main.output
 }
 
@@ -185,13 +181,14 @@ jar.finalizedBy('reobfJar')
 
 shadowJar {
     configurations = [project.configurations.shadowMc]
-    classifier ''
+    archiveClassifier = ''
     relocate 'de.maxhenkel.configbuilder', "de.maxhenkel.${mod_id}.configbuilder"
     relocate 'org.concentus', "de.maxhenkel.${mod_id}.concentus"
     dependencies {
         exclude(dependency('com.google.code.findbugs:jsr305'))
     }
 }
+shadowJar.dependsOn('reobfJar')
 
 reobf {
     shadowJar {}
