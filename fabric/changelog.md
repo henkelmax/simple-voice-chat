@@ -1,2 +1,1 @@
-- Fixed issues with the audio listener API
-- Added Chinese Traditional translation
+- Added audio senders to the voice chat API
