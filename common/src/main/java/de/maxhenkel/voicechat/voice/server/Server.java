@@ -277,17 +277,17 @@ public class Server extends Thread {
     }
 
     public void onMicPacket(UUID playerUuid, MicPacket packet) throws Exception {
-        EntityPlayerMP player = server.getPlayerList().getPlayer(playerUuid);
+        EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(playerUuid);
         if (player == null) {
             return;
         }
         if (!PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player)) {
             CooldownTimer.run("no-speak-" + playerUuid, 30_000L, () -> {
-                player.displayClientMessage(new TextComponentTranslation("message.voicechat.no_speak_permission"), true);
+                player.sendStatusMessage(new TextComponentTranslation("message.voicechat.no_speak_permission"), true);
             });
             return;
         }
-        PlayerState state = playerStateManager.getState(player.getUUID());
+        PlayerState state = playerStateManager.getState(player.getUniqueID());
         if (state == null) {
             return;
         }
