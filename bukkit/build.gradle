@@ -214,3 +214,4 @@ hangarPublish {
     }
 }
 tasks.publishAllPublicationsToHangar.dependsOn(build)
+tasks.publishPluginPublicationToHangar.dependsOn(build)
