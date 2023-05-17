@@ -42,6 +42,10 @@ configurations {
     shadowMc.extendsFrom minecraftLibrary
 }
 
+tasks.register('prepareWorkspace') {
+
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
