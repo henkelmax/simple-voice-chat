@@ -119,6 +119,8 @@ public class ServerVoiceEvents implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        server.getGroupManager().onPlayerLoggedOut(event.getPlayer());
+
         clientCompatibilities.remove(event.getPlayer().getUniqueId());
         if (server == null) {
             return;

@@ -28,6 +28,7 @@ public class ServerGroupManager {
         this.server = server;
         groups = new ConcurrentHashMap<>();
         CommonCompatibilityManager.INSTANCE.onPlayerCompatibilityCheckSucceeded(this::onPlayerCompatibilityCheckSucceeded);
+        CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::onPlayerLoggedOut);
         CommonCompatibilityManager.INSTANCE.getNetManager().joinGroupChannel.setServerListener((srv, player, handler, packet) -> {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
@@ -62,6 +63,10 @@ public class ServerGroupManager {
         for (Group category : groups.values()) {
             broadcastAddGroup(category);
         }
+    }
+
+    private void onPlayerLoggedOut(ServerPlayer serverPlayer) {
+        cleanupGroups();
     }
 
     private PlayerStateManager getStates() {
