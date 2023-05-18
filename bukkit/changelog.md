@@ -1,1 +1,1 @@
-- Added audio senders to the voice chat API
+- Fixed group not getting deleted when disconnecting
