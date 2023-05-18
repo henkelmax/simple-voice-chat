@@ -61,6 +61,10 @@ public class ServerGroupManager {
         }
     }
 
+    public void onPlayerLoggedOut(Player player) {
+        cleanupGroups();
+    }
+
     private PlayerStateManager getStates() {
         return Voicechat.SERVER.getServer().getPlayerStateManager();
     }

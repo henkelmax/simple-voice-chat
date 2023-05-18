@@ -1,1 +1,1 @@
-- Updated to 1.20
+- Fixed group not getting deleted when disconnecting

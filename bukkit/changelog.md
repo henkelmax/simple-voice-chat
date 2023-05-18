@@ -1,1 +1,2 @@
+- Fixed group not getting deleted when disconnecting
 - Add support for 1.20
