@@ -4,7 +4,6 @@ pluginManagement {
         maven { url = 'https://maven.fabricmc.net/' }
         maven { url = 'https://maven.quiltmc.org/repository/release' }
         maven { url = 'https://maven.quiltmc.org/repository/snapshot' }
-        maven { url = 'https://server.bbkr.space/artifactory/libs-release/' }
         maven { url = 'https://maven.maxhenkel.de/repository/public' }
         maven { url = 'https://maven.minecraftforge.net/' }
         mavenCentral()
