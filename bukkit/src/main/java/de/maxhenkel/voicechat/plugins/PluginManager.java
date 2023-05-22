@@ -17,6 +17,7 @@ import de.maxhenkel.voicechat.plugins.impl.events.*;
 import de.maxhenkel.voicechat.plugins.impl.packets.*;
 import de.maxhenkel.voicechat.voice.common.*;
 import de.maxhenkel.voicechat.voice.server.Group;
+import de.maxhenkel.voicechat.voice.server.Server;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -214,7 +215,23 @@ public class PluginManager {
     }
 
     public boolean onLeaveGroup(Player player) {
-        return dispatchEvent(LeaveGroupEvent.class, new LeaveGroupEventImpl(null, VoicechatConnectionImpl.fromPlayer(player)));
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return false;
+        }
+        @Nullable GroupImpl group = null;
+        PlayerState state = server.getPlayerStateManager().getState(player.getUniqueId());
+        if (state != null) {
+            UUID groupUUID = state.getGroup();
+            if (groupUUID != null) {
+                Group g = server.getGroupManager().getGroup(groupUUID);
+                if (g != null) {
+                    group = new GroupImpl(g);
+                }
+            }
+        }
+
+        return dispatchEvent(LeaveGroupEvent.class, new LeaveGroupEventImpl(group, VoicechatConnectionImpl.fromPlayer(player)));
     }
 
     public boolean onRemoveGroup(Group group) {
