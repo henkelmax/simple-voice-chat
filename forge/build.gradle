@@ -9,7 +9,7 @@ buildscript {
 }
 
 plugins {
-    id 'net.minecraftforge.gradle' version '5.+'
+    id 'net.minecraftforge.gradle' version '6.+'
     id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
     id 'com.github.johnrengelman.shadow' version "${shadow_version}"
     id 'com.modrinth.minotaur' version "${minotaur_version}"
