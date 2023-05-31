@@ -1,1 +1,1 @@
-- Updated to 1.20-pre7
+- Updated to 1.20-rc1
