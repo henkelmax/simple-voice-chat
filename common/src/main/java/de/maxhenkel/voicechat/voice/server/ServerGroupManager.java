@@ -65,7 +65,7 @@ public class ServerGroupManager {
         }
     }
 
-    private void onPlayerLoggedOut(ServerPlayer serverPlayer) {
+    private void onPlayerLoggedOut(ServerPlayerEntity serverPlayer) {
         cleanupGroups();
     }
 
