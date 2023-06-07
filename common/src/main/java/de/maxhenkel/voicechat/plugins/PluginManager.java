@@ -227,7 +227,7 @@ public class PluginManager {
             return false;
         }
         @Nullable GroupImpl group = null;
-        PlayerState state = server.getPlayerStateManager().getState(player.getUUID());
+        PlayerState state = server.getPlayerStateManager().getState(player.getUniqueID());
         if (state != null) {
             UUID groupUUID = state.getGroup();
             if (groupUUID != null) {
