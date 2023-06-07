@@ -54,24 +54,6 @@
         "versions": "*"
       }
     ],
-    "suggests": [
-      {
-        "id": "modmenu",
-        "versions": ">=${modmenu_version}"
-      },
-      {
-        "id": "cloth-config2",
-        "versions": ">=${cloth_config_version}"
-      },
-      {
-        "id": "fabric-permissions-api-v0",
-        "versions": "*"
-      },
-      {
-        "id": "viaversion",
-        "versions": "*"
-      }
-    ],
     "metadata": {
       "name": "${mod_name}",
       "description": "A working voice chat in Minecraft!",
@@ -92,19 +74,14 @@
         "description": "All Rights Reserved"
       },
       "icon": "icon.png"
-    },
-    "minecraft": {
-      "environment": "*"
-    },
-    "custom": {
-      "modmenu": {
-        "links": {
-          "modmenu.discord": "https://discord.gg/4dH2zwTmyX"
-        }
-      }
     }
   },
   "mixin": [
     "voicechat.mixins.json"
-  ]
+  ],
+  "modmenu": {
+    "links": {
+      "modmenu.discord": "https://discord.gg/4dH2zwTmyX"
+    }
+  }
 }

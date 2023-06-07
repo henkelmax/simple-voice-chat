@@ -35,7 +35,7 @@ dependencies {
 
     modImplementation("org.quiltmc:quilt-loader:${quilt_loader_version}")
 
-    include(modImplementation('org.quiltmc.quilted-fabric-api:fabric-key-binding-api-v1:6.0.0-alpha.2+0.75.3-1.19.4'))
+    include(modImplementation('org.quiltmc.quilted-fabric-api:fabric-key-binding-api-v1:7.0.0-alpha.4+0.83.0-1.20'))
 
     include(modImplementation("org.quiltmc.qsl.core:qsl_base:${qsl_version}"))
     include(modImplementation("org.quiltmc.qsl.core:registry:${qsl_version}"))
