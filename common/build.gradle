@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'net.minecraftforge.gradle' version '5.+'
+    id 'net.minecraftforge.gradle' version '6.+'
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
@@ -16,7 +16,7 @@ repositories {
     mavenLocal()
 }
 
-task prepareWorkspace {
+tasks.register('prepareWorkspace') {
 
 }
 
