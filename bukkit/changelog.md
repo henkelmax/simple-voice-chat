@@ -1,2 +1,3 @@
 - Fixed group not getting deleted when disconnecting
 - Fixed group in LeaveGroupEvent always null
+- Add support for 1.20
