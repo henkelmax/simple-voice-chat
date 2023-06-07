@@ -1,1 +1,1 @@
-- Updated to 1.20
+- Add support for 1.20
