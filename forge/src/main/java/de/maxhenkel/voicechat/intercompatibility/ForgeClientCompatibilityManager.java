@@ -70,7 +70,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
 
     @SubscribeEvent
     public void onRenderOverlay(RenderGuiOverlayEvent.Post event) {
-        renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(event.getPoseStack(), event.getPartialTick()));
+        renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(event.getGuiGraphics(), event.getPartialTick()));
     }
 
     @SubscribeEvent
