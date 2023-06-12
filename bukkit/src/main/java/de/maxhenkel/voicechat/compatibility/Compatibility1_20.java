@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 public class Compatibility1_20 extends BaseCompatibility {
 
     public static final BukkitVersion VERSION_1_20 = BukkitVersion.parseBukkitVersion("1.20-R0.1");
+    public static final BukkitVersion VERSION_1_20_1 = BukkitVersion.parseBukkitVersion("1.20.1-R0.1");
 
     public static final Compatibility1_20 INSTANCE = new Compatibility1_20();
 
