@@ -43,6 +43,7 @@ public class ClientConfig {
     public ConfigEntry<AudioType> audioType;
     public ConfigEntry<Boolean> useNatives;
     public ConfigEntry<Boolean> freecamSupport;
+    public ConfigEntry<Boolean> muteOnJoin;
 
     public ClientConfig(ConfigBuilder builder) {
 
@@ -192,6 +193,10 @@ public class ClientConfig {
         freecamSupport = builder
                 .booleanEntry("freecam_support", true,
                         "This lets you hear players near you, even though you are further away with your freecam"
+                );
+        muteOnJoin = builder
+                .booleanEntry("mute_on_join", false,
+                        "If enabled, you will be automatically muted when joining a world"
                 );
     }
 
