@@ -83,6 +83,9 @@ public class ClientManager {
     }
 
     private void onJoinWorld() {
+        if (VoicechatClient.CLIENT_CONFIG.muteOnJoin.get()) {
+            VoicechatClient.CLIENT_CONFIG.muted.set(true);
+        }
         if (client != null) {
             Voicechat.LOGGER.info("Disconnecting from previous connection due to server change");
             onDisconnect();
