@@ -149,6 +149,7 @@
   "cloth_config.voicechat.config.run_local_server": "Run in singleplayer/LAN worlds",
   "cloth_config.voicechat.config.offline_player_volume_adjustment": "Offline player volume adjustment",
   "cloth_config.voicechat.config.freecam_support": "Freecam support",
+  "cloth_config.voicechat.config.mute_on_join": "Mute on join",
   "cloth_config.voicechat.config.audio_packet_threshold": "Audio packet threshold",
   "cloth_config.voicechat.config.deactivation_delay": "Deactivation delay",
   "cloth_config.voicechat.config.output_buffer_size": "Output buffer size",
