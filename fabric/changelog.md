@@ -1,1 +1,1 @@
-- Updated to 1.20.1
+- Added mute on join config option
