@@ -1,2 +1,1 @@
-- Fixed group not getting deleted when disconnecting
-- Fixed group in LeaveGroupEvent always null
+- Added mute on join config option
