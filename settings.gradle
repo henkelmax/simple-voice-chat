@@ -11,4 +11,4 @@ pluginManagement {
 }
 
 rootProject.name = 'voicechat'
-include('api', 'common', 'fabric', /*'quilt', 'forge', */'bukkit')
+include('api', 'common', 'fabric', /*'quilt',*/ 'forge', 'bukkit')
