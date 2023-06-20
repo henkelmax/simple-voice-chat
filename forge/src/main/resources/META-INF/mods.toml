@@ -22,7 +22,7 @@ description='''A working voice chat in Minecraft!'''
 [[dependencies.${mod_id}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[${minecraft_version}]"
+    versionRange="[1.20,1.20.1]"
     ordering="NONE"
     side="BOTH"
 [[dependencies.${mod_id}]]

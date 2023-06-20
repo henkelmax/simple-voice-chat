@@ -23,7 +23,7 @@
       },
       {
         "id": "minecraft",
-        "versions": "${minecraft_dependency}"
+        "versions": ["1.20", "1.20.1"]
       },
       {
         "id": "java",
