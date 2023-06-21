@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.api;
 import de.maxhenkel.voicechat.api.audiochannel.ClientEntityAudioChannel;
 import de.maxhenkel.voicechat.api.audiochannel.ClientLocationalAudioChannel;
 import de.maxhenkel.voicechat.api.audiochannel.ClientStaticAudioChannel;
+import de.maxhenkel.voicechat.api.config.ConfigAccessor;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -77,5 +78,10 @@ public interface VoicechatClientApi extends VoicechatApi {
      * @param categoryId the category ID to remove
      */
     void unregisterClientVolumeCategory(String categoryId);
+
+    /**
+     * @return a read-only config accessor for the mods client config
+     */
+    ConfigAccessor getClientConfig();
 
 }

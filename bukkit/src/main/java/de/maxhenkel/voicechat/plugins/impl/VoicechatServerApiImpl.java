@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.api.audiochannel.*;
 import de.maxhenkel.voicechat.api.audiolistener.AudioListener;
 import de.maxhenkel.voicechat.api.audiolistener.PlayerAudioListener;
 import de.maxhenkel.voicechat.api.audiosender.AudioSender;
+import de.maxhenkel.voicechat.api.config.ConfigAccessor;
 import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
@@ -15,6 +16,7 @@ import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.*;
 import de.maxhenkel.voicechat.plugins.impl.audiolistener.PlayerAudioListenerImpl;
 import de.maxhenkel.voicechat.plugins.impl.audiosender.AudioSenderImpl;
+import de.maxhenkel.voicechat.plugins.impl.config.ConfigAccessorImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.EntitySoundPacketImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.LocationalSoundPacketImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.StaticSoundPacketImpl;
@@ -285,6 +287,11 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
             return Collections.emptyList();
         }
         return server.getCategoryManager().getCategories().stream().map(VolumeCategory.class::cast).collect(Collectors.toList());
+    }
+
+    @Override
+    public ConfigAccessor getServerConfig() {
+        return new ConfigAccessorImpl(Voicechat.SERVER_CONFIG.voiceChatDistance.getConfig());
     }
 
 }
