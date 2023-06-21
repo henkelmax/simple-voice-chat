@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
+import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.api.VoicechatClientApi;
@@ -7,9 +8,11 @@ import de.maxhenkel.voicechat.api.VolumeCategory;
 import de.maxhenkel.voicechat.api.audiochannel.ClientEntityAudioChannel;
 import de.maxhenkel.voicechat.api.audiochannel.ClientLocationalAudioChannel;
 import de.maxhenkel.voicechat.api.audiochannel.ClientStaticAudioChannel;
+import de.maxhenkel.voicechat.api.config.ConfigAccessor;
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.ClientEntityAudioChannelImpl;
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.ClientLocationalAudioChannelImpl;
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.ClientStaticAudioChannelImpl;
+import de.maxhenkel.voicechat.plugins.impl.config.ConfigAccessorImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
@@ -76,6 +79,11 @@ public class VoicechatClientApiImpl extends VoicechatApiImpl implements Voicecha
     @Override
     public void unregisterClientVolumeCategory(String categoryId) {
         ClientManager.getCategoryManager().removeCategory(categoryId);
+    }
+
+    @Override
+    public ConfigAccessor getClientConfig() {
+        return new ConfigAccessorImpl(VoicechatClient.CLIENT_CONFIG.disabled.getConfig());
     }
 
     @Override
