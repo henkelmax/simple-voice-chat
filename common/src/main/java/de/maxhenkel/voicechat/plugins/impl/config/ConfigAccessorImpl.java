@@ -2,7 +2,8 @@ package de.maxhenkel.voicechat.plugins.impl.config;
 
 import de.maxhenkel.configbuilder.Config;
 import de.maxhenkel.voicechat.api.config.ConfigAccessor;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 public class ConfigAccessorImpl implements ConfigAccessor {
 
