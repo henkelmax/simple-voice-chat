@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.api.audiochannel.*;
 import de.maxhenkel.voicechat.api.audiolistener.AudioListener;
 import de.maxhenkel.voicechat.api.audiolistener.PlayerAudioListener;
 import de.maxhenkel.voicechat.api.audiosender.AudioSender;
+import de.maxhenkel.voicechat.api.config.ConfigAccessor;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
 import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
@@ -312,5 +313,10 @@ public interface VoicechatServerApi extends VoicechatApi {
      * @return all registered volume categories
      */
     Collection<VolumeCategory> getVolumeCategories();
+
+    /**
+     * @return a read-only config accessor for the mods server config
+     */
+    ConfigAccessor getServerConfig();
 
 }
