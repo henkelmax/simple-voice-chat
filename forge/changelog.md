@@ -1,1 +1,1 @@
-- Added mute on join config option
+- Added config accessors to the API

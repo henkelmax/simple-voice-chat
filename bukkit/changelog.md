@@ -1,1 +1,1 @@
-- Add support for 1.20.1
+- Added config accessors to the API
