@@ -1,1 +1,1 @@
-- Added config accessors to the API
+- Improved logging
