@@ -72,33 +72,14 @@ public class Server extends Thread {
     @Override
     public void run() {
         try {
-            String bindAddress = Voicechat.SERVER_CONFIG.voiceChatBindAddress.get();
-
-            if (bindAddress.trim().equals("*")) {
-                bindAddress = "";
-            } else if (bindAddress.trim().isEmpty()) {
-                try {
-                    bindAddress = Voicechat.compatibility.getServerIp(server);
-                    if (!bindAddress.trim().isEmpty()) {
-                        try {
-                            InetAddress address = InetAddress.getByName(bindAddress);
-                            if (address.isLoopbackAddress()) {
-                                bindAddress = "";
-                            } else {
-                                Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
-                            }
-                        } catch (Exception e) {
-                            Voicechat.LOGGER.warn("Invalid server-ip", e);
-                            bindAddress = "";
-                        }
-                    }
-                } catch (Throwable t) {
-                    Voicechat.LOGGER.warn("Failed to get server-ip from server.properties - binding to wildcard address", t);
-                }
-            }
-
+            String bindAddress = getBindAddress();
             socket.open(port, bindAddress);
-            Voicechat.LOGGER.info("Server started at port {}", socket.getLocalPort());
+
+            if (bindAddress.isEmpty()) {
+                Voicechat.LOGGER.info("Voice chat server started at port {}", socket.getLocalPort());
+            } else {
+                Voicechat.LOGGER.info("Voice chat server started at {}:{}", bindAddress, socket.getLocalPort());
+            }
 
             while (!socket.isClosed()) {
                 try {
@@ -107,8 +88,37 @@ public class Server extends Thread {
                 }
             }
         } catch (Exception e) {
-            Voicechat.LOGGER.error("Voice chat server error {}", e.getMessage());
+            Voicechat.LOGGER.error("Voice chat server error", e);
         }
+    }
+
+    private String getBindAddress() {
+        String bindAddress = Voicechat.SERVER_CONFIG.voiceChatBindAddress.get();
+
+        if (bindAddress.trim().equals("*")) {
+            bindAddress = "";
+        } else if (bindAddress.trim().isEmpty()) {
+            try {
+                bindAddress = Voicechat.compatibility.getServerIp(server);
+                if (!bindAddress.trim().isEmpty()) {
+                    try {
+                        InetAddress address = InetAddress.getByName(bindAddress);
+                        if (address.isLoopbackAddress()) {
+                            bindAddress = "";
+                        } else {
+                            Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
+                        }
+                    } catch (Exception e) {
+                        Voicechat.LOGGER.warn("Invalid server-ip", e);
+                        bindAddress = "";
+                    }
+                }
+            } catch (Throwable t) {
+                Voicechat.LOGGER.warn("Failed to get server-ip from server.properties - binding to wildcard address", t);
+            }
+        }
+
+        return bindAddress;
     }
 
     public UUID getSecret(UUID playerUUID) {

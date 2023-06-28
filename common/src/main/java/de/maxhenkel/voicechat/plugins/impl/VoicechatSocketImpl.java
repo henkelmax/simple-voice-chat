@@ -56,6 +56,7 @@ public class VoicechatSocketImpl extends VoicechatSocketBase implements Voicecha
         if (!host.isEmpty()) {
             try {
                 new URI("voicechat://" + host);
+                Voicechat.LOGGER.info("Voice host is '{}'", host);
             } catch (URISyntaxException e) {
                 Voicechat.LOGGER.warn("Failed to parse voice host", e);
                 System.exit(1);
