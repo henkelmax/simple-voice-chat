@@ -1,1 +1,2 @@
-- Added config accessors to the API
+- Improved logging
+- Fixed bind address not parsed correctly when using a LAN world
