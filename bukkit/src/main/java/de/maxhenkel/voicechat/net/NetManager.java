@@ -84,7 +84,7 @@ public class NetManager implements Listener {
             try {
                 packet = c.newInstance();
             } catch (Exception e) {
-                Voicechat.LOGGER.error("Failed to create new packet instance of {}: {}", packetClass.getSimpleName(), e.getMessage());
+                Voicechat.LOGGER.error("Failed to create new packet instance of {}", packetClass.getSimpleName(), e);
                 return;
             }
             FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
