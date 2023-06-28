@@ -72,31 +72,14 @@ public class Server extends Thread {
     @Override
     public void run() {
         try {
-            String bindAddress = Voicechat.SERVER_CONFIG.voiceChatBindAddress.get();
-
-            if (bindAddress.trim().equals("*")) {
-                bindAddress = "";
-            } else if (bindAddress.trim().isEmpty()) {
-                if (server.isDedicatedServer() && server instanceof DedicatedServer) {
-                    bindAddress = ((DedicatedServer) server).getStringProperty("server-ip", "");
-                    if (!bindAddress.trim().isEmpty()) {
-                        try {
-                            InetAddress address = InetAddress.getByName(bindAddress);
-                            if (address.isLoopbackAddress()) {
-                                bindAddress = "";
-                            } else {
-                                Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
-                            }
-                        } catch (Exception e) {
-                            Voicechat.LOGGER.warn("Invalid server-ip", e);
-                            bindAddress = "";
-                        }
-                    }
-                }
-            }
-
+            String bindAddress = getBindAddress();
             socket.open(port, bindAddress);
-            Voicechat.LOGGER.info("Server started at port {}", socket.getLocalPort());
+
+            if (bindAddress.isEmpty()) {
+                Voicechat.LOGGER.info("Voice chat server started at port {}", socket.getLocalPort());
+            } else {
+                Voicechat.LOGGER.info("Voice chat server started at {}:{}", bindAddress, socket.getLocalPort());
+            }
 
             while (!socket.isClosed()) {
                 try {
@@ -109,6 +92,32 @@ public class Server extends Thread {
         }
     }
 
+    private String getBindAddress() {
+        String bindAddress = Voicechat.SERVER_CONFIG.voiceChatBindAddress.get();
+
+        if (bindAddress.trim().equals("*")) {
+            bindAddress = "";
+        } else if (bindAddress.trim().isEmpty()) {
+            if (server.isDedicatedServer() && server instanceof DedicatedServer) {
+                bindAddress = ((DedicatedServer) server).getStringProperty("server-ip", "");
+                if (!bindAddress.trim().isEmpty()) {
+                    try {
+                        InetAddress address = InetAddress.getByName(bindAddress);
+                        if (address.isLoopbackAddress()) {
+                            bindAddress = "";
+                        } else {
+                            Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
+                        }
+                    } catch (Exception e) {
+                        Voicechat.LOGGER.warn("Invalid server-ip", e);
+                        bindAddress = "";
+                    }
+                }
+            }
+        }
+        return bindAddress;
+    }
+
     /**
      * Changes the port of the voice chat server.
      * <b>NOTE:</b> This removes every existing connection and all secrets!
@@ -118,7 +127,7 @@ public class Server extends Thread {
      */
     public void changePort(int port) throws Exception {
         VoicechatSocket newSocket = PluginManager.instance().getSocketImplementation(server);
-        newSocket.open(port, Voicechat.SERVER_CONFIG.voiceChatBindAddress.get());
+        newSocket.open(port, getBindAddress());
         VoicechatSocket old = socket;
         socket = newSocket;
         this.port = port;
