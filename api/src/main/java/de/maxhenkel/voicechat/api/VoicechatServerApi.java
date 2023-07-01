@@ -81,7 +81,7 @@ public interface VoicechatServerApi extends VoicechatApi {
      * <b>NOTE</b>: Never use more than one audio player for every audio channel.
      *
      * @param audioChannel  the channel where the audio player should send the audio to
-     * @param encoder       the optus encoder used to encode the audio data
+     * @param encoder       the opus encoder used to encode the audio data
      * @param audioSupplier this gets called whenever a new audio frame needs to be sent. The size of the array always needs to be 960. To end the playback, return <code>null</code>
      * @return the audio player
      */
@@ -94,7 +94,7 @@ public interface VoicechatServerApi extends VoicechatApi {
      * <b>NOTE</b>: Never use more than one audio player for every audio channel.
      *
      * @param audioChannel the channel where the audio player should send the audio to
-     * @param encoder      the optus encoder used to encode the audio data
+     * @param encoder      the opus encoder used to encode the audio data
      * @param audio        the audio data
      * @return the audio player
      */
