@@ -1,1 +1,1 @@
-- Improved logging
+- Fixed entity audio channels not working for non-players
