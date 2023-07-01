@@ -192,9 +192,9 @@ public class AudioChannel extends Thread {
             appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData));
         } else if (packet instanceof PlayerSoundPacket) {
             PlayerSoundPacket soundPacket = (PlayerSoundPacket) packet;
-            @Nullable Entity entity = minecraft.level.getPlayerByUUID(uuid);
+            @Nullable Entity entity = minecraft.world.getPlayerEntityByUUID(uuid);
             if (entity == null) {
-                Vector3d position = minecraft.gameRenderer.getMainCamera().getPosition();
+                Vec3d position = PositionalAudioUtils.getCameraPosition();
                 AxisAlignedBB box = new AxisAlignedBB(
                         position.x - soundPacket.getDistance() - 1F,
                         position.y - soundPacket.getDistance() - 1F,
@@ -203,7 +203,7 @@ public class AudioChannel extends Thread {
                         position.y + soundPacket.getDistance() + 1F,
                         position.z + soundPacket.getDistance() + 1F
                 );
-                entity = minecraft.level.getEntities((Entity) null, box, e -> e.getUUID().equals(uuid)).stream().findAny().orElse(null);
+                entity = minecraft.world.getEntitiesInAABBexcluding(null, box, e -> e.getUniqueID().equals(uuid)).stream().findAny().orElse(null);
                 if (entity == null) {
                     return;
                 }
@@ -217,8 +217,8 @@ public class AudioChannel extends Thread {
             }
 
             float deathVolume = 1F;
-            if (entity instanceof LivingEntity) {
-                deathVolume = Math.min(Math.max((20F - (float) ((LivingEntity) entity).deathTime) / 20F, 0F), 1F);
+            if (entity instanceof EntityLiving) {
+                deathVolume = Math.min(Math.max((20F - (float) ((EntityLiving) entity).deathTime) / 20F, 0F), 1F);
             }
             volume *= deathVolume;
             Vec3d pos = entity.getPositionEyes(1F);
