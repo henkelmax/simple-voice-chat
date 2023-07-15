@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.ClientVoicechatSocket;
+import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.*;
@@ -32,6 +33,7 @@ public class ClientVoicechatConnection extends Thread {
         this.authThread.start();
         setDaemon(true);
         setName("VoiceChatConnectionThread");
+        setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
         this.socket.open();
     }
 
@@ -128,6 +130,7 @@ public class ClientVoicechatConnection extends Thread {
             this.running = true;
             setDaemon(true);
             setName("VoiceChatAuthenticationThread");
+            setDefaultUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
         }
 
         @Override

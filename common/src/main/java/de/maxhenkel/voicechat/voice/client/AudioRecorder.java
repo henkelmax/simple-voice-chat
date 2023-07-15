@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.mp3.Mp3Encoder;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.impl.mp3.Mp3EncoderImpl;
+import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -56,7 +57,7 @@ public class AudioRecorder {
 
         stereoFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, SoundManager.SAMPLE_RATE, 16, 2, 4, SoundManager.SAMPLE_RATE, false);
 
-        threadPool = Executors.newSingleThreadExecutor();
+        threadPool = Executors.newSingleThreadExecutor(NamedThreadPoolFactory.create("AudioRecorderThread"));
     }
 
     public static AudioRecorder create() {
