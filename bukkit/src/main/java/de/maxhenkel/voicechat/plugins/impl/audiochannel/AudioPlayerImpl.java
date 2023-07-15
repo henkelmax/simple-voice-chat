@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.audiochannel.AudioChannel;
 import de.maxhenkel.voicechat.api.audiochannel.AudioPlayer;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
+import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,6 +28,7 @@ public class AudioPlayerImpl extends Thread implements AudioPlayer {
         this.audioSupplier = audioSupplier;
         setDaemon(true);
         setName(String.format("AudioPlayer-%s", audioChannel.getId()));
+        setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
     }
 
     @Override

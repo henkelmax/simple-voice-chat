@@ -1,1 +1,1 @@
-- Fixed entity audio channels not working for non-players
+- Improved uncaught exception handling in threads

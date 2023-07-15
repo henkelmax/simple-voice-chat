@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 import de.maxhenkel.voicechat.voice.client.*;
 import de.maxhenkel.voicechat.voice.client.speaker.*;
 import de.maxhenkel.voicechat.voice.common.Utils;
@@ -103,6 +104,7 @@ public class MicTestButton extends ButtonBase {
             this.running = true;
             setDaemon(true);
             setName("VoiceTestingThread");
+            setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
 
             micThread = client != null ? client.getMicThread() : null;
             if (micThread == null) {
