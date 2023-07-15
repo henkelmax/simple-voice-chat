@@ -1,5 +1,7 @@
 package de.maxhenkel.voicechat.voice.common;
 
+import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
+
 import java.util.concurrent.ThreadFactory;
 
 public class NamedThreadPoolFactory implements ThreadFactory {
@@ -13,6 +15,7 @@ public class NamedThreadPoolFactory implements ThreadFactory {
     @Override
     public Thread newThread(Runnable r) {
         Thread thread = new Thread(r, name);
+        thread.setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
         thread.setDaemon(true);
         return thread;
     }
