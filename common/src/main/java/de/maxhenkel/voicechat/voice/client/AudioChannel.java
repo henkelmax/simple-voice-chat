@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.opus.OpusDecoder;
+import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 import de.maxhenkel.voicechat.integration.freecam.FreecamUtil;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.opus.OpusManager;
@@ -50,6 +51,7 @@ public class AudioChannel extends Thread {
         this.minecraft = Minecraft.getInstance();
         setDaemon(true);
         setName("AudioChannelThread-" + uuid.toString());
+        setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
         Voicechat.LOGGER.info("Creating audio channel for " + uuid);
     }
 
