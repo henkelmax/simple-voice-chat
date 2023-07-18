@@ -37,7 +37,7 @@ public class AudioChannel extends Thread {
     private final OpusDecoder decoder;
     private long lastSequenceNumber;
 
-    public AudioChannel(ClientVoicechat client, InitializationData initializationData, UUID uuid) throws NativeDependencyException {
+    public AudioChannel(ClientVoicechat client, InitializationData initializationData, UUID uuid) {
         this.client = client;
         this.initializationData = initializationData;
         this.uuid = uuid;
