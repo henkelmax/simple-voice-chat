@@ -72,8 +72,8 @@ public class ClientVoicechat {
                         ch.addToQueue(packet);
                         ch.start();
                         audioChannels.put(packet.getSender(), ch);
-                    } catch (NativeDependencyException e) {
-                        CooldownTimer.run("decoder_unavailable", () -> {
+                    } catch (Exception e) {
+                        CooldownTimer.run("playback_unavailable", () -> {
                             Voicechat.LOGGER.error("Failed to create audio channel", e);
                             ClientManager.sendPlayerError("message.voicechat.playback_unavailable", e);
                         });
