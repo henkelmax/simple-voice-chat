@@ -100,7 +100,7 @@ public class MicTestButton extends ButtonBase {
         // @Nullable
         // private SoundManager ownSoundManager;
 
-        public VoiceThread() throws SpeakerException, MicrophoneException, NativeDependencyException {
+        public VoiceThread() throws SpeakerException, MicrophoneException {
             this.running = true;
             setDaemon(true);
             setName("VoiceTestingThread");
