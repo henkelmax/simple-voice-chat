@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.compatibility;
 
 import de.maxhenkel.voicechat.Voicechat;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.key.Key;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -21,8 +21,8 @@ public abstract class BaseCompatibility implements Compatibility {
     }
 
     @Override
-    public NamespacedKey createNamespacedKey(String key) {
-        return new NamespacedKey(Voicechat.MODID, key);
+    public Key createNamespacedKey(String key) {
+        return Key.key(Voicechat.MODID, key);
     }
 
     @Override

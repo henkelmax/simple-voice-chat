@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import de.maxhenkel.voicechat.BukkitVersion;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.key.Key;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
@@ -26,8 +26,8 @@ public class Compatibility1_12 extends BaseCompatibility {
     }
 
     @Override
-    public NamespacedKey createNamespacedKey(String key) {
-        return new NamespacedKey(CHANNEL, key);
+    public Key createNamespacedKey(String key) {
+        return Key.key(CHANNEL, key);
     }
 
     @Override
