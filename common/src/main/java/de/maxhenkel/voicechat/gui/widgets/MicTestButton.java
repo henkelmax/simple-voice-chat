@@ -101,7 +101,7 @@ public class MicTestButton extends AbstractButton {
         @Nullable
         private SoundManager ownSoundManager;
 
-        public VoiceThread() throws SpeakerException, MicrophoneException, NativeDependencyException {
+        public VoiceThread() throws SpeakerException, MicrophoneException{
             this.running = true;
             setDaemon(true);
             setName("VoiceTestingThread");

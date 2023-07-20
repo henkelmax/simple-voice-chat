@@ -33,7 +33,7 @@ public class MicThread extends Thread {
     @Nullable
     private Denoiser denoiser;
 
-    public MicThread(@Nullable ClientVoicechat client, @Nullable ClientVoicechatConnection connection) throws MicrophoneException, NativeDependencyException {
+    public MicThread(@Nullable ClientVoicechat client, @Nullable ClientVoicechatConnection connection) throws MicrophoneException {
         this.client = client;
         this.connection = connection;
         this.running = true;
