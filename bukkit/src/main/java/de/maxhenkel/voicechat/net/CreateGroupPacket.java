@@ -4,14 +4,14 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.plugins.impl.GroupImpl;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.key.Key;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 
 public class CreateGroupPacket implements Packet<CreateGroupPacket> {
 
-    public static final NamespacedKey CREATE_GROUP = Voicechat.compatibility.createNamespacedKey("create_group");
+    public static final Key CREATE_GROUP = Voicechat.compatibility.createNamespacedKey("create_group");
 
     private String name;
     @Nullable
@@ -42,7 +42,7 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
     }
 
     @Override
-    public NamespacedKey getID() {
+    public Key getID() {
         return CREATE_GROUP;
     }
 

@@ -3,11 +3,11 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.key.Key;
 
 public class AddCategoryPacket implements Packet<AddCategoryPacket> {
 
-    public static final NamespacedKey ADD_CATEGORY = Voicechat.compatibility.createNamespacedKey("add_category");
+    public static final Key ADD_CATEGORY = Voicechat.compatibility.createNamespacedKey("add_category");
 
     private VolumeCategoryImpl category;
 
@@ -24,7 +24,7 @@ public class AddCategoryPacket implements Packet<AddCategoryPacket> {
     }
 
     @Override
-    public NamespacedKey getID() {
+    public Key getID() {
         return ADD_CATEGORY;
     }
 
