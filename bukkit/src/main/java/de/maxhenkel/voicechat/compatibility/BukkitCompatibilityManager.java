@@ -32,6 +32,7 @@ public class BukkitCompatibilityManager {
         COMPATIBILITIES.put(Compatibility1_12.VERSION_1_12_2, Compatibility1_12.INSTANCE);
         COMPATIBILITIES.put(Compatibility1_12.VERSION_1_12_1, Compatibility1_12.INSTANCE);
         COMPATIBILITIES.put(Compatibility1_12.VERSION_1_12, Compatibility1_12.INSTANCE);
+        COMPATIBILITIES.put(Compatibility1_8.VERSION_1_8_8, Compatibility1_8.INSTANCE);
     }
 
     public static Compatibility getCompatibility() throws Exception {

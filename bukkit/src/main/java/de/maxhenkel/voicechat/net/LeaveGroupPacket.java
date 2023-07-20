@@ -2,19 +2,19 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.key.Key;
 import org.bukkit.entity.Player;
 
 public class LeaveGroupPacket implements Packet<LeaveGroupPacket> {
 
-    public static final NamespacedKey LEAVE_GROUP = Voicechat.compatibility.createNamespacedKey("leave_group");
+    public static final Key LEAVE_GROUP = Voicechat.compatibility.createNamespacedKey("leave_group");
 
     public LeaveGroupPacket() {
 
     }
 
     @Override
-    public NamespacedKey getID() {
+    public Key getID() {
         return LEAVE_GROUP;
     }
 

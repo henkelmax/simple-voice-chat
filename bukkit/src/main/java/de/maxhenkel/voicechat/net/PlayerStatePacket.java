@@ -3,11 +3,11 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.key.Key;
 
 public class PlayerStatePacket implements Packet<PlayerStatePacket> {
 
-    public static final NamespacedKey PLAYER_STATE = Voicechat.compatibility.createNamespacedKey("player_state");
+    public static final Key PLAYER_STATE = Voicechat.compatibility.createNamespacedKey("player_state");
 
     private PlayerState playerState;
 
@@ -24,7 +24,7 @@ public class PlayerStatePacket implements Packet<PlayerStatePacket> {
     }
 
     @Override
-    public NamespacedKey getID() {
+    public Key getID() {
         return PLAYER_STATE;
     }
 

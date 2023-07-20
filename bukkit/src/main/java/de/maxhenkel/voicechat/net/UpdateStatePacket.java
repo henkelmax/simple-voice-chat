@@ -2,12 +2,12 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.key.Key;
 import org.bukkit.entity.Player;
 
 public class UpdateStatePacket implements Packet<UpdateStatePacket> {
 
-    public static final NamespacedKey PLAYER_STATE = Voicechat.compatibility.createNamespacedKey("update_state");
+    public static final Key PLAYER_STATE = Voicechat.compatibility.createNamespacedKey("update_state");
 
     private boolean disabled;
 
@@ -24,7 +24,7 @@ public class UpdateStatePacket implements Packet<UpdateStatePacket> {
     }
 
     @Override
-    public NamespacedKey getID() {
+    public Key getID() {
         return PLAYER_STATE;
     }
 
