@@ -182,7 +182,7 @@ public class RenderEvents {
         if (ClientManager.getClient() != null && ClientManager.getClient().getConnection() != null && ClientManager.getClient().getConnection().isInitialized()) {
             return true;
         }
-        return minecraft.getIntegratedServer() != null && !minecraft.getIntegratedServer().getPublic();
+        return minecraft.getIntegratedServer() == null || minecraft.getIntegratedServer().getPublic();
     }
 
 }
