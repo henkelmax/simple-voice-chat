@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.key.Key;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class JoinGroupPacket implements Packet<JoinGroupPacket> {
 
-    public static final NamespacedKey SET_GROUP = Voicechat.compatibility.createNamespacedKey("set_group");
+    public static final Key SET_GROUP = Voicechat.compatibility.createNamespacedKey("set_group");
 
     private UUID group;
     @Nullable
@@ -35,7 +35,7 @@ public class JoinGroupPacket implements Packet<JoinGroupPacket> {
     }
 
     @Override
-    public NamespacedKey getID() {
+    public Key getID() {
         return SET_GROUP;
     }
 

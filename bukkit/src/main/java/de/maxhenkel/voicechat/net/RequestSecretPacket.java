@@ -2,12 +2,12 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.key.Key;
 import org.bukkit.entity.Player;
 
 public class RequestSecretPacket implements Packet<RequestSecretPacket> {
 
-    public static final NamespacedKey REQUEST_SECRET = Voicechat.compatibility.createNamespacedKey("request_secret");
+    public static final Key REQUEST_SECRET = Voicechat.compatibility.createNamespacedKey("request_secret");
 
     private int compatibilityVersion;
 
@@ -24,7 +24,7 @@ public class RequestSecretPacket implements Packet<RequestSecretPacket> {
     }
 
     @Override
-    public NamespacedKey getID() {
+    public Key getID() {
         return REQUEST_SECRET;
     }
 
