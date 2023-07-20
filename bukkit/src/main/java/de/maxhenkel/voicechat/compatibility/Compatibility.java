@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.compatibility;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import net.kyori.adventure.text.Component;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.key.Key;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
@@ -18,7 +18,7 @@ public interface Compatibility {
 
     void removeChannel(Player player, String channel);
 
-    NamespacedKey createNamespacedKey(String key);
+    Key createNamespacedKey(String key);
 
     void sendMessage(Player player, Component component);
 

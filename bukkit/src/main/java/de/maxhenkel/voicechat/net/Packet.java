@@ -1,12 +1,12 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.key.Key;
 import org.bukkit.entity.Player;
 
 public interface Packet<T extends Packet> {
 
-    NamespacedKey getID();
+    Key getID();
 
     T fromBytes(FriendlyByteBuf buf);
 

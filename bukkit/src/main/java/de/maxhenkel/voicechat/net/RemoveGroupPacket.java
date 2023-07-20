@@ -2,13 +2,13 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.key.Key;
 
 import java.util.UUID;
 
 public class RemoveGroupPacket implements Packet<RemoveGroupPacket> {
 
-    public static final NamespacedKey REMOVE_GROUP = Voicechat.compatibility.createNamespacedKey("remove_group");
+    public static final Key REMOVE_GROUP = Voicechat.compatibility.createNamespacedKey("remove_group");
 
     private UUID groupId;
 
@@ -25,7 +25,7 @@ public class RemoveGroupPacket implements Packet<RemoveGroupPacket> {
     }
 
     @Override
-    public NamespacedKey getID() {
+    public Key getID() {
         return REMOVE_GROUP;
     }
 
