@@ -257,7 +257,7 @@ public class Server extends Thread {
                         if (player != null) {
                             CommonCompatibilityManager.INSTANCE.emitServerVoiceChatConnectedEvent(player);
                             PluginManager.instance().onPlayerConnected(player);
-                            Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getDisplayName().getUnformattedComponentText(), connection.getPlayerUUID());
+                            Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getDisplayNameString(), connection.getPlayerUUID());
                         }
                         sendPacket(new ConnectionCheckAckPacket(), connection);
                         continue;
