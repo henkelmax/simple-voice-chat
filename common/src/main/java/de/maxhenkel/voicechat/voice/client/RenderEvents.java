@@ -165,7 +165,7 @@ public class RenderEvents {
         if (ClientManager.getClient() != null && ClientManager.getClient().getConnection() != null && ClientManager.getClient().getConnection().isInitialized()) {
             return true;
         }
-        return minecraft.getCurrentServer() != null && !minecraft.getCurrentServer().isLan();
+        return minecraft.getSingleplayerServer() == null || minecraft.getSingleplayerServer().isPublished();
     }
 
     private static void vertex(IVertexBuilder builder, MatrixStack matrixStack, float x, float y, float z, float u, float v, int light) {
