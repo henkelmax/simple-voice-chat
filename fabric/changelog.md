@@ -1,0 +1,1 @@
+- Fixed disconnected icon not showing in some cases
