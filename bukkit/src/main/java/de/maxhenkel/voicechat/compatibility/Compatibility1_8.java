@@ -10,8 +10,6 @@ import org.bukkit.entity.Player;
 
 public class Compatibility1_8 extends BaseCompatibility {
 
-    public static final String CHANNEL = "vc";
-
     public static final BukkitVersion VERSION_1_8_8 = BukkitVersion.parseBukkitVersion("1.8.8-R0.1");
 
     public static final Compatibility1_8 INSTANCE = new Compatibility1_8();
@@ -25,7 +23,7 @@ public class Compatibility1_8 extends BaseCompatibility {
 
     @Override
     public Key createNamespacedKey(String key) {
-        return Key.key(CHANNEL, key);
+        return Key.key(Compatibility1_12.CHANNEL, key);
     }
 
     @Override
