@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.key.Key;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
 
     private Map<UUID, PlayerState> playerStates;
 
-    public static final NamespacedKey PLAYER_STATES = Voicechat.compatibility.createNamespacedKey("player_states");
+    public static final Key PLAYER_STATES = Voicechat.compatibility.createNamespacedKey("player_states");
 
     public PlayerStatesPacket() {
 
@@ -28,7 +28,7 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
     }
 
     @Override
-    public NamespacedKey getID() {
+    public Key getID() {
         return PLAYER_STATES;
     }
 
