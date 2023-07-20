@@ -1,1 +1,2 @@
-- Improved uncaught exception handling in threads
+- Added support for 1.8.8
+
