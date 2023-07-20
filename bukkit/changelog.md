@@ -1,2 +1,2 @@
 - Added support for 1.8.8
-
+- Fixed ViaVersion compatibility
