@@ -1,1 +1,1 @@
-- Fixed disconnected icon not showing in some cases
+- Fix microphone testing not working in some cases

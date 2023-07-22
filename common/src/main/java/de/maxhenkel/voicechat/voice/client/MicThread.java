@@ -56,15 +56,9 @@ public class MicThread extends Thread {
 
     @Override
     public void run() {
+        Microphone mic = getMic();
         if (mic == null) {
-            try {
-                mic = MicrophoneManager.createMicrophone();
-                Minecraft.getInstance().execute(ClientManager.instance()::checkMicrophonePermissions);
-            } catch (MicrophoneException e) {
-                onError.accept(e);
-                running = false;
-                return;
-            }
+            return;
         }
 
         while (running) {
@@ -109,6 +103,10 @@ public class MicThread extends Thread {
 
     @Nullable
     public short[] pollMic() {
+        Microphone mic = getMic();
+        if (mic == null) {
+            throw new IllegalStateException("No microphone available");
+        }
         if (!mic.isStarted()) {
             mic.start();
         }
@@ -123,6 +121,24 @@ public class MicThread extends Thread {
         short[] buff = mic.read();
         volumeManager.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
         return denoiseIfEnabled(buff);
+    }
+
+    @Nullable
+    private Microphone getMic() {
+        if (!running) {
+            return null;
+        }
+        if (mic == null) {
+            try {
+                mic = MicrophoneManager.createMicrophone();
+                Minecraft.getInstance().execute(ClientManager.instance()::checkMicrophonePermissions);
+            } catch (MicrophoneException e) {
+                onError.accept(e);
+                running = false;
+                return null;
+            }
+        }
+        return mic;
     }
 
     private volatile boolean activating;
