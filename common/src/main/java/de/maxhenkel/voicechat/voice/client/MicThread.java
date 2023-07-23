@@ -117,15 +117,18 @@ public class MicThread extends Thread {
         }
 
         if (mic.available() < SoundManager.FRAME_SIZE) {
-            if (mic.available() == 128)
-                amount128++;
-            else
-                amount128 = 0;
+            if (mic.available() == lastAmount)
+                amountnbr++;
+            else {
+                amountnbr = 0;
+                lastAmount = mic.available();
+            }
 
-            if (amount128 > 10) {
-                amount128 = 0;
+
+            if (amountnbr > 10) {
+                amountnbr = 0;
                 mic.stop();
-                Voicechat.LOGGER.info("Microphone stopped working. Restarting...");
+                Voicechat.LOGGER.info("Microphone stopped working. Restarting..." + lastAmount);
             }
             Utils.sleep(5);
             return null;
@@ -135,7 +138,8 @@ public class MicThread extends Thread {
         return denoiseIfEnabled(buff);
     }
 
-    private volatile int amount128 = 0;
+    private volatile int amountnbr = 0;
+    private volatile int lastAmount = 0;
     private volatile boolean activating;
     private volatile int deactivationDelay;
     private volatile short[] lastBuff;
