@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class VoiceChatResourcePack extends ResourcePack {
@@ -99,7 +100,7 @@ public class VoiceChatResourcePack extends ResourcePack {
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to list builtin pack resources", e);
         }
-        return list.stream().filter(resourceLocation -> pathFilter.test(resourceLocation.getPath())).toList();
+        return list.stream().filter(resourceLocation -> pathFilter.test(resourceLocation.getPath())).collect(Collectors.toList());
     }
 
     private static String convertPath(Path path) {
