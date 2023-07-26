@@ -21,11 +21,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class VoiceChatResourcePack extends AbstractPackResources {
 
@@ -90,7 +89,6 @@ public class VoiceChatResourcePack extends AbstractPackResources {
             URL url = Voicechat.class.getResource(getPath());
             Path namespacePath = Paths.get(url.toURI()).resolve(type.getDirectory()).resolve(namespace);
             Path resPath = namespacePath.resolve(prefix);
-            List<Path> files = Files.walk(resPath).collect(Collectors.toList());
 
             if (!Files.exists(resPath)) {
                 return list;
@@ -104,8 +102,8 @@ public class VoiceChatResourcePack extends AbstractPackResources {
             }
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to list builtin pack resources", e);
-            return list;
         }
+        return list.stream().filter(pathFilter).toList();
     }
 
     private static String convertPath(Path path) {
