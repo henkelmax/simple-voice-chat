@@ -1,1 +1,1 @@
-- Fix microphone testing not working in some cases
+- Improved builtin resource pack handling

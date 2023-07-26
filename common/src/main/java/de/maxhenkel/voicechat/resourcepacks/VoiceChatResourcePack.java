@@ -19,7 +19,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -53,14 +52,10 @@ public class VoiceChatResourcePack extends AbstractPackResources {
         return getResource(String.join("/", strings));
     }
 
-    private static String getPathFromLocation(PackType packType, ResourceLocation resourceLocation) {
-        return String.format(Locale.ROOT, "%s/%s/%s", packType.getDirectory(), resourceLocation.getNamespace(), resourceLocation.getPath());
-    }
-
     @Nullable
     @Override
     public IoSupplier<InputStream> getResource(PackType packType, ResourceLocation resourceLocation) {
-        return getResource(getPathFromLocation(packType, resourceLocation));
+        return getRootResource(packType.getDirectory(), resourceLocation.getNamespace(), resourceLocation.getPath());
     }
 
     @Nullable
@@ -79,22 +74,33 @@ public class VoiceChatResourcePack extends AbstractPackResources {
             if (url == null) {
                 return;
             }
-            Path resPath = Paths.get(url.toURI());
+            Path namespacePath = Paths.get(url.toURI()).resolve(type.getDirectory()).resolve(namespace);
+            Path resPath = namespacePath.resolve(prefix);
 
-            String absolutePath = type.getDirectory() + "/" + namespace + "/";
-            String absolutePrefixPath = absolutePath + prefix + "/";
+            if (!Files.exists(resPath)) {
+                return;
+            }
 
             try (Stream<Path> files = Files.walk(resPath)) {
                 files.filter(path -> !Files.isDirectory(path)).forEach(path -> {
-                    String name = path.getFileName().toString();
-                    if (!name.endsWith(".mcmeta") && name.startsWith(absolutePrefixPath)) {
-                        ResourceLocation resourceLocation = new ResourceLocation(namespace, name.substring(absolutePath.length()));
-                        resourceOutput.accept(resourceLocation, getResource(type, resourceLocation));
-                    }
+                    ResourceLocation resourceLocation = new ResourceLocation(namespace, convertPath(path).substring(convertPath(namespacePath).length() + 1));
+                    resourceOutput.accept(resourceLocation, getResource(type, resourceLocation));
                 });
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            Voicechat.LOGGER.error("Failed to list builtin pack resources", e);
         }
+    }
+
+    private static String convertPath(Path path) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < path.getNameCount(); i++) {
+            stringBuilder.append(path.getName(i));
+            if (i < path.getNameCount() - 1) {
+                stringBuilder.append("/");
+            }
+        }
+        return stringBuilder.toString();
     }
 
     @Override
