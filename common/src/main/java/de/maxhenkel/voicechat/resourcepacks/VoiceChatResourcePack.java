@@ -103,7 +103,7 @@ public class VoiceChatResourcePack extends AbstractPackResources {
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to list builtin pack resources", e);
         }
-        return list.stream().filter(pathFilter).toList();
+        return list.stream().filter(resourceLocation -> pathFilter.test(resourceLocation.getPath())).toList();
     }
 
     private static String convertPath(Path path) {
