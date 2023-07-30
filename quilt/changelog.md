@@ -1,1 +1,1 @@
-- Improved builtin resource pack handling
+- Updated Quilt loader and QSL
