@@ -1,3 +1,7 @@
+plugins {
+    id 'fabric-loom' version "${fabric_loom_version}" apply false
+}
+
 task publishAll(type: GradleBuild) {
     group = 'voicechat'
     tasks = [
@@ -21,7 +25,7 @@ task publishBukkit(type: GradleBuild) {
             ':bukkit:clean',
             ':bukkit:curseforge',
             ':bukkit:modrinth',
-            ':bukkit:publishAllPublicationsToHangar',
+            ':bukkit:publishAllPublicationsToHangar'
     ]
 }
 
@@ -86,6 +90,6 @@ task cleanAll(type: GradleBuild) {
             ':api:clean',
             ':fabric:clean',
             ':forge:clean',
-            ':bukkit:clean',
+            ':bukkit:clean'
     ]
 }

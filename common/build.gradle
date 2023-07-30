@@ -1,14 +1,5 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url = 'https://maven.maxhenkel.de/repository/public' }
-        mavenLocal()
-    }
-}
-
 plugins {
-    id 'java'
-    id 'common-loom' version "${common_loom_version}"
+    id 'fabric-loom'
 }
 
 sourceCompatibility = JavaLanguageVersion.of(java_version as int)
