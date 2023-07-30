@@ -1,8 +1,8 @@
 [Modrinth](https://modrinth.com/mod/simple-voice-chat)
 |
-[CurseForge](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat)
+[CurseForge](https://legacy.curseforge.com/minecraft/mc-mods/simple-voice-chat)
 |
-[CurseForge Bukkit](https://www.curseforge.com/minecraft/bukkit-plugins/simple-voice-chat)
+[CurseForge Bukkit](https://legacy.curseforge.com/minecraft/bukkit-plugins/simple-voice-chat)
 |
 [Spigot](https://www.spigotmc.org/resources/simple-voice-chat.93738/)
 |
@@ -20,10 +20,12 @@
 
 # Simple Voice Chat
 
-This mod adds a proximity voice chat to your Minecraft server.
+A proximity voice chat for Minecraft.
 You can choose between push to talk (PTT) or voice activation.
 The default PTT key is `CAPS LOCK`, but it can be changed in the key bind settings.
 You can access the voice chat settings by pressing the `V` key.
+
+There is a variety of [addons](https://modrepo.de/minecraft/voicechat/addons) that offer additional features and functionalities.
 
 :warning: **NOTE** This mod requires special setup on the server in order to work.
 Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki/setup) for more information.
@@ -45,15 +47,15 @@ Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki/setup) for mo
 
 ## Features
 
+- Push to talk
+- Voice activation
 - Proximity voice chat
 - Password protected group chats
 - [Opus codec](https://opus-codec.org/)
 - [RNNoise](https://jmvalin.ca/demo/rnnoise/) recurrent neural network noise suppression
 - OpenAL audio
 - Cross compatibility between Fabric, Forge, Quilt, Bukkit, Spigot and Paper
-- Compatibility with [ModMenu](https://www.curseforge.com/minecraft/mc-mods/modmenu) (Use [ClothConfig](https://www.curseforge.com/minecraft/mc-mods/cloth-config) for a better configuration UI)
-- Push to talk
-- Voice activation
+- Compatibility with [ModMenu](https://modrinth.com/mod/modmenu) (Use [ClothConfig](https://modrinth.com/mod/cloth-config) for a better configuration UI)
 - Configurable push to talk key
 - Microphone test playback
 - Configurable voice distance
@@ -64,17 +66,7 @@ Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki/setup) for mo
 - AES encryption
 - Audio recording with separate audio tracks
 - A powerful [API](https://modrepo.de/minecraft/voicechat/api)
-
-## Addons
-
-| Name                              | Description                                                    | Links                                                                                                                                                                                                                              |
-|-----------------------------------|----------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| AudioPlayer                       | Allows putting custom audio files on music discs               | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/audioplayer), [Modrinth](https://modrinth.com/mod/audioplayer), [Third party Paper port](https://github.com/Navoei/CustomDiscs)                                          |
-| Voice Chat Interaction            | Voice chat skulk sensor activation and warden detection        | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/voice-chat-interaction), [Modrinth](https://modrinth.com/mod/voice-chat-interaction), [Third party Paper port](https://github.com/iGalaxyYT/voicechat-interaction-paper) |
-| Sound Physics Remastered          | Sound Physics for Simple Voice Chat                            | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/sound-physics-remastered), [Modrinth](https://modrinth.com/mod/sound-physics-remastered)                                                                                 |
-| Replay Voice Chat                 | A compatibility mod to record Simple Voice Chat with ReplayMod | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/replay-voice-chat), [Modrinth](https://modrinth.com/mod/replay-voice-chat)                                                                                               |
-| Voice Chat Broadcast              | Broadcast your voice to everyone                               | [GitHub](https://github.com/henkelmax/voicechat-broadcast-plugin)                                                                                                                                                                  |
-| Simple Voice Chat Enhanced Groups | Various improvements to voice chat groups                      | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/enhanced-groups), [Modrinth](https://modrinth.com/mod/enhanced-groups)                                                                                                   |
+- Many [addons](https://modrepo.de/minecraft/voicechat/addons)
 
 ## Icons
 
@@ -125,22 +117,6 @@ In addition, there is the possibility to specify the recording and playback devi
 By clicking the 'Enable microphone testing' button, you can hear your own voice and adjust the activation level of the voice activation.
 
 ![](https://i.imgur.com/TMyfSYU.png)
-
-## Key Bindings
-
-| Name                  |      Default Key       | Description                                                                               |
-|-----------------------|:----------------------:|-------------------------------------------------------------------------------------------|
-| Voice Chat GUI        |          `V`           | Opens the voice chat GUI.                                                                 |
-| Voice Chat Settings   | *Not bound by default* | Opens the voice chat settings.                                                            |
-| Group Chats           |          `G`           | Opens the group chat GUI.                                                                 |
-| Push To Talk          |      `CAPS LOCK`       | The push to talk key (Only when using activation type `PTT`).                             |
-| Mute Microphone       |          `M`           | The mute button (Only when using voice activation type `Voice`).                          |
-| Disable Voice Chat    |          `N`           | This button disables the voice chat. Other people can't hear you and you can't hear them. |
-| Hide Voice Chat Icons |          `H`           | This button hides all icons related to the voice chat.                                    |
-| Toggle Recording      | *Not bound by default* | Toggles voice chat audio recording.                                                       |
-| Whisper               | *Not bound by default* | Hold down to whisper.                                                                     |
-
-You can change every key binding in the Minecraft key binding settings.
 
 ## Important Notes
 
