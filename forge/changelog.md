@@ -1,1 +1,1 @@
-- Improved builtin resource pack handling
+- Updated mcmod.info
