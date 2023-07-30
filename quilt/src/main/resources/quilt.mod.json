@@ -5,6 +5,25 @@
     "id": "${mod_id}",
     "version": "${mod_version}",
     "intermediate_mappings": "net.fabricmc:intermediary",
+    "metadata": {
+      "name": "${mod_name}",
+      "description": "A working voice chat in Minecraft!",
+      "contributors": {
+        "${mod_vendor}": "Owner"
+      },
+      "contact": {
+        "homepage": "https://modrepo.de/minecraft/voicechat/overview",
+        "issues": "https://github.com/henkelmax/simple-voice-chat/issues",
+        "sources": "https://github.com/henkelmax/simple-voice-chat"
+      },
+      "license": {
+        "name": "All Rights Reserved",
+        "id": "ARR",
+        "url": "https://github.com/henkelmax/simple-voice-chat/blob/1.20.1/license",
+        "description": "All Rights Reserved"
+      },
+      "icon": "icon.png"
+    },
     "entrypoints": {
       "client_init": [
         "de.maxhenkel.voicechat.QuiltVoicechatClientMod"
