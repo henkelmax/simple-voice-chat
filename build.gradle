@@ -21,7 +21,7 @@ task publishBukkit(type: GradleBuild) {
             ':bukkit:clean',
             ':bukkit:curseforge',
             ':bukkit:modrinth',
-            ':bukkit:publishAllPublicationsToHangar',
+            ':bukkit:publishAllPublicationsToHangar'
     ]
 }
 
@@ -86,6 +86,6 @@ task cleanAll(type: GradleBuild) {
             ':api:clean',
             ':fabric:clean',
             ':forge:clean',
-            ':bukkit:clean',
+            ':bukkit:clean'
     ]
 }
