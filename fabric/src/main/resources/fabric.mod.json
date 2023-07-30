@@ -8,10 +8,9 @@
     "${mod_vendor}"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat",
+    "homepage": "https://modrepo.de/minecraft/voicechat/overview",
     "issues": "https://github.com/henkelmax/simple-voice-chat/issues",
     "sources": "https://github.com/henkelmax/simple-voice-chat",
-    "email": "info@modrepo.de",
     "discord": "https://discord.gg/4dH2zwTmyX"
   },
   "license": "All Rights Reserved",
