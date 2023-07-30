@@ -1,3 +1,12 @@
+buildscript {
+    println('Loading root gradle.properties')
+    Properties properties = new Properties()
+    properties.load(new FileInputStream(file('../gradle.properties')))
+    properties.each { key, value ->
+        ext.set(key.toString(), value.toString())
+    }
+}
+
 plugins {
     id 'org.quiltmc.loom' version "${quilt_loom_version}"
     id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
@@ -12,6 +21,19 @@ targetCompatibility = JavaLanguageVersion.of(java_version as int)
 archivesBaseName = archives_base_name
 version = mod_version
 group = maven_group
+
+sourceSets {
+    main {
+        java {
+            srcDir '../common/src/main/java'
+            srcDir '../api/src/main/java'
+        }
+        resources {
+            srcDir '../common/src/main/resources'
+            srcDir '../api/src/main/resources'
+        }
+    }
+}
 
 repositories {
     mavenCentral()
@@ -43,10 +65,6 @@ dependencies {
     include(modImplementation("org.quiltmc.qsl.core:networking:${qsl_version}"))
     include(modImplementation("org.quiltmc.qsl.core:resource_loader:${qsl_version}"))
     include(modImplementation("org.quiltmc.qsl.command:command:${qsl_version}"))
-
-    implementation(project(path: ':common', configuration: 'namedElements')) {
-        transitive false
-    }
 
     modCompileOnly("com.terraformersmc:modmenu:${modmenu_version}") {
         transitive false
@@ -80,13 +98,10 @@ dependencies {
 
     implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
     shadow "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
-
-    implementation project(':api')
-    shadow project(':api')
 }
 
 tasks.register('generateJava', Copy) {
-    from project(':common').file('src/template/java')
+    from file('../common/src/template/java')
     into "${buildDir}/generated/java"
     expand 'compatibility_version': mod_compatibility_version
 }
@@ -110,11 +125,6 @@ processResources {
                 'modmenu_version': modmenu_version,
                 'cloth_config_version': cloth_config_version
     }
-    from project(':common').sourceSets.main.resources
-}
-
-tasks.withType(JavaCompile).configureEach {
-    source(project(':common').sourceSets.main.allSource)
 }
 
 tasks.withType(JavaCompile).configureEach {
