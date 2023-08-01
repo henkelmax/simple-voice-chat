@@ -143,7 +143,7 @@ jar {
 }
 
 curseforge {
-    apiKey = file("${rootDir}/curseforge_api_key.txt").exists() ? file("${rootDir}/curseforge_api_key.txt").text : ''
+    apiKey = file("${rootDir}/../curseforge_api_key.txt").exists() ? file("${rootDir}/../curseforge_api_key.txt").text : ''
     project {
         id = curse_id
         changelogType = 'markdown'
@@ -177,7 +177,7 @@ tasks.modrinth.configure({
 })
 
 modrinth {
-    token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
+    token = file("${rootDir}/../modrinth_token.txt").exists() ? file("${rootDir}/../modrinth_token.txt").text : ''
     projectId = modrinth_id
     versionNumber = "quilt-${mod_version}"
     versionName = "${mod_name} ${mod_version}"
@@ -197,6 +197,7 @@ tasks.modrinth.dependsOn(build)
 
 modUpdate {
     serverURL = 'https://update.maxhenkel.de/'
+    apiKey = file("${rootDir}/../mod_update_api_key.txt").exists() ? file("${rootDir}/../mod_update_api_key.txt").text : ''
     modID = mod_id
     gameVersion = minecraft_version
     modLoader = 'quilt'
