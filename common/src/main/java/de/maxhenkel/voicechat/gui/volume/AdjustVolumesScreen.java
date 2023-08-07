@@ -38,7 +38,6 @@ public class AdjustVolumesScreen extends ListScreenBase {
     @Override
     public void tick() {
         super.tick();
-        searchBox.tick();
     }
 
     @Override

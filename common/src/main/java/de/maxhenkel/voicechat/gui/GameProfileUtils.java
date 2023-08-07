@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.resources.PlayerSkin;
 
 import java.util.UUID;
 
@@ -12,16 +12,16 @@ public class GameProfileUtils {
 
     private static final Minecraft mc = Minecraft.getInstance();
 
-    public static ResourceLocation getSkin(UUID uuid) {
+    public static PlayerSkin getSkin(UUID uuid) {
         ClientPacketListener connection = mc.getConnection();
         if (connection == null) {
-            return DefaultPlayerSkin.getDefaultSkin(uuid);
+            return DefaultPlayerSkin.get(uuid);
         }
         PlayerInfo playerInfo = connection.getPlayerInfo(uuid);
         if (playerInfo == null) {
-            return DefaultPlayerSkin.getDefaultSkin(uuid);
+            return DefaultPlayerSkin.get(uuid);
         }
-        return playerInfo.getSkinLocation();
+        return playerInfo.getSkin();
     }
 
 }

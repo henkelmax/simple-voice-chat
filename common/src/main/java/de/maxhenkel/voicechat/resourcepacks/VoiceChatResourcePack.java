@@ -6,8 +6,10 @@ import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.AbstractPackResources;
+import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackCompatibility;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.IoSupplier;
 import net.minecraft.world.flag.FeatureFlagSet;
@@ -19,22 +21,23 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class VoiceChatResourcePack extends AbstractPackResources {
+public class VoiceChatResourcePack extends AbstractPackResources implements Pack.ResourcesSupplier {
 
     public VoiceChatResourcePack(String id) {
         super(id, true);
     }
 
     public Pack toPack(Component name) {
-        Pack.ResourcesSupplier resourcesSupplier = (s) -> this;
-        Pack.Info info = Pack.readPackInfo("", resourcesSupplier);
+        int packVersion = SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES);
+        Pack.Info info = Pack.readPackInfo("", this, packVersion);
         if (info == null) {
-            info = new Pack.Info(name, SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES), FeatureFlagSet.of(FeatureFlags.VANILLA));
+            info = new Pack.Info(name, PackCompatibility.COMPATIBLE, FeatureFlagSet.of(FeatureFlags.VANILLA), Collections.emptyList());
         }
-        return Pack.create(this.packId(), name, false, resourcesSupplier, info, PackType.CLIENT_RESOURCES, Pack.Position.TOP, false, PackSource.BUILT_IN);
+        return Pack.create(packId(), name, false, this, info, Pack.Position.TOP, false, PackSource.BUILT_IN);
     }
 
     private String getPath() {
@@ -114,5 +117,15 @@ public class VoiceChatResourcePack extends AbstractPackResources {
     @Override
     public void close() {
 
+    }
+
+    @Override
+    public PackResources openPrimary(String string) {
+        return this;
+    }
+
+    @Override
+    public PackResources openFull(String string, Pack.Info info) {
+        return this;
     }
 }

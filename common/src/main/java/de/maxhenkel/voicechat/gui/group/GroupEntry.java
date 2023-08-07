@@ -12,6 +12,7 @@ import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
@@ -36,7 +37,6 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
         this.state = state;
         this.volumeSlider = new AdjustVolumeSlider(0, 0, 100, 20, new PlayerVolumeEntry.PlayerVolumeConfigEntry(state.getUuid()));
         this.children.add(volumeSlider);
-
     }
 
     @Override
@@ -57,10 +57,10 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
             }
         }
 
-        ResourceLocation skin = GameProfileUtils.getSkin(state.getUuid());
-        guiGraphics.blit(skin, 1, 1, 8, 8, 8, 8, 8, 8, 64, 64);
+        PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
+        guiGraphics.blit(skin.texture(), 1, 1, 8, 8, 8, 8, 8, 8, 64, 64);
         RenderSystem.enableBlend();
-        guiGraphics.blit(skin, 1, 1, 8, 8, 40, 8, 8, 8, 64, 64);
+        guiGraphics.blit(skin.texture(), 1, 1, 8, 8, 40, 8, 8, 8, 64, 64);
         RenderSystem.disableBlend();
 
         if (state.isDisabled()) {

@@ -1,12 +1,9 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
-import io.netty.buffer.Unpooled;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
-import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -46,22 +43,22 @@ public abstract class NetManager {
     public abstract <T extends Packet<T>> Channel<T> registerReceiver(Class<T> packetType, boolean toClient, boolean toServer);
 
     public static void sendToServer(Packet<?> packet) {
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-        packet.toBytes(buffer);
         ClientPacketListener connection = Minecraft.getInstance().getConnection();
         if (connection != null) {
-            connection.send(new ServerboundCustomPayloadPacket(packet.getIdentifier(), buffer));
+            CommonCompatibilityManager.INSTANCE.getNetManager().sendToServer(packet, connection);
         }
     }
+
+    public abstract void sendToServer(Packet<?> packet, ClientPacketListener connection);
 
     public static void sendToClient(ServerPlayer player, Packet<?> packet) {
         if (!Voicechat.SERVER.isCompatible(player)) {
             return;
         }
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-        packet.toBytes(buffer);
-        player.connection.send(new ClientboundCustomPayloadPacket(packet.getIdentifier(), buffer));
+        CommonCompatibilityManager.INSTANCE.getNetManager().sendToClient(packet, player);
     }
+
+    public abstract void sendToClient(Packet<?> packet, ServerPlayer player);
 
     public interface ServerReceiver<T extends Packet<T>> {
         void onPacket(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, T packet);

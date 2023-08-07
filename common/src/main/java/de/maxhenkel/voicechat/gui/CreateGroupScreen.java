@@ -72,8 +72,6 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
     @Override
     public void tick() {
         super.tick();
-        groupName.tick();
-        password.tick();
         createGroup.active = !groupName.getValue().isEmpty();
     }
 

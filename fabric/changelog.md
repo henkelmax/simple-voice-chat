@@ -1,1 +1,1 @@
-- Updated fabric.mod.json
+- Updated to 23w31a

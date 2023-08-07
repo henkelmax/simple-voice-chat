@@ -12,6 +12,7 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -82,10 +83,10 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             guiGraphics.pose().translate(headPosX, headPosY, 0);
             float scale = (float) SKIN_SIZE / 8F;
             guiGraphics.pose().scale(scale, scale, scale);
-            ResourceLocation skin = GameProfileUtils.getSkin(state.getUuid());
-            guiGraphics.blit(skin, 0, 0, 8, 8, 8, 8, 64, 64);
+            PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
+            guiGraphics.blit(skin.texture(), 0, 0, 8, 8, 8, 8, 64, 64);
             RenderSystem.enableBlend();
-            guiGraphics.blit(skin, 0, 0, 40, 8, 8, 8, 64, 64);
+            guiGraphics.blit(skin.texture(), 0, 0, 40, 8, 8, 8, 64, 64);
             RenderSystem.disableBlend();
             guiGraphics.pose().popPose();
         }

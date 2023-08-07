@@ -1,11 +1,15 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
+import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -58,6 +62,20 @@ public class FabricNetManager extends NetManager {
             throw new IllegalArgumentException(e);
         }
         return c;
+    }
+
+    @Override
+    public void sendToServer(Packet<?> packet, ClientPacketListener connection) {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        packet.toBytes(buffer);
+        ClientPlayNetworking.send(packet.getIdentifier(), buffer);
+    }
+
+    @Override
+    public void sendToClient(Packet<?> packet, ServerPlayer player) {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        packet.toBytes(buffer);
+        ServerPlayNetworking.send(player, packet.getIdentifier(), buffer);
     }
 
 }

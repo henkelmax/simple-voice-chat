@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -72,9 +73,9 @@ public class GroupChatManager {
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            ResourceLocation skin = GameProfileUtils.getSkin(state.getUuid());
-            guiGraphics.blit(skin, posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
-            guiGraphics.blit(skin, posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 40, 8, 8, 8, 64, 64);
+            PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
+            guiGraphics.blit(skin.texture(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
+            guiGraphics.blit(skin.texture(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 40, 8, 8, 8, 64, 64);
 
             if (state.isDisabled()) {
                 guiGraphics.pose().pushPose();

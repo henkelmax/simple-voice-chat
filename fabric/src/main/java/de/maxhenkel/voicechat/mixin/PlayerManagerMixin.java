@@ -12,9 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerList.class)
 public class PlayerManagerMixin {
 
-
     @Inject(at = @At("RETURN"), method = "placeNewPlayer")
-    private void onPlayerConnect(Connection connection, ServerPlayer player, CallbackInfo info) {
+    private void onPlayerConnect(Connection connection, ServerPlayer player, int i, CallbackInfo ci) {
         PlayerEvents.PLAYER_LOGGED_IN.invoker().accept(player);
     }
 

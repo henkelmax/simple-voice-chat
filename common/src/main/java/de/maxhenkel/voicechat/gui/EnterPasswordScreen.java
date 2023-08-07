@@ -57,7 +57,6 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
     @Override
     public void tick() {
         super.tick();
-        password.tick();
         joinGroup.active = !password.getValue().isEmpty();
     }
 
