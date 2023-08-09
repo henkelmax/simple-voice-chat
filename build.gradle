@@ -8,9 +8,7 @@ task publishAll(type: GradleBuild) {
             ':common:clean',
             ':forge:clean',
             ':fabric:clean',
-            'cleanQuilt',
             ':bukkit:clean',
-            'publishQuilt',
             ':forge:curseforge',
             ':forge:modrinth',
             ':forge:modUpdate',
@@ -18,6 +16,17 @@ task publishAll(type: GradleBuild) {
             ':fabric:modrinth',
             ':fabric:modUpdate',
             ':bukkit:build'
+    ]
+}
+
+task publishQuilt(type: GradleBuild) {
+    group = 'voicechat'
+    dir = 'quilt'
+    tasks = [
+            'clean',
+            'curseforge',
+            'modrinth',
+            'modUpdate'
     ]
 }
 
@@ -118,15 +127,5 @@ task cleanQuilt(type: GradleBuild) {
     dir = 'quilt'
     tasks = [
             'clean'
-    ]
-}
-
-task publishQuilt(type: GradleBuild) {
-    group = 'voicechat'
-    dir = 'quilt'
-    tasks = [
-            'curseforge',
-            'modrinth',
-            'modUpdate'
     ]
 }
