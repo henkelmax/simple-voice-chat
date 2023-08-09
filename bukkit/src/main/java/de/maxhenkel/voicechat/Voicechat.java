@@ -65,8 +65,8 @@ public final class Voicechat extends JavaPlugin {
 
         LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
 
-        SERVER_CONFIG = ConfigBuilder.build(getDataFolder().toPath().resolve("voicechat-server.properties"), true, ServerConfig::new);
-        TRANSLATIONS = ConfigBuilder.build(getDataFolder().toPath().resolve("translations.properties"), true, Translations::new);
+        SERVER_CONFIG = ConfigBuilder.builder(ServerConfig::new).path(getDataFolder().toPath().resolve("voicechat-server.properties")).build();
+        TRANSLATIONS = ConfigBuilder.builder(Translations::new).path(getDataFolder().toPath().resolve("translations.properties")).build();
 
         netManager = new NetManager();
         netManager.onEnable();
