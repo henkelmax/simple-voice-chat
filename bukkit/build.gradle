@@ -87,6 +87,7 @@ repositories {
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
     maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
     maven { url = 'https://repo.viaversion.com/' }
+    mavenLocal()
 }
 
 tasks.register('copyJarToServer') {
