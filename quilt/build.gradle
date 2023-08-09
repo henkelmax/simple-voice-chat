@@ -44,7 +44,6 @@ repositories {
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url = 'https://repo.viaversion.com/' }
-    mavenLocal()
 }
 
 runClient.doFirst {
