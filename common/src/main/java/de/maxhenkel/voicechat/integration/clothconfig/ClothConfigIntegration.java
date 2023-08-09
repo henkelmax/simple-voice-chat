@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.integration.clothconfig;
 
-import de.maxhenkel.configbuilder.ConfigEntry;
+import de.maxhenkel.configbuilder.entry.*;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
@@ -59,8 +59,8 @@ public class ClothConfigIntegration {
     }
 
     protected static <T> AbstractConfigListEntry<T> fromConfigEntry(ConfigEntryBuilder entryBuilder, ITextComponent name, ConfigEntry<T> entry) {
-        if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.DoubleConfigEntry) {
-            de.maxhenkel.configbuilder.ConfigBuilderImpl.DoubleConfigEntry e = (de.maxhenkel.configbuilder.ConfigBuilderImpl.DoubleConfigEntry) entry;
+        if (entry instanceof DoubleConfigEntry) {
+            DoubleConfigEntry e = (DoubleConfigEntry) entry;
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startDoubleField(name, e.get())
                     .setMin(e.getMin())
@@ -71,7 +71,7 @@ public class ClothConfigIntegration {
                         e.save();
                     })
                     .build();
-        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.IntegerConfigEntry) {
+        } else if (entry instanceof IntegerConfigEntry) {
             de.maxhenkel.configbuilder.ConfigBuilderImpl.IntegerConfigEntry e = (de.maxhenkel.configbuilder.ConfigBuilderImpl.IntegerConfigEntry) entry;
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startIntField(name, e.get())
@@ -80,14 +80,14 @@ public class ClothConfigIntegration {
                     .setDefaultValue(e::getDefault)
                     .setSaveConsumer(d -> e.set(d).save())
                     .build();
-        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.BooleanConfigEntry) {
+        } else if (entry instanceof BooleanConfigEntry) {
             de.maxhenkel.configbuilder.ConfigBuilderImpl.BooleanConfigEntry e = (de.maxhenkel.configbuilder.ConfigBuilderImpl.BooleanConfigEntry) entry;
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startBooleanToggle(name, e.get())
                     .setDefaultValue(e::getDefault)
                     .setSaveConsumer(d -> e.set(d).save())
                     .build();
-        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.StringConfigEntry) {
+        } else if (entry instanceof StringConfigEntry) {
             de.maxhenkel.configbuilder.ConfigBuilderImpl.StringConfigEntry e = (de.maxhenkel.configbuilder.ConfigBuilderImpl.StringConfigEntry) entry;
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startStrField(name, e.get())
