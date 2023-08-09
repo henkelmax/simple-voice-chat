@@ -219,7 +219,7 @@ public class ClientPlayerStateManager {
                 return connection.getData().getPlayerUUID();
             }
         }
-        return Minecraft.getInstance().getUser().getGameProfile().getId();
+        return Minecraft.getInstance().getUser().getProfileId();
     }
 
     @Nullable

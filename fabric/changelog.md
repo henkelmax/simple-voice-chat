@@ -1,1 +1,1 @@
-- Fixed crash when using the opus decoder or encoder from multiple threads
+- Updated to 23w32a
