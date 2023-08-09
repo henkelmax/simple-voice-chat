@@ -1,1 +1,1 @@
-- Updated mods.toml
+- Fixed crash when using the opus decoder or encoder from multiple threads
