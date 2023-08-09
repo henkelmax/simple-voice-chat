@@ -12,7 +12,6 @@ repositories {
     mavenCentral()
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
     maven { url = 'https://maven.shedaniel.me/' }
-    mavenLocal()
 }
 
 tasks.register('prepareWorkspace') {
