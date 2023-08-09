@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.config;
 
+import de.maxhenkel.configbuilder.CommentedProperties;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
 
 import java.nio.file.Path;
@@ -14,7 +15,8 @@ public class VolumeConfig extends CommentedPropertyConfig {
     private final Map<String, Double> categoryVolumes;
 
     public VolumeConfig(Path path) {
-        super(path);
+        super(new CommentedProperties(false));
+        this.path = path;
         Map<String, String> entries = getEntries();
         volumes = new HashMap<>();
         categoryVolumes = new HashMap<>();
