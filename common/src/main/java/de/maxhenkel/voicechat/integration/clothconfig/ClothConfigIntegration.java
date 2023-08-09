@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.integration.clothconfig;
 
-import de.maxhenkel.configbuilder.ConfigEntry;
+import de.maxhenkel.configbuilder.entry.*;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
@@ -59,7 +59,7 @@ public class ClothConfigIntegration {
     }
 
     protected static <T> AbstractConfigListEntry<T> fromConfigEntry(ConfigEntryBuilder entryBuilder, Component name, ConfigEntry<T> entry) {
-        if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.DoubleConfigEntry e) {
+        if (entry instanceof DoubleConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startDoubleField(name, e.get())
                     .setMin(e.getMin())
@@ -70,7 +70,7 @@ public class ClothConfigIntegration {
                         e.save();
                     })
                     .build();
-        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.IntegerConfigEntry e) {
+        } else if (entry instanceof IntegerConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startIntField(name, e.get())
                     .setMin(e.getMin())
@@ -78,13 +78,13 @@ public class ClothConfigIntegration {
                     .setDefaultValue(e::getDefault)
                     .setSaveConsumer(d -> e.set(d).save())
                     .build();
-        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.BooleanConfigEntry e) {
+        } else if (entry instanceof BooleanConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startBooleanToggle(name, e.get())
                     .setDefaultValue(e::getDefault)
                     .setSaveConsumer(d -> e.set(d).save())
                     .build();
-        } else if (entry instanceof de.maxhenkel.configbuilder.ConfigBuilderImpl.StringConfigEntry e) {
+        } else if (entry instanceof StringConfigEntry e) {
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startStrField(name, e.get())
                     .setDefaultValue(e::getDefault)
