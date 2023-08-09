@@ -1,2 +1,1 @@
-- Updated Quilt loader and QSL
-- Updated quilt.mod.json
+- Fixed crash when using the opus decoder or encoder from multiple threads
