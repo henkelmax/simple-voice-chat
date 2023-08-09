@@ -61,5 +61,12 @@
   "message.voicechat.storage_size": "Förväntad lagringsstorlek %s",
   "message.voicechat.saved_debug_report": "Sparare röstchattsfelsökningsrapport till %s",
   "message.voicechat.open": "Öppna",
-  "message.voicechat.saved_debug_report_failed": "Misslyckades att spara röstchattsfelsökningsrapport: %s"
+  "message.voicechat.saved_debug_report_failed": "Misslyckades att spara röstchattsfelsökningsrapport: %s",
+  "message.voicechat.denoiser": "Brusreducering: %s",
+  "message.voicechat.enabled": "Aktiverad",
+  "message.voicechat.disabled": "Avaktiverad",
+  "message.voicechat.audio_type": "3D ljud: %s",
+  "message.voicechat.audio_type.normal": "Normal",
+  "message.voicechat.audio_type.reduced": "Reducerad",
+  "message.voicechat.audio_type.off": "Av"
 }
