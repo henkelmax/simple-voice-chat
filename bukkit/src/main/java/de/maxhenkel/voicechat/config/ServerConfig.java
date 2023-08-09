@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.config;
 
 import de.maxhenkel.configbuilder.ConfigBuilder;
-import de.maxhenkel.configbuilder.ConfigEntry;
+import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.voicechat.Voicechat;
 
 public class ServerConfig {
