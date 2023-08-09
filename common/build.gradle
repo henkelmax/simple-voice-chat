@@ -10,7 +10,6 @@ repositories {
     maven { url = 'https://maven.fabricmc.net/' }
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
     maven { url = 'https://maven.shedaniel.me/' }
-    mavenLocal()
 }
 
 task prepareWorkspace {
