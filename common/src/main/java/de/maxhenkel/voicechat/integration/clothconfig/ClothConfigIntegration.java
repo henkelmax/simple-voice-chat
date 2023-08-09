@@ -72,7 +72,7 @@ public class ClothConfigIntegration {
                     })
                     .build();
         } else if (entry instanceof IntegerConfigEntry) {
-            de.maxhenkel.configbuilder.ConfigBuilderImpl.IntegerConfigEntry e = (de.maxhenkel.configbuilder.ConfigBuilderImpl.IntegerConfigEntry) entry;
+            IntegerConfigEntry e = (IntegerConfigEntry) entry;
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startIntField(name, e.get())
                     .setMin(e.getMin())
@@ -81,14 +81,14 @@ public class ClothConfigIntegration {
                     .setSaveConsumer(d -> e.set(d).save())
                     .build();
         } else if (entry instanceof BooleanConfigEntry) {
-            de.maxhenkel.configbuilder.ConfigBuilderImpl.BooleanConfigEntry e = (de.maxhenkel.configbuilder.ConfigBuilderImpl.BooleanConfigEntry) entry;
+            BooleanConfigEntry e = (BooleanConfigEntry) entry;
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startBooleanToggle(name, e.get())
                     .setDefaultValue(e::getDefault)
                     .setSaveConsumer(d -> e.set(d).save())
                     .build();
         } else if (entry instanceof StringConfigEntry) {
-            de.maxhenkel.configbuilder.ConfigBuilderImpl.StringConfigEntry e = (de.maxhenkel.configbuilder.ConfigBuilderImpl.StringConfigEntry) entry;
+            StringConfigEntry e = (StringConfigEntry) entry;
             return (AbstractConfigListEntry<T>) entryBuilder
                     .startStrField(name, e.get())
                     .setDefaultValue(e::getDefault)

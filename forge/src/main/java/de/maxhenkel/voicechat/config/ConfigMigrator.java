@@ -2,8 +2,8 @@ package de.maxhenkel.voicechat.config;
 
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import de.maxhenkel.configbuilder.ConfigBuilderImpl;
-import de.maxhenkel.configbuilder.ConfigEntry;
+import de.maxhenkel.configbuilder.entry.ConfigEntry;
+import de.maxhenkel.configbuilder.entry.EnumConfigEntry;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import net.minecraft.world.server.ServerWorld;
@@ -106,8 +106,8 @@ public class ConfigMigrator {
                 return;
             }
 
-            if (configEntry instanceof ConfigBuilderImpl.EnumConfigEntry<?>) {
-                ConfigBuilderImpl.EnumConfigEntry<?> enumConfigEntry = (ConfigBuilderImpl.EnumConfigEntry<?>) configEntry;
+            if (configEntry instanceof EnumConfigEntry<?>) {
+                EnumConfigEntry<?> enumConfigEntry = (EnumConfigEntry<?>) configEntry;
                 forgeValue = Enum.valueOf(enumConfigEntry.get().getClass(), forgeValue.toString());
             }
 
