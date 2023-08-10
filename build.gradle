@@ -2,24 +2,17 @@ plugins {
     id 'fabric-loom' version "${fabric_loom_version}" apply false
 }
 
-task publishAll(type: GradleBuild) {
+tasks.register('publish01Bukkit', GradleBuild) {
     group = 'voicechat'
     tasks = [
-            ':common:clean',
-            ':forge:clean',
-            ':fabric:clean',
             ':bukkit:clean',
-            ':forge:curseforge',
-            ':forge:modrinth',
-            ':forge:modUpdate',
-            ':fabric:curseforge',
-            ':fabric:modrinth',
-            ':fabric:modUpdate',
-            ':bukkit:build'
+            ':bukkit:curseforge',
+            ':bukkit:modrinth',
+            ':bukkit:publishAllPublicationsToHangar'
     ]
 }
 
-task publishQuilt(type: GradleBuild) {
+tasks.register('publish02Quilt', GradleBuild) {
     group = 'voicechat'
     dir = 'quilt'
     tasks = [
@@ -30,17 +23,29 @@ task publishQuilt(type: GradleBuild) {
     ]
 }
 
-task publishBukkit(type: GradleBuild) {
+tasks.register('publish03Forge', GradleBuild) {
     group = 'voicechat'
     tasks = [
-            ':bukkit:clean',
-            ':bukkit:curseforge',
-            ':bukkit:modrinth',
-            ':bukkit:publishAllPublicationsToHangar'
+            ':common:clean',
+            ':forge:clean',
+            ':forge:curseforge',
+            ':forge:modrinth',
+            ':forge:modUpdate'
     ]
 }
 
-task publishSnapshot(type: GradleBuild) {
+tasks.register('publish04Fabric', GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':common:clean',
+            ':fabric:clean',
+            ':fabric:curseforge',
+            ':fabric:modrinth',
+            ':fabric:modUpdate'
+    ]
+}
+
+tasks.register('publish05Snapshot', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':common:clean',
@@ -50,7 +55,7 @@ task publishSnapshot(type: GradleBuild) {
     ]
 }
 
-task publishAPI(type: GradleBuild) {
+tasks.register('publish06API', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':api:clean',
@@ -58,7 +63,7 @@ task publishAPI(type: GradleBuild) {
     ]
 }
 
-task publishAPILocal(type: GradleBuild) {
+tasks.register('publish07APILocal', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':api:clean',
@@ -66,7 +71,7 @@ task publishAPILocal(type: GradleBuild) {
     ]
 }
 
-task quiltClient(type: GradleBuild) {
+tasks.register('runClientQuilt', GradleBuild) {
     group = 'voicechat'
     dir = 'quilt'
     tasks = [
@@ -74,21 +79,21 @@ task quiltClient(type: GradleBuild) {
     ]
 }
 
-task fabricClient(type: GradleBuild) {
+tasks.register('runClientFabric', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':fabric:runClient'
     ]
 }
 
-task forgeClient(type: GradleBuild) {
+tasks.register('runClientForge', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':forge:runClient'
     ]
 }
 
-task quiltServer(type: GradleBuild) {
+tasks.register('runServerQuilt', GradleBuild) {
     group = 'voicechat'
     dir = 'quilt'
     tasks = [
@@ -96,21 +101,21 @@ task quiltServer(type: GradleBuild) {
     ]
 }
 
-task fabricServer(type: GradleBuild) {
+tasks.register('runServerFabric', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':fabric:runServer'
     ]
 }
 
-task forgeServer(type: GradleBuild) {
+tasks.register('runServerForge', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':forge:runServer'
     ]
 }
 
-task cleanAll(type: GradleBuild) {
+tasks.register('cleanAll', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':common:clean',
@@ -122,7 +127,7 @@ task cleanAll(type: GradleBuild) {
     ]
 }
 
-task cleanQuilt(type: GradleBuild) {
+tasks.register('cleanQuilt', GradleBuild) {
     group = 'voicechat'
     dir = 'quilt'
     tasks = [
