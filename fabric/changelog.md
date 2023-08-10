@@ -1,1 +1,3 @@
 - Updated ConfigBuilder
+- Updated Lame4j
+- Updated RNNoise4j
