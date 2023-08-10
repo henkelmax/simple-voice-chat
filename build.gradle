@@ -1,4 +1,4 @@
-task publishBukkit(type: GradleBuild) {
+tasks.register('publish01Bukkit', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':bukkit:clean',
@@ -8,7 +8,18 @@ task publishBukkit(type: GradleBuild) {
     ]
 }
 
-task publishAPI(type: GradleBuild) {
+tasks.register('publish03Forge', GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':common:clean',
+            ':forge:clean',
+            ':forge:curseforge',
+            ':forge:modrinth',
+            ':forge:modUpdate'
+    ]
+}
+
+tasks.register('publish06API', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':api:clean',
@@ -16,7 +27,7 @@ task publishAPI(type: GradleBuild) {
     ]
 }
 
-task publishAPILocal(type: GradleBuild) {
+tasks.register('publish07APILocal', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':api:clean',
@@ -24,21 +35,21 @@ task publishAPILocal(type: GradleBuild) {
     ]
 }
 
-task forgeClient(type: GradleBuild) {
+tasks.register('runClientForge', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':forge:runClient'
     ]
 }
 
-task forgeServer(type: GradleBuild) {
+tasks.register('runServerForge', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':forge:runServer'
     ]
 }
 
-task cleanAll(type: GradleBuild) {
+tasks.register('cleanAll', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':common:clean',
