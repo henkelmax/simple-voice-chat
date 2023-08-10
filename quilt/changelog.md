@@ -1,1 +1,3 @@
-- Fixed crash when using the opus decoder or encoder from multiple threads
+- Updated ConfigBuilder
+- Updated Lame4j
+- Updated RNNoise4j
