@@ -108,7 +108,7 @@
   "message.voicechat.macos_no_mic_permission": "Ingen mikrofonåtkomst. Kontrollera inställningarna för Säkerhet och Sekretess",
   "message.voicechat.macos_unsupported_launcher": "Din launcher stöder inte MacOS-mikrofonbehörigheter",
   "message.voicechat.player_no_voicechat": "%s har inte %s installerad",
-  "message.voicechat.mute.enabled": "Tryck för att slå på mikrofonen",
+  "message.voicechat.mute.enabled": "Tryck för att sätta på mikrofonen",
   "message.voicechat.mute.disabled": "Tryck för att stänga av mikrofonen",
   "message.voicechat.mute.disabled_ptt": "Du kan inte stänga av ljudet när du använder tryck för tal",
   "message.voicechat.disable.enabled": "Tryck för att aktivera alla röstchattljud",
