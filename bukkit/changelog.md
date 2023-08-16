@@ -1,1 +1,1 @@
-- Updated ConfigBuilder
+- Fixed servers not shutting down properly

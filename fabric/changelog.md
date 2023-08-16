@@ -1,5 +1,1 @@
-- Updated ConfigBuilder
-- Updated Lame4j
-- Updated RNNoise4j
-- Fixed crash with some other mods
-- Fixed open to LAN message shown twice
+- Fixed servers not shutting down properly
