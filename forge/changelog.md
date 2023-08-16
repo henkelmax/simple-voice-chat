@@ -1,3 +1,1 @@
-- Updated ConfigBuilder
-- Updated Lame4j
-- Updated RNNoise4j
+- Fixed servers not shutting down properly
