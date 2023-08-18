@@ -1,1 +1,1 @@
-- Fixed servers not shutting down properly
+- Fixed player and category volumes not loading properly
