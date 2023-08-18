@@ -2,6 +2,8 @@ package de.maxhenkel.voicechat.config;
 
 import de.maxhenkel.configbuilder.CommentedProperties;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
+import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 
 import java.nio.file.Path;
 import java.util.Collections;
@@ -17,17 +19,26 @@ public class VolumeConfig extends CommentedPropertyConfig {
     public VolumeConfig(Path path) {
         super(new CommentedProperties(false));
         this.path = path;
+        reload();
+        properties.setHeaderComments(Collections.singletonList(String.format("%s volume config", CommonCompatibilityManager.INSTANCE.getModName())));
         Map<String, String> entries = getEntries();
         volumes = new HashMap<>();
         categoryVolumes = new HashMap<>();
         for (Map.Entry<String, String> entry : entries.entrySet()) {
-            double volume = Double.parseDouble(entry.getValue().toString());
+            properties.setComments(entry.getKey(), Collections.emptyList());
             try {
-                volumes.put(UUID.fromString(entry.getKey()), volume);
-            } catch (IllegalArgumentException e) {
-                categoryVolumes.put(entry.getKey(), volume);
+                double volume = Double.parseDouble(entry.getValue().toString());
+                try {
+                    volumes.put(UUID.fromString(entry.getKey()), volume);
+                } catch (IllegalArgumentException e) {
+                    categoryVolumes.put(entry.getKey(), volume);
+                }
+            } catch (NumberFormatException e) {
+                Voicechat.LOGGER.warn("Invalid volume value '{}' for '{}'", entry.getValue(), entry.getKey());
+                properties.remove(entry.getKey());
             }
         }
+        saveSync();
     }
 
     public double getPlayerVolume(UUID uuid, double def) {
