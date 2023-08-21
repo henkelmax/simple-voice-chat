@@ -26,6 +26,8 @@ public class ClientVoicechat {
     @Nullable
     private ClientVoicechatConnection connection;
     @Nullable
+    private InitializationData initializationData;
+    @Nullable
     private AudioRecorder recorder;
     private long startTime;
 
@@ -54,8 +56,9 @@ public class ClientVoicechat {
     }
 
     public void connect(InitializationData data) throws Exception {
-        Voicechat.LOGGER.info("Connecting to voice chat server: '{}:{}'", data.getServerIP(), data.getServerPort());
-        connection = new ClientVoicechatConnection(this, data);
+        initializationData = data;
+        Voicechat.LOGGER.info("Connecting to voice chat server: '{}:{}'", initializationData.getServerIP(), initializationData.getServerPort());
+        connection = new ClientVoicechatConnection(this, initializationData);
         connection.start();
     }
 
@@ -182,6 +185,11 @@ public class ClientVoicechat {
     @Nullable
     public ClientVoicechatConnection getConnection() {
         return connection;
+    }
+
+    @Nullable
+    public InitializationData getInitializationData() {
+        return initializationData;
     }
 
     @Nullable
