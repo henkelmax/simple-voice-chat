@@ -1,1 +1,1 @@
-- Fixed player and category volumes not loading properly
+- Fixed voice chat not connecting with polymer installed
