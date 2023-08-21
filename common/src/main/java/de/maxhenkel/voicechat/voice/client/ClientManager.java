@@ -92,6 +92,10 @@ public class ClientManager {
             VoicechatClient.CLIENT_CONFIG.muted.set(true);
         }
         if (client != null) {
+            if (client.getInitializationData() == null) {
+                Voicechat.LOGGER.warn("Initialized voice chat connection multiple times");
+                return;
+            }
             Voicechat.LOGGER.info("Disconnecting from previous connection due to server change");
             onDisconnect();
         }
