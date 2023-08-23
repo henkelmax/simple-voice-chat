@@ -1,1 +1,3 @@
-- Fixed voice chat not connecting with polymer installed
+- Updated Simplified Chinese translation
+- Added Swedish translation
+- Added Tatar translation
