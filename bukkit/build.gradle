@@ -207,8 +207,8 @@ hangarPublish {
             register(Platforms.PAPER) {
                 jar.set(tasks.shadowJar.archiveFile)
                 platformVersions.set(hangar_minecraft_versions.split(',').collect { it.trim() })
-                dependencies.hangar("ViaVersion", "ViaVersion")
-                dependencies.hangar("ViaVersion", "ViaBackwards")
+                dependencies.hangar("ViaVersion")
+                dependencies.hangar("ViaBackwards")
             }
         }
     }
