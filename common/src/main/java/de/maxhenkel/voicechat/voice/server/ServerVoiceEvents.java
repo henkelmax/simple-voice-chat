@@ -94,7 +94,11 @@ public class ServerVoiceEvents {
         }
         CommonCompatibilityManager.INSTANCE.emitPlayerCompatibilityCheckSucceeded(player);
 
-        UUID secret = server.getSecret(player.getUUID());
+        UUID secret = server.generateNewSecret(player.getUUID());
+        if (secret == null) {
+            Voicechat.LOGGER.warn("Player already requested secret - ignoring");
+            return;
+        }
         NetManager.sendToClient(player, new SecretPacket(player, secret, server.getPort(), Voicechat.SERVER_CONFIG));
         Voicechat.LOGGER.info("Sent secret to {}", player.getDisplayName().getString());
     }

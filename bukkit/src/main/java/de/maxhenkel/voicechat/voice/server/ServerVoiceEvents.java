@@ -91,7 +91,11 @@ public class ServerVoiceEvents implements Listener {
         server.getCategoryManager().onPlayerCompatibilityCheckSucceeded(player);
         server.getGroupManager().onPlayerCompatibilityCheckSucceeded(player);
 
-        UUID secret = server.getSecret(player.getUniqueId());
+        UUID secret = server.generateNewSecret(player.getUniqueId());
+        if (secret == null) {
+            Voicechat.LOGGER.warn("Player already requested secret - ignoring");
+            return;
+        }
         NetManager.sendToClient(player, new SecretPacket(player, secret, server.getPort(), Voicechat.SERVER_CONFIG));
         Voicechat.LOGGER.info("Sent secret to {}", player.getName());
     }

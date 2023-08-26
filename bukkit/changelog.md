@@ -1,1 +1,1 @@
-- Fixed servers not shutting down properly
+- Fixed voice chat not connecting with polymer installed
