@@ -87,11 +87,6 @@ public class FabricClientCompatibilityManager extends ClientCompatibilityManager
     }
 
     @Override
-    public void onJoinServer(Runnable onJoinServer) {
-        ClientWorldEvents.JOIN_SERVER.register(onJoinServer);
-    }
-
-    @Override
     public void onJoinWorld(Runnable onJoinWorld) {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> onJoinWorld.run());
     }

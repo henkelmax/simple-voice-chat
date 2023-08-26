@@ -36,7 +36,6 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     private final List<Runnable> clientTickEvents;
     private final List<Runnable> inputEvents;
     private final List<Runnable> disconnectEvents;
-    private final List<Runnable> joinServerEvents;
     private final List<Runnable> joinWorldEvents;
     private final List<Consumer<ClientVoicechatConnection>> voicechatConnectEvents;
     private final List<Runnable> voicechatDisconnectEvents;
@@ -52,7 +51,6 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         clientTickEvents = new ArrayList<>();
         inputEvents = new ArrayList<>();
         disconnectEvents = new ArrayList<>();
-        joinServerEvents = new ArrayList<>();
         joinWorldEvents = new ArrayList<>();
         voicechatConnectEvents = new ArrayList<>();
         voicechatDisconnectEvents = new ArrayList<>();
@@ -107,15 +105,6 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @SubscribeEvent
     public void onJoinServer(ClientPlayerNetworkEvent.LoggingIn event) {
         if (event.getPlayer() != minecraft.player) {
-            return;
-        }
-        joinServerEvents.forEach(Runnable::run);
-        joinWorldEvents.forEach(Runnable::run);
-    }
-
-    @SubscribeEvent
-    public void onJoinWorld(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getEntity() != minecraft.player) {
             return;
         }
         joinWorldEvents.forEach(Runnable::run);
@@ -214,11 +203,6 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @Override
     public void onDisconnect(Runnable onDisconnect) {
         disconnectEvents.add(onDisconnect);
-    }
-
-    @Override
-    public void onJoinServer(Runnable onJoinServer) {
-        joinServerEvents.add(onJoinServer);
     }
 
     @Override
