@@ -8,10 +8,7 @@ import de.maxhenkel.voicechat.api.VolumeCategory;
 import de.maxhenkel.voicechat.api.audiolistener.AudioListener;
 import de.maxhenkel.voicechat.api.audiolistener.PlayerAudioListener;
 import de.maxhenkel.voicechat.api.events.*;
-import de.maxhenkel.voicechat.plugins.impl.GroupImpl;
-import de.maxhenkel.voicechat.plugins.impl.VoicechatConnectionImpl;
-import de.maxhenkel.voicechat.plugins.impl.VoicechatServerApiImpl;
-import de.maxhenkel.voicechat.plugins.impl.VoicechatSocketImpl;
+import de.maxhenkel.voicechat.plugins.impl.*;
 import de.maxhenkel.voicechat.plugins.impl.audiolistener.PlayerAudioListenerImpl;
 import de.maxhenkel.voicechat.plugins.impl.events.*;
 import de.maxhenkel.voicechat.plugins.impl.packets.*;
@@ -151,7 +148,13 @@ public class PluginManager {
         VoicechatServerStartingEventImpl event = new VoicechatServerStartingEventImpl();
         dispatchEvent(VoicechatServerStartingEvent.class, event);
         VoicechatSocket socket = event.getSocketImplementation();
-        if (socket == null) {
+        if (Voicechat.SERVER_CONFIG.useIntegratedNetworking.get()) {
+            if (socket != null) {
+                Voicechat.LOGGER.warn("Ignoring custom socket implementation '{}' because integrated networking is enabled", socket.getClass().getName());
+            }
+            socket = new IntegratedVoicechatSocketImpl();
+            Voicechat.LOGGER.info("Using integrated networking voicechat socket implementation");
+        } else if (socket == null) {
             socket = new VoicechatSocketImpl();
             Voicechat.logDebug("Using default voicechat socket implementation");
         } else {

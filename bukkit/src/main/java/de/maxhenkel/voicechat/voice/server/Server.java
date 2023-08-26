@@ -21,6 +21,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.net.InetAddress;
+import java.net.SocketAddress;
 import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 import java.util.Collection;
@@ -77,10 +78,15 @@ public class Server extends Thread {
             String bindAddress = getBindAddress();
             socket.open(port, bindAddress);
 
-            if (bindAddress.isEmpty()) {
-                Voicechat.LOGGER.info("Voice chat server started at port {}", socket.getLocalPort());
+            int localPort = socket.getLocalPort();
+
+            if (localPort < 0) {
+                Voicechat.LOGGER.info("Voice chat server started with integrated networking");
+                Voicechat.LOGGER.warn("Integrated networking may cause performance and audio issues");
+            } else if (bindAddress.isEmpty()) {
+                Voicechat.LOGGER.info("Voice chat server started at port {}", localPort);
             } else {
-                Voicechat.LOGGER.info("Voice chat server started at {}:{}", bindAddress, socket.getLocalPort());
+                Voicechat.LOGGER.info("Voice chat server started at {}:{}", bindAddress, localPort);
             }
 
             while (!socket.isClosed()) {
@@ -237,9 +243,9 @@ public class Server extends Thread {
                     }
 
                     if (message.getPacket() instanceof ConnectionCheckPacket) {
-                        ClientConnection connection = getUnconnectedSender(message);
+                        ClientConnection connection = getUnconnectedSender(message.getAddress());
                         if (connection == null) {
-                            connection = getSender(message);
+                            connection = getSender(message.getAddress());
                             if (connection != null) {
                                 sendPacket(new ConnectionCheckAckPacket(), connection);
                             }
@@ -260,7 +266,7 @@ public class Server extends Thread {
                         continue;
                     }
 
-                    ClientConnection conn = getSender(message);
+                    ClientConnection conn = getSender(message.getAddress());
                     if (conn == null) {
                         continue;
                     }
@@ -475,21 +481,21 @@ public class Server extends Thread {
     }
 
     @Nullable
-    public ClientConnection getSender(NetworkMessage message) {
+    public ClientConnection getSender(SocketAddress socketAddress) {
         return connections
                 .values()
                 .stream()
-                .filter(connection -> connection.getAddress().equals(message.getAddress()))
+                .filter(connection -> connection.getAddress().equals(socketAddress))
                 .findAny()
                 .orElse(null);
     }
 
     @Nullable
-    public ClientConnection getUnconnectedSender(NetworkMessage message) {
+    public ClientConnection getUnconnectedSender(SocketAddress socketAddress) {
         return unCheckedConnections
                 .values()
                 .stream()
-                .filter(connection -> connection.getAddress().equals(message.getAddress()))
+                .filter(connection -> connection.getAddress().equals(socketAddress))
                 .findAny()
                 .orElse(null);
     }
@@ -507,6 +513,9 @@ public class Server extends Thread {
         return socket;
     }
 
+    /**
+     * @return the port the server is running on or -1 if the server is not running on a port
+     */
     public int getPort() {
         return socket.getLocalPort();
     }

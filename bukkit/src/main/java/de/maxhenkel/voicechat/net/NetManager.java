@@ -29,6 +29,7 @@ public class NetManager implements Listener {
             registerIncomingPacket(CreateGroupPacket.class);
             registerIncomingPacket(JoinGroupPacket.class);
             registerIncomingPacket(LeaveGroupPacket.class);
+            registerIncomingPacket(UDPWrapperPacket.class);
 
             registerOutgoingPacket(SecretPacket.class);
             registerOutgoingPacket(PlayerStatesPacket.class);
@@ -38,6 +39,7 @@ public class NetManager implements Listener {
             registerOutgoingPacket(JoinedGroupPacket.class);
             registerOutgoingPacket(AddCategoryPacket.class);
             registerOutgoingPacket(RemoveCategoryPacket.class);
+            registerOutgoingPacket(UDPWrapperPacket.class);
         } catch (Exception e) {
             throw new IllegalStateException("Failed to register voice chat packets");
         }

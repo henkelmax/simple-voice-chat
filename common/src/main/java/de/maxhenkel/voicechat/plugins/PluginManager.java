@@ -148,7 +148,14 @@ public class PluginManager {
         VoicechatServerStartingEventImpl event = new VoicechatServerStartingEventImpl();
         dispatchEvent(VoicechatServerStartingEvent.class, event);
         VoicechatSocket socket = event.getSocketImplementation();
-        if (socket == null) {
+
+        if (Voicechat.SERVER_CONFIG.useIntegratedNetworking.get()) {
+            if (socket != null) {
+                Voicechat.LOGGER.warn("Ignoring custom socket implementation '{}' because integrated networking is enabled", socket.getClass().getName());
+            }
+            socket = new IntegratedVoicechatSocketImpl();
+            Voicechat.LOGGER.info("Using integrated networking voicechat socket implementation");
+        } else if (socket == null) {
             socket = new VoicechatSocketImpl();
             Voicechat.logDebug("Using default voicechat socket implementation");
         } else {

@@ -62,6 +62,12 @@ public class ClientManager {
         });
 
         CommonCompatibilityManager.INSTANCE.getNetManager().secretChannel.setClientListener((client, handler, packet) -> authenticate(packet));
+
+        CommonCompatibilityManager.INSTANCE.getNetManager().udpWrapperPacketChannel.setClientListener((c, handler, packet) -> {
+            if (client != null && client.getConnection() != null) {
+                client.getConnection().onIntegratedPackets(packet.getPackets());
+            }
+        });
     }
 
     private void authenticate(SecretPacket secretPacket) {

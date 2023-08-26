@@ -1,10 +1,14 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.RawUdpPacket;
+import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
+import de.maxhenkel.voicechat.net.UDPWrapperPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.plugins.impl.IntegratedVoicechatSocketImpl;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -60,6 +64,22 @@ public class ServerVoiceEvents implements Listener {
             NetManager.sendMessage(player, getIncompatibleMessage(packet.getCompatibilityVersion()));
         } else {
             initializePlayerConnection(player);
+        }
+    }
+
+    public void onUDPWrapperPacket(UDPWrapperPacket packet) {
+        if (server == null) {
+            return;
+        }
+        if (!(server.getSocket() instanceof IntegratedVoicechatSocketImpl)) {
+            CooldownTimer.run("socket_not_integrated", () -> {
+                Voicechat.LOGGER.warn("Received integrated packets but socket is not using integrated networking");
+            });
+            return;
+        }
+        IntegratedVoicechatSocketImpl socket = (IntegratedVoicechatSocketImpl) server.getSocket();
+        for (RawUdpPacket rawUdpPacket : packet.getPackets()) {
+            socket.receivePacket(rawUdpPacket);
         }
     }
 
@@ -137,4 +157,5 @@ public class ServerVoiceEvents implements Listener {
     public Server getServer() {
         return server;
     }
+
 }

@@ -22,6 +22,7 @@ public class ServerConfig {
     public ConfigEntry<Boolean> forceVoiceChat;
     public ConfigEntry<Integer> loginTimeout;
     public ConfigEntry<Double> broadcastRange;
+    public ConfigEntry<Boolean> useIntegratedNetworking;
 
     public ServerConfig(ConfigBuilder builder) {
         builder.header(String.format("Simple Voice Chat server config v%s", Voicechat.INSTANCE.getDescription().getVersion()));
@@ -98,6 +99,14 @@ public class ServerConfig {
                 .doubleEntry("broadcast_range", -1D, -1D, Double.MAX_VALUE,
                         "The range where the voice chat should broadcast audio to",
                         "A value <0 means 'max_voice_distance'"
+                );
+        useIntegratedNetworking = builder
+                .booleanEntry("use_integrated_networking", false,
+                        "If the voice chat should use Minecrafts networking to transmit audio packets",
+                        "Only enable this if you do not have the option to open a UDP port on your server",
+                        "This option is not recommended, since it is less performant and may cause audio issues",
+                        "Use this option at your own risk",
+                        "This setting is experimental and may be removed or changed in the future"
                 );
     }
 

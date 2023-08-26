@@ -26,6 +26,7 @@ public abstract class NetManager {
     public Channel<JoinedGroupPacket> joinedGroupChannel;
     public Channel<AddCategoryPacket> addCategoryChannel;
     public Channel<RemoveCategoryPacket> removeCategoryChannel;
+    public Channel<UDPWrapperPacket> udpWrapperPacketChannel;
 
     public void init() {
         updateStateChannel = registerReceiver(UpdateStatePacket.class, false, true);
@@ -41,6 +42,7 @@ public abstract class NetManager {
         joinedGroupChannel = registerReceiver(JoinedGroupPacket.class, true, false);
         addCategoryChannel = registerReceiver(AddCategoryPacket.class, true, false);
         removeCategoryChannel = registerReceiver(RemoveCategoryPacket.class, true, false);
+        udpWrapperPacketChannel = registerReceiver(UDPWrapperPacket.class, true, true);
     }
 
     public abstract <T extends Packet<T>> Channel<T> registerReceiver(Class<T> packetType, boolean toClient, boolean toServer);

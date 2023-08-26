@@ -57,7 +57,12 @@ public class ClientVoicechat {
 
     public void connect(InitializationData data) throws Exception {
         initializationData = data;
-        Voicechat.LOGGER.info("Connecting to voice chat server: '{}:{}'", initializationData.getServerIP(), initializationData.getServerPort());
+        if (initializationData.getServerPort() < 0) {
+            Voicechat.LOGGER.info("Connecting to voice chat server via internal networking");
+        } else {
+            Voicechat.LOGGER.info("Connecting to voice chat server: '{}:{}'", initializationData.getServerIP(), initializationData.getServerPort());
+        }
+
         connection = new ClientVoicechatConnection(this, initializationData);
         connection.start();
     }

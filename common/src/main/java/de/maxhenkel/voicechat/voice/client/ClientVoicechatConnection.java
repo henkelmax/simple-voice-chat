@@ -2,13 +2,18 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.ClientVoicechatSocket;
+import de.maxhenkel.voicechat.api.RawUdpPacket;
+import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.net.IntegratedSocketAddress;
 import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.plugins.impl.ClientIntegratedVoicechatSocketImpl;
 import de.maxhenkel.voicechat.voice.common.*;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.List;
 
 public class ClientVoicechatConnection extends Thread {
 
@@ -26,7 +31,11 @@ public class ClientVoicechatConnection extends Thread {
         this.client = client;
         this.data = data;
         this.address = InetAddress.getByName(data.getServerIP());
-        this.socket = PluginManager.instance().getClientSocketImplementation();
+        if (data.getServerPort() < 0) {
+            this.socket = new ClientIntegratedVoicechatSocketImpl();
+        } else {
+            this.socket = PluginManager.instance().getClientSocketImplementation();
+        }
         this.lastKeepAlive = -1;
         this.running = true;
         this.authThread = new AuthThread();
@@ -51,6 +60,16 @@ public class ClientVoicechatConnection extends Thread {
 
     public boolean isInitialized() {
         return authenticated && connected;
+    }
+
+    public void onIntegratedPackets(List<RawUdpPacket> packets) {
+        if (!(socket instanceof ClientIntegratedVoicechatSocketImpl)) {
+            CooldownTimer.run("socket_not_integrated", () -> {
+                Voicechat.LOGGER.warn("Received integrated packets but socket is not using integrated networking");
+            });
+            return;
+        }
+        ((ClientIntegratedVoicechatSocketImpl) socket).receivePackets(packets);
     }
 
     @Override
@@ -106,7 +125,11 @@ public class ClientVoicechatConnection extends Thread {
         if (!isConnected()) {
             return; // Ignore sending packets when connection is closed
         }
-        socket.send(message.writeClient(this), new InetSocketAddress(address, data.getServerPort()));
+        if (data.getServerPort() < 0) {
+            socket.send(message.writeClient(this), new IntegratedSocketAddress(data.getPlayerUUID()));
+        } else {
+            socket.send(message.writeClient(this), new InetSocketAddress(address, data.getServerPort()));
+        }
     }
 
     public void checkTimeout() {
