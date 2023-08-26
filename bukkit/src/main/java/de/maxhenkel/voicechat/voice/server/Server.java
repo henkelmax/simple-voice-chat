@@ -134,6 +134,18 @@ public class Server extends Thread {
         }
     }
 
+    /**
+     * @param playerUUID the player uuid
+     * @return the new secret or null if the player already has a secret
+     */
+    @Nullable
+    public UUID generateNewSecret(UUID playerUUID) {
+        if (hasSecret(playerUUID)) {
+            return null;
+        }
+        return getSecret(playerUUID);
+    }
+
     public boolean hasSecret(UUID playerUUID) {
         return secrets.containsKey(playerUUID);
     }

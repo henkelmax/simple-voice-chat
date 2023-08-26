@@ -10,10 +10,4 @@ public class ClientWorldEvents {
             listener.run();
         }
     });
-
-    public static final Event<Runnable> JOIN_SERVER = EventFactory.createArrayBacked(Runnable.class, (listeners) -> () -> {
-        for (Runnable listener : listeners) {
-            listener.run();
-        }
-    });
 }

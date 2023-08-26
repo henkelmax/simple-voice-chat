@@ -45,8 +45,6 @@ public abstract class ClientCompatibilityManager {
 
     public abstract void onDisconnect(Runnable onDisconnect);
 
-    public abstract void onJoinServer(Runnable onJoinServer);
-
     public abstract void onJoinWorld(Runnable onJoinWorld);
 
     public abstract void onPublishServer(Consumer<Integer> onPublishServer);
