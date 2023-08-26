@@ -9,10 +9,4 @@ public class ClientWorldEvents {
             listener.run();
         }
     });
-
-    public static final Event<Runnable> JOIN_SERVER = Event.create(Runnable.class, (listeners) -> () -> {
-        for (Runnable listener : listeners) {
-            listener.run();
-        }
-    });
 }
