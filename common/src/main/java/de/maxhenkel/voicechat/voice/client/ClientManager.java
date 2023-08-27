@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.debug.DebugOverlay;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.PermissionCheck;
@@ -32,6 +33,7 @@ public class ClientManager {
     private final ClientCategoryManager categoryManager;
     private final PTTKeyHandler pttKeyHandler;
     private final RenderEvents renderEvents;
+    private final DebugOverlay debugOverlay;
     private final KeyEvents keyEvents;
     private final Minecraft minecraft;
     private boolean hasShownPermissionsMessage;
@@ -42,6 +44,7 @@ public class ClientManager {
         categoryManager = new ClientCategoryManager();
         pttKeyHandler = new PTTKeyHandler();
         renderEvents = new RenderEvents();
+        debugOverlay = new DebugOverlay();
         keyEvents = new KeyEvents();
         minecraft = Minecraft.getInstance();
 
@@ -199,6 +202,10 @@ public class ClientManager {
 
     public static RenderEvents getRenderEvents() {
         return instance().renderEvents;
+    }
+
+    public static DebugOverlay getDebugOverlay() {
+        return instance().debugOverlay;
     }
 
     public KeyEvents getKeyEvents() {
