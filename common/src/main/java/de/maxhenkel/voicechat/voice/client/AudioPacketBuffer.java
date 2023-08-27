@@ -35,15 +35,16 @@ public class AudioPacketBuffer {
             return packet;
         }
         packet = queue.poll(5, TimeUnit.MILLISECONDS);
-        if (packet != null) {
-            if (packet.getSequenceNumber() == lastSequenceNumber + 1 || lastSequenceNumber < 0) {
-                lastSequenceNumber = packet.getSequenceNumber();
-                return packet;
-            } else {
-                addSorted(packet);
-            }
+        if (packet == null) {
+            return null;
         }
-        return null;
+        if (packet.getSequenceNumber() == lastSequenceNumber + 1 || lastSequenceNumber < 0) {
+            lastSequenceNumber = packet.getSequenceNumber();
+            return packet;
+        } else {
+            addSorted(packet);
+            return null;
+        }
     }
 
     private void addSorted(SoundPacket<?> packet) {
@@ -56,18 +57,28 @@ public class AudioPacketBuffer {
 
     @Nullable
     private SoundPacket<?> getNext() {
-        if (packetBuffer.size() > packetThreshold || isFlushingBuffer) {
-            isFlushingBuffer = packetBuffer.size() != 0;
-            if (packetBuffer.size() != 0) {
-                SoundPacket<?> packet = packetBuffer.remove(0);
-                lastSequenceNumber = packet.getSequenceNumber();
-                return packet;
-            } else {
+        if (isFlushingBuffer) {
+            if (packetBuffer.isEmpty()) {
+                isFlushingBuffer = false;
                 return null;
             }
-        } else {
+            return getFirstPacket();
+        } else if (packetBuffer.size() > packetThreshold) {
+            return getFirstPacket();
+        } else if (!packetBuffer.isEmpty()) {
+            SoundPacket<?> packet = packetBuffer.get(0);
+            if (packet.getSequenceNumber() == lastSequenceNumber + 1 || lastSequenceNumber < 0) {
+                return getFirstPacket();
+            }
             return null;
         }
+        return null;
+    }
+
+    private SoundPacket<?> getFirstPacket() {
+        SoundPacket<?> packet = packetBuffer.remove(0);
+        lastSequenceNumber = packet.getSequenceNumber();
+        return packet;
     }
 
     public void clear() {
@@ -76,6 +87,13 @@ public class AudioPacketBuffer {
         }
         lastSequenceNumber = -1L;
         isFlushingBuffer = false;
+    }
+
+    public int getSize() {
+        if (packetBuffer == null) {
+            return 0;
+        }
+        return packetBuffer.size();
     }
 
 }
