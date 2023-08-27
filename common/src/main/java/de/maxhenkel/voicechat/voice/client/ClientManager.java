@@ -179,7 +179,7 @@ public class ClientManager {
 
     private static ClientManager instance;
 
-    public static ClientManager instance() {
+    public static synchronized ClientManager instance() {
         if (instance == null) {
             instance = new ClientManager();
         }
