@@ -232,6 +232,7 @@ public class ClientVoicechat {
 
         if (connection != null) {
             connection.close();
+            connection = null;
         }
 
         if (recorder != null) {
