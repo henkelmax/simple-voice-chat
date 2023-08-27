@@ -22,6 +22,7 @@ import java.nio.ShortBuffer;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 @Deprecated
 public abstract class ALSpeakerBase implements Speaker {
@@ -264,6 +265,16 @@ public abstract class ALSpeakerBase implements Speaker {
             return;
         }
         soundManager.runInContext(executor, runnable);
+    }
+
+    public void fetchQueuedBuffersAsync(Consumer<Integer> supplier) {
+        runInContext(() -> {
+            if (isStoppedSync()) {
+                supplier.accept(-1);
+                return;
+            }
+            supplier.accept(getQueuedBuffersSync());
+        });
     }
 
 }
