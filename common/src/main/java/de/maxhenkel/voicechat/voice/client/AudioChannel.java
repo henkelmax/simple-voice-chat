@@ -132,13 +132,15 @@ public class AudioChannel extends Thread {
                     int packetsToCompensate = (int) (packet.getSequenceNumber() - (lastSequenceNumber + 1));
 
                     if (packetsToCompensate > 0) {
-                        Voicechat.LOGGER.debug("Compensating {}/{} packets ", packetsToCompensate >= 4 ? 0 : packetsToCompensate, packetsToCompensate);
+                        Voicechat.logDebug("Compensating {}/{} packets ", packetsToCompensate >= 4 ? 0 : packetsToCompensate, packetsToCompensate);
                     }
 
                     if (packetsToCompensate <= 4) {
                         for (int i = 0; i < packetsToCompensate; i++) {
                             writeToSpeaker(packet, decoder.decode(null));
                         }
+                    } else {
+                        Voicechat.logDebug("Skipping compensation for {} packets", packetsToCompensate);
                     }
                 }
 
