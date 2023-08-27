@@ -85,9 +85,9 @@ public abstract class ALSpeakerBase implements Speaker {
     public void play(short[] data, float volume, @Nullable Vec3d position, @Nullable String category, float maxDistance) {
         runInContext(() -> {
             removeProcessedBuffersSync();
-            int buffers = getQueuedBuffersSync();
-            boolean stopped = getStateSync() == AL10.AL_INITIAL || getStateSync() == AL10.AL_STOPPED || buffers <= 1;
+            boolean stopped = isStoppedSync();
             if (stopped) {
+                Voicechat.logDebug("Filling playback buffer {}", audioChannelId);
                 for (int i = 0; i < getBufferSize(); i++) {
                     writeSync(new short[bufferSize], 1F, position, category, maxDistance);
                 }
@@ -100,6 +100,10 @@ public abstract class ALSpeakerBase implements Speaker {
                 SoundManager.checkAlError();
             }
         });
+    }
+
+    protected boolean isStoppedSync() {
+        return getStateSync() == AL10.AL_INITIAL || getStateSync() == AL10.AL_STOPPED || getQueuedBuffersSync() <= 0;
     }
 
     protected int getBufferSize() {
@@ -256,6 +260,9 @@ public abstract class ALSpeakerBase implements Speaker {
     }
 
     public void runInContext(Runnable runnable) {
+        if (executor.isShutdown()) {
+            return;
+        }
         soundManager.runInContext(executor, runnable);
     }
 
