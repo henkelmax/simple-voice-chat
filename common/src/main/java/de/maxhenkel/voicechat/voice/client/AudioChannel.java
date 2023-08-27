@@ -52,7 +52,7 @@ public class AudioChannel extends Thread {
         setDaemon(true);
         setName("AudioChannelThread-" + uuid.toString());
         setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
-        Voicechat.LOGGER.info("Creating audio channel for " + uuid);
+        Voicechat.LOGGER.info("Creating audio channel for {}", uuid);
     }
 
     public boolean canKill() {
@@ -60,7 +60,7 @@ public class AudioChannel extends Thread {
     }
 
     public void closeAndKill() {
-        Voicechat.LOGGER.info("Closing audio channel for " + uuid);
+        Voicechat.LOGGER.info("Closing audio channel for {}", uuid);
         stopped = true;
         queue.clear();
         if (Thread.currentThread() == this) {
@@ -92,7 +92,6 @@ public class AudioChannel extends Thread {
             speaker = SpeakerManager.createSpeaker(null/*client.getSoundManager()*/, uuid);
 
             while (!stopped) {
-
                 if (ClientManager.getPlayerStateManager().isDisabled()) {
                     closeAndKill();
                     return;
