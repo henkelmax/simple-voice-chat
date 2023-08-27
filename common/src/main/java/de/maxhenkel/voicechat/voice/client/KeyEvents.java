@@ -9,6 +9,7 @@ import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -49,7 +50,11 @@ public class KeyEvents {
         ClientVoicechat client = ClientManager.getClient();
         ClientPlayerStateManager playerStateManager = ClientManager.getPlayerStateManager();
         if (KEY_VOICE_CHAT.consumeClick()) {
-            minecraft.setScreen(new VoiceChatScreen());
+            if (Screen.hasAltDown()) {
+                ClientManager.getDebugOverlay().toggle();
+            } else {
+                minecraft.setScreen(new VoiceChatScreen());
+            }
         }
 
         if (KEY_GROUP.consumeClick()) {

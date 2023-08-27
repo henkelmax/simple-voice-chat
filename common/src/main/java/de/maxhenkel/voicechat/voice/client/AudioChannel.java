@@ -37,6 +37,7 @@ public class AudioChannel extends Thread {
     private boolean stopped;
     private final OpusDecoder decoder;
     private long lastSequenceNumber;
+    private long lostPackets;
 
     public AudioChannel(ClientVoicechat client, InitializationData initializationData, UUID uuid) {
         this.client = client;
@@ -137,6 +138,7 @@ public class AudioChannel extends Thread {
                     }
 
                     if (packetsToCompensate <= 4) {
+                        lostPackets += packetsToCompensate;
                         for (int i = 0; i < packetsToCompensate; i++) {
                             writeToSpeaker(packet, decoder.decode(null));
                         }
@@ -281,4 +283,19 @@ public class AudioChannel extends Thread {
         return stopped;
     }
 
+    public BlockingQueue<SoundPacket<?>> getQueue() {
+        return queue;
+    }
+
+    public Speaker getSpeaker() {
+        return speaker;
+    }
+
+    public AudioPacketBuffer getPacketBuffer() {
+        return packetBuffer;
+    }
+
+    public long getLostPackets() {
+        return lostPackets;
+    }
 }
