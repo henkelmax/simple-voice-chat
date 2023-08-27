@@ -210,6 +210,10 @@ public class ClientVoicechat {
         return startTime;
     }
 
+    public Map<UUID, AudioChannel> getAudioChannels() {
+        return audioChannels;
+    }
+
     public void close() {
         synchronized (audioChannels) {
             Voicechat.LOGGER.info("Clearing audio channels");
