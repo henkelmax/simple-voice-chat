@@ -94,7 +94,6 @@
   "message.voicechat.incompatible_version": "Twoja wersja czatu głosowego jest niekompatybilna z wersją używaną przez serwer. Proszę zainstalować wersję %s (%s)",
   "message.voicechat.incompatible": "Twoja wersja czatu głosowego jest niekompatybilna z wersją używaną przez serwer.",
   "message.voicechat.group_members": "Członkowie grupy",
-  "message.voicechat.join_create_group": "Dołącz do, lub stwórz grupę",
   "message.voicechat.group_name": "Nazwa grupy",
   "message.voicechat.leave_group": "Opuść grupę",
   "message.voicechat.not_in_group": "Nie jesteś w grupie",
