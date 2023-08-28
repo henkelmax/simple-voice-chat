@@ -114,7 +114,7 @@ public class ConfigMigrator {
             }
 
             configEntry.set(forgeValue);
-            Voicechat.logDebug("Migrated config entry '{}' with value '{}'", configEntry.getKey(), forgeValue);
+            Voicechat.LOGGER.debug("Migrated config entry '{}' with value '{}'", configEntry.getKey(), forgeValue);
         } catch (Throwable e) {
             Voicechat.LOGGER.error("Failed to migrate config entry {}", configEntry.getKey(), e);
         }
