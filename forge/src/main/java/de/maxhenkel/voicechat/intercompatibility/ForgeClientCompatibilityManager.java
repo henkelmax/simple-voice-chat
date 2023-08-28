@@ -96,6 +96,14 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         joinWorldEvents.forEach(Runnable::run);
     }
 
+    @SubscribeEvent
+    public void onJoinWorld(EntityJoinWorldEvent event) {
+        if (event.getEntity() != minecraft.player) {
+            return;
+        }
+        joinWorldEvents.forEach(Runnable::run);
+    }
+
     public void onOpenPort(int port) {
         publishServerEvents.forEach(consumer -> consumer.accept(port));
     }
