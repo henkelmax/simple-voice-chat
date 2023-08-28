@@ -6,7 +6,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.util.StackLocatorUtil;
 
 import java.util.Map;
 
@@ -76,9 +75,6 @@ public class Log4JVoicechatLogger implements VoicechatLogger {
     }
 
     private String modifyMessage(String message) {
-        if (debugMode) {
-            return String.format("[%s/%s] %s", logger.getName(), StackLocatorUtil.getCallerClass(4).getSimpleName(), message);
-        }
         return String.format("[%s] %s", logger.getName(), message);
     }
 
