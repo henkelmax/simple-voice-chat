@@ -1,1 +1,1 @@
-- Fixed voice chat not connecting with polymer installed
+- Improved debug logging
