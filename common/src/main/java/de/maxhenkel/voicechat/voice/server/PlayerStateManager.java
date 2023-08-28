@@ -40,7 +40,7 @@ public class PlayerStateManager {
             states.put(player.getUUID(), state);
 
             broadcastState(state);
-            Voicechat.logDebug("Got state of {}: {}", player.getDisplayName().getString(), state);
+            Voicechat.LOGGER.debug("Got state of {}: {}", player.getDisplayName().getString(), state);
         });
     }
 
@@ -53,20 +53,20 @@ public class PlayerStateManager {
     private void onPlayerCompatibilityCheckSucceeded(ServerPlayerEntity player) {
         PlayerStatesPacket packet = new PlayerStatesPacket(states);
         NetManager.sendToClient(player, packet);
-        Voicechat.logDebug("Sending initial states to {}", player.getDisplayName().getString());
+        Voicechat.LOGGER.debug("Sending initial states to {}", player.getDisplayName().getString());
     }
 
     private void onPlayerLoggedIn(ServerPlayerEntity player) {
         PlayerState state = defaultDisconnectedState(player);
         states.put(player.getUUID(), state);
         broadcastState(state);
-        Voicechat.logDebug("Setting default state of {}: {}", player.getDisplayName().getString(), state);
+        Voicechat.LOGGER.debug("Setting default state of {}: {}", player.getDisplayName().getString(), state);
     }
 
     private void onPlayerLoggedOut(ServerPlayerEntity player) {
         states.remove(player.getUUID());
         broadcastState(new PlayerState(player.getUUID(), player.getGameProfile().getName(), false, true));
-        Voicechat.logDebug("Removing state of {}", player.getDisplayName().getString());
+        Voicechat.LOGGER.debug("Removing state of {}", player.getDisplayName().getString());
     }
 
     private void onPlayerVoicechatDisconnect(UUID uuid) {
@@ -78,7 +78,7 @@ public class PlayerStateManager {
         state.setDisconnected(true);
 
         broadcastState(state);
-        Voicechat.logDebug("Set state of {} to disconnected: {}", uuid, state);
+        Voicechat.LOGGER.debug("Set state of {} to disconnected: {}", uuid, state);
     }
 
     private void onPlayerVoicechatConnect(ServerPlayerEntity player) {
@@ -93,7 +93,7 @@ public class PlayerStateManager {
         states.put(player.getUUID(), state);
 
         broadcastState(state);
-        Voicechat.logDebug("Set state of {} to connected: {}", player.getDisplayName().getString(), state);
+        Voicechat.LOGGER.debug("Set state of {} to connected: {}", player.getDisplayName().getString(), state);
     }
 
     @Nullable
@@ -109,12 +109,12 @@ public class PlayerStateManager {
         PlayerState state = states.get(player.getUUID());
         if (state == null) {
             state = PlayerStateManager.defaultDisconnectedState(player);
-            Voicechat.logDebug("Defaulting to default state for {}: {}", player.getDisplayName().getString(), state);
+            Voicechat.LOGGER.debug("Defaulting to default state for {}: {}", player.getDisplayName().getString(), state);
         }
         state.setGroup(group);
         states.put(player.getUUID(), state);
         broadcastState(state);
-        Voicechat.logDebug("Setting group of {}: {}", player.getDisplayName().getString(), state);
+        Voicechat.LOGGER.debug("Setting group of {}: {}", player.getDisplayName().getString(), state);
     }
 
     public Collection<PlayerState> getStates() {

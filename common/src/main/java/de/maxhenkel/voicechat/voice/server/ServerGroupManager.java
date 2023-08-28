@@ -59,7 +59,7 @@ public class ServerGroupManager {
     }
 
     private void onPlayerCompatibilityCheckSucceeded(ServerPlayerEntity player) {
-        Voicechat.logDebug("Synchronizing {} groups with {}", groups.size(), player.getDisplayName().getString());
+        Voicechat.LOGGER.debug("Synchronizing {} groups with {}", groups.size(), player.getDisplayName().getString());
         for (Group category : groups.values()) {
             broadcastAddGroup(category);
         }
