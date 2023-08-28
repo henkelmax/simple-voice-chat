@@ -8,14 +8,16 @@ import de.maxhenkel.voicechat.voice.client.speaker.ALSpeaker;
 import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
 public class DebugOverlay {
 
-    private static final Minecraft mc = Minecraft.getInstance();
+    private static final Minecraft mc = Minecraft.getMinecraft();
 
     private final Map<UUID, AudioChannelInfo> audioChannelInfoMap;
     private boolean active;
@@ -42,20 +44,20 @@ public class DebugOverlay {
 
     private List<String> rightText = new ArrayList<>();
 
-    private void render(GuiGraphics gui, float tickDelta) {
+    private void render(float tickDelta) {
         if (!active) {
             return;
         }
         rightText.clear();
 
         rightText.add(String.format("%s %s debug overlay", CommonCompatibilityManager.INSTANCE.getModName(), CommonCompatibilityManager.INSTANCE.getModVersion()));
-        rightText.add(String.format("Press ALT + %s to toggle", ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_VOICE_CHAT).getDisplayName().getString()));
+        rightText.add(String.format("Press ALT + %s to toggle", KeyEvents.KEY_VOICE_CHAT.getDisplayName()));
         rightText.add(null);
 
         ClientVoicechat client = ClientManager.getClient();
         if (client == null) {
             rightText.add("Voice chat not running");
-            drawRight(gui, rightText);
+            drawRight(rightText);
             return;
         }
 
@@ -65,7 +67,7 @@ public class DebugOverlay {
         rightText.add(null);
         addAudioChannelStrings(rightText);
 
-        drawRight(gui, rightText);
+        drawRight(rightText);
     }
 
     public static final int MAX_AUDIO_CHANNELS = 4;
@@ -152,19 +154,20 @@ public class DebugOverlay {
 
     private static final int LEFT_PADDING = 5;
 
-    private void drawRight(GuiGraphics gui, List<String> strings) {
+    private void drawRight(List<String> strings) {
         for (int i = 0; i < strings.size(); i++) {
             String text = strings.get(i);
             if (text == null || text.isEmpty()) {
                 continue;
             }
-            gui.pose().pushPose();
-            int width = mc.font.width(text);
-            gui.pose().translate(mc.getWindow().getGuiScaledWidth() - width - LEFT_PADDING, 25F + i * (mc.font.lineHeight + 1F), 0F);
-            gui.fill(-1, -1, width, mc.font.lineHeight, 0x90505050);
-            gui.drawString(mc.font, text, 0, 0, 0xFFFFFF, false);
+            GlStateManager.pushMatrix();
+            int width = mc.fontRenderer.getStringWidth(text);
+            ScaledResolution scaledresolution = new ScaledResolution(mc);
+            GlStateManager.translate(scaledresolution.getScaledWidth() - width - LEFT_PADDING, 25F + i * (mc.fontRenderer.FONT_HEIGHT + 1F), 0F);
+            Gui.drawRect(-1, -1, width, mc.fontRenderer.FONT_HEIGHT, 0x90505050);
+            mc.fontRenderer.drawString(text, 0, 0, 0xFFFFFF);
 
-            gui.pose().popPose();
+            GlStateManager.popMatrix();
         }
     }
 

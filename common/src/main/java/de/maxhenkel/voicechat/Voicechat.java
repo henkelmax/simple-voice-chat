@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public abstract class Voicechat {
 
     public static final String MODID = "voicechat";
-    public static final VoicechatLogger LOGGER = new Log4JVoicechatLogger(MODID);
+    public static VoicechatLogger LOGGER;
     public static ServerVoiceEvents SERVER;
     public static ServerConfig SERVER_CONFIG;
     public static Translations TRANSLATIONS;
@@ -26,6 +26,7 @@ public abstract class Voicechat {
     public static final Pattern GROUP_REGEX = Pattern.compile("^[^\\n\\r\\t\\s][^\\n\\r\\t]{0,23}$");
 
     public void initialize() {
+        LOGGER = new Log4JVoicechatLogger(MODID);
         if (debugMode()) {
             LOGGER.warn("Running in debug mode - Don't leave this enabled in production!");
         }

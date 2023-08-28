@@ -54,7 +54,7 @@ public abstract class JavaSpeakerBase implements Speaker {
         }
 
         if (getAvailableSamples() > AudioChannelConfig.maxSpeakerBufferSize()) {
-            Voicechat.logDebug("Skipping playing audio to avoid delay");
+            Voicechat.LOGGER.debug("Skipping playing audio to avoid delay");
             return;
         }
 
