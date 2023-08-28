@@ -1,13 +1,12 @@
 package de.maxhenkel.voicechat.debug;
 
+import de.maxhenkel.voicechat.gui.GroupType;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.voice.client.AudioChannel;
-import de.maxhenkel.voicechat.voice.client.ClientManager;
-import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
-import de.maxhenkel.voicechat.voice.client.KeyEvents;
+import de.maxhenkel.voicechat.voice.client.*;
 import de.maxhenkel.voicechat.voice.client.speaker.ALSpeaker;
 import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
+import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -59,19 +58,20 @@ public class DebugOverlay {
             drawRight(gui, rightText);
             return;
         }
-        rightText.add(getAudioChannelCountString());
+
+        rightText.add(String.format("UUID: %s", ClientManager.getPlayerStateManager().getOwnID()));
+        rightText.add(null);
+        addStateStrings(rightText);
+        rightText.add(null);
         addAudioChannelStrings(rightText);
 
         drawRight(gui, rightText);
     }
 
-    private String getAudioChannelCountString() {
-        return String.format("Audio Channels: %s", audioChannelInfoMap.size());
-    }
-
     public static final int MAX_AUDIO_CHANNELS = 4;
 
     private void addAudioChannelStrings(List<String> strings) {
+        strings.add(String.format("Audio Channels: %s", audioChannelInfoMap.size()));
         ArrayList<Map.Entry<UUID, AudioChannelInfo>> entries = new ArrayList<>(audioChannelInfoMap.entrySet());
         for (int i = 0; i < entries.size() && i < MAX_AUDIO_CHANNELS; i++) {
             Map.Entry<UUID, AudioChannelInfo> entry = entries.get(i);
@@ -99,6 +99,37 @@ public class DebugOverlay {
         if (entries.size() > 4) {
             strings.add(String.format("%s more channels", entries.size() - MAX_AUDIO_CHANNELS));
         }
+    }
+
+    private void addStateStrings(List<String> strings) {
+        ClientGroupManager groupManager = ClientManager.getGroupManager();
+        Collection<ClientGroup> groups = groupManager.getGroups();
+        ClientPlayerStateManager stateManager = ClientManager.getPlayerStateManager();
+        ClientGroup group = stateManager.getGroup();
+        strings.add(String.format("Groups: %s", groups.size()));
+        strings.add(clientGroupToString(group));
+
+        strings.add(String.format(
+                "States: %s Disconnected: %s Disabled: %s Muted: %s",
+                stateManager.getPlayerStates(true).size(),
+                stateManager.isDisconnected(),
+                stateManager.isDisabled(),
+                stateManager.isMuted()
+        ));
+    }
+
+    private String clientGroupToString(ClientGroup group) {
+        if (group == null) {
+            return "Group: N/A";
+        }
+        return String.format(
+                "Group: %s Name: %s Password: %s Persistent: %s Type: %s",
+                group.getId().toString().substring(24),
+                group.getName(),
+                group.hasPassword(),
+                group.isPersistent(),
+                GroupType.fromType(group.getType()).name()
+        );
     }
 
     private void updateCache() {
