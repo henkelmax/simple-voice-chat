@@ -11,7 +11,7 @@ import de.maxhenkel.voicechat.config.Translations;
 import de.maxhenkel.voicechat.integration.commodore.CommodoreCommands;
 import de.maxhenkel.voicechat.integration.placeholderapi.VoicechatExpansion;
 import de.maxhenkel.voicechat.integration.viaversion.ViaVersionCompatibility;
-import de.maxhenkel.voicechat.logging.Log4JVoicechatLogger;
+import de.maxhenkel.voicechat.logging.JavaLoggingLogger;
 import de.maxhenkel.voicechat.logging.VoicechatLogger;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
@@ -31,7 +31,7 @@ public final class Voicechat extends JavaPlugin {
     public static Voicechat INSTANCE;
 
     public static final String MODID = "voicechat";
-    public static final VoicechatLogger LOGGER = new Log4JVoicechatLogger(MODID);
+    public static VoicechatLogger LOGGER;
 
     public static int COMPATIBILITY_VERSION = BuildConstants.COMPATIBILITY_VERSION;
 
@@ -48,6 +48,11 @@ public final class Voicechat extends JavaPlugin {
     @Override
     public void onEnable() {
         INSTANCE = this;
+        LOGGER = new JavaLoggingLogger(getLogger());
+
+        if (debugMode()) {
+            LOGGER.warn("Running in debug mode - Don't leave this enabled in production!");
+        }
 
         try {
             compatibility = BukkitCompatibilityManager.getCompatibility();
