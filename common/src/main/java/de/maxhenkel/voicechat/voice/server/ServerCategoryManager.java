@@ -22,7 +22,7 @@ public class ServerCategoryManager extends CategoryManager {
     }
 
     private void onPlayerCompatibilityCheckSucceeded(EntityPlayerMP player) {
-        Voicechat.logDebug("Synchronizing {} volume categories with {}", categories.size(), player.getDisplayNameString());
+        Voicechat.LOGGER.debug("Synchronizing {} volume categories with {}", categories.size(), player.getDisplayNameString());
         for (VolumeCategoryImpl category : getCategories()) {
             broadcastAddCategory(server.getServer(), category);
         }
@@ -31,7 +31,7 @@ public class ServerCategoryManager extends CategoryManager {
     @Override
     public void addCategory(VolumeCategoryImpl category) {
         super.addCategory(category);
-        Voicechat.logDebug("Synchronizing volume category {} with all players", category.getId());
+        Voicechat.LOGGER.debug("Synchronizing volume category {} with all players", category.getId());
         broadcastAddCategory(server.getServer(), category);
     }
 
@@ -39,7 +39,7 @@ public class ServerCategoryManager extends CategoryManager {
     @Nullable
     public VolumeCategoryImpl removeCategory(String categoryId) {
         VolumeCategoryImpl volumeCategory = super.removeCategory(categoryId);
-        Voicechat.logDebug("Removing volume category {} for all players", categoryId);
+        Voicechat.LOGGER.debug("Removing volume category {} for all players", categoryId);
         broadcastRemoveCategory(server.getServer(), categoryId);
         return volumeCategory;
     }

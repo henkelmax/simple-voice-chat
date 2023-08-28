@@ -88,7 +88,7 @@ public abstract class ALSpeakerBase implements Speaker {
             removeProcessedBuffersSync();
             boolean stopped = isStoppedSync();
             if (stopped) {
-                Voicechat.logDebug("Filling playback buffer {}", audioChannelId);
+                Voicechat.LOGGER.debug("Filling playback buffer {}", audioChannelId);
                 for (int i = 0; i < getBufferSize(); i++) {
                     writeSync(new short[bufferSize], 1F, position, category, maxDistance);
                 }

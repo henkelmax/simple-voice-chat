@@ -83,7 +83,7 @@ public class NetworkMessage {
         byte[] data = packet.getData();
         PacketBuffer b = new PacketBuffer(Unpooled.wrappedBuffer(data));
         if (b.readByte() != MAGIC_BYTE) {
-            Voicechat.logDebug("Received invalid packet from {}", client.getAddress());
+            Voicechat.LOGGER.debug("Received invalid packet from {}", client.getAddress());
             return null;
         }
         return readFromBytes(packet.getSocketAddress(), client.getData().getSecret(), b.readByteArray(), System.currentTimeMillis());
@@ -94,13 +94,13 @@ public class NetworkMessage {
         byte[] data = packet.getData();
         PacketBuffer b = new PacketBuffer(Unpooled.wrappedBuffer(data));
         if (b.readByte() != MAGIC_BYTE) {
-            Voicechat.logDebug("Received invalid packet from {}", packet.getSocketAddress());
+            Voicechat.LOGGER.debug("Received invalid packet from {}", packet.getSocketAddress());
             return null;
         }
         UUID playerID = b.readUniqueId();
         if (!server.hasSecret(playerID)) {
             // Ignore packets if they are not from a player that has a secret
-            Voicechat.logDebug("Player " + playerID + " does not have a secret");
+            Voicechat.LOGGER.debug("Player " + playerID + " does not have a secret");
             return null;
         }
         return readFromBytes(packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray(), packet.getTimestamp());
@@ -113,14 +113,14 @@ public class NetworkMessage {
             decrypt = AES.decrypt(secret, encryptedPayload);
         } catch (Exception e) {
             // Return null if the encryption fails due to a wrong secret
-            Voicechat.logDebug("Failed to decrypt packet from {}", socketAddress);
+            Voicechat.LOGGER.debug("Failed to decrypt packet from {}", socketAddress);
             return null;
         }
         PacketBuffer buffer = new PacketBuffer(Unpooled.wrappedBuffer(decrypt));
         byte packetType = buffer.readByte();
         Class<? extends Packet> packetClass = packetRegistry.get(packetType);
         if (packetClass == null) {
-            Voicechat.logDebug("Got invalid packet ID {}", packetType);
+            Voicechat.LOGGER.debug("Got invalid packet ID {}", packetType);
             return null;
         }
         Packet<? extends Packet<?>> p = packetClass.getDeclaredConstructor().newInstance();

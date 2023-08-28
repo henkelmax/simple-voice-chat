@@ -150,7 +150,7 @@ public class PluginManager {
         VoicechatSocket socket = event.getSocketImplementation();
         if (socket == null) {
             socket = new VoicechatSocketImpl();
-            Voicechat.logDebug("Using default voicechat socket implementation");
+            Voicechat.LOGGER.debug("Using default voicechat socket implementation");
         } else {
             Voicechat.LOGGER.info("Using custom voicechat socket implementation: {}", socket.getClass().getName());
         }
@@ -163,7 +163,7 @@ public class PluginManager {
         ClientVoicechatSocket socket = event.getSocketImplementation();
         if (socket == null) {
             socket = new ClientVoicechatSocketImpl();
-            Voicechat.logDebug("Using default voicechat client socket implementation");
+            Voicechat.LOGGER.debug("Using default voicechat client socket implementation");
         } else {
             Voicechat.LOGGER.info("Using custom voicechat client socket implementation: {}", socket.getClass().getName());
         }
