@@ -39,7 +39,7 @@ public class Log4JVoicechatLogger implements VoicechatLogger {
         org.apache.logging.log4j.core.Logger coreLogger = (org.apache.logging.log4j.core.Logger) logger;
         Map<String, Appender> appenders = coreLogger.getAppenders();
         coreLogger.setAdditive(false);
-        Configurator.setLevel(logger, Level.DEBUG);
+        Configurator.setLevel(logger.getName(), Level.DEBUG);
         for (Appender appender : appenders.values()) {
             coreLogger.addAppender(appender);
         }
