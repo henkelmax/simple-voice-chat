@@ -31,7 +31,7 @@ public class JavaOpusDecoderImpl implements de.maxhenkel.voicechat.api.opus.Opus
         } catch (OpusException e) {
             throw new IllegalStateException("Opus decoder error " + e.getMessage());
         }
-        Voicechat.logDebug("Initializing Opus decoder with sample rate {} Hz, frame size {} bytes and max payload size {} bytes", sampleRate, frameSize, maxPayloadSize);
+        Voicechat.LOGGER.debug("Initializing Opus decoder with sample rate {} Hz, frame size {} bytes and max payload size {} bytes", sampleRate, frameSize, maxPayloadSize);
     }
 
     @Override

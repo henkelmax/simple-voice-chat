@@ -20,12 +20,12 @@ public class ClientGroupManager {
         groups = new ConcurrentHashMap<>();
         CommonCompatibilityManager.INSTANCE.getNetManager().addGroupChannel.setClientListener((client, handler, packet) -> {
             groups.put(packet.getGroup().getId(), packet.getGroup());
-            Voicechat.logDebug("Added group '{}' ({})", packet.getGroup().getName(), packet.getGroup().getId());
+            Voicechat.LOGGER.debug("Added group '{}' ({})", packet.getGroup().getName(), packet.getGroup().getId());
             JoinGroupList.update();
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().removeGroupChannel.setClientListener((client, handler, packet) -> {
             groups.remove(packet.getGroupId());
-            Voicechat.logDebug("Removed group {}", packet.getGroupId());
+            Voicechat.LOGGER.debug("Removed group {}", packet.getGroupId());
             JoinGroupList.update();
         });
         ClientCompatibilityManager.INSTANCE.onDisconnect(() -> groups.clear());

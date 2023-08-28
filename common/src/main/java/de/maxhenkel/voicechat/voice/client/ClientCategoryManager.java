@@ -23,11 +23,11 @@ public class ClientCategoryManager extends CategoryManager {
         images = new ConcurrentHashMap<>();
         CommonCompatibilityManager.INSTANCE.getNetManager().addCategoryChannel.setClientListener((client, handler, packet) -> {
             addCategory(packet.getCategory());
-            Voicechat.logDebug("Added category {}", packet.getCategory().getId());
+            Voicechat.LOGGER.debug("Added category {}", packet.getCategory().getId());
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().removeCategoryChannel.setClientListener((client, handler, packet) -> {
             removeCategory(packet.getCategoryId());
-            Voicechat.logDebug("Removed category {}", packet.getCategoryId());
+            Voicechat.LOGGER.debug("Removed category {}", packet.getCategoryId());
         });
         ClientCompatibilityManager.INSTANCE.onDisconnect(this::clear);
     }
