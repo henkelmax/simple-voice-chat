@@ -1,1 +1,1 @@
-- Updated to 23w35a
+- Updated to 1.20.2-pre1
