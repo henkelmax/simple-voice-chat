@@ -219,7 +219,7 @@ public class VoicechatCommands {
         return server;
     }
 
-    private static int joinGroupByName(CommandSourceStack source, String groupName, @Nullable String password) throws CommandSyntaxException {
+    private static int joinGroupByName(CommandSource source, String groupName, @Nullable String password) throws CommandSyntaxException {
         Server server = joinGroup(source);
         if (server == null) {
             return 1;
@@ -228,19 +228,19 @@ public class VoicechatCommands {
         List<Group> groups = server.getGroupManager().getGroups().values().stream().filter(group -> group.getName().equals(groupName)).collect(Collectors.toList());
 
         if (groups.isEmpty()) {
-            source.sendFailure(Component.translatable("message.voicechat.group_does_not_exist"));
+            source.sendFailure(new TranslationTextComponent("message.voicechat.group_does_not_exist"));
             return 1;
         }
 
         if (groups.size() > 1) {
-            source.sendFailure(Component.translatable("message.voicechat.group_name_not_unique"));
+            source.sendFailure(new TranslationTextComponent("message.voicechat.group_name_not_unique"));
             return 1;
         }
 
         return joinGroup(source, server, groups.get(0).getId(), password);
     }
 
-    private static int joinGroupById(CommandSourceStack source, UUID groupID, @Nullable String password) throws CommandSyntaxException {
+    private static int joinGroupById(CommandSource source, UUID groupID, @Nullable String password) throws CommandSyntaxException {
         Server server = joinGroup(source);
         if (server == null) {
             return 1;
@@ -248,7 +248,7 @@ public class VoicechatCommands {
         return joinGroup(source, server, groupID, password);
     }
 
-    private static int joinGroup(CommandSourceStack source, Server server, UUID groupID, @Nullable String password) throws CommandSyntaxException {
+    private static int joinGroup(CommandSource source, Server server, UUID groupID, @Nullable String password) throws CommandSyntaxException {
         Group group = server.getGroupManager().getGroup(groupID);
 
         if (group == null) {

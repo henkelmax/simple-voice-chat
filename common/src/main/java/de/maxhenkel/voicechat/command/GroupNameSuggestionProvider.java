@@ -7,16 +7,16 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.server.Group;
 import de.maxhenkel.voicechat.voice.server.Server;
-import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.command.CommandSource;
 
 import java.util.concurrent.CompletableFuture;
 
-public class GroupNameSuggestionProvider implements SuggestionProvider<CommandSourceStack> {
+public class GroupNameSuggestionProvider implements SuggestionProvider<CommandSource> {
 
     public static final GroupNameSuggestionProvider INSTANCE = new GroupNameSuggestionProvider();
 
     @Override
-    public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
+    public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSource> context, SuggestionsBuilder builder) {
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
             return builder.buildFuture();
