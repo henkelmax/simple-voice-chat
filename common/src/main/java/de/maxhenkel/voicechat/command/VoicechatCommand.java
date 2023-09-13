@@ -21,7 +21,9 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class VoicechatCommand extends CommandBase {
 
@@ -50,28 +52,28 @@ public class VoicechatCommand extends CommandBase {
 
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("help")) {
-                helpCommand(server, sender, args);
+                helpCommand(sender, args);
                 return;
             } else if (args[0].equalsIgnoreCase("test")) {
                 if (PermissionManager.INSTANCE.ADMIN_PERMISSION.hasPermission(sender)) {
-                    testCommand(server, sender, args);
+                    testCommand(sender, args);
                     return;
                 }
             } else if (args[0].equalsIgnoreCase("invite")) {
-                inviteCommand(server, sender, args);
+                inviteCommand(sender, args);
                 return;
             } else if (args[0].equalsIgnoreCase("join")) {
-                joinCommand(server, sender, args);
+                joinCommand(sender, args);
                 return;
             } else if (args[0].equalsIgnoreCase("leave")) {
-                leaveCommand(server, sender, args);
+                leaveCommand(sender);
                 return;
             }
         }
-        helpCommand(server, sender, args);
+        helpCommand(sender, args);
     }
 
-    private boolean helpCommand(MinecraftServer server, EntityPlayerMP commandSender, String[] args) {
+    private boolean helpCommand(EntityPlayerMP commandSender, String[] args) {
         commandSender.sendMessage(new TextComponentString("/voicechat [help]"));
         commandSender.sendMessage(new TextComponentString("/voicechat [test] <target>"));
         commandSender.sendMessage(new TextComponentString("/voicechat [invite] <target>"));
@@ -80,7 +82,7 @@ public class VoicechatCommand extends CommandBase {
         return true;
     }
 
-    private boolean testCommand(MinecraftServer server, EntityPlayerMP commandSender, String[] args) {
+    private boolean testCommand(EntityPlayerMP commandSender, String[] args) {
         if (args.length < 2) {
             return false;
         }
@@ -135,7 +137,7 @@ public class VoicechatCommand extends CommandBase {
         return true;
     }
 
-    private boolean inviteCommand(MinecraftServer server, EntityPlayerMP commandSender, String[] args) {
+    private boolean inviteCommand(EntityPlayerMP commandSender, String[] args) {
         if (args.length < 2) {
             return false;
         }
@@ -181,25 +183,47 @@ public class VoicechatCommand extends CommandBase {
         return true;
     }
 
-    private boolean joinCommand(MinecraftServer server, EntityPlayerMP player, String[] args) {
+    private boolean joinCommand(EntityPlayerMP player, String[] args) {
         if (args.length < 2) {
             return false;
         }
 
+        int argIndex = 1;
         UUID groupUUID;
         try {
-            groupUUID = UUID.fromString(args[1]);
+            groupUUID = UUID.fromString(args[argIndex]);
         } catch (Exception e) {
-            player.sendMessage(new TextComponentTranslation("message.voicechat.group_does_not_exist"));
+            String groupName;
+            if (args[argIndex].startsWith("\"")) {
+                StringBuilder sb = new StringBuilder();
+                for (; argIndex < args.length; argIndex++) {
+                    sb.append(args[argIndex]).append(" ");
+                    if (args[argIndex].endsWith("\"") && !args[argIndex].endsWith("\\\"")) {
+                        break;
+                    }
+                }
+                groupName = sb.toString().trim();
+                String[] split = groupName.split("\"");
+                if (split.length > 1) {
+                    groupName = split[1];
+                }
+            } else {
+                groupName = args[argIndex];
+            }
+            groupUUID = getGroupUUID(player, Voicechat.SERVER.getServer(), groupName);
+        }
+
+        if (groupUUID == null) {
             return true;
         }
 
+        argIndex++;
+
         String password = null;
-        if (args.length >= 3) {
+        if (args.length >= argIndex + 1) {
             StringBuilder sb = new StringBuilder();
-            for (int i = 2; i < args.length; i++) {
-                sb.append(args[i]);
-                sb.append(" ");
+            for (; argIndex < args.length; argIndex++) {
+                sb.append(args[argIndex]).append(" ");
             }
             password = sb.toString().trim();
             if (password.startsWith("\"")) {
@@ -212,6 +236,22 @@ public class VoicechatCommand extends CommandBase {
 
         joinGroup(player, groupUUID, password);
         return true;
+    }
+
+    private UUID getGroupUUID(EntityPlayerMP player, Server server, String groupName) {
+        List<Group> groups = server.getGroupManager().getGroups().values().stream().filter(group -> group.getName().equals(groupName)).collect(Collectors.toList());
+
+        if (groups.isEmpty()) {
+            player.sendMessage(new TextComponentTranslation("message.voicechat.group_does_not_exist"));
+            return null;
+        }
+
+        if (groups.size() > 1) {
+            player.sendMessage(new TextComponentTranslation("message.voicechat.group_name_not_unique"));
+            return null;
+        }
+
+        return groups.get(0).getId();
     }
 
     private static void joinGroup(EntityPlayerMP player, UUID groupID, @Nullable String password) {
@@ -238,7 +278,7 @@ public class VoicechatCommand extends CommandBase {
         player.sendMessage(new TextComponentTranslation("message.voicechat.join_successful", new TextComponentString(group.getName()).setStyle(new Style().setColor(TextFormatting.GREEN))));
     }
 
-    private boolean leaveCommand(MinecraftServer mcServer, EntityPlayerMP player, String[] args) {
+    private boolean leaveCommand(EntityPlayerMP player) {
         if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
             player.sendMessage(new TextComponentTranslation("message.voicechat.groups_disabled"));
             return true;
