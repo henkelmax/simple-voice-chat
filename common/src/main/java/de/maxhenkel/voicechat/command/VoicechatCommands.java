@@ -27,8 +27,10 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class VoicechatCommands {
 
@@ -133,21 +135,38 @@ public class VoicechatCommands {
             return 1;
         })));
 
-        literalBuilder.then(Commands.literal("join").then(Commands.argument("group", UuidArgument.uuid()).executes((commandSource) -> {
+        literalBuilder.then(Commands.literal("join").then(Commands.argument("group_id", UuidArgument.uuid()).executes((commandSource) -> {
             if (checkNoVoicechat(commandSource)) {
                 return 0;
             }
-            UUID groupID = UuidArgument.getUuid(commandSource, "group");
-            return joinGroup(commandSource.getSource(), groupID, null);
+            UUID groupID = UuidArgument.getUuid(commandSource, "group_id");
+            return joinGroupById(commandSource.getSource(), groupID, null);
         })));
 
-        literalBuilder.then(Commands.literal("join").then(Commands.argument("group", UuidArgument.uuid()).then(Commands.argument("password", StringArgumentType.string()).executes((commandSource) -> {
+        literalBuilder.then(Commands.literal("join").then(Commands.argument("group_id", UuidArgument.uuid()).then(Commands.argument("password", StringArgumentType.string()).executes((commandSource) -> {
             if (checkNoVoicechat(commandSource)) {
                 return 0;
             }
-            UUID groupID = UuidArgument.getUuid(commandSource, "group");
+            UUID groupID = UuidArgument.getUuid(commandSource, "group_id");
             String password = StringArgumentType.getString(commandSource, "password");
-            return joinGroup(commandSource.getSource(), groupID, password.isEmpty() ? null : password);
+            return joinGroupById(commandSource.getSource(), groupID, password.isEmpty() ? null : password);
+        }))));
+
+        literalBuilder.then(Commands.literal("join").then(Commands.argument("group_name", StringArgumentType.string()).suggests(GroupNameSuggestionProvider.INSTANCE).executes((commandSource) -> {
+            if (checkNoVoicechat(commandSource)) {
+                return 0;
+            }
+            String groupName = StringArgumentType.getString(commandSource, "group_name");
+            return joinGroupByName(commandSource.getSource(), groupName, null);
+        })));
+
+        literalBuilder.then(Commands.literal("join").then(Commands.argument("group_name", StringArgumentType.string()).suggests(GroupNameSuggestionProvider.INSTANCE).then(Commands.argument("password", StringArgumentType.string()).executes((commandSource) -> {
+            if (checkNoVoicechat(commandSource)) {
+                return 0;
+            }
+            String groupName = StringArgumentType.getString(commandSource, "group_name");
+            String password = StringArgumentType.getString(commandSource, "password");
+            return joinGroupByName(commandSource.getSource(), groupName, password.isEmpty() ? null : password);
         }))));
 
         literalBuilder.then(Commands.literal("leave").executes((commandSource) -> {
@@ -180,24 +199,57 @@ public class VoicechatCommands {
         dispatcher.register(literalBuilder);
     }
 
-    private static int joinGroup(CommandSourceStack source, UUID groupID, @Nullable String password) throws CommandSyntaxException {
+    private static Server joinGroup(CommandSourceStack source) throws CommandSyntaxException {
         if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
             source.sendFailure(Component.translatable("message.voicechat.groups_disabled"));
-            return 1;
+            return null;
         }
 
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
             source.sendSuccess(() -> Component.translatable("message.voicechat.voice_chat_unavailable"), false);
-            return 1;
+            return null;
         }
         ServerPlayer player = source.getPlayerOrException();
 
         if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
             source.sendSuccess(() -> Component.translatable("message.voicechat.no_group_permission"), false);
+            return null;
+        }
+
+        return server;
+    }
+
+    private static int joinGroupByName(CommandSourceStack source, String groupName, @Nullable String password) throws CommandSyntaxException {
+        Server server = joinGroup(source);
+        if (server == null) {
             return 1;
         }
 
+        List<Group> groups = server.getGroupManager().getGroups().values().stream().filter(group -> group.getName().equals(groupName)).collect(Collectors.toList());
+
+        if (groups.isEmpty()) {
+            source.sendFailure(Component.translatable("message.voicechat.group_does_not_exist"));
+            return 1;
+        }
+
+        if (groups.size() > 1) {
+            source.sendFailure(Component.translatable("message.voicechat.group_name_not_unique"));
+            return 1;
+        }
+
+        return joinGroup(source, server, groups.get(0).getId(), password);
+    }
+
+    private static int joinGroupById(CommandSourceStack source, UUID groupID, @Nullable String password) throws CommandSyntaxException {
+        Server server = joinGroup(source);
+        if (server == null) {
+            return 1;
+        }
+        return joinGroup(source, server, groupID, password);
+    }
+
+    private static int joinGroup(CommandSourceStack source, Server server, UUID groupID, @Nullable String password) throws CommandSyntaxException {
         Group group = server.getGroupManager().getGroup(groupID);
 
         if (group == null) {
@@ -205,7 +257,7 @@ public class VoicechatCommands {
             return 1;
         }
 
-        server.getGroupManager().joinGroup(group, player, password);
+        server.getGroupManager().joinGroup(group, source.getPlayerOrException(), password);
         source.sendSuccess(() -> Component.translatable("message.voicechat.join_successful", Component.literal(group.getName()).withStyle(ChatFormatting.GRAY)), false);
         return 1;
     }

@@ -206,20 +206,42 @@ public class VoiceChatCommands implements CommandExecutor, TabCompleter {
             return false;
         }
 
+        int argIndex = 1;
         UUID groupUUID;
         try {
-            groupUUID = UUID.fromString(args[1]);
+            groupUUID = UUID.fromString(args[argIndex]);
         } catch (Exception e) {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.group_does_not_exist"));
+            String groupName;
+            if (args[argIndex].startsWith("\"")) {
+                StringBuilder sb = new StringBuilder();
+                for (; argIndex < args.length; argIndex++) {
+                    sb.append(args[argIndex]).append(" ");
+                    if (args[argIndex].endsWith("\"") && !args[argIndex].endsWith("\\\"")) {
+                        break;
+                    }
+                }
+                groupName = sb.toString().trim();
+                String[] split = groupName.split("\"");
+                if (split.length > 1) {
+                    groupName = split[1];
+                }
+            } else {
+                groupName = args[argIndex];
+            }
+            groupUUID = getGroupUUID(commandSender, Voicechat.SERVER.getServer(), groupName);
+        }
+
+        if (groupUUID == null) {
             return true;
         }
 
+        argIndex++;
+
         String password = null;
-        if (args.length >= 3) {
+        if (args.length >= argIndex + 1) {
             StringBuilder sb = new StringBuilder();
-            for (int i = 2; i < args.length; i++) {
-                sb.append(args[i]);
-                sb.append(" ");
+            for (; argIndex < args.length; argIndex++) {
+                sb.append(args[argIndex]).append(" ");
             }
             password = sb.toString().trim();
             if (password.startsWith("\"")) {
@@ -232,6 +254,22 @@ public class VoiceChatCommands implements CommandExecutor, TabCompleter {
 
         joinGroup(commandSender, groupUUID, password);
         return true;
+    }
+
+    private UUID getGroupUUID(Player commandSender, Server server, String groupName) {
+        List<Group> groups = server.getGroupManager().getGroups().values().stream().filter(group -> group.getName().equals(groupName)).collect(Collectors.toList());
+
+        if (groups.isEmpty()) {
+            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.group_does_not_exist"));
+            return null;
+        }
+
+        if (groups.size() > 1) {
+            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.group_name_not_unique"));
+            return null;
+        }
+
+        return groups.get(0).getId();
     }
 
     private static void joinGroup(Player commandSender, UUID groupID, @Nullable String password) {
