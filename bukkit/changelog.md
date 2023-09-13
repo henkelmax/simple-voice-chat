@@ -1,1 +1,1 @@
-- Improved debug logging
+- Added join group by name command

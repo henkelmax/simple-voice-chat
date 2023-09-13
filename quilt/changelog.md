@@ -1,6 +1,1 @@
-- Fixed Simplified Chinese translation
-- Added debug overlay
-- Fixed audio issues when having packet loss
-- Fixed audio issues when receiving packets out of order
-- Improved debug logging
-- Fixed error when disconnecting while audio is playing
+- Added join group by name command

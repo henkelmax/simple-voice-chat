@@ -89,6 +89,7 @@
   "message.voicechat.group_type_title": "%s (%s)",
   "message.voicechat.group_title": "%s",
   "message.voicechat.group_does_not_exist": "This group does not exist",
+  "message.voicechat.group_name_not_unique": "Group name is not unique",
   "message.voicechat.create": "Create",
   "message.voicechat.create_group": "Create a Group",
   "message.voicechat.create_group_button": "Create a group",
