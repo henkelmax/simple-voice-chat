@@ -49,7 +49,7 @@ public abstract class NetManager {
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
         packet.toBytes(buffer);
         ClientPlayNetHandler connection = Minecraft.getInstance().getConnection();
-        if (connection != null) {
+        if (connection != null && connection.getLevel() != null) {
             connection.send(new CCustomPayloadPacket(packet.getIdentifier(), buffer));
         }
     }
