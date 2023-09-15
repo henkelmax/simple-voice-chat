@@ -44,7 +44,7 @@ public abstract class NetManager {
 
     public static void sendToServer(Packet<?> packet) {
         ClientPacketListener connection = Minecraft.getInstance().getConnection();
-        if (connection != null) {
+        if (connection != null && connection.getLevel() != null) {
             CommonCompatibilityManager.INSTANCE.getNetManager().sendToServer(packet, connection);
         }
     }
