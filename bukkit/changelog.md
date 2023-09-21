@@ -1,1 +1,1 @@
-- Improved debug logging
+- Updated to 1.20.2
