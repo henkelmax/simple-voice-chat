@@ -1,1 +1,1 @@
-- Updated to 1.20.2-rc2
+- Updated to 1.20.2
