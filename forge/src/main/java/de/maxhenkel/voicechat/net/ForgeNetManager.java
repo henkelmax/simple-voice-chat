@@ -1,13 +1,17 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
+import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.EventNetworkChannel;
 import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.event.EventNetworkChannel;
 
 public class ForgeNetManager extends NetManager {
 
@@ -16,17 +20,16 @@ public class ForgeNetManager extends NetManager {
         Channel<T> c = new Channel<>();
         try {
             T dummyPacket = packetType.getDeclaredConstructor().newInstance();
-            EventNetworkChannel channel = NetworkRegistry.newEventChannel(
-                    dummyPacket.getIdentifier(),
-                    () -> NetworkRegistry.ACCEPTVANILLA,
-                    NetworkRegistry.acceptMissingOr(NetworkRegistry.ACCEPTVANILLA),
-                    NetworkRegistry.acceptMissingOr(NetworkRegistry.ACCEPTVANILLA)
-            );
+            EventNetworkChannel channel = ChannelBuilder.named(dummyPacket.getIdentifier())
+                    .acceptedVersions((status, version) -> true)
+                    .optional()
+                    .networkProtocolVersion(Voicechat.COMPATIBILITY_VERSION)
+                    .eventNetworkChannel();
             channel.addListener(event -> {
                 if (event.getPayload() == null) {
                     return;
                 }
-                NetworkEvent.Context context = event.getSource().get();
+                CustomPayloadEvent.Context context = event.getSource();
                 if (toServer && context.getDirection().equals(NetworkDirection.PLAY_TO_SERVER)) {
                     try {
                         if (!Voicechat.SERVER.isCompatible(context.getSender()) && !packetType.equals(RequestSecretPacket.class)) {
@@ -55,6 +58,20 @@ public class ForgeNetManager extends NetManager {
             throw new IllegalArgumentException(e);
         }
         return c;
+    }
+
+    @Override
+    public void sendToServer(Packet<?> packet, ClientPacketListener connection) {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        packet.toBytes(buffer);
+        connection.send(NetworkDirection.PLAY_TO_SERVER.buildPacket(buffer, packet.getIdentifier()).getThis());
+    }
+
+    @Override
+    public void sendToClient(Packet<?> packet, ServerPlayer player) {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        packet.toBytes(buffer);
+        player.connection.send(NetworkDirection.PLAY_TO_CLIENT.buildPacket(buffer, packet.getIdentifier()).getThis());
     }
 
     @OnlyIn(Dist.CLIENT)

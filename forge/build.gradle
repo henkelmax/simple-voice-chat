@@ -33,6 +33,7 @@ repositories {
     mavenCentral()
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
     maven { url = 'https://maven.shedaniel.me/' }
+    maven { url = 'https://maven.minecraftforge.net' }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -46,7 +47,7 @@ tasks.register('prepareWorkspace') {
 }
 
 dependencies {
-    minecraft "net.neoforged:forge:${minecraft_version}-${forge_version}"
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     implementation(project(':common')) {
         transitive false
@@ -139,7 +140,6 @@ curseforge {
         releaseType = release_type
         addGameVersion minecraft_version
         addGameVersion 'Forge'
-        addGameVersion 'NeoForge'
         addGameVersion "Java ${java_version}"
         mainArtifact(jar) {
             displayName = "[FORGE][${minecraft_version}] ${mod_name} ${mod_version}"
@@ -164,7 +164,7 @@ modrinth {
     versionType = release_type.toUpperCase()
     changelog = file('changelog.md').text
     gameVersions = [minecraft_version]
-    loaders = ['forge', 'neoforge']
+    loaders = ['forge']
     dependencies {
         optional.project '9s6osm5g' // ClothConfig
     }
