@@ -44,20 +44,11 @@ public class Compatibility1_20_2 extends BaseCompatibility {
 
     private void send(Player player, Component component, boolean status) {
         String json = GsonComponentSerializer.gson().serialize(component);
-
         Object entityPlayer = callMethod(player, "getHandle");
-        Object playerConnection = getField(entityPlayer, "c");
-        Class<?> packet = getClass("net.minecraft.network.protocol.Packet");
-        Class<?> craftChatMessage = getClass("org.bukkit.craftbukkit.v1_20_R2.util.CraftChatMessage");
-
         Class<?> iChatBaseComponentClass = getClass("net.minecraft.network.chat.IChatBaseComponent");
+        Class<?> craftChatMessage = getClass("org.bukkit.craftbukkit.v1_20_R2.util.CraftChatMessage");
         Object iChatBaseComponent = callMethod(craftChatMessage, "fromJSON", new Class[]{String.class}, json);
-
-        Class<?> clientboundSystemChatPacketClass = getClass("net.minecraft.network.protocol.game.ClientboundSystemChatPacket");
-
-        Object clientboundSystemChatPacket = callConstructor(clientboundSystemChatPacketClass, new Class[]{iChatBaseComponentClass, boolean.class}, iChatBaseComponent, status);
-
-        callMethod(playerConnection, "a", new Class[]{packet}, clientboundSystemChatPacket);
+        callMethod(entityPlayer, "a", new Class[]{iChatBaseComponentClass, boolean.class}, iChatBaseComponent, status);
     }
 
 }
