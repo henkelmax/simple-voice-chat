@@ -73,8 +73,8 @@ public class VoicechatSocketImpl extends VoicechatSocketBase implements Voicecha
 
     @Override
     public void send(byte[] data, SocketAddress address) throws Exception {
-        if (socket == null) {
-            return; // Ignoring packet sending when socket isn't open yet
+        if (socket == null || socket.isClosed()) {
+            return; // Ignoring packet sending when socket isn't open yet or already closed
         }
         socket.send(new DatagramPacket(data, data.length, address));
     }
