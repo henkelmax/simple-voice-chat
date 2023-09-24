@@ -227,12 +227,12 @@ public class VoicechatCommands {
         List<Group> groups = server.getGroupManager().getGroups().values().stream().filter(group -> group.getName().equals(groupName)).collect(Collectors.toList());
 
         if (groups.isEmpty()) {
-            source.sendFailure(Component.translatable("message.voicechat.group_does_not_exist"));
+            source.sendFailure(new TranslatableComponent("message.voicechat.group_does_not_exist"));
             return 1;
         }
 
         if (groups.size() > 1) {
-            source.sendFailure(Component.translatable("message.voicechat.group_name_not_unique"));
+            source.sendFailure(new TranslatableComponent("message.voicechat.group_name_not_unique"));
             return 1;
         }
 
