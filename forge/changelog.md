@@ -1,2 +1,1 @@
-- Added join group by name command
-- Fixed error spam when shutting down server
+- Updated brazilian portuguese translation
