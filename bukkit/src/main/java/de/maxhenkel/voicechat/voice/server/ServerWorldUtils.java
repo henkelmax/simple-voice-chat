@@ -24,7 +24,7 @@ public class ServerWorldUtils {
     }
 
     public static boolean isInRange(Location pos1, Location pos2, double range) {
-        return Math.abs(pos1.getX() - pos2.getX()) <= range && Math.abs(pos1.getY() - pos2.getY()) <= range && Math.abs(pos1.getZ() - pos2.getZ()) <= range;
+        return pos1.distanceSquared(pos2) <= range * range;
     }
 
 }
