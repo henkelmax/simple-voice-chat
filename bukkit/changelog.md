@@ -1,0 +1,1 @@
+- Fixed getPlayersInRange radius not being circular
