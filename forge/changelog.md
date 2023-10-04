@@ -1,3 +1,1 @@
-- Added join group by name command
-- Fixed compatibility with Forward-Forge-Client-Reset-Packet
-- Fixed error spam when shutting down server
+- Updated brazilian portuguese translation
