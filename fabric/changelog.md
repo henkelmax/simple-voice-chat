@@ -1,2 +1,1 @@
-- Updated brazilian portuguese translation
-- Fixed getPlayersInRange radius not being circular
+- Updated to 23w40a

@@ -1,11 +1,10 @@
 {
   "pack": {
     "pack_format": 18,
-    "description": [
-      {
-        "translate": "resourcepack.voicechat.white_icons.description",
-        "color": "light_gray"
-      }
-    ]
+    "description": {
+      "type": "translatable",
+      "translate": "resourcepack.voicechat.white_icons.description",
+      "color": "gray"
+    }
   }
 }
