@@ -25,7 +25,7 @@ public class ServerWorldUtils {
     }
 
     public static boolean isInRange(Vec3d pos1, Vec3d pos2, double range) {
-        return Math.abs(pos1.x - pos2.x) <= range && Math.abs(pos1.y - pos2.y) <= range && Math.abs(pos1.z - pos2.z) <= range;
+        return pos1.squareDistanceTo(pos2) <= range * range;
     }
 
 }
