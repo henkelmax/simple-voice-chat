@@ -1,2 +1,0 @@
-- Updated brazilian portuguese translation
-- Fixed getPlayersInRange radius not being circular
