@@ -24,7 +24,11 @@ public class ServerWorldUtils {
     }
 
     public static boolean isInRange(Location pos1, Location pos2, double range) {
-        return pos1.distanceSquared(pos2) <= range * range;
+        return (square(pos1.getX() - pos2.getX()) + square(pos1.getY() - pos2.getY()) + square(pos1.getZ() - pos2.getZ())) <= square(range);
+    }
+
+    private static double square(double value) {
+        return value * value;
     }
 
 }
