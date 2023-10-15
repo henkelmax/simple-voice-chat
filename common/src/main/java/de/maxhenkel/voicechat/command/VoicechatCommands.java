@@ -89,7 +89,7 @@ public class VoicechatCommands {
                 commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.ping_sent_waiting"), false);
             } catch (Exception e) {
                 commandSource.getSource().sendSuccess(new TranslationTextComponent("message.voicechat.failed_to_send_ping", e.getMessage()), false);
-                e.printStackTrace();
+                Voicechat.LOGGER.warn("Failed to send ping", e);
                 return 1;
             }
             return 1;
