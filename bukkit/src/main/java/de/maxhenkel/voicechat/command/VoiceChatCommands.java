@@ -149,7 +149,7 @@ public class VoiceChatCommands implements CommandExecutor, TabCompleter {
             NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.ping_sent_waiting"));
         } catch (Exception e) {
             NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.failed_to_send_ping", Component.text(e.getMessage())));
-            e.printStackTrace();
+            Voicechat.LOGGER.warn("Failed to send ping", e);
         }
         return true;
     }
