@@ -1,1 +1,1 @@
-- Fixed getPlayersInRange radius not being circular
+- Fixed getPlayersInRange not working when called from the API
