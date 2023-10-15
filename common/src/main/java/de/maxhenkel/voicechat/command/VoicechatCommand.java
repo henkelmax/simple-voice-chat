@@ -132,7 +132,7 @@ public class VoicechatCommand extends CommandBase {
             commandSender.sendMessage(new TextComponentTranslation("message.voicechat.ping_sent_waiting"));
         } catch (Exception e) {
             commandSender.sendMessage(new TextComponentTranslation("message.voicechat.failed_to_send_ping", new TextComponentString(String.valueOf(e.getMessage()))));
-            e.printStackTrace();
+            Voicechat.LOGGER.warn("Failed to send ping", e);
         }
         return true;
     }
