@@ -1,1 +1,1 @@
-- Fixed getPlayersInRange not working when called from the API
+- Reworked placeholders
