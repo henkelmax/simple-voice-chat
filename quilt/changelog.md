@@ -1,1 +1,1 @@
-- Improved test command error logging
+- Added cloth config descriptions
