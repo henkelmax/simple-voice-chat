@@ -1,1 +1,1 @@
-- Updated to 23w43a
+- Added cloth config descriptions
