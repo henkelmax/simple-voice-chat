@@ -11,6 +11,7 @@ minecraft {
 repositories {
     mavenCentral()
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
+    maven { url = 'https://maven.minecraftforge.net/' }
 }
 
 tasks.register('prepareWorkspace') {
