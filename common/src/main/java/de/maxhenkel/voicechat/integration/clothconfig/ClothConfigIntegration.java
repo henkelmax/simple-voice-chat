@@ -60,8 +60,8 @@ public class ClothConfigIntegration {
     }
 
     protected static <T> AbstractConfigListEntry<T> fromConfigEntry(ConfigEntryBuilder entryBuilder, ConfigEntry<T> entry) {
-        Component name = new TranslationTextComponent(String.format("cloth_config.voicechat.config.%s", entry.getKey()));
-        Component description = new TranslationTextComponent(String.format("cloth_config.voicechat.config.%s.description", entry.getKey()));
+        ITextComponent name = new TranslationTextComponent(String.format("cloth_config.voicechat.config.%s", entry.getKey()));
+        ITextComponent description = new TranslationTextComponent(String.format("cloth_config.voicechat.config.%s.description", entry.getKey()));
 
         if (entry instanceof DoubleConfigEntry) {
             DoubleConfigEntry e = (DoubleConfigEntry) entry;
