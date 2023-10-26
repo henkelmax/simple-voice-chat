@@ -37,11 +37,11 @@ public class VoicechatExpansion extends PlaceholderExpansion {
             return super.onPlaceholderRequest(player, params);
         }
 
-        if (params.equalsIgnoreCase("prefix_uses_voicechat")) {
-            return Voicechat.SERVER.isCompatible(player) ? Voicechat.TRANSLATIONS.placeholderUsesVoicechat.get() : "";
-        } else if (params.equalsIgnoreCase("prefix_no_voicechat")) {
-            return !Voicechat.SERVER.isCompatible(player) ? Voicechat.TRANSLATIONS.placeholderNoVoicechat.get() : "";
-        } else if (params.equalsIgnoreCase("prefix_disabled")) {
+        if (params.equalsIgnoreCase("installed")) {
+            return Voicechat.SERVER.isCompatible(player) ? Voicechat.TRANSLATIONS.placeholderVoicechatInstalled.get() : "";
+        } else if (params.equalsIgnoreCase("not_installed")) {
+            return !Voicechat.SERVER.isCompatible(player) ? Voicechat.TRANSLATIONS.placeholderVoicechatNotInstalled.get() : "";
+        } else if (params.equalsIgnoreCase("disabled")) {
             Server server = Voicechat.SERVER.getServer();
             if (server == null) {
                 return "";
