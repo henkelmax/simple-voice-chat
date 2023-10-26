@@ -1,1 +1,2 @@
 - Added cloth config descriptions
+- Fixed voice chat settings screen not having dirt background
