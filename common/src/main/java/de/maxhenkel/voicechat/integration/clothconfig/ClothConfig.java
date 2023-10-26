@@ -20,7 +20,7 @@ public class ClothConfig {
     }
 
     private static boolean checkLoaded() {
-        if (CommonCompatibilityManager.INSTANCE.isModLoaded("cloth-config2") || CommonCompatibilityManager.INSTANCE.isModLoaded("cloth-config") || CommonCompatibilityManager.INSTANCE.isModLoaded("cloth_config")) {
+        if (CommonCompatibilityManager.INSTANCE.isModLoaded("cloth-config2") || CommonCompatibilityManager.INSTANCE.isModLoaded("cloth-config") || CommonCompatibilityManager.INSTANCE.isModLoaded("cloth-config2") || CommonCompatibilityManager.INSTANCE.isModLoaded("cloth_config")) {
             try {
                 Class.forName("me.shedaniel.clothconfig2.api.ConfigBuilder");
                 Voicechat.LOGGER.info("Using Cloth Config GUI");
