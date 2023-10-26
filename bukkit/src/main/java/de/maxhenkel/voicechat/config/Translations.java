@@ -9,14 +9,14 @@ public class Translations {
     public final ConfigEntry<String> voicechatNotCompatibleMessage;
     public final ConfigEntry<String> voicechatNeededForCommandMessage;
     public final ConfigEntry<String> playerCommandMessage;
-    public final ConfigEntry<String> placeholderUsesVoicechat;
-    public final ConfigEntry<String> placeholderNoVoicechat;
+    public final ConfigEntry<String> placeholderVoicechatInstalled;
+    public final ConfigEntry<String> placeholderVoicechatNotInstalled;
     public final ConfigEntry<String> placeholderVoicechatDisabled;
 
     public Translations(ConfigBuilder builder) {
         builder.header(
                 "Simple Voice Chat translations",
-                "This file contains all server-side translations for the Simple Voice Chat mod"
+                "This file contains all server-side translations for the Simple Voice Chat plugin"
         );
 
         forceVoicechatKickMessage = builder.stringEntry(
@@ -42,20 +42,20 @@ public class Translations {
                 "This command can only be executed as a player",
                 "The message a player gets when trying to execute a command that can only be executed as a player"
         );
-        placeholderUsesVoicechat = builder.stringEntry(
-                "placeholder_api_uses_voicechat",
-                "§a",
-                "The Placeholder API string for 'prefix_uses_voicechat'"
+        placeholderVoicechatInstalled = builder.stringEntry(
+                "placeholder_api_voicechat_installed",
+                "",
+                "The Placeholder API string for '%voicechat_installed%'"
         );
-        placeholderNoVoicechat = builder.stringEntry(
-                "placeholder_api_no_voicechat",
-                "§c",
-                "The Placeholder API string for 'prefix_no_voicechat'"
+        placeholderVoicechatNotInstalled = builder.stringEntry(
+                "placeholder_api_voicechat_not_installed",
+                "",
+                "The Placeholder API string for '%voicechat_not_installed%'"
         );
         placeholderVoicechatDisabled = builder.stringEntry(
-                "placeholder_api_disabled",
-                "§c",
-                "The Placeholder API string for 'prefix_disabled'"
+                "placeholder_api_voicechat_disabled",
+                "",
+                "The Placeholder API string for '%voicechat_disabled%'"
         );
     }
 
