@@ -51,6 +51,7 @@ repositories {
     mavenCentral()
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
     maven { url = 'https://repo.spongepowered.org/maven' }
+    maven { url = 'https://maven.minecraftforge.net/' }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
