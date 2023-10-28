@@ -7,12 +7,12 @@ import java.util.UUID;
 
 public class GroupSoundPacket extends SoundPacket<GroupSoundPacket> {
 
-    public GroupSoundPacket(UUID sender, byte[] data, long sequenceNumber, @Nullable String category) {
-        super(sender, data, sequenceNumber, category);
+    public GroupSoundPacket(UUID channelId, UUID sender, byte[] data, long sequenceNumber, @Nullable String category) {
+        super(channelId, sender, data, sequenceNumber, category);
     }
 
-    public GroupSoundPacket(UUID sender, short[] data, @Nullable String category) {
-        super(sender, data, category);
+    public GroupSoundPacket(UUID channelId, UUID sender, short[] data, @Nullable String category) {
+        super(channelId, sender, data, category);
     }
 
     public GroupSoundPacket() {
@@ -22,6 +22,7 @@ public class GroupSoundPacket extends SoundPacket<GroupSoundPacket> {
     @Override
     public GroupSoundPacket fromBytes(FriendlyByteBuf buf) {
         GroupSoundPacket soundPacket = new GroupSoundPacket();
+        soundPacket.channelId = buf.readUUID();
         soundPacket.sender = buf.readUUID();
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
@@ -35,6 +36,7 @@ public class GroupSoundPacket extends SoundPacket<GroupSoundPacket> {
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
+        buf.writeUUID(channelId);
         buf.writeUUID(sender);
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);
