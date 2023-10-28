@@ -8,20 +8,23 @@ public abstract class SoundPacket<T extends SoundPacket> implements Packet<T> {
     public static final byte WHISPER_MASK = 0b1;
     public static final byte HAS_CATEGORY_MASK = 0b10;
 
+    protected UUID channelId;
     protected UUID sender;
     protected byte[] data;
     protected long sequenceNumber;
     @Nullable
     protected String category;
 
-    public SoundPacket(UUID sender, byte[] data, long sequenceNumber, @Nullable String category) {
+    public SoundPacket(UUID channelId, UUID sender, byte[] data, long sequenceNumber, @Nullable String category) {
+        this.channelId = channelId;
         this.sender = sender;
         this.data = data;
         this.sequenceNumber = sequenceNumber;
         this.category = category;
     }
 
-    public SoundPacket(UUID sender, short[] data, @Nullable String category) {
+    public SoundPacket(UUID channelId, UUID sender, short[] data, @Nullable String category) {
+        this.channelId = channelId;
         this.sender = sender;
         this.data = Utils.shortsToBytes(data);
         this.sequenceNumber = -1L;
@@ -32,12 +35,16 @@ public abstract class SoundPacket<T extends SoundPacket> implements Packet<T> {
 
     }
 
-    public byte[] getData() {
-        return data;
+    public UUID getChannelId() {
+        return channelId;
     }
 
     public UUID getSender() {
         return sender;
+    }
+
+    public byte[] getData() {
+        return data;
     }
 
     public boolean isFromClientAudioChannel() {
