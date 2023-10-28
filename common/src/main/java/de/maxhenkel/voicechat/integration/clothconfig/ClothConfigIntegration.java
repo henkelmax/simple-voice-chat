@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.integration.clothconfig;
 
 import de.maxhenkel.configbuilder.entry.*;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.integration.freecam.FreecamMode;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -29,7 +30,13 @@ public class ClothConfigIntegration {
         general.addEntry(fromConfigEntry(entryBuilder, VoicechatClient.CLIENT_CONFIG.recordingDestination));
         general.addEntry(fromConfigEntry(entryBuilder, VoicechatClient.CLIENT_CONFIG.runLocalServer));
         general.addEntry(fromConfigEntry(entryBuilder, VoicechatClient.CLIENT_CONFIG.offlinePlayerVolumeAdjustment));
-        general.addEntry(fromConfigEntry(entryBuilder, VoicechatClient.CLIENT_CONFIG.freecamSupport));
+        general.addEntry(entryBuilder
+                .startEnumSelector(Component.translatable("cloth_config.voicechat.config.freecam_mode"), FreecamMode.class, VoicechatClient.CLIENT_CONFIG.freecamMode.get())
+                .setTooltip(Component.translatable("cloth_config.voicechat.config.freecam_mode.description"))
+                .setDefaultValue(VoicechatClient.CLIENT_CONFIG.freecamMode::getDefault)
+                .setSaveConsumer(e -> VoicechatClient.CLIENT_CONFIG.freecamMode.set(e).save())
+                .build()
+        );
         general.addEntry(fromConfigEntry(entryBuilder, VoicechatClient.CLIENT_CONFIG.muteOnJoin));
 
         ConfigCategory audio = builder.getOrCreateCategory(Component.translatable("cloth_config.voicechat.category.audio"));
