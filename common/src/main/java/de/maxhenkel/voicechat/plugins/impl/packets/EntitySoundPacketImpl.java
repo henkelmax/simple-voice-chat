@@ -36,6 +36,11 @@ public class EntitySoundPacketImpl extends SoundPacketImpl implements EntitySoun
         return packet;
     }
 
+    @Override
+    public UUID getChannelId() {
+        return packet.getChannelId();
+    }
+
     public static class BuilderImpl extends SoundPacketImpl.BuilderImpl<BuilderImpl, EntitySoundPacket> implements EntitySoundPacket.Builder<BuilderImpl> {
 
         protected UUID entityUuid;
@@ -57,8 +62,8 @@ public class EntitySoundPacketImpl extends SoundPacketImpl implements EntitySoun
             }
         }
 
-        public BuilderImpl(UUID sender, byte[] opusEncodedData, long sequenceNumber, @Nullable String category) {
-            super(sender, opusEncodedData, sequenceNumber, category);
+        public BuilderImpl(UUID channelId, UUID sender, byte[] opusEncodedData, long sequenceNumber, @Nullable String category) {
+            super(channelId, sender, opusEncodedData, sequenceNumber, category);
             this.distance = Utils.getDefaultDistance();
         }
 
@@ -85,7 +90,7 @@ public class EntitySoundPacketImpl extends SoundPacketImpl implements EntitySoun
             if (entityUuid == null) {
                 throw new IllegalStateException("entityUuid missing");
             }
-            return new EntitySoundPacketImpl(new PlayerSoundPacket(sender, opusEncodedData, sequenceNumber, whispering, distance, category));
+            return new EntitySoundPacketImpl(new PlayerSoundPacket(channelId, sender, opusEncodedData, sequenceNumber, whispering, distance, category));
         }
 
     }
