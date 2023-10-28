@@ -1,0 +1,1 @@
+- Allow creating groups with specific ID using the API
