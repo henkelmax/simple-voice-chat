@@ -23,6 +23,11 @@ public class SoundPacketImpl implements SoundPacket {
     }
 
     @Override
+    public UUID getChannelId() {
+        return packet.getChannelId();
+    }
+
+    @Override
     public UUID getSender() {
         return packet.getSender();
     }
@@ -64,14 +69,14 @@ public class SoundPacketImpl implements SoundPacket {
 
     @Override
     public EntitySoundPacket toEntitySoundPacket(UUID entityUuid, boolean whispering) {
-        return new EntitySoundPacketImpl(new PlayerSoundPacket(packet.getSender(), packet.getData(), packet.getSequenceNumber(), whispering, getDistance(), null));
+        return new EntitySoundPacketImpl(new PlayerSoundPacket(packet.getChannelId(), packet.getSender(), packet.getData(), packet.getSequenceNumber(), whispering, getDistance(), null));
     }
 
     @Override
     public LocationalSoundPacket toLocationalSoundPacket(Position position) {
         if (position instanceof PositionImpl) {
             PositionImpl p = (PositionImpl) position;
-            return new LocationalSoundPacketImpl(new LocationSoundPacket(packet.getSender(), p.getPosition(), packet.getData(), packet.getSequenceNumber(), getDistance(), null));
+            return new LocationalSoundPacketImpl(new LocationSoundPacket(packet.getChannelId(), packet.getSender(), p.getPosition(), packet.getData(), packet.getSequenceNumber(), getDistance(), null));
         } else {
             throw new IllegalArgumentException("position is not an instance of PositionImpl");
         }
@@ -90,11 +95,12 @@ public class SoundPacketImpl implements SoundPacket {
 
     @Override
     public StaticSoundPacket toStaticSoundPacket() {
-        return new StaticSoundPacketImpl(new GroupSoundPacket(packet.getSender(), packet.getData(), packet.getSequenceNumber(), null));
+        return new StaticSoundPacketImpl(new GroupSoundPacket(packet.getChannelId(), packet.getSender(), packet.getData(), packet.getSequenceNumber(), null));
     }
 
     public abstract static class BuilderImpl<T extends BuilderImpl<T, P>, P extends SoundPacket> implements Builder<T, P> {
 
+        protected UUID channelId;
         protected UUID sender;
         protected byte[] opusEncodedData;
         protected long sequenceNumber;
@@ -102,17 +108,28 @@ public class SoundPacketImpl implements SoundPacket {
         protected String category;
 
         public BuilderImpl(SoundPacketImpl soundPacket) {
+            this.channelId = soundPacket.getChannelId();
             this.sender = soundPacket.getSender();
             this.opusEncodedData = soundPacket.getOpusEncodedData();
             this.sequenceNumber = soundPacket.getSequenceNumber();
             this.category = soundPacket.getCategory();
         }
 
-        public BuilderImpl(UUID sender, byte[] opusEncodedData, long sequenceNumber, @Nullable String category) {
+        public BuilderImpl(UUID channelId, UUID sender, byte[] opusEncodedData, long sequenceNumber, @Nullable String category) {
+            this.channelId = channelId;
             this.sender = sender;
             this.opusEncodedData = opusEncodedData;
             this.sequenceNumber = sequenceNumber;
             this.category = category;
+        }
+
+        @Override
+        public T channelId(UUID channelId) {
+            if (channelId == null) {
+                throw new IllegalArgumentException("channelId can't be null");
+            }
+            this.channelId = channelId;
+            return (T) this;
         }
 
         @Override

@@ -22,7 +22,7 @@ public class ClientLocationalAudioChannelImpl extends ClientAudioChannelImpl imp
 
     @Override
     protected SoundPacket<?> createSoundPacket(short[] rawAudio) {
-        return new LocationSoundPacket(id, rawAudio, new Vec3d(position.getX(), position.getY(), position.getZ()), distance, category);
+        return new LocationSoundPacket(id, id, rawAudio, new Vec3d(position.getX(), position.getY(), position.getZ()), distance, category);
     }
 
     @Override

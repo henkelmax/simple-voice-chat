@@ -69,13 +69,13 @@ public class ClientVoicechat {
         }
         synchronized (audioChannels) {
             if (!ClientManager.getPlayerStateManager().isDisabled()) {
-                AudioChannel sendTo = audioChannels.get(packet.getSender());
+                AudioChannel sendTo = audioChannels.get(packet.getChannelId());
                 if (sendTo == null) {
                     try {
-                        AudioChannel ch = new AudioChannel(this, connection.getData(), packet.getSender());
+                        AudioChannel ch = new AudioChannel(this, connection.getData(), packet.getChannelId());
                         ch.addToQueue(packet);
                         ch.start();
-                        audioChannels.put(packet.getSender(), ch);
+                        audioChannels.put(packet.getChannelId(), ch);
                     } catch (Exception e) {
                         CooldownTimer.run("playback_unavailable", () -> {
                             Voicechat.LOGGER.error("Failed to create audio channel", e);

@@ -11,14 +11,14 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
     protected Vec3d location;
     protected float distance;
 
-    public LocationSoundPacket(UUID sender, Vec3d location, byte[] data, long sequenceNumber, float distance, @Nullable String category) {
-        super(sender, data, sequenceNumber, category);
+    public LocationSoundPacket(UUID channelId, UUID sender, Vec3d location, byte[] data, long sequenceNumber, float distance, @Nullable String category) {
+        super(channelId, sender, data, sequenceNumber, category);
         this.location = location;
         this.distance = distance;
     }
 
-    public LocationSoundPacket(UUID sender, short[] data, Vec3d location, float distance, @Nullable String category) {
-        super(sender, data, category);
+    public LocationSoundPacket(UUID channelId, UUID sender, short[] data, Vec3d location, float distance, @Nullable String category) {
+        super(channelId, sender, data, category);
         this.location = location;
         this.distance = distance;
     }
@@ -38,6 +38,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
     @Override
     public LocationSoundPacket fromBytes(PacketBuffer buf) {
         LocationSoundPacket soundPacket = new LocationSoundPacket();
+        soundPacket.channelId = buf.readUUID();
         soundPacket.sender = buf.readUniqueId();
         soundPacket.location = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
         soundPacket.data = buf.readByteArray();
@@ -54,6 +55,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
 
     @Override
     public void toBytes(PacketBuffer buf) {
+        buf.writeUUID(channelId);
         buf.writeUniqueId(sender);
         buf.writeDouble(location.x);
         buf.writeDouble(location.y);

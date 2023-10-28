@@ -10,14 +10,14 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
     protected boolean whispering;
     protected float distance;
 
-    public PlayerSoundPacket(UUID sender, byte[] data, long sequenceNumber, boolean whispering, float distance, @Nullable String category) {
-        super(sender, data, sequenceNumber, category);
+    public PlayerSoundPacket(UUID channelId, UUID sender, byte[] data, long sequenceNumber, boolean whispering, float distance, @Nullable String category) {
+        super(channelId, sender, data, sequenceNumber, category);
         this.whispering = whispering;
         this.distance = distance;
     }
 
-    public PlayerSoundPacket(UUID sender, short[] data, boolean whispering, float distance, @Nullable String category) {
-        super(sender, data, category);
+    public PlayerSoundPacket(UUID channelId, UUID sender, short[] data, boolean whispering, float distance, @Nullable String category) {
+        super(channelId, sender, data, category);
         this.whispering = whispering;
         this.distance = distance;
     }
@@ -41,6 +41,7 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
     @Override
     public PlayerSoundPacket fromBytes(PacketBuffer buf) {
         PlayerSoundPacket soundPacket = new PlayerSoundPacket();
+        soundPacket.channelId = buf.readUUID();
         soundPacket.sender = buf.readUniqueId();
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
@@ -56,6 +57,7 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
 
     @Override
     public void toBytes(PacketBuffer buf) {
+        buf.writeUUID(channelId);
         buf.writeUniqueId(sender);
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);
