@@ -57,7 +57,18 @@ public interface Group {
     public interface Builder {
 
         /**
-         * <b>NOTE</b>: The name might be stripped of special characters and whitespace
+         * Sets the ID of the group.
+         * If this is not set, the ID will be randomly generated.
+         * <br/>
+         * <b>NOTE</b>: If there is already a group with the same ID, the group will be overwritten.
+         *
+         * @param id the group ID or <code>null</code> if the ID should be randomly generated
+         * @return the builder
+         */
+        Builder setId(@Nullable UUID id);
+
+        /**
+         * <b>NOTE</b>: The name might be stripped of special characters and whitespace.
          *
          * @param name the name of the group
          * @return the builder
@@ -84,6 +95,7 @@ public interface Group {
 
         /**
          * @return the built group
+         * @throws IllegalStateException if the name is not set or invalid
          */
         Group build();
 
