@@ -8,6 +8,11 @@ import java.util.UUID;
 public interface SoundPacket extends Packet, ConvertablePacket {
 
     /**
+     * @return the channel ID of the sound packet
+     */
+    UUID getChannelId();
+
+    /**
      * @return the sender of this packet - doesn't necessarily need to be a players UUID
      */
     UUID getSender();
@@ -35,6 +40,15 @@ public interface SoundPacket extends Packet, ConvertablePacket {
      * @param <P> the packet, the builder builds
      */
     public interface Builder<T extends Builder<T, P>, P extends SoundPacket> {
+
+        /**
+         * <b>NOTE</b>: Make sure to set this to a unique value to avoid conflicts with other channels.
+         * This value needs to be the same when sending multiple packets of the same channel.
+         *
+         * @param channelId the channel ID of the sound packet
+         * @return the builder
+         */
+        T channelId(UUID channelId);
 
         /**
          * @param data the opus encoded audio data

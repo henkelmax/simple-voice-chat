@@ -53,7 +53,7 @@ public class LocationalAudioChannelImpl extends AudioChannelImpl implements Loca
 
     @Override
     public void send(byte[] opusData) {
-        broadcast(new LocationSoundPacket(channelId, position.getPosition(), opusData, sequenceNumber.getAndIncrement(), distance, category));
+        broadcast(new LocationSoundPacket(channelId, channelId, position.getPosition(), opusData, sequenceNumber.getAndIncrement(), distance, category));
     }
 
     @Override
@@ -63,7 +63,7 @@ public class LocationalAudioChannelImpl extends AudioChannelImpl implements Loca
 
     @Override
     public void flush() {
-        broadcast(new LocationSoundPacket(channelId, position.getPosition(), new byte[0], sequenceNumber.getAndIncrement(), distance, category));
+        broadcast(new LocationSoundPacket(channelId, channelId, position.getPosition(), new byte[0], sequenceNumber.getAndIncrement(), distance, category));
     }
 
     private void broadcast(LocationSoundPacket packet) {
