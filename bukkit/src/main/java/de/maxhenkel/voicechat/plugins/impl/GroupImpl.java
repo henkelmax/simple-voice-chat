@@ -60,6 +60,8 @@ public class GroupImpl implements Group {
 
     public static class BuilderImpl implements Group.Builder {
 
+        @Nullable
+        private UUID id;
         private String name;
         @Nullable
         private String password;
@@ -68,6 +70,12 @@ public class GroupImpl implements Group {
 
         public BuilderImpl() {
             type = Type.NORMAL;
+        }
+
+        @Override
+        public Builder setId(@Nullable UUID id) {
+            this.id = id;
+            return this;
         }
 
         @Override
@@ -114,7 +122,7 @@ public class GroupImpl implements Group {
             if (!Voicechat.GROUP_REGEX.matcher(name).matches()) {
                 throw new IllegalStateException(String.format("Invalid group name: %s", name));
             }
-            GroupImpl group = new GroupImpl(new de.maxhenkel.voicechat.voice.server.Group(UUID.randomUUID(), name, password, persistent, type));
+            GroupImpl group = new GroupImpl(new de.maxhenkel.voicechat.voice.server.Group(id == null ? UUID.randomUUID() : id, name, password, persistent, type));
             Server server = Voicechat.SERVER.getServer();
             if (server != null && persistent) {
                 server.getGroupManager().addGroup(group.getGroup(), null);
