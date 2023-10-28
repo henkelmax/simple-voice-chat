@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.config;
 import com.sun.jna.Platform;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
+import de.maxhenkel.voicechat.integration.freecam.FreecamMode;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.VersionCheck;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
@@ -41,7 +42,7 @@ public class ClientConfig {
     public ConfigEntry<Boolean> offlinePlayerVolumeAdjustment;
     public ConfigEntry<AudioType> audioType;
     public ConfigEntry<Boolean> useNatives;
-    public ConfigEntry<Boolean> freecamSupport;
+    public ConfigEntry<FreecamMode> freecamMode;
     public ConfigEntry<Boolean> muteOnJoin;
 
     public ClientConfig(ConfigBuilder builder) {
@@ -185,9 +186,12 @@ public class ClientConfig {
                         "If the mod should load native libraries",
                         "If set to false, the Java Opus implementation will be used, the denoiser won't be available and you won't be able to record audio."
                 );
-        freecamSupport = builder
-                .booleanEntry("freecam_support", true,
-                        "This lets you hear players near you, even though you are further away with your freecam"
+        freecamMode = builder
+                .enumEntry("freecam_mode", FreecamMode.CAMERA,
+                        "How listening to other players should work when using freecam mods",
+                        "Possible values are 'CAMERA' and 'PLAYER'",
+                        "CAMERA: You will hear voice chat audio around your camera. Whether you hear distant audio depends on the voice chat broadcast range of the server",
+                        "PLAYER: You will hear voice chat audio around your player no matter where your camera is"
                 );
         muteOnJoin = builder
                 .booleanEntry("mute_on_join", false,
