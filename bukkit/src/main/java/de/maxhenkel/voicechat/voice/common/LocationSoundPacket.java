@@ -11,8 +11,8 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
     protected Location location;
     protected float distance;
 
-    public LocationSoundPacket(UUID sender, Location location, byte[] data, long sequenceNumber, float distance, @Nullable String category) {
-        super(sender, data, sequenceNumber, category);
+    public LocationSoundPacket(UUID channelId, UUID sender, Location location, byte[] data, long sequenceNumber, float distance, @Nullable String category) {
+        super(channelId, sender, data, sequenceNumber, category);
         this.location = location;
         this.distance = distance;
     }
@@ -32,6 +32,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
     @Override
     public LocationSoundPacket fromBytes(FriendlyByteBuf buf) {
         LocationSoundPacket soundPacket = new LocationSoundPacket();
+        soundPacket.channelId = buf.readUUID();
         soundPacket.sender = buf.readUUID();
         soundPacket.location = new Location(null, buf.readDouble(), buf.readDouble(), buf.readDouble());
         soundPacket.data = buf.readByteArray();
@@ -48,6 +49,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
+        buf.writeUUID(channelId);
         buf.writeUUID(sender);
         buf.writeDouble(location.getX());
         buf.writeDouble(location.getY());
