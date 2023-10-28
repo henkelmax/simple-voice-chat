@@ -7,16 +7,22 @@ import java.util.UUID;
 public interface ConvertablePacket {
 
     /**
+     * <b>NOTE</b>: Make sure to set {@link SoundPacket.Builder#channelId(UUID)} to avoid conflicts with other channels.
+     *
      * @return a builder to build an entity sound packet based on this packet
      */
     EntitySoundPacket.Builder<?> entitySoundPacketBuilder();
 
     /**
+     * <b>NOTE</b>: Make sure to set {@link SoundPacket.Builder#channelId(UUID)} to avoid conflicts with other channels.
+     *
      * @return a builder to build a locational sound packet based on this packet
      */
     LocationalSoundPacket.Builder<?> locationalSoundPacketBuilder();
 
     /**
+     * <b>NOTE</b>: Make sure to set {@link SoundPacket.Builder#channelId(UUID)} to avoid conflicts with other channels.
+     *
      * @return a builder to build a static sound packet based on this packet
      */
     StaticSoundPacket.Builder<?> staticSoundPacketBuilder();
