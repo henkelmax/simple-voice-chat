@@ -29,6 +29,11 @@ public interface Group {
     boolean isPersistent();
 
     /**
+     * @return if the group is hidden in the group list UI
+     */
+    boolean isHidden();
+
+    /**
      * @return the group type
      */
     Type getType();
@@ -86,6 +91,12 @@ public interface Group {
          * @return the builder
          */
         Builder setPersistent(boolean persistent);
+
+        /**
+         * @param hidden if the group should be hidden in the group list UI
+         * @return the builder
+         */
+        Builder setHidden(boolean hidden);
 
         /**
          * @param type the group type
