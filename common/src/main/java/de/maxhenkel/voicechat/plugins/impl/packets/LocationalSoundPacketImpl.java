@@ -51,8 +51,8 @@ public class LocationalSoundPacketImpl extends SoundPacketImpl implements Locati
             }
         }
 
-        public BuilderImpl(UUID sender, byte[] opusEncodedData, long sequenceNumber, @Nullable String category) {
-            super(sender, opusEncodedData, sequenceNumber, category);
+        public BuilderImpl(UUID channelId, UUID sender, byte[] opusEncodedData, long sequenceNumber, @Nullable String category) {
+            super(channelId, sender, opusEncodedData, sequenceNumber, category);
             distance = Utils.getDefaultDistance();
         }
 
@@ -73,7 +73,7 @@ public class LocationalSoundPacketImpl extends SoundPacketImpl implements Locati
             if (position == null) {
                 throw new IllegalStateException("position missing");
             }
-            return new LocationalSoundPacketImpl(new LocationSoundPacket(sender, position.getPosition(), opusEncodedData, sequenceNumber, distance, category));
+            return new LocationalSoundPacketImpl(new LocationSoundPacket(channelId, sender, position.getPosition(), opusEncodedData, sequenceNumber, distance, category));
         }
 
     }
