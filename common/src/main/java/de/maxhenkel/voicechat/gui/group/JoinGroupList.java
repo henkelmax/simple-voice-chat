@@ -24,7 +24,7 @@ public class JoinGroupList extends ListScreenListBase<JoinGroupEntry> {
     }
 
     private void updateGroups() {
-        Map<UUID, JoinGroupEntry.Group> groups = ClientManager.getGroupManager().getGroups().stream().collect(Collectors.toMap(ClientGroup::getId, JoinGroupEntry.Group::new));
+        Map<UUID, JoinGroupEntry.Group> groups = ClientManager.getGroupManager().getGroups().stream().filter(clientGroup -> !clientGroup.isHidden()).collect(Collectors.toMap(ClientGroup::getId, JoinGroupEntry.Group::new));
         Collection<PlayerState> playerStates = ClientManager.getPlayerStateManager().getPlayerStates(true);
 
         for (PlayerState state : playerStates) {

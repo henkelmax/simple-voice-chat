@@ -46,7 +46,7 @@ public class ServerGroupManager {
             Voicechat.LOGGER.warn("Player {} tried to create a group with an invalid name: {}", player.getDisplayName(), packet.getName());
             return;
         }
-        Group group = new Group(UUID.randomUUID(), packet.getName(), packet.getPassword(), false, packet.getType());
+        Group group = new Group(UUID.randomUUID(), packet.getName(), packet.getPassword(), false, false, packet.getType());
         addGroup(group, player);
     }
 
