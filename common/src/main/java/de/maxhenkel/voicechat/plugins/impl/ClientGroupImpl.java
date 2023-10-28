@@ -34,6 +34,11 @@ public class ClientGroupImpl implements Group {
     }
 
     @Override
+    public boolean isHidden() {
+        return group.isHidden();
+    }
+
+    @Override
     public Type getType() {
         return group.getType();
     }
