@@ -37,6 +37,11 @@ public class GroupImpl implements Group {
     }
 
     @Override
+    public boolean isHidden() {
+        return group.isHidden();
+    }
+
+    @Override
     public Type getType() {
         return group.getType();
     }
@@ -66,6 +71,7 @@ public class GroupImpl implements Group {
         @Nullable
         private String password;
         private boolean persistent;
+        private boolean hidden;
         private Type type;
 
         public BuilderImpl() {
@@ -108,6 +114,12 @@ public class GroupImpl implements Group {
         }
 
         @Override
+        public Builder setHidden(boolean hidden) {
+            this.hidden = hidden;
+            return this;
+        }
+
+        @Override
         public Group.Builder setType(Type type) {
             this.type = type;
             return this;
@@ -121,7 +133,7 @@ public class GroupImpl implements Group {
             if (!Voicechat.GROUP_REGEX.matcher(name).matches()) {
                 throw new IllegalStateException(String.format("Invalid group name: %s", name));
             }
-            GroupImpl group = new GroupImpl(new de.maxhenkel.voicechat.voice.server.Group(id == null ? UUID.randomUUID() : id, name, password, persistent, type));
+            GroupImpl group = new GroupImpl(new de.maxhenkel.voicechat.voice.server.Group(id == null ? UUID.randomUUID() : id, name, password, persistent, hidden, type));
             Server server = Voicechat.SERVER.getServer();
             if (server != null && persistent) {
                 server.getGroupManager().addGroup(group.getGroup(), null);
