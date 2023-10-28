@@ -50,7 +50,7 @@ public class ServerGroupManager {
                 Voicechat.LOGGER.warn("Player {} tried to create a group with an invalid name: {}", player.getDisplayName().getString(), packet.getName());
                 return;
             }
-            addGroup(new Group(UUID.randomUUID(), packet.getName(), packet.getPassword(), false, packet.getType()), player);
+            addGroup(new Group(UUID.randomUUID(), packet.getName(), packet.getPassword(), false, false, packet.getType()), player);
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().leaveGroupChannel.setServerListener((srv, player, handler, packet) -> {
             leaveGroup(player);
