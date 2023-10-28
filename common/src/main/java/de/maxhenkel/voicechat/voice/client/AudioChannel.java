@@ -70,7 +70,7 @@ public class AudioChannel extends Thread {
         try {
             join();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Voicechat.LOGGER.error("Interrupted while waiting for audio channel to close", e);
         }
     }
 
