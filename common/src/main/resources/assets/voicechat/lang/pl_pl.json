@@ -139,7 +139,6 @@
   "resourcepack.voicechat.black_icons.description": "Czarne ikony czatu głosowego",
   "cloth_config.voicechat.category.general": "Ogólne",
   "cloth_config.voicechat.config.offline_player_volume_adjustment": "Dostosowywanie dzwięku graczy Offline",
-  "cloth_config.voicechat.config.freecam_support": "Obsługa Freecam",
   "cloth_config.voicechat.config.mute_on_join": "Wycisz na dołączeniu",
   "cloth_config.voicechat.settings": "Ustawienia czatu głosowego",
   "cloth_config.voicechat.category.other": "Inne",

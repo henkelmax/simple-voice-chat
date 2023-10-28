@@ -149,7 +149,6 @@
   "cloth_config.voicechat.config.recording_destination": "录音保存位置",
   "cloth_config.voicechat.config.run_local_server": "在单人/局域网游戏中启用",
   "cloth_config.voicechat.config.offline_player_volume_adjustment": "离线玩家音量调整",
-  "cloth_config.voicechat.config.freecam_support": "Freecam 支持",
   "cloth_config.voicechat.config.mute_on_join": "加入时静音",
   "cloth_config.voicechat.config.audio_packet_threshold": "音频包阈值",
   "cloth_config.voicechat.config.voice_deactivation_delay": "关闭延迟",
