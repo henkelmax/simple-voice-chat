@@ -25,6 +25,7 @@ public class MicThread extends Thread {
     private final ClientVoicechat client;
     @Nullable
     private final ClientVoicechatConnection connection;
+    @Nullable
     private Microphone mic;
     private final VolumeManager volumeManager;
     private boolean running;
@@ -73,7 +74,7 @@ public class MicThread extends Thread {
                 activating = false;
                 wasPTT = false;
                 wasWhispering = false;
-                flush();
+                flushIfNeeded();
 
                 if (!microphoneLocked && ClientManager.getPlayerStateManager().isDisabled()) {
                     if (mic.isStarted()) {
@@ -92,11 +93,16 @@ public class MicThread extends Thread {
             if (audio == null) {
                 continue;
             }
+
+            boolean sentAudio = false;
             MicrophoneActivationType type = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get();
             if (type.equals(MicrophoneActivationType.PTT)) {
-                ptt(audio);
+                sentAudio = ptt(audio);
             } else if (type.equals(MicrophoneActivationType.VOICE)) {
-                voice(audio);
+                sentAudio = voice(audio);
+            }
+            if (!sentAudio) {
+                sendAudio(null, ClientManager.getPttKeyHandler().isWhisperDown());
             }
         }
     }
@@ -145,15 +151,16 @@ public class MicThread extends Thread {
     private volatile int deactivationDelay;
     private volatile short[] lastBuff;
 
-    private void voice(short[] audio) {
+    private boolean voice(short[] audio) {
         wasPTT = false;
 
         if (ClientManager.getPlayerStateManager().isMuted()) {
             activating = false;
             wasWhispering = false;
-            flush();
-            return;
+            return false;
         }
+
+        boolean sentAudio = false;
 
         wasWhispering = ClientManager.getPttKeyHandler().isWhisperDown();
 
@@ -163,41 +170,44 @@ public class MicThread extends Thread {
                 if (deactivationDelay >= VoicechatClient.CLIENT_CONFIG.deactivationDelay.get()) {
                     activating = false;
                     deactivationDelay = 0;
-                    flush();
                 } else {
-                    sendAudioPacket(audio, wasWhispering);
+                    sendAudio(audio, wasWhispering);
                     deactivationDelay++;
+                    sentAudio = true;
                 }
             } else {
-                sendAudioPacket(audio, wasWhispering);
+                sendAudio(audio, wasWhispering);
+                sentAudio = true;
             }
         } else {
             if (offset > 0) {
                 if (lastBuff != null) {
-                    sendAudioPacket(lastBuff, wasWhispering);
+                    sendAudio(lastBuff, wasWhispering);
                 }
-                sendAudioPacket(audio, wasWhispering);
+                sendAudio(audio, wasWhispering);
                 activating = true;
+                sentAudio = true;
             }
         }
         lastBuff = audio;
+        return sentAudio;
     }
 
     private volatile boolean wasPTT;
 
-    private void ptt(short[] audio) {
+    private boolean ptt(short[] audio) {
         activating = false;
         if (!ClientManager.getPttKeyHandler().isAnyDown()) {
             if (wasPTT) {
                 wasPTT = false;
                 wasWhispering = false;
-                flush();
             }
-            return;
+            return false;
         }
         wasPTT = true;
         wasWhispering = ClientManager.getPttKeyHandler().isWhisperDown();
-        sendAudioPacket(audio, wasWhispering);
+        sendAudio(audio, wasWhispering);
+        return true;
     }
 
     public short[] denoiseIfEnabled(short[] audio) {
@@ -220,6 +230,40 @@ public class MicThread extends Thread {
             return;
         }
         recorder.flushChunkThreaded(Minecraft.getInstance().getUser().getGameProfile().getId());
+    }
+
+    private boolean hasSentAudio;
+
+    /**
+     * Sends the audio to the server if necessary.
+     * If {@param rawAudio} is null and no audio is being injected, a stop packet will be sent.
+     * This needs to get called every microphone poll, even if no mic audio should be sent.
+     *
+     * @param rawAudio   the raw audio or
+     * @param whispering whether the player is whispering
+     */
+    private void sendAudio(@Nullable short[] rawAudio, boolean whispering) {
+        @Nullable short[] mergedAudio = PluginManager.instance().onMergeClientSound(rawAudio);
+        if (mergedAudio == null) {
+            flushIfNeeded();
+            return;
+        }
+        short[] finalAudio = PluginManager.instance().onClientSound(mergedAudio, whispering);
+        if (finalAudio == null) {
+            flushIfNeeded();
+            return;
+        }
+
+        sendAudioPacket(finalAudio, whispering);
+        hasSentAudio = true;
+    }
+
+    private void flushIfNeeded() {
+        if (!hasSentAudio) {
+            return;
+        }
+        flush();
+        hasSentAudio = false;
     }
 
     public boolean isTalking() {
@@ -248,11 +292,13 @@ public class MicThread extends Thread {
             try {
                 join(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Voicechat.LOGGER.error("Interrupted while waiting for mic thread to close", e);
             }
         }
 
-        mic.close();
+        if (mic != null) {
+            mic.close();
+        }
         encoder.close();
         if (denoiser != null) {
             denoiser.close();
@@ -263,12 +309,7 @@ public class MicThread extends Thread {
     private final AtomicLong sequenceNumber = new AtomicLong();
     private volatile boolean stopPacketSent = true;
 
-    private void sendAudioPacket(short[] data, boolean whispering) {
-        short[] audio = PluginManager.instance().onClientSound(data, whispering);
-        if (audio == null) {
-            return;
-        }
-
+    private void sendAudioPacket(short[] audio, boolean whispering) {
         try {
             if (connection != null && connection.isInitialized()) {
                 byte[] encoded = encoder.encode(audio);
@@ -276,7 +317,7 @@ public class MicThread extends Thread {
                 stopPacketSent = false;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Voicechat.LOGGER.error("Failed to send audio packet", e);
         }
         try {
             if (client != null && client.getRecorder() != null) {
@@ -300,7 +341,7 @@ public class MicThread extends Thread {
             connection.sendToServer(new NetworkMessage(new MicPacket(new byte[0], false, sequenceNumber.getAndIncrement())));
             stopPacketSent = true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Voicechat.LOGGER.error("Failed to send stop packet", e);
         }
     }
 }

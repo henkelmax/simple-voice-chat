@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
+import de.maxhenkel.voicechat.voice.client.SoundManager;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
 
@@ -235,6 +236,29 @@ public class Utils {
      */
     public static double percToDb(double perc) {
         return (perc * 127D) - 127D;
+    }
+
+    public static short[] combineAudio(Iterable<short[]> audioParts) {
+        short[] result = new short[SoundManager.FRAME_SIZE];
+        int sample;
+        for (int i = 0; i < result.length; i++) {
+            sample = 0;
+            for (short[] audio : audioParts) {
+                if (audio == null) {
+                    sample += 0;
+                } else {
+                    sample += audio[i];
+                }
+            }
+            if (sample > Short.MAX_VALUE) {
+                result[i] = Short.MAX_VALUE;
+            } else if (sample < Short.MIN_VALUE) {
+                result[i] = Short.MIN_VALUE;
+            } else {
+                result[i] = (short) sample;
+            }
+        }
+        return result;
     }
 
     @Nullable
