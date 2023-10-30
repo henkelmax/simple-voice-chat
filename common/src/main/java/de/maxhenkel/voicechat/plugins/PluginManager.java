@@ -288,6 +288,20 @@ public class PluginManager {
     }
 
     @Nullable
+    public short[] onMergeClientSound(@Nullable short[] rawAudio) {
+        MergeClientSoundEventImpl event = new MergeClientSoundEventImpl();
+        dispatchEvent(MergeClientSoundEvent.class, event);
+        List<short[]> audioToMerge = event.getAudioToMerge();
+        if (audioToMerge == null) {
+            return rawAudio;
+        }
+        if (rawAudio != null) {
+            audioToMerge.add(0, rawAudio);
+        }
+        return Utils.combineAudio(audioToMerge);
+    }
+
+    @Nullable
     public short[] onClientSound(short[] rawAudio, boolean whispering) {
         ClientSoundEventImpl clientSoundEvent = new ClientSoundEventImpl(rawAudio, whispering);
         boolean cancelled = dispatchEvent(ClientSoundEvent.class, clientSoundEvent);
