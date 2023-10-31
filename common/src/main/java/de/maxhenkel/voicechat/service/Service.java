@@ -32,6 +32,10 @@ public class Service {
         if (implClass != null) {
             return implClass;
         }
+        implClass = loadClassWithPrefix(serviceClass, "NeoForge");
+        if (implClass != null) {
+            return implClass;
+        }
         implClass = loadClassWithPrefix(serviceClass, "Forge");
         if (implClass != null) {
             return implClass;
