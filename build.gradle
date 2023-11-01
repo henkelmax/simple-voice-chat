@@ -34,7 +34,18 @@ tasks.register('publish03Forge', GradleBuild) {
     ]
 }
 
-tasks.register('publish04Fabric', GradleBuild) {
+tasks.register('publish04NeoForge', GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':common:clean',
+            ':neoforge:clean',
+            ':neoforge:curseforge',
+            ':neoforge:modrinth',
+            ':neoforge:modUpdate'
+    ]
+}
+
+tasks.register('publish05Fabric', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':common:clean',
@@ -45,7 +56,7 @@ tasks.register('publish04Fabric', GradleBuild) {
     ]
 }
 
-tasks.register('publish05Snapshot', GradleBuild) {
+tasks.register('publish06Snapshot', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':common:clean',
@@ -55,7 +66,7 @@ tasks.register('publish05Snapshot', GradleBuild) {
     ]
 }
 
-tasks.register('publish06API', GradleBuild) {
+tasks.register('publish07API', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':api:clean',
@@ -63,7 +74,7 @@ tasks.register('publish06API', GradleBuild) {
     ]
 }
 
-tasks.register('publish07APILocal', GradleBuild) {
+tasks.register('publish08APILocal', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':api:clean',
