@@ -59,9 +59,9 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
         ySize = HEADER_SIZE + units * UNIT_SIZE + FOOTER_SIZE;
 
         if (deviceList != null) {
-            deviceList.updateSize(width, height, guiTop + HEADER_SIZE, guiTop + HEADER_SIZE + units * UNIT_SIZE);
+            deviceList.setRectangle(width, units * UNIT_SIZE, 0, guiTop + HEADER_SIZE);
         } else {
-            deviceList = new AudioDeviceList(width, height, guiTop + HEADER_SIZE, guiTop + HEADER_SIZE + units * UNIT_SIZE, CELL_HEIGHT);
+            deviceList = new AudioDeviceList(width, units * UNIT_SIZE, guiTop + HEADER_SIZE, CELL_HEIGHT);
         }
         addWidget(deviceList);
 

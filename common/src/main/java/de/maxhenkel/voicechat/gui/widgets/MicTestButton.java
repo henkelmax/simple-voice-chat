@@ -50,8 +50,8 @@ public class MicTestButton extends AbstractButton {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-        super.render(guiGraphics, x, y, partialTicks);
+    public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+        super.renderWidget(guiGraphics, x, y, partialTicks);
         if (voiceThread != null) {
             voiceThread.updateLastRender();
         }

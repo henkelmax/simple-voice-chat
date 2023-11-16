@@ -17,8 +17,8 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
     protected final List<VolumeEntry> entries;
     protected String filter;
 
-    public AdjustVolumeList(int width, int height, int x, int y, int size, AdjustVolumesScreen screen) {
-        super(width, height, x, y, size);
+    public AdjustVolumeList(int width, int height, int top, int itemSizee, AdjustVolumesScreen screen) {
+        super(width, height, top, itemSizee);
         this.screen = screen;
         this.entries = Lists.newArrayList();
         this.filter = "";
