@@ -64,7 +64,7 @@ dependencies {
         transitive false
     }
 
-    compileOnly "me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
 
     implementation 'org.jetbrains:annotations:23.0.0'
 
