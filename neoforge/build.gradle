@@ -12,19 +12,33 @@ group = mod_packagename
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
 
+configurations {
+    minecraftLibrary {}
+    implementation.extendsFrom minecraftLibrary
+}
+
 runs {
+    configureEach {
+        modSource project.sourceSets.main
+        dependencies {
+            runtime configuration(project.configurations.minecraftLibrary)
+        }
+    }
     client {
         workingDirectory project.file('run')
         systemProperty 'forge.logging.console.level', 'debug'
         programArguments = ['--username', "henkelmax${new Random().nextInt(1000)}"]
-        modSource project.sourceSets.main
     }
     server {
         workingDirectory project.file('run/server')
         systemProperty 'forge.logging.console.level', 'debug'
         programArgument '--nogui'
-        modSource project.sourceSets.main
     }
+}
+
+tasks.withType(JavaCompile).matching(it -> !it.name.startsWith("neo")).configureEach {
+    source(project(":common").sourceSets.main.allSource)
+    source(project(":api").sourceSets.main.allSource)
 }
 
 repositories {
@@ -43,7 +57,7 @@ tasks.register('prepareWorkspace') {
 dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}"
 
-    implementation(project(path: ':common', configuration: 'namedElements')) {
+    compileOnly(project(path: ':common', configuration: 'namedElements')) {
         transitive false
     }
     shadow(project(path: ':common', configuration: 'namedElements')) {
@@ -54,22 +68,22 @@ dependencies {
 
     implementation 'org.jetbrains:annotations:23.0.0'
 
-    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
+    minecraftLibrary "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
     shadow "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
 
-    implementation "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
+    minecraftLibrary "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
     shadow "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
 
-    implementation "org.concentus:Concentus:${concentus_version}"
+    minecraftLibrary "org.concentus:Concentus:${concentus_version}"
     shadow "org.concentus:Concentus:${concentus_version}"
 
-    implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
+    minecraftLibrary "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
     shadow "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
 
-    implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
+    minecraftLibrary "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
     shadow "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
 
-    implementation(project(':api')) {
+    compileOnly(project(':api')) {
         transitive false
     }
     shadow(project(':api')) {
@@ -99,12 +113,6 @@ processResources {
     }
     from("${project(':common').projectDir}/src/main/resources")
 }
-
-// TODO Check
-/*tasks.withType(JavaCompile).configureEach {
-    source(project(':common').sourceSets.main.allSource)
-    source(project(':api').sourceSets.main.allSource)
-}*/
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
