@@ -1,1 +1,2 @@
-- Port to NeoForge
+- Updated Ukrainian translation
+- Updated Chinese traditional translation
