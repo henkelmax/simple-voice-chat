@@ -1,1 +1,2 @@
-- Added cloth config descriptions
+- Updated Ukrainian translation
+- Updated Chinese traditional translation
