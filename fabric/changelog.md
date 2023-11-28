@@ -1,2 +1,1 @@
-- Updated Ukrainian translation
-- Updated Chinese traditional translation
+- Updated to 1.20.3-pre4
