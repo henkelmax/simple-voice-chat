@@ -1,0 +1,2 @@
+- Updated Ukrainian translation
+- Updated Chinese traditional translation
