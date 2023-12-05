@@ -11,6 +11,8 @@ public class BukkitCompatibilityManager {
     private static final Map<BukkitVersion, Compatibility> COMPATIBILITIES = new HashMap<>();
 
     static {
+        COMPATIBILITIES.put(Compatibility1_20_3.VERSION_1_20_3, Compatibility1_20_3.INSTANCE);
+        COMPATIBILITIES.put(Compatibility1_20_2.VERSION_1_20_2, Compatibility1_20_2.INSTANCE);
         COMPATIBILITIES.put(Compatibility1_20.VERSION_1_20_1, Compatibility1_20.INSTANCE);
         COMPATIBILITIES.put(Compatibility1_20.VERSION_1_20, Compatibility1_20.INSTANCE);
         COMPATIBILITIES.put(Compatibility1_19_1.VERSION_1_19_4, Compatibility1_19_1.INSTANCE);
