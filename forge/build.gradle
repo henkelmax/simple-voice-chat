@@ -1,5 +1,5 @@
 plugins {
-    id 'net.neoforged.gradle' version '6.0.+'
+    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
     id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
     id 'com.github.johnrengelman.shadow' version "${shadow_version}"
     id 'com.modrinth.minotaur' version "${minotaur_version}"
@@ -14,7 +14,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
-
+    copyIdeResources = true
     runs {
         client {
             workingDirectory project.file('run')
@@ -49,11 +49,11 @@ tasks.register('prepareWorkspace') {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    implementation(project(':common')) {
+    compileOnly(project(':common')) {
         transitive false
     }
 
-    implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"));
+    compileOnly(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"));
 
     implementation 'org.jetbrains:annotations:23.0.0'
 
@@ -111,7 +111,7 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
-jar {
+tasks.named('jar', Jar).configure {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes(['Specification-Title'     : mod_name,
@@ -124,7 +124,15 @@ jar {
         ])
     }
     from configurations.shadow.collect { it.isDirectory() ? it : zipTree(it) }
+    finalizedBy 'reobfJar'
 }
+
+sourceSets.each {
+    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    it.output.resourcesDir = dir
+    it.java.destinationDirectory = dir
+}
+
 
 tasks.register('deobfJar', Jar) {
     archiveClassifier = 'deobf'

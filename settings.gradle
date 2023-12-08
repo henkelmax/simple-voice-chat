@@ -4,6 +4,7 @@ pluginManagement {
         maven { url = 'https://maven.fabricmc.net/' }
         maven { url = 'https://maven.maxhenkel.de/repository/public' }
         maven { url = 'https://maven.neoforged.net/releases' }
+        maven { url = 'https://maven.minecraftforge.net' }
         mavenCentral()
     }
 }
@@ -13,4 +14,4 @@ plugins {
 }
 
 rootProject.name = 'voicechat'
-include('api', 'common', 'fabric', 'neoforge', /*'forge', */'bukkit')
+include('api', 'common', 'fabric', 'neoforge', 'forge', 'bukkit')
