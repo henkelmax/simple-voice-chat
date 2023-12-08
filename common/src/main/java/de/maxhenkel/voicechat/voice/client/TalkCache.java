@@ -5,26 +5,28 @@ import net.minecraft.entity.Entity;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class TalkCache {
 
     private static final long TIMEOUT = 250L;
 
+    private static final Talk DEFAULT = new Talk(0L, false);
+
     private final Map<UUID, Talk> cache;
-    private Supplier<Long> timestampSupplier;
 
     public TalkCache() {
         this.cache = new HashMap<>();
-        this.timestampSupplier = System::currentTimeMillis;
-    }
-
-    public void setTimestampSupplier(Supplier<Long> timestampSupplier) {
-        this.timestampSupplier = timestampSupplier;
     }
 
     public void updateTalking(UUID entity, boolean whispering) {
-        cache.put(entity, new Talk(whispering));
+        Talk talk = cache.get(entity);
+        if (talk == null) {
+            talk = new Talk(whispering);
+            cache.put(entity, talk);
+        } else {
+            talk.timestamp = System.currentTimeMillis();
+            talk.whispering = whispering;
+        }
     }
 
     public boolean isTalking(Entity entity) {
@@ -45,8 +47,8 @@ public class TalkCache {
             }
         }
 
-        Talk lastTalk = cache.getOrDefault(entity, new Talk(0L, false));
-        return timestampSupplier.get() - lastTalk.timestamp < TIMEOUT;
+        Talk lastTalk = cache.getOrDefault(entity, DEFAULT);
+        return System.currentTimeMillis() - lastTalk.timestamp < TIMEOUT;
     }
 
     public boolean isWhispering(UUID entity) {
@@ -59,13 +61,13 @@ public class TalkCache {
             }
         }
 
-        Talk lastTalk = cache.getOrDefault(entity, new Talk(0L, false));
-        return lastTalk.whispering && timestampSupplier.get() - lastTalk.timestamp < TIMEOUT;
+        Talk lastTalk = cache.getOrDefault(entity, DEFAULT);
+        return lastTalk.whispering && System.currentTimeMillis() - lastTalk.timestamp < TIMEOUT;
     }
 
-    private class Talk {
-        private final long timestamp;
-        private final boolean whispering;
+    private static class Talk {
+        private long timestamp;
+        private boolean whispering;
 
         public Talk(long timestamp, boolean whispering) {
             this.timestamp = timestamp;
@@ -73,7 +75,7 @@ public class TalkCache {
         }
 
         public Talk(boolean whispering) {
-            this.timestamp = timestampSupplier.get();
+            this.timestamp = System.currentTimeMillis();
             this.whispering = whispering;
         }
     }
