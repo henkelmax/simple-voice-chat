@@ -158,6 +158,7 @@ curseforge {
         }
     }
 }
+tasks.curseforge.dependsOn(shadowJar)
 
 tasks.modrinth.configure({
     group = 'upload'
@@ -177,7 +178,7 @@ modrinth {
         optional.project '9s6osm5g' // ClothConfig
     }
 }
-tasks.modrinth.dependsOn(build)
+tasks.modrinth.dependsOn(shadowJar)
 
 modUpdate {
     serverURL = 'https://update.maxhenkel.de/'
