@@ -1,1 +1,1 @@
-- Minor improvements
+- Fixed replay-voice-chat compatibility
