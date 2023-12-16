@@ -1,2 +1,7 @@
-- Fixed compatibility with Sound Physics Remastered
-- Updated French translation
+- Allow creating groups with specific ID using the API
+- Added hidden groups to the API
+- Fixed not being able to play multiple entity audio channels for the same entity
+- Removed "freecam_support" config option
+- Added "freecam_mode" config option
+- Fixed crash when using an incompatible microphone
+- Added the ability to programmatically send audio from the client with the API
