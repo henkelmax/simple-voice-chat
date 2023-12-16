@@ -6,6 +6,15 @@ plugins {
     id 'mod-update' version "${mod_update_version}"
 }
 
+apply plugin: 'idea'
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
 archivesBaseName = project.archives_base_name
 version = mod_version
 group = mod_packagename
@@ -137,6 +146,28 @@ tasks.register('deobfJar', Jar) {
     archiveClassifier = 'deobf'
     from sourceSets.main.output
 }
+
+// https://github.com/neoforged/NeoGradle/issues/18#issuecomment-1858754401
+tasks.register('customClean', Delete) {
+    doLast {
+        def files = []
+        fileTree("build")
+                .exclude('**/expanded.lock')
+                .visit { FileVisitDetails fvd ->
+                    files << fvd.file
+                }
+        files.reverse()
+                .each { f ->
+                    def file = file(f)
+                    if (!file.exists()) return;
+                    if ((file.isDirectory() && file.list().size() == 0)
+                            || !file.isDirectory())
+                        delete f
+                }
+    }
+}
+clean.dependsOn customClean
+clean.enabled = false
 
 curseforge {
     apiKey = file("${rootDir}/curseforge_api_key.txt").exists() ? file("${rootDir}/curseforge_api_key.txt").text : ''
