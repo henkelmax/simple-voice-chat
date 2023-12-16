@@ -1,1 +1,1 @@
-- Fixed replay-voice-chat compatibility
+- Fixed compatibility with Sound Physics Remastered
