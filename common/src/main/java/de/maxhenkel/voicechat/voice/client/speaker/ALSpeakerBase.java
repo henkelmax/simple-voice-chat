@@ -154,7 +154,7 @@ public abstract class ALSpeakerBase implements Speaker {
         AL10.alSourcef(source, AL10.AL_MAX_DISTANCE, maxDistance);
         SoundManager.checkAlError();
 
-        AL11.alSourcef(source, AL11.AL_REFERENCE_DISTANCE, maxDistance / 2F);
+        AL10.alSourcef(source, AL10.AL_REFERENCE_DISTANCE, maxDistance / 2F);
         SoundManager.checkAlError();
     }
 
