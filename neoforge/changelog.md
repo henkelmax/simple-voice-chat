@@ -1,2 +1,1 @@
-- Updated Ukrainian translation
-- Updated Chinese traditional translation
+- Fixed replay-voice-chat compatibility

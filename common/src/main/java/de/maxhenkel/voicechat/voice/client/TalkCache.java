@@ -11,6 +11,8 @@ public class TalkCache {
 
     private static final long TIMEOUT = 250L;
 
+    private static final Talk DEFAULT = new Talk(0L, false);
+
     private final Map<UUID, Talk> cache;
     private Supplier<Long> timestampSupplier;
 
@@ -24,7 +26,14 @@ public class TalkCache {
     }
 
     public void updateTalking(UUID entity, boolean whispering) {
-        cache.put(entity, new Talk(whispering));
+        Talk talk = cache.get(entity);
+        if (talk == null) {
+            talk = new Talk(timestampSupplier.get(), whispering);
+            cache.put(entity, talk);
+        } else {
+            talk.timestamp = timestampSupplier.get();
+            talk.whispering = whispering;
+        }
     }
 
     public boolean isTalking(Entity entity) {
@@ -45,7 +54,7 @@ public class TalkCache {
             }
         }
 
-        Talk lastTalk = cache.getOrDefault(entity, new Talk(0L, false));
+        Talk lastTalk = cache.getOrDefault(entity, DEFAULT);
         return timestampSupplier.get() - lastTalk.timestamp < TIMEOUT;
     }
 
@@ -59,21 +68,16 @@ public class TalkCache {
             }
         }
 
-        Talk lastTalk = cache.getOrDefault(entity, new Talk(0L, false));
+        Talk lastTalk = cache.getOrDefault(entity, DEFAULT);
         return lastTalk.whispering && timestampSupplier.get() - lastTalk.timestamp < TIMEOUT;
     }
 
-    private class Talk {
-        private final long timestamp;
-        private final boolean whispering;
+    private static class Talk {
+        private long timestamp;
+        private boolean whispering;
 
         public Talk(long timestamp, boolean whispering) {
             this.timestamp = timestamp;
-            this.whispering = whispering;
-        }
-
-        public Talk(boolean whispering) {
-            this.timestamp = timestampSupplier.get();
             this.whispering = whispering;
         }
     }
