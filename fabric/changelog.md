@@ -1,1 +1,2 @@
 - Fixed compatibility with Sound Physics Remastered
+- Updated French translation
