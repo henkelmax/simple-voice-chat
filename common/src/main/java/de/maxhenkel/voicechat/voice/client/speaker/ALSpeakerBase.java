@@ -147,6 +147,9 @@ public abstract class ALSpeakerBase implements Speaker {
 
         AL11.alSourcef(source, AL11.AL_MAX_DISTANCE, maxDistance);
         SoundManager.checkAlError();
+
+        AL11.alSourcef(source, AL11.AL_REFERENCE_DISTANCE, maxDistance / 2F);
+        SoundManager.checkAlError();
     }
 
     protected abstract int getFormat();
