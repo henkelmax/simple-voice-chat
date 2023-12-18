@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = EntityRenderer.class, priority = 10000)
 public abstract class EntityRendererMixin {
 
-    @Inject(at = @At("HEAD"), method = "renderNameTag")
-    private void renderNameTag(Entity entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, CallbackInfo info) {
+    @Inject(method = "renderNameTag", at = @At("HEAD"))
+    private void renderNameTag(Entity entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, float f, CallbackInfo info) {
         if (info.isCancelled()) {
             return;
         }

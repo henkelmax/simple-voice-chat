@@ -15,4 +15,4 @@ plugins {
 }
 
 rootProject.name = 'voicechat'
-include('api', 'common', 'fabric', 'neoforge', 'forge', 'bukkit')
+include('api', 'common', 'fabric', /*'neoforge', 'forge', */'bukkit')

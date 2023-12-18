@@ -1,2 +1,1 @@
-- Fixed compatibility with Sound Physics Remastered
-- Updated French translation
+- Updated to 23w51a

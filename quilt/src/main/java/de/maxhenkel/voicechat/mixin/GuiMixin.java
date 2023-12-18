@@ -11,9 +11,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = Gui.class, priority = 999)
 public class GuiMixin {
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderEffects(Lnet/minecraft/client/gui/GuiGraphics;)V"))
+    @Inject(method = "renderEffects", at = @At(value = "HEAD"))
     private void onHUDRender(GuiGraphics poseStack, float f, CallbackInfo ci) {
         RenderEvents.RENDER_HUD.invoker().accept(poseStack);
     }
 
 }
+
