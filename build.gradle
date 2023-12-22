@@ -1,3 +1,12 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version "${shadow_version}" apply false
+    id 'com.matthewprenger.cursegradle' version "${cursegradle_version}" apply false
+    id 'com.modrinth.minotaur' version "${minotaur_version}" apply false
+    id 'mod-update' version "${mod_update_version}" apply false
+    id 'fabric-loom' version "${fabric_loom_version}" apply false
+}
+
+//TODO Use exec {}
 tasks.register('publish01Bukkit', GradleBuild) {
     group = 'voicechat'
     tasks = [
