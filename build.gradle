@@ -1,7 +1,87 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version "${shadow_version}" apply false
+    id 'com.matthewprenger.cursegradle' version "${cursegradle_version}" apply false
+    id 'com.modrinth.minotaur' version "${minotaur_version}" apply false
+    id 'mod-update' version "${mod_update_version}" apply false
+}
+
+//TODO Use exec {}
+tasks.register('publish01Bukkit', GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':bukkit:clean',
+            ':bukkit:curseforge',
+            ':bukkit:modrinth',
+            ':bukkit:publishAllPublicationsToHangar'
+    ]
+}
+
+tasks.register('publish03Forge', GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':common:clean',
+            ':forge:clean',
+            ':forge:curseforge',
+            ':forge:modrinth',
+            ':forge:modUpdate'
+    ]
+}
+
+tasks.register('publish04Fabric', GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':common:clean',
+            ':fabric:clean',
+            ':fabric:curseforge',
+            ':fabric:modrinth',
+            ':fabric:modUpdate'
+    ]
+}
+
+tasks.register('publish05Snapshot', GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':common:clean',
+            ':fabric:clean',
+            ':fabric:curseforge',
+            ':fabric:modrinth'
+    ]
+}
+
+tasks.register('publish06API', GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':api:clean',
+            ':api:publish'
+    ]
+}
+
+tasks.register('publish07APILocal', GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':api:clean',
+            ':api:publishToMavenLocal'
+    ]
+}
+
+tasks.register('runClientFabric', GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':fabric:runClient'
+    ]
+}
+
 tasks.register('runClientForge', GradleBuild) {
     group = 'voicechat'
     tasks = [
             ':forge:runClient'
+    ]
+}
+
+tasks.register('runServerFabric', GradleBuild) {
+    group = 'voicechat'
+    tasks = [
+            ':fabric:runServer'
     ]
 }
 
@@ -17,6 +97,7 @@ tasks.register('cleanAll', GradleBuild) {
     tasks = [
             ':common:clean',
             ':api:clean',
+            ':fabric:clean',
             ':forge:clean',
             ':bukkit:clean'
     ]

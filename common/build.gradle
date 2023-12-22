@@ -1,21 +1,18 @@
-plugins {
-    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
-}
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'com.github.johnrengelman.shadow'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
-
-minecraft {
-    mappings channel: 'snapshot', version: '20171003-1.12'
-}
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
 repositories {
-    mavenCentral()
-    maven { url = 'https://maven.maxhenkel.de/repository/public' }
-    maven { url = 'https://maven.minecraftforge.net/' }
+    maven { url = 'https://maven.shedaniel.me/' }
 }
 
-tasks.register('prepareWorkspace') {
-
+dependencies {
+    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
+    implementation "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
+    implementation "org.concentus:Concentus:${concentus_version}"
+    implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
+    implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
 }
 
 sourceSets {
@@ -28,20 +25,4 @@ sourceSets {
         compileClasspath += sourceSets.template.output
         runtimeClasspath += sourceSets.template.output
     }
-}
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-
-    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
-    implementation "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
-    implementation "org.concentus:Concentus:${concentus_version}"
-    implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
-    implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
-
-    implementation project(':api')
 }

@@ -9,114 +9,21 @@ buildscript {
 }
 
 plugins {
-    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
-    id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
-    id 'com.github.johnrengelman.shadow' version "${shadow_version}"
-    id 'com.modrinth.minotaur' version "${minotaur_version}"
-    id 'mod-update' version "${mod_update_version}"
+    id 'net.minecraftforge.gradle' version "${forgegradle_version}"
+    id 'org.spongepowered.mixin' version "${mixingradle_version}"
 }
 
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.matthewprenger.cursegradle'
+apply plugin: 'com.modrinth.minotaur'
+apply plugin: 'mod-update'
 apply plugin: 'org.spongepowered.mixin'
 
-archivesBaseName = project.archives_base_name
-version = mod_version
-group = mod_packagename
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
-
-minecraft {
-    mappings channel: 'snapshot', version: '20171003-1.12'
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
-            args = ['--username', "henkelmax${new Random().nextInt(1000)}"]
-            arg '-torg.spongepowered.asm.launch.MixinTweaker'
-        }
-        server {
-            workingDirectory project.file('run/server')
-            property 'forge.logging.console.level', 'debug'
-            arg "--nogui"
-            arg '-torg.spongepowered.asm.launch.MixinTweaker'
-        }
-    }
-}
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
 legacy {
     fixClasspath = false
 }
-
-repositories {
-    mavenCentral()
-    maven { url = 'https://maven.maxhenkel.de/repository/public' }
-    maven { url = 'https://repo.spongepowered.org/maven' }
-    maven { url = 'https://maven.minecraftforge.net/' }
-}
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-sourceSets.all { it.output.resourcesDir = it.output.classesDirs.getFiles().iterator().next() }
-
-configurations {
-    shadowMc.extendsFrom minecraftLibrary
-}
-
-tasks.register('prepareWorkspace') {
-
-}
-
-dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-
-    implementation(project(':common')) {
-        transitive false
-    }
-
-    annotationProcessor('org.spongepowered:mixin:0.8.3-SNAPSHOT:processor') {
-        transitive false
-    }
-    minecraftLibrary('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
-        transitive false
-    }
-    shadowMc('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
-        transitive false
-    }
-
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-
-    minecraftLibrary "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
-    shadowMc "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
-
-    minecraftLibrary "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
-    shadowMc "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
-
-    minecraftLibrary "org.concentus:Concentus:${concentus_version}"
-    shadowMc "org.concentus:Concentus:${concentus_version}"
-
-    minecraftLibrary "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
-    shadowMc "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
-
-    minecraftLibrary "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
-    shadowMc "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
-
-    minecraftLibrary(project(':api')) {
-        transitive false
-    }
-    shadowMc(project(':api')) {
-        transitive false
-    }
-}
-
-tasks.register('generateJava', Copy) {
-    from project(':common').file('src/template/java')
-    into "${buildDir}/generated/java"
-    expand 'compatibility_version': mod_compatibility_version
-}
-sourceSets.main.java {
-    srcDir "${buildDir}/generated/java"
-}
-compileJava.dependsOn generateJava
 
 mixin {
     add sourceSets.main, "voicechat.refmap.json"
@@ -125,108 +32,53 @@ mixin {
 
 processResources {
     filesMatching('**/*.info') {
-        expand 'mod_id': mod_id,
-                'mod_version': mod_version,
-                'mod_name': mod_name,
+        expand 'mod_version': mod_version,
                 'minecraft_version': minecraft_version
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    source(project(':common').sourceSets.main.allSource)
+repositories {
+    maven { url = 'https://repo.spongepowered.org/maven' }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-}
-
-jar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes(['Specification-Title'        : mod_name,
-                    'Specification-Vendor'       : mod_vendor,
-                    'Specification-Version'      : "1",
-                    'Implementation-Title'       : mod_name,
-                    'Implementation-Version'     : mod_version,
-                    'Implementation-Vendor'      : mod_vendor,
-                    'Implementation-Timestamp'   : new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                    "FMLCorePluginContainsFMLMod": "true",
-                    "ForceLoadAsMod"             : "true",
-                    "TweakClass"                 : "org.spongepowered.asm.launch.MixinTweaker",
-                    "TweakOrder"                 : "0"
-        ])
+dependencies {
+    annotationProcessor('org.spongepowered:mixin:0.8.3-SNAPSHOT:processor') {
+        transitive false
     }
-    from configurations.shadow.collect { it.isDirectory() ? it : zipTree(it) }
-}
-
-tasks.register('deobfJar', Jar) {
-    archiveClassifier = 'deobf'
-    from sourceSets.main.output
-}
-
-tasks.curseforge.dependsOn(build)
-curseforge {
-    apiKey = file("${rootDir}/curseforge_api_key.txt").exists() ? file("${rootDir}/curseforge_api_key.txt").text : ''
-    project {
-        id = curse_id
-        changelogType = 'markdown'
-        changelog = file('changelog.md')
-        releaseType = release_type
-        addGameVersion minecraft_version
-        addGameVersion 'Forge'
-        addGameVersion "Java ${java_version}"
-        mainArtifact(file("${buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-            displayName = "[FORGE][${minecraft_version}] ${mod_name} ${mod_version}"
-        }
+    minecraftLibrary('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
+        transitive false
     }
+    shadow('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
+        transitive false
+    }
+
+    implementation 'org.jetbrains:annotations:23.0.0'
+
+    implementation "org.concentus:Concentus:${concentus_version}"
+    shadow "org.concentus:Concentus:${concentus_version}"
+
+    implementation "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
+    shadow "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
+
+    implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
+    shadow "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
+
+    implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
+    shadow "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
 }
 
-tasks.modrinth.configure({
-    group = 'upload'
-})
-
-tasks.modrinth.dependsOn(build)
-modrinth {
-    token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
-    projectId = modrinth_id
-    versionNumber = "forge-${mod_version}"
-    versionName = "${mod_name} ${mod_version}"
-    uploadFile = file("${buildDir}/libs/${archivesBaseName}-${version}.jar")
-    versionType = release_type.toUpperCase()
-    changelog = file('changelog.md').text
-    gameVersions = [minecraft_version]
-    loaders = ['forge']
+tasks.register('generateJava', Copy) {
+    from project(':common').file('src/template/java')
+    into "${layout.buildDirectory.asFile.get()}/generated/java"
+    expand 'compatibility_version': voicechat_compatibility_version
 }
-
-modUpdate {
-    serverURL = 'https://update.maxhenkel.de/'
-    modID = mod_id
-    gameVersion = minecraft_version
-    modVersion = mod_version
-    changelogFile = file('changelog.md')
-    releaseType = release_type
-    tags = recommended == 'true' ? ['recommended'] : []
+sourceSets.main.java {
+    srcDir "${layout.buildDirectory.asFile.get()}/generated/java"
 }
-
-jar.finalizedBy('reobfJar')
+compileJava.dependsOn generateJava
 
 shadowJar {
-    configurations = [project.configurations.shadowMc]
-    archiveClassifier = ''
-    relocate 'de.maxhenkel.configbuilder', "de.maxhenkel.${mod_id}.configbuilder"
-    relocate 'org.concentus', "de.maxhenkel.${mod_id}.concentus"
-    dependencies {
-        exclude(dependency('com.google.code.findbugs:jsr305'))
-    }
-}
-shadowJar.dependsOn('reobfJar')
-
-reobf {
-    shadowJar {}
-}
-
-artifacts {
-    archives deobfJar
+    relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'
 }
 
 // https://stackoverflow.com/a/70151634/9889252

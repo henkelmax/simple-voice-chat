@@ -3,7 +3,7 @@ pluginManagement {
         gradlePluginPortal()
         maven { url = 'https://maven.maxhenkel.de/repository/public' }
         maven { url = 'https://maven.minecraftforge.net' }
-        mavenCentral()
+        maven { url = 'https://repo.u-team.info' }
     }
 }
 
