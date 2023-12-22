@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "quilt_loader": {
-    "group": "${mod_group}",
-    "id": "${mod_id}",
+    "group": "de.maxhenkel.voicechat",
+    "id": "voicechat",
     "version": "${mod_version}",
     "intermediate_mappings": "net.fabricmc:intermediary",
     "metadata": {
-      "name": "${mod_name}",
+      "name": "Simple Voice Chat",
       "description": "A working voice chat in Minecraft!",
       "contributors": {
-        "${mod_vendor}": "Owner"
+        "Max Henkel": "Owner"
       },
       "contact": {
         "homepage": "https://modrepo.de/minecraft/voicechat/overview",
@@ -38,7 +38,7 @@
     "depends": [
       {
         "id": "quilt_loader",
-        "versions": ">=${quilt_loader_version}"
+        "versions": "${quilt_loader_dependency}"
       },
       {
         "id": "minecraft",
@@ -90,40 +90,14 @@
         "id": "viaversion",
         "versions": "*"
       }
-    ],
-    "metadata": {
-      "name": "${mod_name}",
-      "description": "A working voice chat in Minecraft!",
-      "contributors": {
-        "${mod_vendor}": "Author"
-      },
-      "contact": {
-        "homepage": "https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat",
-        "issues": "https://github.com/henkelmax/simple-voice-chat/issues",
-        "sources": "https://github.com/henkelmax/simple-voice-chat",
-        "email": "info@modrepo.de",
-        "discord": "https://discord.gg/4dH2zwTmyX"
-      },
-      "license": {
-        "name": "All Rights Reserved",
-        "id": "ARR",
-        "url": "https://modrepo.de",
-        "description": "All Rights Reserved"
-      },
-      "icon": "icon.png"
-    },
-    "minecraft": {
-      "environment": "*"
-    },
-    "custom": {
-      "modmenu": {
-        "links": {
-          "modmenu.discord": "https://discord.gg/4dH2zwTmyX"
-        }
-      }
-    }
+    ]
   },
   "mixin": [
     "voicechat.mixins.json"
-  ]
+  ],
+  "modmenu": {
+    "links": {
+      "modmenu.discord": "https://discord.gg/4dH2zwTmyX"
+    }
+  }
 }

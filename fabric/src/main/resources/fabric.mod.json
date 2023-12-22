@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "${mod_id}",
+  "id": "voicechat",
   "version": "${mod_version}",
-  "name": "${mod_name}",
+  "name": "Simple Voice Chat",
   "description": "A working voice chat in Minecraft!",
   "authors": [
-    "${mod_vendor}"
+    "Max Henkel"
   ],
   "contact": {
     "homepage": "https://modrepo.de/minecraft/voicechat/overview",
@@ -31,7 +31,7 @@
     "voicechat.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${fabric_loader_version}",
+    "fabricloader": "${fabric_loader_dependency}",
     "minecraft": "${minecraft_dependency}",
     "java": ">=${java_version}"
   },
@@ -42,7 +42,7 @@
     "viaversion": "*"
   },
   "breaks": {
-    "fabric-api": "<${min_fabric_version}"
+    "fabric-api": "${fabric_api_dependency_breaks}"
   },
   "custom": {
     "modmenu": {
