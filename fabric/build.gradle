@@ -1,51 +1,32 @@
-plugins {
-    id 'fabric-loom'
-    id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
-    id 'com.github.johnrengelman.shadow' version "${shadow_version}"
-    id 'com.modrinth.minotaur' version "${minotaur_version}"
-    id 'mod-update' version "${mod_update_version}"
+apply plugin: 'fabric-loom'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.matthewprenger.cursegradle'
+apply plugin: 'com.modrinth.minotaur'
+apply plugin: 'mod-update'
+
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
+
+processResources {
+    filesMatching('fabric.mod.json') {
+        expand 'java_version': java_version,
+                'mod_version': mod_version,
+                'minecraft_version': minecraft_version,
+                'minecraft_dependency': minecraft_dependency,
+                'fabric_loader_dependency': fabric_loader_dependency,
+                'modmenu_version': modmenu_version,
+                'cloth_config_version': cloth_config_version,
+                'fabric_api_dependency_breaks': fabric_api_dependency_breaks
+    }
 }
 
-sourceCompatibility = JavaLanguageVersion.of(java_version as int)
-targetCompatibility = JavaLanguageVersion.of(java_version as int)
-
-archivesBaseName = archives_base_name
-version = mod_version
-group = maven_group
-
 repositories {
-    mavenCentral()
-    maven { url = 'https://maven.fabricmc.net/' }
-    maven { url = 'https://maven.terraformersmc.com/' }
     maven { url = 'https://maven.shedaniel.me/' }
-    maven { url = 'https://maven.maxhenkel.de/repository/public' }
-    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url = 'https://maven.terraformersmc.com/releases' }
     maven { url = 'https://repo.viaversion.com/' }
 }
 
-runClient.doFirst {
-    args = ['--username', "henkelmax${new Random().nextInt(1000)}"]
-}
-
 dependencies {
-    minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-
-    Set<String> apiModules = [
-            'fabric-api-base',
-            'fabric-command-api-v2',
-            'fabric-lifecycle-events-v1',
-            'fabric-networking-api-v1',
-            'fabric-resource-loader-v0',
-            'fabric-key-binding-api-v1'
-    ]
-
-    apiModules.forEach {
-        include(modImplementation(fabricApi.module(it, fabric_version)))
-    }
-
-    implementation project(path: ':common', configuration: 'namedElements')
+    implementation 'org.jetbrains:annotations:23.0.0'
 
     modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
 
@@ -56,149 +37,30 @@ dependencies {
     modImplementation "me.lucko:fabric-permissions-api:${fabric_permission_api_version}"
     modCompileOnly "com.viaversion:viaversion-fabric:${viaversion_version}"
 
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    implementation 'org.jetbrains:annotations:23.0.0'
-
-    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
-    shadow "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
+    implementation "org.concentus:Concentus:${concentus_version}"
+    shadow "org.concentus:Concentus:${concentus_version}"
 
     implementation "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
     shadow "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
-
-    implementation "org.concentus:Concentus:${concentus_version}"
-    shadow "org.concentus:Concentus:${concentus_version}"
 
     implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
     shadow "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
 
     implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
     shadow "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
-
-    implementation project(':api')
-    shadow project(':api')
 }
 
 tasks.register('generateJava', Copy) {
     from project(':common').file('src/template/java')
-    into "${buildDir}/generated/java"
-    expand 'compatibility_version': mod_compatibility_version
+    into "${layout.buildDirectory.asFile.get()}/generated/java"
+    expand 'compatibility_version': voicechat_compatibility_version
 }
 sourceSets.main.java {
-    srcDir "${buildDir}/generated/java"
+    srcDir "${layout.buildDirectory.asFile.get()}/generated/java"
 }
 compileJava.dependsOn generateJava
 generateJava.dependsOn('sourcesJar')
 
-processResources {
-    filesMatching('fabric.mod.json') {
-        expand 'mod_id': mod_id,
-                'mod_name': mod_name,
-                'mod_vendor': mod_vendor,
-                'mod_version': mod_version,
-                'java_version': java_version,
-                'minecraft_dependency': minecraft_dependency,
-                'fabric_loader_version': fabric_loader_version,
-                'min_fabric_version': min_fabric_version,
-                'modmenu_version': modmenu_version,
-                'cloth_config_version': cloth_config_version
-    }
-    from project(":common").sourceSets.main.resources
-}
-
-tasks.withType(JavaCompile).configureEach {
-    source(project(':common').sourceSets.main.allSource)
-}
-
-tasks.withType(JavaCompile).configureEach {
-    it.options.encoding = 'UTF-8'
-    it.options.release = java_version as int
-}
-
-java {
-    withSourcesJar()
-}
-
-jar {
-    from('LICENSE') {
-        rename { "${it}_${archivesBaseName}" }
-    }
-}
-
-curseforge {
-    apiKey = file("${rootDir}/curseforge_api_key.txt").exists() ? file("${rootDir}/curseforge_api_key.txt").text : ''
-    project {
-        id = curse_id
-        changelogType = 'markdown'
-        changelog = file('changelog.md')
-        releaseType = release_type
-        addGameVersion curseforge_minecraft_version
-        addGameVersion 'Fabric'
-        addGameVersion "Java ${java_version}"
-        mainArtifact(file("${buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-            displayName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
-            relations {
-                optionalDependency 'modmenu'
-                optionalDependency 'sound-physics-remastered'
-                optionalDependency 'cloth-config'
-                optionalDependency 'audioplayer'
-                optionalDependency 'luckperms'
-                optionalDependency 'viafabric'
-            }
-        }
-        afterEvaluate {
-            uploadTask.dependsOn(remapJar)
-        }
-    }
-    options {
-        forgeGradleIntegration = false
-    }
-}
-
-tasks.modrinth.configure({
-    group = 'upload'
-})
-
-modrinth {
-    token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
-    projectId = modrinth_id
-    versionNumber = "fabric-${mod_version}"
-    versionName = "${mod_name} ${mod_version}"
-    uploadFile = remapJar
-    versionType = release_type.toUpperCase()
-    changelog = file('changelog.md').text
-    gameVersions = [minecraft_version]
-    loaders = ['fabric']
-    dependencies {
-        optional.project 'mOgUt4GM' // ModMenu
-        optional.project '9s6osm5g' // ClothConfig
-        optional.project 'Vebnzrzj' // LuckPerms
-        optional.project 'YlKdE5VK' // ViaFabric
-    }
-}
-tasks.modrinth.dependsOn(build)
-
-modUpdate {
-    serverURL = 'https://update.maxhenkel.de/'
-    modID = mod_id
-    gameVersion = minecraft_version
-    modLoader = 'fabric'
-    modVersion = mod_version
-    changelogFile = file('changelog.md')
-    releaseType = release_type
-    tags = recommended == 'true' ? ['recommended'] : []
-}
-
 shadowJar {
-    configurations = [project.configurations.shadow]
-    archiveClassifier = 'shadow-dev'
-    relocate 'de.maxhenkel.configbuilder', "de.maxhenkel.${mod_id}.configbuilder"
-    relocate 'org.concentus', "de.maxhenkel.${mod_id}.concentus"
-    dependencies {
-        exclude(dependency('com.google.code.findbugs:jsr305'))
-    }
-}
-
-remapJar {
-    dependsOn shadowJar
-    inputFile = shadowJar.archiveFile.get()
+    relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'
 }
