@@ -1,11 +1,11 @@
 name: voicechat
 version: ${version}
 main: de.maxhenkel.voicechat.Voicechat
-api-version: ${bukkit_api_version}
+api-version: 1.13
 prefix: voicechat
 authors: [ "Max Henkel", "Matthew Wells" ]
 description: A working voice chat in Minecraft
-website: https://modrepo.de
+website: https://modrepo.de/minecraft/voicechat/overview
 folia-supported: true
 commands:
   voicechat:

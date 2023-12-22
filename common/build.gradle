@@ -1,19 +1,22 @@
-plugins {
-    id 'fabric-loom'
-}
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'fabric-loom'
 
-sourceCompatibility = JavaLanguageVersion.of(java_version as int)
-targetCompatibility = JavaLanguageVersion.of(java_version as int)
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
 repositories {
-    mavenCentral()
-    maven { url = 'https://maven.fabricmc.net/' }
-    maven { url = 'https://maven.maxhenkel.de/repository/public' }
     maven { url = 'https://maven.shedaniel.me/' }
 }
 
-task prepareWorkspace {
+dependencies {
+    modApi("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}"){
+        transitive = false
+    }
 
+    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
+    implementation "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
+    implementation "org.concentus:Concentus:${concentus_version}"
+    implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
+    implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
 }
 
 sourceSets {
@@ -25,25 +28,5 @@ sourceSets {
     main {
         compileClasspath += sourceSets.template.output
         runtimeClasspath += sourceSets.template.output
-    }
-}
-
-dependencies {
-    minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-
-    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
-    implementation "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
-    implementation "org.concentus:Concentus:${concentus_version}"
-    implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
-    implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
-
-    implementation project(':api')
-
-    modApi("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}"){
-        transitive = false
     }
 }

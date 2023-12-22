@@ -1,7 +1,4 @@
 buildscript {
-    repositories {
-        maven { url = 'https://repo.u-team.info' }
-    }
     dependencies {
         classpath "info.u-team.curse_gradle_uploader:curse_gradle_uploader:${curse_gradle_uploader_version}"
     }
@@ -9,24 +6,46 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version "${shadow_version}"
     id 'com.modrinth.minotaur' version "${minotaur_version}"
     id 'io.papermc.hangar-publish-plugin' version "${hangar_publish_version}"
 }
 
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'info.u_team.curse_gradle_uploader'
+
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
 sourceCompatibility = JavaLanguageVersion.of(8)
 targetCompatibility = JavaLanguageVersion.of(8)
 
-archivesBaseName = archives_base_name
-version = mod_version
-group = maven_group
+repositories {
+    mavenCentral()
+    maven { url = 'https://libraries.minecraft.net/' }
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+    maven { url = 'https://repo.viaversion.com/' }
+}
+
+dependencies {
+    implementation "net.kyori:adventure-api:${adventure_api_version}"
+    shadow "net.kyori:adventure-api:${adventure_api_version}"
+
+    implementation "net.kyori:adventure-text-serializer-gson:${adventure_api_version}"
+    shadow "net.kyori:adventure-text-serializer-gson:${adventure_api_version}"
+
+    implementation "me.lucko:commodore:${commodore_version}"
+    shadow "me.lucko:commodore:${commodore_version}"
+
+    implementation "org.concentus:Concentus:${concentus_version}"
+    shadow "org.concentus:Concentus:${concentus_version}"
+
+    compileOnly "me.clip:placeholderapi:${placeholder_api_version}"
+
+    compileOnly "com.viaversion:viaversion-bukkit:${viaversion_version}"
+}
 
 processResources {
     filesMatching('plugin.yml') {
-        expand 'version': version,
-                'bukkit_api_version': bukkit_api_version
+        expand 'version': version
     }
 }
 
@@ -42,52 +61,28 @@ sourceSets {
     }
 }
 
-dependencies {
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    implementation "org.bukkit:craftbukkit:${bukkit_version}"
-
-    implementation "net.kyori:adventure-api:${adventure_api_version}"
-    shadow "net.kyori:adventure-api:${adventure_api_version}"
-    implementation "net.kyori:adventure-text-serializer-gson:${adventure_api_version}"
-    shadow "net.kyori:adventure-text-serializer-gson:${adventure_api_version}"
-    implementation "me.lucko:commodore:${commodore_version}"
-    shadow "me.lucko:commodore:${commodore_version}"
-
-    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
-    shadow "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
-
-    implementation "org.concentus:Concentus:${concentus_version}"
-    shadow "org.concentus:Concentus:${concentus_version}"
-
-    compileOnly "me.clip:placeholderapi:${placeholder_api_version}"
-
-    compileOnly "com.viaversion:viaversion-bukkit:${viaversion_version}"
-
-    implementation project(':api')
-    shadow project(':api')
-}
-
 tasks.register('generateJava', Copy) {
     from 'src/template/java'
-    into "${buildDir}/generated/java"
-    expand 'compatibility_version': mod_compatibility_version,
+    into "${layout.buildDirectory.asFile.get()}/generated/java"
+    expand 'compatibility_version': voicechat_compatibility_version,
             'target_bukkit_version': bukkit_version
 }
+tasks.sourcesJar.dependsOn('generateJava')
 
 sourceSets.main.java {
-    srcDir "${buildDir}/generated/java"
+    srcDir "${layout.buildDirectory.asFile.get()}/generated/java"
 }
-
 compileJava.dependsOn generateJava
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven { url = 'https://papermc.io/repo/repository/maven-public/' }
-    maven { url = 'https://libraries.minecraft.net/' }
-    maven { url = 'https://maven.maxhenkel.de/repository/public' }
-    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
-    maven { url = 'https://repo.viaversion.com/' }
+shadowJar {
+    relocate 'net.kyori', 'de.maxhenkel.voicechat.net.kyori'
+    relocate 'com.google.gson', 'de.maxhenkel.voicechat.gson'
+    relocate 'me.lucko.commodore', 'de.maxhenkel.voicechat.commodore'
+    relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'
+    dependencies {
+        exclude(dependency('com.mojang:brigadier:.*'))
+        exclude(dependency('com.google.code.findbugs:jsr305:.*'))
+    }
 }
 
 tasks.register('copyJarToServer') {
@@ -96,7 +91,7 @@ tasks.register('copyJarToServer') {
             delete "${projectDir}/run/plugins/${archivesBaseName}-${version}.jar"
         }
         copy {
-            from "${buildDir}/libs/${archivesBaseName}-${version}.jar"
+            from "${layout.buildDirectory.asFile.get()}/libs/${archivesBaseName}-${version}.jar"
             into "${projectDir}/run/plugins"
         }
     }
@@ -135,83 +130,3 @@ tasks.register('runPaperServer') {
 build.dependsOn(shadowJar)
 runServer.dependsOn(build)
 runPaperServer.dependsOn(build)
-
-shadowJar {
-    configurations = [project.configurations.shadow]
-    archiveClassifier = ''
-    relocate 'net.kyori', 'de.maxhenkel.voicechat.net.kyori'
-    relocate 'com.google.gson', 'de.maxhenkel.voicechat.gson'
-    relocate 'me.lucko.commodore', 'de.maxhenkel.voicechat.commodore'
-    relocate 'de.maxhenkel.configbuilder', 'de.maxhenkel.voicechat.configbuilder'
-    relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'
-    dependencies {
-        exclude(dependency('com.mojang:brigadier:.*'))
-        exclude(dependency('com.google.code.findbugs:jsr305:.*'))
-    }
-}
-
-curseforge {
-    apiBaseUrl = 'https://dev.bukkit.org'
-    apiKey = file("${rootDir}/curseforge_api_key.txt").exists() ? file("${rootDir}/curseforge_api_key.txt").text : ''
-    project {
-        id = curse_id
-        changelogType = 'markdown'
-        changelog = file('changelog.md')
-        releaseType = release_type
-        curseforge_minecraft_versions.split(',').collect({ it.trim() }).forEach {
-            addGameVersion it
-        }
-        mainArtifact(shadowJar) {
-            displayName = "[BUKKIT/SPIGOT/PAPER] ${mod_name} ${mod_version}"
-        }
-    }
-}
-
-tasks.modrinth.configure({
-    group = 'upload'
-})
-
-modrinth {
-    token = file("${rootDir}/modrinth_token.txt").exists() ? file("${rootDir}/modrinth_token.txt").text : ''
-    projectId = modrinth_id
-    versionNumber = "bukkit-${mod_version}"
-    versionName = "${mod_name} ${mod_version}"
-    uploadFile = shadowJar
-    versionType = release_type.toUpperCase()
-    changelog = file('changelog.md').text
-    gameVersions = minecraft_versions.split(',').collect { it.trim() }
-    loaders = ['bukkit', 'spigot', 'paper', 'purpur', 'folia']
-    dependencies {
-        optional.project 'Vebnzrzj' // LuckPerms
-    }
-}
-tasks.modrinth.dependsOn(build)
-
-import io.papermc.hangarpublishplugin.model.Platforms
-
-tasks.publishAllPublicationsToHangar.configure({
-    group = 'upload'
-})
-
-hangarPublish {
-    def apiKeyString = file("${rootDir}/hangar_api_key.txt").exists() ? file("${rootDir}/hangar_api_key.txt").text : ''
-    def changelogString = file('changelog.md').text
-    def releaseString = release_type.capitalize()
-    publications.register('plugin') {
-        version.set(mod_version)
-        id.set('SimpleVoiceChat')
-        channel.set(releaseString)
-        changelog.set(changelogString)
-        apiKey.set(apiKeyString)
-        platforms {
-            register(Platforms.PAPER) {
-                jar.set(tasks.shadowJar.archiveFile)
-                platformVersions.set(hangar_minecraft_versions.split(',').collect { it.trim() })
-                dependencies.hangar("ViaVersion")
-                dependencies.hangar("ViaBackwards")
-            }
-        }
-    }
-}
-tasks.publishAllPublicationsToHangar.dependsOn(build)
-tasks.publishPluginPublicationToHangar.dependsOn(build)
