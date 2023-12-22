@@ -1,6 +1,8 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    // Plugin to use settings.xml for credentials
+    id 'net.linguica.maven-settings' version "${maven_settings_version}"
 }
 
 sourceCompatibility = JavaLanguageVersion.of(8)
@@ -56,10 +58,6 @@ publishing {
         maven {
             name = 'henkelmax.public'
             url = 'https://maven.maxhenkel.de/repository/public'
-            credentials {
-                username System.getenv('MAVEN_USERNAME')
-                password System.getenv('MAVEN_PASSWORD')
-            }
         }
     }
 }

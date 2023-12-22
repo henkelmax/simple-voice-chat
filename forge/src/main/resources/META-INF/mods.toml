@@ -1,38 +1,38 @@
-modLoader="javafml"
-loaderVersion="${forge_loader_requirement}"
-license="All rights reserved"
-issueTrackerURL="https://github.com/henkelmax/simple-voice-chat/issues"
-displayURL="https://modrepo.de/minecraft/voicechat/overview"
-logoFile="icon.png"
-# credits=""
-authors="Max Henkel"
+modLoader = "javafml"
+loaderVersion = "*"
+license = "All rights reserved"
+issueTrackerURL = "https://github.com/henkelmax/simple-voice-chat/issues"
 [[mods]]
-modId="${mod_id}"
-version="${mod_version}"
-displayName="${mod_name}"
-updateJSONURL="https://maxhenkel.de/update/voicechat.json"
-description='''A working voice chat in Minecraft!'''
-[[dependencies.${mod_id}]]
-    modId="forge"
-    mandatory=true
-    versionRange="${forge_requirement}"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.${mod_id}]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[${minecraft_version}]"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.${mod_id}]]
-    modId="sound_physics_remastered"
-    mandatory=false
-    versionRange="[1.17.1-1.0.5,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.${mod_id}]]
-    modId="cloth_config"
-    mandatory=false
-    versionRange="[${cloth_config_version},)"
-    ordering="AFTER"
-    side="BOTH"
+modId = "voicechat"
+version = "${mod_version}"
+displayName = "Simple Voice Chat"
+updateJSONURL = "https://update.maxhenkel.de/forge/voicechat"
+displayURL = "https://modrepo.de/minecraft/voicechat/overview"
+logoFile = "icon.png"
+authors = "Max Henkel"
+description = '''A working voice chat in Minecraft!'''
+displayTest = "NONE"
+[[dependencies.voicechat]]
+modId = "forge"
+mandatory = true
+versionRange = "${forge_dependency}"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.voicechat]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[${minecraft_version}]"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.voicechat]]
+modId = "sound_physics_remastered"
+mandatory = false
+versionRange = "[1.17.1-1.0.5,)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.voicechat]]
+modId = "cloth_config"
+mandatory = false
+versionRange = "[${cloth_config_version},)"
+ordering = "AFTER"
+side = "BOTH"
