@@ -1,34 +1,11 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url = 'https://repo.spongepowered.org/maven' }
-    }
-    dependencies {
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
-    }
-}
-
-plugins {
-    id 'net.minecraftforge.gradle' version "${forgegradle_version}"
-    id 'org.spongepowered.mixin' version "${mixingradle_version}"
-}
-
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'com.matthewprenger.cursegradle'
 apply plugin: 'com.modrinth.minotaur'
 apply plugin: 'mod-update'
-apply plugin: 'org.spongepowered.mixin'
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
-
-legacy {
-    fixClasspath = false
-}
-
-mixin {
-    add sourceSets.main, "voicechat.refmap.json"
-    config "voicechat.mixins.json"
-}
 
 processResources {
     filesMatching('**/*.info') {
@@ -42,15 +19,9 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor('org.spongepowered:mixin:0.8.3-SNAPSHOT:processor') {
-        transitive false
-    }
-    minecraftLibrary('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
-        transitive false
-    }
-    shadow('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
-        transitive false
-    }
+    annotationProcessor 'org.spongepowered:mixin:0.8.3-SNAPSHOT:processor'
+    minecraftLibrary 'org.spongepowered:mixin:0.8.3-SNAPSHOT'
+    shadow 'org.spongepowered:mixin:0.8.3-SNAPSHOT'
 
     implementation 'org.jetbrains:annotations:23.0.0'
 
@@ -81,23 +52,48 @@ shadowJar {
     relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'
 }
 
+legacy {
+    fixClasspath = false
+}
+
+mixin {
+    add sourceSets.main, "voicechat.refmap.json"
+    config "voicechat.mixins.json"
+}
+
+minecraft {
+    runs {
+        client {
+            arg '-torg.spongepowered.asm.launch.MixinTweaker'
+        }
+        server {
+            arg '-torg.spongepowered.asm.launch.MixinTweaker'
+        }
+    }
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes(['FMLCorePluginContainsFMLMod': 'true',
+                    'ForceLoadAsMod'             : 'true',
+                    'TweakClass'                 : 'org.spongepowered.asm.launch.MixinTweaker',
+                    'TweakOrder'                 : '0'
+        ])
+    }
+}
+
 // https://stackoverflow.com/a/70151634/9889252
-apply plugin: 'idea'
 idea {
     module {
         inheritOutputDirs = true
     }
 }
-subprojects {
-    apply plugin: 'idea'
-}
-
-task prepareAssets(type: Copy) {
+tasks.register('prepareAssets', Copy) {
     group = 'build'
     from project(":common").file('src/main/resources')
     into project.file('build/classes/java/main')
 }
-
 classes.dependsOn(prepareAssets)
 
 tasks.register('prepareWorkspace') {

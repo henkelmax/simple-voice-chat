@@ -1,14 +1,8 @@
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'com.github.johnrengelman.shadow'
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
-repositories {
-    maven { url = 'https://maven.shedaniel.me/' }
-}
-
 dependencies {
-    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
     implementation "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
     implementation "org.concentus:Concentus:${concentus_version}"
     implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"

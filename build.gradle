@@ -1,4 +1,6 @@
 plugins {
+    id 'net.minecraftforge.gradle' version "${forgegradle_version}" apply false
+    id 'org.spongepowered.mixin' version "${mixingradle_version}" apply false
     id 'com.github.johnrengelman.shadow' version "${shadow_version}" apply false
     id 'com.matthewprenger.cursegradle' version "${cursegradle_version}" apply false
     id 'com.modrinth.minotaur' version "${minotaur_version}" apply false
