@@ -1,6 +1,5 @@
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'fabric-loom'
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
@@ -9,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")){
+    modImplementation("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}"){
         transitive = false
     }
 
