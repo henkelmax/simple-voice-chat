@@ -42,7 +42,7 @@
     "viaversion": "*"
   },
   "breaks": {
-    "fabric": "<${fabric_api_dependency_breaks}"
+    "fabric": "${fabric_api_dependency_breaks}"
   },
   "custom": {
     "modmenu": {
