@@ -28,16 +28,16 @@ dependencies {
 
     implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"))
 
-    implementation "org.concentus:Concentus:${concentus_version}"
+    minecraftLibrary "org.concentus:Concentus:${concentus_version}"
     shadow "org.concentus:Concentus:${concentus_version}"
 
-    implementation "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
+    minecraftLibrary "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
     shadow "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
 
-    implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
+    minecraftLibrary "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
     shadow "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
 
-    implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
+    minecraftLibrary "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
     shadow "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
 }
 
