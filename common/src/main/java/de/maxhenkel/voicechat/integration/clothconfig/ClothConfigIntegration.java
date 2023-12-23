@@ -31,8 +31,8 @@ public class ClothConfigIntegration {
         general.addEntry(fromConfigEntry(entryBuilder, VoicechatClient.CLIENT_CONFIG.runLocalServer));
         general.addEntry(fromConfigEntry(entryBuilder, VoicechatClient.CLIENT_CONFIG.offlinePlayerVolumeAdjustment));
         general.addEntry(entryBuilder
-                .startEnumSelector(Component.translatable("cloth_config.voicechat.config.freecam_mode"), FreecamMode.class, VoicechatClient.CLIENT_CONFIG.freecamMode.get())
-                .setTooltip(Component.translatable("cloth_config.voicechat.config.freecam_mode.description"))
+                .startEnumSelector(new TranslatableComponent("cloth_config.voicechat.config.freecam_mode"), FreecamMode.class, VoicechatClient.CLIENT_CONFIG.freecamMode.get())
+                .setTooltip(new TranslatableComponent("cloth_config.voicechat.config.freecam_mode.description"))
                 .setDefaultValue(VoicechatClient.CLIENT_CONFIG.freecamMode::getDefault)
                 .setSaveConsumer(e -> VoicechatClient.CLIENT_CONFIG.freecamMode.set(e).save())
                 .build()
