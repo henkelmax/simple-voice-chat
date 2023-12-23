@@ -6,100 +6,46 @@ plugins {
     id 'fabric-loom' version "${fabric_loom_version}" apply false
 }
 
-//TODO Use exec {}
-tasks.register('publish01Bukkit', GradleBuild) {
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/taskutils.gradle"
+
+tasks.register('01-publishBukkit') {
     group = 'voicechat'
-    tasks = [
-            ':bukkit:clean',
-            ':bukkit:curseforge',
-            ':bukkit:modrinth',
-            ':bukkit:publishAllPublicationsToHangar'
-    ]
+    doLast {
+        runGradleTasks(['bukkit:clean'], ['bukkit:curseforge', 'bukkit:modrinth', 'bukkit:publishAllPublicationsToHangar'])
+    }
 }
 
-tasks.register('publish03Forge', GradleBuild) {
+tasks.register('03-publishForge') {
     group = 'voicechat'
-    tasks = [
-            ':common:clean',
-            ':forge:clean',
-            ':forge:curseforge',
-            ':forge:modrinth',
-            ':forge:modUpdate'
-    ]
+    doLast {
+        runGradleTasks(['common:clean', 'forge:clean'], ['forge:curseforge', 'forge:modrinth', 'forge:modUpdate'])
+    }
 }
 
-tasks.register('publish04Fabric', GradleBuild) {
+tasks.register('05-publishFabric') {
     group = 'voicechat'
-    tasks = [
-            ':common:clean',
-            ':fabric:clean',
-            ':fabric:curseforge',
-            ':fabric:modrinth',
-            ':fabric:modUpdate'
-    ]
+    doLast {
+        runGradleTasks(['common:clean', 'fabric:clean'], ['fabric:curseforge', 'fabric:modrinth', 'fabric:modUpdate'])
+    }
 }
 
-tasks.register('publish05Snapshot', GradleBuild) {
+tasks.register('publishFabricSnapshot') {
     group = 'voicechat'
-    tasks = [
-            ':common:clean',
-            ':fabric:clean',
-            ':fabric:curseforge',
-            ':fabric:modrinth'
-    ]
+    doLast {
+        runGradleTasks(['common:clean', 'fabric:clean'], ['fabric:curseforge', 'fabric:modrinth'])
+    }
 }
 
-tasks.register('publish06API', GradleBuild) {
+tasks.register('publishApi') {
     group = 'voicechat'
-    tasks = [
-            ':api:clean',
-            ':api:publish'
-    ]
+    doLast {
+        runGradleTasks(['api:clean', 'api:publish'], [])
+    }
 }
 
-tasks.register('publish07APILocal', GradleBuild) {
+tasks.register('publishApiLocal') {
     group = 'voicechat'
-    tasks = [
-            ':api:clean',
-            ':api:publishToMavenLocal'
-    ]
-}
-
-tasks.register('runClientFabric', GradleBuild) {
-    group = 'voicechat'
-    tasks = [
-            ':fabric:runClient'
-    ]
-}
-
-tasks.register('runClientForge', GradleBuild) {
-    group = 'voicechat'
-    tasks = [
-            ':forge:runClient'
-    ]
-}
-
-tasks.register('runServerFabric', GradleBuild) {
-    group = 'voicechat'
-    tasks = [
-            ':fabric:runServer'
-    ]
-}
-
-tasks.register('runServerForge', GradleBuild) {
-    group = 'voicechat'
-    tasks = [
-            ':forge:runServer'
-    ]
-}
-
-tasks.register('cleanAll', GradleBuild) {
-    group = 'voicechat'
-    tasks = [
-            ':common:clean',
-            ':api:clean',
-            ':fabric:clean',
-            ':forge:clean',
-            ':bukkit:clean'
-    ]
+    doLast {
+        runGradleTasks(['api:clean', 'api:publishToMavenLocal'], [])
+    }
 }
