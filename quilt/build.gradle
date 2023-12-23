@@ -16,6 +16,7 @@ plugins {
 }
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/taskutils.gradle"
 
 processResources {
     filesMatching('quilt.mod.json') {
@@ -102,4 +103,11 @@ sourceSets {
 
 shadowJar {
     relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'
+}
+
+tasks.register('uploadMod') {
+    group = 'voicechat'
+    doLast {
+        runGradleTasks(['clean'], ['curseforge', 'modrinth', 'modUpdate'])
+    }
 }
