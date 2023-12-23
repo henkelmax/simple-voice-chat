@@ -149,7 +149,6 @@ cloth_config.voicechat.category.group_chat_icons=Ícones de bate-papo em grupo
 cloth_config.voicechat.config.recording_destination=Destino de gravação
 cloth_config.voicechat.config.run_local_server=Execute em mundos singleplayer/LAN
 cloth_config.voicechat.config.offline_player_volume_adjustment=Ajuste de volume do player offline
-cloth_config.voicechat.config.freecam_support=Suporte para Freecam
 cloth_config.voicechat.config.mute_on_join=Silenciar ao ingressar
 cloth_config.voicechat.config.audio_packet_threshold=Limite de pacote de áudio
 cloth_config.voicechat.config.voice_deactivation_delay=Atraso de desativação

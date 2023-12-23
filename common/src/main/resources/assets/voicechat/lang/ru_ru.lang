@@ -148,7 +148,6 @@ cloth_config.voicechat.category.group_chat_icons=Иконки групповог
 cloth_config.voicechat.config.recording_destination=Местоназначение записи
 cloth_config.voicechat.config.run_local_server=Запуск в одиночных/LAN мирах
 cloth_config.voicechat.config.offline_player_volume_adjustment=Регулировка звука игрока вне сети
-cloth_config.voicechat.config.freecam_support=Поддержка свободной камеры
 cloth_config.voicechat.config.audio_packet_threshold=Порог аудиопакета
 cloth_config.voicechat.config.voice_deactivation_delay=Задержка выключения
 cloth_config.voicechat.config.output_buffer_size=Размер буфера вывода

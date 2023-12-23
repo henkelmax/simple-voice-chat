@@ -148,7 +148,6 @@ cloth_config.voicechat.category.group_chat_icons=Gruppchatt ikoner
 cloth_config.voicechat.config.recording_destination=Inspelningsdestination
 cloth_config.voicechat.config.run_local_server=Kör i enspelare/LAN-världar
 cloth_config.voicechat.config.offline_player_volume_adjustment=Volymjustering för offlinespelare
-cloth_config.voicechat.config.freecam_support=Freecam-stöd
 cloth_config.voicechat.config.mute_on_join=Tysta vid anslutning
 cloth_config.voicechat.config.audio_packet_threshold=Ljudpakettröskel
 cloth_config.voicechat.config.voice_deactivation_delay=Inaktiveringsfördröjning

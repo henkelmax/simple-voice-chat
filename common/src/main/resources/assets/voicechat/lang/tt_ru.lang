@@ -149,7 +149,6 @@ cloth_config.voicechat.category.group_chat_icons=Төркем чатының т�
 cloth_config.voicechat.config.recording_destination=Яздырулар урыны
 cloth_config.voicechat.config.run_local_server=Берлек уенда/Локаль дөньяларда кабызу
 cloth_config.voicechat.config.offline_player_volume_adjustment=Офлайн-уенчы катылыгы көйләү
-cloth_config.voicechat.config.freecam_support=Freecam-ны хуплау
 cloth_config.voicechat.config.mute_on_join=Кушылуга микрофон тавышын сүндерү
 cloth_config.voicechat.config.audio_packet_threshold=Аудио-пакет чик кыйммәте
 cloth_config.voicechat.config.voice_deactivation_delay=Деактивация тоткарлагычы
