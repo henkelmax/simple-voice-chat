@@ -72,24 +72,6 @@
         "id": "quilted_fabric_key_binding_api_v1",
         "versions": "*"
       }
-    ],
-    "suggests": [
-      {
-        "id": "modmenu",
-        "versions": ">=${modmenu_version}"
-      },
-      {
-        "id": "cloth-config2",
-        "versions": ">=${cloth_config_version}"
-      },
-      {
-        "id": "fabric-permissions-api-v0",
-        "versions": "*"
-      },
-      {
-        "id": "viaversion",
-        "versions": "*"
-      }
     ]
   },
   "mixin": [
