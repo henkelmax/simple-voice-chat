@@ -99,3 +99,7 @@ task prepareAssets(type: Copy) {
 }
 
 classes.dependsOn(prepareAssets)
+
+tasks.register('prepareWorkspace') {
+
+}
