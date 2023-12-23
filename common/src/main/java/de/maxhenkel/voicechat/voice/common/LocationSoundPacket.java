@@ -38,7 +38,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
     @Override
     public LocationSoundPacket fromBytes(PacketBuffer buf) {
         LocationSoundPacket soundPacket = new LocationSoundPacket();
-        soundPacket.channelId = buf.readUUID();
+        soundPacket.channelId = buf.readUniqueId();
         soundPacket.sender = buf.readUniqueId();
         soundPacket.location = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
         soundPacket.data = buf.readByteArray();
@@ -55,7 +55,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUUID(channelId);
+        buf.writeUniqueId(channelId);
         buf.writeUniqueId(sender);
         buf.writeDouble(location.x);
         buf.writeDouble(location.y);

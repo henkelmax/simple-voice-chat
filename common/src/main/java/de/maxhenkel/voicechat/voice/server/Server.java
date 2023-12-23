@@ -378,7 +378,7 @@ public class Server extends Thread {
                 }
             }
             if (Voicechat.SERVER_CONFIG.spectatorInteraction.get()) {
-                soundPacket = new LocationSoundPacket(sender.getUniqueID(), sender.getUUID(), sender.getPositionEyes(1F), packet.getData(), packet.getSequenceNumber(), distance, null);
+                soundPacket = new LocationSoundPacket(sender.getUniqueID(), sender.getUniqueID(), sender.getPositionEyes(1F), packet.getData(), packet.getSequenceNumber(), distance, null);
                 source = SoundPacketEvent.SOURCE_SPECTATOR;
             }
         }
@@ -388,7 +388,7 @@ public class Server extends Thread {
             float whisperMultiplayer = packet.isWhispering() ? Voicechat.SERVER_CONFIG.whisperDistanceMultiplier.get().floatValue() : 1F;
             float multiplier = crouchMultiplayer * whisperMultiplayer;
             distance = distance * multiplier;
-            soundPacket = new PlayerSoundPacket(sender.getUniqueID(), sender.getUUID(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering(), distance, null);
+            soundPacket = new PlayerSoundPacket(sender.getUniqueID(), sender.getUniqueID(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering(), distance, null);
             source = SoundPacketEvent.SOURCE_PROXIMITY;
         }
 
@@ -447,7 +447,7 @@ public class Server extends Thread {
             try {
                 sendSoundPacket(sender, senderState, player, state, connection, packet, source);
             } catch (Exception e) {
-                Voicechat.LOGGER.error("Error sending sound packet to player {}", player.getDisplayName().getString(), e);
+                Voicechat.LOGGER.error("Error sending sound packet to player {}", player.getDisplayNameString(), e);
             }
         }
     }

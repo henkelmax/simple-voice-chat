@@ -22,7 +22,7 @@ public class GroupSoundPacket extends SoundPacket<GroupSoundPacket> {
     @Override
     public GroupSoundPacket fromBytes(PacketBuffer buf) {
         GroupSoundPacket soundPacket = new GroupSoundPacket();
-        soundPacket.channelId = buf.readUUID();
+        soundPacket.channelId = buf.readUniqueId();
         soundPacket.sender = buf.readUniqueId();
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
@@ -36,7 +36,7 @@ public class GroupSoundPacket extends SoundPacket<GroupSoundPacket> {
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUUID(channelId);
+        buf.writeUniqueId(channelId);
         buf.writeUniqueId(sender);
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);

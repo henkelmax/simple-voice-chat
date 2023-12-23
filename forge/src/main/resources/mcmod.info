@@ -1,12 +1,12 @@
 [
   {
-    "modid": "${mod_id}",
-    "name": "${mod_name}",
+    "modid": "voicechat",
+    "name": "Simple Voice Chat",
     "description": "A working voice chat in Minecraft!",
     "version": "${mod_version}",
     "mcversion": "${minecraft_version}",
     "url": "https://modrepo.de/minecraft/voicechat/overview",
-    "updateUrl": "https://maxhenkel.de/update/voicechat.json",
+    "updateUrl": "https://update.maxhenkel.de/forge/voicechat",
     "authorList": ["Max Henkel"],
     "credits": "",
     "logoFile": "icon.png",

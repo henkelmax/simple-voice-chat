@@ -41,7 +41,7 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
     @Override
     public PlayerSoundPacket fromBytes(PacketBuffer buf) {
         PlayerSoundPacket soundPacket = new PlayerSoundPacket();
-        soundPacket.channelId = buf.readUUID();
+        soundPacket.channelId = buf.readUniqueId();
         soundPacket.sender = buf.readUniqueId();
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
@@ -57,7 +57,7 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUUID(channelId);
+        buf.writeUniqueId(channelId);
         buf.writeUniqueId(sender);
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);
