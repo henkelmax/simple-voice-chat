@@ -43,7 +43,7 @@
     "viaversion": "*"
   },
   "breaks": {
-    "fabric": "<${fabric_api_dependency_breaks}",
+    "fabric": "${fabric_api_dependency_breaks}",
     "sound_physics_remastered": "<1.18.2-1.0.5"
   },
   "custom": {
