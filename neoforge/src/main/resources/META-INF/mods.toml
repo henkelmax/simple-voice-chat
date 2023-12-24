@@ -14,19 +14,19 @@ description = '''A working voice chat in Minecraft!'''
 displayTest = "NONE"
 [[dependencies.voicechat]]
 modId = "neoforge"
-mandatory = true
+type = "required"
 versionRange = "${neoforge_dependency}"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.voicechat]]
 modId = "minecraft"
-mandatory = true
+type = "required"
 versionRange = "[${minecraft_version}]"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.voicechat]]
 modId = "cloth_config"
-mandatory = false
+type = "optional"
 versionRange = "[${cloth_config_version},)"
 ordering = "AFTER"
 side = "BOTH"
