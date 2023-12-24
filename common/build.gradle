@@ -20,7 +20,3 @@ sourceSets {
         runtimeClasspath += sourceSets.template.output
     }
 }
-
-tasks.register('prepareWorkspace') {
-
-}

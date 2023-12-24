@@ -96,6 +96,8 @@ tasks.register('prepareAssets', Copy) {
 }
 classes.dependsOn(prepareAssets)
 
-tasks.register('prepareWorkspace') {
-
+sourceSets.each {
+    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    it.output.resourcesDir = dir
+    it.java.destinationDirectory = dir
 }
