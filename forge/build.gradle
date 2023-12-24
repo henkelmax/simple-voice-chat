@@ -54,7 +54,3 @@ compileJava.dependsOn generateJava
 shadowJar {
     relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'
 }
-
-tasks.register('prepareWorkspace') {
-
-}
