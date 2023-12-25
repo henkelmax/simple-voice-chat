@@ -59,7 +59,6 @@ sourceSets.main.java {
     srcDir "${layout.buildDirectory.asFile.get()}/generated/java"
 }
 compileJava.dependsOn generateJava
-generateJava.dependsOn('sourcesJar')
 
 shadowJar {
     relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'
