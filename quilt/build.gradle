@@ -86,7 +86,6 @@ sourceSets.main.java {
     srcDir "${layout.buildDirectory.asFile.get()}/generated/java"
 }
 compileJava.dependsOn generateJava
-generateJava.dependsOn('sourcesJar')
 
 sourceSets {
     main {
