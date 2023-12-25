@@ -67,7 +67,6 @@ tasks.register('generateJava', Copy) {
     expand 'compatibility_version': voicechat_compatibility_version,
             'target_bukkit_version': bukkit_version
 }
-tasks.sourcesJar.dependsOn('generateJava')
 
 sourceSets.main.java {
     srcDir "${layout.buildDirectory.asFile.get()}/generated/java"
