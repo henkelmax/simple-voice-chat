@@ -8,6 +8,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.Connection;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -65,8 +66,13 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
         renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getEntity(), event.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
     }
 
+    private static final ResourceLocation HOTBAR_OVERLAY = new ResourceLocation("hotbar");
+
     @SubscribeEvent
     public void onRenderOverlay(RenderGuiOverlayEvent.Post event) {
+        if (!HOTBAR_OVERLAY.equals(event.getOverlay().id())) {
+            return;
+        }
         renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(event.getGuiGraphics(), event.getPartialTick()));
     }
 
