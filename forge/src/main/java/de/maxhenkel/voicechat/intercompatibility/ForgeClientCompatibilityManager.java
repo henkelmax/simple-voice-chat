@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.events.ClientVoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.events.ClientVoiceChatDisconnectedEvent;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
@@ -8,14 +7,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -64,8 +59,8 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
-        if (!event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) {
+    public void onRenderOverlay(RenderGameOverlayEvent.Pre event) {
+        if (!RenderGameOverlayEvent.ElementType.HOTBAR.equals(event.getType())) {
             return;
         }
         renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(event.getPartialTicks()));
