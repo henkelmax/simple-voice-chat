@@ -5,3 +5,4 @@
 - Added "freecam_mode" config option
 - Fixed crash when using an incompatible microphone
 - Added the ability to programmatically send audio from the client with the API
+- Improved GUI rendering performance
