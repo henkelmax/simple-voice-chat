@@ -15,7 +15,6 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -67,7 +66,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
 
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
-        if (!event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) {
+        if (!RenderGameOverlayEvent.ElementType.HOTBAR.equals(event.getType())) {
             return;
         }
         renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(event.getMatrixStack(), event.getPartialTicks()));
