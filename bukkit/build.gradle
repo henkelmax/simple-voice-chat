@@ -41,6 +41,7 @@ dependencies {
     compileOnly "me.clip:placeholderapi:${placeholder_api_version}"
 
     compileOnly "com.viaversion:viaversion-bukkit:${viaversion_version}"
+    compileOnly "com.viaversion:viaversion-common:${viaversion_version}"
 }
 
 processResources {
