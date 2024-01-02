@@ -153,8 +153,6 @@
   "cloth_config.voicechat.config.run_local_server.description": "Om talechat skal fungere i enkeltspiller/LAN-verdener",
   "cloth_config.voicechat.config.offline_player_volume_adjustment": "Volumjustering for frakoblede spiller",
   "cloth_config.voicechat.config.offline_player_volume_adjustment.description": "Hvis volumjusteringensmenyen også skal vise frakoblede spillere",
-  "cloth_config.voicechat.config.freecam_support": "Freecam støtte",
-  "cloth_config.voicechat.config.freecam_support.description": "Dette lar deg høre spillere nær deg, selv om du er lenger unna med ditt freecam",
   "cloth_config.voicechat.config.mute_on_join": "Demp når du logger på",
   "cloth_config.voicechat.config.mute_on_join.description": "Når aktivert, vil du automatisk bli dempet når du blir med i en verden",
   "cloth_config.voicechat.config.audio_packet_threshold": "Lydpakketerskel",
