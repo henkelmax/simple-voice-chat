@@ -6,7 +6,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -65,7 +64,7 @@ public class FabricNetManager extends NetManager {
     }
 
     @Override
-    public void sendToServer(Packet<?> packet, ClientPacketListener connection) {
+    protected void sendToServerInternal(Packet<?> packet) {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         packet.toBytes(buffer);
         ClientPlayNetworking.send(packet.getIdentifier(), buffer);
