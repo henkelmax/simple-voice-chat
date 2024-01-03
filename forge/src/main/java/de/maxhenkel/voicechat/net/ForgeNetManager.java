@@ -61,7 +61,12 @@ public class ForgeNetManager extends NetManager {
     }
 
     @Override
-    public void sendToServer(Packet<?> packet, ClientPacketListener connection) {
+    @OnlyIn(Dist.CLIENT)
+    protected void sendToServerInternal(Packet<?> packet) {
+        ClientPacketListener connection = Minecraft.getInstance().getConnection();
+        if (connection == null) {
+            return;
+        }
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         packet.toBytes(buffer);
         connection.send(NetworkDirection.PLAY_TO_SERVER.buildPacket(buffer, packet.getIdentifier()).getThis());

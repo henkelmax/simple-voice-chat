@@ -45,11 +45,11 @@ public abstract class NetManager {
     public static void sendToServer(Packet<?> packet) {
         ClientPacketListener connection = Minecraft.getInstance().getConnection();
         if (connection != null && connection.getLevel() != null) {
-            CommonCompatibilityManager.INSTANCE.getNetManager().sendToServer(packet, connection);
+            CommonCompatibilityManager.INSTANCE.getNetManager().sendToServerInternal(packet);
         }
     }
 
-    public abstract void sendToServer(Packet<?> packet, ClientPacketListener connection);
+    protected abstract void sendToServerInternal(Packet<?> packet);
 
     public static void sendToClient(ServerPlayer player, Packet<?> packet) {
         if (!Voicechat.SERVER.isCompatible(player)) {
