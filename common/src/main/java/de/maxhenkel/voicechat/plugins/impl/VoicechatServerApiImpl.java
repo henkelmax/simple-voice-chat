@@ -169,11 +169,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         net.minecraft.server.level.ServerPlayer player = (net.minecraft.server.level.ServerPlayer) receiver.getPlayer().getPlayer();
 
         @Nullable ClientConnection c = server.getConnections().get(receiver.getPlayer().getUuid());
-        try {
-            server.sendSoundPacket(null, null, player, state, c, soundPacket, SoundPacketEvent.SOURCE_PLUGIN);
-        } catch (Exception e) {
-            Voicechat.LOGGER.error("Failed to send voice chat packet", e);
-        }
+        server.sendSoundPacket(null, null, player, state, c, soundPacket, SoundPacketEvent.SOURCE_PLUGIN);
     }
 
     @Nullable
