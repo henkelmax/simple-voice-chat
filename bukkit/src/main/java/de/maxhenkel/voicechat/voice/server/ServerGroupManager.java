@@ -62,6 +62,8 @@ public class ServerGroupManager {
     }
 
     public void onPlayerLoggedOut(Player player) {
+        PlayerStateManager manager = getStates();
+        manager.setGroup(player, null);
         cleanupGroups();
     }
 
