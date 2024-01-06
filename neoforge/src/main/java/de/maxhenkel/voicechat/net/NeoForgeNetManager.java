@@ -71,13 +71,13 @@ public class NeoForgeNetManager extends NetManager {
                                     }
                                     channel.onServerPacket(sender.server, sender, sender.connection, (T) payload.packet());
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    Voicechat.LOGGER.error("Failed to process packet", e);
                                 }
                             } else {
                                 try {
                                     onClientPacket(channel, (T) payload.packet());
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    Voicechat.LOGGER.error("Failed to process packet", e);
                                 }
                             }
                         });
