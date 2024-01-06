@@ -7,3 +7,4 @@
 - Added the ability to programmatically send audio from the client with the API
 - Improved GUI rendering performance
 - Added Norwegian Bokmål translation
+- Fixed players not being able to be heard when reconnecting
