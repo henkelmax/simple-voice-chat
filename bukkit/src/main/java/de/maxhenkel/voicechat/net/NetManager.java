@@ -111,7 +111,7 @@ public class NetManager implements Listener {
                 buf.readBytes(bytes);
                 player.sendPluginMessage(Voicechat.INSTANCE, p.getID().toString(), bytes);
             } catch (Exception e) {
-                e.printStackTrace();
+                Voicechat.LOGGER.error("Failed to send packet to '{}'", player.getName(), e);
             }
         });
     }

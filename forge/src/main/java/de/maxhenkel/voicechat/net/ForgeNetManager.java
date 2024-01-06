@@ -36,7 +36,7 @@ public class ForgeNetManager extends NetManager {
                         packet.fromBytes(event.getPayload());
                         c.onServerPacket(context.getSender().server, context.getSender(), context.getSender().connection, packet);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Voicechat.LOGGER.error("Failed to process packet", e);
                     }
                 } else {
                     try {
@@ -44,7 +44,7 @@ public class ForgeNetManager extends NetManager {
                         packet.fromBytes(event.getPayload());
                         onClientPacket(c, packet);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Voicechat.LOGGER.error("Failed to process packet", e);
                     }
                 }
             });
