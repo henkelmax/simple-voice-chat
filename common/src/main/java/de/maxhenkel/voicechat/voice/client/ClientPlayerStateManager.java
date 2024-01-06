@@ -51,6 +51,12 @@ public class ClientPlayerStateManager {
             states.put(packet.getPlayerState().getUuid(), packet.getPlayerState());
             Voicechat.LOGGER.debug("Got state for {}: {}", packet.getPlayerState().getName(), packet.getPlayerState());
             VoicechatClient.USERNAME_CACHE.updateUsernameAndSave(packet.getPlayerState().getUuid(), packet.getPlayerState().getName());
+            if (packet.getPlayerState().isDisconnected()) {
+                ClientVoicechat c = ClientManager.getClient();
+                if (c != null) {
+                    c.closeAudioChannel(packet.getPlayerState().getUuid());
+                }
+            }
             AdjustVolumeList.update();
             JoinGroupList.update();
             GroupList.update();
