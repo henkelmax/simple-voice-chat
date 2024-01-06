@@ -73,11 +73,11 @@ public class Server extends Thread {
         processThread.start();
     }
 
-    private void onPlayerLoggedIn(ServerPlayer player) {
+    private void onPlayerLoggedIn(ServerPlayerEntity player) {
         playerStateManager.onPlayerLoggedIn(player);
     }
 
-    private void onPlayerLoggedOut(ServerPlayer player) {
+    private void onPlayerLoggedOut(ServerPlayerEntity player) {
         playerStateManager.onPlayerLoggedOut(player);
         groupManager.onPlayerLoggedOut(player);
     }
