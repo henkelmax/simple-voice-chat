@@ -23,7 +23,7 @@ public class ForgeNetManager extends NetManager {
                         vcPacket.fromBytes(packet.getBufferData());
                         c.onServerPacket(player.mcServer, player, player.connection, vcPacket);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Voicechat.LOGGER.error("Failed to process packet", e);
                     }
                 });
             }
@@ -35,7 +35,7 @@ public class ForgeNetManager extends NetManager {
                         packet.fromBytes(payload.getBufferData());
                         onClientPacket(c, packet);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Voicechat.LOGGER.error("Failed to process packet", e);
                     }
                 });
             }

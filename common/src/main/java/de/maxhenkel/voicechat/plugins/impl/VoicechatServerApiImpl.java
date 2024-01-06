@@ -179,7 +179,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         try {
             server.sendSoundPacket(null, null, player, state, c, soundPacket, SoundPacketEvent.SOURCE_PLUGIN);
         } catch (Exception e) {
-            e.printStackTrace();
+            Voicechat.LOGGER.error("Failed to send voice chat packet", e);
         }
     }
 

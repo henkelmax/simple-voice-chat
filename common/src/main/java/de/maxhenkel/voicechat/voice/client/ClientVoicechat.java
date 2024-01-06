@@ -112,7 +112,7 @@ public class ClientVoicechat {
                 Voicechat.LOGGER.info("Restarting sound manager");
                 reloadSoundManager();
             } catch (SpeakerException e) {
-                e.printStackTrace();
+                Voicechat.LOGGER.error("Failed to restart sound manager", e);
             }
         }
 

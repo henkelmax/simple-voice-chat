@@ -70,7 +70,7 @@ public class MicTestButton extends ButtonBase {
             } catch (Exception e) {
                 setMicActive(false);
                 enabled = false;
-                e.printStackTrace();
+                Voicechat.LOGGER.error("Microphone error", e);
             }
         } else {
             close();
@@ -174,7 +174,7 @@ public class MicTestButton extends ButtonBase {
             try {
                 join();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Voicechat.LOGGER.warn("Failed to close microphone", e);
             }
         }
     }
