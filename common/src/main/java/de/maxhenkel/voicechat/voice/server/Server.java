@@ -64,11 +64,22 @@ public class Server extends Thread {
         playerStateManager = new PlayerStateManager(this);
         groupManager = new ServerGroupManager(this);
         categoryManager = new ServerCategoryManager(this);
+        CommonCompatibilityManager.INSTANCE.onPlayerLoggedIn(this::onPlayerLoggedIn);
+        CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::onPlayerLoggedOut);
         setDaemon(true);
         setName("VoiceChatServerThread");
         setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
         processThread = new ProcessThread();
         processThread.start();
+    }
+
+    private void onPlayerLoggedIn(ServerPlayer player) {
+        playerStateManager.onPlayerLoggedIn(player);
+    }
+
+    private void onPlayerLoggedOut(ServerPlayer player) {
+        playerStateManager.onPlayerLoggedOut(player);
+        groupManager.onPlayerLoggedOut(player);
     }
 
     @Override
