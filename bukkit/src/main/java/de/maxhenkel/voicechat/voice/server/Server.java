@@ -274,7 +274,7 @@ public class Server extends Thread {
                         conn.setLastKeepAliveResponse(System.currentTimeMillis());
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Voicechat.LOGGER.error("Voice chat server error", e);
                 }
             }
         }

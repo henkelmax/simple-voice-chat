@@ -84,7 +84,7 @@ public class ServerVoiceEvents {
             server.start();
             PluginManager.instance().onServerStarted();
         } catch (Exception e) {
-            e.printStackTrace();
+            Voicechat.LOGGER.error("Failed to start voice chat server", e);
         }
     }
 
