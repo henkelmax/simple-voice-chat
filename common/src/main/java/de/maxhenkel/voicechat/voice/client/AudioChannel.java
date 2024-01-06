@@ -157,7 +157,7 @@ public class AudioChannel extends Thread {
             }
         } catch (InterruptedException ignored) {
         } catch (Throwable e) {
-            e.printStackTrace();
+            Voicechat.LOGGER.error("Audio channel error", e);
         } finally {
             if (speaker != null) {
                 flushRecording();

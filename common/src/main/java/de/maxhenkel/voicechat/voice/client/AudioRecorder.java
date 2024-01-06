@@ -199,7 +199,7 @@ public class AudioRecorder {
             try {
                 writeChunk(playerUUID, chunk);
             } catch (IOException e) {
-                e.printStackTrace();
+                Voicechat.LOGGER.error("Failed to save audio chunk for {}", playerUUID, e);
             }
         });
     }
