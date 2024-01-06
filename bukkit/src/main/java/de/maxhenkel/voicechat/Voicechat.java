@@ -128,7 +128,6 @@ public final class Voicechat extends JavaPlugin {
             SERVER.init();
 
             Bukkit.getPluginManager().registerEvents(SERVER, this);
-            Bukkit.getPluginManager().registerEvents(SERVER.getServer().getPlayerStateManager(), this);
         });
     }
 
