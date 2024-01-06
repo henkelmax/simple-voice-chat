@@ -281,14 +281,10 @@ public class MicThread extends Thread {
     private volatile boolean stopPacketSent = true;
 
     private void sendAudioPacket(short[] audio, boolean whispering) {
-        try {
-            if (connection != null && connection.isInitialized()) {
-                byte[] encoded = encoder.encode(audio);
-                connection.sendToServer(new NetworkMessage(new MicPacket(encoded, whispering, sequenceNumber.getAndIncrement())));
-                stopPacketSent = false;
-            }
-        } catch (Exception e) {
-            Voicechat.LOGGER.error("Failed to send audio packet", e);
+        if (connection != null && connection.isInitialized()) {
+            byte[] encoded = encoder.encode(audio);
+            connection.sendToServer(new NetworkMessage(new MicPacket(encoded, whispering, sequenceNumber.getAndIncrement())));
+            stopPacketSent = false;
         }
         try {
             if (client != null && client.getRecorder() != null) {
@@ -308,11 +304,7 @@ public class MicThread extends Thread {
         if (connection == null || !connection.isInitialized()) {
             return;
         }
-        try {
-            connection.sendToServer(new NetworkMessage(new MicPacket(new byte[0], false, sequenceNumber.getAndIncrement())));
-            stopPacketSent = true;
-        } catch (Exception e) {
-            Voicechat.LOGGER.error("Failed to send stop packet", e);
-        }
+        connection.sendToServer(new NetworkMessage(new MicPacket(new byte[0], false, sequenceNumber.getAndIncrement())));
+        stopPacketSent = true;
     }
 }
