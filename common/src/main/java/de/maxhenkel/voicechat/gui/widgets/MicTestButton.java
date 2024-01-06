@@ -69,13 +69,13 @@ public class MicTestButton extends AbstractButton {
                 voiceThread = new VoiceThread(e -> {
                     setMicActive(false);
                     active = false;
-                    e.printStackTrace();
+                    Voicechat.LOGGER.error("Microphone error", e);
                 });
                 voiceThread.start();
             } catch (Exception e) {
                 setMicActive(false);
                 active = false;
-                e.printStackTrace();
+                Voicechat.LOGGER.error("Microphone error", e);
             }
         } else {
             close();
@@ -184,7 +184,7 @@ public class MicTestButton extends AbstractButton {
             try {
                 join();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Voicechat.LOGGER.warn("Failed to close microphone", e);
             }
         }
     }

@@ -38,7 +38,7 @@ public class QuiltNetManager extends NetManager {
                         packet.fromBytes(buf);
                         c.onServerPacket(server, player, handler, packet);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Voicechat.LOGGER.error("Failed to process packet", e);
                     }
                 });
             }
@@ -49,7 +49,7 @@ public class QuiltNetManager extends NetManager {
                         packet.fromBytes(buf);
                         client.execute(() -> c.onClientPacket(client, handler, packet));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Voicechat.LOGGER.error("Failed to process packet", e);
                     }
                 });
             }
