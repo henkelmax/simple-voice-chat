@@ -80,7 +80,7 @@ public class PingManager {
         public void send() throws Exception {
             timestamp = System.currentTimeMillis();
             attempt++;
-            server.sendPacket(new PingPacket(id, timestamp), connection);
+            server.sendPacketRaw(new PingPacket(id, timestamp), connection);
             Voicechat.LOGGER.info("Sent ping {} attempt {}", id, attempt);
         }
     }
