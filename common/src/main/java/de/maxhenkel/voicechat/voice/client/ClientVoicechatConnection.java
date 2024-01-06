@@ -102,11 +102,18 @@ public class ClientVoicechatConnection extends Thread {
         return running && !socket.isClosed();
     }
 
-    public void sendToServer(NetworkMessage message) throws Exception {
+    public boolean sendToServer(NetworkMessage message) {
         if (!isConnected()) {
-            return; // Ignore sending packets when connection is closed
+            return false; // Ignore sending packets when connection is closed
         }
-        socket.send(message.writeClient(this), new InetSocketAddress(address, data.getServerPort()));
+        try {
+            socket.send(message.writeClient(this), new InetSocketAddress(address, data.getServerPort()));
+            return true;
+        } catch (Exception e) {
+            Voicechat.LOGGER.error("Failed to send voice chat packet - Disconnecting", e);
+            disconnect();
+            return false;
+        }
     }
 
     public void checkTimeout() {
@@ -141,37 +148,24 @@ public class ClientVoicechatConnection extends Thread {
                 }
                 if (!authenticated) {
                     validateLogMessageCount = 0;
-                    try {
-                        if (authLogMessageCount < 10) {
-                            Voicechat.LOGGER.info("Trying to authenticate voice chat connection");
-                            authLogMessageCount++;
-                        } else if (authLogMessageCount == 10) {
-                            Voicechat.LOGGER.warn("Trying to authenticate voice chat connection (this message will not be logged again)");
-                            authLogMessageCount++;
-                        }
-                        sendToServer(new NetworkMessage(new AuthenticatePacket(data.getPlayerUUID(), data.getSecret())));
-                    } catch (Exception e) {
-                        if (!socket.isClosed()) {
-                            Voicechat.LOGGER.error("Failed to authenticate voice chat connection: {}", e.getMessage());
-                        }
+                    if (authLogMessageCount < 10) {
+                        Voicechat.LOGGER.info("Trying to authenticate voice chat connection");
+                        authLogMessageCount++;
+                    } else if (authLogMessageCount == 10) {
+                        Voicechat.LOGGER.warn("Trying to authenticate voice chat connection (this message will not be logged again)");
+                        authLogMessageCount++;
                     }
+                    sendToServer(new NetworkMessage(new AuthenticatePacket(data.getPlayerUUID(), data.getSecret())));
                 } else {
                     authLogMessageCount = 0;
-                    try {
-                        if (validateLogMessageCount < 10) {
-                            Voicechat.LOGGER.info("Trying to validate voice chat connection");
-                            validateLogMessageCount++;
-                        } else if (validateLogMessageCount == 10) {
-                            Voicechat.LOGGER.warn("Trying to validate voice chat connection (this message will not be logged again)");
-                            validateLogMessageCount++;
-                        }
-
-                        sendToServer(new NetworkMessage(new ConnectionCheckPacket()));
-                    } catch (Exception e) {
-                        if (!socket.isClosed()) {
-                            Voicechat.LOGGER.error("Failed to validate voice chat connection: {}", e.getMessage());
-                        }
+                    if (validateLogMessageCount < 10) {
+                        Voicechat.LOGGER.info("Trying to validate voice chat connection");
+                        validateLogMessageCount++;
+                    } else if (validateLogMessageCount == 10) {
+                        Voicechat.LOGGER.warn("Trying to validate voice chat connection (this message will not be logged again)");
+                        validateLogMessageCount++;
                     }
+                    sendToServer(new NetworkMessage(new ConnectionCheckPacket()));
                 }
 
                 Utils.sleep(1000);
