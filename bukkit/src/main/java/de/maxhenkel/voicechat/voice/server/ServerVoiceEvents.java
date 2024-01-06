@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -122,8 +123,14 @@ public class ServerVoiceEvents implements Listener {
     }
 
     @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        server.getPlayerStateManager().onPlayerJoin(event);
+    }
+
+    @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        server.getGroupManager().onPlayerLoggedOut(event.getPlayer());
+        server.getPlayerStateManager().onPlayerQuit(event);
+        server.getGroupManager().onPlayerQuit(event);
 
         clientCompatibilities.remove(event.getPlayer().getUniqueId());
         if (server == null) {
