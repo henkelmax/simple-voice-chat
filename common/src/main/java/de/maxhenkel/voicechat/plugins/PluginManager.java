@@ -48,7 +48,7 @@ public class PluginManager {
         EventBuilder eventBuilder = EventBuilder.create();
         EventRegistration registration = eventBuilder::addEvent;
         for (VoicechatPlugin plugin : plugins) {
-            Voicechat.LOGGER.info("Registering events for {}", plugin.getPluginId());
+            Voicechat.LOGGER.info("Registering events for '{}'", plugin.getPluginId());
             try {
                 plugin.registerEvents(registration);
             } catch (Throwable e) {
@@ -137,8 +137,8 @@ public class PluginManager {
                 if (event.isCancelled()) {
                     break;
                 }
-            } catch (Throwable e) {
-                Voicechat.LOGGER.warn("Failed to dispatch event '{}'", event.getClass().getSimpleName(), e);
+            } catch (Exception e) {
+                Voicechat.LOGGER.error("Failed to dispatch event '{}'", event.getClass().getSimpleName(), e);
             }
         }
         return event.isCancelled();
