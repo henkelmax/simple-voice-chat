@@ -41,14 +41,12 @@ public class PlayerStateManager implements Listener {
         Voicechat.LOGGER.debug("Got state of {}: {}", player.getName(), state);
     }
 
-    @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         states.remove(event.getPlayer().getUniqueId());
         broadcastState(new PlayerState(event.getPlayer().getUniqueId(), event.getPlayer().getName(), false, true));
         Voicechat.LOGGER.debug("Removing state of {}", event.getPlayer().getName());
     }
 
-    @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         PlayerState state = defaultDisconnectedState(event.getPlayer());
         states.put(event.getPlayer().getUniqueId(), state);
