@@ -89,7 +89,7 @@ public class AudioSenderImpl implements AudioSender {
             }
             server.onMicPacket(uuid, packet);
         } catch (Exception e) {
-            e.printStackTrace();
+            Voicechat.LOGGER.error("Failed to send audio", e);
         }
         return true;
     }
