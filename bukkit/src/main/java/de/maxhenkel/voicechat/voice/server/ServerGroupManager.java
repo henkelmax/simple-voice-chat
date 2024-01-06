@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -61,9 +62,7 @@ public class ServerGroupManager {
         }
     }
 
-    public void onPlayerLoggedOut(Player player) {
-        PlayerStateManager manager = getStates();
-        manager.setGroup(player, null);
+    public void onPlayerQuit(PlayerQuitEvent event) {
         cleanupGroups();
     }
 
