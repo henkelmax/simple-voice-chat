@@ -22,8 +22,6 @@ public class PlayerStateManager {
     public PlayerStateManager(Server voicechatServer) {
         this.voicechatServer = voicechatServer;
         this.states = new ConcurrentHashMap<>();
-        CommonCompatibilityManager.INSTANCE.onPlayerLoggedIn(this::onPlayerLoggedIn);
-        CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::onPlayerLoggedOut);
         CommonCompatibilityManager.INSTANCE.onServerVoiceChatConnected(this::onPlayerVoicechatConnect);
         CommonCompatibilityManager.INSTANCE.onServerVoiceChatDisconnected(this::onPlayerVoicechatDisconnect);
         CommonCompatibilityManager.INSTANCE.onPlayerCompatibilityCheckSucceeded(this::onPlayerCompatibilityCheckSucceeded);
@@ -56,14 +54,14 @@ public class PlayerStateManager {
         Voicechat.LOGGER.debug("Sending initial states to {}", player.getDisplayNameString());
     }
 
-    private void onPlayerLoggedIn(EntityPlayerMP player) {
+    public void onPlayerLoggedIn(EntityPlayerMP player) {
         PlayerState state = defaultDisconnectedState(player);
         states.put(player.getUniqueID(), state);
         broadcastState(state);
         Voicechat.LOGGER.debug("Setting default state of {}: {}", player.getDisplayNameString(), state);
     }
 
-    private void onPlayerLoggedOut(EntityPlayerMP player) {
+    public void onPlayerLoggedOut(EntityPlayerMP player) {
         states.remove(player.getUniqueID());
         broadcastState(new PlayerState(player.getUniqueID(), player.getGameProfile().getName(), false, true));
         Voicechat.LOGGER.debug("Removing state of {}", player.getDisplayNameString());
