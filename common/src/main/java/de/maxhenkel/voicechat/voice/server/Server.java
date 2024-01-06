@@ -297,7 +297,7 @@ public class Server extends Thread {
         }
     }
 
-    public void onMicPacket(UUID playerUuid, MicPacket packet) throws Exception {
+    public void onMicPacket(UUID playerUuid, MicPacket packet) {
         ServerPlayer player = server.getPlayerList().getPlayer(playerUuid);
         if (player == null) {
             return;
@@ -317,7 +317,7 @@ public class Server extends Thread {
         }
     }
 
-    private void processMicPacket(ServerPlayer player, PlayerState state, MicPacket packet) throws Exception {
+    private void processMicPacket(ServerPlayer player, PlayerState state, MicPacket packet) {
         if (state.hasGroup()) {
             @Nullable Group group = groupManager.getGroup(state.getGroup());
             processGroupPacket(state, player, packet);
@@ -329,7 +329,7 @@ public class Server extends Thread {
         processProximityPacket(state, player, packet);
     }
 
-    private void processGroupPacket(PlayerState senderState, ServerPlayer sender, MicPacket packet) throws Exception {
+    private void processGroupPacket(PlayerState senderState, ServerPlayer sender, MicPacket packet) {
         UUID groupId = senderState.getGroup();
         if (groupId == null) {
             return;
@@ -351,7 +351,7 @@ public class Server extends Thread {
         }
     }
 
-    private void processProximityPacket(PlayerState senderState, ServerPlayer sender, MicPacket packet) throws Exception {
+    private void processProximityPacket(PlayerState senderState, ServerPlayer sender, MicPacket packet) {
         @Nullable UUID groupId = senderState.getGroup();
         float distance = Utils.getDefaultDistance();
 
@@ -391,7 +391,7 @@ public class Server extends Thread {
         broadcast(ServerWorldUtils.getPlayersInRange(sender.serverLevel(), sender.position(), getBroadcastRange(distance), p -> !p.getUUID().equals(sender.getUUID())), soundPacket, sender, senderState, groupId, source);
     }
 
-    public void sendSoundPacket(@Nullable ServerPlayer sender, @Nullable PlayerState senderState, ServerPlayer receiver, PlayerState receiverState, @Nullable ClientConnection connection, SoundPacket<?> soundPacket, String source) throws Exception {
+    public void sendSoundPacket(@Nullable ServerPlayer sender, @Nullable PlayerState senderState, ServerPlayer receiver, PlayerState receiverState, @Nullable ClientConnection connection, SoundPacket<?> soundPacket, String source) {
         PluginManager.instance().onListenerAudio(receiver.getUUID(), soundPacket);
 
         if (connection == null) {
@@ -440,15 +440,11 @@ public class Server extends Thread {
                 continue;
             }
             @Nullable ClientConnection connection = getConnection(state.getUuid());
-            try {
-                sendSoundPacket(sender, senderState, player, state, connection, packet, source);
-            } catch (Exception e) {
-                Voicechat.LOGGER.error("Error sending sound packet to player {}", player.getDisplayName().getString(), e);
-            }
+            sendSoundPacket(sender, senderState, player, state, connection, packet, source);
         }
     }
 
-    private void sendKeepAlives() throws Exception {
+    private void sendKeepAlives() {
         long timestamp = System.currentTimeMillis();
 
         connections.values().removeIf(connection -> {
@@ -513,7 +509,31 @@ public class Server extends Thread {
         return socket.getLocalPort();
     }
 
-    public void sendPacket(Packet<?> packet, ClientConnection connection) throws Exception {
+    /**
+     * Sends the packet and handles potential errors.
+     *
+     * @param packet     the packet to send
+     * @param connection the connection to send the packet to
+     * @return if the packet was sent successfully
+     */
+    public boolean sendPacket(Packet<?> packet, ClientConnection connection) {
+        try {
+            sendPacketRaw(packet, connection);
+            return true;
+        } catch (Exception e) {
+            Voicechat.LOGGER.error("Failed to send voice chat packet to {}", connection.getPlayerUUID());
+            return false;
+        }
+    }
+
+    /**
+     * Sends the packet. You must handle potential errors
+     *
+     * @param packet     the packet to send
+     * @param connection the connection to send the packet to
+     * @throws Exception if an I/O error occurs
+     */
+    public void sendPacketRaw(Packet<?> packet, ClientConnection connection) throws Exception {
         connection.send(this, new NetworkMessage(packet));
     }
 
