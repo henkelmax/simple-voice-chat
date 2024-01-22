@@ -27,7 +27,7 @@ public class ServerGroupManager {
         this.server = server;
         groups = new ConcurrentHashMap<>();
         CommonCompatibilityManager.INSTANCE.onPlayerCompatibilityCheckSucceeded(this::onPlayerCompatibilityCheckSucceeded);
-        CommonCompatibilityManager.INSTANCE.getNetManager().joinGroupChannel.setServerListener((srv, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().joinGroupChannel.setServerListener((player, packet) -> {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
             }
@@ -37,7 +37,7 @@ public class ServerGroupManager {
             }
             joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
         });
-        CommonCompatibilityManager.INSTANCE.getNetManager().createGroupChannel.setServerListener((srv, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().createGroupChannel.setServerListener((player, packet) -> {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
             }
@@ -51,7 +51,7 @@ public class ServerGroupManager {
             }
             addGroup(new Group(UUID.randomUUID(), packet.getName(), packet.getPassword(), false, false, packet.getType()), player);
         });
-        CommonCompatibilityManager.INSTANCE.getNetManager().leaveGroupChannel.setServerListener((srv, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().leaveGroupChannel.setServerListener((player, packet) -> {
             leaveGroup(player);
         });
     }

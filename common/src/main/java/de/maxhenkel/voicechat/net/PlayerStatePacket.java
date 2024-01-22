@@ -2,12 +2,13 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
 public class PlayerStatePacket implements Packet<PlayerStatePacket> {
 
-    public static final ResourceLocation PLAYER_STATE = new ResourceLocation(Voicechat.MODID, "player_state");
+    public static final CustomPacketPayload.Type<PlayerStatePacket> PLAYER_STATE = new CustomPacketPayload.Type<>(new ResourceLocation(Voicechat.MODID, "player_state"));
 
     private PlayerState playerState;
 
@@ -24,19 +25,19 @@ public class PlayerStatePacket implements Packet<PlayerStatePacket> {
     }
 
     @Override
-    public ResourceLocation getIdentifier() {
-        return PLAYER_STATE;
-    }
-
-    @Override
-    public PlayerStatePacket fromBytes(FriendlyByteBuf buf) {
+    public PlayerStatePacket fromBytes(RegistryFriendlyByteBuf buf) {
         playerState = PlayerState.fromBytes(buf);
         return this;
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(RegistryFriendlyByteBuf buf) {
         playerState.toBytes(buf);
+    }
+
+    @Override
+    public Type<PlayerStatePacket> type() {
+        return PLAYER_STATE;
     }
 
 }

@@ -3,7 +3,8 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.plugins.PluginManager;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -11,7 +12,7 @@ import java.util.UUID;
 
 public class SecretPacket implements Packet<SecretPacket> {
 
-    public static final ResourceLocation SECRET = new ResourceLocation(Voicechat.MODID, "secret");
+    public static final CustomPacketPayload.Type<SecretPacket> SECRET = new CustomPacketPayload.Type<>(new ResourceLocation(Voicechat.MODID, "secret"));
 
     private UUID secret;
     private int serverPort;
@@ -77,17 +78,12 @@ public class SecretPacket implements Packet<SecretPacket> {
         return voiceHost;
     }
 
-    @Override
-    public ResourceLocation getIdentifier() {
-        return SECRET;
-    }
-
     public boolean allowRecording() {
         return allowRecording;
     }
 
     @Override
-    public SecretPacket fromBytes(FriendlyByteBuf buf) {
+    public SecretPacket fromBytes(RegistryFriendlyByteBuf buf) {
         secret = buf.readUUID();
         serverPort = buf.readInt();
         playerUUID = buf.readUUID();
@@ -102,7 +98,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(RegistryFriendlyByteBuf buf) {
         buf.writeUUID(secret);
         buf.writeInt(serverPort);
         buf.writeUUID(playerUUID);
@@ -113,6 +109,11 @@ public class SecretPacket implements Packet<SecretPacket> {
         buf.writeBoolean(groupsEnabled);
         buf.writeUtf(voiceHost);
         buf.writeBoolean(allowRecording);
+    }
+
+    @Override
+    public Type<SecretPacket> type() {
+        return SECRET;
     }
 
 }

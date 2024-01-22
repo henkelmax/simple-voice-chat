@@ -46,7 +46,7 @@ public class ClientPlayerStateManager {
 
         states = new HashMap<>();
 
-        CommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel.setClientListener((client, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel.setClientListener((player, packet) -> {
             states.put(packet.getPlayerState().getUuid(), packet.getPlayerState());
             Voicechat.LOGGER.debug("Got state for {}: {}", packet.getPlayerState().getName(), packet.getPlayerState());
             VoicechatClient.USERNAME_CACHE.updateUsernameAndSave(packet.getPlayerState().getUuid(), packet.getPlayerState().getName());
@@ -60,7 +60,7 @@ public class ClientPlayerStateManager {
             JoinGroupList.update();
             GroupList.update();
         });
-        CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel.setClientListener((client, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel.setClientListener((player, packet) -> {
             states = packet.getPlayerStates();
             Voicechat.LOGGER.debug("Received {} state(s)", states.size());
             for (PlayerState state : states.values()) {
@@ -71,14 +71,14 @@ public class ClientPlayerStateManager {
             JoinGroupList.update();
             GroupList.update();
         });
-        CommonCompatibilityManager.INSTANCE.getNetManager().joinedGroupChannel.setClientListener((client, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().joinedGroupChannel.setClientListener((player, packet) -> {
             Screen screen = Minecraft.getInstance().screen;
             this.group = packet.getGroup();
             if (packet.isWrongPassword()) {
                 if (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
                     Minecraft.getInstance().setScreen(null);
                 }
-                client.player.displayClientMessage(Component.translatable("message.voicechat.wrong_password").withStyle(ChatFormatting.DARK_RED), true);
+                player.displayClientMessage(Component.translatable("message.voicechat.wrong_password").withStyle(ChatFormatting.DARK_RED), true);
             } else if (group != null && screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
                 ClientGroup clientGroup = getGroup();
                 if (clientGroup != null) {

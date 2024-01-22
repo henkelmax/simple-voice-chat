@@ -26,7 +26,7 @@ public class PlayerStateManager {
         CommonCompatibilityManager.INSTANCE.onServerVoiceChatDisconnected(this::onPlayerVoicechatDisconnect);
         CommonCompatibilityManager.INSTANCE.onPlayerCompatibilityCheckSucceeded(this::onPlayerCompatibilityCheckSucceeded);
 
-        CommonCompatibilityManager.INSTANCE.getNetManager().updateStateChannel.setServerListener((server, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().updateStateChannel.setServerListener((player, packet) -> {
             PlayerState state = states.get(player.getUUID());
 
             if (state == null) {

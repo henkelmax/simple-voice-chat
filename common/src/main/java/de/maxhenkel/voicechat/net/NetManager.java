@@ -4,9 +4,8 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 public abstract class NetManager {
 
@@ -61,11 +60,11 @@ public abstract class NetManager {
     public abstract void sendToClient(Packet<?> packet, ServerPlayer player);
 
     public interface ServerReceiver<T extends Packet<T>> {
-        void onPacket(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, T packet);
+        void onPacket(ServerPlayer player, T packet);
     }
 
     public interface ClientReceiver<T extends Packet<T>> {
-        void onPacket(Minecraft client, ClientPacketListener handler, T packet);
+        void onPacket(LocalPlayer player, T packet);
     }
 
 }

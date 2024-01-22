@@ -31,7 +31,7 @@ public class ServerVoiceEvents {
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::playerLoggedOut);
         CommonCompatibilityManager.INSTANCE.onServerStopping(this::serverStopping);
 
-        CommonCompatibilityManager.INSTANCE.getNetManager().requestSecretChannel.setServerListener((server, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().requestSecretChannel.setServerListener((player, packet) -> {
             Voicechat.LOGGER.info("Received secret request of {} ({})", player.getDisplayName().getString(), packet.getCompatibilityVersion());
             clientCompatibilities.put(player.getUUID(), packet.getCompatibilityVersion());
             if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
