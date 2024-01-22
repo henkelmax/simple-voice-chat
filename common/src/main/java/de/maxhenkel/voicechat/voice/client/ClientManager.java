@@ -64,7 +64,7 @@ public class ClientManager {
             }
         });
 
-        CommonCompatibilityManager.INSTANCE.getNetManager().secretChannel.setClientListener((client, handler, packet) -> authenticate(packet));
+        CommonCompatibilityManager.INSTANCE.getNetManager().secretChannel.setClientListener((player, packet) -> authenticate(packet));
     }
 
     private void authenticate(SecretPacket secretPacket) {
