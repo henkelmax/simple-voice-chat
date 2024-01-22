@@ -86,7 +86,7 @@ public class FabricNetManager extends NetManager {
     }
 
     @Override
-    public void sendToServer(Packet<?> packet, ClientPacketListener connection) {
+    protected void sendToServerInternal(Packet<?> packet) {
         ClientPlayNetworking.send(packet);
     }
 
