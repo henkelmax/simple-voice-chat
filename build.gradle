@@ -23,20 +23,6 @@ tasks.register('03-publishForge') {
     }
 }
 
-tasks.register('05-publishFabric') {
-    group = 'voicechat'
-    doLast {
-        runGradleTasks(['common:clean', 'fabric:clean'], ['fabric:curseforge', 'fabric:modrinth', 'fabric:modUpdate'])
-    }
-}
-
-tasks.register('publishFabricSnapshot') {
-    group = 'voicechat'
-    doLast {
-        runGradleTasks(['common:clean', 'fabric:clean'], ['fabric:curseforge', 'fabric:modrinth'])
-    }
-}
-
 tasks.register('publishApi') {
     group = 'voicechat'
     doLast {
