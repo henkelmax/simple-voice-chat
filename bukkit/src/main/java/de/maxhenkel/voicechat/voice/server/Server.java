@@ -24,10 +24,10 @@ import java.net.InetAddress;
 import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -56,9 +56,9 @@ public class Server extends Thread {
         }
         this.server = Bukkit.getServer();
         socket = PluginManager.instance().getSocketImplementation();
-        connections = new HashMap<>();
-        unCheckedConnections = new HashMap<>();
-        secrets = new HashMap<>();
+        connections = new ConcurrentHashMap<>();
+        unCheckedConnections = new ConcurrentHashMap<>();
+        secrets = new ConcurrentHashMap<>();
         packetQueue = new LinkedBlockingQueue<>();
         pingManager = new PingManager(this);
         playerStateManager = new PlayerStateManager();
