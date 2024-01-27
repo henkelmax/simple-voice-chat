@@ -15,8 +15,7 @@ apply plugin: 'info.u_team.curse_gradle_uploader'
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
-sourceCompatibility = JavaLanguageVersion.of(8)
-targetCompatibility = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 repositories {
     mavenCentral()
