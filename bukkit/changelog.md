@@ -1,1 +1,2 @@
 - Fixed compiled Java version
+- Improved thread safety
