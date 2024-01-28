@@ -81,7 +81,7 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
             minecraft.setScreen(null);
             return true;
         }
-        if (password.keyPressed(keyCode, scanCode, modifiers) | super.keyPressed(keyCode, scanCode, modifiers)) {
+        if (super.keyPressed(keyCode, scanCode, modifiers)) {
             return true;
         }
         if (keyCode == GLFW.GLFW_KEY_ENTER) {
