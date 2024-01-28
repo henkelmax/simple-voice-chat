@@ -2,7 +2,11 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import io.netty.buffer.Unpooled;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
@@ -57,6 +61,20 @@ public class QuiltNetManager extends NetManager {
             throw new IllegalArgumentException(e);
         }
         return c;
+    }
+
+    @Override
+    public void sendToServer(Packet<?> packet, ClientPacketListener connection) {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        packet.toBytes(buffer);
+        ClientPlayNetworking.send(packet.getIdentifier(), buffer);
+    }
+
+    @Override
+    public void sendToClient(Packet<?> packet, ServerPlayer player) {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        packet.toBytes(buffer);
+        ServerPlayNetworking.send(player, packet.getIdentifier(), buffer);
     }
 
 }

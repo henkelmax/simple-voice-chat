@@ -1,2 +1,3 @@
+- Updated to 1.20.2
 - Improved thread safety
 - Fixed backspace deleting two characters in text fields
