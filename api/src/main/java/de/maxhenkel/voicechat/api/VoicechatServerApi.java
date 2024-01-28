@@ -278,7 +278,7 @@ public interface VoicechatServerApi extends VoicechatApi {
      * @return all players in the provided location
      */
     default Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Position pos, double range) {
-        return getPlayersInRange(level, pos, range, player -> true);
+        return getPlayersInRange(level, pos, range, null);
     }
 
     /**
