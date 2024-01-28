@@ -24,7 +24,7 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
-import de.maxhenkel.voicechat.voice.server.ServerWorldUtils;
+import de.maxhenkel.voicechat.voice.server.ServerPlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -238,9 +238,9 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
     }
 
     @Override
-    public Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Position pos, double range, Predicate<ServerPlayer> filter) {
+    public Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Position pos, double range, @Nullable Predicate<ServerPlayer> filter) {
         if (pos instanceof PositionImpl) {
-            return ServerWorldUtils.getPlayersInRange((World) level.getServerLevel(), ((PositionImpl) pos).getPosition(), range, player -> filter.test(new ServerPlayerImpl(player))).stream().map(ServerPlayerImpl::new).collect(Collectors.toList());
+            return ServerPlayerManager.getPlayersInRange((World) level.getServerLevel(), ((PositionImpl) pos).getPosition(), range, filter == null ? null : player -> filter.test(new ServerPlayerImpl(player))).stream().map(ServerPlayerImpl::new).collect(Collectors.toList());
         } else {
             throw new IllegalArgumentException("Position is not an instance of PositionImpl");
         }
