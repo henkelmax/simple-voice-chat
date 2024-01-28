@@ -17,6 +17,7 @@ import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.BukkitVoicechatServiceImpl;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
+import de.maxhenkel.voicechat.voice.server.ServerPlayerManager;
 import me.lucko.commodore.Commodore;
 import me.lucko.commodore.CommodoreProvider;
 import org.bukkit.Bukkit;
@@ -128,6 +129,7 @@ public final class Voicechat extends JavaPlugin {
             SERVER.init();
 
             Bukkit.getPluginManager().registerEvents(SERVER, this);
+            ServerPlayerManager.init(this);
         });
     }
 

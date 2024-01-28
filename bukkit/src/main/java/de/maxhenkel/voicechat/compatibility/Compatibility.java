@@ -26,6 +26,8 @@ public interface Compatibility {
 
     void runTask(Runnable runnable);
 
+    void scheduleSyncRepeatingTask(Runnable runnable, long delay, long period);
+
     ArgumentType<?> playerArgument();
 
     ArgumentType<?> uuidArgument();
