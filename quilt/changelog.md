@@ -1,1 +1,2 @@
 - Improved thread safety
+- Fixed backspace deleting two characters in text fields
