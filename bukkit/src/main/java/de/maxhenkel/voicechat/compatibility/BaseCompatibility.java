@@ -34,4 +34,16 @@ public abstract class BaseCompatibility implements Compatibility {
         }
         Bukkit.getScheduler().runTask(Voicechat.INSTANCE, runnable);
     }
+
+    @Override
+    public void scheduleSyncRepeatingTask(Runnable runnable, long delay, long period) {
+        if (doesMethodExist(Bukkit.class, "getGlobalRegionScheduler")) {
+            Object globalRegionScheduler = callMethod(Bukkit.class, "getGlobalRegionScheduler");
+            if (doesMethodExist(globalRegionScheduler.getClass(), "runAtFixedRate")) {
+                callMethod(globalRegionScheduler, "runAtFixedRate", new Class[]{Plugin.class, Consumer.class, Long.class, Long.class}, Voicechat.INSTANCE, (Consumer<?>) (task) -> runnable.run(), delay, period);
+            }
+            return;
+        }
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(Voicechat.INSTANCE, runnable, delay, period);
+    }
 }

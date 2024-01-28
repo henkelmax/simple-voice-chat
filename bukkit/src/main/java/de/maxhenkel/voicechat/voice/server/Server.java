@@ -376,7 +376,7 @@ public class Server extends Thread {
             source = SoundPacketEvent.SOURCE_PROXIMITY;
         }
 
-        broadcast(ServerWorldUtils.getPlayersInRange(sender.getWorld(), sender.getLocation(), getBroadcastRange(distance), p -> !p.getUniqueId().equals(sender.getUniqueId())), soundPacket, sender, senderState, groupId, source);
+        broadcast(ServerPlayerManager.getPlayersInRange(sender.getWorld(), sender.getLocation(), getBroadcastRange(distance), p -> !p.getUniqueId().equals(sender.getUniqueId())), soundPacket, sender, senderState, groupId, source);
     }
 
     public void sendSoundPacket(@Nullable Player sender, @Nullable PlayerState senderState, Player receiver, PlayerState receiverState, @Nullable ClientConnection connection, SoundPacket<?> soundPacket, String source) {
