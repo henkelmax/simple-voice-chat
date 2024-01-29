@@ -1,0 +1,32 @@
+name: Translation
+description: Submit a translation for this project
+labels: [translation]
+assignees: henkelmax
+body:
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional notes
+      description: Additional information.
+    validations:
+      required: false
+  - type: input
+    id: locale_code
+    attributes:
+      label: Locale code
+      description: The Minecraft locale code (See [this](https://minecraft.wiki/w/Language#Languages) for more information).
+      placeholder: en_us
+    validations:
+      required: true
+  - type: textarea
+    id: translation
+    attributes:
+      label: Translation json
+      description: The contents of your translation file.
+      render: json
+      placeholder: |
+        {
+          "translation.key": "Translated value"
+        }
+    validations:
+      required: true
