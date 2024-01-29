@@ -1,0 +1,95 @@
+name: Bug report
+description: File a bug report
+labels: [triage]
+assignees: henkelmax
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!WARNING]  
+        > This form is **only for bug reports**!
+        > Please don't abuse this for feature requests or questions.
+        > Forms that are not filled out properly will be closed without response!
+
+        > [!IMPORTANT]  
+        > Don't report any issues related to your voice chat not being connected.
+        > Please visit the [Discord server](https://discord.gg/4dH2zwTmyX) for help with that issue.
+  - type: checkboxes
+    id: read_wiki
+    attributes:
+      label: Confirmation
+      description: |
+        By submitting this issue, you confirm that vou've read the [wiki](https://modrepo.de/minecraft/voicechat/wiki) and your issue is not listed there.
+      options:
+        - label: I have read the wiki
+          required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug description
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: input
+    id: mc_version
+    attributes:
+      label: Minecraft version
+      description: The Minecraft version you are using.
+      placeholder: 1.20.4
+    validations:
+      required: true
+  - type: input
+    id: mod_version
+    attributes:
+      label: Mod/Plugin version
+      description: The version of the mod/plugin.
+      placeholder: 1.20.4-1.2.3
+    validations:
+      required: true
+  - type: input
+    id: mod_loader_version
+    attributes:
+      label: Mod/Plugin loader and version
+      description: The mod/plugin loader and mod/plugin loader version you are using.
+      placeholder: Fabric Loader 0.15.6 / NeoForge 20.4.1 / Forge 48.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: |
+        Steps to reproduce the issue.
+        Please **don't** report issues that are not reproducible.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: false
+  - type: input
+    id: logs
+    attributes:
+      label: Log files
+      description: |
+        Please provide log files of the game session in which the problem occurred.
+        Don't paste the complete logs into the issue.
+        You can use [https://gist.github.com/](https://gist.github.com/).
+      placeholder: https://gist.github.com/exampleuser/example
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Screenshots of the issue.
+    validations:
+      required: false
