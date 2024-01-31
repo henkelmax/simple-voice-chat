@@ -181,7 +181,7 @@ public class RenderEvents {
                 .uv(u, v)
                 .overlayCoords(OverlayTexture.NO_OVERLAY)
                 .uv2(light)
-                .normal(entry.normal(), 0F, 0F, -1F)
+                .normal(entry, 0F, 0F, -1F)
                 .endVertex();
     }
 
