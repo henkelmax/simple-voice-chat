@@ -30,7 +30,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         super.mouseDragged(mc, mouseX, mouseY);
         mc.getTextureManager().bindTexture(SLIDER);
         GlStateManager.color(1F, 1F, 1F, 1F);
-        int width = (int) ((width - 2) * micValue);
+        int width = (int) ((getWidth() - 2) * micValue);
         drawTexturedModalRect(x + 1, y + 1, 0, 0, width, 18);
     }
 

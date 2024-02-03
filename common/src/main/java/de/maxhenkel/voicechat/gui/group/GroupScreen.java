@@ -62,7 +62,11 @@ public class GroupScreen extends ListScreenBase {
 
         ClientPlayerStateManager stateManager = ClientManager.getPlayerStateManager();
 
-        groupList = new GroupList(this, width, height, guiTop + HEADER_SIZE, guiTop + HEADER_SIZE + units * UNIT_SIZE, CELL_HEIGHT);
+        if (groupList != null) {
+            groupList.updateSize(width, units * UNIT_SIZE, guiTop + HEADER_SIZE);
+        } else {
+            groupList = new GroupList(this, width, units * UNIT_SIZE, guiTop + HEADER_SIZE, CELL_HEIGHT);
+        }
         setList(groupList);
 
         int buttonY = guiTop + ySize - 20 - 7;

@@ -14,8 +14,8 @@ public abstract class ListScreenListBase<T extends ListScreenEntryBase> extends 
 
     private final List<T> entries;
 
-    public ListScreenListBase(int width, int height, int top, int bottom, int size) {
-        super(Minecraft.getMinecraft(), width, height, top, bottom, size);
+    public ListScreenListBase(int width, int height, int top, int size) {
+        super(Minecraft.getMinecraft(), width, height, top, top + height, size);
         entries = new ArrayList<>();
     }
 
@@ -71,7 +71,9 @@ public abstract class ListScreenListBase<T extends ListScreenEntryBase> extends 
     public void drawScreen(int mouseXIn, int mouseYIn, float partialTicks) {
         ScaledResolution scaledResolution = new ScaledResolution(mc);
         double scale = scaledResolution.getScaleFactor();
-        enableScissor((int) ((double) getRowLeft() * scale), (int) ((double) (height - bottom) * scale), (int) ((double) (getScrollBarX() + 6) * scale), (int) ((double) (height - (height - bottom + 4) - top + 4) * scale));
+        //enableScissor((int) ((double) getRowLeft() * scale), (int) ((double) (height - bottom) * scale), (int) ((double) (getScrollBarX() + 6) * scale), (int) ((double) (height - (height - bottom + 4) - top + 4) * scale));
+        int scaledHeight = mc.getWindow().getGuiScaledHeight();
+        enableScissor(0, (int) ((double) (scaledHeight - y1) * scale), Integer.MAX_VALUE / 2, (int) ((double) height * scale));
         super.drawScreen(mouseXIn, mouseYIn, partialTicks);
         disableScissor();
     }

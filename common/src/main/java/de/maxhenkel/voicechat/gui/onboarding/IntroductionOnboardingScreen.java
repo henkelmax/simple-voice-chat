@@ -23,9 +23,9 @@ public class IntroductionOnboardingScreen extends OnboardingScreenBase {
     protected void init() {
         super.init();
 
-        Button skipButton = Button.builder(SKIP, button -> {
+        Button skipButton = new Button(guiLeft, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth, BUTTON_HEIGHT, SKIP, button -> {
             OnboardingManager.finishOnboarding();
-        }).bounds(guiLeft, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth, BUTTON_HEIGHT).build();
+        });
         addRenderableWidget(skipButton);
 
         addNextButton();
