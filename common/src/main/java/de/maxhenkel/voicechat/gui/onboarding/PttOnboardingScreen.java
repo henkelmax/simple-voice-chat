@@ -1,9 +1,9 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.gui.widgets.KeybindButton;
 import de.maxhenkel.voicechat.voice.client.KeyEvents;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -41,11 +41,11 @@ public class PttOnboardingScreen extends OnboardingScreenBase {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        renderTitle(guiGraphics, TITLE);
-        renderMultilineText(guiGraphics, DESCRIPTION);
-        guiGraphics.drawString(font, BUTTON_DESCRIPTION.getVisualOrderText(), width / 2 - font.width(BUTTON_DESCRIPTION) / 2, keybindButtonPos - font.lineHeight - PADDING, TEXT_COLOR, true);
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        super.render(poseStack, mouseX, mouseY, partialTicks);
+        renderTitle(poseStack, TITLE);
+        renderMultilineText(poseStack, DESCRIPTION);
+        font.drawShadow(poseStack, BUTTON_DESCRIPTION.getVisualOrderText(), width / 2 - font.width(BUTTON_DESCRIPTION) / 2, keybindButtonPos - font.lineHeight - PADDING, TEXT_COLOR);
     }
 
     @Override
