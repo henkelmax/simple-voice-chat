@@ -13,12 +13,8 @@ import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.channel.local.LocalAddress;
-import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.*;
 
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
@@ -92,7 +88,7 @@ public class ClientManager {
 
     private void onJoinWorld() {
         if (VoicechatClient.CLIENT_CONFIG.muteOnJoin.get()) {
-            VoicechatClient.CLIENT_CONFIG.muted.set(true);
+            playerStateManager.setMuted(true);
         }
         if (client != null) {
             Voicechat.LOGGER.info("Disconnecting from previous connection due to server change");
@@ -112,40 +108,18 @@ public class ClientManager {
             AVAuthorizationStatus status = PermissionCheck.getMicrophonePermissions();
             if (status.equals(AVAuthorizationStatus.DENIED)) {
                 if (!hasShownPermissionsMessage) {
-                    ClientManager.sendPlayerError("message.voicechat.macos_no_mic_permission", null);
+                    ChatUtils.sendPlayerError("message.voicechat.macos_no_mic_permission", null);
                     hasShownPermissionsMessage = true;
                 }
                 Voicechat.LOGGER.warn("User hasn't granted microphone permissions: {}", status.name());
             } else if (!status.equals(AVAuthorizationStatus.AUTHORIZED)) {
                 if (!hasShownPermissionsMessage) {
-                    ClientManager.sendPlayerError("message.voicechat.macos_unsupported_launcher", null);
+                    ChatUtils.sendPlayerError("message.voicechat.macos_unsupported_launcher", null);
                     hasShownPermissionsMessage = true;
                 }
                 Voicechat.LOGGER.warn("User has an unsupported launcher: {}", status.name());
             }
         }
-    }
-
-    public static void sendPlayerError(String translationKey, @Nullable Exception e) {
-        sendPlayerMessage(
-                ComponentUtils.wrapInSquareBrackets(new TextComponent(CommonCompatibilityManager.INSTANCE.getModName()))
-                        .withStyle(ChatFormatting.GREEN)
-                        .append(" ")
-                        .append(new TranslatableComponent(translationKey).withStyle(ChatFormatting.RED))
-                        .withStyle(style -> {
-                            if (e != null) {
-                                return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED)));
-                            }
-                            return style;
-                        }));
-    }
-
-    public static void sendPlayerMessage(Component component) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null) {
-            return;
-        }
-        player.sendMessage(component, Util.NIL_UUID);
     }
 
     private void onDisconnect() {
