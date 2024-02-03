@@ -41,7 +41,7 @@ public class MicTestButton extends AbstractButton {
     @Override
     public void render(PoseStack matrixStack, int x, int y, float partialTicks) {
         super.render(matrixStack, x, y, partialTicks);
-        if (voiceThread != null) {
+        if (visible && voiceThread != null) {
             voiceThread.updateLastRender();
         }
     }
