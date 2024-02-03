@@ -23,13 +23,9 @@ public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
     protected ConfigEntry<String> configEntry;
 
     public AudioDeviceList(int width, int height, int top) {
-        super(width, height, top, top + height, CELL_HEIGHT);
+        super(width, height, top, CELL_HEIGHT);
         setRenderBackground(false);
         setRenderTopAndBottom(false);
-    }
-
-    public void updateSize(int width, int height, int top) {
-        updateSize(width, height, top, top + height);
     }
 
     @Override

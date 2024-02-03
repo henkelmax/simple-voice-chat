@@ -55,7 +55,7 @@ public abstract class OnboardingScreenBase extends Screen {
     }
 
     protected void addPositiveButton(Component text, Button.OnPress onPress) {
-        Button nextButton = Button.builder(text, onPress).bounds(guiLeft + contentWidth / 2 + PADDING / 2, guiTop + contentHeight - BUTTON_HEIGHT, contentWidth / 2 - PADDING / 2, BUTTON_HEIGHT).build();
+        Button nextButton = new Button(guiLeft + contentWidth / 2 + PADDING / 2, guiTop + contentHeight - BUTTON_HEIGHT, contentWidth / 2 - PADDING / 2, BUTTON_HEIGHT, text, onPress);
         addRenderableWidget(nextButton);
     }
 
@@ -70,9 +70,9 @@ public abstract class OnboardingScreenBase extends Screen {
         if (previous instanceof OnboardingScreenBase) {
             text = BACK;
         }
-        Button cancel = Button.builder(text, button -> {
+        Button cancel = new Button(guiLeft, guiTop + contentHeight - BUTTON_HEIGHT, big ? contentWidth : contentWidth / 2 - PADDING / 2, BUTTON_HEIGHT, text, button -> {
             minecraft.setScreen(previous);
-        }).bounds(guiLeft, guiTop + contentHeight - BUTTON_HEIGHT, big ? contentWidth : contentWidth / 2 - PADDING / 2, BUTTON_HEIGHT).build();
+        });
         addRenderableWidget(cancel);
     }
 

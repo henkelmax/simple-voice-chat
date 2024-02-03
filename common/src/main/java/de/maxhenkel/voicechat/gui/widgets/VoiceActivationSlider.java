@@ -29,7 +29,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     protected void renderBg(PoseStack poseStack, Minecraft minecraft, int i, int j) {
         RenderSystem.setShaderTexture(0, SLIDER);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        int width = (int) ((width - 2) * micValue);
+        int width = (int) ((getWidth() - 2) * micValue);
         blit(poseStack, x + 1, y + 1, 0, 0, width, 18);
         super.renderBg(poseStack, minecraft, i, j);
     }

@@ -15,8 +15,8 @@ public class GroupList extends ListScreenListBase<GroupEntry> {
 
     protected final ListScreenBase parent;
 
-    public GroupList(ListScreenBase parent, int width, int height, int x, int y, int size) {
-        super(width, height, x, y, size);
+    public GroupList(ListScreenBase parent, int width, int height, int top, int size) {
+        super(width, height, top, size);
         this.parent = parent;
         setRenderBackground(false);
         setRenderTopAndBottom(false);
