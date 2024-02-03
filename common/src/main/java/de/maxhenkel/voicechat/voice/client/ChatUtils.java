@@ -1,39 +1,39 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.*;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.*;
+import net.minecraft.util.text.event.HoverEvent;
 
 import javax.annotation.Nullable;
 
 public class ChatUtils {
 
     public static void sendPlayerError(String translationKey, @Nullable Exception e) {
-        MutableComponent error = createModMessage(new TranslatableComponent(translationKey).withStyle(ChatFormatting.RED)).withStyle(style -> {
+        IFormattableTextComponent error = createModMessage(new TranslationTextComponent(translationKey).withStyle(TextFormatting.RED)).withStyle(style -> {
             if (e != null) {
-                return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED)));
+                return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(e.getMessage()).withStyle(TextFormatting.RED)));
             }
             return style;
         });
         sendPlayerMessage(error);
     }
 
-    public static void sendModMessage(Component message) {
+    public static void sendModMessage(ITextComponent message) {
         sendPlayerMessage(createModMessage(message));
     }
 
-    public static MutableComponent createModMessage(Component message) {
-        return new TextComponent("")
-                .append(ComponentUtils.wrapInSquareBrackets(new TextComponent(CommonCompatibilityManager.INSTANCE.getModName())).withStyle(ChatFormatting.GREEN))
+    public static IFormattableTextComponent createModMessage(ITextComponent message) {
+        return new StringTextComponent("")
+                .append(TextComponentUtils.wrapInSquareBrackets(new StringTextComponent(CommonCompatibilityManager.INSTANCE.getModName())).withStyle(TextFormatting.GREEN))
                 .append(" ")
                 .append(message);
     }
 
-    public static void sendPlayerMessage(Component component) {
-        LocalPlayer player = Minecraft.getInstance().player;
+    public static void sendPlayerMessage(ITextComponent component) {
+        ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }

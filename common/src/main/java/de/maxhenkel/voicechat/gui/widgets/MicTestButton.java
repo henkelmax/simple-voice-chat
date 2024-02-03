@@ -11,6 +11,7 @@ import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
@@ -20,7 +21,7 @@ public class MicTestButton extends ButtonBase {
 
     private static final ITextComponent TEST = new TranslationTextComponent("message.voicechat.mic_test");
     private static final ITextComponent DISABLE_TEST = new StringTextComponent("X");
-    private static final ITextComponent TEST_UNAVAILABLE = new TranslationTextComponent("message.voicechat.mic_test_unavailable").withStyle(ChatFormatting.RED);
+    private static final ITextComponent TEST_UNAVAILABLE = new TranslationTextComponent("message.voicechat.mic_test_unavailable").withStyle(TextFormatting.RED);
 
     private boolean micActive;
     @Nullable
@@ -120,8 +121,6 @@ public class MicTestButton extends ButtonBase {
             if (micThread == null) {
                 micThread = new MicThread(client, null);
                 usesOwnMicThread = true;
-            } else {
-                micThread.getError(onMicError);
             }
 
             // SoundManager soundManager;

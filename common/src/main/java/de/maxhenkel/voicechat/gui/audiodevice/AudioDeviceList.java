@@ -5,12 +5,13 @@ import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
 
@@ -35,11 +36,11 @@ public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
         if (entry == null) {
             return false;
         }
-        if (getHovered() != entry) {
+        if (!isMouseOver(mouseX, mouseY)) {
             return false;
         }
         if (!isSelected(entry.getDevice())) {
-            minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
+            minecraft.getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
             onSelect(entry);
             return true;
         }
@@ -72,7 +73,7 @@ public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
     }
 
     public void setAudioDevices(Collection<String> entries) {
-        replaceEntries(entries.stream().map(s -> new AudioDeviceEntry(s, getVisibleName(s), icon, () -> isSelected(s))).toList());
+        replaceEntries(entries.stream().map(s -> new AudioDeviceEntry(s, getVisibleName(s), icon, () -> isSelected(s))).collect(Collectors.toList()));
     }
 
     public boolean isSelected(String name) {
