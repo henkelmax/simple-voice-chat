@@ -1,20 +1,20 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.gui.widgets.KeybindButton;
 import de.maxhenkel.voicechat.voice.client.KeyEvents;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 
 public class PttOnboardingScreen extends OnboardingScreenBase {
 
-    private static final Component TITLE = new TranslatableComponent("message.voicechat.onboarding.ptt.title").withStyle(ChatFormatting.BOLD);
-    private static final Component DESCRIPTION = new TranslatableComponent("message.voicechat.onboarding.ptt.description");
-    private static final Component BUTTON_DESCRIPTION = new TranslatableComponent("message.voicechat.onboarding.ptt.button_description");
+    private static final ITextComponent TITLE = new TranslationTextComponent("message.voicechat.onboarding.ptt.title").withStyle(TextFormatting.BOLD);
+    private static final ITextComponent DESCRIPTION = new TranslationTextComponent("message.voicechat.onboarding.ptt.description");
+    private static final ITextComponent BUTTON_DESCRIPTION = new TranslationTextComponent("message.voicechat.onboarding.ptt.button_description");
 
     protected KeybindButton keybindButton;
 
@@ -30,7 +30,7 @@ public class PttOnboardingScreen extends OnboardingScreenBase {
 
         keybindButtonPos = guiTop + contentHeight - BUTTON_HEIGHT * 3 - PADDING * 2 - 40;
         keybindButton = new KeybindButton(KeyEvents.KEY_PTT, guiLeft + 40, keybindButtonPos, contentWidth - 40 * 2, BUTTON_HEIGHT);
-        addRenderableWidget(keybindButton);
+        addButton(keybindButton);
 
         addNextButton();
         addBackOrCancelButton();
@@ -42,11 +42,11 @@ public class PttOnboardingScreen extends OnboardingScreenBase {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        super.render(poseStack, mouseX, mouseY, partialTicks);
-        renderTitle(poseStack, TITLE);
-        renderMultilineText(poseStack, DESCRIPTION);
-        font.drawShadow(poseStack, BUTTON_DESCRIPTION.getVisualOrderText(), width / 2 - font.width(BUTTON_DESCRIPTION) / 2, keybindButtonPos - font.lineHeight - PADDING, TEXT_COLOR);
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+        super.render(stack, mouseX, mouseY, partialTicks);
+        renderTitle(stack, TITLE);
+        renderMultilineText(stack, DESCRIPTION);
+        font.drawShadow(stack, BUTTON_DESCRIPTION.getVisualOrderText(), width / 2 - font.width(BUTTON_DESCRIPTION) / 2, keybindButtonPos - font.lineHeight - PADDING, TEXT_COLOR);
     }
 
     @Override

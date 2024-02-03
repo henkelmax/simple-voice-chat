@@ -26,8 +26,6 @@ public class MicThread extends Thread {
     private final ClientVoicechatConnection connection;
     @Nullable
     private final Microphone mic;
-    @Nullable
-    private MicrophoneException microphoneError;
     private final VolumeManager volumeManager;
     private boolean running;
     private boolean microphoneLocked;
@@ -53,12 +51,6 @@ public class MicThread extends Thread {
         setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
 
         mic = MicrophoneManager.createMicrophone();
-    }
-
-    public void getError(Consumer<MicrophoneException> onError) {
-        if (microphoneError != null) {
-            onError.accept(microphoneError);
-        }
     }
 
     @Override

@@ -4,18 +4,18 @@ import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.audiodevice.SelectSpeakerScreen;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class SpeakerOnboardingScreen extends DeviceOnboardingScreen {
 
-    private static final Component TITLE = new TranslatableComponent("message.voicechat.onboarding.speaker").withStyle(ChatFormatting.BOLD);
+    private static final ITextComponent TITLE = new TranslationTextComponent("message.voicechat.onboarding.speaker").withStyle(TextFormatting.BOLD);
 
     public SpeakerOnboardingScreen(@Nullable Screen previous) {
         super(TITLE, previous);

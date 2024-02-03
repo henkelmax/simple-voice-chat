@@ -1,11 +1,11 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.voicechat.gui.audiodevice.AudioDeviceList;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -16,7 +16,7 @@ public abstract class DeviceOnboardingScreen extends OnboardingScreenBase {
 
     protected List<String> micNames;
 
-    public DeviceOnboardingScreen(Component title, @Nullable Screen previous) {
+    public DeviceOnboardingScreen(ITextComponent title, @Nullable Screen previous) {
         super(title, previous);
         micNames = getNames();
         if (micNames.isEmpty()) {
@@ -50,9 +50,9 @@ public abstract class DeviceOnboardingScreen extends OnboardingScreenBase {
     public abstract Screen getNextScreen();
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        super.render(poseStack, mouseX, mouseY, partialTicks);
-        deviceList.render(poseStack, mouseX, mouseY, partialTicks);
-        renderTitle(poseStack, title);
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+        super.render(stack, mouseX, mouseY, partialTicks);
+        deviceList.render(stack, mouseX, mouseY, partialTicks);
+        renderTitle(stack, title);
     }
 }
