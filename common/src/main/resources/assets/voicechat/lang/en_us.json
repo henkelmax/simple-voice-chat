@@ -157,7 +157,7 @@
   "message.voicechat.onboarding.voice.description": "Enable microphone testing and make sure the volume is below the slider when you're silent and above it when you are speaking.",
   "message.voicechat.onboarding.final": "Finish Setup",
   "message.voicechat.onboarding.final.description.success": "You have successfully configured your voice chat!\n\nOpen the voice chat menu with %s.",
-  "message.voicechat.onboarding.final.description.ptt": "Hold %s while talking to use the voice chat",
+  "message.voicechat.onboarding.final.description.ptt": "Hold %s while talking to use the voice chat.",
   "message.voicechat.onboarding.final.description.voice": "You will be muted when exiting this screen. Press %s to unmute.",
   "message.voicechat.onboarding.final.description.configuration": "You can always change all settings in the voice chat menu.\nKeybinds can be changed like any other keybind in the game.",
   "message.voicechat.onboarding.final.finish_setup": "Finish setup",
