@@ -9,8 +9,8 @@ import java.util.function.Function;
 
 public class BooleanConfigButton extends AbstractButton {
 
-    private ConfigEntry<Boolean> entry;
-    private Function<Boolean, Component> component;
+    protected ConfigEntry<Boolean> entry;
+    protected Function<Boolean, Component> component;
 
     public BooleanConfigButton(int x, int y, int width, int height, ConfigEntry<Boolean> entry, Function<Boolean, Component> component) {
         super(x, y, width, height, Component.empty());

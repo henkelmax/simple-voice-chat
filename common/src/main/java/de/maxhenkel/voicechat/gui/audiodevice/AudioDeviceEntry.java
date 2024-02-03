@@ -7,6 +7,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
+
 public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
 
     protected static final ResourceLocation SELECTED = new ResourceLocation(Voicechat.MODID, "textures/icons/device_selected.png");
@@ -20,18 +23,21 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
     protected final Minecraft minecraft;
     protected final String device;
     protected final String visibleDeviceName;
-    protected final SelectDeviceScreen parent;
+    @Nullable
+    protected final ResourceLocation icon;
+    protected final Supplier<Boolean> isSelected;
 
-    public AudioDeviceEntry(SelectDeviceScreen parent, String device) {
-        this.parent = parent;
+    public AudioDeviceEntry(String device, String name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
         this.device = device;
-        this.visibleDeviceName = parent.getVisibleName(device);
+        this.icon = icon;
+        this.isSelected = isSelected;
+        this.visibleDeviceName = name;
         this.minecraft = Minecraft.getInstance();
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
-        boolean selected = parent.getSelectedDevice().equals(device);
+        boolean selected = isSelected.get();
         if (selected) {
             guiGraphics.fill(left, top, left + width, top + height, BG_FILL_SELECTED);
         } else if (hovered) {
@@ -40,7 +46,9 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
             guiGraphics.fill(left, top, left + width, top + height, BG_FILL);
         }
 
-        guiGraphics.blit(parent.getIcon(device), left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
+        if (icon != null) {
+            guiGraphics.blit(icon, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
+        }
         if (selected) {
             guiGraphics.blit(SELECTED, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
         }

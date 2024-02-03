@@ -23,8 +23,6 @@
   "message.voicechat.group": "그룹",
   "message.voicechat.voice_chat_volume": "음성 채팅 볼륨: %s",
   "message.voicechat.microphone_amplification": "마이크 증폭: %s",
-  "message.voicechat.mic_test_on": "마이크 테스트 사용안함",
-  "message.voicechat.mic_test_off": "마이크 테스트 사용",
   "message.voicechat.mic_test_unavailable": "마이크 테스트를 할 수 없음",
   "message.voicechat.voice_chat_unavailable": "음성 채팅을 할 수 없음",
   "message.voicechat.voice_chat_not_connected": "음성 채팅이 연결되지 않음",
