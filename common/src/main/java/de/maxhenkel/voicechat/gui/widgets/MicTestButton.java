@@ -39,7 +39,7 @@ public class MicTestButton extends ButtonBase {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         super.drawButton(mc, mouseX, mouseY, partialTicks);
-        if (voiceThread != null) {
+        if (visible && voiceThread != null) {
             voiceThread.updateLastRender();
         }
     }
