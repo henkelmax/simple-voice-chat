@@ -13,6 +13,7 @@ import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import org.lwjgl.glfw.GLFW;
 
@@ -70,7 +71,7 @@ public class KeyEvents {
             if (Screen.hasAltDown()) {
                 if (Screen.hasControlDown()) {
                     VoicechatClient.CLIENT_CONFIG.onboardingFinished.set(false).save();
-                    minecraft.player.displayClientMessage(Component.literal("Onboarding status has been reset"), true);
+                    minecraft.player.displayClientMessage(new TextComponent("Onboarding status has been reset"), true);
                 } else {
                     ClientManager.getDebugOverlay().toggle();
                 }

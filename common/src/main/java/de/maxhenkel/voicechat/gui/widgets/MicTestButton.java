@@ -13,6 +13,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
@@ -21,7 +22,7 @@ import java.util.function.Consumer;
 public class MicTestButton extends AbstractButton {
 
     private static final Component TEST = new TranslatableComponent("message.voicechat.mic_test");
-    private static final Component DISABLE_TEST = Component.literal("X");
+    private static final Component DISABLE_TEST = new TextComponent("X");
     private static final Component TEST_UNAVAILABLE = new TranslatableComponent("message.voicechat.mic_test_unavailable").withStyle(ChatFormatting.RED);
 
     private boolean micActive;

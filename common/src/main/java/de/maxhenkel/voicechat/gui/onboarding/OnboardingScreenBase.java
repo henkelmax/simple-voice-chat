@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.FormattedCharSequence;
 
 import javax.annotation.Nullable;
@@ -11,9 +12,9 @@ import java.util.List;
 
 public abstract class OnboardingScreenBase extends Screen {
 
-    public static final Component NEXT = Component.translatable("message.voicechat.onboarding.next");
-    public static final Component BACK = Component.translatable("message.voicechat.onboarding.back");
-    public static final Component CANCEL = Component.translatable("message.voicechat.onboarding.cancel");
+    public static final Component NEXT = new TranslatableComponent("message.voicechat.onboarding.next");
+    public static final Component BACK = new TranslatableComponent("message.voicechat.onboarding.back");
+    public static final Component CANCEL = new TranslatableComponent("message.voicechat.onboarding.cancel");
 
     protected static final int TEXT_COLOR = 0xFFFFFFFF;
     protected static final int PADDING = 8;

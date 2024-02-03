@@ -15,6 +15,7 @@ import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.channel.local.LocalAddress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
