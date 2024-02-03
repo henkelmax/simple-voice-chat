@@ -8,7 +8,8 @@ import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
 import de.maxhenkel.voicechat.gui.widgets.*;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
-import de.maxhenkel.voicechat.voice.client.Denoiser;
+import de.maxhenkel.voicechat.voice.client.KeyEvents;
+import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -21,8 +22,9 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_voicechat_settings.png");
     private static final ITextComponent TITLE = new TextComponentTranslation("gui.voicechat.voice_chat_settings.title");
-    private static final ITextComponent ENABLED = new TextComponentTranslation("message.voicechat.enabled");
-    private static final ITextComponent DISABLED = new TextComponentTranslation("message.voicechat.disabled");
+
+    private static final ITextComponent ASSIGN_TOOLTIP = new TextComponentTranslation("message.voicechat.press_to_reassign_key");
+    private static final ITextComponent PUSH_TO_TALK = new TextComponentTranslation("message.voicechat.activation_type.ptt");
     private static final ITextComponent ADJUST_VOLUMES = new TextComponentTranslation("message.voicechat.adjust_volumes");
     private static final ITextComponent SELECT_MICROPHONE = new TextComponentTranslation("message.voicechat.select_microphone");
     private static final ITextComponent SELECT_SPEAKER = new TextComponentTranslation("message.voicechat.select_speaker");
@@ -31,6 +33,8 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
     @Nullable
     private final GuiScreen parent;
     private VoiceActivationSlider voiceActivationSlider;
+    private MicTestButton micTestButton;
+    private KeybindButton keybindButton;
 
     public VoiceChatSettingsScreen(@Nullable GuiScreen parent) {
         super(TITLE, 248, 219);
@@ -51,25 +55,21 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         y += 21;
         addButton(new MicAmplificationSlider(1, guiLeft + 10, y, xSize - 20, 20));
         y += 21;
-        BooleanConfigButton denoiser = addButton(new BooleanConfigButton(2, guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.denoiser, enabled -> {
-            return new TextComponentTranslation("message.voicechat.denoiser", enabled ? ENABLED : DISABLED);
+        addButton(new DenoiserButton(guiLeft + 10, y, xSize - 20, 20));
+        y += 21;
+
+        voiceActivationSlider = new VoiceActivationSlider(guiLeft + 10 + 30 + 1, y + 21, xSize - 20 - 30 - 1, 20);
+        micTestButton = new MicTestButton(5, guiLeft + 10, y + 21, 30, 20, voiceActivationSlider);
+        keybindButton = new KeybindButton(KeyEvents.KEY_PTT, guiLeft + 10, y + 21, xSize - 20, 20, PUSH_TO_TALK);
+        addButton(new MicActivationButton(guiLeft + 10, y, xSize - 20, 20, type -> {
+            voiceActivationSlider.visible = MicrophoneActivationType.VOICE.equals(type);
+            micTestButton.visible = MicrophoneActivationType.VOICE.equals(type);
+            keybindButton.visible = MicrophoneActivationType.PTT.equals(type);
         }));
-        if (Denoiser.createDenoiser() == null) {
-            denoiser.enabled = false;
-        }
-        y += 21;
-
-        voiceActivationSlider = new VoiceActivationSlider(3, guiLeft + 10, y + 21, xSize - 20, 20);
-
-        addButton(new MicActivationButton(4, guiLeft + 10, y, xSize - 20, 20, voiceActivationSlider));
-        y += 21;
-
-        addButton(voiceActivationSlider);
-        y += 21;
-
-        MicTestButton micTestButton = new MicTestButton(5, guiLeft + 10, y, xSize - 20, 20, voiceActivationSlider);
         addButton(micTestButton);
-        y += 21;
+        addButton(voiceActivationSlider);
+        addButton(keybindButton);
+        y += 21 * 2;
 
         addButton(new EnumButton<AudioType>(6, guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.audioType) {
 
@@ -103,7 +103,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
                 mc.displayGuiScreen(new SelectMicrophoneScreen(VoiceChatSettingsScreen.this));
             }
         });
-        addButton(new ButtonBase(9, guiLeft + xSize / 2 + 6, y, xSize / 2 - 15, 20, SELECT_SPEAKER) {
+        addButton(new ButtonBase(9, guiLeft + xSize / 2 + 1, y, (xSize - 20) / 2 - 1, 20, SELECT_SPEAKER) {
             @Override
             public void onPress() {
                 mc.displayGuiScreen(new SelectSpeakerScreen(VoiceChatSettingsScreen.this));
@@ -137,9 +137,22 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
             return;
         }
 
-        ITextComponent tooltip = voiceActivationSlider.getTooltip();
-        if (tooltip != null && voiceActivationSlider.isMouseOver()) {
-            drawHoveringText(tooltip.getUnformattedComponentText(), mouseX, mouseY);
+        ITextComponent sliderTooltip = voiceActivationSlider.getHoverText();
+        ITextComponent testTooltip = micTestButton.getHoverText();
+        if (voiceActivationSlider.isHovered() && sliderTooltip != null) {
+            drawHoveringText(sliderTooltip.getUnformattedComponentText(), mouseX, mouseY);
+        } else if (micTestButton.isHovered() && testTooltip != null) {
+            drawHoveringText(testTooltip.getUnformattedComponentText(), mouseX, mouseY);
+        } else if (keybindButton.isHovered()) {
+            drawHoveringText(ASSIGN_TOOLTIP.getUnformattedComponentText(), mouseX, mouseY);
         }
+    }
+
+    @Override
+    public boolean shouldCloseOnEsc() {
+        if (keybindButton.isListening()) {
+            return false;
+        }
+        return super.shouldCloseOnEsc();
     }
 }

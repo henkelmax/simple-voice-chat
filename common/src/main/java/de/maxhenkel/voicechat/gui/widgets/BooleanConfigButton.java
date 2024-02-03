@@ -8,8 +8,8 @@ import java.util.function.Function;
 
 public class BooleanConfigButton extends ButtonBase {
 
-    private ConfigEntry<Boolean> entry;
-    private Function<Boolean, ITextComponent> component;
+    protected ConfigEntry<Boolean> entry;
+    protected Function<Boolean, ITextComponent> component;
 
     public BooleanConfigButton(int id, int x, int y, int width, int height, ConfigEntry<Boolean> entry, Function<Boolean, ITextComponent> component) {
         super(id, x, y, width, height, new TextComponentString(""));

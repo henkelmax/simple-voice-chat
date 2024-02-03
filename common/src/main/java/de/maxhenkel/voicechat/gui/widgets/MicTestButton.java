@@ -4,7 +4,9 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 import de.maxhenkel.voicechat.voice.client.*;
-import de.maxhenkel.voicechat.voice.client.speaker.*;
+import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
+import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
+import de.maxhenkel.voicechat.voice.client.speaker.SpeakerManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
@@ -15,9 +17,8 @@ import javax.annotation.Nullable;
 
 public class MicTestButton extends ButtonBase {
 
-    private static final ITextComponent TEST_UNAVAILABLE = new TextComponentTranslation("message.voicechat.mic_test_unavailable");
-    private static final ITextComponent TEST_ON = new TextComponentTranslation("message.voicechat.mic_test_on");
-    private static final ITextComponent TEST_OFF = new TextComponentTranslation("message.voicechat.mic_test_off");
+    private static final ITextComponent TEST = new TranslationTextComponent("message.voicechat.mic_test");
+    private static final ITextComponent TEST_UNAVAILABLE = new TranslationTextComponent("message.voicechat.mic_test_unavailable").withStyle(ChatFormatting.RED);
 
     private boolean micActive;
     @Nullable
@@ -26,24 +27,11 @@ public class MicTestButton extends ButtonBase {
     @Nullable
     private final ClientVoicechat client;
 
-    public MicTestButton(int id, int xIn, int yIn, int widthIn, int heightIn, MicListener micListener) {
-        super(id, xIn, yIn, widthIn, heightIn, new TextComponentString(""));
+    public MicTestButton(int xIn, int yIn, int widthIn, int heightIn, MicListener micListener) {
+        super(xIn, yIn, widthIn, heightIn, TEST);
         this.micListener = micListener;
         this.client = ClientManager.getClient();
-        // enabled = client == null || client.getSoundManager() != null;
-        updateText();
-    }
-
-    private void updateText() {
-        if (!enabled) {
-            displayString = TEST_UNAVAILABLE.getUnformattedComponentText();
-            return;
-        }
-        if (micActive) {
-            displayString = TEST_ON.getUnformattedComponentText();
-        } else {
-            displayString = TEST_OFF.getUnformattedComponentText();
-        }
+        active = client == null || client.getSoundManager() != null;
     }
 
     @Override
@@ -56,7 +44,14 @@ public class MicTestButton extends ButtonBase {
 
     public void setMicActive(boolean micActive) {
         this.micActive = micActive;
-        updateText();
+    }
+
+    @Nullable
+    public ITextComponent getHoverText() {
+        if (!active) {
+            return TEST_UNAVAILABLE;
+        }
+        return null;
     }
 
     @Override
@@ -75,7 +70,6 @@ public class MicTestButton extends ButtonBase {
         } else {
             close();
         }
-        updateText();
     }
 
     private void close() {
@@ -154,6 +148,7 @@ public class MicTestButton extends ButtonBase {
             // if (ownSoundManager != null) {
             //     ownSoundManager.close();
             // }
+            micActive = false;
             Voicechat.LOGGER.info("Mic test audio channel closed");
         }
 

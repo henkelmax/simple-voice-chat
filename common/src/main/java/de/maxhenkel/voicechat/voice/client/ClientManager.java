@@ -13,7 +13,6 @@ import io.netty.channel.local.LocalAddress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.HoverEvent;
 
 import javax.annotation.Nullable;
@@ -88,7 +87,7 @@ public class ClientManager {
 
     private void onJoinWorld() {
         if (VoicechatClient.CLIENT_CONFIG.muteOnJoin.get()) {
-            VoicechatClient.CLIENT_CONFIG.muted.set(true);
+            playerStateManager.setMuted(true);
         }
         if (client != null) {
             Voicechat.LOGGER.info("Disconnecting from previous connection due to server change");
@@ -97,27 +96,6 @@ public class ClientManager {
         Voicechat.LOGGER.info("Sending secret request to the server");
         NetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
         client = new ClientVoicechat();
-    }
-
-    public static void sendPlayerError(String translationKey, @Nullable Exception e) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player == null) {
-            return;
-        }
-        Style style = new Style().setColor(TextFormatting.RED);
-        if (e != null) {
-            style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(e.getMessage()).setStyle(new Style().setColor(TextFormatting.RED))));
-        }
-        player.sendMessage(
-                wrapInSquareBrackets(new TextComponentString(CommonCompatibilityManager.INSTANCE.getModName()))
-                        .setStyle(new Style().setColor(TextFormatting.GREEN))
-                        .appendText(" ")
-                        .appendSibling(new TextComponentTranslation(translationKey).setStyle(style))
-        );
-    }
-
-    private static ITextComponent wrapInSquareBrackets(ITextComponent component) {
-        return new TextComponentString("[").appendSibling(component).appendText("]");
     }
 
     private void onDisconnect() {

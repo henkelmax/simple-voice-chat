@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.gui.audiodevice;
 
+import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
@@ -18,9 +19,9 @@ import java.util.List;
 
 public class SelectSpeakerScreen extends SelectDeviceScreen {
 
-    protected static final ResourceLocation SPEAKER_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker.png");
-    protected static final ITextComponent TITLE = new TextComponentTranslation("gui.voicechat.select_speaker.title");
-    protected static final ITextComponent NO_SPEAKER = new TextComponentTranslation("message.voicechat.no_speaker").setStyle(new Style().setColor(TextFormatting.GRAY));
+    public static final ResourceLocation SPEAKER_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker.png");
+    public static final ITextComponent TITLE = new TextComponentTranslation("gui.voicechat.select_speaker.title");
+    public static final ITextComponent NO_SPEAKER = new TextComponentTranslation("message.voicechat.no_speaker").setStyle(new Style().setColor(TextFormatting.GRAY));
 
     public SelectSpeakerScreen(@Nullable GuiScreen parent) {
         super(TITLE, parent);
@@ -33,12 +34,7 @@ public class SelectSpeakerScreen extends SelectDeviceScreen {
     }
 
     @Override
-    public String getSelectedDevice() {
-        return VoicechatClient.CLIENT_CONFIG.speaker.get();
-    }
-
-    @Override
-    public ResourceLocation getIcon(String device) {
+    public ResourceLocation getIcon() {
         return SPEAKER_ICON;
     }
 
@@ -48,17 +44,8 @@ public class SelectSpeakerScreen extends SelectDeviceScreen {
     }
 
     @Override
-    public String getVisibleName(String device) {
-        return device;
-        // return SoundManager.cleanDeviceName(device);
+    public ConfigEntry<String> getConfigEntry() {
+        return VoicechatClient.CLIENT_CONFIG.speaker;
     }
 
-    @Override
-    public void onSelect(String device) {
-        VoicechatClient.CLIENT_CONFIG.speaker.set(device).save();
-        ClientVoicechat client = ClientManager.getClient();
-        if (client != null) {
-            client.reloadAudio();
-        }
-    }
 }

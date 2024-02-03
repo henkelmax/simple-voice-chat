@@ -30,7 +30,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         super.mouseDragged(mc, mouseX, mouseY);
         mc.getTextureManager().bindTexture(SLIDER);
         GlStateManager.color(1F, 1F, 1F, 1F);
-        int width = (int) (226D * micValue);
+        int width = (int) ((width - 2) * micValue);
         drawTexturedModalRect(x + 1, y + 1, 0, 0, width, 18);
     }
 
@@ -47,7 +47,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     }
 
     @Nullable
-    public ITextComponent getTooltip() {
+    public ITextComponent getHoverText() {
         if (value >= 1D) {
             return NO_ACTIVATION;
         }

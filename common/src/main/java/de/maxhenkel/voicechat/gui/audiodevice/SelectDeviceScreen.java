@@ -15,7 +15,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class SelectDeviceScreen extends ListScreenBase {
 
@@ -25,7 +24,7 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
     protected static final int HEADER_SIZE = 16;
     protected static final int FOOTER_SIZE = 32;
     protected static final int UNIT_SIZE = 18;
-    protected static final int CELL_HEIGHT = 36;
+
 
     @Nullable
     protected GuiScreen parent;
@@ -40,26 +39,23 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
 
     public abstract List<String> getDevices();
 
-    public abstract String getSelectedDevice();
-
-    public abstract void onSelect(String device);
-
-    public abstract ResourceLocation getIcon(String device);
+    public abstract ResourceLocation getIcon();
 
     public abstract ITextComponent getEmptyListComponent();
 
-    public abstract String getVisibleName(String device);
+    public abstract ConfigEntry<String> getConfigEntry();
 
     @Override
     public void initGui() {
         super.initGui();
         guiLeft = guiLeft + 2;
         guiTop = 32;
-        int minUnits = MathHelper.ceil((float) (CELL_HEIGHT + 4) / (float) UNIT_SIZE);
+        int minUnits = MathHelper.ceil((float) (AudioDeviceList.CELL_HEIGHT + 4) / (float) UNIT_SIZE);
         units = Math.max(minUnits, (height - HEADER_SIZE - FOOTER_SIZE - guiTop * 2) / UNIT_SIZE);
         ySize = HEADER_SIZE + units * UNIT_SIZE + FOOTER_SIZE;
 
-        deviceList = new AudioDeviceList(width, height, guiTop + HEADER_SIZE, guiTop + HEADER_SIZE + units * UNIT_SIZE, CELL_HEIGHT);
+        deviceList = new AudioDeviceList(width, units * UNIT_SIZE, guiTop + HEADER_SIZE).setIcon(getIcon()).setConfigEntry(getConfigEntry());
+            deviceList = new AudioDeviceList(width, height, guiTop + HEADER_SIZE, guiTop + HEADER_SIZE + units * UNIT_SIZE, CELL_HEIGHT);
         setList(deviceList);
 
         back = new ButtonBase(0, guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 14, 20, BACK) {
@@ -70,7 +66,7 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
         };
         addButton(back);
 
-        deviceList.replaceEntries(getDevices().stream().map(s -> new AudioDeviceEntry(this, s)).collect(Collectors.toList()));
+        deviceList.setAudioDevices(getDevices());
     }
 
     @Override
@@ -91,23 +87,6 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
         fontRenderer.drawString(title.getUnformattedComponentText(), width / 2 - fontRenderer.getStringWidth(title.getUnformattedComponentText()) / 2, guiTop + 5, isIngame() ? VoiceChatScreenBase.FONT_COLOR : 0xFFFFFF);
         if (deviceList == null || deviceList.isEmpty()) {
             drawCenteredString(fontRenderer, getEmptyListComponent().getUnformattedComponentText(), width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - fontRenderer.FONT_HEIGHT / 2, -1);
-        }
-    }
-
-    @Override
-    public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        super.mouseClicked(mouseX, mouseY, button);
-        if (deviceList == null) {
-            return;
-        }
-        for (AudioDeviceEntry entry : deviceList.children()) {
-            if (entry.isSelected()) {
-                if (!getSelectedDevice().equals(entry.getDevice())) {
-                    mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.F));
-                    onSelect(entry.getDevice());
-                    return;
-                }
-            }
         }
     }
 

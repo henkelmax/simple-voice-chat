@@ -1,1 +1,3 @@
-- Improved thread safety
+- Added onboarding guide
+- Removed default push to talk key assignment
+- Improved voice chat settings screen

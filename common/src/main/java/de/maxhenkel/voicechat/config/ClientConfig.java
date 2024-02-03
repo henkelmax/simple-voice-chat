@@ -12,6 +12,7 @@ import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
 
 public class ClientConfig {
 
+    public ConfigEntry<Boolean> onboardingFinished;
     public ConfigEntry<Double> voiceChatVolume;
     public ConfigEntry<Double> voiceActivationThreshold;
     public ConfigEntry<Double> microphoneAmplification;
@@ -49,6 +50,10 @@ public class ClientConfig {
 
         builder.header(String.format("%s client config v%s", CommonCompatibilityManager.INSTANCE.getModName(), CommonCompatibilityManager.INSTANCE.getModVersion()));
 
+        onboardingFinished = builder
+                .booleanEntry("onboarding_finished", false,
+                        "If the voice chat onboarding process has been finished"
+                );
         voiceChatVolume = builder
                 .doubleEntry("voice_chat_volume", 1D, 0D, 2D,
                         "The voice chat volume"

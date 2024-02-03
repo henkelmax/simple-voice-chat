@@ -8,6 +8,9 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
+
 public class AudioDeviceEntry extends ListScreenEntryBase {
 
     protected static final ResourceLocation SELECTED = new ResourceLocation(Voicechat.MODID, "textures/icons/device_selected.png");
@@ -21,19 +24,22 @@ public class AudioDeviceEntry extends ListScreenEntryBase {
     protected final Minecraft minecraft;
     protected final String device;
     protected final String visibleDeviceName;
-    protected final SelectDeviceScreen parent;
+    @Nullable
+    protected final ResourceLocation icon;
+    protected final Supplier<Boolean> isSelected;
 
-    public AudioDeviceEntry(SelectDeviceScreen parent, String device) {
-        this.parent = parent;
+    public AudioDeviceEntry(String device, String name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
         this.device = device;
-        this.visibleDeviceName = parent.getVisibleName(device);
+        this.icon = icon;
+        this.isSelected = isSelected;
+        this.visibleDeviceName = name;
         this.minecraft = Minecraft.getMinecraft();
     }
 
     @Override
     public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
         super.drawEntry(slotIndex, x, y, listWidth, slotHeight, mouseX, mouseY, isSelected, partialTicks);
-        boolean selected = parent.getSelectedDevice().equals(device);
+        boolean selected = isSelected.get();
         if (selected) {
             GuiScreen.drawRect(x, y, x + listWidth, y + slotHeight, BG_FILL_SELECTED);
         } else if (isSelected) {
@@ -43,8 +49,10 @@ public class AudioDeviceEntry extends ListScreenEntryBase {
         }
         GlStateManager.color(1F, 1F, 1F, 1F);
 
-        minecraft.getTextureManager().bindTexture(parent.getIcon(device));
-        GuiScreen.drawModalRectWithCustomSizedTexture(x + PADDING, y + slotHeight / 2 - 8, 16, 16, 16, 16, 16, 16);
+        if (icon != null) {
+            minecraft.getTextureManager().bindTexture(icon);
+            GuiScreen.drawModalRectWithCustomSizedTexture(x + PADDING, y + slotHeight / 2 - 8, 16, 16, 16, 16, 16, 16);
+        }
         if (selected) {
             minecraft.getTextureManager().bindTexture(SELECTED);
             GuiScreen.drawModalRectWithCustomSizedTexture(x + PADDING, y + slotHeight / 2 - 8, 16, 16, 16, 16, 16, 16);

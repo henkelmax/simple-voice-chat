@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
+import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import net.minecraft.client.Minecraft;
@@ -39,7 +40,7 @@ public class ClientVoicechat {
             reloadSoundManager();
         } catch (SpeakerException e) {
             Voicechat.LOGGER.error("Failed to start sound manager", e);
-            ClientManager.sendPlayerError("message.voicechat.speaker_unavailable", e);
+            ChatUtils.sendPlayerError("message.voicechat.speaker_unavailable", e);
         }
         this.audioChannels = new HashMap<>();
     }
@@ -61,6 +62,7 @@ public class ClientVoicechat {
         Voicechat.LOGGER.info("Connecting to voice chat server: '{}:{}'", initializationData.getServerIP(), initializationData.getServerPort());
         connection = new ClientVoicechatConnection(this, initializationData);
         connection.start();
+        OnboardingManager.onConnecting();
     }
 
     public void processSoundPacket(SoundPacket packet) {
@@ -79,7 +81,7 @@ public class ClientVoicechat {
                     } catch (Exception e) {
                         CooldownTimer.run("playback_unavailable", () -> {
                             Voicechat.LOGGER.error("Failed to create audio channel", e);
-                            ClientManager.sendPlayerError("message.voicechat.playback_unavailable", e);
+                            ChatUtils.sendPlayerError("message.voicechat.playback_unavailable", e);
                         });
                     }
                 } else {
@@ -131,7 +133,7 @@ public class ClientVoicechat {
             micThread.start();
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to start microphone thread", e);
-            ClientManager.sendPlayerError("message.voicechat.microphone_unavailable", e);
+            ChatUtils.sendPlayerError("message.voicechat.microphone_unavailable", e);
         }
     }
 
