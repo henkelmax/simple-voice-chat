@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 
 import javax.annotation.Nullable;
 
@@ -21,7 +22,7 @@ public class KeybindButton extends AbstractButton {
     protected boolean listening;
 
     public KeybindButton(KeyMapping mapping, int x, int y, int width, int height, @Nullable Component description) {
-        super(x, y, width, height, Component.empty());
+        super(x, y, width, height, new TextComponent(""));
         this.keyMapping = mapping;
         this.description = description;
         updateText();
@@ -34,7 +35,7 @@ public class KeybindButton extends AbstractButton {
     protected void updateText() {
         MutableComponent text;
         if (listening) {
-            text = Component.literal("> ").append(getText(keyMapping).copy().withStyle(ChatFormatting.WHITE, ChatFormatting.UNDERLINE)).append(" <").withStyle(ChatFormatting.YELLOW);
+            text = new TextComponent("> ").append(getText(keyMapping).copy().withStyle(ChatFormatting.WHITE, ChatFormatting.UNDERLINE)).append(" <").withStyle(ChatFormatting.YELLOW);
         } else {
             text = getText(keyMapping).copy();
         }
