@@ -10,6 +10,7 @@ import de.maxhenkel.voicechat.voice.client.speaker.SpeakerManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
@@ -18,6 +19,7 @@ import javax.annotation.Nullable;
 public class MicTestButton extends ButtonBase {
 
     private static final ITextComponent TEST = new TranslationTextComponent("message.voicechat.mic_test");
+    private static final ITextComponent DISABLE_TEST = new StringTextComponent("X");
     private static final ITextComponent TEST_UNAVAILABLE = new TranslationTextComponent("message.voicechat.mic_test_unavailable").withStyle(ChatFormatting.RED);
 
     private boolean micActive;
@@ -44,6 +46,15 @@ public class MicTestButton extends ButtonBase {
 
     public void setMicActive(boolean micActive) {
         this.micActive = micActive;
+        updateText();
+    }
+
+    private void updateText() {
+        if (micActive) {
+            setMessage(DISABLE_TEST);
+        } else {
+            setMessage(TEST);
+        }
     }
 
     @Nullable
@@ -70,6 +81,7 @@ public class MicTestButton extends ButtonBase {
         } else {
             close();
         }
+        updateText();
     }
 
     private void close() {
@@ -150,7 +162,7 @@ public class MicTestButton extends ButtonBase {
             // if (ownSoundManager != null) {
             //     ownSoundManager.close();
             // }
-            micActive = false;
+            setMicActive(false);
             Voicechat.LOGGER.info("Mic test audio channel closed");
         }
 
