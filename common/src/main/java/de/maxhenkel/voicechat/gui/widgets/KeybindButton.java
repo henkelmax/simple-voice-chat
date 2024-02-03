@@ -50,6 +50,10 @@ public class KeybindButton extends AbstractButton {
         return keyMapping.getTranslatedKeyMessage();
     }
 
+    public boolean isHovered() {
+        return isHovered;
+    }
+
     @Override
     public void onPress() {
         listening = true;
@@ -92,7 +96,7 @@ public class KeybindButton extends AbstractButton {
     }
 
     @Override
-    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+    public void updateNarration(NarrationElementOutput narrationElementOutput) {
 
     }
 

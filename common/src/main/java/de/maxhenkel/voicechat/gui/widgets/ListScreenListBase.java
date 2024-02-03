@@ -7,14 +7,19 @@ import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 
 public abstract class ListScreenListBase<T extends ListScreenEntryBase<T>> extends ContainerObjectSelectionList<T> {
 
-    public ListScreenListBase(int width, int height, int top, int bottom, int size) {
-        super(Minecraft.getInstance(), width, height, top, bottom, size);
+    public ListScreenListBase(int width, int height, int top, int size) {
+        super(Minecraft.getInstance(), width, height, top, top + height, size);
+    }
+
+    public void updateSize(int width, int height, int top) {
+        updateSize(width, height, top, top + height);
     }
 
     @Override
     public void render(PoseStack poseStack, int x, int y, float partialTicks) {
         double scale = minecraft.getWindow().getGuiScale();
-        RenderSystem.enableScissor((int) ((double) getRowLeft() * scale), (int) ((double) (height - y1) * scale), (int) ((double) (getScrollbarPosition() + 6) * scale), (int) ((double) (height - (height - y1) - y0 - 4) * scale));
+        int scaledHeight = minecraft.getWindow().getGuiScaledHeight();
+        RenderSystem.enableScissor(0, (int) ((double) (scaledHeight - y1) * scale), Integer.MAX_VALUE / 2, (int) ((double) height * scale));
         super.render(poseStack, x, y, partialTicks);
         RenderSystem.disableScissor();
     }

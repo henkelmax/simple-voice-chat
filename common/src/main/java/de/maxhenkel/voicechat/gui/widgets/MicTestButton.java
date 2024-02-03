@@ -67,6 +67,10 @@ public class MicTestButton extends AbstractButton {
         return null;
     }
 
+    public boolean isHovered() {
+        return isHovered;
+    }
+
     @Override
     public void onPress() {
         setMicActive(!micActive);
