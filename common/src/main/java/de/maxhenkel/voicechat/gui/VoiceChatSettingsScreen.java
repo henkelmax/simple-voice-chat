@@ -10,7 +10,8 @@ import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
 import de.maxhenkel.voicechat.gui.widgets.*;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
-import de.maxhenkel.voicechat.voice.client.Denoiser;
+import de.maxhenkel.voicechat.voice.client.KeyEvents;
+import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -24,8 +25,9 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_voicechat_settings.png");
     private static final Component TITLE = Component.translatable("gui.voicechat.voice_chat_settings.title");
-    private static final Component ENABLED = Component.translatable("message.voicechat.enabled");
-    private static final Component DISABLED = Component.translatable("message.voicechat.disabled");
+
+    private static final Component ASSIGN_TOOLTIP = Component.translatable("message.voicechat.press_to_reassign_key");
+    private static final Component PUSH_TO_TALK = Component.translatable("message.voicechat.activation_type.ptt");
     private static final Component ADJUST_VOLUMES = Component.translatable("message.voicechat.adjust_volumes");
     private static final Component SELECT_MICROPHONE = Component.translatable("message.voicechat.select_microphone");
     private static final Component SELECT_SPEAKER = Component.translatable("message.voicechat.select_speaker");
@@ -34,6 +36,8 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
     @Nullable
     private final Screen parent;
     private VoiceActivationSlider voiceActivationSlider;
+    private MicTestButton micTestButton;
+    private KeybindButton keybindButton;
 
     public VoiceChatSettingsScreen(@Nullable Screen parent) {
         super(TITLE, 248, 219);
@@ -54,25 +58,22 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         y += 21;
         addRenderableWidget(new MicAmplificationSlider(guiLeft + 10, y, xSize - 20, 20));
         y += 21;
-        BooleanConfigButton denoiser = addRenderableWidget(new BooleanConfigButton(guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.denoiser, enabled -> {
-            return Component.translatable("message.voicechat.denoiser", enabled ? ENABLED : DISABLED);
+        addRenderableWidget(new DenoiserButton(guiLeft + 10, y, xSize - 20, 20));
+        y += 21;
+
+        voiceActivationSlider = new VoiceActivationSlider(guiLeft + 10 + 30 + 1, y + 21, xSize - 20 - 30 - 1, 20);
+        micTestButton = new MicTestButton(guiLeft + 10, y + 21, 30, 20, voiceActivationSlider);
+        keybindButton = new KeybindButton(KeyEvents.KEY_PTT, guiLeft + 10, y + 21, xSize - 20, 20, PUSH_TO_TALK);
+        addRenderableWidget(new MicActivationButton(guiLeft + 10, y, xSize - 20, 20, type -> {
+            voiceActivationSlider.visible = MicrophoneActivationType.VOICE.equals(type);
+            micTestButton.visible = MicrophoneActivationType.VOICE.equals(type);
+            keybindButton.visible = MicrophoneActivationType.PTT.equals(type);
         }));
-        if (Denoiser.createDenoiser() == null) {
-            denoiser.active = false;
-        }
-        y += 21;
 
-        voiceActivationSlider = new VoiceActivationSlider(guiLeft + 10, y + 21, xSize - 20, 20);
-
-        addRenderableWidget(new MicActivationButton(guiLeft + 10, y, xSize - 20, 20, voiceActivationSlider));
-        y += 21;
-
-        addRenderableWidget(voiceActivationSlider);
-        y += 21;
-
-        MicTestButton micTestButton = new MicTestButton(guiLeft + 10, y, xSize - 20, 20, voiceActivationSlider);
         addRenderableWidget(micTestButton);
-        y += 21;
+        addRenderableWidget(voiceActivationSlider);
+        addRenderableWidget(keybindButton);
+        y += 21 * 2;
 
         addRenderableWidget(new EnumButton<>(guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.audioType) {
             @Override
@@ -98,10 +99,10 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         }
         addRenderableWidget(Button.builder(SELECT_MICROPHONE, button -> {
             minecraft.setScreen(new SelectMicrophoneScreen(this));
-        }).bounds(guiLeft + 10, y, xSize / 2 - 15, 20).build());
+        }).bounds(guiLeft + 10, y, (xSize - 20) / 2 - 1, 20).build());
         addRenderableWidget(Button.builder(SELECT_SPEAKER, button -> {
             minecraft.setScreen(new SelectSpeakerScreen(this));
-        }).bounds(guiLeft + xSize / 2 + 6, y, xSize / 2 - 15, 20).build());
+        }).bounds(guiLeft + xSize / 2 + 1, y, (xSize - 20) / 2 - 1, 20).build());
         y += 21;
         if (!isIngame() && parent != null) {
             addRenderableWidget(Button.builder(BACK, button -> {
@@ -125,9 +126,22 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         int titleWidth = font.width(TITLE);
         font.draw(poseStack, TITLE.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, getFontColor());
 
-        Component tooltip = voiceActivationSlider.getTooltip();
-        if (tooltip != null && voiceActivationSlider.isHovered()) {
-            renderTooltip(poseStack, tooltip, mouseX, mouseY);
+        Component sliderTooltip = voiceActivationSlider.getHoverText();
+        Component testTooltip = micTestButton.getHoverText();
+        if (voiceActivationSlider.isHovered() && sliderTooltip != null) {
+            renderTooltip(poseStack, sliderTooltip, mouseX, mouseY);
+        } else if (micTestButton.isHovered() && testTooltip != null) {
+            renderTooltip(poseStack, testTooltip, mouseX, mouseY);
+        } else if (keybindButton.isHovered()) {
+            renderTooltip(poseStack, ASSIGN_TOOLTIP, mouseX, mouseY);
         }
+    }
+
+    @Override
+    public boolean shouldCloseOnEsc() {
+        if (keybindButton.isListening()) {
+            return false;
+        }
+        return super.shouldCloseOnEsc();
     }
 }

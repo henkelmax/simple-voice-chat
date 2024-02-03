@@ -22,8 +22,6 @@
   "message.voicechat.group": "Skupina",
   "message.voicechat.voice_chat_volume": "Hlasitost hlasové komunikace: %s",
   "message.voicechat.microphone_amplification": "Úprava hlasového vstupu: %s",
-  "message.voicechat.mic_test_on": "Vypnout zkoušku mikrofonu",
-  "message.voicechat.mic_test_off": "Zapnout zkoušku mikrofonu",
   "message.voicechat.mic_test_unavailable": "Zkouška mikrofonu je nedostupná",
   "message.voicechat.voice_chat_unavailable": "Hlasová komunikace je nedostupná",
   "message.voicechat.voice_chat_not_connected": "Hlasová komunikace není připojena",

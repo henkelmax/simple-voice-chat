@@ -4,15 +4,17 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraft.network.chat.Component;
 
+import java.util.function.Consumer;
+
 public class MicActivationButton extends EnumButton<MicrophoneActivationType> {
 
-    private final VoiceActivationSlider voiceActivationSlider;
+    protected Consumer<MicrophoneActivationType> onChange;
 
-    public MicActivationButton(int xIn, int yIn, int widthIn, int heightIn, VoiceActivationSlider voiceActivationSlider) {
+    public MicActivationButton(int xIn, int yIn, int widthIn, int heightIn, Consumer<MicrophoneActivationType> onChange) {
         super(xIn, yIn, widthIn, heightIn, VoicechatClient.CLIENT_CONFIG.microphoneActivationType);
-        this.voiceActivationSlider = voiceActivationSlider;
+        this.onChange = onChange;
         updateText();
-        setVisibility();
+        onChange.accept(entry.get());
     }
 
     @Override
@@ -22,11 +24,7 @@ public class MicActivationButton extends EnumButton<MicrophoneActivationType> {
 
     @Override
     protected void onUpdate(MicrophoneActivationType type) {
-        setVisibility();
-    }
-
-    private void setVisibility() {
-        voiceActivationSlider.visible = MicrophoneActivationType.VOICE.equals(entry.get());
+        onChange.accept(type);
     }
 
 }

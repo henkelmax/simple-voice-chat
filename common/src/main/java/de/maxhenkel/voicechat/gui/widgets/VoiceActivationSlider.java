@@ -34,7 +34,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         blitNineSliced(poseStack, getX(), getY(), getWidth(), getHeight(), 4, 200, 20, 0, getYTexturePos());
 
         RenderSystem.setShaderTexture(0, VOICE_ACTIVATION_SLIDER);
-        int micWidth = (int) (226D * micValue);
+        int micWidth = (int) ((width - 2) * micValue);
         blit(poseStack, getX() + 1, getY() + 1, 0, 0, micWidth, 18);
 
         RenderSystem.setShaderTexture(0, SLIDER_LOCATION);
@@ -65,7 +65,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     }
 
     @Nullable
-    public Component getTooltip() {
+    public Component getHoverText() {
         if (value >= 1D) {
             return NO_ACTIVATION;
         }
