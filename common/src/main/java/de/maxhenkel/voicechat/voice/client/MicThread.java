@@ -27,6 +27,8 @@ public class MicThread extends Thread {
     private final ClientVoicechatConnection connection;
     @Nullable
     private Microphone mic;
+    @Nullable
+    private MicrophoneException microphoneError;
     private final VolumeManager volumeManager;
     private boolean running;
     private boolean microphoneLocked;
@@ -53,6 +55,12 @@ public class MicThread extends Thread {
         setDaemon(true);
         setName("MicrophoneThread");
         setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
+    }
+
+    public void getError(Consumer<MicrophoneException> onError) {
+        if (microphoneError != null) {
+            onError.accept(microphoneError);
+        }
     }
 
     @Override
@@ -140,6 +148,7 @@ public class MicThread extends Thread {
                 Minecraft.getInstance().execute(ClientManager.instance()::checkMicrophonePermissions);
             } catch (MicrophoneException e) {
                 onError.accept(e);
+                microphoneError = e;
                 running = false;
                 return null;
             }
