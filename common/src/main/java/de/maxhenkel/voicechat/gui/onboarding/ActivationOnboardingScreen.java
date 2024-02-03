@@ -27,16 +27,16 @@ public class ActivationOnboardingScreen extends OnboardingScreenBase {
     protected void init() {
         super.init();
 
-        Button ptt = Button.builder(Component.translatable("message.voicechat.onboarding.activation.ptt.name"), button -> {
+        Button ptt = new Button(guiLeft, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth / 2 - PADDING / 2, BUTTON_HEIGHT, Component.translatable("message.voicechat.onboarding.activation.ptt.name"), button -> {
             VoicechatClient.CLIENT_CONFIG.microphoneActivationType.set(MicrophoneActivationType.PTT).save();
             minecraft.setScreen(new PttOnboardingScreen(this));
-        }).bounds(guiLeft, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth / 2 - PADDING / 2, BUTTON_HEIGHT).build();
+        });
         addRenderableWidget(ptt);
 
-        Button voice = Button.builder(Component.translatable("message.voicechat.onboarding.activation.voice.name"), button -> {
+        Button voice = new Button(guiLeft + contentWidth / 2 + PADDING / 2, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth / 2 - PADDING / 2, BUTTON_HEIGHT, Component.translatable("message.voicechat.onboarding.activation.voice.name"), button -> {
             VoicechatClient.CLIENT_CONFIG.microphoneActivationType.set(MicrophoneActivationType.VOICE).save();
             minecraft.setScreen(new VoiceActivationOnboardingScreen(this));
-        }).bounds(guiLeft + contentWidth / 2 + PADDING / 2, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth / 2 - PADDING / 2, BUTTON_HEIGHT).build();
+        });
         addRenderableWidget(voice);
 
         addBackOrCancelButton(true);

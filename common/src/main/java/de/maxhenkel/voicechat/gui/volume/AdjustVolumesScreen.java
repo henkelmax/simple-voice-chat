@@ -53,9 +53,9 @@ public class AdjustVolumesScreen extends ListScreenBase {
 
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
         if (volumeList != null) {
-            volumeList.updateSize(width, height, guiTop + HEADER_SIZE + SEARCH_HEIGHT, guiTop + HEADER_SIZE + units * UNIT_SIZE);
+            volumeList.updateSize(width, units * UNIT_SIZE - SEARCH_HEIGHT, guiTop + HEADER_SIZE + SEARCH_HEIGHT);
         } else {
-            volumeList = new AdjustVolumeList(width, height, guiTop + HEADER_SIZE + SEARCH_HEIGHT, guiTop + HEADER_SIZE + units * UNIT_SIZE, CELL_HEIGHT, this);
+            volumeList = new AdjustVolumeList(width, units * UNIT_SIZE - SEARCH_HEIGHT, guiTop + HEADER_SIZE + SEARCH_HEIGHT, CELL_HEIGHT, this);
         }
         String string = searchBox != null ? searchBox.getValue() : "";
         searchBox = new TextFieldWidget(font, guiLeft + 28, guiTop + HEADER_SIZE + 6, 196, SEARCH_HEIGHT, SEARCH_HINT);
