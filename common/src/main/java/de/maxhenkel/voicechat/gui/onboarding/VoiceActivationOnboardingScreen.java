@@ -1,11 +1,11 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.gui.widgets.DenoiserButton;
 import de.maxhenkel.voicechat.gui.widgets.MicAmplificationSlider;
 import de.maxhenkel.voicechat.gui.widgets.MicTestButton;
 import de.maxhenkel.voicechat.gui.widgets.VoiceActivationSlider;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -48,18 +48,18 @@ public class VoiceActivationOnboardingScreen extends OnboardingScreenBase {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        super.render(poseStack, mouseX, mouseY, partialTicks);
 
-        renderTitle(guiGraphics, TITLE);
-        renderMultilineText(guiGraphics, DESCRIPTION);
+        renderTitle(poseStack, TITLE);
+        renderMultilineText(poseStack, DESCRIPTION);
 
         Component sliderTooltip = slider.getHoverText();
         Component testTooltip = micTestButton.getHoverText();
         if (slider.isHovered() && sliderTooltip != null) {
-            guiGraphics.renderTooltip(font, sliderTooltip, mouseX, mouseY);
+            renderTooltip(poseStack, sliderTooltip, mouseX, mouseY);
         } else if (micTestButton.isHovered() && testTooltip != null) {
-            guiGraphics.renderTooltip(font, testTooltip, mouseX, mouseY);
+            renderTooltip(poseStack, testTooltip, mouseX, mouseY);
         }
     }
 }
