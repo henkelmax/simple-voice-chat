@@ -22,9 +22,13 @@ public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
     @Nullable
     protected ConfigEntry<String> configEntry;
 
-    public AudioDeviceList(int width, int height, int x, int y) {
-        super(width, height, x, y, CELL_HEIGHT);
+    public AudioDeviceList(int width, int height, int top) {
+        super(width, height, top, top + height, CELL_HEIGHT);
         setRenderBackground(false);
+    }
+
+    public void updateSize(int width, int height, int top) {
+        updateSize(width, height, top, top + height);
     }
 
     @Override
@@ -36,7 +40,7 @@ public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
         if (entry == null) {
             return false;
         }
-        if (!isHovered()) {
+        if (getHovered() != entry) {
             return false;
         }
         if (!isSelected(entry.getDevice())) {

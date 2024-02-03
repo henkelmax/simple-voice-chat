@@ -35,7 +35,7 @@ public abstract class DeviceOnboardingScreen extends OnboardingScreenBase {
         super.init();
 
         if (deviceList != null) {
-            deviceList.setRectangle(width, contentHeight - font.lineHeight - BUTTON_HEIGHT - PADDING * 2, 0, guiTop + font.lineHeight + PADDING);
+            deviceList.updateSize(width, contentHeight - font.lineHeight - BUTTON_HEIGHT - PADDING * 2, guiTop + font.lineHeight + PADDING);
         } else {
             deviceList = new AudioDeviceList(width, contentHeight - font.lineHeight - BUTTON_HEIGHT - PADDING * 2, guiTop + font.lineHeight + PADDING).setIcon(getIcon()).setConfigEntry(getConfigEntry());
         }

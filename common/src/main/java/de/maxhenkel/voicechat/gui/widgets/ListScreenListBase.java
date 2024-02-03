@@ -7,8 +7,8 @@ import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 
 public abstract class ListScreenListBase<T extends ListScreenEntryBase<T>> extends ContainerObjectSelectionList<T> {
 
-    public ListScreenListBase(int width, int height, int x, int y, int size) {
-        super(Minecraft.getInstance(), width, height, x, y, size);
+    public ListScreenListBase(int width, int height, int top, int bottom, int size) {
+        super(Minecraft.getInstance(), width, height, top, bottom, size);
     }
 
     @Override
