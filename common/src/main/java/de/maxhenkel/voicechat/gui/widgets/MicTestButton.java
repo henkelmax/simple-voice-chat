@@ -104,6 +104,8 @@ public class MicTestButton extends AbstractButton {
             if (micThread == null) {
                 micThread = new MicThread(client, null);
                 usesOwnMicThread = true;
+            } else {
+                micThread.getError(onMicError);
             }
 
             SoundManager soundManager;
