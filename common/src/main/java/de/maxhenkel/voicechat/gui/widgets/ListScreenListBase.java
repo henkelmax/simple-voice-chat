@@ -7,8 +7,8 @@ import net.minecraft.client.gui.widget.list.AbstractOptionList;
 
 public abstract class ListScreenListBase<T extends ListScreenEntryBase<T>> extends AbstractOptionList<T> {
 
-    public ListScreenListBase(int width, int height, int x, int y, int size) {
-        super(Minecraft.getInstance(), width, height, x, y, size);
+    public ListScreenListBase(int width, int height, int top, int bottom, int size) {
+        super(Minecraft.getInstance(), width, height, top, bottom, size);
     }
 
     @Override
