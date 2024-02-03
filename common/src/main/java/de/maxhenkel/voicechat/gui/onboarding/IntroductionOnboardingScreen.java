@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -38,10 +38,10 @@ public class IntroductionOnboardingScreen extends OnboardingScreenBase {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        renderTitle(guiGraphics, TITLE);
-        renderMultilineText(guiGraphics, DESCRIPTION);
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        super.render(poseStack, mouseX, mouseY, partialTicks);
+        renderTitle(poseStack, TITLE);
+        renderMultilineText(poseStack, DESCRIPTION);
     }
 
 }

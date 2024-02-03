@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -44,9 +44,9 @@ public abstract class OnboardingScreenBase extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(guiGraphics);
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(poseStack);
+        super.render(poseStack, mouseX, mouseY, partialTicks);
     }
 
     @Nullable
@@ -80,17 +80,17 @@ public abstract class OnboardingScreenBase extends Screen {
         addBackOrCancelButton(false);
     }
 
-    protected void renderTitle(GuiGraphics guiGraphics, Component titleComponent) {
+    protected void renderTitle(PoseStack poseStack, Component titleComponent) {
         int titleWidth = font.width(titleComponent);
-        guiGraphics.drawString(font, titleComponent.getVisualOrderText(), width / 2 - titleWidth / 2, guiTop, TEXT_COLOR, true);
+        font.drawShadow(poseStack, titleComponent.getVisualOrderText(), width / 2 - titleWidth / 2, guiTop, TEXT_COLOR);
     }
 
-    protected void renderMultilineText(GuiGraphics guiGraphics, Component textComponent) {
+    protected void renderMultilineText(PoseStack poseStack, Component textComponent) {
         List<FormattedCharSequence> text = font.split(textComponent, contentWidth);
 
         for (int i = 0; i < text.size(); i++) {
             FormattedCharSequence line = text.get(i);
-            guiGraphics.drawString(font, line, width / 2 - font.width(line) / 2, guiTop + font.lineHeight + 20 + i * (font.lineHeight + 1), TEXT_COLOR, true);
+            font.drawShadow(poseStack, line, width / 2 - font.width(line) / 2, guiTop + font.lineHeight + 20 + i * (font.lineHeight + 1), TEXT_COLOR);
         }
     }
 
