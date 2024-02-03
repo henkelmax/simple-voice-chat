@@ -1,52 +1,57 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.gui.widgets.ButtonBase;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
 
 public class ActivationOnboardingScreen extends OnboardingScreenBase {
 
-    private static final ITextComponent TITLE = new TranslationTextComponent("message.voicechat.onboarding.activation.title").withStyle(TextFormatting.BOLD);
-    private static final ITextComponent DESCRIPTION = new TranslationTextComponent("message.voicechat.onboarding.activation")
-            .append("\n\n")
-            .append(new TranslationTextComponent("message.voicechat.onboarding.activation.ptt", new TranslationTextComponent("message.voicechat.onboarding.activation.ptt.name").withStyle(TextFormatting.BOLD, TextFormatting.UNDERLINE)))
-            .append("\n\n")
-            .append(new TranslationTextComponent("message.voicechat.onboarding.activation.voice", new TranslationTextComponent("message.voicechat.onboarding.activation.voice.name").withStyle(TextFormatting.BOLD, TextFormatting.UNDERLINE)));
+    private static final ITextComponent TITLE = new TextComponentTranslation("message.voicechat.onboarding.activation.title").setStyle(new Style().setBold(true));
+    private static final ITextComponent DESCRIPTION = new TextComponentTranslation("message.voicechat.onboarding.activation")
+            .appendText("\n\n")
+            .appendSibling(new TextComponentTranslation("message.voicechat.onboarding.activation.ptt", new TextComponentTranslation("message.voicechat.onboarding.activation.ptt.name").setStyle(new Style().setBold(true).setUnderlined(true))))
+            .appendText("\n\n")
+            .appendSibling(new TextComponentTranslation("message.voicechat.onboarding.activation.voice", new TextComponentTranslation("message.voicechat.onboarding.activation.voice.name").setStyle(new Style().setBold(true).setUnderlined(true))));
 
-    public ActivationOnboardingScreen(@Nullable Screen previous) {
+    public ActivationOnboardingScreen(@Nullable GuiScreen previous) {
         super(TITLE, previous);
     }
 
     @Override
-    protected void init() {
-        super.init();
+    public void initGui() {
+        super.initGui();
 
-        Button ptt = new Button(guiLeft, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth / 2 - PADDING / 2, BUTTON_HEIGHT, new TranslationTextComponent("message.voicechat.onboarding.activation.ptt.name"), button -> {
-            VoicechatClient.CLIENT_CONFIG.microphoneActivationType.set(MicrophoneActivationType.PTT).save();
-            minecraft.setScreen(new PttOnboardingScreen(this));
-        });
+        ButtonBase ptt = new ButtonBase(0, guiLeft, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth / 2 - PADDING / 2, BUTTON_HEIGHT, new TextComponentTranslation("message.voicechat.onboarding.activation.ptt.name")) {
+            @Override
+            public void onPress() {
+                VoicechatClient.CLIENT_CONFIG.microphoneActivationType.set(MicrophoneActivationType.PTT).save();
+                mc.displayGuiScreen(new PttOnboardingScreen(ActivationOnboardingScreen.this));
+            }
+        };
         addButton(ptt);
 
-        Button voice = new Button(guiLeft + contentWidth / 2 + PADDING / 2, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth / 2 - PADDING / 2, BUTTON_HEIGHT, new TranslationTextComponent("message.voicechat.onboarding.activation.voice.name"), button -> {
-            VoicechatClient.CLIENT_CONFIG.microphoneActivationType.set(MicrophoneActivationType.VOICE).save();
-            minecraft.setScreen(new VoiceActivationOnboardingScreen(this));
-        });
+        ButtonBase voice = new ButtonBase(1, guiLeft + contentWidth / 2 + PADDING / 2, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth / 2 - PADDING / 2, BUTTON_HEIGHT, new TextComponentTranslation("message.voicechat.onboarding.activation.voice.name")) {
+            @Override
+            public void onPress() {
+                VoicechatClient.CLIENT_CONFIG.microphoneActivationType.set(MicrophoneActivationType.VOICE).save();
+                mc.displayGuiScreen(new VoiceActivationOnboardingScreen(ActivationOnboardingScreen.this));
+            }
+        };
         addButton(voice);
 
-        addBackOrCancelButton(true);
+        addBackOrCancelButton(2, true);
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-        super.render(stack, mouseX, mouseY, partialTicks);
-        renderTitle(stack, TITLE);
-        renderMultilineText(stack, DESCRIPTION);
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        renderTitle(TITLE);
+        renderMultilineText(DESCRIPTION);
     }
 }

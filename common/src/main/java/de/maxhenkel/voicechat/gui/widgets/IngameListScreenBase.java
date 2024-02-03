@@ -1,19 +1,19 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import de.maxhenkel.voicechat.gui.ScreenBase;
+import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.text.ITextComponent;
 
 import java.io.IOException;
 
-public abstract class ListScreenBase extends ScreenBase {
+public abstract class IngameListScreenBase extends VoiceChatScreenBase {
 
     private Runnable postRender;
     private ListScreenListBase<?> list;
 
-    public ListScreenBase(ITextComponent title) {
-        super(title);
+    public IngameListScreenBase(ITextComponent title, int xSize, int ySize) {
+        super(title, xSize, ySize);
     }
 
     @Override

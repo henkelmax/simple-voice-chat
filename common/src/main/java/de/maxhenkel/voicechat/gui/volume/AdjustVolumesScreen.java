@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.gui.volume;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
-import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
+import de.maxhenkel.voicechat.gui.widgets.IngameListScreenBase;
 import net.minecraft.client.gui.GuiPageButtonList;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
@@ -17,7 +17,7 @@ import org.lwjgl.input.Keyboard;
 import java.io.IOException;
 import java.util.Locale;
 
-public class AdjustVolumesScreen extends ListScreenBase {
+public class AdjustVolumesScreen extends IngameListScreenBase {
 
     protected static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_volumes.png");
     protected static final ITextComponent TITLE = new TextComponentTranslation("gui.voicechat.adjust_volume.title");
@@ -57,13 +57,10 @@ public class AdjustVolumesScreen extends ListScreenBase {
 
         Keyboard.enableRepeatEvents(true);
 
-        if (volumeList != null) {
-            volumeList.updateSize(width, units * UNIT_SIZE - SEARCH_HEIGHT, guiTop + HEADER_SIZE + SEARCH_HEIGHT);
-        } else {
-            volumeList = new AdjustVolumeList(width, units * UNIT_SIZE - SEARCH_HEIGHT, guiTop + HEADER_SIZE + SEARCH_HEIGHT, CELL_HEIGHT, this);
-        }
+        volumeList = new AdjustVolumeList(width, units * UNIT_SIZE - SEARCH_HEIGHT, guiTop + HEADER_SIZE + SEARCH_HEIGHT, CELL_HEIGHT, this);
+
         String string = searchBox != null ? searchBox.getText() : "";
-        searchBox = new GuiTextField(0, fontRenderer, guiLeft + 28, guiTop + HEADER_SIZE + 6, 196, SEARCH_HEIGHT, SEARCH_HINT);
+        searchBox = new GuiTextField(0, fontRenderer, guiLeft + 28, guiTop + HEADER_SIZE + 6, 196, SEARCH_HEIGHT);
         searchBox.setMaxStringLength(16);
         searchBox.setEnableBackgroundDrawing(false);
         searchBox.setVisible(true);

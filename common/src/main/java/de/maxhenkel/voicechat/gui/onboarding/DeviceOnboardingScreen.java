@@ -1,9 +1,9 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.voicechat.gui.audiodevice.AudioDeviceList;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -16,11 +16,12 @@ public abstract class DeviceOnboardingScreen extends OnboardingScreenBase {
 
     protected List<String> micNames;
 
-    public DeviceOnboardingScreen(ITextComponent title, @Nullable Screen previous) {
+    public DeviceOnboardingScreen(ITextComponent title, @Nullable GuiScreen previous) {
         super(title, previous);
+        mc = Minecraft.getMinecraft();
         micNames = getNames();
         if (micNames.isEmpty()) {
-            minecraft.setScreen(getNextScreen());
+            mc.addScheduledTask(() -> mc.displayGuiScreen(getNextScreen()));
         }
     }
 
@@ -31,28 +32,26 @@ public abstract class DeviceOnboardingScreen extends OnboardingScreenBase {
     public abstract ConfigEntry<String> getConfigEntry();
 
     @Override
-    protected void init() {
-        super.init();
+    public void initGui() {
+        super.initGui();
 
-        if (deviceList != null) {
-            deviceList.updateSize(width, contentHeight - font.lineHeight - BUTTON_HEIGHT - PADDING * 2, guiTop + font.lineHeight + PADDING);
-        } else {
-            deviceList = new AudioDeviceList(width, contentHeight - font.lineHeight - BUTTON_HEIGHT - PADDING * 2, guiTop + font.lineHeight + PADDING).setIcon(getIcon()).setConfigEntry(getConfigEntry());
-        }
+        deviceList = new AudioDeviceList(width, contentHeight - fontRenderer.FONT_HEIGHT - BUTTON_HEIGHT - PADDING * 2, guiTop + fontRenderer.FONT_HEIGHT + PADDING).setIcon(getIcon()).setConfigEntry(getConfigEntry());
+
         deviceList.setAudioDevices(getNames());
-        addWidget(deviceList);
+        setList(deviceList);
 
-        addNextButton();
-        addBackOrCancelButton();
+        addNextButton(0);
+        addBackOrCancelButton(1);
     }
 
     @Override
-    public abstract Screen getNextScreen();
+    public abstract GuiScreen getNextScreen();
+
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-        super.render(stack, mouseX, mouseY, partialTicks);
-        deviceList.render(stack, mouseX, mouseY, partialTicks);
-        renderTitle(stack, title);
+    public void drawScreen(int mouseX, int mouseY, float delta) {
+        super.drawScreen(mouseX, mouseY, delta);
+        deviceList.drawScreen(mouseX, mouseY, delta);
+        renderTitle(title);
     }
 }

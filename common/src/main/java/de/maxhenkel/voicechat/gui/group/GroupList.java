@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.gui.group;
 
-import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
+import de.maxhenkel.voicechat.gui.widgets.IngameListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
@@ -14,9 +14,9 @@ import java.util.UUID;
 
 public class GroupList extends ListScreenListBase<GroupEntry> {
 
-    protected final ListScreenBase parent;
+    protected final IngameListScreenBase parent;
 
-    public GroupList(ListScreenBase parent, int width, int height, int top, int size) {
+    public GroupList(IngameListScreenBase parent, int width, int height, int top, int size) {
         super(width, height, top, size);
         this.parent = parent;
         updateMembers();

@@ -1,48 +1,50 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import de.maxhenkel.voicechat.gui.widgets.ButtonBase;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
 
 public class IntroductionOnboardingScreen extends OnboardingScreenBase {
 
-    private static final ITextComponent TITLE = new TranslationTextComponent("message.voicechat.onboarding.introduction.title", CommonCompatibilityManager.INSTANCE.getModName()).withStyle(TextFormatting.BOLD);
-    private static final ITextComponent DESCRIPTION = new TranslationTextComponent("message.voicechat.onboarding.introduction.description");
-    private static final ITextComponent SKIP = new TranslationTextComponent("message.voicechat.onboarding.introduction.skip");
+    private static final ITextComponent TITLE = new TextComponentTranslation("message.voicechat.onboarding.introduction.title", CommonCompatibilityManager.INSTANCE.getModName()).setStyle(new Style().setBold(true));
+    private static final ITextComponent DESCRIPTION = new TextComponentTranslation("message.voicechat.onboarding.introduction.description");
+    private static final ITextComponent SKIP = new TextComponentTranslation("message.voicechat.onboarding.introduction.skip");
 
-    public IntroductionOnboardingScreen(@Nullable Screen previous) {
+    public IntroductionOnboardingScreen(@Nullable GuiScreen previous) {
         super(TITLE, previous);
     }
 
     @Override
-    protected void init() {
-        super.init();
+    public void initGui() {
+        super.initGui();
 
-        Button skipButton = new Button(guiLeft, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth, BUTTON_HEIGHT, SKIP, button -> {
-            OnboardingManager.finishOnboarding();
-        });
+        ButtonBase skipButton = new ButtonBase(0, guiLeft, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth, BUTTON_HEIGHT, SKIP) {
+            @Override
+            public void onPress() {
+                OnboardingManager.finishOnboarding();
+            }
+        };
         addButton(skipButton);
 
-        addNextButton();
-        addBackOrCancelButton();
+        addNextButton(1);
+        addBackOrCancelButton(2);
     }
 
     @Override
-    public Screen getNextScreen() {
+    public GuiScreen getNextScreen() {
         return new MicOnboardingScreen(this);
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-        super.render(stack, mouseX, mouseY, partialTicks);
-        renderTitle(stack, TITLE);
-        renderMultilineText(stack, DESCRIPTION);
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        renderTitle(TITLE);
+        renderMultilineText(DESCRIPTION);
     }
 
 }

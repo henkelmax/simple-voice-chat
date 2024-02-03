@@ -1,22 +1,20 @@
 package de.maxhenkel.voicechat.gui.audiodevice;
 
+import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ButtonBase;
-import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
-import net.minecraft.client.audio.PositionedSoundRecord;
+import de.maxhenkel.voicechat.gui.widgets.IngameListScreenBase;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.List;
 
-public abstract class SelectDeviceScreen extends ListScreenBase {
+public abstract class SelectDeviceScreen extends IngameListScreenBase {
 
     protected static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_audio_devices.png");
     protected static final ITextComponent BACK = new TextComponentTranslation("message.voicechat.back");
@@ -54,11 +52,7 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
         units = Math.max(minUnits, (height - HEADER_SIZE - FOOTER_SIZE - guiTop * 2) / UNIT_SIZE);
         ySize = HEADER_SIZE + units * UNIT_SIZE + FOOTER_SIZE;
 
-        if (deviceList != null) {
-            deviceList.updateSize(width, units * UNIT_SIZE, guiTop + HEADER_SIZE);
-        } else {
-            deviceList = new AudioDeviceList(width, units * UNIT_SIZE, guiTop + HEADER_SIZE).setIcon(getIcon()).setConfigEntry(getConfigEntry());
-        }
+        deviceList = new AudioDeviceList(width, units * UNIT_SIZE, guiTop + HEADER_SIZE).setIcon(getIcon()).setConfigEntry(getConfigEntry());
         setList(deviceList);
 
         back = new ButtonBase(0, guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 14, 20, BACK) {

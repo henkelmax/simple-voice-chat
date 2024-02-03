@@ -5,7 +5,7 @@ import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeSlider;
 import de.maxhenkel.voicechat.gui.volume.PlayerVolumeEntry;
-import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
+import de.maxhenkel.voicechat.gui.widgets.IngameListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
@@ -25,12 +25,12 @@ public class GroupEntry extends ListScreenEntryBase {
     protected static final int BG_FILL = VoiceChatScreenBase.color(255, 74, 74, 74);
     protected static final int PLAYER_NAME_COLOR = VoiceChatScreenBase.color(255, 255, 255, 255);
 
-    protected final ListScreenBase parent;
+    protected final IngameListScreenBase parent;
     protected final Minecraft minecraft;
     protected PlayerState state;
     protected final AdjustVolumeSlider volumeSlider;
 
-    public GroupEntry(ListScreenBase parent, PlayerState state) {
+    public GroupEntry(IngameListScreenBase parent, PlayerState state) {
         this.parent = parent;
         this.minecraft = Minecraft.getMinecraft();
         this.state = state;

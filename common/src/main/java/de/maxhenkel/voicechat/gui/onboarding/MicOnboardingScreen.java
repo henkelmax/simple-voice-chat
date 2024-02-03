@@ -4,20 +4,20 @@ import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.audiodevice.SelectMicrophoneScreen;
 import de.maxhenkel.voicechat.voice.client.microphone.MicrophoneManager;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class MicOnboardingScreen extends DeviceOnboardingScreen {
 
-    private static final ITextComponent TITLE = new TranslationTextComponent("message.voicechat.onboarding.microphone").withStyle(TextFormatting.BOLD);
+    private static final ITextComponent TITLE = new TextComponentTranslation("message.voicechat.onboarding.microphone").setStyle(new Style().setBold(true));
 
-    public MicOnboardingScreen(@Nullable Screen previous) {
+    public MicOnboardingScreen(@Nullable GuiScreen previous) {
         super(TITLE, previous);
     }
 
@@ -37,7 +37,7 @@ public class MicOnboardingScreen extends DeviceOnboardingScreen {
     }
 
     @Override
-    public Screen getNextScreen() {
+    public GuiScreen getNextScreen() {
         return new SpeakerOnboardingScreen(this);
     }
 

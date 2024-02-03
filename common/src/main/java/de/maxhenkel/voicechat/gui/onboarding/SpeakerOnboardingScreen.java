@@ -3,27 +3,28 @@ package de.maxhenkel.voicechat.gui.onboarding;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.audiodevice.SelectSpeakerScreen;
-import de.maxhenkel.voicechat.voice.client.SoundManager;
-import net.minecraft.client.gui.screen.Screen;
+import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
+import de.maxhenkel.voicechat.voice.client.DataLines;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class SpeakerOnboardingScreen extends DeviceOnboardingScreen {
 
-    private static final ITextComponent TITLE = new TranslationTextComponent("message.voicechat.onboarding.speaker").withStyle(TextFormatting.BOLD);
+    private static final ITextComponent TITLE = new TextComponentTranslation("message.voicechat.onboarding.speaker").setStyle(new Style().setBold(true));
 
-    public SpeakerOnboardingScreen(@Nullable Screen previous) {
+    public SpeakerOnboardingScreen(@Nullable GuiScreen previous) {
         super(TITLE, previous);
     }
 
     @Override
     public List<String> getNames() {
-        return SoundManager.getAllSpeakers();
+        return DataLines.getSpeakerNames(AudioChannelConfig.STEREO_FORMAT);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class SpeakerOnboardingScreen extends DeviceOnboardingScreen {
     }
 
     @Override
-    public Screen getNextScreen() {
+    public GuiScreen getNextScreen() {
         return new ActivationOnboardingScreen(this);
     }
 

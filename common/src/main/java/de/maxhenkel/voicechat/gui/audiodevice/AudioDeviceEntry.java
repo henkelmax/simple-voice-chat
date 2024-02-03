@@ -37,12 +37,12 @@ public class AudioDeviceEntry extends ListScreenEntryBase {
     }
 
     @Override
-    public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
-        super.drawEntry(slotIndex, x, y, listWidth, slotHeight, mouseX, mouseY, isSelected, partialTicks);
+    public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+        super.drawEntry(slotIndex, x, y, listWidth, slotHeight, mouseX, mouseY, hovered, partialTicks);
         boolean selected = isSelected.get();
         if (selected) {
             GuiScreen.drawRect(x, y, x + listWidth, y + slotHeight, BG_FILL_SELECTED);
-        } else if (isSelected) {
+        } else if (hovered) {
             GuiScreen.drawRect(x, y, x + listWidth, y + slotHeight, BG_FILL_HOVERED);
         } else {
             GuiScreen.drawRect(x, y, x + listWidth, y + slotHeight, BG_FILL);

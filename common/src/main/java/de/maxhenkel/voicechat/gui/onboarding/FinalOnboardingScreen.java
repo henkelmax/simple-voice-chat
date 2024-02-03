@@ -1,78 +1,72 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.KeyEvents;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.*;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 
 public class FinalOnboardingScreen extends OnboardingScreenBase {
 
-    private static final ITextComponent TITLE = new TranslationTextComponent("message.voicechat.onboarding.final").withStyle(TextFormatting.BOLD);
-    private static final ITextComponent FINISH_SETUP = new TranslationTextComponent("message.voicechat.onboarding.final.finish_setup");
+    private static final ITextComponent TITLE = new TextComponentTranslation("message.voicechat.onboarding.final").setStyle(new Style().setBold(true));
+    private static final ITextComponent FINISH_SETUP = new TextComponentTranslation("message.voicechat.onboarding.final.finish_setup");
 
     protected ITextComponent description;
 
-    public FinalOnboardingScreen(@Nullable Screen previous) {
+    public FinalOnboardingScreen(@Nullable GuiScreen previous) {
         super(TITLE, previous);
-        description = new StringTextComponent("");
+        description = new TextComponentString("");
     }
 
     @Override
-    protected void init() {
-        super.init();
+    public void initGui() {
+        super.initGui();
 
-        IFormattableTextComponent text = new TranslationTextComponent("message.voicechat.onboarding.final.description.success",
-                KeyEvents.KEY_VOICE_CHAT.getTranslatedKeyMessage().copy().withStyle(TextFormatting.BOLD, TextFormatting.UNDERLINE)
-        ).append("\n\n");
+        ITextComponent text = new TextComponentTranslation("message.voicechat.onboarding.final.description.success",
+                new TextComponentString(KeyEvents.KEY_VOICE_CHAT.getDisplayName()).setStyle(new Style().setBold(true).setUnderlined(true))
+        ).appendText("\n\n");
 
         if (VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.PTT)) {
-            text = text.append(new TranslationTextComponent("message.voicechat.onboarding.final.description.ptt",
-                    KeyEvents.KEY_PTT.getTranslatedKeyMessage().copy().withStyle(TextFormatting.BOLD, TextFormatting.UNDERLINE)
-            ).withStyle(TextFormatting.BOLD)).append("\n\n");
+            text = text.appendSibling(new TextComponentTranslation("message.voicechat.onboarding.final.description.ptt",
+                    new TextComponentString(KeyEvents.KEY_PTT.getDisplayName()).setStyle(new Style().setBold(true).setUnderlined(true))
+            ).setStyle(new Style().setBold(true))).appendText("\n\n");
         } else {
-            text = text.append(new TranslationTextComponent("message.voicechat.onboarding.final.description.voice",
-                    KeyEvents.KEY_MUTE.getTranslatedKeyMessage().copy().withStyle(TextFormatting.BOLD, TextFormatting.UNDERLINE)
-            ).withStyle(TextFormatting.BOLD)).append("\n\n");
+            text = text.appendSibling(new TextComponentTranslation("message.voicechat.onboarding.final.description.voice",
+                    new TextComponentString(KeyEvents.KEY_MUTE.getDisplayName()).setStyle(new Style().setBold(true).setUnderlined(true))
+            ).setStyle(new Style().setBold(true))).appendText("\n\n");
         }
 
-        description = text.append(new TranslationTextComponent("message.voicechat.onboarding.final.description.configuration"));
+        description = text.appendSibling(new TextComponentTranslation("message.voicechat.onboarding.final.description.configuration"));
 
-        addPositiveButton(FINISH_SETUP, button -> OnboardingManager.finishOnboarding());
-        addBackOrCancelButton();
+        addPositiveButton(0, FINISH_SETUP, button -> OnboardingManager.finishOnboarding());
+        addBackOrCancelButton(1);
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-        super.render(stack, mouseX, mouseY, partialTicks);
-        renderTitle(stack, TITLE);
-        renderMultilineText(stack, description);
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        renderTitle(TITLE);
+        renderMultilineText(description);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (keyCode == Keyboard.KEY_ESCAPE) {
             OnboardingManager.finishOnboarding();
-            return true;
+            return;
         }
-        if (keyCode == ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_VOICE_CHAT).getValue()) {
+        if (keyCode == ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_VOICE_CHAT)) {
             OnboardingManager.finishOnboarding();
-            minecraft.setScreen(new VoiceChatScreen());
-            return true;
+            mc.displayGuiScreen(new VoiceChatScreen());
+            return;
         }
-
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean shouldCloseOnEsc() {
-        return false;
+        super.keyTyped(typedChar, keyCode);
     }
 
 }

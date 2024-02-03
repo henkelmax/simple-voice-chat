@@ -8,7 +8,7 @@ import de.maxhenkel.voicechat.gui.tooltips.DisableTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.HideGroupHudTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.MuteTooltipSupplier;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
-import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
+import de.maxhenkel.voicechat.gui.widgets.IngameListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
 import de.maxhenkel.voicechat.net.LeaveGroupPacket;
 import de.maxhenkel.voicechat.net.NetManager;
@@ -22,7 +22,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
-public class GroupScreen extends ListScreenBase {
+public class GroupScreen extends IngameListScreenBase {
 
     protected static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_group.png");
     protected static final ResourceLocation LEAVE = new ResourceLocation(Voicechat.MODID, "textures/icons/leave.png");
@@ -62,11 +62,7 @@ public class GroupScreen extends ListScreenBase {
 
         ClientPlayerStateManager stateManager = ClientManager.getPlayerStateManager();
 
-        if (groupList != null) {
-            groupList.updateSize(width, units * UNIT_SIZE, guiTop + HEADER_SIZE);
-        } else {
-            groupList = new GroupList(this, width, units * UNIT_SIZE, guiTop + HEADER_SIZE, CELL_HEIGHT);
-        }
+        groupList = new GroupList(this, width, units * UNIT_SIZE, guiTop + HEADER_SIZE, CELL_HEIGHT);
         setList(groupList);
 
         int buttonY = guiTop + ySize - 20 - 7;

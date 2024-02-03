@@ -11,9 +11,8 @@ import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.channel.local.LocalAddress;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;

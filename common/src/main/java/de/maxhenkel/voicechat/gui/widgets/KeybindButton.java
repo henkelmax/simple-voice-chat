@@ -1,58 +1,56 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.AbstractButton;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nullable;
 
-public class KeybindButton extends AbstractButton {
+public class KeybindButton extends ButtonBase {
 
-    private static final Minecraft mc = Minecraft.getInstance();
+    private static final Minecraft mc = Minecraft.getMinecraft();
 
     protected KeyBinding keyMapping;
     @Nullable
     protected ITextComponent description;
     protected boolean listening;
 
-    public KeybindButton(KeyBinding mapping, int x, int y, int width, int height, @Nullable ITextComponent description) {
-        super(x, y, width, height, StringTextComponent.EMPTY);
+    public KeybindButton(int id, KeyBinding mapping, int x, int y, int width, int height, @Nullable ITextComponent description) {
+        super(id, x, y, width, height, "");
         this.keyMapping = mapping;
         this.description = description;
         updateText();
     }
 
-    public KeybindButton(KeyBinding mapping, int x, int y, int width, int height) {
-        this(mapping, x, y, width, height, null);
+    public KeybindButton(int id, KeyBinding mapping, int x, int y, int width, int height) {
+        this(id, mapping, x, y, width, height, null);
     }
 
     protected void updateText() {
-        IFormattableTextComponent text;
+        ITextComponent text;
         if (listening) {
-            text = new StringTextComponent("> ").append(getText(keyMapping).copy().withStyle(TextFormatting.WHITE, TextFormatting.UNDERLINE)).append(" <").withStyle(TextFormatting.YELLOW);
+            text = new TextComponentString("> ").appendSibling(getText(keyMapping).setStyle(new Style().setColor(TextFormatting.BOLD).setColor(TextFormatting.UNDERLINE))).appendText(" <").setStyle(new Style().setColor(TextFormatting.YELLOW));
         } else {
-            text = getText(keyMapping).copy();
+            text = getText(keyMapping);
         }
 
         if (description != null) {
-            text = description.copy().append(": ").append(text);
+            text = new TextComponentString("").appendSibling(description).appendText(": ").appendSibling(text);
         }
 
-        setMessage(text);
+        displayString = text.getFormattedText();
     }
 
     private static ITextComponent getText(KeyBinding keyMapping) {
-        return keyMapping.getTranslatedKeyMessage();
+        return new TextComponentString(keyMapping.getDisplayName());
     }
 
     public boolean isHovered() {
-        return isHovered;
+        return hovered;
     }
 
     @Override
@@ -61,39 +59,33 @@ public class KeybindButton extends AbstractButton {
         updateText();
     }
 
-    @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mousePressed(int button) {
         if (listening) {
-            mc.options.setKey(keyMapping, InputMappings.Type.MOUSE.getOrCreate(button));
+            setKeyBind(button - 100);
             listening = false;
             updateText();
             return true;
         }
-        return super.mouseClicked(x, y, button);
-
+        return false;
     }
 
-    @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers) {
+    public boolean keyPressed(int key) {
         if (listening) {
-            if (key == GLFW.GLFW_KEY_ESCAPE) {
-                mc.options.setKey(keyMapping, InputMappings.UNKNOWN);
+            if (key == Keyboard.KEY_ESCAPE) {
+                setKeyBind(Keyboard.KEY_NONE);
             } else {
-                mc.options.setKey(keyMapping, InputMappings.getKey(key, scanCode));
+                setKeyBind(key);
             }
             listening = false;
             updateText();
             return true;
         }
-        return super.keyPressed(key, scanCode, modifiers);
+        return false;
     }
 
-    @Override
-    public boolean keyReleased(int key, int scanCode, int modifiers) {
-        if (listening && key == GLFW.GLFW_KEY_ESCAPE) {
-            return true;
-        }
-        return super.keyReleased(key, scanCode, modifiers);
+    protected void setKeyBind(int key) {
+        mc.gameSettings.setOptionKeyBinding(keyMapping, key);
+        KeyBinding.resetKeyBindingArrayAndHash();
     }
 
     public boolean isListening() {

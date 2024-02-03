@@ -71,9 +71,8 @@ public abstract class ListScreenListBase<T extends ListScreenEntryBase> extends 
     public void drawScreen(int mouseXIn, int mouseYIn, float partialTicks) {
         ScaledResolution scaledResolution = new ScaledResolution(mc);
         double scale = scaledResolution.getScaleFactor();
-        //enableScissor((int) ((double) getRowLeft() * scale), (int) ((double) (height - bottom) * scale), (int) ((double) (getScrollBarX() + 6) * scale), (int) ((double) (height - (height - bottom + 4) - top + 4) * scale));
-        int scaledHeight = mc.getWindow().getGuiScaledHeight();
-        enableScissor(0, (int) ((double) (scaledHeight - y1) * scale), Integer.MAX_VALUE / 2, (int) ((double) height * scale));
+        int scaledHeight = scaledResolution.getScaledHeight();
+        enableScissor(0, (int) ((double) (scaledHeight - bottom) * scale), Integer.MAX_VALUE / 2, (int) ((double) height * scale));
         super.drawScreen(mouseXIn, mouseYIn, partialTicks);
         disableScissor();
     }
@@ -85,10 +84,6 @@ public abstract class ListScreenListBase<T extends ListScreenEntryBase> extends 
 
     public static void disableScissor() {
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
-    }
-
-    public int getRowLeft() {
-        return left + width / 2 - getListWidth() / 2 + 2;
     }
 
     @Override

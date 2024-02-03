@@ -30,7 +30,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         super.mouseDragged(mc, mouseX, mouseY);
         mc.getTextureManager().bindTexture(SLIDER);
         GlStateManager.color(1F, 1F, 1F, 1F);
-        int width = (int) ((getWidth() - 2) * micValue);
+        int width = (int) ((getButtonWidth() - 2) * micValue);
         drawTexturedModalRect(x + 1, y + 1, 0, 0, width, 18);
     }
 
@@ -63,4 +63,9 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     public void onMicValue(double percentage) {
         this.micValue = percentage;
     }
+
+    public boolean isHovered() {
+        return hovered;
+    }
+
 }

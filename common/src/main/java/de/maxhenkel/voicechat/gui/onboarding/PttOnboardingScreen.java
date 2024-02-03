@@ -1,59 +1,68 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.gui.widgets.KeybindButton;
 import de.maxhenkel.voicechat.voice.client.KeyEvents;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 
 public class PttOnboardingScreen extends OnboardingScreenBase {
 
-    private static final ITextComponent TITLE = new TranslationTextComponent("message.voicechat.onboarding.ptt.title").withStyle(TextFormatting.BOLD);
-    private static final ITextComponent DESCRIPTION = new TranslationTextComponent("message.voicechat.onboarding.ptt.description");
-    private static final ITextComponent BUTTON_DESCRIPTION = new TranslationTextComponent("message.voicechat.onboarding.ptt.button_description");
+    private static final ITextComponent TITLE = new TextComponentTranslation("message.voicechat.onboarding.ptt.title").setStyle(new Style().setBold(true));
+    private static final ITextComponent DESCRIPTION = new TextComponentTranslation("message.voicechat.onboarding.ptt.description");
+    private static final ITextComponent BUTTON_DESCRIPTION = new TextComponentTranslation("message.voicechat.onboarding.ptt.button_description");
 
     protected KeybindButton keybindButton;
 
     protected int keybindButtonPos;
 
-    public PttOnboardingScreen(@Nullable Screen previous) {
+    public PttOnboardingScreen(@Nullable GuiScreen previous) {
         super(TITLE, previous);
     }
 
     @Override
-    protected void init() {
-        super.init();
+    public void initGui() {
+        super.initGui();
 
         keybindButtonPos = guiTop + contentHeight - BUTTON_HEIGHT * 3 - PADDING * 2 - 40;
-        keybindButton = new KeybindButton(KeyEvents.KEY_PTT, guiLeft + 40, keybindButtonPos, contentWidth - 40 * 2, BUTTON_HEIGHT);
+        keybindButton = new KeybindButton(0, KeyEvents.KEY_PTT, guiLeft + 40, keybindButtonPos, contentWidth - 40 * 2, BUTTON_HEIGHT);
         addButton(keybindButton);
 
-        addNextButton();
-        addBackOrCancelButton();
+        addNextButton(1);
+        addBackOrCancelButton(2);
     }
 
     @Override
-    public Screen getNextScreen() {
+    public GuiScreen getNextScreen() {
         return new FinalOnboardingScreen(this);
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-        super.render(stack, mouseX, mouseY, partialTicks);
-        renderTitle(stack, TITLE);
-        renderMultilineText(stack, DESCRIPTION);
-        font.drawShadow(stack, BUTTON_DESCRIPTION.getVisualOrderText(), width / 2 - font.width(BUTTON_DESCRIPTION) / 2, keybindButtonPos - font.lineHeight - PADDING, TEXT_COLOR);
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        renderTitle(TITLE);
+        renderMultilineText(DESCRIPTION);
+        fontRenderer.drawStringWithShadow(BUTTON_DESCRIPTION.getFormattedText(), width / 2 - fontRenderer.getStringWidth(BUTTON_DESCRIPTION.getUnformattedComponentText()) / 2, keybindButtonPos - fontRenderer.FONT_HEIGHT - PADDING, TEXT_COLOR);
     }
 
     @Override
-    public boolean shouldCloseOnEsc() {
-        if (keybindButton.isListening()) {
-            return false;
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (keybindButton.keyPressed(keyCode)) {
+            return;
         }
-        return super.shouldCloseOnEsc();
+        super.keyTyped(typedChar, keyCode);
     }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        if (keybindButton.mousePressed(mouseButton)) {
+            return;
+        }
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
 }

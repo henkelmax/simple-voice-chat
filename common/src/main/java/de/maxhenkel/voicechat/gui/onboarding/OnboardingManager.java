@@ -5,25 +5,26 @@ import de.maxhenkel.voicechat.voice.client.ChatUtils;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.KeyEvents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
 
 public class OnboardingManager {
 
-    private static final Minecraft MC = Minecraft.getInstance();
+    private static final Minecraft MC = Minecraft.getMinecraft();
 
     public static boolean isOnboarding() {
         return !VoicechatClient.CLIENT_CONFIG.onboardingFinished.get();
     }
 
-    public static void startOnboarding(@Nullable Screen parent) {
-        MC.setScreen(getOnboardingScreen(parent));
+    public static void startOnboarding(@Nullable GuiScreen parent) {
+        MC.displayGuiScreen(getOnboardingScreen(parent));
     }
 
-    public static Screen getOnboardingScreen(@Nullable Screen parent) {
+    public static GuiScreen getOnboardingScreen(@Nullable GuiScreen parent) {
         return new IntroductionOnboardingScreen(parent);
     }
 
@@ -32,15 +33,15 @@ public class OnboardingManager {
         VoicechatClient.CLIENT_CONFIG.disabled.set(false).save();
         VoicechatClient.CLIENT_CONFIG.onboardingFinished.set(true).save();
         ClientManager.getPlayerStateManager().onFinishOnboarding();
-        MC.setScreen(null);
+        MC.displayGuiScreen(null);
     }
 
     public static void onConnecting() {
         if (!isOnboarding()) {
             return;
         }
-        ChatUtils.sendModMessage(new TranslationTextComponent("message.voicechat.set_up",
-                KeyEvents.KEY_VOICE_CHAT.getTranslatedKeyMessage().copy().withStyle(TextFormatting.BOLD, TextFormatting.UNDERLINE)
+        ChatUtils.sendModMessage(new TextComponentTranslation("message.voicechat.set_up",
+                new TextComponentString(KeyEvents.KEY_VOICE_CHAT.getDisplayName()).setStyle(new Style().setBold(true).setUnderlined(true))
         ));
     }
 }

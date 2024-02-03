@@ -9,19 +9,15 @@ import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.*;
 
 import javax.annotation.Nullable;
 
 public class MicTestButton extends ButtonBase {
 
-    private static final ITextComponent TEST = new TranslationTextComponent("message.voicechat.mic_test");
-    private static final ITextComponent DISABLE_TEST = new StringTextComponent("X");
-    private static final ITextComponent TEST_UNAVAILABLE = new TranslationTextComponent("message.voicechat.mic_test_unavailable").withStyle(TextFormatting.RED);
+    private static final ITextComponent TEST = new TextComponentTranslation("message.voicechat.mic_test");
+    private static final ITextComponent DISABLE_TEST = new TextComponentString("X");
+    private static final ITextComponent TEST_UNAVAILABLE = new TextComponentTranslation("message.voicechat.mic_test_unavailable").setStyle(new Style().setColor(TextFormatting.RED));
 
     private boolean micActive;
     @Nullable
@@ -30,11 +26,11 @@ public class MicTestButton extends ButtonBase {
     @Nullable
     private final ClientVoicechat client;
 
-    public MicTestButton(int xIn, int yIn, int widthIn, int heightIn, MicListener micListener) {
-        super(xIn, yIn, widthIn, heightIn, TEST);
+    public MicTestButton(int id, int xIn, int yIn, int widthIn, int heightIn, MicListener micListener) {
+        super(id, xIn, yIn, widthIn, heightIn, TEST);
         this.micListener = micListener;
         this.client = ClientManager.getClient();
-        active = client == null || client.getSoundManager() != null;
+        // enabled = client == null || client.getSoundManager() != null;
     }
 
     @Override
@@ -52,22 +48,22 @@ public class MicTestButton extends ButtonBase {
 
     private void updateText() {
         if (micActive) {
-            setMessage(DISABLE_TEST);
+            displayString = DISABLE_TEST.getFormattedText();
         } else {
-            setMessage(TEST);
+            displayString = TEST.getFormattedText();
         }
     }
 
     @Nullable
     public ITextComponent getHoverText() {
-        if (!active) {
+        if (!enabled) {
             return TEST_UNAVAILABLE;
         }
         return null;
     }
 
     public boolean isHovered() {
-        return isHovered;
+        return hovered;
     }
 
     @Override

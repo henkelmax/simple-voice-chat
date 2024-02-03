@@ -1,17 +1,13 @@
 package de.maxhenkel.voicechat.gui;
 
-import de.maxhenkel.voicechat.gui.widgets.ButtonBase;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public abstract class VoiceChatScreenBase extends GuiScreen {
+public abstract class VoiceChatScreenBase extends ScreenBase {
 
     public static final int FONT_COLOR = 4210752;
 
@@ -20,10 +16,9 @@ public abstract class VoiceChatScreenBase extends GuiScreen {
     protected int guiTop;
     protected int xSize;
     protected int ySize;
-    protected ITextComponent title;
 
     protected VoiceChatScreenBase(ITextComponent title, int xSize, int ySize) {
-        this.title = title;
+        super(title);
         this.xSize = xSize;
         this.ySize = ySize;
         this.hoverAreas = new ArrayList<>();
@@ -31,45 +26,10 @@ public abstract class VoiceChatScreenBase extends GuiScreen {
 
     @Override
     public void initGui() {
-        buttonList.clear();
-        labelList.clear();
         super.initGui();
 
         this.guiLeft = (width - this.xSize) / 2;
         this.guiTop = (height - this.ySize) / 2;
-    }
-
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float delta) {
-        drawDefaultBackground();
-        renderBackground(mouseX, mouseY, delta);
-        super.drawScreen(mouseX, mouseY, delta);
-        renderForeground(mouseX, mouseY, delta);
-        for (GuiButton button : buttonList) {
-            if (button instanceof ButtonBase) {
-                ((ButtonBase) button).renderTooltips(mouseX, mouseY, delta);
-            }
-        }
-    }
-
-    public void renderBackground(int mouseX, int mouseY, float delta) {
-
-    }
-
-    public void renderForeground(int mouseX, int mouseY, float delta) {
-
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
-        super.actionPerformed(button);
-
-        if (!(button instanceof ButtonBase)) {
-            return;
-        }
-
-        ButtonBase b = (ButtonBase) button;
-        b.onPress();
     }
 
     public int getGuiLeft() {
@@ -78,10 +38,6 @@ public abstract class VoiceChatScreenBase extends GuiScreen {
 
     public int getGuiTop() {
         return guiTop;
-    }
-
-    protected boolean isIngame() {
-        return mc.world != null;
     }
 
     protected int getFontColor() {
@@ -94,10 +50,6 @@ public abstract class VoiceChatScreenBase extends GuiScreen {
                 drawHoveringText(hoverArea.tooltip.get(), mouseX - guiLeft, mouseY - guiTop);
             }
         }
-    }
-
-    public static int color(int alpha, int red, int green, int blue) {
-        return alpha << 24 | red << 16 | green << 8 | blue;
     }
 
     public static class HoverArea {

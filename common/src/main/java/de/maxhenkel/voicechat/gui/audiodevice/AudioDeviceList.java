@@ -5,9 +5,9 @@ import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
-import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -28,19 +28,15 @@ public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(int mouseX, int mouseY, int button) {
         if (super.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
-        AudioDeviceEntry entry = getEntryAtPosition(mouseX, mouseY);
-        if (entry == null) {
-            return false;
-        }
-        if (!isMouseOver(mouseX, mouseY)) {
-            return false;
-        }
-        if (!isSelected(entry.getDevice())) {
-            minecraft.getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
+        for (AudioDeviceEntry entry : children()) {
+            if (!entry.isSelected()) {
+                continue;
+            }
+            mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.F));
             onSelect(entry);
             return true;
         }

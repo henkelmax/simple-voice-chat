@@ -17,6 +17,7 @@ import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 
 public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
@@ -55,13 +56,13 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         y += 21;
         addButton(new MicAmplificationSlider(1, guiLeft + 10, y, xSize - 20, 20));
         y += 21;
-        addButton(new DenoiserButton(guiLeft + 10, y, xSize - 20, 20));
+        addButton(new DenoiserButton(2, guiLeft + 10, y, xSize - 20, 20));
         y += 21;
 
-        voiceActivationSlider = new VoiceActivationSlider(guiLeft + 10 + 30 + 1, y + 21, xSize - 20 - 30 - 1, 20);
-        micTestButton = new MicTestButton(5, guiLeft + 10, y + 21, 30, 20, voiceActivationSlider);
-        keybindButton = new KeybindButton(KeyEvents.KEY_PTT, guiLeft + 10, y + 21, xSize - 20, 20, PUSH_TO_TALK);
-        addButton(new MicActivationButton(guiLeft + 10, y, xSize - 20, 20, type -> {
+        voiceActivationSlider = new VoiceActivationSlider(5, guiLeft + 10 + 30 + 1, y + 21, xSize - 20 - 30 - 1, 20);
+        micTestButton = new MicTestButton(4, guiLeft + 10, y + 21, 30, 20, voiceActivationSlider);
+        keybindButton = new KeybindButton(6, KeyEvents.KEY_PTT, guiLeft + 10, y + 21, xSize - 20, 20, PUSH_TO_TALK);
+        addButton(new MicActivationButton(3, guiLeft + 10, y, xSize - 20, 20, type -> {
             voiceActivationSlider.visible = MicrophoneActivationType.VOICE.equals(type);
             micTestButton.visible = MicrophoneActivationType.VOICE.equals(type);
             keybindButton.visible = MicrophoneActivationType.PTT.equals(type);
@@ -71,7 +72,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         addButton(keybindButton);
         y += 21 * 2;
 
-        addButton(new EnumButton<AudioType>(6, guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.audioType) {
+        addButton(new EnumButton<AudioType>(7, guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.audioType) {
 
             @Override
             protected ITextComponent getText(AudioType type) {
@@ -89,7 +90,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         });
         y += 21;
         if (isIngame()) {
-            addButton(new ButtonBase(7, guiLeft + 10, y, xSize - 20, 20, ADJUST_VOLUMES) {
+            addButton(new ButtonBase(8, guiLeft + 10, y, xSize - 20, 20, ADJUST_VOLUMES) {
                 @Override
                 public void onPress() {
                     mc.displayGuiScreen(new AdjustVolumesScreen());
@@ -97,13 +98,13 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
             });
             y += 21;
         }
-        addButton(new ButtonBase(8, guiLeft + 10, y, xSize / 2 - 15, 20, SELECT_MICROPHONE) {
+        addButton(new ButtonBase(9, guiLeft + 10, y, xSize / 2 - 15, 20, SELECT_MICROPHONE) {
             @Override
             public void onPress() {
                 mc.displayGuiScreen(new SelectMicrophoneScreen(VoiceChatSettingsScreen.this));
             }
         });
-        addButton(new ButtonBase(9, guiLeft + xSize / 2 + 1, y, (xSize - 20) / 2 - 1, 20, SELECT_SPEAKER) {
+        addButton(new ButtonBase(10, guiLeft + xSize / 2 + 1, y, (xSize - 20) / 2 - 1, 20, SELECT_SPEAKER) {
             @Override
             public void onPress() {
                 mc.displayGuiScreen(new SelectSpeakerScreen(VoiceChatSettingsScreen.this));
@@ -111,7 +112,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         });
         y += 21;
         if (!isIngame() && parent != null) {
-            addButton(new ButtonBase(10, guiLeft + 10, y, xSize - 20, 20, BACK) {
+            addButton(new ButtonBase(11, guiLeft + 10, y, xSize - 20, 20, BACK) {
                 @Override
                 public void onPress() {
                     mc.displayGuiScreen(parent);
@@ -131,7 +132,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
     @Override
     public void renderForeground(int mouseX, int mouseY, float delta) {
         int titleWidth = fontRenderer.getStringWidth(TITLE.getUnformattedComponentText());
-        fontRenderer.drawString(TITLE.getUnformattedComponentText(), guiLeft + (xSize - titleWidth) / 2, guiTop + 7, getFontColor());
+        fontRenderer.drawString(TITLE.getFormattedText(), guiLeft + (xSize - titleWidth) / 2, guiTop + 7, getFontColor());
 
         if (voiceActivationSlider == null) {
             return;
@@ -140,19 +141,27 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         ITextComponent sliderTooltip = voiceActivationSlider.getHoverText();
         ITextComponent testTooltip = micTestButton.getHoverText();
         if (voiceActivationSlider.isHovered() && sliderTooltip != null) {
-            drawHoveringText(sliderTooltip.getUnformattedComponentText(), mouseX, mouseY);
+            drawHoveringText(sliderTooltip.getFormattedText(), mouseX, mouseY);
         } else if (micTestButton.isHovered() && testTooltip != null) {
-            drawHoveringText(testTooltip.getUnformattedComponentText(), mouseX, mouseY);
+            drawHoveringText(testTooltip.getFormattedText(), mouseX, mouseY);
         } else if (keybindButton.isHovered()) {
-            drawHoveringText(ASSIGN_TOOLTIP.getUnformattedComponentText(), mouseX, mouseY);
+            drawHoveringText(ASSIGN_TOOLTIP.getFormattedText(), mouseX, mouseY);
         }
     }
 
     @Override
-    public boolean shouldCloseOnEsc() {
-        if (keybindButton.isListening()) {
-            return false;
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (keybindButton.keyPressed(keyCode)) {
+            return;
         }
-        return super.shouldCloseOnEsc();
+        super.keyTyped(typedChar, keyCode);
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        if (keybindButton.mousePressed(mouseButton)) {
+            return;
+        }
+        super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 }

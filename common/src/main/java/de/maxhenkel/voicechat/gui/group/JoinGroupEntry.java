@@ -5,7 +5,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.gui.GroupType;
-import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
+import de.maxhenkel.voicechat.gui.widgets.IngameListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
@@ -30,11 +30,11 @@ public class JoinGroupEntry extends ListScreenEntryBase {
     protected static final int BG_FILL_SELECTED = VoiceChatScreenBase.color(255, 90, 90, 90);
     protected static final int PLAYER_NAME_COLOR = VoiceChatScreenBase.color(255, 255, 255, 255);
 
-    protected final ListScreenBase parent;
+    protected final IngameListScreenBase parent;
     protected final Minecraft minecraft;
     protected final Group group;
 
-    public JoinGroupEntry(ListScreenBase parent, Group group) {
+    public JoinGroupEntry(IngameListScreenBase parent, Group group) {
         this.parent = parent;
         this.minecraft = Minecraft.getMinecraft();
         this.group = group;
