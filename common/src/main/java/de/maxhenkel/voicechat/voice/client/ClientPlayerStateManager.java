@@ -11,6 +11,7 @@ import de.maxhenkel.voicechat.gui.group.GroupList;
 import de.maxhenkel.voicechat.gui.group.GroupScreen;
 import de.maxhenkel.voicechat.gui.group.JoinGroupList;
 import de.maxhenkel.voicechat.gui.group.JoinGroupScreen;
+import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeList;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
@@ -153,6 +154,9 @@ public class ClientPlayerStateManager {
     }
 
     public boolean canEnable() {
+        if (OnboardingManager.isOnboarding()) {
+            return false;
+        }
         ClientVoicechat client = ClientManager.getClient();
         if (client == null) {
             return false;
@@ -177,6 +181,10 @@ public class ClientPlayerStateManager {
     public void setMuted(boolean muted) {
         VoicechatClient.CLIENT_CONFIG.muted.set(muted).save();
         PluginManager.instance().dispatchEvent(MicrophoneMuteEvent.class, new MicrophoneMuteEventImpl(muted));
+    }
+
+    public void onFinishOnboarding() {
+        syncOwnState();
     }
 
     public boolean isInGroup(Player player) {
