@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.voicechat.gui.audiodevice.AudioDeviceList;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -50,9 +50,9 @@ public abstract class DeviceOnboardingScreen extends OnboardingScreenBase {
     public abstract Screen getNextScreen();
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        deviceList.render(guiGraphics, mouseX, mouseY, partialTicks);
-        renderTitle(guiGraphics, title);
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        super.render(poseStack, mouseX, mouseY, partialTicks);
+        deviceList.render(poseStack, mouseX, mouseY, partialTicks);
+        renderTitle(poseStack, title);
     }
 }

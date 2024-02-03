@@ -1,13 +1,13 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.KeyEvents;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -51,10 +51,10 @@ public class FinalOnboardingScreen extends OnboardingScreenBase {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        renderTitle(guiGraphics, TITLE);
-        renderMultilineText(guiGraphics, description);
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        super.render(poseStack, mouseX, mouseY, partialTicks);
+        renderTitle(poseStack, TITLE);
+        renderMultilineText(poseStack, description);
     }
 
     @Override
