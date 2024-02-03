@@ -11,6 +11,7 @@ import de.maxhenkel.voicechat.voice.client.speaker.SpeakerManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.gui.widget.button.AbstractButton;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
@@ -18,6 +19,7 @@ import javax.annotation.Nullable;
 public class MicTestButton extends AbstractButton {
 
     private static final ITextComponent TEST = new TranslationTextComponent("message.voicechat.mic_test");
+    private static final ITextComponent DISABLE_TEST = new StringTextComponent("X");
     private static final ITextComponent TEST_UNAVAILABLE = new TranslationTextComponent("message.voicechat.mic_test_unavailable").withStyle(ChatFormatting.RED);
 
     private boolean micActive;
@@ -44,6 +46,15 @@ public class MicTestButton extends AbstractButton {
 
     public void setMicActive(boolean micActive) {
         this.micActive = micActive;
+        updateText();
+    }
+
+    private void updateText() {
+        if (micActive) {
+            setMessage(DISABLE_TEST);
+        } else {
+            setMessage(TEST);
+        }
     }
 
     @Nullable
@@ -70,6 +81,7 @@ public class MicTestButton extends AbstractButton {
         } else {
             close();
         }
+        updateText();
     }
 
     private void close() {
@@ -94,7 +106,7 @@ public class MicTestButton extends AbstractButton {
         @Nullable
         private SoundManager ownSoundManager;
 
-        public VoiceThread() throws SpeakerException, MicrophoneException{
+        public VoiceThread() throws SpeakerException, MicrophoneException {
             this.running = true;
             setDaemon(true);
             setName("VoiceTestingThread");
@@ -150,7 +162,7 @@ public class MicTestButton extends AbstractButton {
             if (ownSoundManager != null) {
                 ownSoundManager.close();
             }
-            micActive = false;
+            setMicActive(false);
             Voicechat.LOGGER.info("Mic test audio channel closed");
         }
 
