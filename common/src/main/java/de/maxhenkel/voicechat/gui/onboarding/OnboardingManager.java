@@ -7,7 +7,7 @@ import de.maxhenkel.voicechat.voice.client.KeyEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 
@@ -39,7 +39,7 @@ public class OnboardingManager {
         if (!isOnboarding()) {
             return;
         }
-        ChatUtils.sendModMessage(Component.translatable("message.voicechat.set_up",
+        ChatUtils.sendModMessage(new TranslatableComponent("message.voicechat.set_up",
                 KeyEvents.KEY_VOICE_CHAT.getTranslatedKeyMessage().copy().withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE)
         ));
     }
