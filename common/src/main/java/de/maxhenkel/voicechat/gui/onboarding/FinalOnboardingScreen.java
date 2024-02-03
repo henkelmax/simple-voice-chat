@@ -11,40 +11,42 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 
 public class FinalOnboardingScreen extends OnboardingScreenBase {
 
-    private static final Component TITLE = Component.translatable("message.voicechat.onboarding.final").withStyle(ChatFormatting.BOLD);
-    private static final Component FINISH_SETUP = Component.translatable("message.voicechat.onboarding.final.finish_setup");
+    private static final Component TITLE = new TranslatableComponent("message.voicechat.onboarding.final").withStyle(ChatFormatting.BOLD);
+    private static final Component FINISH_SETUP = new TranslatableComponent("message.voicechat.onboarding.final.finish_setup");
 
     protected Component description;
 
     public FinalOnboardingScreen(@Nullable Screen previous) {
         super(TITLE, previous);
-        description = Component.empty();
+        description = new TextComponent("");
     }
 
     @Override
     protected void init() {
         super.init();
 
-        MutableComponent text = Component.translatable("message.voicechat.onboarding.final.description.success",
+        MutableComponent text = new TranslatableComponent("message.voicechat.onboarding.final.description.success",
                 KeyEvents.KEY_VOICE_CHAT.getTranslatedKeyMessage().copy().withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE)
         ).append("\n\n");
 
         if (VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.PTT)) {
-            text = text.append(Component.translatable("message.voicechat.onboarding.final.description.ptt",
+            text = text.append(new TranslatableComponent("message.voicechat.onboarding.final.description.ptt",
                     KeyEvents.KEY_PTT.getTranslatedKeyMessage().copy().withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE)
             ).withStyle(ChatFormatting.BOLD)).append("\n\n");
         } else {
-            text = text.append(Component.translatable("message.voicechat.onboarding.final.description.voice",
+            text = text.append(new TranslatableComponent("message.voicechat.onboarding.final.description.voice",
                     KeyEvents.KEY_MUTE.getTranslatedKeyMessage().copy().withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE)
             ).withStyle(ChatFormatting.BOLD)).append("\n\n");
         }
 
-        description = text.append(Component.translatable("message.voicechat.onboarding.final.description.configuration"));
+        description = text.append(new TranslatableComponent("message.voicechat.onboarding.final.description.configuration"));
 
         addPositiveButton(FINISH_SETUP, button -> OnboardingManager.finishOnboarding());
         addBackOrCancelButton();

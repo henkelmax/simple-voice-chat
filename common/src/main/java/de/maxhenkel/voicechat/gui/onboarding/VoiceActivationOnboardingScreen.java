@@ -8,13 +8,14 @@ import de.maxhenkel.voicechat.gui.widgets.VoiceActivationSlider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 
 public class VoiceActivationOnboardingScreen extends OnboardingScreenBase {
 
-    private static final Component TITLE = Component.translatable("message.voicechat.onboarding.voice.title").withStyle(ChatFormatting.BOLD);
-    private static final Component DESCRIPTION = Component.translatable("message.voicechat.onboarding.voice.description");
+    private static final Component TITLE = new TranslatableComponent("message.voicechat.onboarding.voice.title").withStyle(ChatFormatting.BOLD);
+    private static final Component DESCRIPTION = new TranslatableComponent("message.voicechat.onboarding.voice.description");
 
     protected VoiceActivationSlider slider;
     protected MicTestButton micTestButton;

@@ -2,21 +2,19 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentUtils;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.*;
 
 import javax.annotation.Nullable;
 
 public class ChatUtils {
 
     public static void sendPlayerError(String translationKey, @Nullable Exception e) {
-        MutableComponent error = createModMessage(Component.translatable(translationKey).withStyle(ChatFormatting.RED)).withStyle(style -> {
+        MutableComponent error = createModMessage(new TranslatableComponent(translationKey).withStyle(ChatFormatting.RED)).withStyle(style -> {
             if (e != null) {
-                return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(e.getMessage()).withStyle(ChatFormatting.RED)));
+                return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED)));
             }
             return style;
         });
@@ -28,8 +26,8 @@ public class ChatUtils {
     }
 
     public static MutableComponent createModMessage(Component message) {
-        return Component.empty()
-                .append(ComponentUtils.wrapInSquareBrackets(Component.literal(CommonCompatibilityManager.INSTANCE.getModName())).withStyle(ChatFormatting.GREEN))
+        return new TextComponent("")
+                .append(ComponentUtils.wrapInSquareBrackets(new TextComponent(CommonCompatibilityManager.INSTANCE.getModName())).withStyle(ChatFormatting.GREEN))
                 .append(" ")
                 .append(message);
     }
@@ -39,7 +37,6 @@ public class ChatUtils {
         if (player == null) {
             return;
         }
-        player.sendSystemMessage(component);
+        player.sendMessage(component, Util.NIL_UUID);
     }
-
 }

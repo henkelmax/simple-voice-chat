@@ -6,14 +6,15 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 
 public class IntroductionOnboardingScreen extends OnboardingScreenBase {
 
-    private static final Component TITLE = Component.translatable("message.voicechat.onboarding.introduction.title", CommonCompatibilityManager.INSTANCE.getModName()).withStyle(ChatFormatting.BOLD);
-    private static final Component DESCRIPTION = Component.translatable("message.voicechat.onboarding.introduction.description");
-    private static final Component SKIP = Component.translatable("message.voicechat.onboarding.introduction.skip");
+    private static final Component TITLE = new TranslatableComponent("message.voicechat.onboarding.introduction.title", CommonCompatibilityManager.INSTANCE.getModName()).withStyle(ChatFormatting.BOLD);
+    private static final Component DESCRIPTION = new TranslatableComponent("message.voicechat.onboarding.introduction.description");
+    private static final Component SKIP = new TranslatableComponent("message.voicechat.onboarding.introduction.skip");
 
     public IntroductionOnboardingScreen(@Nullable Screen previous) {
         super(TITLE, previous);
