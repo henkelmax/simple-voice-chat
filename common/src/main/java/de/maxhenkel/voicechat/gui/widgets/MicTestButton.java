@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 public class MicTestButton extends AbstractButton {
 
     private static final Component TEST = new TranslatableComponent("message.voicechat.mic_test");
+    private static final Component DISABLE_TEST = Component.literal("X");
     private static final Component TEST_UNAVAILABLE = new TranslatableComponent("message.voicechat.mic_test_unavailable").withStyle(ChatFormatting.RED);
 
     private boolean micActive;
@@ -47,6 +48,15 @@ public class MicTestButton extends AbstractButton {
 
     public void setMicActive(boolean micActive) {
         this.micActive = micActive;
+        updateText();
+    }
+
+    private void updateText() {
+        if (micActive) {
+            setMessage(DISABLE_TEST);
+        } else {
+            setMessage(TEST);
+        }
     }
 
     @Nullable
@@ -77,6 +87,7 @@ public class MicTestButton extends AbstractButton {
         } else {
             close();
         }
+        updateText();
     }
 
     private void close() {
@@ -162,7 +173,7 @@ public class MicTestButton extends AbstractButton {
             if (ownSoundManager != null) {
                 ownSoundManager.close();
             }
-            micActive = false;
+            setMicActive(false);
             Voicechat.LOGGER.info("Mic test audio channel closed");
         }
 
