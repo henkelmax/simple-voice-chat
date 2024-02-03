@@ -23,8 +23,6 @@
   "message.voicechat.group": "Grupo",
   "message.voicechat.voice_chat_volume": "Volumen del chat de voz: %s",
   "message.voicechat.microphone_amplification": "Amplificación del micrófono: %s",
-  "message.voicechat.mic_test_on": "Detener prueba de micrófono",
-  "message.voicechat.mic_test_off": "Iniciar prueba de micrófono",
   "message.voicechat.mic_test_unavailable": "Prueba de micrófono no disponible",
   "message.voicechat.voice_chat_unavailable": "El chat de voz no está disponible",
   "message.voicechat.voice_chat_not_connected": "El chat de voz no está conectado",

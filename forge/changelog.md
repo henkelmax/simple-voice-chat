@@ -1,2 +1,3 @@
-- Improved thread safety
-- Fixed backspace deleting two characters in text fields
+- Added onboarding guide
+- Removed default push to talk key assignment
+- Improved voice chat settings screen

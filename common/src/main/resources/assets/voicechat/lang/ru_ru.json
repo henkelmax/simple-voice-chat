@@ -23,8 +23,6 @@
   "message.voicechat.group": "Группа",
   "message.voicechat.voice_chat_volume": "Громкость голосового чата: %s",
   "message.voicechat.microphone_amplification": "Усиление микрофона: %s",
-  "message.voicechat.mic_test_on": "Откл. проверку микрофона",
-  "message.voicechat.mic_test_off": "Вкл. проверку микрофона",
   "message.voicechat.mic_test_unavailable": "Проверка микрофона недоступна",
   "message.voicechat.voice_chat_unavailable": "Голосовой чат недоступен",
   "message.voicechat.voice_chat_not_connected": "Голосовой чат не подключён",
