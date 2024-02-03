@@ -9,6 +9,9 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
+
 public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
 
     protected static final ResourceLocation SELECTED = new ResourceLocation(Voicechat.MODID, "textures/icons/device_selected.png");
@@ -22,18 +25,21 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
     protected final Minecraft minecraft;
     protected final String device;
     protected final String visibleDeviceName;
-    protected final SelectDeviceScreen parent;
+    @Nullable
+    protected final ResourceLocation icon;
+    protected final Supplier<Boolean> isSelected;
 
-    public AudioDeviceEntry(SelectDeviceScreen parent, String device) {
-        this.parent = parent;
+    public AudioDeviceEntry(String device, String name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
         this.device = device;
-        this.visibleDeviceName = parent.getVisibleName(device);
+        this.icon = icon;
+        this.isSelected = isSelected;
+        this.visibleDeviceName = name;
         this.minecraft = Minecraft.getInstance();
     }
 
     @Override
     public void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
-        boolean selected = parent.getSelectedDevice().equals(device);
+        boolean selected = isSelected.get();
         if (selected) {
             GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL_SELECTED);
         } else if (hovered) {
@@ -42,8 +48,10 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
             GuiComponent.fill(poseStack, left, top, left + width, top + height, BG_FILL);
         }
 
-        RenderSystem.setShaderTexture(0, parent.getIcon(device));
-        GuiComponent.blit(poseStack, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
+        if (icon != null) {
+            RenderSystem.setShaderTexture(0, icon);
+            GuiComponent.blit(poseStack, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
+        }
         if (selected) {
             RenderSystem.setShaderTexture(0, SELECTED);
             GuiComponent.blit(poseStack, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);

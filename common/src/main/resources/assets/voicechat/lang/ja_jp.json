@@ -23,8 +23,6 @@
   "message.voicechat.group": "グループ",
   "message.voicechat.voice_chat_volume": "ボイスチャット音量: %s",
   "message.voicechat.microphone_amplification": "マイクの音量増幅: %s",
-  "message.voicechat.mic_test_on": "マイクのテストを無効",
-  "message.voicechat.mic_test_off": "マイクのテストを有効",
   "message.voicechat.mic_test_unavailable": "マイクのテストが利用できません",
   "message.voicechat.voice_chat_unavailable": "ボイスチャットが利用できません",
   "message.voicechat.voice_chat_not_connected": "ボイスチャットに接続されていません",
