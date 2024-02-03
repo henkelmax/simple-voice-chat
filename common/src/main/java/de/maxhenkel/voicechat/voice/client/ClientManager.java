@@ -11,14 +11,8 @@ import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.channel.local.LocalAddress;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponentUtils;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.event.HoverEvent;
 
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
@@ -92,7 +86,7 @@ public class ClientManager {
 
     private void onJoinWorld() {
         if (VoicechatClient.CLIENT_CONFIG.muteOnJoin.get()) {
-            VoicechatClient.CLIENT_CONFIG.muted.set(true);
+            playerStateManager.setMuted(true);
         }
         if (client != null) {
             Voicechat.LOGGER.info("Disconnecting from previous connection due to server change");
@@ -101,25 +95,6 @@ public class ClientManager {
         Voicechat.LOGGER.info("Sending secret request to the server");
         NetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
         client = new ClientVoicechat();
-    }
-
-    public static void sendPlayerError(String translationKey, @Nullable Exception e) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
-        if (player == null) {
-            return;
-        }
-        player.sendMessage(
-                TextComponentUtils.wrapInSquareBrackets(new StringTextComponent(CommonCompatibilityManager.INSTANCE.getModName()))
-                        .withStyle(TextFormatting.GREEN)
-                        .append(" ")
-                        .append(new TranslationTextComponent(translationKey).withStyle(TextFormatting.RED))
-                        .withStyle(style -> {
-                            if (e != null) {
-                                return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(e.getMessage()).withStyle(TextFormatting.RED)));
-                            }
-                            return style;
-                        })
-                , Util.NIL_UUID);
     }
 
     private void onDisconnect() {

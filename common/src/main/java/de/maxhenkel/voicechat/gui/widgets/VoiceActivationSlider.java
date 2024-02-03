@@ -30,7 +30,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     protected void renderBg(MatrixStack poseStack, Minecraft minecraft, int i, int j) {
         minecraft.getTextureManager().bind(SLIDER);
         RenderSystem.color4f(1F, 1F, 1F, 1F);
-        int width = (int) (226D * micValue);
+        int width = (int) ((width - 2) * micValue);
         blit(poseStack, x + 1, y + 1, 0, 0, width, 18);
         super.renderBg(poseStack, minecraft, i, j);
     }
@@ -48,7 +48,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     }
 
     @Nullable
-    public ITextComponent getTooltip() {
+    public ITextComponent getHoverText() {
         if (value >= 1D) {
             return NO_ACTIVATION;
         }

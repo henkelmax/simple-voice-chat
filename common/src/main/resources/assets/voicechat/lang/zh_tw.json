@@ -23,8 +23,6 @@
   "message.voicechat.group": "群組",
   "message.voicechat.voice_chat_volume": "語音聊天音量：%s",
   "message.voicechat.microphone_amplification": "麥克風增益：%s",
-  "message.voicechat.mic_test_on": "停用麥克風測試",
-  "message.voicechat.mic_test_off": "啟用麥克風測試",
   "message.voicechat.mic_test_unavailable": "麥克風測試無法使用",
   "message.voicechat.voice_chat_unavailable": "語音聊天無法使用",
   "message.voicechat.voice_chat_not_connected": "語音聊天未連接",

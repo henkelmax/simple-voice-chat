@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
 import de.maxhenkel.voicechat.gui.group.GroupScreen;
 import de.maxhenkel.voicechat.gui.group.JoinGroupScreen;
+import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
@@ -31,11 +32,13 @@ public class KeyEvents {
     public static KeyBinding KEY_TOGGLE_RECORDING;
     public static KeyBinding KEY_ADJUST_VOLUMES;
 
+    public static KeyMapping[] ALL_KEYS;
+
     public KeyEvents() {
         minecraft = Minecraft.getInstance();
         ClientCompatibilityManager.INSTANCE.onHandleKeyBinds(this::handleKeybinds);
 
-        KEY_PTT = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyBinding("key.push_to_talk", GLFW.GLFW_KEY_CAPS_LOCK, "key.categories.voicechat"));
+        KEY_PTT = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyBinding("key.push_to_talk", InputConstants.UNKNOWN.getValue(), "key.categories.voicechat"));
         KEY_WHISPER = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyBinding("key.whisper", InputMappings.UNKNOWN.getValue(), "key.categories.voicechat"));
         KEY_MUTE = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyBinding("key.mute_microphone", GLFW.GLFW_KEY_M, "key.categories.voicechat"));
         KEY_DISABLE = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyBinding("key.disable_voice_chat", GLFW.GLFW_KEY_N, "key.categories.voicechat"));
@@ -45,14 +48,33 @@ public class KeyEvents {
         KEY_GROUP = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyBinding("key.voice_chat_group", GLFW.GLFW_KEY_G, "key.categories.voicechat"));
         KEY_TOGGLE_RECORDING = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyBinding("key.voice_chat_toggle_recording", InputMappings.UNKNOWN.getValue(), "key.categories.voicechat"));
         KEY_ADJUST_VOLUMES = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyBinding("key.voice_chat_adjust_volumes", InputMappings.UNKNOWN.getValue(), "key.categories.voicechat"));
+
+        ALL_KEYS = new KeyMapping[]{
+                KEY_PTT, KEY_WHISPER, KEY_MUTE, KEY_DISABLE, KEY_HIDE_ICONS, KEY_VOICE_CHAT, KEY_VOICE_CHAT_SETTINGS, KEY_GROUP, KEY_TOGGLE_RECORDING, KEY_ADJUST_VOLUMES
+        };
     }
 
     private void handleKeybinds() {
+        if (OnboardingManager.isOnboarding()) {
+            for (KeyMapping allKey : ALL_KEYS) {
+                if (allKey.consumeClick()) {
+                    OnboardingManager.startOnboarding(null);
+                    return;
+                }
+            }
+            return;
+        }
+
         ClientVoicechat client = ClientManager.getClient();
         ClientPlayerStateManager playerStateManager = ClientManager.getPlayerStateManager();
         if (KEY_VOICE_CHAT.consumeClick()) {
             if (Screen.hasAltDown()) {
-                ClientManager.getDebugOverlay().toggle();
+                if (Screen.hasControlDown()) {
+                    VoicechatClient.CLIENT_CONFIG.onboardingFinished.set(false).save();
+                    minecraft.player.displayClientMessage(Component.literal("Onboarding status has been reset"), true);
+                } else {
+                    ClientManager.getDebugOverlay().toggle();
+                }
             } else {
                 minecraft.setScreen(new VoiceChatScreen());
             }
