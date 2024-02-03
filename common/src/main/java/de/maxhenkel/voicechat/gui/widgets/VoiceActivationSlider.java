@@ -7,11 +7,11 @@ import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 public class VoiceActivationSlider extends DebouncedSlider implements MicTestButton.MicListener {
 
@@ -38,7 +38,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         RenderSystem.enableDepthTest();
         guiGraphics.blitSprite(getSlider(), getX(), getY(), getWidth(), getHeight());
 
-        int micWidth = (int) (226D * micValue);
+        int micWidth = (int) ((width - 2) * micValue);
         guiGraphics.blit(VOICE_ACTIVATION_SLIDER, getX() + 1, getY() + 1, 0, 0, micWidth, 18);
 
         guiGraphics.blitSprite(getHandle(), getX() + (int) (value * (double) (width - 8)), getY(), 8, 20);
@@ -66,10 +66,9 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     }
 
     @Nullable
-    @Override
-    public Tooltip getTooltip() {
+    public Component getHoverText() {
         if (value >= 1D) {
-            return Tooltip.create(NO_ACTIVATION);
+            return NO_ACTIVATION;
         }
         return null;
     }
