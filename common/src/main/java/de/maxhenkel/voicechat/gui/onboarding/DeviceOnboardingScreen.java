@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.gui.onboarding;
 
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.voicechat.gui.audiodevice.AudioDeviceList;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -18,9 +19,10 @@ public abstract class DeviceOnboardingScreen extends OnboardingScreenBase {
 
     public DeviceOnboardingScreen(Component title, @Nullable Screen previous) {
         super(title, previous);
+        minecraft = Minecraft.getInstance();
         micNames = getNames();
         if (micNames.isEmpty()) {
-            minecraft.setScreen(getNextScreen());
+            minecraft.tell(() -> minecraft.setScreen(getNextScreen()));
         }
     }
 
