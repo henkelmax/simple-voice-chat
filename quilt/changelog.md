@@ -1,3 +1,4 @@
 - Added onboarding guide
 - Removed default push to talk key assignment
 - Improved voice chat settings screen
+- Don't play back audio below threshold when testing

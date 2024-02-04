@@ -219,6 +219,21 @@ public class Utils {
     }
 
     /**
+     * @param samples   the audio samples
+     * @param threshold the activation threshold
+     * @return if the audio level was above the threshold
+     */
+    public static boolean isAboveThreshold(short[] samples, double threshold) {
+        for (int i = 0; i < samples.length; i += 100) {
+            double level = Utils.calculateAudioLevel(samples, i, Math.min(i + 100, samples.length));
+            if (level >= threshold) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Converts a dB value to a percentage value (-127 - 0) - (0 - 1)
      *
      * @param db the decibel value
