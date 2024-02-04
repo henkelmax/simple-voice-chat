@@ -99,6 +99,7 @@ public class MicTestButton extends ButtonBase {
 
     private class VoiceThread extends Thread {
 
+        private final MicActivator micActivator;
         private final Speaker speaker;
         private boolean running;
         private long lastRender;
@@ -112,6 +113,8 @@ public class MicTestButton extends ButtonBase {
             setDaemon(true);
             setName("VoiceTestingThread");
             setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
+
+            micActivator = new MicActivator();
 
             micThread = client != null ? client.getMicThread() : null;
             if (micThread == null) {
@@ -150,7 +153,16 @@ public class MicTestButton extends ButtonBase {
 
                 micListener.onMicValue(Utils.dbToPerc(Utils.getHighestAudioLevel(buff)));
 
-                speaker.play(buff, VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue(), null);
+                if (VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE)) {
+                    if (micActivator.push(buff, a -> {
+                    })) {
+                        play(buff);
+                    }
+                } else {
+                    micActivator.stopActivating();
+                    play(buff);
+                }
+
             }
             speaker.close();
             setMicLocked(false);
@@ -163,6 +175,10 @@ public class MicTestButton extends ButtonBase {
             // }
             setMicActive(false);
             Voicechat.LOGGER.info("Mic test audio channel closed");
+        }
+
+        private void play(short[] buff) {
+            speaker.play(buff, VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue(), null);
         }
 
         public void updateLastRender() {
