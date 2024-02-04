@@ -99,7 +99,7 @@ public class ClientConfig {
                         "Empty for default device"
                 );
         muted = builder
-                .booleanEntry("muted", false,
+                .booleanEntry("muted", true,
                         "If the microphone is muted (only when using voice activation)"
                 );
         disabled = builder
