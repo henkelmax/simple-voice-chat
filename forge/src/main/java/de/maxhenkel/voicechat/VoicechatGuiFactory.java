@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat;
 
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
+import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;
@@ -20,8 +21,11 @@ public class VoicechatGuiFactory implements IModGuiFactory {
     }
 
     @Override
-    public GuiScreen createConfigGui(GuiScreen parentScreen) {
-        return new VoiceChatSettingsScreen(parentScreen);
+    public GuiScreen createConfigGui(GuiScreen parent) {
+        if (OnboardingManager.isOnboarding()) {
+            return OnboardingManager.getOnboardingScreen(parent);
+        }
+        return new VoiceChatSettingsScreen(parent);
     }
 
     @Override
