@@ -34,14 +34,14 @@ public abstract class VoicechatClient {
     public VoicechatClient() {
         KeyEvents.registerKeyBinds();
 
-        CLASSIC_ICONS = new VoiceChatResourcePack("classic_icons");
-        WHITE_ICONS = new VoiceChatResourcePack("white_icons");
-        BLACK_ICONS = new VoiceChatResourcePack("black_icons");
+        CLASSIC_ICONS = new VoiceChatResourcePack("classic_icons", Component.translatable("resourcepack.voicechat.classic_icons"));
+        WHITE_ICONS = new VoiceChatResourcePack("white_icons", Component.translatable("resourcepack.voicechat.white_icons"));
+        BLACK_ICONS = new VoiceChatResourcePack("black_icons", Component.translatable("resourcepack.voicechat.black_icons"));
 
         ClientCompatibilityManager.INSTANCE.addResourcePackSource(Minecraft.getInstance().getResourcePackRepository(), consumer -> {
-            consumer.accept(CLASSIC_ICONS.toPack(Component.translatable("resourcepack.voicechat.classic_icons")));
-            consumer.accept(WHITE_ICONS.toPack(Component.translatable("resourcepack.voicechat.white_icons")));
-            consumer.accept(BLACK_ICONS.toPack(Component.translatable("resourcepack.voicechat.black_icons")));
+            consumer.accept(CLASSIC_ICONS.toPack());
+            consumer.accept(WHITE_ICONS.toPack());
+            consumer.accept(BLACK_ICONS.toPack());
         });
     }
 

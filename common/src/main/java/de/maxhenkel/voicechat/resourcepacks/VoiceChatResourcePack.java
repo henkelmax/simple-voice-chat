@@ -5,9 +5,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.AbstractPackResources;
-import net.minecraft.server.packs.PackResources;
-import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.*;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.IoSupplier;
@@ -18,22 +16,23 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
 public class VoiceChatResourcePack extends AbstractPackResources implements Pack.ResourcesSupplier {
 
-    public VoiceChatResourcePack(String id) {
-        super(id, true);
+    public VoiceChatResourcePack(String id, Component name) {
+        super(new PackLocationInfo(id, name, PackSource.BUILT_IN, Optional.empty()));
     }
 
-    public Pack toPack(Component name) {
+    public Pack toPack() {
         int packVersion = SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES);
-        Pack.Info info = Pack.readPackInfo("", this, packVersion);
-        if (info == null) {
+        Pack.Metadata meta = Pack.readPackMetadata(location(), this, packVersion);
+        if (meta == null) {
             throw new IllegalStateException("Could not find builtin resource pack info");
         }
-        return Pack.create(packId(), name, false, this, info, Pack.Position.TOP, false, PackSource.BUILT_IN);
+        return Pack.readMetaAndCreate(location(), this, PackType.CLIENT_RESOURCES, new PackSelectionConfig(false, Pack.Position.TOP, false));
     }
 
     private String getPath() {
@@ -115,13 +114,14 @@ public class VoiceChatResourcePack extends AbstractPackResources implements Pack
 
     }
 
+
     @Override
-    public PackResources openPrimary(String string) {
+    public PackResources openPrimary(PackLocationInfo packLocationInfo) {
         return this;
     }
 
     @Override
-    public PackResources openFull(String string, Pack.Info info) {
+    public PackResources openFull(PackLocationInfo packLocationInfo, Pack.Metadata metadata) {
         return this;
     }
 }
