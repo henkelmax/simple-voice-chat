@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.debug;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 import java.net.SocketAddress;
 import java.util.UUID;
@@ -20,12 +20,12 @@ public class PingHandler {
             return false;
         }
         try {
-            FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(payload));
+            PacketBuffer buffer = new PacketBuffer(Unpooled.wrappedBuffer(payload));
             UUID id = buffer.readUUID();
             long timestamp = buffer.readLong();
             Voicechat.LOGGER.debug("Received ping {} from ", id, socketAddress);
 
-            FriendlyByteBuf responseBuffer = new FriendlyByteBuf(Unpooled.buffer(128 + 64));
+            PacketBuffer responseBuffer = new PacketBuffer(Unpooled.buffer(128 + 64));
 
             responseBuffer.writeUUID(id);
             responseBuffer.writeLong(timestamp);
