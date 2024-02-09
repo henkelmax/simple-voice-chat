@@ -22,6 +22,7 @@ public class ServerConfig {
     public ConfigEntry<Boolean> forceVoiceChat;
     public ConfigEntry<Integer> loginTimeout;
     public ConfigEntry<Double> broadcastRange;
+    public ConfigEntry<Boolean> allowPings;
 
     public ServerConfig(ConfigBuilder builder) {
         builder.header(String.format("Simple Voice Chat server config v%s", Voicechat.INSTANCE.getDescription().getVersion()));
@@ -98,6 +99,10 @@ public class ServerConfig {
                 .doubleEntry("broadcast_range", -1D, -1D, Double.MAX_VALUE,
                         "The range where the voice chat should broadcast audio to",
                         "A value <0 means 'max_voice_distance'"
+                );
+        allowPings = builder
+                .booleanEntry("allow_pings", true,
+                        "If the voice chat server should reply to pings"
                 );
     }
 
