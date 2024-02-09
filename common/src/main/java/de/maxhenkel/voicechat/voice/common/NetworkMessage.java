@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.common;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.RawUdpPacket;
+import de.maxhenkel.voicechat.debug.PingHandler;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
@@ -99,6 +100,9 @@ public class NetworkMessage {
         }
         UUID playerID = b.readUUID();
         if (!server.hasSecret(playerID)) {
+            if (PingHandler.onPacket(server, packet.getSocketAddress(), playerID, b.readByteArray())) {
+                return null;
+            }
             // Ignore packets if they are not from a player that has a secret
             Voicechat.LOGGER.debug("Player {} does not have a secret", playerID);
             return null;
