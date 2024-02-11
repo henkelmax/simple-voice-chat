@@ -155,7 +155,7 @@
   "message.voicechat.onboarding.ptt.description": "Bitte wählen Sie die Taste, mit dem Sie Ihr Mikrofon aktivieren möchten.",
   "message.voicechat.onboarding.ptt.button_description": "Klicken um neu zuzuweisen",
   "message.voicechat.onboarding.voice.title": "Mikrofon Schwellenwert einstellen",
-  "message.voicechat.onboarding.voice.description": "Aktivieren Sie den Mikrofontest und vergewissern Sie sich, dass die Lautstärke unter dem Schieberegler liegt, wenn Sie still sind, und darüber, wenn Sie sprechen.",
+  "message.voicechat.onboarding.voice.description": "Aktivieren Sie den Mikrofontest und vergewissern Sie sich, dass die Lautstärke unter dem Schieberegler liegt, wenn Sie still sind und darüber, wenn Sie sprechen.",
   "message.voicechat.onboarding.final": "Einrichtung abschließen",
   "message.voicechat.onboarding.final.description.success": "Sie haben Ihren Sprachchat erfolgreich konfiguriert!\n\nÖffnen Sie das Sprachchat Menü mit %s.",
   "message.voicechat.onboarding.final.description.ptt": "Halten Sie während dem sprechen %s gedrückt, um den Sprachchat zu verwenden.",
