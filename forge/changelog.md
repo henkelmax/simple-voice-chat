@@ -1,6 +1,2 @@
-- Added onboarding guide
-- Removed default push to talk key assignment
-- Improved voice chat settings screen
-- Don't play back audio below threshold when testing
-- Added support for pinging voice chat servers
-- Added allow_pings server config option
+- Updated German translation
+- Updated Mexican translation
