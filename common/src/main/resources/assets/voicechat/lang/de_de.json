@@ -60,7 +60,7 @@
   "message.voicechat.group_name": "Gruppenname",
   "message.voicechat.leave_group": "Gruppe verlassen",
   "message.voicechat.not_in_group": "Sie sind in keiner Gruppe",
-  "message.voicechat.invite": "%s hat sie in die Gruppe %s eingeladen. %s",
+  "message.voicechat.invite": "%s hat Sie in die Gruppe %s eingeladen. %s",
   "message.voicechat.accept_invite": "AKZEPTIEREN",
   "message.voicechat.accept_invite.hover": "Klicken um die Einladung anzunehmen",
   "message.voicechat.join_successful": "Erfolgreich %s beigetreten",
