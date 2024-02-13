@@ -60,9 +60,9 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         addButton(new DenoiserButton(guiLeft + 10, y, xSize - 20, 20));
         y += 21;
 
-        voiceActivationSlider = new VoiceActivationSlider(guiLeft + 10 + 30 + 1, y + 21, xSize - 20 - 30 - 1, 20);
-        micTestButton = new MicTestButton(guiLeft + 10, y + 21, 30, 20, voiceActivationSlider);
-        keybindButton = new KeybindButton(KeyEvents.KEY_PTT, guiLeft + 10 + 30 + 1, y + 21, xSize - 20 - 30 - 1, 20, PUSH_TO_TALK);
+        voiceActivationSlider = new VoiceActivationSlider(guiLeft + 10 + 20 + 1, y + 21, xSize - 20 - 20 - 1, 20);
+        micTestButton = new MicTestButton(guiLeft + 10, y + 21, voiceActivationSlider);
+        keybindButton = new KeybindButton(KeyEvents.KEY_PTT, guiLeft + 10 + 20 + 1, y + 21, xSize - 20 - 20 - 1, 20, PUSH_TO_TALK);
         addButton(new MicActivationButton(guiLeft + 10, y, xSize - 20, 20, type -> {
             voiceActivationSlider.visible = MicrophoneActivationType.VOICE.equals(type);
             keybindButton.visible = MicrophoneActivationType.PTT.equals(type);
@@ -124,11 +124,10 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         font.draw(poseStack, TITLE.getVisualOrderText(), (float) (guiLeft + (xSize - titleWidth) / 2), guiTop + 7, getFontColor());
 
         ITextComponent sliderTooltip = voiceActivationSlider.getHoverText();
-        ITextComponent testTooltip = micTestButton.getHoverText();
         if (voiceActivationSlider.isHovered() && sliderTooltip != null) {
             renderTooltip(poseStack, sliderTooltip, mouseX, mouseY);
-        } else if (micTestButton.isHovered() && testTooltip != null) {
-            renderTooltip(poseStack, testTooltip, mouseX, mouseY);
+        } else if (micTestButton.isHovered()) {
+            micTestButton.renderToolTip(poseStack, mouseX, mouseY);
         } else if (keybindButton.isHovered()) {
             renderTooltip(poseStack, ASSIGN_TOOLTIP, mouseX, mouseY);
         }
