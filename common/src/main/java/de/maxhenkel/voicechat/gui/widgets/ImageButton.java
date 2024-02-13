@@ -16,11 +16,12 @@ public class ImageButton extends AbstractButton {
 
     protected Minecraft mc;
     protected ResourceLocation texture;
+    @Nullable
     protected PressAction onPress;
     @Nullable
     protected TooltipSupplier tooltipSupplier;
 
-    public ImageButton(int x, int y, ResourceLocation texture, PressAction onPress, @Nullable TooltipSupplier tooltipSupplier) {
+    public ImageButton(int x, int y, ResourceLocation texture, @Nullable PressAction onPress, @Nullable TooltipSupplier tooltipSupplier) {
         super(x, y, 20, 20, Component.empty());
         mc = Minecraft.getInstance();
         this.texture = texture;
@@ -34,7 +35,9 @@ public class ImageButton extends AbstractButton {
 
     @Override
     public void onPress() {
-        this.onPress.onPress(this);
+        if (onPress != null) {
+            onPress.onPress(this);
+        }
     }
 
     protected void renderImage(GuiGraphics guiGraphics, int mouseX, int mouseY) {
