@@ -9,18 +9,20 @@ import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
-public class MicTestButton extends AbstractButton {
+public class MicTestButton extends ToggleImageButton implements ImageButton.TooltipSupplier {
 
-    private static final Component TEST = Component.translatable("message.voicechat.mic_test");
-    private static final Component DISABLE_TEST = Component.literal("X");
+    private static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone_button.png");
+    private static final Component TEST_DISABLED = Component.translatable("message.voicechat.mic_test.disabled");
+    private static final Component TEST_ENABLED = Component.translatable("message.voicechat.mic_test.enabled");
     private static final Component TEST_UNAVAILABLE = Component.translatable("message.voicechat.mic_test_unavailable").withStyle(ChatFormatting.RED);
 
     private boolean micActive;
@@ -30,11 +32,14 @@ public class MicTestButton extends AbstractButton {
     @Nullable
     private final ClientVoicechat client;
 
-    public MicTestButton(int xIn, int yIn, int widthIn, int heightIn, MicListener micListener) {
-        super(xIn, yIn, widthIn, heightIn, TEST);
+    public MicTestButton(int xIn, int yIn, MicListener micListener) {
+        super(xIn, yIn, MICROPHONE, null, null, null);
         this.micListener = micListener;
         this.client = ClientManager.getClient();
         active = client == null || client.getSoundManager() != null;
+
+        stateSupplier = () -> !micActive;
+        tooltipSupplier = this;
     }
 
     @Override
@@ -47,23 +52,6 @@ public class MicTestButton extends AbstractButton {
 
     public void setMicActive(boolean micActive) {
         this.micActive = micActive;
-        updateText();
-    }
-
-    private void updateText() {
-        if (micActive) {
-            setMessage(DISABLE_TEST);
-        } else {
-            setMessage(TEST);
-        }
-    }
-
-    @Nullable
-    public Component getHoverText() {
-        if (!active) {
-            return TEST_UNAVAILABLE;
-        }
-        return null;
     }
 
     @Override
@@ -86,7 +74,6 @@ public class MicTestButton extends AbstractButton {
         } else {
             close();
         }
-        updateText();
     }
 
     private void close() {
@@ -104,6 +91,19 @@ public class MicTestButton extends AbstractButton {
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
         defaultButtonNarrationText(narrationElementOutput);
+    }
+
+    @Override
+    public void onTooltip(ImageButton button, GuiGraphics guiGraphics, Font font, int mouseX, int mouseY) {
+        if (!active) {
+            guiGraphics.renderTooltip(font, TEST_UNAVAILABLE, mouseX, mouseY);
+            return;
+        }
+        if (micActive) {
+            guiGraphics.renderTooltip(font, TEST_ENABLED, mouseX, mouseY);
+        } else {
+            guiGraphics.renderTooltip(font, TEST_DISABLED, mouseX, mouseY);
+        }
     }
 
     private class VoiceThread extends Thread {
