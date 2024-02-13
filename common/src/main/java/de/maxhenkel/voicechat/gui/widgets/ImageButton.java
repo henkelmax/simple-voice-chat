@@ -9,14 +9,17 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public class ImageButton extends AbstractButton {
 
     protected Minecraft mc;
     protected ResourceLocation texture;
+    @Nullable
     protected PressAction onPress;
     protected TooltipSupplier tooltipSupplier;
 
-    public ImageButton(int x, int y, ResourceLocation texture, PressAction onPress, TooltipSupplier tooltipSupplier) {
+    public ImageButton(int x, int y, ResourceLocation texture, @Nullable PressAction onPress, TooltipSupplier tooltipSupplier) {
         super(x, y, 20, 20, TextComponent.EMPTY);
         mc = Minecraft.getInstance();
         this.texture = texture;
@@ -26,7 +29,9 @@ public class ImageButton extends AbstractButton {
 
     @Override
     public void onPress() {
-        this.onPress.onPress(this);
+        if (onPress != null) {
+            onPress.onPress(this);
+        }
     }
 
     protected void renderImage(PoseStack matrices, int mouseX, int mouseY, float delta) {
@@ -36,12 +41,16 @@ public class ImageButton extends AbstractButton {
         blit(matrices, x + 2, y + 2, 0, 0, 16, 16, 16, 16);
     }
 
+    protected boolean shouldRenderTooltip() {
+        return isHovered;
+    }
+
     @Override
     public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
         super.renderButton(matrices, mouseX, mouseY, delta);
         renderImage(matrices, mouseX, mouseY, delta);
 
-        if (isHovered) {
+        if (shouldRenderTooltip()) {
             renderToolTip(matrices, mouseX, mouseY);
         }
     }
