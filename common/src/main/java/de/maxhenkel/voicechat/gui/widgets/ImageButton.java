@@ -14,11 +14,12 @@ public class ImageButton extends AbstractButton {
 
     protected Minecraft mc;
     protected ResourceLocation texture;
+    @Nullable
     protected PressAction onPress;
     @Nullable
     protected TooltipSupplier tooltipSupplier;
 
-    public ImageButton(int x, int y, ResourceLocation texture, PressAction onPress, @Nullable TooltipSupplier tooltipSupplier) {
+    public ImageButton(int x, int y, ResourceLocation texture, @Nullable PressAction onPress, @Nullable TooltipSupplier tooltipSupplier) {
         super(x, y, 20, 20, Component.empty());
         mc = Minecraft.getInstance();
         this.texture = texture;
@@ -32,7 +33,9 @@ public class ImageButton extends AbstractButton {
 
     @Override
     public void onPress() {
-        this.onPress.onPress(this);
+        if (onPress != null) {
+            onPress.onPress(this);
+        }
     }
 
     protected void renderImage(PoseStack matrices, int mouseX, int mouseY) {
@@ -42,12 +45,16 @@ public class ImageButton extends AbstractButton {
         blit(matrices, getX() + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
     }
 
+    protected boolean shouldRenderTooltip() {
+        return isHovered;
+    }
+
     @Override
     public void renderWidget(PoseStack stack, int mouseX, int mouseY, float f) {
         super.renderWidget(stack, mouseX, mouseY, f);
         renderImage(stack, mouseX, mouseY);
 
-        if (isHovered) {
+        if (shouldRenderTooltip()) {
             renderToolTip(stack, mouseX, mouseY);
         }
     }
