@@ -33,8 +33,8 @@ public class VoiceActivationOnboardingScreen extends OnboardingScreenBase {
         addButton(new MicAmplificationSlider(0, guiLeft, bottom - space * 2, contentWidth, BUTTON_HEIGHT));
         addButton(new DenoiserButton(1, guiLeft, bottom - space, contentWidth, BUTTON_HEIGHT));
 
-        slider = new VoiceActivationSlider(2, guiLeft + 30 + SMALL_PADDING, bottom, contentWidth - 30 - SMALL_PADDING, BUTTON_HEIGHT);
-        micTestButton = new MicTestButton(3, guiLeft, bottom, 30, BUTTON_HEIGHT, slider);
+        slider = new VoiceActivationSlider(2, guiLeft + 20 + SMALL_PADDING, bottom, contentWidth - 20 - SMALL_PADDING, BUTTON_HEIGHT);
+        micTestButton = new MicTestButton(3, guiLeft, bottom, slider);
         addButton(micTestButton);
         addButton(slider);
 
@@ -55,11 +55,10 @@ public class VoiceActivationOnboardingScreen extends OnboardingScreenBase {
         renderMultilineText(DESCRIPTION);
 
         ITextComponent sliderTooltip = slider.getHoverText();
-        ITextComponent testTooltip = micTestButton.getHoverText();
         if (slider.isHovered() && sliderTooltip != null) {
             drawHoveringText(sliderTooltip.getFormattedText(), mouseX, mouseY);
-        } else if (micTestButton.isHovered() && testTooltip != null) {
-            drawHoveringText(testTooltip.getFormattedText(), mouseX, mouseY);
+        } else if (micTestButton.isHovered()) {
+            micTestButton.onTooltip(micTestButton, mouseX, mouseY);
         }
     }
 }

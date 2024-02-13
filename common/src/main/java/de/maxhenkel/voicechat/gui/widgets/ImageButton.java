@@ -4,14 +4,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 
+import javax.annotation.Nullable;
+
 public class ImageButton extends ButtonBase {
 
     protected Minecraft mc;
     protected ResourceLocation texture;
+    @Nullable
     protected PressAction onPress;
     protected TooltipSupplier tooltipSupplier;
 
-    public ImageButton(int id, int x, int y, ResourceLocation texture, PressAction onPress, TooltipSupplier tooltipSupplier) {
+    public ImageButton(int id, int x, int y, ResourceLocation texture, @Nullable PressAction onPress, TooltipSupplier tooltipSupplier) {
         super(id, x, y, 20, 20, new TextComponentString(""));
         mc = Minecraft.getMinecraft();
         this.texture = texture;
@@ -21,7 +24,9 @@ public class ImageButton extends ButtonBase {
 
     @Override
     public void onPress() {
-        this.onPress.onPress(this);
+        if (onPress != null) {
+            onPress.onPress(this);
+        }
     }
 
     protected void renderImage(int mouseX, int mouseY, float delta) {

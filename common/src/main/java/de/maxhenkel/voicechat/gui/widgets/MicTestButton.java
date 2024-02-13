@@ -9,14 +9,21 @@ import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.*;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 
-public class MicTestButton extends ButtonBase {
+public class MicTestButton extends ToggleImageButton implements ImageButton.TooltipSupplier {
 
-    private static final ITextComponent TEST = new TextComponentTranslation("message.voicechat.mic_test");
-    private static final ITextComponent DISABLE_TEST = new TextComponentString("X");
+    private static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone_button.png");
+    private static final ITextComponent TEST_DISABLED = new TextComponentTranslation("message.voicechat.mic_test.disabled");
+    private static final ITextComponent TEST_ENABLED = new TextComponentTranslation("message.voicechat.mic_test.enabled");
     private static final ITextComponent TEST_UNAVAILABLE = new TextComponentTranslation("message.voicechat.mic_test_unavailable").setStyle(new Style().setColor(TextFormatting.RED));
 
     private boolean micActive;
@@ -26,11 +33,14 @@ public class MicTestButton extends ButtonBase {
     @Nullable
     private final ClientVoicechat client;
 
-    public MicTestButton(int id, int xIn, int yIn, int widthIn, int heightIn, MicListener micListener) {
-        super(id, xIn, yIn, widthIn, heightIn, TEST);
+    public MicTestButton(int id, int xIn, int yIn, MicListener micListener) {
+        super(id, xIn, yIn, MICROPHONE, null, null, null);
         this.micListener = micListener;
         this.client = ClientManager.getClient();
         // enabled = client == null || client.getSoundManager() != null;
+
+        stateSupplier = () -> !micActive;
+        tooltipSupplier = this;
     }
 
     @Override
@@ -43,23 +53,6 @@ public class MicTestButton extends ButtonBase {
 
     public void setMicActive(boolean micActive) {
         this.micActive = micActive;
-        updateText();
-    }
-
-    private void updateText() {
-        if (micActive) {
-            displayString = DISABLE_TEST.getFormattedText();
-        } else {
-            displayString = TEST.getFormattedText();
-        }
-    }
-
-    @Nullable
-    public ITextComponent getHoverText() {
-        if (!enabled) {
-            return TEST_UNAVAILABLE;
-        }
-        return null;
     }
 
     public boolean isHovered() {
@@ -82,7 +75,6 @@ public class MicTestButton extends ButtonBase {
         } else {
             close();
         }
-        updateText();
     }
 
     private void close() {
@@ -95,6 +87,24 @@ public class MicTestButton extends ButtonBase {
     public void stop() {
         close();
         setMicActive(false);
+    }
+
+    @Override
+    public void onTooltip(ImageButton button, int mouseX, int mouseY) {
+        GuiScreen screen = mc.currentScreen;
+        if (screen == null) {
+            return;
+        }
+        if (!enabled) {
+            screen.drawHoveringText(TEST_UNAVAILABLE.getFormattedText(), mouseX, mouseY);
+            return;
+        }
+        if (micActive) {
+            screen.drawHoveringText(TEST_ENABLED.getFormattedText(), mouseX, mouseY);
+        } else {
+            screen.drawHoveringText(TEST_DISABLED.getFormattedText(), mouseX, mouseY);
+        }
+        GlStateManager.disableLighting();
     }
 
     private class VoiceThread extends Thread {
