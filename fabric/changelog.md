@@ -1,3 +1,1 @@
-- Updated German translation
-- Updated Mexican translation
-- Improved microphone testing
+- Updated to 24w07a
