@@ -137,6 +137,7 @@
   "message.voicechat.invite_player": "%s in Ihre Gruppe einladen",
   "message.voicechat.press_to_reassign_key": "Press to reassign key",
   "message.voicechat.set_up": "Press %s to set up",
+  "message.voicechat.onboarding.reset": "Einrichtungsstatus zurückgesetzt",
   "message.voicechat.onboarding.next": "Weiter",
   "message.voicechat.onboarding.confirm": "Bestätigen",
   "message.voicechat.onboarding.back": "Zurück",
