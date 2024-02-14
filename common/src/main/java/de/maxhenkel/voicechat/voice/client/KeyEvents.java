@@ -10,10 +10,10 @@ import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.glfw.GLFW;
 
@@ -55,6 +55,10 @@ public class KeyEvents {
     }
 
     private void handleKeybinds() {
+        ClientPlayerEntity player = minecraft.player;
+        if (player == null) {
+            return;
+        }
         if (OnboardingManager.isOnboarding()) {
             for (KeyBinding allKey : ALL_KEYS) {
                 if (allKey.consumeClick()) {
@@ -71,7 +75,7 @@ public class KeyEvents {
             if (Screen.hasAltDown()) {
                 if (Screen.hasControlDown()) {
                     VoicechatClient.CLIENT_CONFIG.onboardingFinished.set(false).save();
-                    minecraft.player.displayClientMessage(new StringTextComponent("Onboarding status has been reset"), true);
+                    player.displayClientMessage(new TranslationTextComponent("Onboarding status has been reset"), true);
                 } else {
                     ClientManager.getDebugOverlay().toggle();
                 }
@@ -89,7 +93,7 @@ public class KeyEvents {
                     minecraft.setScreen(new JoinGroupScreen());
                 }
             } else {
-                minecraft.player.displayClientMessage(new TranslationTextComponent("message.voicechat.groups_disabled"), true);
+                player.displayClientMessage(new TranslationTextComponent("message.voicechat.groups_disabled"), true);
             }
         }
 
@@ -126,9 +130,9 @@ public class KeyEvents {
             VoicechatClient.CLIENT_CONFIG.hideIcons.set(hidden).save();
 
             if (hidden) {
-                minecraft.player.displayClientMessage(new TranslationTextComponent("message.voicechat.icons_hidden"), true);
+                player.displayClientMessage(new TranslationTextComponent("message.voicechat.icons_hidden"), true);
             } else {
-                minecraft.player.displayClientMessage(new TranslationTextComponent("message.voicechat.icons_visible"), true);
+                player.displayClientMessage(new TranslationTextComponent("message.voicechat.icons_visible"), true);
             }
         }
     }
