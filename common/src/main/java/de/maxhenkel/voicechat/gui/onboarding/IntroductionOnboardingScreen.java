@@ -24,7 +24,7 @@ public class IntroductionOnboardingScreen extends OnboardingScreenBase {
         super.init();
 
         Button skipButton = Button.builder(SKIP, button -> {
-            OnboardingManager.finishOnboarding();
+            minecraft.setScreen(new SkipOnboardingScreen(IntroductionOnboardingScreen.this));
         }).bounds(guiLeft, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth, BUTTON_HEIGHT).build();
         addRenderableWidget(skipButton);
 
