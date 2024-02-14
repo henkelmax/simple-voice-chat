@@ -29,8 +29,8 @@ public class IntroductionOnboardingScreen extends OnboardingScreenBase {
         });
         addRenderableWidget(skipButton);
 
-        addNextButton();
         addBackOrCancelButton();
+        addNextButton();
     }
 
     @Override
