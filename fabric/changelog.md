@@ -1,1 +1,1 @@
-- Updated to 24w07a
+- Translated onboarding status reset message
