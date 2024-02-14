@@ -38,8 +38,8 @@ public class VoiceActivationOnboardingScreen extends OnboardingScreenBase {
         addButton(micTestButton);
         addButton(slider);
 
-        addNextButton(4);
         addBackOrCancelButton(5);
+        addNextButton(4);
     }
 
     @Override

@@ -23,8 +23,8 @@ public class SkipOnboardingScreen extends OnboardingScreenBase {
     protected void init() {
         super.init();
 
-        addPositiveButton(CONFIRM, button -> OnboardingManager.finishOnboarding());
         addBackOrCancelButton();
+        addPositiveButton(CONFIRM, button -> OnboardingManager.finishOnboarding());
     }
 
     @Override
