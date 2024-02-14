@@ -28,8 +28,8 @@ public class IntroductionOnboardingScreen extends OnboardingScreenBase {
         }).bounds(guiLeft, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth, BUTTON_HEIGHT).build();
         addRenderableWidget(skipButton);
 
-        addNextButton();
         addBackOrCancelButton();
+        addNextButton();
     }
 
     @Override
