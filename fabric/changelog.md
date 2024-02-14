@@ -1,2 +1,3 @@
 - Translated onboarding status reset message
 - Added confirm skip setup screen
+- Fixed onboarding screen button order

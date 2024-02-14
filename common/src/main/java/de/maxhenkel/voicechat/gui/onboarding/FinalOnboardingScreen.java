@@ -48,8 +48,8 @@ public class FinalOnboardingScreen extends OnboardingScreenBase {
 
         description = text.append(new TranslatableComponent("message.voicechat.onboarding.final.description.configuration"));
 
-        addPositiveButton(FINISH_SETUP, button -> OnboardingManager.finishOnboarding());
         addBackOrCancelButton();
+        addPositiveButton(FINISH_SETUP, button -> OnboardingManager.finishOnboarding());
     }
 
     @Override
