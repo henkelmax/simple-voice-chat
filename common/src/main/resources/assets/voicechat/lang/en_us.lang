@@ -135,6 +135,7 @@ message.voicechat.audio_type.off=Off
 message.voicechat.invite_player=Invite %s to your group
 message.voicechat.press_to_reassign_key=Press to reassign key
 message.voicechat.set_up=Press %s to set up
+message.voicechat.onboarding.reset=Onboarding status has been reset
 message.voicechat.onboarding.next=Next
 message.voicechat.onboarding.confirm=Confirm
 message.voicechat.onboarding.back=Back
