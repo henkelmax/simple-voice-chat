@@ -32,8 +32,8 @@ public class PttOnboardingScreen extends OnboardingScreenBase {
         keybindButton = new KeybindButton(KeyEvents.KEY_PTT, guiLeft + 40, keybindButtonPos, contentWidth - 40 * 2, BUTTON_HEIGHT);
         addButton(keybindButton);
 
-        addNextButton();
         addBackOrCancelButton();
+        addNextButton();
     }
 
     @Override
