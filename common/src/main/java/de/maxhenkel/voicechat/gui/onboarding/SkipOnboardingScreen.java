@@ -32,8 +32,8 @@ public class SkipOnboardingScreen extends OnboardingScreenBase {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
         renderTitle(guiGraphics, TITLE);
         renderMultilineText(guiGraphics, DESCRIPTION);
     }
