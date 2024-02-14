@@ -40,8 +40,8 @@ public abstract class DeviceOnboardingScreen extends OnboardingScreenBase {
         deviceList.setAudioDevices(getNames());
         setList(deviceList);
 
-        addBackOrCancelButton(1);
-        addNextButton(0);
+        addBackOrCancelButton(0);
+        addNextButton(1);
     }
 
     @Override

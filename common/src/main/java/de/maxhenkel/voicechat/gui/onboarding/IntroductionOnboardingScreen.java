@@ -26,13 +26,13 @@ public class IntroductionOnboardingScreen extends OnboardingScreenBase {
         ButtonBase skipButton = new ButtonBase(0, guiLeft, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth, BUTTON_HEIGHT, SKIP) {
             @Override
             public void onPress() {
-                minecraft.setScreen(new SkipOnboardingScreen(IntroductionOnboardingScreen.this));
+                mc.displayGuiScreen(new SkipOnboardingScreen(IntroductionOnboardingScreen.this));
             }
         };
         addButton(skipButton);
 
-        addBackOrCancelButton(2);
-        addNextButton(1);
+        addBackOrCancelButton(1);
+        addNextButton(2);
     }
 
     @Override

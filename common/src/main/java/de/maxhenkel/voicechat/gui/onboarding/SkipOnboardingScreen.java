@@ -1,42 +1,41 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
 
 public class SkipOnboardingScreen extends OnboardingScreenBase {
 
-    private static final Component TITLE = new TranslatableComponent("message.voicechat.onboarding.skip.title", CommonCompatibilityManager.INSTANCE.getModName()).withStyle(ChatFormatting.BOLD);
-    private static final Component DESCRIPTION = new TranslatableComponent("message.voicechat.onboarding.skip.description");
-    private static final Component CONFIRM = new TranslatableComponent("message.voicechat.onboarding.confirm");
+    private static final ITextComponent TITLE = new TextComponentTranslation("message.voicechat.onboarding.skip.title", CommonCompatibilityManager.INSTANCE.getModName()).setStyle(new Style().setBold(true));
+    private static final ITextComponent DESCRIPTION = new TextComponentTranslation("message.voicechat.onboarding.skip.description");
+    private static final ITextComponent CONFIRM = new TextComponentTranslation("message.voicechat.onboarding.confirm");
 
-    public SkipOnboardingScreen(@Nullable Screen previous) {
+    public SkipOnboardingScreen(@Nullable GuiScreen previous) {
         super(TITLE, previous);
     }
 
     @Override
-    protected void init() {
-        super.init();
+    public void initGui() {
+        super.initGui();
 
-        addBackOrCancelButton();
-        addPositiveButton(CONFIRM, button -> OnboardingManager.finishOnboarding());
+        addBackOrCancelButton(0);
+        addPositiveButton(1, CONFIRM, button -> OnboardingManager.finishOnboarding());
     }
 
     @Override
-    public Screen getNextScreen() {
+    public GuiScreen getNextScreen() {
         return previous;
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        super.render(poseStack, mouseX, mouseY, partialTicks);
-        renderTitle(poseStack, TITLE);
-        renderMultilineText(poseStack, DESCRIPTION);
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        renderTitle(TITLE);
+        renderMultilineText(DESCRIPTION);
     }
 
 }

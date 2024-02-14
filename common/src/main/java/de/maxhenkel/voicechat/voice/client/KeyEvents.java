@@ -10,7 +10,7 @@ import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -54,7 +54,7 @@ public class KeyEvents {
     }
 
     private void handleKeybinds() {
-        ClientPlayerEntity player = minecraft.player;
+        EntityPlayerSP player = minecraft.player;
         if (player == null) {
             return;
         }
