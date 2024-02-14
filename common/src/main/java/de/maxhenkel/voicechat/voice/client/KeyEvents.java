@@ -74,7 +74,7 @@ public class KeyEvents {
             if (GuiScreen.isAltKeyDown()) {
                 if (GuiScreen.isCtrlKeyDown()) {
                     VoicechatClient.CLIENT_CONFIG.onboardingFinished.set(false).save();
-                    player.sendStatusMessage(new TextComponentTranslation("Onboarding status has been reset"), true);
+                    player.sendStatusMessage(new TextComponentTranslation("message.voicechat.onboarding.reset"), true);
                 } else {
                     ClientManager.getDebugOverlay().toggle();
                 }
