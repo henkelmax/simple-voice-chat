@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -11,7 +10,7 @@ import javax.annotation.Nullable;
 
 public class SkipOnboardingScreen extends OnboardingScreenBase {
 
-    private static final ITextComponent TITLE = new TranslationTextComponent("message.voicechat.onboarding.skip.title", CommonCompatibilityManager.INSTANCE.getModName()).withStyle(TextFormatting.BOLD);
+    private static final ITextComponent TITLE = new TranslationTextComponent("message.voicechat.onboarding.skip.title").withStyle(TextFormatting.BOLD);
     private static final ITextComponent DESCRIPTION = new TranslationTextComponent("message.voicechat.onboarding.skip.description");
     private static final ITextComponent CONFIRM = new TranslationTextComponent("message.voicechat.onboarding.confirm");
 
