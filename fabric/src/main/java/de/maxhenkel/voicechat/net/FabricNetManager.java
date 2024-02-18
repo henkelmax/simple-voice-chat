@@ -72,7 +72,7 @@ public class FabricNetManager extends NetManager {
                 if (FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT)) {
                     ClientPlayNetworking.registerGlobalReceiver(type, (payload, context) -> {
                         try {
-                            Minecraft.getInstance().execute(() -> c.onClientPacket(Minecraft.getInstance().player, payload)); //TODO Remove when https://github.com/FabricMC/fabric/issues/3602 is fixed
+                            Minecraft.getInstance().execute(() -> c.onClientPacket(context.player(), payload));
                         } catch (Exception e) {
                             Voicechat.LOGGER.error("Failed to register packet receiver", e);
                         }
