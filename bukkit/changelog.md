@@ -1,2 +1,1 @@
-- Added support for pinging voice chat servers
-- Added allow_pings server config option
+- Update Adventure API
