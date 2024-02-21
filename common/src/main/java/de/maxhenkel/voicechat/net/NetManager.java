@@ -48,10 +48,10 @@ public abstract class NetManager {
     public abstract <T extends Packet<T>> Channel<T> registerReceiver(Class<T> packetType, boolean toClient, boolean toServer);
 
     public static void sendToServer(Packet<?> packet) {
-        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-        packet.toBytes(buffer);
         NetHandlerPlayClient connection = Minecraft.getMinecraft().getConnection();
-        if (connection != null) {
+        if (connection != null && connection.getNetworkManager().isChannelOpen()) {
+            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
+            packet.toBytes(buffer);
             connection.sendPacket(new CPacketCustomPayload(packet.getIdentifier().toString(), buffer));
         }
     }

@@ -1,1 +1,1 @@
-- Minor improvements
+- Fixed game freezing when exiting hosted LAN world
