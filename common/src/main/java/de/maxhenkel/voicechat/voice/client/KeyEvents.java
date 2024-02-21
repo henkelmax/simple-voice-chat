@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
@@ -139,14 +140,19 @@ public class KeyEvents {
 
     private boolean checkConnected() {
         if (ClientManager.getClient() == null || ClientManager.getClient().getConnection() == null || !ClientManager.getClient().getConnection().isInitialized()) {
-            sendUnavailableMessage();
+            sendNotConnectedMessage();
             return false;
         }
         return true;
     }
 
-    private void sendUnavailableMessage() {
-        minecraft.player.displayClientMessage(new TranslatableComponent("message.voicechat.voice_chat_not_connected"), true);
+    private void sendNotConnectedMessage() {
+        LocalPlayer player = minecraft.player;
+        if (player == null) {
+            Voicechat.LOGGER.warn("Voice chat not connected");
+            return;
+        }
+        player.displayClientMessage(new TranslatableComponent("message.voicechat.voice_chat_not_connected"), true);
     }
 
 }
