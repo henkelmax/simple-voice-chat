@@ -12,7 +12,7 @@ public class PingHandler {
 
     public static final UUID PING_V1 = UUID.fromString("58bc9ae9-c7a8-45e4-a11c-efbb67199425");
 
-    public static boolean onPacket(Server server, SocketAddress socketAddress, UUID playerID, byte[] payload) {
+    public static boolean onPacket(Server server, SocketAddress socketAddress, UUID playerID, PacketBuffer buf) {
         if (!Voicechat.SERVER_CONFIG.allowPings.get()) {
             return false;
         }
@@ -20,6 +20,7 @@ public class PingHandler {
             return false;
         }
         try {
+            byte[] payload = buf.readByteArray();
             PacketBuffer buffer = new PacketBuffer(Unpooled.wrappedBuffer(payload));
             UUID id = buffer.readUUID();
             long timestamp = buffer.readLong();
