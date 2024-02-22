@@ -1,1 +1,1 @@
-- Minor improvements
+- Fixed error logs when receiving invalid voice chat packets
