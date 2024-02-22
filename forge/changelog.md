@@ -1,1 +1,2 @@
 - Fixed game freezing when exiting hosted LAN world
+- Fixed error logs when receiving invalid voice chat packets

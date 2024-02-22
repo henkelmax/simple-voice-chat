@@ -100,7 +100,7 @@ public class NetworkMessage {
         }
         UUID playerID = b.readUniqueId();
         if (!server.hasSecret(playerID)) {
-            if (PingHandler.onPacket(server, packet.getSocketAddress(), playerID, b.readByteArray())) {
+            if (PingHandler.onPacket(server, packet.getSocketAddress(), playerID, b)) {
                 return null;
             }
             // Ignore packets if they are not from a player that has a secret
