@@ -24,7 +24,6 @@ public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
 
     public AudioDeviceList(int width, int height, int top) {
         super(width, height, top, CELL_HEIGHT);
-        setRenderBackground(false);
     }
 
     @Override

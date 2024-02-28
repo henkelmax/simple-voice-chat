@@ -1,1 +1,1 @@
-- Fixed error logs when receiving invalid voice chat packets
+- Updated to 24w09a
