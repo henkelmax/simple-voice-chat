@@ -1,1 +1,1 @@
-- Fixed error logs when receiving invalid voice chat packets
+- Fixed debug logging for pings
