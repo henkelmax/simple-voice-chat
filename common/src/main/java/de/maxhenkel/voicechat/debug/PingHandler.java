@@ -24,7 +24,7 @@ public class PingHandler {
             PacketBuffer buffer = new PacketBuffer(Unpooled.wrappedBuffer(payload));
             UUID id = buffer.readUniqueId();
             long timestamp = buffer.readLong();
-            Voicechat.LOGGER.debug("Received ping {} from ", id, socketAddress);
+            Voicechat.LOGGER.debug("Received ping {} from {}", id, socketAddress);
 
             PacketBuffer responseBuffer = new PacketBuffer(Unpooled.buffer(128 + 64));
 
@@ -36,7 +36,7 @@ public class PingHandler {
 
             server.getSocket().send(response, socketAddress);
         } catch (Exception e) {
-            Voicechat.LOGGER.debug("Failed to send ping to {}: ", socketAddress, e.getMessage());
+            Voicechat.LOGGER.debug("Failed to send ping to {}: {}", socketAddress, e.getMessage());
         }
         return true;
     }
