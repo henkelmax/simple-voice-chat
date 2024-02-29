@@ -26,7 +26,7 @@ public class ServerGroupManager {
     public ServerGroupManager(Server server) {
         this.server = server;
         groups = new ConcurrentHashMap<>();
-        CommonCompatibilityManager.INSTANCE.onPlayerCompatibilityCheckSucceeded(this::onPlayerCompatibilityCheckSucceeded);
+
         CommonCompatibilityManager.INSTANCE.getNetManager().joinGroupChannel.setServerListener((srv, player, handler, packet) -> {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
@@ -56,7 +56,7 @@ public class ServerGroupManager {
         });
     }
 
-    private void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
+    public void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
         Voicechat.LOGGER.debug("Synchronizing {} groups with {}", groups.size(), player.getDisplayName().getString());
         for (Group category : groups.values()) {
             broadcastAddGroup(category);
