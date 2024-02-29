@@ -76,12 +76,12 @@ public class Server extends Thread {
     }
 
     public void onPlayerLoggedOut(EntityPlayerMP player) {
-        this.disconnectClient(player.getUUID());
+        this.disconnectClient(player.getUniqueID());
         playerStateManager.onPlayerLoggedOut(player);
         groupManager.onPlayerLoggedOut(player);
     }
 
-    public void onPlayerVoicechatConnect(ServerPlayer player) {
+    public void onPlayerVoicechatConnect(EntityPlayerMP player) {
         playerStateManager.onPlayerVoicechatConnect(player);
     }
 
@@ -89,7 +89,7 @@ public class Server extends Thread {
         playerStateManager.onPlayerVoicechatDisconnect(uuid);
     }
 
-    public void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
+    public void onPlayerCompatibilityCheckSucceeded(EntityPlayerMP player) {
         playerStateManager.onPlayerCompatibilityCheckSucceeded(player);
         groupManager.onPlayerCompatibilityCheckSucceeded(player);
         categoryManager.onPlayerCompatibilityCheckSucceeded(player);
