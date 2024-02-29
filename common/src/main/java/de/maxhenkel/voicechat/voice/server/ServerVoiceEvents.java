@@ -31,6 +31,10 @@ public class ServerVoiceEvents {
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::playerLoggedOut);
         CommonCompatibilityManager.INSTANCE.onServerStopping(this::serverStopping);
 
+        CommonCompatibilityManager.INSTANCE.onServerVoiceChatConnected(this::serverVoiceChatConnected);
+        CommonCompatibilityManager.INSTANCE.onServerVoiceChatDisconnected(this::serverVoiceChatDisconnected);
+        CommonCompatibilityManager.INSTANCE.onPlayerCompatibilityCheckSucceeded(this::playerCompatibilityCheckSucceeded);
+
         CommonCompatibilityManager.INSTANCE.getNetManager().requestSecretChannel.setServerListener((player, packet) -> {
             Voicechat.LOGGER.info("Received secret request of {} ({})", player.getDisplayName().getString(), packet.getCompatibilityVersion());
             clientCompatibilities.put(player.getUUID(), packet.getCompatibilityVersion());
@@ -104,6 +108,10 @@ public class ServerVoiceEvents {
     }
 
     public void playerLoggedIn(ServerPlayer serverPlayer) {
+        if (server != null) {
+            server.onPlayerLoggedIn(serverPlayer);
+        }
+
         if (!Voicechat.SERVER_CONFIG.forceVoiceChat.get()) {
             return;
         }
@@ -140,8 +148,32 @@ public class ServerVoiceEvents {
             return;
         }
 
-        server.disconnectClient(player.getUUID());
+        server.onPlayerLoggedOut(player);
         Voicechat.LOGGER.info("Disconnecting client {}", player.getDisplayName().getString());
+    }
+
+    public void serverVoiceChatConnected(ServerPlayer serverPlayer) {
+        if (server == null) {
+            return;
+        }
+
+        server.onPlayerVoicechatConnect(serverPlayer);
+    }
+
+    public void serverVoiceChatDisconnected(UUID uuid) {
+        if (server == null) {
+            return;
+        }
+
+        server.onPlayerVoicechatDisconnect(uuid);
+    }
+
+    public void playerCompatibilityCheckSucceeded(ServerPlayer player) {
+        if (server == null) {
+            return;
+        }
+
+        server.onPlayerCompatibilityCheckSucceeded(player);
     }
 
     @Nullable
