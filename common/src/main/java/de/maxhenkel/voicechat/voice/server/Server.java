@@ -64,8 +64,6 @@ public class Server extends Thread {
         playerStateManager = new PlayerStateManager(this);
         groupManager = new ServerGroupManager(this);
         categoryManager = new ServerCategoryManager(this);
-        CommonCompatibilityManager.INSTANCE.onPlayerLoggedIn(this::onPlayerLoggedIn);
-        CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::onPlayerLoggedOut);
         setDaemon(true);
         setName("VoiceChatServerThread");
         setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
@@ -73,13 +71,28 @@ public class Server extends Thread {
         processThread.start();
     }
 
-    private void onPlayerLoggedIn(ServerPlayer player) {
+    public void onPlayerLoggedIn(ServerPlayer player) {
         playerStateManager.onPlayerLoggedIn(player);
     }
 
-    private void onPlayerLoggedOut(ServerPlayer player) {
+    public void onPlayerLoggedOut(ServerPlayer player) {
+        this.disconnectClient(player.getUUID());
         playerStateManager.onPlayerLoggedOut(player);
         groupManager.onPlayerLoggedOut(player);
+    }
+
+    public void onPlayerVoicechatConnect(ServerPlayer player) {
+        playerStateManager.onPlayerVoicechatConnect(player);
+    }
+
+    public void onPlayerVoicechatDisconnect(UUID uuid) {
+        playerStateManager.onPlayerVoicechatDisconnect(uuid);
+    }
+
+    public void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
+        playerStateManager.onPlayerCompatibilityCheckSucceeded(player);
+        groupManager.onPlayerCompatibilityCheckSucceeded(player);
+        categoryManager.onPlayerCompatibilityCheckSucceeded(player);
     }
 
     @Override
