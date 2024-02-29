@@ -81,7 +81,7 @@ public class Server extends Thread {
         groupManager.onPlayerLoggedOut(player);
     }
 
-    public void onPlayerVoicechatConnect(ServerPlayer player) {
+    public void onPlayerVoicechatConnect(ServerPlayerEntity player) {
         playerStateManager.onPlayerVoicechatConnect(player);
     }
 
@@ -89,7 +89,7 @@ public class Server extends Thread {
         playerStateManager.onPlayerVoicechatDisconnect(uuid);
     }
 
-    public void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
+    public void onPlayerCompatibilityCheckSucceeded(ServerPlayerEntity player) {
         playerStateManager.onPlayerCompatibilityCheckSucceeded(player);
         groupManager.onPlayerCompatibilityCheckSucceeded(player);
         categoryManager.onPlayerCompatibilityCheckSucceeded(player);

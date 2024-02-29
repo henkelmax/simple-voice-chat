@@ -154,7 +154,7 @@ public class ServerVoiceEvents {
         Voicechat.LOGGER.info("Disconnecting client {}", player.getDisplayName().getString());
     }
 
-    public void serverVoiceChatConnected(ServerPlayer serverPlayer) {
+    public void serverVoiceChatConnected(ServerPlayerEntity serverPlayer) {
         if (server == null) {
             return;
         }
@@ -170,7 +170,7 @@ public class ServerVoiceEvents {
         server.onPlayerVoicechatDisconnect(uuid);
     }
 
-    public void playerCompatibilityCheckSucceeded(ServerPlayer player) {
+    public void playerCompatibilityCheckSucceeded(ServerPlayerEntity player) {
         if (server == null) {
             return;
         }
