@@ -22,9 +22,6 @@ public class PlayerStateManager {
     public PlayerStateManager(Server voicechatServer) {
         this.voicechatServer = voicechatServer;
         this.states = new ConcurrentHashMap<>();
-        CommonCompatibilityManager.INSTANCE.onServerVoiceChatConnected(this::onPlayerVoicechatConnect);
-        CommonCompatibilityManager.INSTANCE.onServerVoiceChatDisconnected(this::onPlayerVoicechatDisconnect);
-        CommonCompatibilityManager.INSTANCE.onPlayerCompatibilityCheckSucceeded(this::onPlayerCompatibilityCheckSucceeded);
 
         CommonCompatibilityManager.INSTANCE.getNetManager().updateStateChannel.setServerListener((server, player, handler, packet) -> {
             PlayerState state = states.get(player.getUUID());
@@ -48,7 +45,7 @@ public class PlayerStateManager {
         PluginManager.instance().onPlayerStateChanged(state);
     }
 
-    private void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
+    public void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
         PlayerStatesPacket packet = new PlayerStatesPacket(states);
         NetManager.sendToClient(player, packet);
         Voicechat.LOGGER.debug("Sending initial states to {}", player.getDisplayName().getString());
@@ -67,7 +64,7 @@ public class PlayerStateManager {
         Voicechat.LOGGER.debug("Removing state of {}", player.getDisplayName().getString());
     }
 
-    private void onPlayerVoicechatDisconnect(UUID uuid) {
+    public void onPlayerVoicechatDisconnect(UUID uuid) {
         PlayerState state = states.get(uuid);
         if (state == null) {
             return;
@@ -79,7 +76,7 @@ public class PlayerStateManager {
         Voicechat.LOGGER.debug("Set state of {} to disconnected: {}", uuid, state);
     }
 
-    private void onPlayerVoicechatConnect(ServerPlayer player) {
+    public void onPlayerVoicechatConnect(ServerPlayer player) {
         PlayerState state = states.get(player.getUUID());
 
         if (state == null) {
