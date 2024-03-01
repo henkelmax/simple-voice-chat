@@ -1,2 +1,1 @@
-- Fixed debug logging for pings
-- Fixed a memory leak when joining multiple single-player worlds (Thanks to KaptainWutax)
+- Fixed typo in german translation

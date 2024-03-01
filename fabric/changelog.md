@@ -1,1 +1,1 @@
-- Updated to 24w10a
+- Fixed typo in german translation
