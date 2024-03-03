@@ -1,1 +1,2 @@
 - Fixed typo in german translation
+- Improved networking
