@@ -35,6 +35,7 @@ public class ForgeNetManager extends NetManager {
                         T packet = packetType.getDeclaredConstructor().newInstance();
                         packet.fromBytes(event.getPayload());
                         c.onServerPacket(context.getSender().server, context.getSender(), context.getSender().connection, packet);
+                        context.setPacketHandled(true);
                     } catch (Exception e) {
                         Voicechat.LOGGER.error("Failed to process packet", e);
                     }
@@ -46,6 +47,7 @@ public class ForgeNetManager extends NetManager {
                         T packet = packetType.getDeclaredConstructor().newInstance();
                         packet.fromBytes(event.getPayload());
                         onClientPacket(c, packet);
+                        context.setPacketHandled(true);
                     } catch (Exception e) {
                         Voicechat.LOGGER.error("Failed to process packet", e);
                     }
