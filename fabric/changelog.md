@@ -1,2 +1,1 @@
-- Fixed debug logging for pings
-- Fixed a memory leak when joining multiple single-player worlds (Thanks to KaptainWutax)
+- Updated to 24w10a
