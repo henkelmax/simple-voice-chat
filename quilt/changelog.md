@@ -1,1 +1,2 @@
 - Fixed typo in german translation
+- Updated Chinese Simplified translation
