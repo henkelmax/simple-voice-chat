@@ -59,35 +59,20 @@ public class JavaLoggingLogger implements VoiceChatLogger {
 
     private Level fromLogLevel(LogLevel level) {
         if (debugMode) {
-            switch (level) {
-                case TRACE:
-                    return Level.ALL;
-                case WARN:
-                    return Level.WARNING;
-                case ERROR:
-                case FATAL:
-                    return Level.SEVERE;
-                default:
-                    return Level.INFO;
-            }
+            return switch (level) {
+                case TRACE -> Level.ALL;
+                case WARN -> Level.WARNING;
+                case ERROR, FATAL -> Level.SEVERE;
+                default -> Level.INFO;
+            };
         }
-        switch (level) {
-            case TRACE:
-                return Level.ALL;
-            case DEBUG:
-                return Level.CONFIG;
-            case WARN:
-                return Level.WARNING;
-            case ERROR:
-            case FATAL:
-                return Level.SEVERE;
-            default:
-                return Level.INFO;
-        }
-    }
-
-    public Logger getLogger() {
-        return logger;
+        return switch (level) {
+            case TRACE -> Level.ALL;
+            case DEBUG -> Level.CONFIG;
+            case WARN -> Level.WARNING;
+            case ERROR, FATAL -> Level.SEVERE;
+            default -> Level.INFO;
+        };
     }
 
 }
