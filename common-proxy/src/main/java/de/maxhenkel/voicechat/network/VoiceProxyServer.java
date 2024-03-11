@@ -91,7 +91,7 @@ public class VoiceProxyServer extends Thread {
             int port = voiceProxy.getConfig().port.get();
             String bindAddress = voiceProxy.getConfig().bindAddress.get();
             this.socket = new DatagramSocket(port, InetAddress.getByName(bindAddress));
-            this.voiceProxy.getLogger().info("VoiceProxyServer started at {}:{}", bindAddress, port);
+            this.voiceProxy.getLogger().info("Voice chat proxy server started at {}:{}", bindAddress, port);
         } catch (Exception e) {
             this.voiceProxy.getLogger().error("The voice chat proxy server encountered a fatal error and has been shut down", e);
             this.interrupt();
