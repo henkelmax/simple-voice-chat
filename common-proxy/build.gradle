@@ -13,15 +13,3 @@ dependencies {
     implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
     implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
 }
-
-sourceSets {
-    template {
-        java {
-            srcDir 'src/template/java'
-        }
-    }
-    main {
-        compileClasspath += sourceSets.template.output
-        runtimeClasspath += sourceSets.template.output
-    }
-}

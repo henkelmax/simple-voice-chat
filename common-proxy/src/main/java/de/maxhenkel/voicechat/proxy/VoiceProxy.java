@@ -66,6 +66,13 @@ public abstract class VoiceProxy {
     public abstract VoiceChatLogger getLogger();
 
     /**
+     * Returns the VoiceProxySniffer for this instance.
+     */
+    public VoiceProxySniffer getSniffer() {
+        return this.voiceProxySniffer;
+    }
+
+    /**
      * Determine which SocketAddress is used by the player to communicate with the game server
      * @param playerUUID Which player to find the socket for
      * @return The SocketAddress used for game traffic between the game server and the proxy

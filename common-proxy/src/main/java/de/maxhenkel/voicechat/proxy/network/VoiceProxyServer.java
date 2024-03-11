@@ -151,6 +151,8 @@ public class VoiceProxyServer extends Thread {
 
                     // The Player UUID comes right after the magic byte in the form of two longs
                     UUID playerUuid = new UUID(bb.getLong(), bb.getLong());
+                    playerUuid = voiceProxy.getSniffer().getMappedPlayerUUID(playerUuid);
+
                     VoiceProxyBridgeManager.VoiceProxyBridge bridge = voiceProxyBridgeManager.getOrCreateBridge(playerUuid, packet.getSocketAddress());
                     if (bridge == null) continue;
 
