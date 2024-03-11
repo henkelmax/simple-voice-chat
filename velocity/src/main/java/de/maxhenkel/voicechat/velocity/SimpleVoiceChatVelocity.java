@@ -14,11 +14,10 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
-import de.maxhenkel.voicechat.BuildConstants;
+import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.proxy.VoiceProxy;
-import de.maxhenkel.voicechat.proxy.config.VoiceProxyConfig;
+import de.maxhenkel.voicechat.proxy.config.ProxyConfig;
 import de.maxhenkel.voicechat.proxy.logging.VoiceChatLogger;
-import de.maxhenkel.voicechat.velocity.config.VelocityVoiceProxyConfig;
 import de.maxhenkel.voicechat.velocity.logging.JavaLoggingLogger;
 
 import java.net.InetSocketAddress;
@@ -30,14 +29,17 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @Plugin(
-        id = "simplevoicechat-velocity",
-        name = "SimpleVoiceChatVelocity",
-        version = BuildConstants.MOD_VERSION,
-        authors = "henkelmax, NilaTheDragon",
+        id = SimpleVoiceChatVelocity.MOD_ID,
+        name = "Simple Voice Chat",
+        version = VoiceProxy.MOD_VERSION,
+        authors = "NilaTheDragon, Max Henkel",
         url = "https://github.com/henkelmax/simple-voice-chat",
         description = "Run multiple servers with Simple Voice Chat behind a single public port"
 )
 public class SimpleVoiceChatVelocity extends VoiceProxy {
+
+    public static final String MOD_ID = "voicechat";
+
     /**
      * VoiceChatLogger wraps the Logger given by Velocity
      */
@@ -48,7 +50,7 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
     private Path dataDirectory;
     @Inject
     private ProxyServer proxyServer;
-    private VoiceProxyConfig voiceProxyConfig;
+    private ProxyConfig voiceProxyConfig;
 
     @Inject
     public SimpleVoiceChatVelocity(Logger logger) {
@@ -65,7 +67,7 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
     }
 
     @Override
-    public VoiceProxyConfig getConfig() {
+    public ProxyConfig getConfig() {
         return this.voiceProxyConfig;
     }
 
@@ -123,13 +125,14 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
         if (p == null) return;
         this.voiceProxySniffer.onPluginMessage(event.getIdentifier().getId(), ByteBuffer.wrap(event.getData()), p.getUniqueId());
     }
+
     private void reloadConfig() {
         try {
             Files.createDirectories(dataDirectory);
-            Path configPath = dataDirectory.resolve("config.toml");
-            voiceProxyConfig = VelocityVoiceProxyConfig.read(proxyServer, configPath);
+            Path configPath = dataDirectory.resolve("voicechat-proxy.properties");
+            voiceProxyConfig = ConfigBuilder.builder(ProxyConfig::new).path(configPath).build();
         } catch (Exception e) {
-            this.voiceChatLogger.error("An error prevented SimpleVoiceChat-Velocity to load correctly", e);
+            this.voiceChatLogger.error("Error loading config", e);
         }
     }
 }

@@ -5,29 +5,16 @@ apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mo
 
 repositories {
     mavenCentral()
-    maven { url = "https://repo.papermc.io/repository/maven-public/" }
+    maven { url = 'https://repo.papermc.io/repository/maven-public/' }
 }
 
 dependencies {
     compileOnly "com.velocitypowered:velocity-api:${velocity_version}"
     annotationProcessor "com.velocitypowered:velocity-api:${velocity_version}"
-    compileOnly("com.electronwill.night-config:toml:${night_config_version}")
-}
-
-sourceSets {
-    template {
-        java {
-            srcDir 'src/template/java'
-        }
-    }
-    main {
-        compileClasspath += sourceSets.template.output
-        runtimeClasspath += sourceSets.template.output
-    }
 }
 
 tasks.register('generateJava', Copy) {
-    from 'src/template/java'
+    from project(':common-proxy').file('src/template/java')
     into "${layout.buildDirectory.asFile.get()}/generated/java"
     expand 'mod_version': mod_version
 }

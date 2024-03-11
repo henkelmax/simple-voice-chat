@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.proxy.VoiceProxy;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
@@ -85,10 +86,14 @@ public class VoiceProxyServer extends Thread {
         try {
             // Ensure we start with a fresh UDP socket, if for some reason there is already a socket, we have to ensure it's closed
             if (this.socket != null) this.socket.close();
-            this.socket = new DatagramSocket(this.voiceProxy.getConfig().getPort(), this.voiceProxy.getConfig().getAddress());
-            this.voiceProxy.getLogger().info("VoiceProxyServer started at {}:{}", this.voiceProxy.getConfig().getAddress(), this.voiceProxy.getConfig().getPort());
+            //TODO Use proxy port if -1
+            //TODO Improve error handling for invalid bind addresses
+            int port = voiceProxy.getConfig().port.get();
+            String bindAddress = voiceProxy.getConfig().bindAddress.get();
+            this.socket = new DatagramSocket(port, InetAddress.getByName(bindAddress));
+            this.voiceProxy.getLogger().info("VoiceProxyServer started at {}:{}", bindAddress, port);
         } catch (Exception e) {
-            this.voiceProxy.getLogger().error("The VoiceProxyServer encountered a fatal error and has been shut down", e);
+            this.voiceProxy.getLogger().error("The voice chat proxy server encountered a fatal error and has been shut down", e);
             this.interrupt();
             return;
         }
@@ -117,6 +122,7 @@ public class VoiceProxyServer extends Thread {
     /**
      * Queue a DatagramPacket for an outgoing write. It is assumed that the datagram is already addressed to the
      * correct target, no modification will be performed.
+     *
      * @param packet The DatagramPacket to write out via the public UDP socket
      */
     public void write(DatagramPacket packet) {
