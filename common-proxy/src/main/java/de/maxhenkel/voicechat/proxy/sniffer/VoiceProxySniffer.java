@@ -23,9 +23,9 @@ public class VoiceProxySniffer {
     private final Map<UUID, Integer> serverUDPPortMap = new ConcurrentHashMap<>();
 
     /**
-     * Returns the player's UUID on the backend server
-     * @param playerUUID The UUID of the player on the proxy
-     * @return The mapped UUID or same as input
+     * Returns the player's UUID on the proxy server
+     * @param playerUUID The UUID of the player on the backend server
+     * @return The UUID of the player on the proxy
      */
     public UUID getMappedPlayerUUID(UUID playerUUID) {
         return this.playerUUIDMap.getOrDefault(playerUUID, playerUUID);
@@ -45,7 +45,7 @@ public class VoiceProxySniffer {
      * @param playerUUID The UUID of the player on the proxy
      * @return True if the Secret handshake was captured
      */
-    public boolean isPlayerReady(UUID playerUUID) { return this.playerUUIDMap.containsKey(playerUUID); }
+    public boolean isPlayerReady(UUID playerUUID) { return this.playerUUIDMap.containsValue(playerUUID); }
 
     /**
      * Called whenever a PluginMessage has been received by the proxy
@@ -73,7 +73,7 @@ public class VoiceProxySniffer {
      */
     private void handleSecretPacket(ByteBuffer message, UUID playerUUID) {
         SniffedSecretPacket packet = SniffedSecretPacket.fromBytes(message);
-        this.playerUUIDMap.put(playerUUID, packet.getPlayerUUID());
+        this.playerUUIDMap.put(packet.getPlayerUUID(), playerUUID);
         this.serverUDPPortMap.put(playerUUID, packet.getServerPort());
     }
 
