@@ -1,14 +1,16 @@
-plugins {
-    id 'java'
-}
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.modrinth.minotaur'
 
-sourceCompatibility = JavaLanguageVersion.of(8)
-targetCompatibility = JavaLanguageVersion.of(8)
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+sourceSets {
+    template {
+        java {
+            srcDir 'src/template/java'
+        }
+    }
+    main {
+        compileClasspath += sourceSets.template.output
+        runtimeClasspath += sourceSets.template.output
+    }
 }

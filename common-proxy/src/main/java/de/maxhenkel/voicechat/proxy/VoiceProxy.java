@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.proxy;
 
-import de.maxhenkel.voicechat.proxy.config.VoiceProxyConfig;
+import de.maxhenkel.voicechat.BuildConstants;
+import de.maxhenkel.voicechat.proxy.config.ProxyConfig;
 import de.maxhenkel.voicechat.proxy.logging.VoiceChatLogger;
 import de.maxhenkel.voicechat.proxy.network.VoiceProxyServer;
 import de.maxhenkel.voicechat.proxy.sniffer.VoiceProxySniffer;
@@ -11,12 +12,15 @@ import java.util.UUID;
 
 public abstract class VoiceProxy {
 
+    public static final String MOD_VERSION = BuildConstants.MOD_VERSION;
+
     protected final VoiceProxySniffer voiceProxySniffer = new VoiceProxySniffer();
 
     protected VoiceProxyServer voiceProxyServer;
 
     /**
      * Determine which SocketAddress to use for backend UDP traffic
+     *
      * @param playerUUID Which player to find the socket for
      * @return The sniffed SocketAddress or the game port used by the server
      */
@@ -42,6 +46,7 @@ public abstract class VoiceProxy {
 
     /**
      * Called whenever a player disconnects from a backend server
+     *
      * @param playerUUID The UUID of the player that disconnected from a backend server
      */
     protected void onPlayerServerDisconnected(UUID playerUUID) {
@@ -50,7 +55,7 @@ public abstract class VoiceProxy {
         this.getLogger().debug("Player {} is has disconnected from backend server, interrupting bridge if it exists", playerUUID);
     }
 
-    public abstract VoiceProxyConfig getConfig();
+    public abstract ProxyConfig getConfig();
 
     public abstract VoiceChatLogger getLogger();
 
@@ -60,6 +65,7 @@ public abstract class VoiceProxy {
 
     /**
      * Determine which SocketAddress is used by the player to communicate with the game server
+     *
      * @param playerUUID Which player to find the socket for
      * @return The SocketAddress used for game traffic between the game server and the proxy
      */
