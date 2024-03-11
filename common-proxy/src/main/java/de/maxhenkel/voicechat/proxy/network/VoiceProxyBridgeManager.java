@@ -14,20 +14,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * VoiceProxyBridgeManager manages the bridge lifecycle for a given VoiceProxyServer.
  */
 public class VoiceProxyBridgeManager {
+
     /**
      * A map of all currently connected players and their respective VoiceProxyBridge
      * Not all players connected to the Velocity proxy necessarily have a VoiceProxyBridge.
      */
     private final Map<UUID, VoiceProxyBridge> bridgeMap = new ConcurrentHashMap<>();
 
-    /**
-     * The instance that created this VoiceProxyBridgeManager
-     */
     private final VoiceProxy voiceProxy;
 
-    /**
-     * The instance that created this VoiceProxyBridgeManager
-     */
     private final VoiceProxyServer voiceProxyServer;
 
     /**
@@ -83,6 +78,7 @@ public class VoiceProxyBridgeManager {
      * connection between the velocity player and the specific backend server.
      */
     public class VoiceProxyBridge extends Thread {
+
         /**
          * The connection between the Velocity proxy, acting as a player, to the backend server's UDP server
          */
@@ -94,7 +90,7 @@ public class VoiceProxyBridgeManager {
         private final SocketAddress playerAddress;
 
         /**
-         * The UUID used by the player on the backend server.
+         * The UUID used by the player on the proxy server.
          */
         private final UUID playerUUID;
 

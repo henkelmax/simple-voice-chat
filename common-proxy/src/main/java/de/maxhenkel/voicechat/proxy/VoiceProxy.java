@@ -10,14 +10,9 @@ import java.net.SocketAddress;
 import java.util.UUID;
 
 public abstract class VoiceProxy {
-    /**
-     * Generic helper to sniff PluginMessage traffic on proxies
-     */
+
     protected final VoiceProxySniffer voiceProxySniffer = new VoiceProxySniffer();
 
-    /**
-     * The currently active VoiceProxyServer instance
-     */
     protected VoiceProxyServer voiceProxyServer;
 
     /**
@@ -55,19 +50,10 @@ public abstract class VoiceProxy {
         this.getLogger().debug("Player {} is has disconnected from backend server, interrupting bridge if it exists", playerUUID);
     }
 
-    /**
-     * Returns the currently active configuration for the VoiceProxy
-     */
     public abstract VoiceProxyConfig getConfig();
 
-    /**
-     * Returns the root logger for the VoiceProxy
-     */
     public abstract VoiceChatLogger getLogger();
 
-    /**
-     * Returns the VoiceProxySniffer for this instance.
-     */
     public VoiceProxySniffer getSniffer() {
         return this.voiceProxySniffer;
     }
@@ -78,6 +64,5 @@ public abstract class VoiceProxy {
      * @return The SocketAddress used for game traffic between the game server and the proxy
      */
     protected abstract InetSocketAddress getBackendSocket(UUID playerUUID);
-
 
 }

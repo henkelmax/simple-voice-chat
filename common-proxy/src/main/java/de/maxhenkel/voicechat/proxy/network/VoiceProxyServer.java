@@ -110,9 +110,6 @@ public class VoiceProxyServer extends Thread {
         }
     }
 
-    /**
-     * Returns the VoiceProxyBridgeManager instance for this VoiceProxyServer
-     */
     public VoiceProxyBridgeManager getVoiceProxyBridgeManager() {
         return voiceProxyBridgeManager;
     }
