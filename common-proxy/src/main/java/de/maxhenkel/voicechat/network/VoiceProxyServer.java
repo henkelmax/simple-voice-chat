@@ -72,7 +72,7 @@ public class VoiceProxyServer extends Thread {
         this.voiceProxyBridgeManager.shutdown();
 
         // We can now safely close the socket as no more outgoing traffic will be produced
-        this.socket.close();
+        if (this.socket != null) this.socket.close();
 
         // Since the socket is closed, we can now also stop processing incoming traffic
         this.readQueueProcessor.interrupt();
@@ -86,12 +86,21 @@ public class VoiceProxyServer extends Thread {
         try {
             // Ensure we start with a fresh UDP socket, if for some reason there is already a socket, we have to ensure it's closed
             if (this.socket != null) this.socket.close();
-            //TODO Use proxy port if -1
-            //TODO Improve error handling for invalid bind addresses
             int port = voiceProxy.getConfig().port.get();
+            if (port == -1) port = voiceProxy.getDefaultBindSocket().getPort();
+
             String bindAddress = voiceProxy.getConfig().bindAddress.get();
-            this.socket = new DatagramSocket(port, InetAddress.getByName(bindAddress));
-            this.voiceProxy.getLogger().info("Voice chat proxy server started at {}:{}", bindAddress, port);
+            if (bindAddress.isEmpty()) bindAddress = voiceProxy.getDefaultBindSocket().getAddress().getHostAddress();
+
+            InetAddress address = voiceProxy.getDefaultBindSocket().getAddress();
+            try {
+                address = InetAddress.getByName(bindAddress);
+            } catch (Exception e) {
+                this.voiceProxy.getLogger().error("An invalid bind address was specified in the config '{}', falling back to proxy bind address", bindAddress, e);
+            }
+
+            this.socket = new DatagramSocket(port, address);
+            this.voiceProxy.getLogger().info("Voice chat proxy server started at {}:{}", address.getHostAddress(), port);
         } catch (Exception e) {
             this.voiceProxy.getLogger().error("The voice chat proxy server encountered a fatal error and has been shut down", e);
             this.interrupt();

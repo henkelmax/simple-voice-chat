@@ -14,14 +14,10 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
-import de.maxhenkel.configbuilder.ConfigBuilder;
-import de.maxhenkel.voicechat.config.ProxyConfig;
 import de.maxhenkel.voicechat.logging.JavaLoggingLogger;
-import de.maxhenkel.voicechat.logging.VoiceChatLogger;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,25 +35,19 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
 
     public static final String MOD_ID = "voicechat";
 
-    /**
-     * VoiceChatLogger wraps the Logger given by Velocity
-     */
-    private final VoiceChatLogger voiceChatLogger;
-
     @DataDirectory
     @Inject
     private Path dataDirectory;
     @Inject
     private ProxyServer proxyServer;
-    private ProxyConfig voiceProxyConfig;
 
     @Inject
     public SimpleVoiceChatVelocity(Logger logger) {
-        this.voiceChatLogger = new JavaLoggingLogger(logger);
+        super(new JavaLoggingLogger(logger));
     }
 
     @Override
-    protected InetSocketAddress getBackendSocket(UUID playerUUID) {
+    public InetSocketAddress getDefaultBackendSocket(UUID playerUUID) {
         Optional<Player> player = this.proxyServer.getPlayer(playerUUID);
         if (player.isEmpty()) return null;
 
@@ -66,25 +56,23 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
     }
 
     @Override
-    public ProxyConfig getConfig() {
-        return this.voiceProxyConfig;
+    public InetSocketAddress getDefaultBindSocket() {
+        return this.proxyServer.getBoundAddress();
     }
 
     @Override
-    public VoiceChatLogger getLogger() {
-        return this.voiceChatLogger;
+    public Path getDataDirectory() {
+        return this.dataDirectory;
     }
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
         this.proxyServer.getChannelRegistrar().register(MinecraftChannelIdentifier.from("vc:secret"), MinecraftChannelIdentifier.from("voicechat:secret"));
-        this.reloadConfig();
         this.reloadVoiceProxyServer();
     }
 
     @Subscribe
     public void onProxyReload(ProxyReloadEvent event) {
-        this.reloadConfig();
         this.reloadVoiceProxyServer();
     }
 
@@ -123,15 +111,5 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
         if (event.getTarget() instanceof Player) p = (Player) event.getTarget();
         if (p == null) return;
         this.voiceProxySniffer.onPluginMessage(event.getIdentifier().getId(), ByteBuffer.wrap(event.getData()), p.getUniqueId());
-    }
-
-    private void reloadConfig() {
-        try {
-            Files.createDirectories(dataDirectory);
-            Path configPath = dataDirectory.resolve("voicechat-proxy.properties");
-            voiceProxyConfig = ConfigBuilder.builder(ProxyConfig::new).path(configPath).build();
-        } catch (Exception e) {
-            this.voiceChatLogger.error("Error loading config", e);
-        }
     }
 }

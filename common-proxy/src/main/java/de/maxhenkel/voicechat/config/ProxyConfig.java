@@ -12,14 +12,12 @@ public class ProxyConfig {
     public ProxyConfig(ConfigBuilder builder) {
         builder.header(String.format("Simple Voice Chat proxy config v%s", BuildConstants.MOD_VERSION));
 
-        //TODO Use the proxies port if set to -1
         port = builder
-                .integerEntry("port", 25577, -1, 65535, //TODO Set to -1
+                .integerEntry("port", -1, -1, 65535,
                         "The port of the voice chat proxy server",
                         "Setting this to \"-1\" sets the port to the proxies port"
                 );
 
-        //TODO Detect proxy bind address
         bindAddress = builder
                 .stringEntry("bind_address", "",
                         "The IP address to bind the voice chat proxy server on",
