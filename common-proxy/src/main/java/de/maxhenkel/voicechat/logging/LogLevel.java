@@ -1,4 +1,4 @@
-package de.maxhenkel.voicechat.proxy.logging;
+package de.maxhenkel.voicechat.logging;
 
 public enum LogLevel {
 

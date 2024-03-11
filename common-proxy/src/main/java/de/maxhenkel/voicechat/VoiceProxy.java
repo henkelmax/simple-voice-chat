@@ -1,10 +1,9 @@
-package de.maxhenkel.voicechat.proxy;
+package de.maxhenkel.voicechat;
 
-import de.maxhenkel.voicechat.BuildConstants;
-import de.maxhenkel.voicechat.proxy.config.ProxyConfig;
-import de.maxhenkel.voicechat.proxy.logging.VoiceChatLogger;
-import de.maxhenkel.voicechat.proxy.network.VoiceProxyServer;
-import de.maxhenkel.voicechat.proxy.sniffer.VoiceProxySniffer;
+import de.maxhenkel.voicechat.config.ProxyConfig;
+import de.maxhenkel.voicechat.logging.VoiceChatLogger;
+import de.maxhenkel.voicechat.network.VoiceProxyServer;
+import de.maxhenkel.voicechat.sniffer.VoiceProxySniffer;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;

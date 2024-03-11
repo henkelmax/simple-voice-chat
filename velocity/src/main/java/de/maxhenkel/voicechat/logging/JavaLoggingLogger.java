@@ -1,7 +1,4 @@
-package de.maxhenkel.voicechat.velocity.logging;
-
-import de.maxhenkel.voicechat.proxy.logging.LogLevel;
-import de.maxhenkel.voicechat.proxy.logging.VoiceChatLogger;
+package de.maxhenkel.voicechat.logging;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
