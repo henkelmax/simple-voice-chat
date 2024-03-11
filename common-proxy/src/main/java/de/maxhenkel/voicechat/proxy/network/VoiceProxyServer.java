@@ -103,7 +103,9 @@ public class VoiceProxyServer extends Thread {
                 this.socket.receive(packet);
                 this.readQueue.add(packet);
             } catch (Exception e) {
-                this.voiceProxy.getLogger().debug("An exception occurred while attempting to read & queue an incoming datagram", e);
+                if (!this.socket.isClosed()) {
+                    this.voiceProxy.getLogger().debug("An exception occurred while attempting to read & queue an incoming datagram", e);
+                }
             }
         }
     }
