@@ -1,6 +1,6 @@
-package de.maxhenkel.voicechat.proxy.network;
+package de.maxhenkel.voicechat.network;
 
-import de.maxhenkel.voicechat.proxy.VoiceProxy;
+import de.maxhenkel.voicechat.VoiceProxy;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

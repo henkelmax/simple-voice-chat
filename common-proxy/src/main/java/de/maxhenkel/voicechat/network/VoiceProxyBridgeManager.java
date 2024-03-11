@@ -1,6 +1,6 @@
-package de.maxhenkel.voicechat.proxy.network;
+package de.maxhenkel.voicechat.network;
 
-import de.maxhenkel.voicechat.proxy.VoiceProxy;
+import de.maxhenkel.voicechat.VoiceProxy;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -37,6 +37,7 @@ public class VoiceProxyBridgeManager {
 
     /**
      * Disconnect the bridge for a given player
+     *
      * @param playerUUID Which player to disconnect the bridge for
      */
     public void disconnect(UUID playerUUID) {
@@ -47,7 +48,8 @@ public class VoiceProxyBridgeManager {
 
     /**
      * Gets or creates a new bridge for a given player UUID
-     * @param playerUUID Which player to get or create the bridge for
+     *
+     * @param playerUUID    Which player to get or create the bridge for
      * @param playerAddress Which address to relay the packets back to
      * @return The existing or newly created VoiceProxyBridge
      */
@@ -122,7 +124,7 @@ public class VoiceProxyBridgeManager {
                 this.backendServerSocket = new DatagramSocket();
                 voiceProxy.getLogger().debug("Opened new DatagramSocket for communication with backend server");
 
-                while(!this.isInterrupted() && !this.backendServerSocket.isClosed()) {
+                while (!this.isInterrupted() && !this.backendServerSocket.isClosed()) {
                     try {
                         DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
                         this.backendServerSocket.receive(packet);
@@ -145,6 +147,7 @@ public class VoiceProxyBridgeManager {
 
         /**
          * Forwards any given DatagramPacket from the player to the backend server
+         *
          * @param packet The DatagramPacket to be re-packaged and sent to the backend server
          */
         public void forward(DatagramPacket packet) throws IOException {

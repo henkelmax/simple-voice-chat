@@ -1,4 +1,4 @@
-package de.maxhenkel.voicechat.proxy.sniffer;
+package de.maxhenkel.voicechat.sniffer;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -24,6 +24,7 @@ public class VoiceProxySniffer {
 
     /**
      * Returns the player's UUID on the proxy server
+     *
      * @param playerUUID The UUID of the player on the backend server
      * @return The UUID of the player on the proxy
      */
@@ -33,6 +34,7 @@ public class VoiceProxySniffer {
 
     /**
      * Returns the sniffed server UDP port or null if not found
+     *
      * @param playerUUID The UUID of the player on the proxy
      * @return The sniffed UDP port or null
      */
@@ -42,15 +44,19 @@ public class VoiceProxySniffer {
 
     /**
      * Checks whether a player has completed the Secret handshake, and we are ready to proxy the connection
+     *
      * @param playerUUID The UUID of the player on the proxy
      * @return True if the Secret handshake was captured
      */
-    public boolean isPlayerReady(UUID playerUUID) { return this.playerUUIDMap.containsValue(playerUUID); }
+    public boolean isPlayerReady(UUID playerUUID) {
+        return this.playerUUIDMap.containsValue(playerUUID);
+    }
 
     /**
      * Called whenever a PluginMessage has been received by the proxy
-     * @param channel On which channel was the message received
-     * @param message The contents of the received message
+     *
+     * @param channel    On which channel was the message received
+     * @param message    The contents of the received message
      * @param playerUUID Which player was this message for or from
      */
     public void onPluginMessage(String channel, ByteBuffer message, UUID playerUUID) {
@@ -59,6 +65,7 @@ public class VoiceProxySniffer {
 
     /**
      * Called whenever a Player disconnects from a backend server
+     *
      * @param playerUUID Which player disconnected from a server
      */
     public void onPlayerServerDisconnect(UUID playerUUID) {
@@ -68,7 +75,8 @@ public class VoiceProxySniffer {
 
     /**
      * Called whenever a SecretPacket has been sniffed
-     * @param message The SecretPacket in bytes
+     *
+     * @param message    The SecretPacket in bytes
      * @param playerUUID The UUID of the player this packet was intended for
      */
     private void handleSecretPacket(ByteBuffer message, UUID playerUUID) {

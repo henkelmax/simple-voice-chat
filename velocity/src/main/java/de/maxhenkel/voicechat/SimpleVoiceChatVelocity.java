@@ -1,4 +1,4 @@
-package de.maxhenkel.voicechat.velocity;
+package de.maxhenkel.voicechat;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
@@ -15,10 +15,9 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import de.maxhenkel.configbuilder.ConfigBuilder;
-import de.maxhenkel.voicechat.proxy.VoiceProxy;
-import de.maxhenkel.voicechat.proxy.config.ProxyConfig;
-import de.maxhenkel.voicechat.proxy.logging.VoiceChatLogger;
-import de.maxhenkel.voicechat.velocity.logging.JavaLoggingLogger;
+import de.maxhenkel.voicechat.config.ProxyConfig;
+import de.maxhenkel.voicechat.logging.JavaLoggingLogger;
+import de.maxhenkel.voicechat.logging.VoiceChatLogger;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;

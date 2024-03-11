@@ -1,4 +1,4 @@
-package de.maxhenkel.voicechat.proxy.sniffer;
+package de.maxhenkel.voicechat.sniffer;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
