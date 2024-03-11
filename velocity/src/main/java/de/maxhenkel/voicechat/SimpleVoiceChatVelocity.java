@@ -110,6 +110,10 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
         if (event.getSource() instanceof Player) p = (Player) event.getSource();
         if (event.getTarget() instanceof Player) p = (Player) event.getTarget();
         if (p == null) return;
-        this.voiceProxySniffer.onPluginMessage(event.getIdentifier().getId(), ByteBuffer.wrap(event.getData()), p.getUniqueId());
+        ByteBuffer replacement = this.voiceProxySniffer.onPluginMessage(event.getIdentifier().getId(), ByteBuffer.wrap(event.getData()), p.getUniqueId());
+        if (replacement == null) return;
+
+        event.setResult(PluginMessageEvent.ForwardResult.handled());
+        event.getTarget().sendPluginMessage(event.getIdentifier(), replacement.array());
     }
 }

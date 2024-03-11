@@ -16,7 +16,7 @@ public abstract class VoiceProxy {
 
     public static final String MOD_VERSION = BuildConstants.MOD_VERSION;
 
-    protected final VoiceProxySniffer voiceProxySniffer = new VoiceProxySniffer();
+    protected final VoiceProxySniffer voiceProxySniffer = new VoiceProxySniffer(this);
 
     private final VoiceChatLogger voiceChatLogger;
 
@@ -61,6 +61,15 @@ public abstract class VoiceProxy {
         Integer port = this.voiceProxySniffer.getServerPort(playerUUID);
         if (port == null) port = backendSocket.getPort();
         return new InetSocketAddress(backendSocket.getAddress(), port);
+    }
+
+    /**
+     * Returns which port to use for the VoiceProxyServer
+     */
+    public int getPort() {
+        int port = this.getConfig().port.get();
+        if (port == -1) port = this.getDefaultBindSocket().getPort();
+        return port;
     }
 
     /**

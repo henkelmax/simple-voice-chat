@@ -86,8 +86,7 @@ public class VoiceProxyServer extends Thread {
         try {
             // Ensure we start with a fresh UDP socket, if for some reason there is already a socket, we have to ensure it's closed
             if (this.socket != null) this.socket.close();
-            int port = voiceProxy.getConfig().port.get();
-            if (port == -1) port = voiceProxy.getDefaultBindSocket().getPort();
+            int port = voiceProxy.getPort();
 
             String bindAddress = voiceProxy.getConfig().bindAddress.get();
             if (bindAddress.isEmpty()) bindAddress = voiceProxy.getDefaultBindSocket().getAddress().getHostAddress();
