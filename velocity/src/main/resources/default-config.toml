@@ -1,0 +1,10 @@
+# Do not change this
+config-version = "1.0"
+
+# Configure on which port the Simple Voice Chat UDP proxy will listen.
+# If not configured, this defaults to the same port Velocity is listening on.
+# port = 25564
+
+# Configure on which IP address the Simple Voice Chat UDP proxy will listen.
+# If not configured, this defaults to the same IP address Velocity is listening on.
+# ip = "127.0.0.1"
