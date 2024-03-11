@@ -96,7 +96,7 @@ public class VoiceProxyServer extends Thread {
             try {
                 address = InetAddress.getByName(bindAddress);
             } catch (Exception e) {
-                this.voiceProxy.getLogger().error("An invalid bind address was specified in the config '{}', falling back to proxy bind address", bindAddress, e);
+                this.voiceProxy.getLogger().error("An invalid bind address was specified in the config '{}', falling back to proxy bind address", bindAddress);
             }
 
             this.socket = new DatagramSocket(port, address);
