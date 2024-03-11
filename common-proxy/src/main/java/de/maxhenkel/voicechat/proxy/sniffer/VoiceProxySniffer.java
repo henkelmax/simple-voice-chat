@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class VoiceProxySniffer {
 
     /**
-     * Maps the proxy player's UUID to the UUID the backend server assigned.
+     * Maps the backend server player UUID to the proxy player UUID.
      * This is useful when UUID forwarding has not been properly configured.
      */
     private final Map<UUID, UUID> playerUUIDMap = new ConcurrentHashMap<>();
