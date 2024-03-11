@@ -1,15 +1,14 @@
-apply plugin: 'com.github.johnrengelman.shadow'
+plugins {
+    id 'java'
+}
 
-apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
+sourceCompatibility = JavaLanguageVersion.of(8)
+targetCompatibility = JavaLanguageVersion.of(8)
 
 repositories {
-    maven { url = 'https://maven.shedaniel.me/' }
+    mavenCentral()
 }
 
 dependencies {
-    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
-    implementation "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
-    implementation "org.concentus:Concentus:${concentus_version}"
-    implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
-    implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
