@@ -1,5 +1,7 @@
 package de.maxhenkel.voicechat.sniffer;
 
+import de.maxhenkel.voicechat.VoiceProxy;
+
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.UUID;
@@ -21,6 +23,12 @@ public class VoiceProxySniffer {
      * Maps a given player UUID to the sniffed UDP port
      */
     private final Map<UUID, Integer> serverUDPPortMap = new ConcurrentHashMap<>();
+
+    private final VoiceProxy voiceProxy;
+
+    public VoiceProxySniffer(VoiceProxy voiceProxy) {
+        this.voiceProxy = voiceProxy;
+    }
 
     /**
      * Returns the player's UUID on the proxy server
@@ -58,9 +66,11 @@ public class VoiceProxySniffer {
      * @param channel    On which channel was the message received
      * @param message    The contents of the received message
      * @param playerUUID Which player was this message for or from
+     * @return ByteBuffer if the plugin message should be replaced, null otherwise
      */
-    public void onPluginMessage(String channel, ByteBuffer message, UUID playerUUID) {
-        if (channel.endsWith(":secret")) this.handleSecretPacket(message, playerUUID);
+    public ByteBuffer onPluginMessage(String channel, ByteBuffer message, UUID playerUUID) {
+        if (channel.endsWith(":secret")) return this.handleSecretPacket(message, playerUUID);
+        return null;
     }
 
     /**
@@ -79,10 +89,16 @@ public class VoiceProxySniffer {
      * @param message    The SecretPacket in bytes
      * @param playerUUID The UUID of the player this packet was intended for
      */
-    private void handleSecretPacket(ByteBuffer message, UUID playerUUID) {
+    private ByteBuffer handleSecretPacket(ByteBuffer message, UUID playerUUID) {
         SniffedSecretPacket packet = SniffedSecretPacket.fromBytes(message);
         this.playerUUIDMap.put(packet.getPlayerUUID(), playerUUID);
         this.serverUDPPortMap.put(playerUUID, packet.getServerPort());
+
+        if (packet.getServerPort() != voiceProxy.getPort()) {
+            voiceProxy.getLogger().debug("Patching target port in SecretPacket");
+            return SniffedSecretPacket.patch(message, voiceProxy.getPort());
+        }
+        return null;
     }
 
 }

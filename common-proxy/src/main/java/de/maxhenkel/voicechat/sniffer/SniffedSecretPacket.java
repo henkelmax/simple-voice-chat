@@ -40,4 +40,16 @@ public class SniffedSecretPacket {
     public int getServerPort() {
         return serverPort;
     }
+
+    /**
+     * Patch a SecretPacket to advertise a different port
+     * @param packet The packet to patch as a ByteBuffer
+     * @param port Which port to patch into the Packet
+     * @return A modified ByteBuffer
+     */
+    public static ByteBuffer patch(ByteBuffer packet, int port) {
+        ByteBuffer buffer = packet.duplicate();
+        buffer.putInt(16, port);
+        return buffer;
+    }
 }
