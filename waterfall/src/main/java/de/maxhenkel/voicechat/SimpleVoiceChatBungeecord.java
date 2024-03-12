@@ -21,6 +21,9 @@ import java.util.UUID;
 
 public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
 
+    private final String CHANNEL = "voicechat:secret";
+    private final String CHANNEL_1_12 = "vc:secret";
+
     private final Plugin plugin;
 
     public SimpleVoiceChatBungeecord(Plugin plugin) {
@@ -70,15 +73,15 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
     }
 
     public void onProxyInitialization() {
-        plugin.getProxy().registerChannel("vc:secret");
-        plugin.getProxy().registerChannel("voicechat:secret");
+        plugin.getProxy().registerChannel(CHANNEL);
+        plugin.getProxy().registerChannel(CHANNEL_1_12);
         this.reloadVoiceProxyServer();
     }
 
     public void onProxyShutdown() {
         if (this.voiceProxyServer != null) this.voiceProxyServer.interrupt();
-        plugin.getProxy().unregisterChannel("vc:secret");
-        plugin.getProxy().unregisterChannel("voicechat:secret");
+        plugin.getProxy().unregisterChannel(CHANNEL);
+        plugin.getProxy().unregisterChannel(CHANNEL_1_12);
     }
 
     /**
