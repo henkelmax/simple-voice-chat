@@ -8,6 +8,8 @@ import de.maxhenkel.voicechat.sniffer.VoiceProxySniffer;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -91,12 +93,25 @@ public abstract class VoiceProxy {
         } catch (Exception e) {
             voiceChatLogger.error("Error loading config", e);
         }
+        checkCorrectHost();
 
         if (voiceProxyServer != null) {
             voiceProxyServer.interrupt();
         }
         voiceProxyServer = new VoiceProxyServer(this);
         voiceProxyServer.start();
+    }
+
+    private void checkCorrectHost() {
+        String host = voiceProxyConfig.voiceHost.get();
+        if (!host.isEmpty()) {
+            try {
+                new URI("voicechat://" + host);
+                voiceChatLogger.info("Voice host is '{}'", host);
+            } catch (URISyntaxException e) {
+                voiceChatLogger.warn("Failed to parse voice host", e);
+            }
+        }
     }
 
     /**
