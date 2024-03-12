@@ -9,6 +9,7 @@ public class ProxyConfig {
     public ConfigEntry<Integer> port;
     public ConfigEntry<String> bindAddress;
     public ConfigEntry<String> voiceHost;
+    public ConfigEntry<Boolean> allowPings;
 
     public ProxyConfig(ConfigBuilder builder) {
         builder.header(String.format("Simple Voice Chat proxy config v%s", BuildConstants.MOD_VERSION));
@@ -31,6 +32,11 @@ public class ProxyConfig {
                         "The host name that clients should use to connect to the voice chat",
                         "This may also include a port, e.g. 'example.com:24454'",
                         "Don't change this value if you don't know what you are doing"
+                );
+
+        allowPings = builder
+                .booleanEntry("allow_pings", true,
+                        "If the voice chat proxy server should reply to pings"
                 );
     }
 

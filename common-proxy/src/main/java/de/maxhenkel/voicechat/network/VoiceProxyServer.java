@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.network;
 
 import de.maxhenkel.voicechat.VoiceProxy;
+import de.maxhenkel.voicechat.debug.PingHandler;
 
 import java.net.BindException;
 import java.net.DatagramPacket;
@@ -148,6 +149,10 @@ public class VoiceProxyServer extends Thread {
         return voiceProxyBridgeManager;
     }
 
+    public VoiceProxy getVoiceProxy() {
+        return voiceProxy;
+    }
+
     /**
      * Queue a DatagramPacket for an outgoing write. It is assumed that the datagram is already addressed to the
      * correct target, no modification will be performed.
@@ -189,6 +194,11 @@ public class VoiceProxyServer extends Thread {
 
                     // The Player UUID comes right after the magic byte in the form of two longs
                     UUID playerUuid = new UUID(bb.getLong(), bb.getLong());
+
+                    if (PingHandler.onPacket(VoiceProxyServer.this, packet.getSocketAddress(), playerUuid, bb)) {
+                        continue;
+                    }
+                    
                     playerUuid = voiceProxy.getSniffer().getMappedPlayerUUID(playerUuid);
 
                     VoiceProxyBridgeManager.VoiceProxyBridge bridge = voiceProxyBridgeManager.getOrCreateBridge(playerUuid, packet.getSocketAddress());
@@ -224,7 +234,9 @@ public class VoiceProxyServer extends Thread {
             while (!isInterrupted() && !socket.isClosed()) {
                 try {
                     DatagramPacket packet = writeQueue.poll(10, TimeUnit.MILLISECONDS);
-                    if (packet != null) socket.send(packet);
+                    if (packet != null) {
+                        socket.send(packet);
+                    }
                 } catch (InterruptedException ignored) {
                     voiceProxy.getLogger().debug("WriteQueueProcessor interrupted, shutting down");
                 } catch (Exception e) {
