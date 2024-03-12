@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.network;
 
 import de.maxhenkel.voicechat.VoiceProxy;
 
+import java.net.BindException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -53,30 +54,32 @@ public class VoiceProxyServer extends Thread {
      */
     private DatagramSocket socket;
 
-    public VoiceProxyServer(VoiceProxy voiceProxy) {
+    public VoiceProxyServer(VoiceProxy proxy) {
         setDaemon(true);
         setName("VoiceProxyServer");
 
-        this.voiceProxy = voiceProxy;
-        this.voiceProxyBridgeManager = new VoiceProxyBridgeManager(voiceProxy, this);
+        voiceProxy = proxy;
+        voiceProxyBridgeManager = new VoiceProxyBridgeManager(voiceProxy, this);
     }
 
     @Override
     public void interrupt() {
         // First we prevent any more outgoing packets
-        this.writeQueueProcessor.interrupt();
-        this.writeQueue.clear();
+        writeQueueProcessor.interrupt();
+        writeQueue.clear();
 
         // Then we make sure internal bridges are torn down and no more bridges can be created through
         // incoming traffic
-        this.voiceProxyBridgeManager.shutdown();
+        voiceProxyBridgeManager.shutdown();
 
         // We can now safely close the socket as no more outgoing traffic will be produced
-        if (this.socket != null) this.socket.close();
+        if (socket != null) {
+            socket.close();
+        }
 
         // Since the socket is closed, we can now also stop processing incoming traffic
-        this.readQueueProcessor.interrupt();
-        this.readQueue.clear();
+        readQueueProcessor.interrupt();
+        readQueue.clear();
 
         super.interrupt();
     }
@@ -85,39 +88,58 @@ public class VoiceProxyServer extends Thread {
     public void run() {
         try {
             // Ensure we start with a fresh UDP socket, if for some reason there is already a socket, we have to ensure it's closed
-            if (this.socket != null) this.socket.close();
+            if (socket != null) {
+                socket.close();
+            }
             int port = voiceProxy.getPort();
 
             String bindAddress = voiceProxy.getConfig().bindAddress.get();
-            if (bindAddress.isEmpty()) bindAddress = voiceProxy.getDefaultBindSocket().getAddress().getHostAddress();
-
-            InetAddress address = voiceProxy.getDefaultBindSocket().getAddress();
-            try {
-                address = InetAddress.getByName(bindAddress);
-            } catch (Exception e) {
-                this.voiceProxy.getLogger().error("An invalid bind address was specified in the config '{}', falling back to proxy bind address", bindAddress);
+            InetAddress address = null;
+            if (bindAddress.isEmpty()) {
+                address = voiceProxy.getDefaultBindSocket().getAddress();
+                bindAddress = address.getHostAddress();
+            } else if (!bindAddress.trim().equals("*")) {
+                try {
+                    address = InetAddress.getByName(bindAddress);
+                } catch (Exception e) {
+                    voiceProxy.getLogger().error("An invalid bind address was specified in the config '{}', falling back to proxy bind address", bindAddress);
+                    address = voiceProxy.getDefaultBindSocket().getAddress();
+                    bindAddress = address.getHostAddress();
+                }
             }
 
-            this.socket = new DatagramSocket(port, address);
-            this.voiceProxy.getLogger().info("Voice chat proxy server started at {}:{}", address.getHostAddress(), port);
+            try {
+                socket = new DatagramSocket(port, address);
+                if (bindAddress.isEmpty()) {
+                    voiceProxy.getLogger().info("Voice chat proxy server started at port {}", port);
+                } else {
+                    voiceProxy.getLogger().info("Voice chat proxy server started at {}:{}", bindAddress, port);
+                }
+            } catch (BindException e) {
+                if (address == null || bindAddress.equals("0.0.0.0")) {
+                    throw e;
+                }
+                voiceProxy.getLogger().error("Failed to bind to address '{}', binding to wildcard IP instead", bindAddress);
+                socket = new DatagramSocket(port);
+            }
         } catch (Exception e) {
-            this.voiceProxy.getLogger().error("The voice chat proxy server encountered a fatal error and has been shut down", e);
-            this.interrupt();
+            voiceProxy.getLogger().error("The voice chat proxy server encountered a fatal error and has been shut down", e);
+            interrupt();
             return;
         }
 
-        this.writeQueueProcessor.start();
-        this.readQueueProcessor.start();
-        this.voiceProxy.getLogger().debug("Read & Write queue processors started");
+        writeQueueProcessor.start();
+        readQueueProcessor.start();
+        voiceProxy.getLogger().debug("Read & Write queue processors started");
 
-        while (!this.isInterrupted() && !this.socket.isClosed()) {
+        while (!isInterrupted() && !socket.isClosed()) {
             try {
                 DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
-                this.socket.receive(packet);
-                this.readQueue.add(packet);
+                socket.receive(packet);
+                readQueue.add(packet);
             } catch (Exception e) {
-                if (!this.socket.isClosed()) {
-                    this.voiceProxy.getLogger().debug("An exception occurred while attempting to read & queue an incoming datagram", e);
+                if (!socket.isClosed()) {
+                    voiceProxy.getLogger().debug("An exception occurred while attempting to read & queue an incoming datagram", e);
                 }
             }
         }
@@ -134,7 +156,7 @@ public class VoiceProxyServer extends Thread {
      * @param packet The DatagramPacket to write out via the public UDP socket
      */
     public void write(DatagramPacket packet) {
-        this.writeQueue.add(packet);
+        writeQueue.add(packet);
     }
 
     /**
@@ -153,21 +175,27 @@ public class VoiceProxyServer extends Thread {
 
         @Override
         public void run() {
-            while (!this.isInterrupted() && !socket.isClosed()) {
+            while (!isInterrupted() && !socket.isClosed()) {
                 try {
                     DatagramPacket packet = readQueue.poll(10, TimeUnit.MILLISECONDS);
-                    if (packet == null) continue;
+                    if (packet == null) {
+                        continue;
+                    }
 
                     // The first byte in the datagram must match the magic byte, else this is not a valid SimpleVoiceChat packet
                     ByteBuffer bb = ByteBuffer.wrap(packet.getData());
-                    if (bb.get() != (byte) 0b11111111) continue;
+                    if (bb.get() != (byte) 0b11111111) {
+                        continue;
+                    }
 
                     // The Player UUID comes right after the magic byte in the form of two longs
                     UUID playerUuid = new UUID(bb.getLong(), bb.getLong());
                     playerUuid = voiceProxy.getSniffer().getMappedPlayerUUID(playerUuid);
 
                     VoiceProxyBridgeManager.VoiceProxyBridge bridge = voiceProxyBridgeManager.getOrCreateBridge(playerUuid, packet.getSocketAddress());
-                    if (bridge == null) continue;
+                    if (bridge == null) {
+                        continue;
+                    }
 
                     bridge.forward(packet);
                 } catch (InterruptedException ignored) {
@@ -194,7 +222,7 @@ public class VoiceProxyServer extends Thread {
 
         @Override
         public void run() {
-            while (!this.isInterrupted() && !socket.isClosed()) {
+            while (!isInterrupted() && !socket.isClosed()) {
                 try {
                     DatagramPacket packet = writeQueue.poll(10, TimeUnit.MILLISECONDS);
                     if (packet != null) socket.send(packet);
