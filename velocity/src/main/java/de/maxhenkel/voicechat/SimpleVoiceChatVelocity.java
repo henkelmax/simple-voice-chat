@@ -27,7 +27,7 @@ import java.util.logging.Logger;
         id = SimpleVoiceChatVelocity.MOD_ID,
         name = "Simple Voice Chat",
         version = VoiceProxy.MOD_VERSION,
-        authors = "NilaTheDragon, Max Henkel",
+        authors = {"NilaTheDragon", "Max Henkel"},
         url = "https://github.com/henkelmax/simple-voice-chat",
         description = "Run multiple servers with Simple Voice Chat behind a single public port"
 )
