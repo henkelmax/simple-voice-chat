@@ -40,6 +40,14 @@ public class ByteBufferWrapper {
         buffer.putInt(i);
     }
 
+    public long readLong() {
+        return buffer.getLong();
+    }
+
+    public void writeLong(long l) {
+        buffer.putLong(l);
+    }
+
     public double readDouble() {
         return buffer.getDouble();
     }
@@ -112,6 +120,13 @@ public class ByteBufferWrapper {
 
     public void writeVarInt(int i) {
         VarIntUtils.write(buffer, i);
+    }
+
+    public byte[] toBytes() {
+        buffer.flip();
+        byte[] response = new byte[buffer.remaining()];
+        buffer.get(response);
+        return response;
     }
 
 }
