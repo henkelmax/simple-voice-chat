@@ -37,7 +37,7 @@ public class VoiceProxySniffer {
      * @return the UUID of the player on the proxy
      */
     public UUID getMappedPlayerUUID(UUID playerUUID) {
-        return this.playerUUIDMap.getOrDefault(playerUUID, playerUUID);
+        return playerUUIDMap.getOrDefault(playerUUID, playerUUID);
     }
 
     /**
@@ -47,7 +47,7 @@ public class VoiceProxySniffer {
      * @return the sniffed UDP port or <code>null</code>
      */
     public Integer getServerPort(UUID playerUUID) {
-        return this.serverUDPPortMap.getOrDefault(playerUUID, null);
+        return serverUDPPortMap.getOrDefault(playerUUID, null);
     }
 
     /**
@@ -57,7 +57,7 @@ public class VoiceProxySniffer {
      * @return <code>true</code>> if the secret handshake was captured
      */
     public boolean isPlayerReady(UUID playerUUID) {
-        return this.playerUUIDMap.containsValue(playerUUID);
+        return playerUUIDMap.containsValue(playerUUID);
     }
 
     /**
@@ -69,7 +69,9 @@ public class VoiceProxySniffer {
      * @return ByteBuffer if the plugin message should be replaced, <code>null</code> otherwise
      */
     public ByteBuffer onPluginMessage(String channel, ByteBuffer message, UUID playerUUID) {
-        if (channel.endsWith(":secret")) return this.handleSecretPacket(message, playerUUID);
+        if (channel.endsWith(":secret")) {
+            return handleSecretPacket(message, playerUUID);
+        }
         return null;
     }
 
@@ -79,8 +81,8 @@ public class VoiceProxySniffer {
      * @param playerUUID the UUID of the player that disconnected
      */
     public void onPlayerServerDisconnect(UUID playerUUID) {
-        this.serverUDPPortMap.remove(playerUUID);
-        this.playerUUIDMap.remove(playerUUID);
+        serverUDPPortMap.remove(playerUUID);
+        playerUUIDMap.remove(playerUUID);
     }
 
     /**
@@ -91,8 +93,8 @@ public class VoiceProxySniffer {
      */
     private ByteBuffer handleSecretPacket(ByteBuffer message, UUID playerUUID) {
         SniffedSecretPacket packet = SniffedSecretPacket.fromBytes(message);
-        this.playerUUIDMap.put(packet.getPlayerUUID(), playerUUID);
-        this.serverUDPPortMap.put(playerUUID, packet.getServerPort());
+        playerUUIDMap.put(packet.getPlayerUUID(), playerUUID);
+        serverUDPPortMap.put(playerUUID, packet.getServerPort());
         return packet.patch(voiceProxy);
     }
 

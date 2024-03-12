@@ -42,7 +42,9 @@ public class VoiceProxyBridgeManager {
      */
     public void disconnect(UUID playerUUID) {
         VoiceProxyBridge bridge = bridgeMap.getOrDefault(playerUUID, null);
-        if (bridge != null) bridge.interrupt();
+        if (bridge != null) {
+            bridge.interrupt();
+        }
         bridgeMap.remove(playerUUID);
     }
 
@@ -55,10 +57,14 @@ public class VoiceProxyBridgeManager {
      */
     public VoiceProxyBridge getOrCreateBridge(UUID playerUUID, SocketAddress playerAddress) {
         return bridgeMap.computeIfAbsent(playerUUID, uuid -> {
-            if (!this.allowBridgeCreation) return null;
+            if (!allowBridgeCreation) {
+                return null;
+            }
 
-            SocketAddress serverAddress = this.voiceProxy.getBackendUDPSocket(playerUUID);
-            if (serverAddress == null) return null;
+            SocketAddress serverAddress = voiceProxy.getBackendUDPSocket(playerUUID);
+            if (serverAddress == null) {
+                return null;
+            }
 
             VoiceProxyBridge newBridge = new VoiceProxyBridge(uuid, playerAddress, serverAddress);
             newBridge.start();
@@ -70,8 +76,8 @@ public class VoiceProxyBridgeManager {
      * Notifies all bridges to shut down and disallows the creation of further bridges
      */
     public void shutdown() {
-        this.allowBridgeCreation = false;
-        this.bridgeMap.values().forEach(VoiceProxyBridge::interrupt);
+        allowBridgeCreation = false;
+        bridgeMap.values().forEach(VoiceProxyBridge::interrupt);
     }
 
     /**
@@ -109,8 +115,8 @@ public class VoiceProxyBridgeManager {
 
         @Override
         public void interrupt() {
-            bridgeMap.remove(this.playerUUID);
-            this.backendServerSocket.close();
+            bridgeMap.remove(playerUUID);
+            backendServerSocket.close();
             super.interrupt();
         }
 
@@ -121,18 +127,18 @@ public class VoiceProxyBridgeManager {
         @Override
         public void run() {
             try {
-                this.backendServerSocket = new DatagramSocket();
+                backendServerSocket = new DatagramSocket();
                 voiceProxy.getLogger().debug("Opened new DatagramSocket for communication with backend server");
 
-                while (!this.isInterrupted() && !this.backendServerSocket.isClosed()) {
+                while (!isInterrupted() && !backendServerSocket.isClosed()) {
                     try {
                         DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
-                        this.backendServerSocket.receive(packet);
+                        backendServerSocket.receive(packet);
 
-                        DatagramPacket proxyPacket = new DatagramPacket(packet.getData(), packet.getLength(), this.playerAddress);
+                        DatagramPacket proxyPacket = new DatagramPacket(packet.getData(), packet.getLength(), playerAddress);
                         voiceProxyServer.write(proxyPacket);
                     } catch (Exception e) {
-                        if (!this.backendServerSocket.isClosed()) {
+                        if (!backendServerSocket.isClosed()) {
                             voiceProxy.getLogger().error("Failed to bridge packet from backend server to player", e);
                         } else {
                             break;
@@ -142,7 +148,7 @@ public class VoiceProxyBridgeManager {
             } catch (Exception e) {
                 voiceProxy.getLogger().error("Failed to create DatagramSocket for backend communication, shutting down", e);
             }
-            bridgeMap.remove(this.playerUUID);
+            bridgeMap.remove(playerUUID);
         }
 
         /**
@@ -151,9 +157,13 @@ public class VoiceProxyBridgeManager {
          * @param packet The DatagramPacket to be re-packaged and sent to the backend server
          */
         public void forward(DatagramPacket packet) throws IOException {
-            if (this.backendServerSocket == null) return;
-            if (this.backendServerSocket.isClosed()) return;
-            this.backendServerSocket.send(new DatagramPacket(packet.getData(), packet.getLength(), this.serverAddress));
+            if (backendServerSocket == null) {
+                return;
+            }
+            if (backendServerSocket.isClosed()) {
+                return;
+            }
+            backendServerSocket.send(new DatagramPacket(packet.getData(), packet.getLength(), serverAddress));
         }
     }
 

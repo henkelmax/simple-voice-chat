@@ -25,7 +25,7 @@ public abstract class VoiceProxy {
     private ProxyConfig voiceProxyConfig;
 
     public VoiceProxy(VoiceChatLogger logger) {
-        this.voiceChatLogger = logger;
+        voiceChatLogger = logger;
     }
 
     /**
@@ -53,13 +53,19 @@ public abstract class VoiceProxy {
      * @return The sniffed SocketAddress or the game port used by the server
      */
     public SocketAddress getBackendUDPSocket(UUID playerUUID) {
-        if (!this.voiceProxySniffer.isPlayerReady(playerUUID)) return null;
+        if (!voiceProxySniffer.isPlayerReady(playerUUID)) {
+            return null;
+        }
 
-        InetSocketAddress backendSocket = this.getDefaultBackendSocket(playerUUID);
-        if (backendSocket == null) return null;
+        InetSocketAddress backendSocket = getDefaultBackendSocket(playerUUID);
+        if (backendSocket == null) {
+            return null;
+        }
 
-        Integer port = this.voiceProxySniffer.getServerPort(playerUUID);
-        if (port == null) port = backendSocket.getPort();
+        Integer port = voiceProxySniffer.getServerPort(playerUUID);
+        if (port == null) {
+            port = backendSocket.getPort();
+        }
         return new InetSocketAddress(backendSocket.getAddress(), port);
     }
 
@@ -67,8 +73,10 @@ public abstract class VoiceProxy {
      * Returns which port to use for the VoiceProxyServer
      */
     public int getPort() {
-        int port = this.getConfig().port.get();
-        if (port == -1) port = this.getDefaultBindSocket().getPort();
+        int port = getConfig().port.get();
+        if (port == -1) {
+            port = getDefaultBindSocket().getPort();
+        }
         return port;
     }
 
@@ -77,16 +85,18 @@ public abstract class VoiceProxy {
      */
     protected void reloadVoiceProxyServer() {
         try {
-            Files.createDirectories(this.getDataDirectory());
-            Path configPath = this.getDataDirectory().resolve("voicechat-proxy.properties");
-            this.voiceProxyConfig = ConfigBuilder.builder(ProxyConfig::new).path(configPath).build();
+            Files.createDirectories(getDataDirectory());
+            Path configPath = getDataDirectory().resolve("voicechat-proxy.properties");
+            voiceProxyConfig = ConfigBuilder.builder(ProxyConfig::new).path(configPath).build();
         } catch (Exception e) {
-            this.voiceChatLogger.error("Error loading config", e);
+            voiceChatLogger.error("Error loading config", e);
         }
 
-        if (this.voiceProxyServer != null) this.voiceProxyServer.interrupt();
-        this.voiceProxyServer = new VoiceProxyServer(this);
-        this.voiceProxyServer.start();
+        if (voiceProxyServer != null) {
+            voiceProxyServer.interrupt();
+        }
+        voiceProxyServer = new VoiceProxyServer(this);
+        voiceProxyServer.start();
     }
 
     /**
@@ -95,19 +105,23 @@ public abstract class VoiceProxy {
      * @param playerUUID The UUID of the player that disconnected from a backend server
      */
     protected void onPlayerServerDisconnected(UUID playerUUID) {
-        if (this.voiceProxyServer != null) this.voiceProxyServer.getVoiceProxyBridgeManager().disconnect(playerUUID);
-        this.voiceProxySniffer.onPlayerServerDisconnect(playerUUID);
-        this.getLogger().debug("Player {} is has disconnected from backend server, interrupting bridge if it exists", playerUUID);
+        if (voiceProxyServer != null) {
+            voiceProxyServer.getVoiceProxyBridgeManager().disconnect(playerUUID);
+        }
+        voiceProxySniffer.onPlayerServerDisconnect(playerUUID);
+        getLogger().debug("Player {} is has disconnected from backend server, interrupting bridge if it exists", playerUUID);
     }
 
-    public ProxyConfig getConfig() { return this.voiceProxyConfig; }
+    public ProxyConfig getConfig() {
+        return voiceProxyConfig;
+    }
 
     public VoiceChatLogger getLogger() {
-        return this.voiceChatLogger;
+        return voiceChatLogger;
     }
 
     public VoiceProxySniffer getSniffer() {
-        return this.voiceProxySniffer;
+        return voiceProxySniffer;
     }
 
 }
