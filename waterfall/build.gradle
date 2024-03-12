@@ -3,6 +3,12 @@ apply plugin: 'com.modrinth.minotaur'
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
+processResources {
+    filesMatching('bungee.yml') {
+        expand 'mod_version': mod_version
+    }
+}
+
 repositories {
     mavenCentral()
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots/' }
