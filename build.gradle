@@ -15,34 +15,41 @@ tasks.register('01-publishVelocity') {
     }
 }
 
-tasks.register('02-publishBukkit') {
+tasks.register('02-publishBungeeCord') {
+    group = 'voicechat'
+    doLast {
+        runGradleTasks(['common-proxy:clean', 'bungeecord:clean'], ['bungeecord:modrinth'])
+    }
+}
+
+tasks.register('03-publishBukkit') {
     group = 'voicechat'
     doLast {
         runGradleTasks(['bukkit:clean'], ['bukkit:curseforge', 'bukkit:modrinth', 'bukkit:publishAllPublicationsToHangar'])
     }
 }
 
-tasks.register('03-publishQuilt', GradleBuild) {
+tasks.register('04-publishQuilt', GradleBuild) {
     group = 'voicechat'
     dir = 'quilt'
     tasks = ['uploadMod']
 }
 
-tasks.register('04-publishForge') {
+tasks.register('05-publishForge') {
     group = 'voicechat'
     doLast {
         runGradleTasks(['common:clean', 'forge:clean'], ['forge:curseforge', 'forge:modrinth', 'forge:modUpdate'])
     }
 }
 
-tasks.register('05-publishNeoForge') {
+tasks.register('06-publishNeoForge') {
     group = 'voicechat'
     doLast {
         runGradleTasks(['common:clean', 'neoforge:clean'], ['neoforge:curseforge', 'neoforge:modrinth', 'neoforge:modUpdate'])
     }
 }
 
-tasks.register('06-publishFabric') {
+tasks.register('07-publishFabric') {
     group = 'voicechat'
     doLast {
         runGradleTasks(['common:clean', 'fabric:clean'], ['fabric:curseforge', 'fabric:modrinth', 'fabric:modUpdate'])
