@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class VoiceProxyServer extends Thread {
 
-
     /**
      * A queue of incoming datagrams on the public UDP socket
      */
