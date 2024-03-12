@@ -8,34 +8,41 @@ plugins {
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/taskutils.gradle"
 
-tasks.register('01-publishBukkit') {
+tasks.register('01-publishVelocity') {
+    group = 'voicechat'
+    doLast {
+        runGradleTasks(['common-proxy:clean', 'velocity:clean'], ['velocity:modrinth'])
+    }
+}
+
+tasks.register('02-publishBukkit') {
     group = 'voicechat'
     doLast {
         runGradleTasks(['bukkit:clean'], ['bukkit:curseforge', 'bukkit:modrinth', 'bukkit:publishAllPublicationsToHangar'])
     }
 }
 
-tasks.register('02-publishQuilt', GradleBuild) {
+tasks.register('03-publishQuilt', GradleBuild) {
     group = 'voicechat'
     dir = 'quilt'
     tasks = ['uploadMod']
 }
 
-tasks.register('03-publishForge') {
+tasks.register('04-publishForge') {
     group = 'voicechat'
     doLast {
         runGradleTasks(['common:clean', 'forge:clean'], ['forge:curseforge', 'forge:modrinth', 'forge:modUpdate'])
     }
 }
 
-tasks.register('04-publishNeoForge') {
+tasks.register('05-publishNeoForge') {
     group = 'voicechat'
     doLast {
         runGradleTasks(['common:clean', 'neoforge:clean'], ['neoforge:curseforge', 'neoforge:modrinth', 'neoforge:modUpdate'])
     }
 }
 
-tasks.register('05-publishFabric') {
+tasks.register('06-publishFabric') {
     group = 'voicechat'
     doLast {
         runGradleTasks(['common:clean', 'fabric:clean'], ['fabric:curseforge', 'fabric:modrinth', 'fabric:modUpdate'])
