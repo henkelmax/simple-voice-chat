@@ -33,7 +33,7 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
 
     @Override
     public InetSocketAddress getDefaultBackendSocket(UUID playerUUID) {
-        ProxiedPlayer player = this.plugin.getProxy().getPlayer(playerUUID);
+        ProxiedPlayer player = plugin.getProxy().getPlayer(playerUUID);
         if (player == null) {
             return null;
         }
@@ -44,8 +44,8 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
         }
 
         SocketAddress socketAddress = server.getSocketAddress();
-        if (socketAddress instanceof InetSocketAddress) {
-            return (InetSocketAddress) socketAddress;
+        if (socketAddress instanceof InetSocketAddress address) {
+            return address;
         }
 
         getLogger().error("Cannot get socket of server {} because its not using ip:port to connect", server.getInfo().getName());
@@ -54,13 +54,13 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
 
     @Override
     public InetSocketAddress getDefaultBindSocket() {
-        if (this.plugin.getProxy().getConfig().getListeners().isEmpty()) {
+        if (plugin.getProxy().getConfig().getListeners().isEmpty()) {
             getLogger().error("Cannot evaluate default socket because Bungeecord is not configured to listen on any port.");
             return null;
         }
-        ListenerInfo listenerInfo = this.plugin.getProxy().getConfig().getListeners().stream().toList().get(0);
-        if (listenerInfo.getSocketAddress() instanceof InetSocketAddress) {
-            return (InetSocketAddress) listenerInfo.getSocketAddress();
+        ListenerInfo listenerInfo = plugin.getProxy().getConfig().getListeners().stream().toList().get(0);
+        if (listenerInfo.getSocketAddress() instanceof InetSocketAddress address) {
+            return address;
         }
 
         getLogger().error("Cannot evaluate default socket because Bungeecord is not listening on an ip:port");
@@ -69,28 +69,30 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
 
     @Override
     public Path getDataDirectory() {
-        return this.plugin.getDataFolder().toPath();
+        return plugin.getDataFolder().toPath();
     }
 
     public void onProxyInitialization() {
         plugin.getProxy().registerChannel(CHANNEL);
         plugin.getProxy().registerChannel(CHANNEL_1_12);
-        this.reloadVoiceProxyServer();
+        reloadVoiceProxyServer();
     }
 
     public void onProxyShutdown() {
-        if (this.voiceProxyServer != null) this.voiceProxyServer.interrupt();
+        if (this.voiceProxyServer != null) {
+            voiceProxyServer.interrupt();
+        }
         plugin.getProxy().unregisterChannel(CHANNEL);
         plugin.getProxy().unregisterChannel(CHANNEL_1_12);
     }
 
     /**
-     * VoiceProxyServer does not support config reloads, we can treat a reload like a full plugin reload
+     * VoiceProxyServer does not support config reloads, we can treat a reload like a full plugin reload.
      */
     @EventHandler
     public void onProxyReload(ProxyReloadEvent event) {
-        this.onProxyShutdown();
-        this.onProxyInitialization();
+        onProxyShutdown();
+        onProxyInitialization();
     }
 
     /**
@@ -99,7 +101,7 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
      */
     @EventHandler
     public void onServerConnected(ServerSwitchEvent event) {
-        this.onPlayerServerDisconnected(event.getPlayer().getUniqueId());
+        onPlayerServerDisconnected(event.getPlayer().getUniqueId());
     }
 
     /**
@@ -108,7 +110,7 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
      */
     @EventHandler
     public void onPlayerDisconnected(PlayerDisconnectEvent event) {
-        this.onPlayerServerDisconnected(event.getPlayer().getUniqueId());
+        onPlayerServerDisconnected(event.getPlayer().getUniqueId());
     }
 
     /**
@@ -118,11 +120,19 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
     @EventHandler
     public void onPluginMessage(PluginMessageEvent event) {
         ProxiedPlayer p = null;
-        if (event.getSender() instanceof ProxiedPlayer) p = (ProxiedPlayer) event.getSender();
-        if (event.getReceiver() instanceof ProxiedPlayer) p = (ProxiedPlayer) event.getReceiver();
-        if (p == null) return;
-        ByteBuffer replacement = this.voiceProxySniffer.onPluginMessage(event.getTag(), ByteBuffer.wrap(event.getData()), p.getUniqueId());
-        if (replacement == null) return;
+        if (event.getSender() instanceof ProxiedPlayer player) {
+            p = player;
+        }
+        if (event.getReceiver() instanceof ProxiedPlayer player) {
+            p = player;
+        }
+        if (p == null) {
+            return;
+        }
+        ByteBuffer replacement = voiceProxySniffer.onPluginMessage(event.getTag(), ByteBuffer.wrap(event.getData()), p.getUniqueId());
+        if (replacement == null) {
+            return;
+        }
 
         event.setCancelled(true);
         event.getReceiver().unsafe().sendPacket(new PluginMessage(event.getTag(), replacement.array(), true));
