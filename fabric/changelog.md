@@ -1,2 +1,1 @@
-- Fixed typo in german translation
-- Updated Chinese Simplified translation
+- Updated to 24w11a
