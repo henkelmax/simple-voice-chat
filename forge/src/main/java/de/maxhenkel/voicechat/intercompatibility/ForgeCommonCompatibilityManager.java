@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager {
@@ -43,13 +44,13 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     private ASMDataTable asmDataTable;
 
     public ForgeCommonCompatibilityManager() {
-        serverStartingEvents = new ArrayList<>();
-        serverStoppingEvents = new ArrayList<>();
-        playerLoggedInEvents = new ArrayList<>();
-        playerLoggedOutEvents = new ArrayList<>();
-        voicechatConnectEvents = new ArrayList<>();
-        voicechatCompatibilityCheckSucceededEvents = new ArrayList<>();
-        voicechatDisconnectEvents = new ArrayList<>();
+        serverStartingEvents = new CopyOnWriteArrayList<>();
+        serverStoppingEvents = new CopyOnWriteArrayList<>();
+        playerLoggedInEvents = new CopyOnWriteArrayList<>();
+        playerLoggedOutEvents = new CopyOnWriteArrayList<>();
+        voicechatConnectEvents = new CopyOnWriteArrayList<>();
+        voicechatCompatibilityCheckSucceededEvents = new CopyOnWriteArrayList<>();
+        voicechatDisconnectEvents = new CopyOnWriteArrayList<>();
     }
 
     public void preInit(FMLPreInitializationEvent event) {
