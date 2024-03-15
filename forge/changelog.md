@@ -1,3 +1,1 @@
-- Fixed typo in german translation
-- Improved networking
-- Updated Chinese Simplified translation
+- Fixed a potential crash when launching the game
