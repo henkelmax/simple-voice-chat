@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 public class NeoForgeCommonCompatibilityManager extends CommonCompatibilityManager {
@@ -43,14 +44,14 @@ public class NeoForgeCommonCompatibilityManager extends CommonCompatibilityManag
     private final List<Consumer<UUID>> voicechatDisconnectEvents;
 
     public NeoForgeCommonCompatibilityManager() {
-        serverStartingEvents = new ArrayList<>();
-        serverStoppingEvents = new ArrayList<>();
-        registerServerCommandsEvents = new ArrayList<>();
-        playerLoggedInEvents = new ArrayList<>();
-        playerLoggedOutEvents = new ArrayList<>();
-        voicechatConnectEvents = new ArrayList<>();
-        voicechatCompatibilityCheckSucceededEvents = new ArrayList<>();
-        voicechatDisconnectEvents = new ArrayList<>();
+        serverStartingEvents = new CopyOnWriteArrayList<>();
+        serverStoppingEvents = new CopyOnWriteArrayList<>();
+        registerServerCommandsEvents = new CopyOnWriteArrayList<>();
+        playerLoggedInEvents = new CopyOnWriteArrayList<>();
+        playerLoggedOutEvents = new CopyOnWriteArrayList<>();
+        voicechatConnectEvents = new CopyOnWriteArrayList<>();
+        voicechatCompatibilityCheckSucceededEvents = new CopyOnWriteArrayList<>();
+        voicechatDisconnectEvents = new CopyOnWriteArrayList<>();
     }
 
     @SubscribeEvent
