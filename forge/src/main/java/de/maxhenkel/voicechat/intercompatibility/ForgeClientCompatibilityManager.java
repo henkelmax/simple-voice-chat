@@ -20,8 +20,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import java.net.SocketAddress;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 public class ForgeClientCompatibilityManager extends ClientCompatibilityManager {
@@ -42,17 +42,17 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
 
     public ForgeClientCompatibilityManager() {
         minecraft = Minecraft.getInstance();
-        renderNameplateEvents = new ArrayList<>();
-        renderHUDEvents = new ArrayList<>();
-        keyboardEvents = new ArrayList<>();
-        mouseEvents = new ArrayList<>();
-        clientTickEvents = new ArrayList<>();
-        inputEvents = new ArrayList<>();
-        disconnectEvents = new ArrayList<>();
-        joinWorldEvents = new ArrayList<>();
-        voicechatConnectEvents = new ArrayList<>();
-        voicechatDisconnectEvents = new ArrayList<>();
-        publishServerEvents = new ArrayList<>();
+        renderNameplateEvents = new CopyOnWriteArrayList<>();
+        renderHUDEvents = new CopyOnWriteArrayList<>();
+        keyboardEvents = new CopyOnWriteArrayList<>();
+        mouseEvents = new CopyOnWriteArrayList<>();
+        clientTickEvents = new CopyOnWriteArrayList<>();
+        inputEvents = new CopyOnWriteArrayList<>();
+        disconnectEvents = new CopyOnWriteArrayList<>();
+        joinWorldEvents = new CopyOnWriteArrayList<>();
+        voicechatConnectEvents = new CopyOnWriteArrayList<>();
+        voicechatDisconnectEvents = new CopyOnWriteArrayList<>();
+        publishServerEvents = new CopyOnWriteArrayList<>();
     }
 
     @SubscribeEvent
