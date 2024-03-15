@@ -21,8 +21,8 @@ import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 
 import java.net.SocketAddress;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManager {
@@ -44,18 +44,18 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
 
     public NeoForgeClientCompatibilityManager() {
         minecraft = Minecraft.getInstance();
-        renderNameplateEvents = new ArrayList<>();
-        renderHUDEvents = new ArrayList<>();
-        keyboardEvents = new ArrayList<>();
-        mouseEvents = new ArrayList<>();
-        clientTickEvents = new ArrayList<>();
-        inputEvents = new ArrayList<>();
-        disconnectEvents = new ArrayList<>();
-        joinWorldEvents = new ArrayList<>();
-        voicechatConnectEvents = new ArrayList<>();
-        voicechatDisconnectEvents = new ArrayList<>();
-        publishServerEvents = new ArrayList<>();
-        keyMappings = new ArrayList<>();
+        renderNameplateEvents = new CopyOnWriteArrayList<>();
+        renderHUDEvents = new CopyOnWriteArrayList<>();
+        keyboardEvents = new CopyOnWriteArrayList<>();
+        mouseEvents = new CopyOnWriteArrayList<>();
+        clientTickEvents = new CopyOnWriteArrayList<>();
+        inputEvents = new CopyOnWriteArrayList<>();
+        disconnectEvents = new CopyOnWriteArrayList<>();
+        joinWorldEvents = new CopyOnWriteArrayList<>();
+        voicechatConnectEvents = new CopyOnWriteArrayList<>();
+        voicechatDisconnectEvents = new CopyOnWriteArrayList<>();
+        publishServerEvents = new CopyOnWriteArrayList<>();
+        keyMappings = new CopyOnWriteArrayList<>();
     }
 
     @SubscribeEvent
