@@ -2,12 +2,6 @@
 |
 [CurseForge](https://legacy.curseforge.com/minecraft/mc-mods/simple-voice-chat)
 |
-[CurseForge Bukkit](https://legacy.curseforge.com/minecraft/bukkit-plugins/simple-voice-chat)
-|
-[Spigot](https://www.spigotmc.org/resources/simple-voice-chat.93738/)
-|
-[Hangar](https://hangar.papermc.io/henkelmax/SimpleVoiceChat)
-|
 [Discord](https://discord.gg/4dH2zwTmyX)
 |
 [Wiki](https://modrepo.de/minecraft/voicechat/wiki)
@@ -20,12 +14,7 @@
 
 # Simple Voice Chat
 
-A proximity voice chat for Minecraft.
-You can choose between push to talk (PTT) or voice activation.
-The default PTT key is `CAPS LOCK`, but it can be changed in the key bind settings.
-You can access the voice chat settings by pressing the `V` key.
-
-There is a variety of [addons](https://modrepo.de/minecraft/voicechat/addons) that offer additional features and functionalities.
+A proximity voice chat for Minecraft with a variety of [addons](https://modrepo.de/minecraft/voicechat/addons) that offer additional features and functionalities.
 
 :warning: **NOTE** This mod requires special setup on the server in order to work.
 Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki/setup) for more information.
@@ -41,9 +30,12 @@ Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki/setup) for mo
 ## Downloads
 
 - [Fabric](https://modrinth.com/mod/simple-voice-chat/versions?l=fabric)
+- [NeoForge](https://modrinth.com/mod/simple-voice-chat/versions?l=neoforge)
 - [Forge](https://modrinth.com/mod/simple-voice-chat/versions?l=forge)
 - [Bukkit/Spigot/Paper](https://modrinth.com/plugin/simple-voice-chat/versions?l=bukkit)
 - [Quilt](https://modrinth.com/mod/simple-voice-chat/versions?l=quilt)
+- [Velocity](https://modrinth.com/mod/simple-voice-chat/versions?l=velocity)
+- [BungeeCord/Waterfall](https://modrinth.com/mod/simple-voice-chat/versions?l=bungeecord)
 
 ## Features
 
@@ -54,7 +46,8 @@ Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki/setup) for mo
 - [Opus codec](https://opus-codec.org/)
 - [RNNoise](https://jmvalin.ca/demo/rnnoise/) recurrent neural network noise suppression
 - OpenAL audio
-- Cross compatibility between Fabric, Forge, Quilt, Bukkit, Spigot and Paper
+- Cross compatibility between Fabric, NeoForge, Forge, Quilt, Bukkit, Spigot and Paper
+- Support for Velocity, BungeeCord and Waterfall
 - Compatibility with [ModMenu](https://modrinth.com/mod/modmenu) (Use [ClothConfig](https://modrinth.com/mod/cloth-config) for a better configuration UI)
 - Configurable push to talk key
 - Microphone test playback
