@@ -1,1 +1,1 @@
-- Initial Velocity Implementation
+- Initial Velocity release
