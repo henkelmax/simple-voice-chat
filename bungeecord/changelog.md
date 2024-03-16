@@ -1,1 +1,1 @@
-- Initial Bungeecord Implementation
+- Initial Bungeecord/Waterfall release
