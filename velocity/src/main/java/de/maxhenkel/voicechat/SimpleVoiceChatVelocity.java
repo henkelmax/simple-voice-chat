@@ -49,7 +49,9 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
     @Override
     public InetSocketAddress getDefaultBackendSocket(UUID playerUUID) {
         Optional<Player> player = this.proxyServer.getPlayer(playerUUID);
-        if (player.isEmpty()) return null;
+        if (player.isEmpty()) {
+            return null;
+        }
 
         Optional<ServerConnection> server = player.get().getCurrentServer();
         return server.map(serverConnection -> serverConnection.getServerInfo().getAddress()).orElse(null);
@@ -107,11 +109,19 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
     @Subscribe
     public void onPluginMessage(PluginMessageEvent event) {
         Player p = null;
-        if (event.getSource() instanceof Player) p = (Player) event.getSource();
-        if (event.getTarget() instanceof Player) p = (Player) event.getTarget();
-        if (p == null) return;
-        ByteBuffer replacement = this.voiceProxySniffer.onPluginMessage(event.getIdentifier().getId(), ByteBuffer.wrap(event.getData()), p.getUniqueId());
-        if (replacement == null) return;
+        if (event.getSource() instanceof Player) {
+            p = (Player) event.getSource();
+        }
+        if (event.getTarget() instanceof Player) {
+            p = (Player) event.getTarget();
+        }
+        if (p == null) {
+            return;
+        }
+        ByteBuffer replacement = voiceProxySniffer.onPluginMessage(event.getIdentifier().getId(), ByteBuffer.wrap(event.getData()), p.getUniqueId());
+        if (replacement == null) {
+            return;
+        }
 
         event.setResult(PluginMessageEvent.ForwardResult.handled());
         event.getTarget().sendPluginMessage(event.getIdentifier(), replacement.array());

@@ -79,7 +79,7 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
     }
 
     public void onProxyShutdown() {
-        if (this.voiceProxyServer != null) {
+        if (voiceProxyServer != null) {
             voiceProxyServer.interrupt();
         }
         plugin.getProxy().unregisterChannel(CHANNEL);
