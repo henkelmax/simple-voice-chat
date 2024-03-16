@@ -8,17 +8,17 @@ plugins {
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/taskutils.gradle"
 
-tasks.register('01-publishVelocity') {
-    group = 'voicechat'
-    doLast {
-        runGradleTasks(['common-proxy:clean', 'velocity:clean'], ['velocity:modrinth'])
-    }
-}
-
-tasks.register('02-publishBungeeCord') {
+tasks.register('01-publishBungeeCord') {
     group = 'voicechat'
     doLast {
         runGradleTasks(['common-proxy:clean', 'bungeecord:clean'], ['bungeecord:modrinth'])
+    }
+}
+
+tasks.register('02-publishVelocity') {
+    group = 'voicechat'
+    doLast {
+        runGradleTasks(['common-proxy:clean', 'velocity:clean'], ['velocity:modrinth'])
     }
 }
 
