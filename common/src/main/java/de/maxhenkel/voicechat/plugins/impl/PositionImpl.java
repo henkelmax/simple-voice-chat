@@ -3,6 +3,8 @@ package de.maxhenkel.voicechat.plugins.impl;
 import de.maxhenkel.voicechat.api.Position;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.Objects;
+
 public class PositionImpl implements Position {
 
     private final Vec3d position;
@@ -32,5 +34,22 @@ public class PositionImpl implements Position {
 
     public Vec3d getPosition() {
         return position;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        PositionImpl position1 = (PositionImpl) object;
+        return Objects.equals(position, position1.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return position != null ? position.hashCode() : 0;
     }
 }
