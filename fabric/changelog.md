@@ -1,1 +1,1 @@
-- Updated Mexican Spanish translation
+- Improved API object equals checks
