@@ -1,0 +1,1 @@
+- Improved API object equals checks
