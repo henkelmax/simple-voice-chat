@@ -1,1 +1,1 @@
-- Updated to 24w12a
+- Improved API object equals checks

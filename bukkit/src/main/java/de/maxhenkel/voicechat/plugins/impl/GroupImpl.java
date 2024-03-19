@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.Server;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.UUID;
 
 public class GroupImpl implements Group {
@@ -61,6 +62,23 @@ public class GroupImpl implements Group {
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        GroupImpl group1 = (GroupImpl) object;
+        return Objects.equals(group.getId(), group1.group.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return group != null ? group.getId().hashCode() : 0;
     }
 
     public static class BuilderImpl implements Group.Builder {
