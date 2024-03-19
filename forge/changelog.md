@@ -1,2 +1,1 @@
-- Fixed a potential crash when launching the game
-- Updated Mexican Spanish translation
+- Improved API object equals checks
