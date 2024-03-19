@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.plugins.impl;
 import de.maxhenkel.voicechat.api.Entity;
 import de.maxhenkel.voicechat.api.Position;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class EntityImpl implements Entity {
@@ -32,4 +33,20 @@ public class EntityImpl implements Entity {
         return entity;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        EntityImpl entity1 = (EntityImpl) object;
+        return Objects.equals(entity, entity1.entity);
+    }
+
+    @Override
+    public int hashCode() {
+        return entity != null ? entity.hashCode() : 0;
+    }
 }

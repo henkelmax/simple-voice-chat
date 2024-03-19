@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.plugins.impl;
 import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class ClientGroupImpl implements Group {
@@ -47,4 +48,20 @@ public class ClientGroupImpl implements Group {
         return group;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        ClientGroupImpl that = (ClientGroupImpl) object;
+        return Objects.equals(group.getId(), that.group.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return group != null ? group.getId().hashCode() : 0;
+    }
 }
