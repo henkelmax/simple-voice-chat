@@ -91,6 +91,23 @@ public class VolumeCategoryImpl implements VolumeCategory {
         }
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        VolumeCategoryImpl that = (VolumeCategoryImpl) object;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
     public static class BuilderImpl implements VolumeCategory.Builder {
 
         private String id;
