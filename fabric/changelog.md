@@ -1,1 +1,1 @@
-- Updated Mexican Spanish translation
+- Updated to 24w12a
