@@ -17,7 +17,7 @@ public class Compatibility1_8 extends BaseCompatibility {
     @Override
     public String getServerIp(Server server) throws Exception {
         Object minecraftServer = callMethod(server, "getServer");
-        Class<?> minecraftServerClass = getClass("net.minecraft.server.v1_8_R3.MinecraftServer");
+        Class<?> minecraftServerClass = getBukkitClass("MinecraftServer");
         return callMethod(minecraftServerClass, minecraftServer, "getServerIp");
     }
 
@@ -51,13 +51,13 @@ public class Compatibility1_8 extends BaseCompatibility {
 
         Object entityPlayer = callMethod(player, "getHandle");
         Object playerConnection = getField(entityPlayer, "playerConnection");
-        Class<?> packet = getClass("net.minecraft.server.v1_8_R3.Packet");
-        Class<?> chatSerializer = getClass("net.minecraft.server.v1_8_R3.IChatBaseComponent$ChatSerializer");
+        Class<?> packet = getBukkitClass("Packet");
+        Class<?> chatSerializer = getBukkitClass("IChatBaseComponent$ChatSerializer");
 
-        Class<?> iChatBaseComponentClass = getClass("net.minecraft.server.v1_8_R3.IChatBaseComponent");
+        Class<?> iChatBaseComponentClass = getBukkitClass("IChatBaseComponent");
         Object iChatBaseComponent = callMethod(chatSerializer, "a", new Class[]{String.class}, json);
 
-        Class<?> packetPlayOutChatClass = getClass("net.minecraft.server.v1_8_R3.PacketPlayOutChat");
+        Class<?> packetPlayOutChatClass = getBukkitClass("PacketPlayOutChat");
 
         Object clientboundSystemChatPacket = callConstructor(packetPlayOutChatClass, new Class[]{iChatBaseComponentClass, byte.class}, iChatBaseComponent, chatMessageType);
 

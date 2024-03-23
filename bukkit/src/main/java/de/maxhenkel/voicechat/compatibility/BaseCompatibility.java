@@ -46,4 +46,9 @@ public abstract class BaseCompatibility implements Compatibility {
         }
         Bukkit.getScheduler().scheduleSyncRepeatingTask(Voicechat.INSTANCE, runnable, delay, period);
     }
+
+    @Override
+    public String getBaseBukkitPackage() {
+        return Bukkit.getServer().getClass().getPackage().getName();
+    }
 }
