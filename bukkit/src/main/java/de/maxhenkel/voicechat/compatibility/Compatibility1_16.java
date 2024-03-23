@@ -29,43 +29,27 @@ public class Compatibility1_16 extends BaseCompatibility {
 
     @Override
     public void sendMessage(Player player, Component component) {
-        Class<?> chatMessageTypeClass = getClass(
-                "net.minecraft.server.v1_16_R3.ChatMessageType",
-                "net.minecraft.server.v1_16_R2.ChatMessageType",
-                "net.minecraft.server.v1_16_R1.ChatMessageType"
-        );
+        Class<?> chatMessageTypeClass = getBukkitClass("ChatMessageType");
         Object chat = getField(chatMessageTypeClass, "CHAT");
         send(player, component, chat);
     }
 
     @Override
     public void sendStatusMessage(Player player, Component component) {
-        Class<?> chatMessageTypeClass = getClass(
-                "net.minecraft.server.v1_16_R3.ChatMessageType",
-                "net.minecraft.server.v1_16_R2.ChatMessageType",
-                "net.minecraft.server.v1_16_R1.ChatMessageType"
-        );
+        Class<?> chatMessageTypeClass = getBukkitClass("ChatMessageType");
         Object gameInfo = getField(chatMessageTypeClass, "GAME_INFO");
         send(player, component, gameInfo);
     }
 
     @Override
     public ArgumentType<?> playerArgument() {
-        Class<?> argumentEntity = getClass(
-                "net.minecraft.server.v1_16_R3.ArgumentEntity",
-                "net.minecraft.server.v1_16_R2.ArgumentEntity",
-                "net.minecraft.server.v1_16_R1.ArgumentEntity"
-        );
+        Class<?> argumentEntity = getBukkitClass("ArgumentEntity");
         return callMethod(argumentEntity, "c");
     }
 
     @Override
     public ArgumentType<?> uuidArgument() {
-        Class<?> argumentEntity = getClass(
-                "net.minecraft.server.v1_16_R3.ArgumentUUID",
-                "net.minecraft.server.v1_16_R2.ArgumentUUID",
-                "net.minecraft.server.v1_16_R1.ArgumentUUID"
-        );
+        Class<?> argumentEntity = getBukkitClass("ArgumentUUID");
         return callMethod(argumentEntity, "a");
     }
 
@@ -76,36 +60,16 @@ public class Compatibility1_16 extends BaseCompatibility {
 
         Object entityPlayer = callMethod(player, "getHandle");
         Object playerConnection = getField(entityPlayer, "playerConnection");
-        Class<?> packet = getClass(
-                "net.minecraft.server.v1_16_R3.Packet",
-                "net.minecraft.server.v1_16_R2.Packet",
-                "net.minecraft.server.v1_16_R1.Packet"
-        );
-        Class<?> chatSerializer = getClass(
-                "net.minecraft.server.v1_16_R3.IChatBaseComponent$ChatSerializer",
-                "net.minecraft.server.v1_16_R2.IChatBaseComponent$ChatSerializer",
-                "net.minecraft.server.v1_16_R1.IChatBaseComponent$ChatSerializer"
-        );
+        Class<?> packet = getBukkitClass("Packet");
+        Class<?> chatSerializer = getBukkitClass("IChatBaseComponent$ChatSerializer");
 
-        Class<?> iChatBaseComponentClass = getClass(
-                "net.minecraft.server.v1_16_R3.IChatBaseComponent",
-                "net.minecraft.server.v1_16_R2.IChatBaseComponent",
-                "net.minecraft.server.v1_16_R1.IChatBaseComponent"
-        );
+        Class<?> iChatBaseComponentClass = getBukkitClass("IChatBaseComponent");
 
         Object iChatBaseComponent = callMethod(chatSerializer, "a", new Class[]{String.class}, json);
 
-        Class<?> packetPlayOutChatClass = getClass(
-                "net.minecraft.server.v1_16_R3.PacketPlayOutChat",
-                "net.minecraft.server.v1_16_R2.PacketPlayOutChat",
-                "net.minecraft.server.v1_16_R1.PacketPlayOutChat"
-        );
+        Class<?> packetPlayOutChatClass = getBukkitClass("PacketPlayOutChat");
 
-        Class<?> chatMessageTypeClass = getClass(
-                "net.minecraft.server.v1_16_R3.ChatMessageType",
-                "net.minecraft.server.v1_16_R2.ChatMessageType",
-                "net.minecraft.server.v1_16_R1.ChatMessageType"
-        );
+        Class<?> chatMessageTypeClass = getBukkitClass("ChatMessageType");
 
         Object clientboundSystemChatPacket = callConstructor(packetPlayOutChatClass, new Class[]{iChatBaseComponentClass, chatMessageTypeClass, UUID.class}, iChatBaseComponent, chatMessageType, NUL_UUID);
 

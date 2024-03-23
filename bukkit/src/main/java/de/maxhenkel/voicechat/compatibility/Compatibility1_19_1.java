@@ -51,11 +51,7 @@ public class Compatibility1_19_1 extends BaseCompatibility {
         Object entityPlayer = callMethod(player, "getHandle");
         Object playerConnection = getField(entityPlayer, "b");
         Class<?> packet = getClass("net.minecraft.network.protocol.Packet");
-        Class<?> craftChatMessage = getClass(
-                "org.bukkit.craftbukkit.v1_19_R3.util.CraftChatMessage",
-                "org.bukkit.craftbukkit.v1_19_R2.util.CraftChatMessage",
-                "org.bukkit.craftbukkit.v1_19_R1.util.CraftChatMessage"
-        );
+        Class<?> craftChatMessage = getBukkitClass("util.CraftChatMessage");
 
         Class<?> iChatBaseComponentClass = getClass("net.minecraft.network.chat.IChatBaseComponent");
         Object iChatBaseComponent = callMethod(craftChatMessage, "fromJSON", new Class[]{String.class}, json);
