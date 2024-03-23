@@ -32,34 +32,50 @@ public interface Compatibility {
 
     ArgumentType<?> uuidArgument();
 
-    default <T> T callMethod(Object object, String methodName) {
-        return callMethod(object, methodName, new Class[]{});
+    String getBaseBukkitPackage();
+
+    default <T> T callMethod(Object object, String... methodNames) {
+        return callMethod(object, methodNames, new Class[]{});
+    }
+
+    default <T> T callMethod(Object object, String[] methodNames, Class<?>[] parameterTypes, Object... args) {
+        return callMethod(object.getClass(), object, methodNames, parameterTypes, args);
     }
 
     default <T> T callMethod(Object object, String methodName, Class<?>[] parameterTypes, Object... args) {
-        return callMethod(object.getClass(), object, methodName, parameterTypes, args);
+        return callMethod(object.getClass(), object, new String[]{methodName}, parameterTypes, args);
     }
 
-    default <T> T callMethod(Class<?> clazz, Object object, String methodName) {
-        return callMethod(clazz, object, methodName, new Class[]{});
+    default <T> T callMethod(Class<?> clazz, Object object, String... methodNames) {
+        return callMethod(clazz, object, methodNames, new Class[]{});
     }
 
     default <T> T callMethod(Class<?> clazz, Object object, String methodName, Class<?>[] parameterTypes, Object... args) {
-        try {
-            Method method = clazz.getDeclaredMethod(methodName, parameterTypes);
-            method.setAccessible(true);
-            return (T) method.invoke(object, args);
-        } catch (Throwable t) {
-            throw new IllegalStateException(t);
-        }
+        return callMethod(clazz, object, new String[]{methodName}, parameterTypes, args);
     }
 
-    default <T> T callMethod(Class<?> object, String methodName) {
-        return callMethod(object, methodName, new Class[]{});
+    default <T> T callMethod(Class<?> clazz, Object object, String[] methodNames, Class<?>[] parameterTypes, Object... args) {
+        for (String name : methodNames) {
+            try {
+                Method method = clazz.getDeclaredMethod(name, parameterTypes);
+                method.setAccessible(true);
+                return (T) method.invoke(object, args);
+            } catch (Throwable ignored) {
+            }
+        }
+        throw new IllegalStateException(String.format("Could not find any of the following methods in the class %s: %s", clazz.getSimpleName(), String.join(", ", methodNames)));
+    }
+
+    default <T> T callMethod(Class<?> object, String... methodNames) {
+        return callMethod(object, methodNames, new Class[]{});
+    }
+
+    default <T> T callMethod(Class<?> object, String[] methodNames, Class<?>[] parameterTypes, Object... args) {
+        return callMethod(object, null, methodNames, parameterTypes, args);
     }
 
     default <T> T callMethod(Class<?> object, String methodName, Class<?>[] parameterTypes, Object... args) {
-        return callMethod(object, null, methodName, parameterTypes, args);
+        return callMethod(object, null, new String[]{methodName}, parameterTypes, args);
     }
 
     default <T> T callConstructor(Class<?> object) {
@@ -76,30 +92,52 @@ public interface Compatibility {
         }
     }
 
-    default <T> T getField(Object object, String fieldName) {
-        try {
-            Field field = object.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return (T) field.get(object);
-        } catch (Throwable t) {
-            throw new IllegalStateException(t);
+    default <T> T getField(Object object, String... fieldNames) {
+        for (String fieldName : fieldNames) {
+            try {
+                Field field = object.getClass().getDeclaredField(fieldName);
+                field.setAccessible(true);
+                return (T) field.get(object);
+            } catch (Throwable ignored) {
+            }
         }
+        throw new IllegalStateException(String.format("Could not find any of the following fields in the class %s: %s", object.getClass().getSimpleName(), String.join(", ", fieldNames)));
     }
 
-    default <T> T getField(Class<?> object, String fieldName) {
-        try {
-            Field field = object.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return (T) field.get(null);
-        } catch (Throwable t) {
-            throw new IllegalStateException(t);
+    default <T> T getField(Class<?> clazz, String... fieldNames) {
+        for (String fieldName : fieldNames) {
+            try {
+                Field field = clazz.getDeclaredField(fieldName);
+                field.setAccessible(true);
+                return (T) field.get(null);
+            } catch (Throwable ignored) {
+            }
         }
+        throw new IllegalStateException(String.format("Could not find any of the following fields in the class %s: %s", clazz.getSimpleName(), String.join(", ", fieldNames)));
     }
 
+    /**
+     * @param classNames the class names including the package name
+     * @return the class
+     */
     default Class<?> getClass(String... classNames) {
         for (String className : classNames) {
             try {
                 return Class.forName(className);
+            } catch (Throwable ignored) {
+            }
+        }
+        throw new IllegalStateException(String.format("Could not find any of the following classes: %s", String.join(", ", classNames)));
+    }
+
+    /**
+     * @param classNames the class names including the package name, starting after the bukkit the base package e.g. <code>org.bukkit.craftbukkit.v1_20_R3.CraftServer</code> would be <code>CraftServer</code>
+     * @return the class
+     */
+    default Class<?> getBukkitClass(String... classNames) {
+        for (String className : classNames) {
+            try {
+                return Class.forName(String.format("%s.%s", getBaseBukkitPackage(), className));
             } catch (Throwable ignored) {
             }
         }
