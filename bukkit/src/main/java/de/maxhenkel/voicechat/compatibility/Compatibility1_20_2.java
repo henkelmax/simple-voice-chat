@@ -46,7 +46,7 @@ public class Compatibility1_20_2 extends BaseCompatibility {
         String json = GsonComponentSerializer.gson().serialize(component);
         Object entityPlayer = callMethod(player, "getHandle");
         Class<?> iChatBaseComponentClass = getClass("net.minecraft.network.chat.IChatBaseComponent");
-        Class<?> craftChatMessage = getClass("org.bukkit.craftbukkit.v1_20_R2.util.CraftChatMessage");
+        Class<?> craftChatMessage = getBukkitClass("util.CraftChatMessage");
         Object iChatBaseComponent = callMethod(craftChatMessage, "fromJSON", new Class[]{String.class}, json);
         callMethod(entityPlayer, "a", new Class[]{iChatBaseComponentClass, boolean.class}, iChatBaseComponent, status);
     }

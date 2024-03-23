@@ -21,7 +21,7 @@ public class Compatibility1_12 extends BaseCompatibility {
     @Override
     public String getServerIp(Server server) throws Exception {
         Object minecraftServer = callMethod(server, "getServer");
-        Class<?> minecraftServerClass = getClass("net.minecraft.server.v1_12_R1.MinecraftServer");
+        Class<?> minecraftServerClass = getBukkitClass("MinecraftServer");
         return callMethod(minecraftServerClass, minecraftServer, "getServerIp");
     }
 
@@ -32,14 +32,14 @@ public class Compatibility1_12 extends BaseCompatibility {
 
     @Override
     public void sendMessage(Player player, Component component) {
-        Class<?> chatMessageTypeClass = getClass("net.minecraft.server.v1_12_R1.ChatMessageType");
+        Class<?> chatMessageTypeClass = getBukkitClass("ChatMessageType");
         Object b = getField(chatMessageTypeClass, "CHAT");
         send(player, component, b);
     }
 
     @Override
     public void sendStatusMessage(Player player, Component component) {
-        Class<?> chatMessageTypeClass = getClass("net.minecraft.server.v1_12_R1.ChatMessageType");
+        Class<?> chatMessageTypeClass = getBukkitClass("ChatMessageType");
         Object b = getField(chatMessageTypeClass, "GAME_INFO");
         send(player, component, b);
     }
@@ -59,15 +59,15 @@ public class Compatibility1_12 extends BaseCompatibility {
 
         Object entityPlayer = callMethod(player, "getHandle");
         Object playerConnection = getField(entityPlayer, "playerConnection");
-        Class<?> packet = getClass("net.minecraft.server.v1_12_R1.Packet");
-        Class<?> chatSerializer = getClass("net.minecraft.server.v1_12_R1.IChatBaseComponent$ChatSerializer");
+        Class<?> packet = getBukkitClass("Packet");
+        Class<?> chatSerializer = getBukkitClass("IChatBaseComponent$ChatSerializer");
 
-        Class<?> iChatBaseComponentClass = getClass("net.minecraft.server.v1_12_R1.IChatBaseComponent");
+        Class<?> iChatBaseComponentClass = getBukkitClass("IChatBaseComponent");
         Object iChatBaseComponent = callMethod(chatSerializer, "a", new Class[]{String.class}, json);
 
-        Class<?> packetPlayOutChatClass = getClass("net.minecraft.server.v1_12_R1.PacketPlayOutChat");
+        Class<?> packetPlayOutChatClass = getBukkitClass("PacketPlayOutChat");
 
-        Class<?> chatMessageTypeClass = getClass("net.minecraft.server.v1_12_R1.ChatMessageType");
+        Class<?> chatMessageTypeClass = getBukkitClass("ChatMessageType");
 
         Object clientboundSystemChatPacket = callConstructor(packetPlayOutChatClass, new Class[]{iChatBaseComponentClass, chatMessageTypeClass}, iChatBaseComponent, chatMessageType);
 
