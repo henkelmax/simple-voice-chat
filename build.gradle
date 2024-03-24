@@ -12,14 +12,14 @@ apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mo
 tasks.register('01-publishBungeeCord') {
     group = 'voicechat'
     doLast {
-        runGradleTasks(['common-proxy:clean', 'bungeecord:clean'], ['bungeecord:modrinth'])
+        runGradleTasks(['common-proxy:clean', 'bungeecord:clean'], ['bungeecord:modrinth', 'bungeecord:publishAllPublicationsToHangar'])
     }
 }
 
 tasks.register('02-publishVelocity') {
     group = 'voicechat'
     doLast {
-        runGradleTasks(['common-proxy:clean', 'velocity:clean'], ['velocity:modrinth'])
+        runGradleTasks(['common-proxy:clean', 'velocity:clean'], ['velocity:modrinth', 'velocity:publishAllPublicationsToHangar'])
     }
 }
 
