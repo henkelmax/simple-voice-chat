@@ -1,5 +1,4 @@
 apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'com.modrinth.minotaur'
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
