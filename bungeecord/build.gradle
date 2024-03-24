@@ -1,5 +1,10 @@
+plugins {
+    id 'java'
+}
+
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'com.modrinth.minotaur'
+apply plugin: 'io.papermc.hangar-publish-plugin'
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
