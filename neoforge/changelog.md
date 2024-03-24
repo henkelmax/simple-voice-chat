@@ -1,1 +1,2 @@
 - Improved API object equals checks
+- Improved german translation
