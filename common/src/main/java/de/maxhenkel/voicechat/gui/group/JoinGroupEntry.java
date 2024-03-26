@@ -52,9 +52,13 @@ public class JoinGroupEntry extends ListScreenEntryBase {
         boolean hasPassword = group.group.hasPassword();
 
         if (hasPassword) {
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(x + PADDING, y + slotHeight / 2F - 8F, 0F);
+            GlStateManager.scale(16F / 12F, 16F / 12F, 1F);
             GlStateManager.color(1F, 1F, 1F, 1F);
             minecraft.getTextureManager().bindTexture(LOCK);
-            GuiScreen.drawModalRectWithCustomSizedTexture(x + PADDING, y + slotHeight / 2 - 8, 0, 0, 16, 16, 16, 16);
+            GuiScreen.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 12, 12, 16, 16);
+            GlStateManager.popMatrix();
         }
 
         minecraft.fontRenderer.drawString(group.group.getName(), x + PADDING + (hasPassword ? 16 + PADDING : 0), y + slotHeight / 2 - minecraft.fontRenderer.FONT_HEIGHT / 2, PLAYER_NAME_COLOR);
