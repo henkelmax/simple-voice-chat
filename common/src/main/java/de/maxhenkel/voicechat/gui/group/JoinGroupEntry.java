@@ -54,7 +54,11 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
         boolean hasPassword = group.group.hasPassword();
 
         if (hasPassword) {
-            guiGraphics.blit(LOCK, left + PADDING, top + height / 2 - 8, 0, 0, 16, 16, 16, 16);
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(left + PADDING, top + height / 2F - 8F, 0F);
+            guiGraphics.pose().scale(16F / 12F, 16F / 12F, 1F);
+            guiGraphics.blit(LOCK, 0, 0, 0, 0, 12, 12, 16, 16);
+            guiGraphics.pose().popPose();
         }
 
         MutableComponent groupName = Component.literal(group.group.getName());
