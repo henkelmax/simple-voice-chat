@@ -1,2 +1,1 @@
 - Fixed lock icon resolution
-- Updated quilt to 1.20.4

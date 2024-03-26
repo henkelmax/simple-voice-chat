@@ -1,1 +1,1 @@
-- Updated to 24w13a
+- Fixed lock icon resolution
