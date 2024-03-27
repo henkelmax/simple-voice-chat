@@ -1,2 +1,1 @@
-- Improved API object equals checks
-- Improved german translation
+- Updated to 24w13a
