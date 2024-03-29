@@ -6,6 +6,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import org.quiltmc.qsl.networking.api.CustomPayloads;
 import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
@@ -31,29 +32,30 @@ public class QuiltNetManager extends NetManager {
             T dummyPacket = packetType.getDeclaredConstructor().newInstance();
             ResourceLocation identifier = dummyPacket.getIdentifier();
             packets.add(identifier);
+
+            FriendlyByteBuf.Reader<T> reader = (buf) -> {
+                try {
+                    T packet = packetType.getDeclaredConstructor().newInstance();
+                    packet.fromBytes(buf);
+                    return packet;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            };
+
             if (toServer) {
-                ServerPlayNetworking.registerGlobalReceiver(identifier, (server, player, handler, buf, responseSender) -> {
-                    try {
-                        if (!Voicechat.SERVER.isCompatible(player) && !packetType.equals(RequestSecretPacket.class)) {
-                            return;
-                        }
-                        T packet = packetType.getDeclaredConstructor().newInstance();
-                        packet.fromBytes(buf);
-                        c.onServerPacket(server, player, handler, packet);
-                    } catch (Exception e) {
-                        Voicechat.LOGGER.error("Failed to process packet", e);
+                CustomPayloads.registerC2SPayload(identifier, reader);
+                ServerPlayNetworking.registerGlobalReceiver(identifier, (ServerPlayNetworking.CustomChannelReceiver<T>) (server, player, handler, payload, responseSender) -> {
+                    if (!Voicechat.SERVER.isCompatible(player) && !packetType.equals(RequestSecretPacket.class)) {
+                        return;
                     }
+                    c.onServerPacket(server, player, handler, payload);
                 });
             }
             if (toClient && !CommonCompatibilityManager.INSTANCE.isDedicatedServer()) {
-                ClientPlayNetworking.registerGlobalReceiver(identifier, (client, handler, buf, responseSender) -> {
-                    try {
-                        T packet = packetType.getDeclaredConstructor().newInstance();
-                        packet.fromBytes(buf);
-                        client.execute(() -> c.onClientPacket(client, handler, packet));
-                    } catch (Exception e) {
-                        Voicechat.LOGGER.error("Failed to process packet", e);
-                    }
+                CustomPayloads.registerS2CPayload(identifier, reader);
+                ClientPlayNetworking.registerGlobalReceiver(identifier, (ClientPlayNetworking.CustomChannelReceiver<T>) (client, handler, payload, responseSender) -> {
+                    client.execute(() -> c.onClientPacket(client, handler, payload));
                 });
             }
         } catch (Exception e) {
