@@ -68,7 +68,7 @@ public abstract class VoiceProxy {
         if (port == null) {
             port = backendSocket.getPort();
         }
-        return new InetSocketAddress(backendSocket.getAddress(), port);
+        return new InetSocketAddress(backendSocket.getHostString(), port);
     }
 
     /**
