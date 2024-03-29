@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -64,7 +63,7 @@ public class QuiltNetManager extends NetManager {
     }
 
     @Override
-    public void sendToServer(Packet<?> packet, ClientPacketListener connection) {
+    protected void sendToServerInternal(Packet<?> packet) {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         packet.toBytes(buffer);
         ClientPlayNetworking.send(packet.getIdentifier(), buffer);
