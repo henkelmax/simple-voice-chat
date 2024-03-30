@@ -1,1 +1,1 @@
-- Initial Velocity release
+- Added support for unresolved InetSocketAddress

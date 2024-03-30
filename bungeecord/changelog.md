@@ -1,1 +1,1 @@
-- Initial Bungeecord/Waterfall release
+- Added support for unresolved InetSocketAddress
