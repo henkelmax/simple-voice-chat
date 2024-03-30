@@ -54,7 +54,13 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
         }
 
         Optional<ServerConnection> server = player.get().getCurrentServer();
-        return server.map(serverConnection -> serverConnection.getServerInfo().getAddress()).orElse(null);
+        if (server.isEmpty()) return null;
+
+        InetSocketAddress serverSocket = server.get().getServerInfo().getAddress();
+        if (serverSocket.isUnresolved()) {
+            serverSocket = new InetSocketAddress(serverSocket.getHostString(), serverSocket.getPort());
+        }
+        return serverSocket;
     }
 
     @Override
