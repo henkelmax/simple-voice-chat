@@ -5,7 +5,8 @@ plugins {
     id 'com.matthewprenger.cursegradle' version "${cursegradle_version}" apply false
     id 'com.modrinth.minotaur' version "${minotaur_version}" apply false
     id 'mod-update' version "${mod_update_version}" apply false
-    id 'io.papermc.hangar-publish-plugin' version "${hangar_publish_version}"
+    id 'io.papermc.hangar-publish-plugin' version "${hangar_publish_version}" apply false
+    id 'xyz.jpenilla.run-paper' version "${run_task_version}" apply false
 }
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/taskutils.gradle"
