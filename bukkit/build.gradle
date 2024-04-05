@@ -12,6 +12,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'com.modrinth.minotaur'
 apply plugin: 'info.u_team.curse_gradle_uploader'
 apply plugin: 'io.papermc.hangar-publish-plugin'
+apply plugin: 'xyz.jpenilla.run-paper'
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
@@ -98,7 +99,7 @@ tasks.register('copyJarToServer') {
 
 build.finalizedBy(copyJarToServer)
 
-tasks.register('runServer') {
+tasks.register('runBukkitServer') {
     doLast {
         javaexec {
             debug = true
@@ -112,20 +113,12 @@ tasks.register('runServer') {
     }
 }
 
-tasks.register('runPaperServer') {
-    doLast {
-        javaexec {
-            debug = true
-            workingDir = "${projectDir}/run"
-            main = '-jar';
-            args = [
-                    "${projectDir}/run/paper.jar",
-                    'nogui'
-            ]
-        }
+tasks {
+    runServer {
+        minecraftVersion(minecraft_version)
     }
 }
 
 build.dependsOn(shadowJar)
+runBukkitServer.dependsOn(build)
 runServer.dependsOn(build)
-runPaperServer.dependsOn(build)
