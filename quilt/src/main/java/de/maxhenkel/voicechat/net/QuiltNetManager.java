@@ -6,9 +6,9 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import org.quiltmc.qsl.networking.api.CustomPayloads;
 import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
+import org.quiltmc.qsl.networking.impl.payload.PacketByteBufPayload;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,29 +33,29 @@ public class QuiltNetManager extends NetManager {
             ResourceLocation identifier = dummyPacket.getIdentifier();
             packets.add(identifier);
 
-            FriendlyByteBuf.Reader<T> reader = (buf) -> {
-                try {
-                    T packet = packetType.getDeclaredConstructor().newInstance();
-                    packet.fromBytes(buf);
-                    return packet;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            };
-
             if (toServer) {
-                CustomPayloads.registerC2SPayload(identifier, reader);
-                ServerPlayNetworking.registerGlobalReceiver(identifier, (ServerPlayNetworking.CustomChannelReceiver<T>) (server, player, handler, payload, responseSender) -> {
-                    if (!Voicechat.SERVER.isCompatible(player) && !packetType.equals(RequestSecretPacket.class)) {
-                        return;
+                ServerPlayNetworking.registerGlobalReceiver(identifier, (ServerPlayNetworking.CustomChannelReceiver<PacketByteBufPayload>) (server, player, handler, payload, responseSender) -> {
+                    try {
+                        if (!Voicechat.SERVER.isCompatible(player) && !packetType.equals(RequestSecretPacket.class)) {
+                            return;
+                        }
+                        T packet = packetType.getDeclaredConstructor().newInstance();
+                        packet.fromBytes(payload.data());
+                        c.onServerPacket(server, player, handler, packet);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
-                    c.onServerPacket(server, player, handler, payload);
                 });
             }
             if (toClient && !CommonCompatibilityManager.INSTANCE.isDedicatedServer()) {
-                CustomPayloads.registerS2CPayload(identifier, reader);
-                ClientPlayNetworking.registerGlobalReceiver(identifier, (ClientPlayNetworking.CustomChannelReceiver<T>) (client, handler, payload, responseSender) -> {
-                    client.execute(() -> c.onClientPacket(client, handler, payload));
+                ClientPlayNetworking.registerGlobalReceiver(identifier, (ClientPlayNetworking.CustomChannelReceiver<PacketByteBufPayload>) (client, handler, payload, responseSender) -> {
+                    try {
+                        T packet = packetType.getDeclaredConstructor().newInstance();
+                        packet.fromBytes(payload.data());
+                        client.execute(() -> c.onClientPacket(client, handler, packet));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 });
             }
         } catch (Exception e) {
