@@ -1,1 +1,1 @@
-- Fixed lock icon resolution
+- Fixed not being able to join single-player
