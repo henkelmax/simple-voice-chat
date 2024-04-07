@@ -32,6 +32,7 @@ public class ClothConfigIntegration {
         general.addEntry(fromConfigEntry(entryBuilder, VoicechatClient.CLIENT_CONFIG.offlinePlayerVolumeAdjustment));
         general.addEntry(entryBuilder
                 .startEnumSelector(new TranslationTextComponent("cloth_config.voicechat.config.freecam_mode"), FreecamMode.class, VoicechatClient.CLIENT_CONFIG.freecamMode.get())
+                .setEnumNameProvider(e -> new TranslationTextComponent(String.format("cloth_config.voicechat.config.freecam_mode.%s", e.name().toLowerCase())))
                 .setTooltip(new TranslationTextComponent("cloth_config.voicechat.config.freecam_mode.description"))
                 .setDefaultValue(VoicechatClient.CLIENT_CONFIG.freecamMode::getDefault)
                 .setSaveConsumer(e -> VoicechatClient.CLIENT_CONFIG.freecamMode.set(e).save())
@@ -52,6 +53,7 @@ public class ClothConfigIntegration {
         ConfigCategory groupIcons = builder.getOrCreateCategory(new TranslationTextComponent("cloth_config.voicechat.category.group_chat_icons"));
         groupIcons.addEntry(entryBuilder
                 .startEnumSelector(new TranslationTextComponent("cloth_config.voicechat.config.group_player_icon_orientation"), GroupPlayerIconOrientation.class, VoicechatClient.CLIENT_CONFIG.groupPlayerIconOrientation.get())
+                .setEnumNameProvider(e -> new TranslationTextComponent(String.format("cloth_config.voicechat.config.group_player_icon_orientation.%s", e.name().toLowerCase())))
                 .setTooltip(new TranslationTextComponent("cloth_config.voicechat.config.group_player_icon_orientation.description"))
                 .setDefaultValue(VoicechatClient.CLIENT_CONFIG.groupPlayerIconOrientation::getDefault)
                 .setSaveConsumer(e -> VoicechatClient.CLIENT_CONFIG.groupPlayerIconOrientation.set(e).save())
