@@ -1,1 +1,1 @@
-- Fixed lock icon resolution
+- Improved cloth config GUI translations
