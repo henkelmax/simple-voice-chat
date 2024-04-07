@@ -1,1 +1,1 @@
-- Updated to 24w14a
+- Improved cloth config GUI translations
