@@ -53,4 +53,5 @@ compileJava.dependsOn generateJava
 
 shadowJar {
     relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'
+    exclude 'natives/*-x86/*'
 }
