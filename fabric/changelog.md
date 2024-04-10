@@ -1,1 +1,2 @@
-- Improved cloth config GUI translations
+- Excluded 32 bit natives
+- Updated to 1.20.5-pre1
