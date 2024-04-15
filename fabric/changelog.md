@@ -1,2 +1,1 @@
-- Excluded 32 bit natives
-- Updated to 1.20.5-pre1
+- Updated to 1.20.5-pre2
