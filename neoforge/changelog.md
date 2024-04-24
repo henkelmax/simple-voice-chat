@@ -1,1 +1,1 @@
-- Improved cloth config GUI translations
+- Updated to 1.20.5

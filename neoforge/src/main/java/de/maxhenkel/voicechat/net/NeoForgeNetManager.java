@@ -1,22 +1,19 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
-import io.netty.buffer.Unpooled;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.IPayloadHandler;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,54 +32,70 @@ public class NeoForgeNetManager extends NetManager {
     }
 
     @SubscribeEvent
-    public <T extends Packet<T>> void register(RegisterPayloadHandlerEvent event) {
-        IPayloadRegistrar registrar = event.registrar(Voicechat.MODID).optional();
+    public <T extends Packet<T>> void register(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar(Voicechat.MODID).optional();
         for (PacketRegister<T> register : packets) {
             register(registrar, register.channel(), register.packetClass(), register.toClient(), register.toServer());
         }
     }
 
-    private <T extends Packet<T>> void register(IPayloadRegistrar registrar, Channel<T> channel, Class<T> packetType, boolean toClient, boolean toServer) {
+    private <T extends Packet<T>> void register(PayloadRegistrar registrar, Channel<T> channel, Class<T> packetType, boolean toClient, boolean toServer) {
         try {
             T dummyPacket = packetType.getDeclaredConstructor().newInstance();
 
-            registrar.play(
-                    dummyPacket.getIdentifier(),
-                    buf -> {
-                        try {
-                            return WrappedPacket.read(packetType, buf);
-                        } catch (Exception e) {
-                            return null;
-                        }
-                    },
-                    (payload, context) -> {
-                        if (payload == null) {
+            StreamCodec<RegistryFriendlyByteBuf, T> codec = new StreamCodec<>() {
+
+                @Override
+                public void encode(RegistryFriendlyByteBuf buf, T packet) {
+                    packet.toBytes(buf);
+                }
+
+                @Override
+                public T decode(RegistryFriendlyByteBuf buf) {
+                    try {
+                        T packet = packetType.getDeclaredConstructor().newInstance();
+                        packet.fromBytes(buf);
+                        return packet;
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            };
+
+            IPayloadHandler<T> handler = (payload, context) -> {
+                context.enqueueWork(() -> {
+                    if (toServer && context.flow().equals(PacketFlow.SERVERBOUND)) {
+                        if (!(context.player() instanceof ServerPlayer sender)) {
                             return;
                         }
-                        @Nullable Player p = context.player().orElse(null);
-                        context.workHandler().execute(() -> {
-                            if (toServer && context.flow().equals(PacketFlow.SERVERBOUND)) {
-                                if (!(p instanceof ServerPlayer sender)) {
-                                    return;
-                                }
-                                try {
-                                    if (!Voicechat.SERVER.isCompatible(sender) && !packetType.equals(RequestSecretPacket.class)) {
-                                        return;
-                                    }
-                                    channel.onServerPacket(sender.server, sender, sender.connection, (T) payload.packet());
-                                } catch (Exception e) {
-                                    Voicechat.LOGGER.error("Failed to process packet", e);
-                                }
-                            } else {
-                                try {
-                                    onClientPacket(channel, (T) payload.packet());
-                                } catch (Exception e) {
-                                    Voicechat.LOGGER.error("Failed to process packet", e);
-                                }
+                        try {
+                            if (!Voicechat.SERVER.isCompatible(sender) && !packetType.equals(RequestSecretPacket.class)) {
+                                return;
                             }
-                        });
+                            channel.onServerPacket(sender, payload);
+                        } catch (Exception e) {
+                            Voicechat.LOGGER.error("Failed to process packet", e);
+                        }
+                    } else {
+                        if (!(context.player() instanceof LocalPlayer player)) {
+                            return;
+                        }
+                        try {
+                            onClientPacket(player, channel, payload);
+                        } catch (Exception e) {
+                            Voicechat.LOGGER.error("Failed to process packet", e);
+                        }
                     }
-            ).optional();
+                });
+            };
+
+            if (toClient && toServer) {
+                registrar.playBidirectional(dummyPacket.type(), codec, handler);
+            } else if (toClient) {
+                registrar.playToClient(dummyPacket.type(), codec, handler);
+            } else if (toServer) {
+                registrar.playToServer(dummyPacket.type(), codec, handler);
+            }
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
@@ -98,40 +111,17 @@ public class NeoForgeNetManager extends NetManager {
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void sendToServerInternal(Packet<?> packet) {
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-        packet.toBytes(buffer);
-        PacketDistributor.SERVER.noArg().send(new WrappedPacket<>(packet));
+        PacketDistributor.sendToServer(packet);
     }
 
     @Override
     public void sendToClient(Packet<?> packet, ServerPlayer player) {
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-        packet.toBytes(buffer);
-        PacketDistributor.PLAYER.with(player).send(new WrappedPacket<>(packet));
+        PacketDistributor.sendToPlayer(player, packet);
     }
 
     @OnlyIn(Dist.CLIENT)
-    private <T extends Packet<T>> void onClientPacket(Channel<T> channel, T packet) {
-        channel.onClientPacket(Minecraft.getInstance(), Minecraft.getInstance().getConnection(), packet);
-    }
-
-    private record WrappedPacket<T extends Packet<T>>(Packet<T> packet) implements CustomPacketPayload {
-
-        public static <T extends Packet<T>> WrappedPacket<T> read(Class<T> packetClass, FriendlyByteBuf buf) throws Exception {
-            T packet = packetClass.getDeclaredConstructor().newInstance();
-            packet.fromBytes(buf);
-            return new WrappedPacket<>(packet);
-        }
-
-        @Override
-        public void write(FriendlyByteBuf buf) {
-            packet.toBytes(buf);
-        }
-
-        @Override
-        public ResourceLocation id() {
-            return packet.getIdentifier();
-        }
+    private <T extends Packet<T>> void onClientPacket(LocalPlayer player, Channel<T> channel, T packet) {
+        channel.onClientPacket(player, packet);
     }
 
     record PacketRegister<T extends Packet<T>>(Class<T> packetClass, Channel<T> channel, boolean toClient,

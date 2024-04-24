@@ -9,7 +9,7 @@ import de.maxhenkel.voicechat.intercompatibility.NeoForgeClientCompatibilityMana
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.ConfigScreenHandler;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 
 public class NeoForgeVoicechatClientMod extends VoicechatClient {
@@ -23,7 +23,7 @@ public class NeoForgeVoicechatClientMod extends VoicechatClient {
         initializeClient();
         NeoForge.EVENT_BUS.register(ClientCompatibilityManager.INSTANCE);
         ClothConfig.init();
-        ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory((client, parent) -> {
+        ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class, () -> (client, parent) -> {
             if (OnboardingManager.isOnboarding()) {
                 return OnboardingManager.getOnboardingScreen(parent);
             }
@@ -32,7 +32,7 @@ public class NeoForgeVoicechatClientMod extends VoicechatClient {
             } else {
                 return new VoiceChatSettingsScreen(parent);
             }
-        }));
+        });
     }
 
 }
