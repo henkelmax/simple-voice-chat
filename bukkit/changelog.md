@@ -1,2 +1,1 @@
-- Improved API object equals checks
-- Added support for mojmap paper servers
+- Add 1.20.5 support
