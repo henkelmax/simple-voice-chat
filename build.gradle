@@ -11,14 +11,7 @@ plugins {
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/taskutils.gradle"
 
-tasks.register('01-publishBukkit') {
-    group = 'voicechat'
-    doLast {
-        runGradleTasks(['bukkit:clean'], ['bukkit:curseforge', 'bukkit:modrinth', 'bukkit:publishAllPublicationsToHangar'])
-    }
-}
-
-tasks.register('03-publishForge') {
+tasks.register('01-publishForge') {
     group = 'voicechat'
     doLast {
         runGradleTasks(['common:clean', 'forge:clean'], ['forge:curseforge', 'forge:modrinth', 'forge:modUpdate'])
