@@ -1,2 +1,1 @@
-- Fixed not being able to join single-player
-- Improved cloth config GUI translations
+- Cleaned up unused translations
