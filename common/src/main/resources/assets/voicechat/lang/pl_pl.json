@@ -70,8 +70,6 @@
   "message.voicechat.invite_player": "Zaproś %s do swojej grupy",
   "message.voicechat.voice_chat_volume": "Głośność czatu głosowego: %s",
   "message.voicechat.microphone_amplification": "Wzmocnienie mikrofonu: %s",
-  "message.voicechat.mic_test_on": "Wyłącz testowanie mikrofonu",
-  "message.voicechat.mic_test_off": "Włącz testowanie mikrofonu",
   "message.voicechat.mic_test_unavailable": "Testowanie mikrofonu niedostępne",
   "message.voicechat.voice_chat_unavailable": "Czat głosowy niedostępny",
   "message.voicechat.voice_chat_not_connected": "Czat głosowy niedostępny",

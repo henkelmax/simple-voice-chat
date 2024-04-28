@@ -151,8 +151,6 @@
   "cloth_config.voicechat.config.run_local_server.description": "Чи голосовий чат повинен працювати в одиночній грі/світах локальної мережі",
   "cloth_config.voicechat.config.offline_player_volume_adjustment": "Регулювання гучності офлайн гравця",
   "cloth_config.voicechat.config.offline_player_volume_adjustment.description": "Чи графічний інтерфейс регулювання гучності також має показувати офлайн гравців",
-  "cloth_config.voicechat.config.freecam_support": "Підтримка Freecam",
-  "cloth_config.voicechat.config.freecam_support.description": "Це дозволяє почути гравців поблизу, навіть якщо ви перебуваєте далі з вашим Freecam",
   "cloth_config.voicechat.config.mute_on_join": "Вимкнути звук після приєднання",
   "cloth_config.voicechat.config.mute_on_join.description": "Якщо ввімкнено, ваш звук автоматично вимикатиметься під час приєднання до світу",
   "cloth_config.voicechat.config.audio_packet_threshold": "Поріг аудіопакету",
