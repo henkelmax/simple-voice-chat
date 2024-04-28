@@ -1,1 +1,1 @@
-- Updated to 1.20.5
+- Cleaned up unused translations
