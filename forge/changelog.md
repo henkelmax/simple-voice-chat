@@ -1,1 +1,0 @@
-- Improved cloth config GUI translations
