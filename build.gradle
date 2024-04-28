@@ -17,17 +17,3 @@ tasks.register('01-publishForge') {
         runGradleTasks(['common:clean', 'forge:clean'], ['forge:curseforge', 'forge:modrinth', 'forge:modUpdate'])
     }
 }
-
-tasks.register('publishApi') {
-    group = 'voicechat'
-    doLast {
-        runGradleTasks(['api:clean', 'api:publish'], [])
-    }
-}
-
-tasks.register('publishApiLocal') {
-    group = 'voicechat'
-    doLast {
-        runGradleTasks(['api:clean', 'api:publishToMavenLocal'], [])
-    }
-}
