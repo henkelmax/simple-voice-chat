@@ -1,1 +1,1 @@
-- Improved cloth config GUI translations
+- Cleaned up unused translations
