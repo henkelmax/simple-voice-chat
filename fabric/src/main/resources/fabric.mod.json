@@ -32,7 +32,10 @@
   ],
   "depends": {
     "fabricloader": "${fabric_loader_dependency}",
-    "minecraft": "${minecraft_dependency}",
+    "minecraft": [
+      "1.20.5",
+      "1.20.6"
+    ],
     "java": ">=${java_version}"
   },
   "suggests": {
