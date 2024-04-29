@@ -11,14 +11,11 @@ import net.minecraft.network.Connection;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import java.net.SocketAddress;
 import java.util.List;
@@ -85,15 +82,8 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
     }
 
     @SubscribeEvent
-    public void onKeyInput(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.START) {
-            return;
-        }
+    public void onKeyInput(ClientTickEvent.Pre event) {
         clientTickEvents.forEach(Runnable::run);
-    }
-
-    @SubscribeEvent
-    public void onInput(TickEvent.ClientTickEvent event) {
         inputEvents.forEach(Runnable::run);
     }
 
@@ -116,10 +106,7 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
     private boolean wasPublished;
 
     @SubscribeEvent
-    public void onServer(TickEvent.ServerTickEvent event) {
-        if (!event.phase.equals(TickEvent.Phase.END)) {
-            return;
-        }
+    public void onServer(ServerTickEvent.Post event) {
         IntegratedServer server = Minecraft.getInstance().getSingleplayerServer();
         if (server == null) {
             return;
