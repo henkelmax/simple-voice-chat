@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
@@ -25,13 +25,13 @@ public class AddCategoryPacket implements Packet<AddCategoryPacket> {
     }
 
     @Override
-    public AddCategoryPacket fromBytes(RegistryFriendlyByteBuf buf) {
+    public AddCategoryPacket fromBytes(FriendlyByteBuf buf) {
         category = VolumeCategoryImpl.fromBytes(buf);
         return this;
     }
 
     @Override
-    public void toBytes(RegistryFriendlyByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         category.toBytes(buf);
     }
 

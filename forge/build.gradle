@@ -23,10 +23,13 @@ repositories {
     maven { url = 'https://maven.shedaniel.me/' }
 }
 
+minecraft.reobf = false
+
 dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
 
-    implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"))
+    //implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"))
+    implementation("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}")
 
     minecraftLibrary "org.concentus:Concentus:${concentus_version}"
     shadow "org.concentus:Concentus:${concentus_version}"
@@ -39,6 +42,8 @@ dependencies {
 
     minecraftLibrary "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
     shadow "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
+
+    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
 tasks.register('generateJava', Copy) {

@@ -9,9 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.network.CustomPayloadEvent;
-import net.minecraftforge.network.ChannelBuilder;
-import net.minecraftforge.network.EventNetworkChannel;
-import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.*;
 
 public class ForgeNetManager extends NetManager {
 
@@ -20,7 +18,7 @@ public class ForgeNetManager extends NetManager {
         Channel<T> c = new Channel<>();
         try {
             T dummyPacket = packetType.getDeclaredConstructor().newInstance();
-            EventNetworkChannel channel = ChannelBuilder.named(dummyPacket.getIdentifier())
+            EventNetworkChannel channel = ChannelBuilder.named(dummyPacket.type().id())
                     .acceptedVersions((status, version) -> true)
                     .optional()
                     .networkProtocolVersion(Voicechat.COMPATIBILITY_VERSION)
@@ -37,7 +35,7 @@ public class ForgeNetManager extends NetManager {
                         }
                         T packet = packetType.getDeclaredConstructor().newInstance();
                         packet.fromBytes(event.getPayload());
-                        c.onServerPacket(context.getSender().server, context.getSender(), context.getSender().connection, packet);
+                        c.onServerPacket(context.getSender(), packet);
                         context.setPacketHandled(true);
                     } catch (Exception e) {
                         Voicechat.LOGGER.error("Failed to process packet", e);
@@ -66,24 +64,21 @@ public class ForgeNetManager extends NetManager {
     @OnlyIn(Dist.CLIENT)
     protected void sendToServerInternal(Packet<?> packet) {
         ClientPacketListener connection = Minecraft.getInstance().getConnection();
-        if (connection == null) {
-            return;
-        }
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         packet.toBytes(buffer);
-        connection.send(NetworkDirection.PLAY_TO_SERVER.buildPacket(buffer, packet.getIdentifier()).getThis());
+        connection.send(NetworkDirection.PLAY_TO_SERVER.buildPacket(buffer, packet.type().id()).getThis());
     }
 
     @Override
     public void sendToClient(Packet<?> packet, ServerPlayer player) {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         packet.toBytes(buffer);
-        player.connection.send(NetworkDirection.PLAY_TO_CLIENT.buildPacket(buffer, packet.getIdentifier()).getThis());
+        player.connection.send(NetworkDirection.PLAY_TO_CLIENT.buildPacket(buffer, packet.type().id()).getThis());
     }
 
     @OnlyIn(Dist.CLIENT)
     private <T extends Packet<T>> void onClientPacket(Channel<T> channel, T packet) {
-        channel.onClientPacket(Minecraft.getInstance(), Minecraft.getInstance().getConnection(), packet);
+        channel.onClientPacket(Minecraft.getInstance().player, packet);
     }
 
     @OnlyIn(Dist.CLIENT)

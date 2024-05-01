@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
@@ -35,7 +35,7 @@ public class JoinedGroupPacket implements Packet<JoinedGroupPacket> {
     }
 
     @Override
-    public JoinedGroupPacket fromBytes(RegistryFriendlyByteBuf buf) {
+    public JoinedGroupPacket fromBytes(FriendlyByteBuf buf) {
         if (buf.readBoolean()) {
             group = buf.readUUID();
         }
@@ -44,7 +44,7 @@ public class JoinedGroupPacket implements Packet<JoinedGroupPacket> {
     }
 
     @Override
-    public void toBytes(RegistryFriendlyByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeBoolean(group != null);
         if (group != null) {
             buf.writeUUID(group);

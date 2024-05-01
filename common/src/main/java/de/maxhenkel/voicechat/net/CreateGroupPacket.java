@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.plugins.impl.GroupImpl;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
@@ -42,7 +42,7 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
     }
 
     @Override
-    public CreateGroupPacket fromBytes(RegistryFriendlyByteBuf buf) {
+    public CreateGroupPacket fromBytes(FriendlyByteBuf buf) {
         name = buf.readUtf(512);
         password = null;
         if (buf.readBoolean()) {
@@ -53,7 +53,7 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
     }
 
     @Override
-    public void toBytes(RegistryFriendlyByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeUtf(name, 512);
         buf.writeBoolean(password != null);
         if (password != null) {

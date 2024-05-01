@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
@@ -25,13 +25,13 @@ public class PlayerStatePacket implements Packet<PlayerStatePacket> {
     }
 
     @Override
-    public PlayerStatePacket fromBytes(RegistryFriendlyByteBuf buf) {
+    public PlayerStatePacket fromBytes(FriendlyByteBuf buf) {
         playerState = PlayerState.fromBytes(buf);
         return this;
     }
 
     @Override
-    public void toBytes(RegistryFriendlyByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         playerState.toBytes(buf);
     }
 

@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8.4",
+  "package": "de.maxhenkel.voicechat.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "voicechat.refmap.json",
+  "client": [
+    "GuiMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

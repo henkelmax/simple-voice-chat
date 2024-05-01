@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
@@ -35,7 +35,7 @@ public class JoinGroupPacket implements Packet<JoinGroupPacket> {
     }
 
     @Override
-    public JoinGroupPacket fromBytes(RegistryFriendlyByteBuf buf) {
+    public JoinGroupPacket fromBytes(FriendlyByteBuf buf) {
         group = buf.readUUID();
         if (buf.readBoolean()) {
             password = buf.readUtf(512);
@@ -44,7 +44,7 @@ public class JoinGroupPacket implements Packet<JoinGroupPacket> {
     }
 
     @Override
-    public void toBytes(RegistryFriendlyByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeUUID(group);
         buf.writeBoolean(password != null);
         if (password != null) {

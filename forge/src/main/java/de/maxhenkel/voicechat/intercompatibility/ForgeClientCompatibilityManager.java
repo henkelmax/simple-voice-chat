@@ -6,15 +6,14 @@ import de.maxhenkel.voicechat.events.ClientVoiceChatDisconnectedEvent;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.Connection;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.LevelEvent;
@@ -66,14 +65,9 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getEntity(), event.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
     }
 
-    private static final ResourceLocation HOTBAR_OVERLAY = new ResourceLocation("hotbar");
-
-    @SubscribeEvent
-    public void onRenderOverlay(RenderGuiOverlayEvent.Post event) {
-        if (!HOTBAR_OVERLAY.equals(event.getOverlay().id())) {
-            return;
-        }
-        renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(event.getGuiGraphics(), event.getPartialTick()));
+    //TODO Use a Forge event once it's available
+    public void onRenderOverlay(GuiGraphics guiGraphics, float partialTick) {
+        renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(guiGraphics, partialTick));
     }
 
     @SubscribeEvent
