@@ -3,15 +3,24 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.network.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ForgeNetManager extends NetManager {
+
+    private final Map<ResourceLocation, net.minecraftforge.network.Channel<FriendlyByteBuf>> channels;
+
+    public ForgeNetManager() {
+        channels = new HashMap<>();
+    }
 
     @Override
     public <T extends Packet<T>> Channel<T> registerReceiver(Class<T> packetType, boolean toClient, boolean toServer) {
@@ -28,7 +37,7 @@ public class ForgeNetManager extends NetManager {
                     return;
                 }
                 CustomPayloadEvent.Context context = event.getSource();
-                if (toServer && context.getDirection().equals(NetworkDirection.PLAY_TO_SERVER)) {
+                if (toServer && context.isServerSide()) {
                     try {
                         if (!Voicechat.SERVER.isCompatible(context.getSender()) && !packetType.equals(RequestSecretPacket.class)) {
                             return;
@@ -54,6 +63,7 @@ public class ForgeNetManager extends NetManager {
                     }
                 }
             });
+            channels.put(dummyPacket.type().id(), channel);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
@@ -63,17 +73,28 @@ public class ForgeNetManager extends NetManager {
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void sendToServerInternal(Packet<?> packet) {
-        ClientPacketListener connection = Minecraft.getInstance().getConnection();
+        net.minecraftforge.network.Channel<FriendlyByteBuf> channel = channels.get(packet.type().id());
+        if (channel == null) {
+            throw new IllegalArgumentException("No channel for packet %s".formatted(packet.type().id()));
+        }
+
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         packet.toBytes(buffer);
-        connection.send(NetworkDirection.PLAY_TO_SERVER.buildPacket(buffer, packet.type().id()).getThis());
+
+        channel.send(buffer, PacketDistributor.SERVER.noArg());
     }
 
     @Override
     public void sendToClient(Packet<?> packet, ServerPlayer player) {
+        net.minecraftforge.network.Channel<FriendlyByteBuf> channel = channels.get(packet.type().id());
+        if (channel == null) {
+            throw new IllegalArgumentException("No channel for packet %s".formatted(packet.type().id()));
+        }
+
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         packet.toBytes(buffer);
-        player.connection.send(NetworkDirection.PLAY_TO_CLIENT.buildPacket(buffer, packet.type().id()).getThis());
+
+        channel.send(buffer, PacketDistributor.PLAYER.with(player));
     }
 
     @OnlyIn(Dist.CLIENT)

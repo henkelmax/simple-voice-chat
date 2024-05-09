@@ -1,1 +1,1 @@
-- Cleaned up unused translations
+- Fixed crash with latest Forge version
