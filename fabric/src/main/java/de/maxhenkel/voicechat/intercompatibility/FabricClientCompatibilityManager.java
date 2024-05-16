@@ -28,7 +28,7 @@ public class FabricClientCompatibilityManager extends ClientCompatibilityManager
 
     @Override
     public void onRenderHUD(RenderHUDEvent onRenderHUD) {
-        RenderEvents.RENDER_HUD.register(guiGraphics -> onRenderHUD.render(guiGraphics, mc.getFrameTime()));
+        RenderEvents.RENDER_HUD.register(guiGraphics -> onRenderHUD.render(guiGraphics, mc.getTimer().getRealtimeDeltaTicks()));
     }
 
     @Override
