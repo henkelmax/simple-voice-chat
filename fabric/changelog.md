@@ -1,1 +1,1 @@
-- Updated to 24w20a
+- Fixed issues when disconnecting from a server
