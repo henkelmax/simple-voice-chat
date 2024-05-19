@@ -1,1 +1,0 @@
-- Fixed crash with latest Forge version
