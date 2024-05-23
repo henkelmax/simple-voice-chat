@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.VoiceProxy;
 import de.maxhenkel.voicechat.util.ByteBufferWrapper;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class SniffedSecretPacket {
@@ -54,7 +55,7 @@ public class SniffedSecretPacket {
         buf.writeBoolean(groupsEnabled);
         buf.writeUtf(voiceHost, 32767);
         buf.writeBoolean(allowRecording);
-        return buffer;
+        return ByteBuffer.wrap(Arrays.copyOfRange(buffer.array(), 0, buffer.position()));
     }
 
     public UUID getSecret() {
