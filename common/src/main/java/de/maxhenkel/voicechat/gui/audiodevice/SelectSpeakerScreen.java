@@ -14,7 +14,7 @@ import java.util.List;
 
 public class SelectSpeakerScreen extends SelectDeviceScreen {
 
-    public static final ResourceLocation SPEAKER_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker.png");
+    public static final ResourceLocation SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker.png");
     public static final Component TITLE = Component.translatable("gui.voicechat.select_speaker.title");
     public static final Component NO_SPEAKER = Component.translatable("message.voicechat.no_speaker").withStyle(ChatFormatting.GRAY);
 

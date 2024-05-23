@@ -14,7 +14,7 @@ import java.util.List;
 
 public class SelectMicrophoneScreen extends SelectDeviceScreen {
 
-    public static final ResourceLocation MICROPHONE_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone.png");
+    public static final ResourceLocation MICROPHONE_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone.png");
     public static final Component TITLE = Component.translatable("gui.voicechat.select_microphone.title");
     public static final Component NO_MICROPHONE = Component.translatable("message.voicechat.no_microphone").withStyle(ChatFormatting.GRAY);
 

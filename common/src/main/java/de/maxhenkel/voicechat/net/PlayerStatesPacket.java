@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
 
-    public static final CustomPacketPayload.Type<PlayerStatesPacket> PLAYER_STATES = new CustomPacketPayload.Type<>(new ResourceLocation(Voicechat.MODID, "player_states"));
+    public static final CustomPacketPayload.Type<PlayerStatesPacket> PLAYER_STATES = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "player_states"));
 
     private Map<UUID, PlayerState> playerStates;
 

@@ -26,11 +26,11 @@ import java.util.Collections;
 
 public class GroupScreen extends ListScreenBase {
 
-    protected static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_group.png");
-    protected static final ResourceLocation LEAVE = new ResourceLocation(Voicechat.MODID, "textures/icons/leave.png");
-    protected static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone_button.png");
-    protected static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_button.png");
-    protected static final ResourceLocation GROUP_HUD = new ResourceLocation(Voicechat.MODID, "textures/icons/group_hud_button.png");
+    protected static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_group.png");
+    protected static final ResourceLocation LEAVE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/leave.png");
+    protected static final ResourceLocation MICROPHONE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone_button.png");
+    protected static final ResourceLocation SPEAKER = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_button.png");
+    protected static final ResourceLocation GROUP_HUD = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/group_hud_button.png");
     protected static final Component TITLE = Component.translatable("gui.voicechat.group.title");
     protected static final Component LEAVE_GROUP = Component.translatable("message.voicechat.leave_group");
 

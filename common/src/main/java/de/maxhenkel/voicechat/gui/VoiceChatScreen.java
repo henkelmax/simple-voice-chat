@@ -27,12 +27,12 @@ import javax.annotation.Nullable;
 
 public class VoiceChatScreen extends VoiceChatScreenBase {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_voicechat.png");
-    private static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone_button.png");
-    private static final ResourceLocation HIDE = new ResourceLocation(Voicechat.MODID, "textures/icons/hide_button.png");
-    private static final ResourceLocation VOLUMES = new ResourceLocation(Voicechat.MODID, "textures/icons/adjust_volumes.png");
-    private static final ResourceLocation SPEAKER = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_button.png");
-    private static final ResourceLocation RECORD = new ResourceLocation(Voicechat.MODID, "textures/icons/record_button.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_voicechat.png");
+    private static final ResourceLocation MICROPHONE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone_button.png");
+    private static final ResourceLocation HIDE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/hide_button.png");
+    private static final ResourceLocation VOLUMES = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/adjust_volumes.png");
+    private static final ResourceLocation SPEAKER = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_button.png");
+    private static final ResourceLocation RECORD = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/record_button.png");
     private static final Component TITLE = Component.translatable("gui.voicechat.voice_chat.title");
     private static final Component SETTINGS = Component.translatable("message.voicechat.settings");
     private static final Component GROUP = Component.translatable("message.voicechat.group");

@@ -81,7 +81,7 @@ public class VoiceChatResourcePack extends AbstractPackResources implements Pack
 
             try (Stream<Path> files = Files.walk(resPath)) {
                 files.filter(path -> !Files.isDirectory(path)).forEach(path -> {
-                    ResourceLocation resourceLocation = new ResourceLocation(namespace, convertPath(path).substring(convertPath(namespacePath).length() + 1));
+                    ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(namespace, convertPath(path).substring(convertPath(namespacePath).length() + 1));
                     resourceOutput.accept(resourceLocation, getResource(type, resourceLocation));
                 });
             }

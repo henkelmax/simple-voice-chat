@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 
 public class CreateGroupPacket implements Packet<CreateGroupPacket> {
 
-    public static final CustomPacketPayload.Type<CreateGroupPacket> CREATE_GROUP = new CustomPacketPayload.Type<>(new ResourceLocation(Voicechat.MODID, "create_group"));
+    public static final CustomPacketPayload.Type<CreateGroupPacket> CREATE_GROUP = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "create_group"));
 
     private String name;
     @Nullable

@@ -18,7 +18,7 @@ import net.minecraft.util.Mth;
 
 public class JoinGroupScreen extends ListScreenBase {
 
-    protected static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_join_group.png");
+    protected static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_join_group.png");
     protected static final Component TITLE = Component.translatable("gui.voicechat.join_create_group.title");
     protected static final Component CREATE_GROUP = Component.translatable("message.voicechat.create_group_button");
     protected static final Component JOIN_CREATE_GROUP = Component.translatable("message.voicechat.join_create_group");

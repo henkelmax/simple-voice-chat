@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 
 public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_voicechat_settings.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_voicechat_settings.png");
     private static final Component TITLE = Component.translatable("gui.voicechat.voice_chat_settings.title");
 
     private static final Component ASSIGN_TOOLTIP = Component.translatable("message.voicechat.press_to_reassign_key");

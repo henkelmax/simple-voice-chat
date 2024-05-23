@@ -12,7 +12,7 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
 
     protected static final Component OTHER_VOLUME = Component.translatable("message.voicechat.other_volume");
     protected static final Component OTHER_VOLUME_DESCRIPTION = Component.translatable("message.voicechat.other_volume.description");
-    protected static final ResourceLocation OTHER_VOLUME_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/other_volume.png");
+    protected static final ResourceLocation OTHER_VOLUME_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/other_volume.png");
 
     protected static final int SKIN_SIZE = 24;
     protected static final int PADDING = 4;

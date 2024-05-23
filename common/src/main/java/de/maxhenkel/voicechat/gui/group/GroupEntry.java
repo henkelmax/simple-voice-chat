@@ -19,8 +19,8 @@ import net.minecraft.util.FastColor;
 
 public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
 
-    protected static final ResourceLocation TALK_OUTLINE = new ResourceLocation(Voicechat.MODID, "textures/icons/talk_outline.png");
-    protected static final ResourceLocation SPEAKER_OFF = new ResourceLocation(Voicechat.MODID, "textures/icons/speaker_small_off.png");
+    protected static final ResourceLocation TALK_OUTLINE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/talk_outline.png");
+    protected static final ResourceLocation SPEAKER_OFF = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_small_off.png");
 
     protected static final int PADDING = 4;
     protected static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);

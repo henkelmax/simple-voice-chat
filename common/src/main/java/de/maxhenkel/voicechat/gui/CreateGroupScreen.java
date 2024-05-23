@@ -17,7 +17,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class CreateGroupScreen extends VoiceChatScreenBase {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_create_group.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_create_group.png");
     private static final Component TITLE = Component.translatable("gui.voicechat.create_group.title");
     private static final Component CREATE = Component.translatable("message.voicechat.create");
     private static final Component CREATE_GROUP = Component.translatable("message.voicechat.create_group");

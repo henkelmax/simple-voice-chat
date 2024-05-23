@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class LeaveGroupPacket implements Packet<LeaveGroupPacket> {
 
-    public static final CustomPacketPayload.Type<LeaveGroupPacket> LEAVE_GROUP = new CustomPacketPayload.Type<>(new ResourceLocation(Voicechat.MODID, "leave_group"));
+    public static final CustomPacketPayload.Type<LeaveGroupPacket> LEAVE_GROUP = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "leave_group"));
 
     public LeaveGroupPacket() {
 

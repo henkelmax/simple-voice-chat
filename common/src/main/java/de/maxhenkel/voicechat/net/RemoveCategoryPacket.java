@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RemoveCategoryPacket implements Packet<RemoveCategoryPacket> {
 
-    public static final CustomPacketPayload.Type<RemoveCategoryPacket> REMOVE_CATEGORY = new CustomPacketPayload.Type<>(new ResourceLocation(Voicechat.MODID, "remove_category"));
+    public static final CustomPacketPayload.Type<RemoveCategoryPacket> REMOVE_CATEGORY = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "remove_category"));
 
     private String categoryId;
 

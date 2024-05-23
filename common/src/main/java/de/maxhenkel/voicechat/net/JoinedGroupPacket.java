@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class JoinedGroupPacket implements Packet<JoinedGroupPacket> {
 
-    public static final CustomPacketPayload.Type<JoinedGroupPacket> JOINED_GROUP = new CustomPacketPayload.Type<>(new ResourceLocation(Voicechat.MODID, "joined_group"));
+    public static final CustomPacketPayload.Type<JoinedGroupPacket> JOINED_GROUP = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "joined_group"));
 
     @Nullable
     private UUID group;

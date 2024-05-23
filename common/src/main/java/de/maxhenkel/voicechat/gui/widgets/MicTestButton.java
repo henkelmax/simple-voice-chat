@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 
 public class MicTestButton extends ToggleImageButton implements ImageButton.TooltipSupplier {
 
-    private static final ResourceLocation MICROPHONE = new ResourceLocation(Voicechat.MODID, "textures/icons/microphone_button.png");
+    private static final ResourceLocation MICROPHONE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone_button.png");
     private static final Component TEST_DISABLED = Component.translatable("message.voicechat.mic_test.disabled");
     private static final Component TEST_ENABLED = Component.translatable("message.voicechat.mic_test.enabled");
     private static final Component TEST_UNAVAILABLE = Component.translatable("message.voicechat.mic_test_unavailable").withStyle(ChatFormatting.RED);

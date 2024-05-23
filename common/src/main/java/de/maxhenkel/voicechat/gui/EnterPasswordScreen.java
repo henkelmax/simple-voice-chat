@@ -16,7 +16,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class EnterPasswordScreen extends VoiceChatScreenBase {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_enter_password.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_enter_password.png");
     private static final Component TITLE = Component.translatable("gui.voicechat.enter_password.title");
     private static final Component JOIN_GROUP = Component.translatable("message.voicechat.join_group");
     private static final Component ENTER_GROUP_PASSWORD = Component.translatable("message.voicechat.enter_group_password");

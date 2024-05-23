@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class AddGroupPacket implements Packet<AddGroupPacket> {
 
-    public static final CustomPacketPayload.Type<AddGroupPacket> ADD_ADD_GROUP = new CustomPacketPayload.Type<>(new ResourceLocation(Voicechat.MODID, "add_group"));
+    public static final CustomPacketPayload.Type<AddGroupPacket> ADD_ADD_GROUP = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "add_group"));
 
     private ClientGroup group;
 

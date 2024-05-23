@@ -17,7 +17,7 @@ import java.util.List;
 
 public abstract class SelectDeviceScreen extends ListScreenBase {
 
-    protected static final ResourceLocation TEXTURE = new ResourceLocation(Voicechat.MODID, "textures/gui/gui_audio_devices.png");
+    protected static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_audio_devices.png");
     protected static final Component BACK = Component.translatable("message.voicechat.back");
 
     protected static final int HEADER_SIZE = 16;

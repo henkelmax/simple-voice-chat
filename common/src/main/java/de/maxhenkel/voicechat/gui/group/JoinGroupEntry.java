@@ -24,7 +24,7 @@ import java.util.List;
 
 public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
 
-    protected static final ResourceLocation LOCK = new ResourceLocation(Voicechat.MODID, "textures/icons/lock.png");
+    protected static final ResourceLocation LOCK = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/lock.png");
     protected static final Component GROUP_MEMBERS = Component.translatable("message.voicechat.group_members").withStyle(ChatFormatting.GRAY);
     protected static final Component NO_GROUP_MEMBERS = Component.translatable("message.voicechat.no_group_members").withStyle(ChatFormatting.GRAY);
 

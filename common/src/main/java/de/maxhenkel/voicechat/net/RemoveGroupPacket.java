@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class RemoveGroupPacket implements Packet<RemoveGroupPacket> {
 
-    public static final CustomPacketPayload.Type<RemoveGroupPacket> REMOVE_GROUP = new CustomPacketPayload.Type<>(new ResourceLocation(Voicechat.MODID, "remove_group"));
+    public static final CustomPacketPayload.Type<RemoveGroupPacket> REMOVE_GROUP = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "remove_group"));
 
     private UUID groupId;
 

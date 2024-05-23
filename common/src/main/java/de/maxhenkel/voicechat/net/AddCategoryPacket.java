@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class AddCategoryPacket implements Packet<AddCategoryPacket> {
 
-    public static final CustomPacketPayload.Type<AddCategoryPacket> ADD_CATEGORY = new CustomPacketPayload.Type<>(new ResourceLocation(Voicechat.MODID, "add_category"));
+    public static final CustomPacketPayload.Type<AddCategoryPacket> ADD_CATEGORY = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "add_category"));
 
     private VolumeCategoryImpl category;
 

@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class SecretPacket implements Packet<SecretPacket> {
 
-    public static final CustomPacketPayload.Type<SecretPacket> SECRET = new CustomPacketPayload.Type<>(new ResourceLocation(Voicechat.MODID, "secret"));
+    public static final CustomPacketPayload.Type<SecretPacket> SECRET = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "secret"));
 
     private UUID secret;
     private int serverPort;
