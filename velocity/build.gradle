@@ -5,6 +5,7 @@ plugins {
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'com.modrinth.minotaur'
 apply plugin: 'io.papermc.hangar-publish-plugin'
+apply plugin: 'xyz.jpenilla.run-velocity'
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
@@ -28,5 +29,12 @@ sourceSets.main.java {
     srcDir "${layout.buildDirectory.asFile.get()}/generated/java"
 }
 
+tasks {
+    runVelocity {
+        velocityVersion('3.3.0-SNAPSHOT')
+    }
+}
+
 compileJava.dependsOn generateJava
 build.dependsOn shadowJar
+runVelocity.dependsOn(build)
