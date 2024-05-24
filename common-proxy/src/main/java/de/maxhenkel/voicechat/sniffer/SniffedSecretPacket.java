@@ -54,7 +54,8 @@ public class SniffedSecretPacket {
         buf.writeBoolean(groupsEnabled);
         buf.writeUtf(voiceHost, 32767);
         buf.writeBoolean(allowRecording);
-        return buffer;
+
+        return ByteBuffer.wrap(buf.toBytes());
     }
 
     public UUID getSecret() {

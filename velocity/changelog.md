@@ -1,1 +1,1 @@
-- Added support for unresolved InetSocketAddress
+- Added 1.20.6 support
