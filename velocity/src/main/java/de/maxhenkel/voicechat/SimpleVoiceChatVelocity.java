@@ -97,7 +97,9 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
      */
     @Subscribe
     public void onServerConnected(ServerConnectedEvent event) {
-        if (event.getPreviousServer().isEmpty()) return;
+        if (event.getPreviousServer().isEmpty()) {
+            return;
+        }
         this.onPlayerServerDisconnected(event.getPlayer().getUniqueId());
     }
 
