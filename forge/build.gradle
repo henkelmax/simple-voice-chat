@@ -23,8 +23,6 @@ repositories {
     maven { url = 'https://maven.shedaniel.me/' }
 }
 
-minecraft.reobf = false
-
 dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
 
