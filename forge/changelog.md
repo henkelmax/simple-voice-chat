@@ -1,0 +1,1 @@
+- Fixed switching worlds disconnects voice chat

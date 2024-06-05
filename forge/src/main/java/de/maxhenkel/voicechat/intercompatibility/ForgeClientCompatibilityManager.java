@@ -9,10 +9,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.network.NetworkManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.net.SocketAddress;
@@ -83,19 +81,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         disconnectEvents.forEach(Runnable::run);
     }
 
-    @SubscribeEvent
-    public void onJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.player != minecraft.player) {
-            return;
-        }
-        joinWorldEvents.forEach(Runnable::run);
-    }
-
-    @SubscribeEvent
-    public void onJoinWorld(EntityJoinWorldEvent event) {
-        if (event.getEntity() != minecraft.player) {
-            return;
-        }
+    public void onJoinWorld() {
         joinWorldEvents.forEach(Runnable::run);
     }
 

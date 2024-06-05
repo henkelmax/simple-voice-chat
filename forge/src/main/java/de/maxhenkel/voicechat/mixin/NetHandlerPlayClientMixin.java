@@ -1,8 +1,11 @@
 package de.maxhenkel.voicechat.mixin;
 
+import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.ForgeClientCompatibilityManager;
 import de.maxhenkel.voicechat.net.ForgeNetworkEvents;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.server.SPacketCustomPayload;
+import net.minecraft.network.play.server.SPacketJoinGame;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,6 +19,11 @@ public class NetHandlerPlayClientMixin {
         if (ForgeNetworkEvents.onCustomPayloadClient(packet)) {
             ci.cancel();
         }
+    }
+
+    @Inject(method = "handleJoinGame", at = @At("TAIL"))
+    private void handleJoinGame(SPacketJoinGame packetIn, CallbackInfo ci) {
+        ((ForgeClientCompatibilityManager) ClientCompatibilityManager.INSTANCE).onJoinWorld();
     }
 
 }
