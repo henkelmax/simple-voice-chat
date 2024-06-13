@@ -68,7 +68,7 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
         if (!VanillaGuiLayers.HOTBAR.equals(event.getName())) {
             return;
         }
-        renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(event.getGuiGraphics(), event.getPartialTick()));
+        renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(event.getGuiGraphics(), event.getPartialTick().getRealtimeDeltaTicks()));
     }
 
     @SubscribeEvent

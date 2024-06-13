@@ -26,7 +26,7 @@ repositories {
 dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
 
-    implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
+    compileOnly "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
 
     minecraftLibrary "org.concentus:Concentus:${concentus_version}"
     shadow "org.concentus:Concentus:${concentus_version}"
