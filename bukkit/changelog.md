@@ -1,1 +1,1 @@
-- Added support for ViaVersion 5.x.x
+- Updated to 1.21
