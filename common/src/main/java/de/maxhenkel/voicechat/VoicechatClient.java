@@ -4,7 +4,6 @@ import com.sun.jna.Platform;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.ClientConfig;
 import de.maxhenkel.voicechat.config.VolumeConfig;
-import de.maxhenkel.voicechat.integration.clothconfig.ClothConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.VersionCheck;
@@ -57,8 +56,6 @@ public abstract class VoicechatClient {
 
         //Load instance
         ClientManager.instance();
-
-        ClothConfig.init();
 
         OpusManager.opusNativeCheck();
 

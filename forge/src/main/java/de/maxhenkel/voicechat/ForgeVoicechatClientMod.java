@@ -3,8 +3,6 @@ package de.maxhenkel.voicechat;
 import de.maxhenkel.voicechat.config.ConfigMigrator;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
 import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
-import de.maxhenkel.voicechat.integration.clothconfig.ClothConfig;
-import de.maxhenkel.voicechat.integration.clothconfig.ClothConfigIntegration;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.ForgeClientCompatibilityManager;
 import net.minecraftforge.client.ConfigScreenHandler;
@@ -23,16 +21,11 @@ public class ForgeVoicechatClientMod extends VoicechatClient {
     public void clientSetup(FMLClientSetupEvent event) {
         initializeClient();
         MinecraftForge.EVENT_BUS.register(ClientCompatibilityManager.INSTANCE);
-        ClothConfig.init();
         ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory((client, parent) -> {
             if (OnboardingManager.isOnboarding()) {
                 return OnboardingManager.getOnboardingScreen(parent);
             }
-            if (ClothConfig.isLoaded()) {
-                return ClothConfigIntegration.createConfigScreen(parent);
-            } else {
-                return new VoiceChatSettingsScreen(parent);
-            }
+            return new VoiceChatSettingsScreen(parent);
         }));
     }
 
