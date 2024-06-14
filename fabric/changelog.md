@@ -1,1 +1,1 @@
-- Fixed issues when disconnecting from a server
+- Updated Russian translation
