@@ -1,1 +1,1 @@
-- Updated Russian translation
+- Fixed name tag icons not rendering

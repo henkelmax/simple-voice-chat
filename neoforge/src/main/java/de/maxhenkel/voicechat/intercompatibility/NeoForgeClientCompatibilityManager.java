@@ -60,7 +60,7 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
         if (minecraft.player == null || event.getEntity().isInvisibleTo(minecraft.player)) {
             return;
         }
-        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getEntity(), event.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
+        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getEntity(), event.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), event.getPartialTick()));
     }
 
     @SubscribeEvent
