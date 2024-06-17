@@ -1,2 +1,1 @@
-- Fixed switching worlds disconnects voice chat
-- Updated Russian translation
+- Updated Swedish translation
