@@ -55,7 +55,7 @@ public abstract class ClientCompatibilityManager {
     public abstract void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource);
 
     public interface RenderNameplateEvent {
-        void render(Entity entity, Component component, PoseStack stack, MultiBufferSource bufferSource, int light);
+        void render(Entity entity, Component component, PoseStack stack, MultiBufferSource bufferSource, int light, float partialTicks);
     }
 
     public interface RenderHUDEvent {

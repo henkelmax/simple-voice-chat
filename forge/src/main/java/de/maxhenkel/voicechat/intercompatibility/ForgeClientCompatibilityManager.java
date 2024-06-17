@@ -62,7 +62,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         if (minecraft.player == null || event.getEntity().isInvisibleTo(minecraft.player)) {
             return;
         }
-        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getEntity(), event.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
+        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getEntity(), event.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), event.getPartialTick()));
     }
 
     //TODO Use a Forge event once it's available

@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class EntityRendererMixin {
 
     @Inject(method = "renderNameTag", at = @At("HEAD"))
-    private void renderNameTag(Entity entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, float f, CallbackInfo info) {
+    private void renderNameTag(Entity entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, float partialTicks, CallbackInfo info) {
         if (info.isCancelled()) {
             return;
         }
@@ -26,7 +26,7 @@ public abstract class EntityRendererMixin {
         if (!entity.getDisplayName().equals(component)) {
             return;
         }
-        RenderEvents.RENDER_NAMEPLATE.invoker().render(entity, component, poseStack, multiBufferSource, light);
+        RenderEvents.RENDER_NAMEPLATE.invoker().render(entity, component, poseStack, multiBufferSource, light, partialTicks);
     }
 
     @Shadow
