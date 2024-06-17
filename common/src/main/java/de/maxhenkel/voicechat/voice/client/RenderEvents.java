@@ -141,7 +141,7 @@ public class RenderEvents {
         poseStack.pushPose();
         poseStack.translate(nametagPos.x, nametagPos.y + 0.5D, nametagPos.z);
         poseStack.mulPose(minecraft.getEntityRenderDispatcher().cameraOrientation());
-        poseStack.scale(0.025F, -0.025F, 0.025F);
+        poseStack.scale(-0.025F, -0.025F, 0.025F);
         poseStack.translate(0D, -1D, 0D);
 
         float offset = (float) (minecraft.font.width(component) / 2 + 2);
