@@ -1,2 +1,1 @@
-- Fixed name tag icons not rendering
-- Updated Swedish translation
+- Updated French translations
