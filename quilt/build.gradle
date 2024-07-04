@@ -42,7 +42,7 @@ repositories {
 dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
 
-    include(modImplementation('org.quiltmc.quilted-fabric-api:fabric-key-binding-api-v1:9.0.0-alpha.5+0.96.11-1.20.4'))
+    include(modImplementation('org.quiltmc.quilted-fabric-api:fabric-key-binding-api-v1:11.0.0-alpha.1+0.100.4-1.21'))
 
     include(modImplementation("org.quiltmc.qsl.core:qsl_base:${qsl_version}"))
     include(modImplementation("org.quiltmc.qsl.core:registry:${qsl_version}"))
