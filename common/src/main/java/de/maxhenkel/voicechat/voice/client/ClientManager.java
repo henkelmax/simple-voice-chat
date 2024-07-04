@@ -15,6 +15,8 @@ import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
@@ -72,16 +74,25 @@ public class ClientManager {
         if (connection != null) {
             try {
                 SocketAddress socketAddress = ClientCompatibilityManager.INSTANCE.getSocketAddress(connection.getConnection());
-                if (socketAddress instanceof InetSocketAddress) {
-                    InetSocketAddress address = (InetSocketAddress) socketAddress;
-                    client.connect(new InitializationData(address.getHostString(), secretPacket));
-                } else if (socketAddress instanceof LocalAddress) {
-                    client.connect(new InitializationData("127.0.0.1", secretPacket));
-                }
+                client.connect(new InitializationData(resolveAddress(socketAddress), secretPacket));
             } catch (Exception e) {
-                Voicechat.LOGGER.error("Failed to determine server address", e);
+                Voicechat.LOGGER.error("Failed to connect to voice chat server", e);
             }
         }
+    }
+
+    private static String resolveAddress(SocketAddress socketAddress) throws IOException {
+        if (socketAddress instanceof LocalAddress) {
+            return "127.0.0.1";
+        }
+        if (!(socketAddress instanceof InetSocketAddress address)) {
+            throw new IOException(String.format("Failed to determine server address with SocketAddress of type %s", socketAddress.getClass().getSimpleName()));
+        }
+        InetAddress inetAddress = address.getAddress();
+        if (inetAddress == null) {
+            return address.getHostString();
+        }
+        return inetAddress.getHostAddress();
     }
 
     private void onJoinWorld() {
