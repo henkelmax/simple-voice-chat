@@ -1,1 +1,2 @@
 - Updated French translations
+- Improved server address determination on clients
