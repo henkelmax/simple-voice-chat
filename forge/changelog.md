@@ -1,2 +1,3 @@
 - Updated French translations
 - Improved server address determination on clients
+- Fixed buttons in onboarding being rendered incorrectly

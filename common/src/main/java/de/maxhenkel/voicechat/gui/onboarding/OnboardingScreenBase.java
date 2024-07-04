@@ -14,6 +14,11 @@ import java.util.stream.Collectors;
 
 public abstract class OnboardingScreenBase extends ListScreenBase {
 
+    /**
+     * The screen width needs to be limited to 396 to avoid a bug in 1.12 that causes buttons to render weirdly if longer than that.
+     */
+    private static final int MAX_CONTENT_WIDTH = 396;
+
     public static final ITextComponent NEXT = new TextComponentTranslation("message.voicechat.onboarding.next");
     public static final ITextComponent BACK = new TextComponentTranslation("message.voicechat.onboarding.back");
     public static final ITextComponent CANCEL = new TextComponentTranslation("message.voicechat.onboarding.cancel");
@@ -40,7 +45,7 @@ public abstract class OnboardingScreenBase extends ListScreenBase {
     public void initGui() {
         super.initGui();
 
-        contentWidth = width / 2;
+        contentWidth = Math.min(width / 2, MAX_CONTENT_WIDTH);
         guiLeft = (width - contentWidth) / 2;
         guiTop = 20;
         contentHeight = height - guiTop * 2;
