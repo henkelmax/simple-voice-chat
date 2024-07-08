@@ -1,2 +1,1 @@
-- Updated French translations
-- Improved server address determination on clients
+- Fixed stacking blur in other voice chat settings screen

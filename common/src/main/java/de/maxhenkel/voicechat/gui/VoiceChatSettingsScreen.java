@@ -112,6 +112,10 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        if (!isIngame()) {
+            renderPanorama(guiGraphics, delta);
+            renderBlurredBackground(delta);
+        }
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         if (isIngame()) {
