@@ -1,1 +1,1 @@
-MixinConnector: de.maxhenkel.voicechat.MixinConnector
+MixinConfigs: voicechat.mixins.json
