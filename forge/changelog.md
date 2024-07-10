@@ -1,2 +1,3 @@
 - Fixed stacking blur in other voice chat settings screen
 - Fixed crash with latest Forge version
+- Updated Korean translation
