@@ -1,1 +1,1 @@
-- Updated Korean translation
+- Added Vietnamese translation
