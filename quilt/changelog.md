@@ -1,2 +1,1 @@
-- Fixed stacking blur in other voice chat settings screen
-- Updated Korean translation
+- Added Vietnamese translation
