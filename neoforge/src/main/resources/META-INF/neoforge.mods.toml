@@ -21,7 +21,7 @@ side = "BOTH"
 [[dependencies.voicechat]]
 modId = "minecraft"
 type = "required"
-versionRange = "[${minecraft_version}]"
+versionRange = "[1.21,1.21.1]"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.voicechat]]
