@@ -7,6 +7,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -43,7 +44,7 @@ public class ImageButton extends AbstractButton {
     protected void renderImage(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        guiGraphics.blit(texture, getX() + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
+        guiGraphics.blit(RenderType::guiTextured, texture, getX() + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
     }
 
     @Override

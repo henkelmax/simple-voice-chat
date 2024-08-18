@@ -59,7 +59,8 @@ public class KeybindButton extends AbstractButton {
     @Override
     public boolean mouseClicked(double x, double y, int button) {
         if (listening) {
-            mc.options.setKey(keyMapping, InputConstants.Type.MOUSE.getOrCreate(button));
+            keyMapping.setKey(InputConstants.Type.MOUSE.getOrCreate(button));
+            mc.options.save();
             listening = false;
             updateText();
             return true;
@@ -72,10 +73,11 @@ public class KeybindButton extends AbstractButton {
     public boolean keyPressed(int key, int scanCode, int modifiers) {
         if (listening) {
             if (key == InputConstants.KEY_ESCAPE) {
-                mc.options.setKey(keyMapping, InputConstants.UNKNOWN);
+                keyMapping.setKey(InputConstants.UNKNOWN);
             } else {
-                mc.options.setKey(keyMapping, InputConstants.getKey(key, scanCode));
+                keyMapping.setKey(InputConstants.getKey(key, scanCode));
             }
+            mc.options.save();
             listening = false;
             updateText();
             return true;

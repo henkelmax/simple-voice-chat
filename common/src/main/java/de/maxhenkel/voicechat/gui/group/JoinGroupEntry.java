@@ -12,11 +12,12 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.util.ArrayList;
@@ -30,9 +31,9 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
 
     protected static final int SKIN_SIZE = 12;
     protected static final int PADDING = 4;
-    protected static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
-    protected static final int BG_FILL_SELECTED = FastColor.ARGB32.color(255, 90, 90, 90);
-    protected static final int PLAYER_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
+    protected static final int BG_FILL = ARGB.color(255, 74, 74, 74);
+    protected static final int BG_FILL_SELECTED = ARGB.color(255, 90, 90, 90);
+    protected static final int PLAYER_NAME_COLOR = ARGB.color(255, 255, 255, 255);
 
     protected final ListScreenBase parent;
     protected final Minecraft minecraft;
@@ -58,7 +59,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(left + PADDING, top + height / 2F - 8F, 0F);
             guiGraphics.pose().scale(16F / 12F, 16F / 12F, 1F);
-            guiGraphics.blit(LOCK, 0, 0, 0, 0, 12, 12, 16, 16);
+            guiGraphics.blit(RenderType::guiTextured, LOCK, 0, 0, 0, 0, 12, 12, 16, 16);
             guiGraphics.pose().popPose();
         }
 
@@ -88,9 +89,9 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             float scale = (float) SKIN_SIZE / 8F;
             guiGraphics.pose().scale(scale, scale, scale);
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
-            guiGraphics.blit(skin.texture(), 0, 0, 8, 8, 8, 8, 64, 64);
+            guiGraphics.blit(RenderType::guiTextured, skin.texture(), 0, 0, 8, 8, 8, 8, 64, 64);
             RenderSystem.enableBlend();
-            guiGraphics.blit(skin.texture(), 0, 0, 40, 8, 8, 8, 64, 64);
+            guiGraphics.blit(RenderType::guiTextured, skin.texture(), 0, 0, 40, 8, 8, 8, 64, 64);
             RenderSystem.disableBlend();
             guiGraphics.pose().popPose();
         }

@@ -16,6 +16,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -114,12 +115,12 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         if (!isIngame()) {
             renderPanorama(guiGraphics, delta);
-            renderBlurredBackground(delta);
+            renderBlurredBackground();
         }
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         if (isIngame()) {
-            guiGraphics.blit(TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize);
+            guiGraphics.blit(RenderType::guiTextured, TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
         }
     }
 

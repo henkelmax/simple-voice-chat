@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -24,7 +25,7 @@ public class CategoryVolumeEntry extends VolumeEntry {
 
     @Override
     public void renderElement(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
-        guiGraphics.blit(texture, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
+        guiGraphics.blit(RenderType::guiTextured, texture, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
         guiGraphics.drawString(minecraft.font, Component.literal(category.getName()), textX, textY, PLAYER_NAME_COLOR, false);
         if (hovered && category.getDescription() != null) {
             screen.postRender(() -> {

@@ -80,7 +80,7 @@ public class ClientCategoryManager extends CategoryManager {
                 throw new IllegalStateException("Icon is not 16x16");
             }
             for (int y = 0; y < icon.length; y++) {
-                nativeImage.setPixelRGBA(x, y, icon[x][y]);
+                nativeImage.setPixel(x, y, icon[x][y]);
             }
         }
         return nativeImage;

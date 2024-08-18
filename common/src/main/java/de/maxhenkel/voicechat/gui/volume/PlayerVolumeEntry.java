@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.PlayerSkin;
 
 import javax.annotation.Nullable;
@@ -30,13 +31,13 @@ public class PlayerVolumeEntry extends VolumeEntry {
     public void renderElement(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
         if (state != null) {
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
-            guiGraphics.blit(skin.texture(), skinX, skinY, SKIN_SIZE, SKIN_SIZE, 8, 8, 8, 8, 64, 64);
+            guiGraphics.blit(RenderType::guiTextured, skin.texture(), skinX, skinY, SKIN_SIZE, SKIN_SIZE, 8, 8, 8, 8, 64, 64);
             RenderSystem.enableBlend();
-            guiGraphics.blit(skin.texture(), skinX, skinY, SKIN_SIZE, SKIN_SIZE, 40, 8, 8, 8, 64, 64);
+            guiGraphics.blit(RenderType::guiTextured, skin.texture(), skinX, skinY, SKIN_SIZE, SKIN_SIZE, 40, 8, 8, 8, 64, 64);
             RenderSystem.disableBlend();
             guiGraphics.drawString(minecraft.font, state.getName(), textX, textY, PLAYER_NAME_COLOR, false);
         } else {
-            guiGraphics.blit(OTHER_VOLUME_ICON, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
+            guiGraphics.blit(RenderType::guiTextured, OTHER_VOLUME_ICON, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
             guiGraphics.drawString(minecraft.font, OTHER_VOLUME, textX, textY, PLAYER_NAME_COLOR, false);
             if (hovered) {
                 screen.postRender(() -> {

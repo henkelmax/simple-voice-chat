@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -32,16 +33,16 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
         Minecraft minecraft = Minecraft.getInstance();
-        guiGraphics.setColor(1F, 1F, 1F, 1F);
+        //guiGraphics.setColor(1F, 1F, 1F, 1F);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        guiGraphics.blitSprite(getSlider(), getX(), getY(), getWidth(), getHeight());
+        guiGraphics.blitSprite(RenderType::guiTextured, getSlider(), getX(), getY(), getWidth(), getHeight());
 
         int micWidth = (int) ((width - 2) * micValue);
-        guiGraphics.blit(VOICE_ACTIVATION_SLIDER, getX() + 1, getY() + 1, 0, 0, micWidth, 18);
+        guiGraphics.blit(RenderType::guiTextured, VOICE_ACTIVATION_SLIDER, getX() + 1, getY() + 1, 0, 0, micWidth, 18, 256, 256);
 
-        guiGraphics.blitSprite(getHandle(), getX() + (int) (value * (double) (width - 8)), getY(), 8, 20);
+        guiGraphics.blitSprite(RenderType::guiTextured, getHandle(), getX() + (int) (value * (double) (width - 8)), getY(), 8, 20);
         renderScrollingString(guiGraphics, minecraft.font, 2, 16777215);
     }
 

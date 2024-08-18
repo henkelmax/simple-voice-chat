@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.gui.widgets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -27,9 +28,9 @@ public class ToggleImageButton extends ImageButton {
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
         if (stateSupplier.get()) {
-            guiGraphics.blit(texture, getX() + 2, getY() + 2, 16, 0, 16, 16, 32, 32);
+            guiGraphics.blit(RenderType::guiTextured, texture, getX() + 2, getY() + 2, 16, 0, 16, 16, 32, 32);
         } else {
-            guiGraphics.blit(texture, getX() + 2, getY() + 2, 0, 0, 16, 16, 32, 32);
+            guiGraphics.blit(RenderType::guiTextured, texture, getX() + 2, getY() + 2, 0, 0, 16, 16, 32, 32);
         }
     }
 

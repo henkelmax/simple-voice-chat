@@ -12,10 +12,11 @@ import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 
 public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
 
@@ -23,8 +24,8 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
     protected static final ResourceLocation SPEAKER_OFF = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_small_off.png");
 
     protected static final int PADDING = 4;
-    protected static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
-    protected static final int PLAYER_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
+    protected static final int BG_FILL = ARGB.color(255, 74, 74, 74);
+    protected static final int PLAYER_NAME_COLOR = ARGB.color(255, 255, 255, 255);
 
     protected final ListScreenBase parent;
     protected final Minecraft minecraft;
@@ -53,21 +54,21 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
         if (!state.isDisabled()) {
             ClientVoicechat client = ClientManager.getClient();
             if (client != null && client.getTalkCache().isTalking(state.getUuid())) {
-                guiGraphics.blit(TALK_OUTLINE, 0, 0, 0, 0, 10, 10, 16, 16);
+                guiGraphics.blit(RenderType::guiTextured, TALK_OUTLINE, 0, 0, 0, 0, 10, 10, 16, 16);
             }
         }
 
         PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
-        guiGraphics.blit(skin.texture(), 1, 1, 8, 8, 8, 8, 8, 8, 64, 64);
+        guiGraphics.blit(RenderType::guiTextured, skin.texture(), 1, 1, 8, 8, 8, 8, 8, 8, 64, 64);
         RenderSystem.enableBlend();
-        guiGraphics.blit(skin.texture(), 1, 1, 8, 8, 40, 8, 8, 8, 64, 64);
+        guiGraphics.blit(RenderType::guiTextured, skin.texture(), 1, 1, 8, 8, 40, 8, 8, 8, 64, 64);
         RenderSystem.disableBlend();
 
         if (state.isDisabled()) {
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(1D, 1D, 0D);
             guiGraphics.pose().scale(0.5F, 0.5F, 1F);
-            guiGraphics.blit(SPEAKER_OFF, 0, 0, 0, 0, 16, 16, 16, 16);
+            guiGraphics.blit(RenderType::guiTextured, SPEAKER_OFF, 0, 0, 0, 0, 16, 16, 16, 16);
             guiGraphics.pose().popPose();
         }
         guiGraphics.pose().popPose();

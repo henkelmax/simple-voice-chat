@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
 
@@ -67,15 +68,15 @@ public class GroupChatManager {
             if (client.getTalkCache().isTalking(state.getUuid())) {
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-                guiGraphics.blit(TALK_OUTLINE, posX < 0 ? -10 : 0, posY < 0 ? -10 : 0, 0, 0, 10, 10, 16, 16);
+                guiGraphics.blit(RenderType::guiTextured, TALK_OUTLINE, posX < 0 ? -10 : 0, posY < 0 ? -10 : 0, 0, 0, 10, 10, 16, 16);
             }
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
-            guiGraphics.blit(skin.texture(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
-            guiGraphics.blit(skin.texture(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 40, 8, 8, 8, 64, 64);
+            guiGraphics.blit(RenderType::guiTextured, skin.texture(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
+            guiGraphics.blit(RenderType::guiTextured, skin.texture(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 40, 8, 8, 8, 64, 64);
 
             if (state.isDisabled()) {
                 guiGraphics.pose().pushPose();
@@ -83,7 +84,7 @@ public class GroupChatManager {
                 guiGraphics.pose().scale(0.5F, 0.5F, 1F);
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-                guiGraphics.blit(SPEAKER_OFF_ICON, 0, 0, 0, 0, 16, 16, 16, 16);
+                guiGraphics.blit(RenderType::guiTextured, SPEAKER_OFF_ICON, 0, 0, 0, 0, 16, 16, 16, 16);
                 guiGraphics.pose().popPose();
             }
 

@@ -7,13 +7,15 @@ import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
-import net.minecraft.world.entity.Entity;
 
+import javax.annotation.Nullable;
 import java.net.SocketAddress;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public abstract class ClientCompatibilityManager {
@@ -54,8 +56,11 @@ public abstract class ClientCompatibilityManager {
 
     public abstract void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource);
 
+    @Nullable
+    public abstract UUID getUuidFromRenderState(EntityRenderState renderState);
+
     public interface RenderNameplateEvent {
-        void render(Entity entity, Component component, PoseStack stack, MultiBufferSource bufferSource, int light, float partialTicks);
+        void render(EntityRenderState renderState, Component component, PoseStack stack, MultiBufferSource bufferSource, int light);
     }
 
     public interface RenderHUDEvent {

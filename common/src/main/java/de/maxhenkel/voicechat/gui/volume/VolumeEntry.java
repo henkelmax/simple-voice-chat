@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 
 public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
 
@@ -16,8 +16,8 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
 
     protected static final int SKIN_SIZE = 24;
     protected static final int PADDING = 4;
-    protected static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
-    protected static final int PLAYER_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
+    protected static final int BG_FILL = ARGB.color(255, 74, 74, 74);
+    protected static final int PLAYER_NAME_COLOR = ARGB.color(255, 255, 255, 255);
 
     protected final Minecraft minecraft;
     protected final AdjustVolumesScreen screen;

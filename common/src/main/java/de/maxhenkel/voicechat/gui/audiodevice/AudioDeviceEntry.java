@@ -4,8 +4,9 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -15,10 +16,10 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
     protected static final ResourceLocation SELECTED = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/device_selected.png");
 
     protected static final int PADDING = 4;
-    protected static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
-    protected static final int BG_FILL_HOVERED = FastColor.ARGB32.color(255, 90, 90, 90);
-    protected static final int BG_FILL_SELECTED = FastColor.ARGB32.color(255, 40, 40, 40);
-    protected static final int DEVICE_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
+    protected static final int BG_FILL = ARGB.color(255, 74, 74, 74);
+    protected static final int BG_FILL_HOVERED = ARGB.color(255, 90, 90, 90);
+    protected static final int BG_FILL_SELECTED = ARGB.color(255, 40, 40, 40);
+    protected static final int DEVICE_NAME_COLOR = ARGB.color(255, 255, 255, 255);
 
     protected final Minecraft minecraft;
     protected final String device;
@@ -47,10 +48,10 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
         }
 
         if (icon != null) {
-            guiGraphics.blit(icon, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
+            guiGraphics.blit(RenderType::guiTextured, icon, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
         }
         if (selected) {
-            guiGraphics.blit(SELECTED, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
+            guiGraphics.blit(RenderType::guiTextured, SELECTED, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
         }
 
         float deviceWidth = minecraft.font.width(visibleDeviceName);

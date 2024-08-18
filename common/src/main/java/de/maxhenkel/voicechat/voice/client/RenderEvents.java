@@ -12,13 +12,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityAttachment;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
 
@@ -96,50 +93,49 @@ public class RenderEvents {
         float scale = VoicechatClient.CLIENT_CONFIG.hudIconScale.get().floatValue();
         guiGraphics.pose().scale(scale, scale, 1F);
 
-        guiGraphics.blit(texture, posX < 0 ? -16 : 0, posY < 0 ? -16 : 0, 0, 0, 16, 16, 16, 16);
+        guiGraphics.blit(RenderType::guiTextured, texture, posX < 0 ? -16 : 0, posY < 0 ? -16 : 0, 0, 0, 16, 16, 16, 16);
         guiGraphics.pose().popPose();
     }
 
-    private void onRenderName(Entity entity, Component component, PoseStack stack, MultiBufferSource vertexConsumers, int light, float partialTicks) {
+    private void onRenderName(EntityRenderState renderState, Component component, PoseStack stack, MultiBufferSource vertexConsumers, int light) {
         if (!shouldShowIcons()) {
             return;
         }
         if (VoicechatClient.CLIENT_CONFIG.hideIcons.get()) {
             return;
         }
-        if (!(entity instanceof Player player)) {
+        UUID entityId = ClientCompatibilityManager.INSTANCE.getUuidFromRenderState(renderState);
+        if (entityId == null) {
             return;
         }
-        if (entity == minecraft.player) {
+        if (minecraft.player == null || minecraft.player.getUUID().equals(entityId)) {
             return;
         }
-
         if (!minecraft.options.hideGui) {
             ClientPlayerStateManager manager = ClientManager.getPlayerStateManager();
             ClientVoicechat client = ClientManager.getClient();
-            UUID groupId = manager.getGroup(player);
+            UUID groupId = manager.getGroup(entityId);
 
-            if (client != null && client.getTalkCache().isWhispering(player)) {
-                renderPlayerIcon(player, component, WHISPER_SPEAKER_ICON, stack, vertexConsumers, light, partialTicks);
-            } else if (client != null && client.getTalkCache().isTalking(player)) {
-                renderPlayerIcon(player, component, SPEAKER_ICON, stack, vertexConsumers, light, partialTicks);
-            } else if (manager.isPlayerDisconnected(player)) {
-                renderPlayerIcon(player, component, DISCONNECT_ICON, stack, vertexConsumers, light, partialTicks);
+            if (client != null && client.getTalkCache().isWhispering(entityId)) {
+                renderPlayerIcon(renderState, component, WHISPER_SPEAKER_ICON, stack, vertexConsumers, light);
+            } else if (client != null && client.getTalkCache().isTalking(entityId)) {
+                renderPlayerIcon(renderState, component, SPEAKER_ICON, stack, vertexConsumers, light);
+            } else if (manager.isPlayerDisconnected(entityId)) {
+                renderPlayerIcon(renderState, component, DISCONNECT_ICON, stack, vertexConsumers, light);
             } else if (groupId != null && !groupId.equals(manager.getGroupID())) {
-                renderPlayerIcon(player, component, GROUP_ICON, stack, vertexConsumers, light, partialTicks);
-            } else if (manager.isPlayerDisabled(player)) {
-                renderPlayerIcon(player, component, SPEAKER_OFF_ICON, stack, vertexConsumers, light, partialTicks);
+                renderPlayerIcon(renderState, component, GROUP_ICON, stack, vertexConsumers, light);
+            } else if (manager.isPlayerDisabled(entityId)) {
+                renderPlayerIcon(renderState, component, SPEAKER_OFF_ICON, stack, vertexConsumers, light);
             }
         }
     }
 
-    private void renderPlayerIcon(Player player, Component component, ResourceLocation texture, PoseStack poseStack, MultiBufferSource buffer, int light, float partialTicks) {
-        Vec3 nametagPos = player.getAttachments().getNullable(EntityAttachment.NAME_TAG, 0, player.getViewYRot(partialTicks));
-        if (nametagPos == null) {
+    private void renderPlayerIcon(EntityRenderState renderState, Component component, ResourceLocation texture, PoseStack poseStack, MultiBufferSource buffer, int light) {
+        if (renderState.nameTagAttachment == null) {
             return;
         }
         poseStack.pushPose();
-        poseStack.translate(nametagPos.x, nametagPos.y + 0.5D, nametagPos.z);
+        poseStack.translate(renderState.nameTagAttachment.x, renderState.nameTagAttachment.y + 0.5D, renderState.nameTagAttachment.z);
         poseStack.mulPose(minecraft.getEntityRenderDispatcher().cameraOrientation());
         poseStack.scale(0.025F, -0.025F, 0.025F);
         poseStack.translate(0D, -1D, 0D);
@@ -149,7 +145,7 @@ public class RenderEvents {
         VertexConsumer builder = buffer.getBuffer(RenderType.text(texture));
         int alpha = 32;
 
-        if (player.isDiscrete()) {
+        if (renderState.isDiscrete) {
             vertex(builder, poseStack, offset, 10F, 0F, 0F, 1F, alpha, light);
             vertex(builder, poseStack, offset + 10F, 10F, 0F, 1F, 1F, alpha, light);
             vertex(builder, poseStack, offset + 10F, 0F, 0F, 1F, 0F, alpha, light);
