@@ -59,9 +59,9 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
         }
 
         PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
-        guiGraphics.blit(RenderType::guiTextured, skin.texture(), 1, 1, 8, 8, 8, 8, 8, 8, 64, 64);
+        guiGraphics.blit(RenderType::guiTextured, skin.texture(), 1, 1, 8, 8, 8, 8, 64, 64);
         RenderSystem.enableBlend();
-        guiGraphics.blit(RenderType::guiTextured, skin.texture(), 1, 1, 8, 8, 40, 8, 8, 8, 64, 64);
+        guiGraphics.blit(RenderType::guiTextured, skin.texture(), 1, 1, 40, 8, 8, 8, 64, 64);
         RenderSystem.disableBlend();
 
         if (state.isDisabled()) {
