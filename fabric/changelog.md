@@ -1,1 +1,1 @@
-- Updated to 24w35a
+- Fixed compatibility with ViaVersion 5.x.x
