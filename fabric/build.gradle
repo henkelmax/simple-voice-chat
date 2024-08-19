@@ -15,6 +15,7 @@ processResources {
                 'fabric_loader_dependency': fabric_loader_dependency,
                 'modmenu_version': modmenu_version,
                 'cloth_config_version': cloth_config_version,
+                'viaversion_version': viaversion_version,
                 'fabric_api_dependency_breaks': fabric_api_dependency_breaks
     }
 }
@@ -35,7 +36,7 @@ dependencies {
     }
 
     modImplementation "me.lucko:fabric-permissions-api:${fabric_permission_api_version}"
-    modCompileOnly "com.viaversion:viaversion-fabric:${viaversion_version}"
+    modCompileOnly "com.viaversion:viaversion-common:${viaversion_version}"
 
     implementation "org.concentus:Concentus:${concentus_version}"
     shadow "org.concentus:Concentus:${concentus_version}"

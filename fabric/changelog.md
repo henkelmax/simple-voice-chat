@@ -1,1 +1,1 @@
-- Added Vietnamese translation
+- Fixed compatibility with ViaVersion 5.x.x
