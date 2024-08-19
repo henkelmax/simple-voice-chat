@@ -1,1 +1,1 @@
-- Updated to 1.21.1
+- Fixed compatibility with ViaVersion 5.x.x
