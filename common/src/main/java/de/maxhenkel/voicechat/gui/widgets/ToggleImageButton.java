@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
@@ -24,7 +24,7 @@ public class ToggleImageButton extends ImageButton {
         if (stateSupplier == null) {
             return;
         }
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(CoreShaders.POSITION_TEX);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
         if (stateSupplier.get()) {

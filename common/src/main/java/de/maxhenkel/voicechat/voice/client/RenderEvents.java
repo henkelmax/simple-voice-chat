@@ -9,7 +9,7 @@ import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -79,7 +79,7 @@ public class RenderEvents {
 
     private void renderIcon(GuiGraphics guiGraphics, ResourceLocation texture) {
         guiGraphics.pose().pushPose();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(CoreShaders.POSITION_TEX);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         int posX = VoicechatClient.CLIENT_CONFIG.hudIconPosX.get();
         int posY = VoicechatClient.CLIENT_CONFIG.hudIconPosY.get();

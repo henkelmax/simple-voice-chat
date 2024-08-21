@@ -7,7 +7,7 @@ import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
@@ -66,11 +66,11 @@ public class GroupChatManager {
             }
 
             if (client.getTalkCache().isTalking(state.getUuid())) {
-                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShader(CoreShaders.POSITION_TEX);
                 RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
                 guiGraphics.blit(RenderType::guiTextured, TALK_OUTLINE, posX < 0 ? -10 : 0, posY < 0 ? -10 : 0, 0, 0, 10, 10, 16, 16);
             }
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShader(CoreShaders.POSITION_TEX);
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
@@ -82,7 +82,7 @@ public class GroupChatManager {
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate((posX < 0 ? -1D - 8D : 1D), posY < 0 ? -1D - 8D : 1D, 0D);
                 guiGraphics.pose().scale(0.5F, 0.5F, 1F);
-                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShader(CoreShaders.POSITION_TEX);
                 RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
                 guiGraphics.blit(RenderType::guiTextured, SPEAKER_OFF_ICON, 0, 0, 0, 0, 16, 16, 16, 16);
                 guiGraphics.pose().popPose();
