@@ -22,7 +22,7 @@ public abstract class DeviceOnboardingScreen extends OnboardingScreenBase {
         minecraft = Minecraft.getInstance();
         micNames = getNames();
         if (micNames.isEmpty()) {
-            minecraft.tell(() -> minecraft.setScreen(getNextScreen()));
+            minecraft.schedule(() -> minecraft.setScreen(getNextScreen()));
         }
     }
 
