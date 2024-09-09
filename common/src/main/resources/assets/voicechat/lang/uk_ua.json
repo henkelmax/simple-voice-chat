@@ -185,7 +185,7 @@
   "cloth_config.voicechat.config.offline_player_volume_adjustment": "Регулювання гучності офлайн гравця",
   "cloth_config.voicechat.config.offline_player_volume_adjustment.description": "Чи графічний інтерфейс регулювання гучності також має показувати офлайн гравців",
   "cloth_config.voicechat.config.freecam_mode": "Режим вільної камери",
-  "cloth_config.voicechat.config.freecam_mode.description": "Як має працювати прослуховування інших гравців при використанні модів freecam\nCAMERA: Ви будете чути звук голосового чату навколо вашої камери. Чи будете ви чути звук на відстані, залежить від діапазону трансляції голосового чату на сервері\nPLAYER: Ви будете чути звук голосового чату навколо вашого гравця, незалежно від того, де знаходиться ваша камера",
+  "cloth_config.voicechat.config.freecam_mode.description": "Як має працювати прослуховування інших гравців при використанні модів freecam\nКАМЕРА: Ви будете чути звук голосового чату навколо вашої камери. Чи будете ви чути звук на відстані, залежить від діапазону трансляції голосового чату на сервері\nГРАВЕЦЬ: Ви будете чути звук голосового чату навколо вашого гравця, незалежно від того, де знаходиться ваша камера",
   "cloth_config.voicechat.config.freecam_mode.camera": "Камера",
   "cloth_config.voicechat.config.freecam_mode.player": "Гравець",
   "cloth_config.voicechat.config.mute_on_join": "Вимкнути звук після приєднання",
