@@ -1,2 +1,3 @@
 - Updated Traditional Chinese translation
 - Added Portuguese translation
+- Updated Ukrainian translation
