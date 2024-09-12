@@ -1,1 +1,1 @@
-- Updated to 24w37a
+- Updated Traditional Chinese translation
