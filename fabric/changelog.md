@@ -1,1 +1,2 @@
 - Updated Traditional Chinese translation
+- Added Portuguese translation
