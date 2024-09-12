@@ -1,2 +1,1 @@
-- Added Turkish translation
-- Fixed ViaVersion version requirement
+- Updated Traditional Chinese translation
