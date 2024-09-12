@@ -1,2 +1,1 @@
-- Fixed compatibility with ViaVersion 5.x.x
-- Added Turkish translation
+- Updated Traditional Chinese translation
