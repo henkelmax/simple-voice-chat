@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.event.*;
 
 import javax.annotation.Nullable;
 
-@Mod(modid = ForgeVoicechatMod.MODID, acceptedMinecraftVersions = "[1.12.2]", updateJSON = "https://maxhenkel.de/update/voicechat.json", guiFactory = "de.maxhenkel.voicechat.VoicechatGuiFactory")
+@Mod(modid = ForgeVoicechatMod.MODID, acceptedMinecraftVersions = "[1.12.2]", acceptableRemoteVersions = "*", updateJSON = "https://maxhenkel.de/update/voicechat.json", guiFactory = "de.maxhenkel.voicechat.VoicechatGuiFactory")
 public class ForgeVoicechatMod extends Voicechat {
 
     public static ForgeVoicechatMod INSTANCE;
