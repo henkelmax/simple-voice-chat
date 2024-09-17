@@ -34,7 +34,7 @@ public class ServerVoiceEvents {
         CommonCompatibilityManager.INSTANCE.onPlayerCompatibilityCheckSucceeded(this::playerCompatibilityCheckSucceeded);
 
         CommonCompatibilityManager.INSTANCE.getNetManager().requestSecretChannel.setServerListener((server, player, handler, packet) -> {
-            Voicechat.LOGGER.info("Received secret request of {} ({})", player.getDisplayNameString(), packet.getCompatibilityVersion());
+            Voicechat.LOGGER.info("Received secret request of {} ({})", player.getName(), packet.getCompatibilityVersion());
             clientCompatibilities.put(player.getUniqueID(), packet.getCompatibilityVersion());
             if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
                 Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getDisplayNameString(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
@@ -101,7 +101,7 @@ public class ServerVoiceEvents {
             return;
         }
         NetManager.sendToClient(player, new SecretPacket(player, secret, server.getPort(), Voicechat.SERVER_CONFIG));
-        Voicechat.LOGGER.info("Sent secret to {}", player.getDisplayNameString());
+        Voicechat.LOGGER.info("Sent secret to {}", player.getName());
     }
 
     public void playerLoggedIn(EntityPlayerMP serverPlayer) {
@@ -146,7 +146,7 @@ public class ServerVoiceEvents {
         }
 
         server.onPlayerLoggedOut(player);
-        Voicechat.LOGGER.info("Disconnecting client {}", player.getDisplayNameString());
+        Voicechat.LOGGER.info("Disconnecting client {}", player.getName());
     }
 
     public void serverVoiceChatConnected(EntityPlayerMP serverPlayer) {

@@ -35,7 +35,7 @@ public class PlayerStateManager {
             states.put(player.getUniqueID(), state);
 
             broadcastState(state);
-            Voicechat.LOGGER.debug("Got state of {}: {}", player.getDisplayNameString(), state);
+            Voicechat.LOGGER.debug("Got state of {}: {}", player.getName(), state);
         });
     }
 
@@ -48,20 +48,20 @@ public class PlayerStateManager {
     public void onPlayerCompatibilityCheckSucceeded(EntityPlayerMP player) {
         PlayerStatesPacket packet = new PlayerStatesPacket(states);
         NetManager.sendToClient(player, packet);
-        Voicechat.LOGGER.debug("Sending initial states to {}", player.getDisplayNameString());
+        Voicechat.LOGGER.debug("Sending initial states to {}", player.getName());
     }
 
     public void onPlayerLoggedIn(EntityPlayerMP player) {
         PlayerState state = defaultDisconnectedState(player);
         states.put(player.getUniqueID(), state);
         broadcastState(state);
-        Voicechat.LOGGER.debug("Setting default state of {}: {}", player.getDisplayNameString(), state);
+        Voicechat.LOGGER.debug("Setting default state of {}: {}", player.getName(), state);
     }
 
     public void onPlayerLoggedOut(EntityPlayerMP player) {
         states.remove(player.getUniqueID());
         broadcastState(new PlayerState(player.getUniqueID(), player.getGameProfile().getName(), false, true));
-        Voicechat.LOGGER.debug("Removing state of {}", player.getDisplayNameString());
+        Voicechat.LOGGER.debug("Removing state of {}", player.getName());
     }
 
     public void onPlayerVoicechatDisconnect(UUID uuid) {
@@ -88,7 +88,7 @@ public class PlayerStateManager {
         states.put(player.getUniqueID(), state);
 
         broadcastState(state);
-        Voicechat.LOGGER.debug("Set state of {} to connected: {}", player.getDisplayNameString(), state);
+        Voicechat.LOGGER.debug("Set state of {} to connected: {}", player.getName(), state);
     }
 
     @Nullable
@@ -104,12 +104,12 @@ public class PlayerStateManager {
         PlayerState state = states.get(player.getUniqueID());
         if (state == null) {
             state = PlayerStateManager.defaultDisconnectedState(player);
-            Voicechat.LOGGER.debug("Defaulting to default state for {}: {}", player.getDisplayNameString(), state);
+            Voicechat.LOGGER.debug("Defaulting to default state for {}: {}", player.getName(), state);
         }
         state.setGroup(group);
         states.put(player.getUniqueID(), state);
         broadcastState(state);
-        Voicechat.LOGGER.debug("Setting group of {}: {}", player.getDisplayNameString(), state);
+        Voicechat.LOGGER.debug("Setting group of {}: {}", player.getName(), state);
     }
 
     public Collection<PlayerState> getStates() {

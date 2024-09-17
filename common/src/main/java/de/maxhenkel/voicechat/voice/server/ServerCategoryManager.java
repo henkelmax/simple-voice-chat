@@ -21,7 +21,7 @@ public class ServerCategoryManager extends CategoryManager {
     }
 
     public void onPlayerCompatibilityCheckSucceeded(EntityPlayerMP player) {
-        Voicechat.LOGGER.debug("Synchronizing {} volume categories with {}", categories.size(), player.getDisplayNameString());
+        Voicechat.LOGGER.debug("Synchronizing {} volume categories with {}", categories.size(), player.getName());
         for (VolumeCategoryImpl category : getCategories()) {
             broadcastAddCategory(server.getServer(), category);
         }

@@ -1,4 +1,1 @@
-- Updated Traditional Chinese translation
-- Added Portuguese translation
-- Updated Ukrainian translation
-- Fixed Forge servers requiring the mod to be present on the client
+- Fixed potential incompatibility with other mods

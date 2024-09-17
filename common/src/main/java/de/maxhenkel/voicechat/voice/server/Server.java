@@ -293,7 +293,7 @@ public class Server extends Thread {
                         if (player != null) {
                             CommonCompatibilityManager.INSTANCE.emitServerVoiceChatConnectedEvent(player);
                             PluginManager.instance().onPlayerConnected(player);
-                            Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getDisplayNameString(), connection.getPlayerUUID());
+                            Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getName(), connection.getPlayerUUID());
                         }
                         sendPacket(new ConnectionCheckAckPacket(), connection);
                         continue;
@@ -482,7 +482,7 @@ public class Server extends Thread {
                 Voicechat.LOGGER.info("Player {} timed out", connection.getPlayerUUID());
                 EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(connection.getPlayerUUID());
                 if (player != null) {
-                    Voicechat.LOGGER.info("Reconnecting player {}", player.getDisplayNameString());
+                    Voicechat.LOGGER.info("Reconnecting player {}", player.getName());
                     Voicechat.SERVER.initializePlayerConnection(player);
                 } else {
                     Voicechat.LOGGER.warn("Reconnecting player {} failed (Could not find player)", connection.getPlayerUUID());
