@@ -1,1 +1,1 @@
-- Updated to 24w40a
+- Fixed potential incompatibility with other mods
