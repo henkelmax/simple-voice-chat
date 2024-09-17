@@ -47,7 +47,7 @@ public class ServerGroupManager {
                 return;
             }
             if (!Voicechat.GROUP_REGEX.matcher(packet.getName()).matches()) {
-                Voicechat.LOGGER.warn("Player {} tried to create a group with an invalid name: {}", player.getDisplayName().getString(), packet.getName());
+                Voicechat.LOGGER.warn("Player {} tried to create a group with an invalid name: {}", player.getName().getString(), packet.getName());
                 return;
             }
             addGroup(new Group(UUID.randomUUID(), packet.getName(), packet.getPassword(), false, false, packet.getType()), player);
@@ -58,7 +58,7 @@ public class ServerGroupManager {
     }
 
     public void onPlayerCompatibilityCheckSucceeded(ServerPlayerEntity player) {
-        Voicechat.LOGGER.debug("Synchronizing {} groups with {}", groups.size(), player.getDisplayName().getString());
+        Voicechat.LOGGER.debug("Synchronizing {} groups with {}", groups.size(), player.getName().getString());
         for (Group category : groups.values()) {
             broadcastAddGroup(category);
         }
