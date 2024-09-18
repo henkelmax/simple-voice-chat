@@ -1,3 +1,1 @@
-- Updated Traditional Chinese translation
-- Added Portuguese translation
-- Updated Ukrainian translation
+- Updated to 24w38a
