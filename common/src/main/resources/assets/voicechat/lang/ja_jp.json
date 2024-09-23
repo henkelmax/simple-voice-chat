@@ -208,5 +208,7 @@
   "cloth_config.voicechat.config.group_player_icon_pos_y": "グループアイコンのY位置",
   "cloth_config.voicechat.config.group_player_icon_pos_y.description": "グループアイコンの高さ方向の位置。\nマイナスの値は下からの位置を意味します。",
   "cloth_config.voicechat.config.show_own_group_icon": "自分のアイコンを表示",
-  "cloth_config.voicechat.config.show_own_group_icon.description": "グループアイコンに自分のアイコンを表示します。"
+  "cloth_config.voicechat.config.show_own_group_icon.description": "グループアイコンに自分のアイコンを表示します。",
+  "modmenu.summaryTranslation.voicechat": "Minecraftでボイスチャット！",
+  "modmenu.descriptionTranslation.voicechat": "Minecraftでボイスチャット！",
 }
