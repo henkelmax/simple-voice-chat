@@ -13,7 +13,8 @@ public class FabricPermissionManager extends PermissionManager {
             @Override
             public boolean hasPermission(ServerPlayer player) {
                 if (isFabricPermissionsAPILoaded()) {
-                    return Permissions.check(player, modId + "." + node, type.hasPermission(player));
+                    // TODO Update Fabric Permissions API
+                    // return Permissions.check(player, modId + "." + node, type.hasPermission(player));
                 }
                 return type.hasPermission(player);
             }

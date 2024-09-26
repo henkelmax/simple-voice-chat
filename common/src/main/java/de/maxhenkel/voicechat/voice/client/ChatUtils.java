@@ -35,11 +35,7 @@ public class ChatUtils {
     }
 
     public static void sendPlayerMessage(Component component) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null) {
-            return;
-        }
-        player.sendSystemMessage(component);
+        Minecraft.getInstance().gui.getChat().addMessage(component);
     }
 
 }
