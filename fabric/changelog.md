@@ -1,1 +1,1 @@
-- Updated to 24w39a
+- Updated to 24w40a
