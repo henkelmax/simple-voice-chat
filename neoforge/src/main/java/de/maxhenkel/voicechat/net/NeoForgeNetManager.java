@@ -111,7 +111,15 @@ public class NeoForgeNetManager extends NetManager {
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void sendToServerInternal(Packet<?> packet) {
-        PacketDistributor.sendToServer(packet);
+        try {
+            PacketDistributor.sendToServer(packet);
+        } catch (UnsupportedOperationException e) {
+            if (Voicechat.debugMode()) {
+                Voicechat.LOGGER.warn("Server does not accept voice chat packets", e);
+            } else {
+                Voicechat.LOGGER.warn("Server does not accept voice chat packets");
+            }
+        }
     }
 
     @Override
