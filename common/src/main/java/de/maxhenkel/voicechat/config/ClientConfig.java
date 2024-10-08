@@ -60,7 +60,7 @@ public class ClientConfig {
                 );
         voiceActivationThreshold = builder
                 .doubleEntry("voice_activation_threshold", -50D, -127D, 0D,
-                        "The threshold for voice activation in dB"
+                        "The threshold for the voice activation method (in dB)"
                 );
         microphoneAmplification = builder
                 .doubleEntry("microphone_amplification", 1D, 0D, 4D,
@@ -68,114 +68,114 @@ public class ClientConfig {
                 );
         microphoneActivationType = builder
                 .enumEntry("microphone_activation_type", MicrophoneActivationType.PTT,
-                        "Microphone activation type",
-                        "Possible values are 'PTT' and 'VOICE'"
+                        "The microphone activation method",
+                        "Valid values are 'PTT' and 'VOICE'"
                 );
         outputBufferSize = builder
                 .integerEntry("output_buffer_size", 5, 1, 16,
-                        "The size of the audio output buffer in packets",
-                        "Higher values mean a higher latency, but less crackles",
+                        "The size of the audio output buffer (in packets)",
+                        "Higher values mean a higher latency but less crackling",
                         "Increase this value if you have an unstable internet connection"
                 );
         audioPacketThreshold = builder
                 .integerEntry("audio_packet_threshold", 3, 0, 16,
-                        "The maximum amount of audio packets that are held back if a packet arrives out of order or gets dropped",
-                        "This prevents discarding audio packets that are slightly out of order",
+                        "The maximum number of audio packets that should be held back if a packet arrives out of order or is dropped",
+                        "This prevents audio packets that are only slightly out of order from being discarded",
                         "Set this to 0 to disable"
                 );
         deactivationDelay = builder
                 .integerEntry("voice_deactivation_delay", 25, 0, 100,
                         "The time it takes for the microphone to deactivate when using voice activation",
-                        "A value of 1 means 20 milliseconds, 2=40 ms, 3=60 ms, ..."
+                        "A value of 1 means 20 milliseconds, 2=40 ms, 3=60 ms, and so on"
                 );
         microphone = builder
                 .stringEntry("microphone", "",
                         "The microphone used by the voice chat",
-                        "Empty for default device"
+                        "Leave blank to use the default device"
                 );
         speaker = builder
                 .stringEntry("speaker", "",
                         "The speaker used by the voice chat",
-                        "Empty for default device"
+                        "Leave blank to use the default device"
                 );
         muted = builder
                 .booleanEntry("muted", true,
-                        "If the microphone is muted (only when using voice activation)"
+                        "If the microphone is muted (only relevant for the voice activation method)"
                 );
         disabled = builder
                 .booleanEntry("disabled", false,
-                        "If the voice chat is disabled (sound and microphone off)"
+                        "If the voice chat is disabled (both sound and microphone off)"
                 );
         hideIcons = builder
                 .booleanEntry("hide_icons", false,
-                        "If the voice chat icons should be hidden"
+                        "If the voice chat HUD, group chat HUD, and other in-game icons should be hidden"
                 );
         showGroupHUD = builder
                 .booleanEntry("show_group_hud", true,
-                        "If the group HUD should be visible"
+                        "If the group chat HUD should be visible"
                 );
         showOwnGroupIcon = builder
                 .booleanEntry("show_own_group_icon", true,
-                        "If the own icon should be shown when in a group"
+                        "If your own player icon should be displayed in the group chat HUD when you are in a group"
                 );
         groupHudIconScale = builder
                 .doubleEntry("group_hud_icon_scale", 2D, 0.01D, 10D,
-                        "The scale of the group HUD"
+                        "The scale of the player icons in the group chat HUD"
                 );
         groupPlayerIconOrientation = builder
                 .enumEntry("group_player_icon_orientation", GroupPlayerIconOrientation.VERTICAL,
-                        "The orientation of the player icons in the group HUD",
-                        "Possible values are 'VERTICAL' and 'HORIZONTAL'"
+                        "The orientation of the player icons in the group chat HUD",
+                        "Valid values are 'VERTICAL' and 'HORIZONTAL'"
                 );
         groupPlayerIconPosX = builder
                 .integerEntry("group_player_icon_pos_x", 4, Integer.MIN_VALUE, Integer.MAX_VALUE,
-                        "The X position of the player icons in the group HUD",
-                        "Negative values mean anchoring to the right"
+                        "The X position of the player icons in the group chat HUD",
+                        "Negative values mean anchoring to the right instead"
                 );
         groupPlayerIconPosY = builder
                 .integerEntry("group_player_icon_pos_y", 4, Integer.MIN_VALUE, Integer.MAX_VALUE,
-                        "The Y position of the player icons in the group HUD",
-                        "Negative values mean anchoring to the bottom"
+                        "The Y position of the player icons in the group chat HUD",
+                        "Negative values mean anchoring to the bottom instead"
                 );
         hudIconPosX = builder
                 .integerEntry("hud_icon_pos_x", 16, Integer.MIN_VALUE, Integer.MAX_VALUE,
-                        "The X position of the HUD icons",
-                        "Negative values mean anchoring to the right"
+                        "The X position of the icons in the voice chat HUD",
+                        "Negative values mean anchoring to the right instead"
                 );
         hudIconPosY = builder
                 .integerEntry("hud_icon_pos_y", -16, Integer.MIN_VALUE, Integer.MAX_VALUE,
-                        "The Y position of the HUD icons",
-                        "Negative values mean anchoring to the bottom"
+                        "The Y position of the icons in the voice chat HUD",
+                        "Negative values mean anchoring to the bottom instead"
                 );
         hudIconScale = builder
                 .doubleEntry("hud_icon_scale", 1D, 0.01D, 10D,
-                        "The scale of the HUD icons"
+                        "The scale of the icons in the voice chat HUD, such as microphone or connection status"
                 );
         recordingDestination = builder
                 .stringEntry("recording_destination", "",
                         "The location where recordings should be saved",
-                        "Leave empty for default location"
+                        "Leave blank to use the default location"
                 );
         recordingQuality = builder
                 .integerEntry("recording_quality", 2, 0, 9,
-                        "The quality of the recorded audio",
+                        "The quality of the recorded voice chat audio",
                         "0 = highest quality, 9 = lowest quality"
                 );
         denoiser = builder
                 .booleanEntry("denoiser", false,
-                        "If noise cancellation should be enabled"
+                        "If noise suppression should be enabled"
                 );
         runLocalServer = builder
                 .booleanEntry("run_local_server", true,
-                        "If voice chat should work in singleplayer/LAN worlds"
+                        "If the voice chat should work in singleplayer or in worlds shared over LAN"
                 );
         javaMicrophoneImplementation = builder
                 .booleanEntry("java_microphone_implementation", Platform.isMac(),
-                        "Whether to use the Java implementation of microphone capturing instead of OpenAL"
+                        "Whether to use the Java implementation of microphone capture instead of OpenAL"
                 );
         macosCheckMicrophonePermission = builder
                 .booleanEntry("macos_check_microphone_permission", true,
-                        "If the mod should check for microphone permissions (MacOS only)"
+                        "If the mod should check for microphone permissions (macOS only)"
                 );
         showFakePlayersDisconnected = builder
                 .booleanEntry("show_fake_players_disconnected", false,
@@ -183,24 +183,24 @@ public class ClientConfig {
                 );
         offlinePlayerVolumeAdjustment = builder
                 .booleanEntry("offline_player_volume_adjustment", false,
-                        "If the volume adjustment GUI should also show offline players"
+                        "If the volume adjustment interface should also display offline players"
                 );
         audioType = builder
                 .enumEntry("audio_type", AudioType.NORMAL,
                         "The 3D audio type",
-                        "Possible values are 'NORMAL', 'REDUCED' and 'OFF'"
+                        "Valid values are 'NORMAL', 'REDUCED', and 'OFF'"
                 );
         useNatives = builder
                 .booleanEntry("use_natives", true,
                         "If the mod should load native libraries",
-                        "If set to false, the Java Opus implementation will be used, the denoiser won't be available and you won't be able to record audio."
+                        "When disabled, the Java Opus implementation will be used instead, the denoiser won't be available, and you won't be able to record the voice chat audio"
                 );
         freecamMode = builder
                 .enumEntry("freecam_mode", FreecamMode.CAMERA,
                         "How listening to other players should work when using freecam mods",
-                        "Possible values are 'CAMERA' and 'PLAYER'",
-                        "CAMERA: You will hear voice chat audio around your camera. Whether you hear distant audio depends on the voice chat broadcast range of the server",
-                        "PLAYER: You will hear voice chat audio around your player no matter where your camera is"
+                        "Valid values are 'CAMERA' and 'PLAYER'",
+                        "CAMERA: You will hear the voice chat around your camera. Whether you will still be able to hear the voice chat when the camera is far away from your character depends on the voice chat broadcast range of the server",
+                        "PLAYER: You will hear the voice chat around your character no matter where your camera is"
                 );
         muteOnJoin = builder
                 .booleanEntry("mute_on_join", false,
