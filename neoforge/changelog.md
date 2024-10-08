@@ -1,2 +1,2 @@
-- Fixed potential incompatibility with other mods
-- Fixed not being able to join servers without voice chat
+- Reworked English translation
+- Reworked config descriptions
