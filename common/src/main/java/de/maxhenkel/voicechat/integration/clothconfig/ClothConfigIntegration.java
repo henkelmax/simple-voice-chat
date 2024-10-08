@@ -15,7 +15,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 public class ClothConfigIntegration {
 
     public static final TranslatableComponent SETTINGS = new TranslatableComponent("cloth_config.voicechat.settings");
-    public static final TranslatableComponent OTHER_SETTINGS = new TranslatableComponent("cloth_config.voicechat.category.other");
+    public static final TranslatableComponent OTHER_SETTINGS = new TranslatableComponent("cloth_config.voicechat.category.ingame_menu");
 
     public static Screen createConfigScreen(Screen parent) {
         ConfigBuilder builder = ConfigBuilder

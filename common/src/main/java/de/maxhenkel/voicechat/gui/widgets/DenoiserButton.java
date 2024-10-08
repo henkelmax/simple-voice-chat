@@ -7,8 +7,8 @@ import net.minecraft.network.chat.TranslatableComponent;
 
 public class DenoiserButton extends BooleanConfigButton {
 
-    private static final Component ENABLED = new TranslatableComponent("message.voicechat.enabled");
-    private static final Component DISABLED = new TranslatableComponent("message.voicechat.disabled");
+    private static final Component ENABLED = new TranslatableComponent("message.voicechat.denoiser.on");
+    private static final Component DISABLED = new TranslatableComponent("message.voicechat.denoiser.off");
 
     public DenoiserButton(int x, int y, int width, int height) {
         super(x, y, width, height, VoicechatClient.CLIENT_CONFIG.denoiser, enabled -> {
