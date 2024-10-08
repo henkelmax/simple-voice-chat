@@ -1,1 +1,2 @@
-- Fixed potential incompatibility with other mods
+- Reworked English translation
+- Reworked config descriptions
