@@ -32,18 +32,22 @@ public class ServerConfig {
 
         voiceChatPort = builder
                 .integerEntry("port", 24454, -1, 65535,
-                        "The port of the voice chat server",
-                        "Setting this to \"-1\" sets the port to the Minecraft servers port (Not recommended)"
+                        "The port number to use for the voice chat communication.",
+                        "Audio packets are always transmitted via the UDP protocol on the port number",
+                        "specified here, independently of other networking used for the game server.",
+                        "Set this to '-1' to use the same port number that is used by the Minecraft server.",
+                        "However, it is strongly recommended NOT to use the same port number because UDP on",
+                        "it is also used by default for the server query. Doing so may crash the server!"
                 );
         voiceChatBindAddress = builder
                 .stringEntry("bind_address", "",
-                        "The IP address to bind the voice chat server on",
-                        "Leave empty to use 'server-ip' of server.properties",
-                        "To bind to the wildcard address, use '*'"
+                        "The server IP address to bind the voice chat to",
+                        "Leave blank to use the 'server-ip' property from the 'server.properties' config file",
+                        "To bind to the wildcard IP address, use '*'"
                 );
         voiceChatDistance = builder
                 .doubleEntry("max_voice_distance", 48D, 1D, 1_000_000D,
-                        "The distance to where the voice can be heard"
+                        "The distance to which the voice can be heard"
                 );
         crouchDistanceMultiplier = builder
                 .doubleEntry("crouch_distance_multiplier", 1D, 0.01D, 1D,
@@ -55,16 +59,17 @@ public class ServerConfig {
                 );
         voiceChatCodec = builder
                 .enumEntry("codec", Codec.VOIP,
-                        "The opus codec",
-                        "Possible values are 'VOIP', 'AUDIO' and 'RESTRICTED_LOWDELAY'"
+                        "The Opus codec",
+                        "Valid values are 'VOIP', 'AUDIO', and 'RESTRICTED_LOWDELAY'"
                 );
         voiceChatMtuSize = builder
                 .integerEntry("mtu_size", 1024, 256, 10000,
-                        "The maximum size in bytes that voice packets are allowed to have"
+                        "The maximum size that audio packets are allowed to have (in bytes)",
+                        "Set this to a lower value if audio packets don't arrive"
                 );
         keepAlive = builder
                 .integerEntry("keep_alive", 1000, 1000, Integer.MAX_VALUE,
-                        "The frequency at which keep alive packets are sent",
+                        "The frequency at which keep-alive packets are sent (in milliseconds)",
                         "Setting this to a higher value may result in timeouts"
                 );
         groupsEnabled = builder
@@ -73,13 +78,13 @@ public class ServerConfig {
                 );
         voiceHost = builder
                 .stringEntry("voice_host", "",
-                        "The host name that clients should use to connect to the voice chat",
+                        "The hostname that clients should use to connect to the voice chat",
                         "This may also include a port, e.g. 'example.com:24454'",
-                        "Don't change this value if you don't know what you are doing"
+                        "Do NOT change this value if you don't know what you're doing"
                 );
         allowRecording = builder
                 .booleanEntry("allow_recording", true,
-                        "If players are allowed to record the voice chat"
+                        "If players are allowed to record the voice chat audio"
                 );
         spectatorInteraction = builder
                 .booleanEntry("spectator_interaction", false,
@@ -91,21 +96,21 @@ public class ServerConfig {
                 );
         forceVoiceChat = builder
                 .booleanEntry("force_voice_chat", false,
-                        "If players without the mod should get kicked from the server"
+                        "If players without the voice chat mod should be kicked from the server"
                 );
         loginTimeout = builder
                 .integerEntry("login_timeout", 10_000, 100, Integer.MAX_VALUE,
-                        "The amount of milliseconds, the server should wait to check if the player has the mod installed",
-                        "Only active when force_voice_chat is set to true"
+                        "The amount of time the server should wait to check if a player has the mod installed (in milliseconds)",
+                        "Only relevant when 'force_voice_chat' is set to 'true'"
                 );
         broadcastRange = builder
                 .doubleEntry("broadcast_range", -1D, -1D, Double.MAX_VALUE,
-                        "The range where the voice chat should broadcast audio to",
-                        "A value <0 means 'max_voice_distance'"
+                        "The range in which the voice chat should broadcast audio",
+                        "A value less than 0 means 'max_voice_distance'"
                 );
         allowPings = builder
                 .booleanEntry("allow_pings", true,
-                        "If the voice chat server should reply to pings"
+                        "If the voice chat server should reply to external pings"
                 );
     }
 

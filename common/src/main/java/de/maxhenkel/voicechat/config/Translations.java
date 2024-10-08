@@ -24,14 +24,14 @@ public class Translations {
         );
         voicechatNotCompatibleMessage = builder.stringEntry(
                 "voicechat_not_compatible_message",
-                "Your voice chat version is not compatible with the servers version.\\nPlease install version %s of %s.",
+                "Your voice chat client version is not compatible with the server-side version.\\nPlease install version %s of %s.",
                 "The message a player gets when joining a server with an incompatible voice chat version",
                 "The first parameter is the mod/plugin version and the second parameter is the mod/plugin name"
         );
         voicechatNeededForCommandMessage = builder.stringEntry(
                 "voicechat_needed_for_command_message",
                 "You need to have %s installed on your client to use this command",
-                "The message a player gets when trying to execute a command that requires voice chat",
+                "The message a player gets when trying to execute a command that requires the voice chat mod installed on the client side.",
                 "The first parameter is the mod/plugin name"
         );
         playerCommandMessage = builder.stringEntry(

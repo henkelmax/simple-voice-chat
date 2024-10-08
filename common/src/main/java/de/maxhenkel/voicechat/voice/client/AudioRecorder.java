@@ -270,6 +270,7 @@ public class AudioRecorder {
                         new TextComponentString(location.normalize().toString())
                                 .setStyle(new Style()
                                         .setColor(TextFormatting.GRAY)
+                                        .setUnderlined(true)
                                         .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentTranslation("message.voicechat.open_folder")))
                                         .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, location.normalize().toString()))
                                 )
