@@ -271,7 +271,7 @@ public class AudioRecorder {
                 sendProgress(1F);
                 send(Component.translatable("message.voicechat.save_session",
                         Component.literal(location.normalize().toString())
-                                .withStyle(ChatFormatting.GRAY)
+                                .withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE)
                                 .withStyle(style -> style
                                         .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.voicechat.open_folder")))
                                         .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, location.normalize().toString()))))
