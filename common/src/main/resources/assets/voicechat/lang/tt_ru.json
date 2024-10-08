@@ -1,5 +1,4 @@
 {
-  "modmenu.descriptionTranslation.voicechat": "Minecraft-тагы эшли торган тавышлы чат!",
   "key.categories.voicechat": "Тавышлы чат",
   "key.push_to_talk": "Әйтү өчен басу",
   "key.whisper": "Пышылдау",
@@ -35,10 +34,8 @@
   "message.voicechat.adjust_volumes": "Катылыкларны көйләү",
   "message.voicechat.volume_amplification": "Көчәйтү: %s",
   "message.voicechat.muted": "Тавышсыз",
-  "message.voicechat.adjust_volume_player": "%s катылыгын көйләү",
   "message.voicechat.no_microphone": "Микрофоннар юк",
   "message.voicechat.no_speaker": "Динамиклар юк",
-  "message.voicechat.select": "Сайлау",
   "message.voicechat.select_microphone": "Микрофонны сайлау",
   "message.voicechat.select_speaker": "Динамикны сайлау",
   "message.voicechat.back": "Артка",
@@ -76,9 +73,6 @@
   "message.voicechat.recording_stopped": "Яздыру тукталды",
   "message.voicechat.open_folder": "Папканы ачарга",
   "message.voicechat.storage_size": "%s урын зурлыгы көтелде",
-  "message.voicechat.saved_debug_report": "Тавышлы чатның төзәтүне җыю «%s» урынына сакланды",
-  "message.voicechat.open": "Ачарга",
-  "message.voicechat.saved_debug_report_failed": "Тавышлы чатның төзәтү җыюны саклап булмады: %s",
   "message.voicechat.microphone_unavailable": "Микрофон ирешерлек түгел",
   "message.voicechat.speaker_unavailable": "Динамик ирешерлек түгел",
   "message.voicechat.playback_unavailable": "Уйнату ирешерлек түгел",
@@ -159,5 +153,6 @@
   "cloth_config.voicechat.config.group_hud_icon_scale": "Төркем интерфейс тамгачыгының зурлыгы",
   "cloth_config.voicechat.config.group_player_icon_pos_x": "Төркем тамгачыгының X урыны",
   "cloth_config.voicechat.config.group_player_icon_pos_y": "Төркем тамгачыгының Y урыны",
-  "cloth_config.voicechat.config.show_own_group_icon": "Үз төркем интерфейс тамгачыгын күрсәтү"
+  "cloth_config.voicechat.config.show_own_group_icon": "Үз төркем интерфейс тамгачыгын күрсәтү",
+  "modmenu.descriptionTranslation.voicechat": "Minecraft-тагы эшли торган тавышлы чат!"
 }
