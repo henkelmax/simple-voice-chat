@@ -1,3 +1,1 @@
-- Reworked English translation
-- Reworked config descriptions
-- Updated to 1.21.2-pre1
+- Updated to 1.21.2-pre2
