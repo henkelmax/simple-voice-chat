@@ -46,7 +46,6 @@
   "message.voicechat.sending_ping": "Pingの送信中...",
   "message.voicechat.ping_sent_waiting": "Pingの送信完了。応答の待機中...",
   "message.voicechat.ping_received": "%smsで応答を受信しました。",
-  "message.voicechat.ping_received_attempt": "%smsで%s回試行した後、応答がありました",
   "message.voicechat.ping_retry": "応答なし。再試行中...",
   "message.voicechat.ping_timed_out": "%s回の試行後にリクエストがタイムアウトしました",
   "message.voicechat.icons_hidden": "ボイスチャットアイコンを隠しました",
