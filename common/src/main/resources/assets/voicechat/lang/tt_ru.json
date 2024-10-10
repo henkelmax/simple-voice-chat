@@ -44,7 +44,6 @@
   "message.voicechat.sending_ping": "Пинг җибәрү...",
   "message.voicechat.ping_sent_waiting": "Пинг җибәрелде. Җавап көтү...",
   "message.voicechat.ping_received": "%s мс эчендә җавап алды",
-  "message.voicechat.ping_received_attempt": "Җавап %s тапкырдан соң %s мс эчендә алынды",
   "message.voicechat.ping_retry": "Җавап юк. Кабатлау...",
   "message.voicechat.ping_timed_out": "Җавап вакыты %s тапкырдан соң бетте",
   "message.voicechat.icons_hidden": "Тавышлы чат тамгачыклары яшерен",

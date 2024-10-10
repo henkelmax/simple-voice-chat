@@ -43,7 +43,6 @@
   "message.voicechat.sending_ping": "Wysyłanie pingu...",
   "message.voicechat.ping_sent_waiting": "Ping wysłany. Czekanie na odpowiedź...",
   "message.voicechat.ping_received": "Dostano odpowiedź w %sms",
-  "message.voicechat.ping_received_attempt": "Dostano odpowiedź po %s próbach w %sms",
   "message.voicechat.ping_retry": "Nie ma odpowiedzi. Powtarzanie...",
   "message.voicechat.ping_timed_out": "Prośba wygasła po %s próbach",
   "message.voicechat.icons_hidden": "Ikony czatu głosowego ukryte",
