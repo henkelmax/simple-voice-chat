@@ -73,7 +73,7 @@ public class VoicechatCommands {
                         if (attempts <= 1) {
                             commandSource.getSource().sendSuccess(() -> Component.translatable("message.voicechat.ping_received", pingMilliseconds), false);
                         } else {
-                            commandSource.getSource().sendSuccess(() -> Component.translatable("message.voicechat.ping_received_attempt", attempts, pingMilliseconds), false);
+                            commandSource.getSource().sendSuccess(() -> Component.translatable("message.voicechat.ping_received_attempt", pingMilliseconds, attempts), false);
                         }
                     }
 

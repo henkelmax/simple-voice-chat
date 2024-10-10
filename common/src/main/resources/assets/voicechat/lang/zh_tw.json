@@ -46,7 +46,6 @@
   "message.voicechat.sending_ping": "正在傳送 Ping...",
   "message.voicechat.ping_sent_waiting": "已傳送 Ping。等待回覆中...",
   "message.voicechat.ping_received": "在 %s 毫秒得到回覆",
-  "message.voicechat.ping_received_attempt": "在 %s 次嘗試後在 %s 毫秒得到回覆",
   "message.voicechat.ping_retry": "沒有回覆。重試中...",
   "message.voicechat.ping_timed_out": "%s 次嘗試後要求等候逾時",
   "message.voicechat.icons_hidden": "語音聊天圖示隱藏",

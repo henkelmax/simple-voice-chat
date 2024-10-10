@@ -46,7 +46,6 @@
   "message.voicechat.sending_ping": "发送 Ping...",
   "message.voicechat.ping_sent_waiting": "已发送 Ping,等待回应...",
   "message.voicechat.ping_received": "%sms 后得到回应",
-  "message.voicechat.ping_received_attempt": "在 %s 次尝试后 %sms 得到回应",
   "message.voicechat.ping_retry": "无回应，正在重试...",
   "message.voicechat.ping_timed_out": "在 %s 次尝试后超时",
   "message.voicechat.icons_hidden": "语音通话图标：隐藏",
