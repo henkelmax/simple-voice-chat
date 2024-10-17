@@ -1,1 +1,1 @@
-- Updated to 1.21.2-pre5
+- Updated to 1.21.2-rc1
