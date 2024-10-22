@@ -13,9 +13,11 @@ import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 
 import java.util.UUID;
 
@@ -104,16 +106,23 @@ public class RenderEvents {
         if (VoicechatClient.CLIENT_CONFIG.hideIcons.get()) {
             return;
         }
-        UUID entityId = ClientCompatibilityManager.INSTANCE.getUuidFromRenderState(renderState);
-        if (entityId == null) {
+        if (minecraft.player == null || minecraft.level == null) {
             return;
         }
-        if (minecraft.player == null || minecraft.player.getUUID().equals(entityId)) {
+        if (!(renderState instanceof PlayerRenderState playerRenderState)) {
+            return;
+        }
+        Entity entity = minecraft.level.getEntity(playerRenderState.id);
+        if (entity == null) {
+            return;
+        }
+        if (minecraft.player.equals(entity)) {
             return;
         }
         if (!minecraft.options.hideGui) {
             ClientPlayerStateManager manager = ClientManager.getPlayerStateManager();
             ClientVoicechat client = ClientManager.getClient();
+            UUID entityId = entity.getUUID();
             UUID groupId = manager.getGroup(entityId);
 
             if (client != null && client.getTalkCache().isWhispering(entityId)) {

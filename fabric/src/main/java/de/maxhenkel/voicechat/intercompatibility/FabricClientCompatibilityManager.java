@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import de.maxhenkel.voicechat.events.*;
-import de.maxhenkel.voicechat.interfaces.RenderStateUuid;
 import de.maxhenkel.voicechat.mixin.ConnectionAccessor;
 import de.maxhenkel.voicechat.resourcepacks.IPackRepository;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
@@ -11,14 +10,11 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.Connection;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
 
-import javax.annotation.Nullable;
 import java.net.SocketAddress;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public class FabricClientCompatibilityManager extends ClientCompatibilityManager {
@@ -109,14 +105,5 @@ public class FabricClientCompatibilityManager extends ClientCompatibilityManager
     public void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource) {
         IPackRepository repository = (IPackRepository) packRepository;
         repository.addSource(repositorySource);
-    }
-
-    @Override
-    @Nullable
-    public UUID getUuidFromRenderState(EntityRenderState renderState) {
-        if (!(renderState instanceof RenderStateUuid renderStateUuid)) {
-            return null;
-        }
-        return renderStateUuid.voicechat$getUuid();
     }
 }

@@ -56,11 +56,8 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
     }
 
     @SubscribeEvent
-    public void onRenderName(net.neoforged.neoforge.client.event.RenderNameTagEvent event) {
-        if (minecraft.player == null || event.getEntity().isInvisibleTo(minecraft.player)) {
-            return;
-        }
-        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getEntity(), event.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), event.getPartialTick()));
+    public void onRenderName(net.neoforged.neoforge.client.event.RenderNameTagEvent.DoRender event) {
+        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getEntityRenderState(), event.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
     }
 
     @SubscribeEvent
@@ -214,4 +211,5 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
     public void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource) {
         packRepository.addPackFinder(repositorySource);
     }
+
 }

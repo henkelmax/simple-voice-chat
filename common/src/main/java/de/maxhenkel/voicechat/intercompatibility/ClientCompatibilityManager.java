@@ -13,9 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
 
-import javax.annotation.Nullable;
 import java.net.SocketAddress;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public abstract class ClientCompatibilityManager {
@@ -55,9 +53,6 @@ public abstract class ClientCompatibilityManager {
     public abstract SocketAddress getSocketAddress(Connection connection);
 
     public abstract void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource);
-
-    @Nullable
-    public abstract UUID getUuidFromRenderState(EntityRenderState renderState);
 
     public interface RenderNameplateEvent {
         void render(EntityRenderState renderState, Component component, PoseStack stack, MultiBufferSource bufferSource, int light);

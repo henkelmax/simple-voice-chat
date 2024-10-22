@@ -1,2 +1,1 @@
-- Reworked English translation
-- Reworked config descriptions
+- Updated to 1.21.2

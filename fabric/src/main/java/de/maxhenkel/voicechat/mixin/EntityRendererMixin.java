@@ -2,12 +2,10 @@ package de.maxhenkel.voicechat.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.events.RenderEvents;
-import de.maxhenkel.voicechat.interfaces.RenderStateUuid;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,14 +23,6 @@ public abstract class EntityRendererMixin {
             return;
         }
         RenderEvents.RENDER_NAMEPLATE.invoker().render(entityRenderState, component, poseStack, multiBufferSource, light);
-    }
-
-    @Inject(method = "extractRenderState", at = @At("RETURN"))
-    private void renderNameTag(Entity entity, EntityRenderState entityRenderState, float f, CallbackInfo ci) {
-        if (!(entityRenderState instanceof RenderStateUuid renderStateUuid)) {
-            return;
-        }
-        renderStateUuid.voicechat$setUuid(entity.getUUID());
     }
 
 }
