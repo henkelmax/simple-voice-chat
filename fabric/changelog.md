@@ -1,1 +1,1 @@
-- Updated to 1.21.2
+- Re-added fabric-permissions-api
