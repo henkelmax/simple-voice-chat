@@ -15,8 +15,7 @@
     "PackRepositoryMixin",
     "GuiMixin",
     "IntegratedServerMixin",
-    "PlayerEntryMixin",
-    "EntityRenderStateMixin"
+    "PlayerEntryMixin"
   ],
   "injectors": {
     "defaultRequire": 1
