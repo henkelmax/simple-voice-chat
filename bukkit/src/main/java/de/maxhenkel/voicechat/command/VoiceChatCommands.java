@@ -132,7 +132,7 @@ public class VoiceChatCommands implements CommandExecutor, TabCompleter {
                     if (attempts <= 1) {
                         NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.ping_received", Component.text(pingMilliseconds)));
                     } else {
-                        NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.ping_received_attempt", Component.text(attempts), Component.text(pingMilliseconds)));
+                        NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.ping_received_attempt", Component.text(pingMilliseconds), Component.text(attempts)));
                     }
                 }
 

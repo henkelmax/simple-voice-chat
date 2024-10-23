@@ -46,7 +46,6 @@
   "message.voicechat.sending_ping": "Ping gönderiliyor...",
   "message.voicechat.ping_sent_waiting": "Ping gönderildi. Yanıt...",
   "message.voicechat.ping_received": "%s milisaniyede yanıt alındı",
-  "message.voicechat.ping_received_attempt": "%s denemeden sonra %s milisaniyede yanıt alındı",
   "message.voicechat.ping_retry": "Yanıt alınamadı. Yeniden deneniyor...",
   "message.voicechat.ping_timed_out": "İstek %s denemeden sonra zaman aşımına uğradı",
   "message.voicechat.icons_hidden": "Sesli sohbet simgeleri gizli",
