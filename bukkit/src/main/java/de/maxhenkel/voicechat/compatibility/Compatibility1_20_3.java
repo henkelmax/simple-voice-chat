@@ -16,6 +16,7 @@ public class Compatibility1_20_3 extends BaseCompatibility {
     public static final BukkitVersion VERSION_1_21 = BukkitVersion.parseBukkitVersion("1.21-R0.1");
     public static final BukkitVersion VERSION_1_21_1 = BukkitVersion.parseBukkitVersion("1.21.1-R0.1");
     public static final BukkitVersion VERSION_1_21_2 = BukkitVersion.parseBukkitVersion("1.21.2-R0.1");
+    public static final BukkitVersion VERSION_1_21_3 = BukkitVersion.parseBukkitVersion("1.21.3-R0.1");
 
     public static final Compatibility1_20_3 INSTANCE = new Compatibility1_20_3();
 

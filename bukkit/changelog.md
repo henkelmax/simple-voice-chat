@@ -1,1 +1,2 @@
-- Updated to 1.21.2
+- Added support for 1.21.2
+- Updated to 1.21.3
