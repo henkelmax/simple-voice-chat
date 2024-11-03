@@ -1,1 +1,2 @@
-- Updated to 24w46a
+- Updated German translation
+- Updated Polish translation
