@@ -96,6 +96,9 @@ public class RenderEvents {
     }
 
     private void onRenderName(Entity entity, ITextComponent component, MatrixStack stack, IRenderTypeBuffer vertexConsumers, int light) {
+        if (component == null) {
+            return;
+        }
         if (!shouldShowIcons()) {
             return;
         }
