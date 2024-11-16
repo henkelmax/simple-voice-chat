@@ -97,6 +97,9 @@ public class RenderEvents {
     }
 
     private void onRenderName(Entity entity, String str, double x, double y, double z, int maxDistance) {
+        if (str == null) {
+            return;
+        }
         if (!shouldShowIcons()) {
             return;
         }
