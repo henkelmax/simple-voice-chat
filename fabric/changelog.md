@@ -1,2 +1,3 @@
 - Updated German translation
 - Updated Polish translation
+- Fixed potential crash
