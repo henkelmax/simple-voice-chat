@@ -100,6 +100,9 @@ public class RenderEvents {
     }
 
     private void onRenderName(EntityRenderState renderState, Component component, PoseStack stack, MultiBufferSource vertexConsumers, int light) {
+        if (component == null) {
+            return;
+        }
         if (!shouldShowIcons()) {
             return;
         }
