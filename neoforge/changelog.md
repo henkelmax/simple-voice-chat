@@ -1,3 +1,1 @@
-- Updated German translation
-- Updated Polish translation
-- Fixed potential crash
+- Updated to 1.21.4
