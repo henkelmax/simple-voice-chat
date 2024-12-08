@@ -12,8 +12,6 @@ import java.lang.reflect.Method;
 
 public interface Compatibility {
 
-    String getServerIp(Server server) throws Exception;
-
     void addChannel(Player player, String channel);
 
     void removeChannel(Player player, String channel);

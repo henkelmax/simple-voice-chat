@@ -101,7 +101,7 @@ public class Server extends Thread {
             bindAddress = "";
         } else if (bindAddress.trim().isEmpty()) {
             try {
-                bindAddress = Voicechat.compatibility.getServerIp(server);
+                bindAddress = Bukkit.getIp();
                 if (!bindAddress.trim().isEmpty()) {
                     try {
                         InetAddress address = InetAddress.getByName(bindAddress);

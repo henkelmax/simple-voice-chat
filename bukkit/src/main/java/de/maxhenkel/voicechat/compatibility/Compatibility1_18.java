@@ -4,7 +4,6 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import de.maxhenkel.voicechat.BukkitVersion;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -16,11 +15,6 @@ public class Compatibility1_18 extends BaseCompatibility {
     public static final BukkitVersion VERSION_1_18 = BukkitVersion.parseBukkitVersion("1.18-R0.1");
 
     public static final Compatibility1_18 INSTANCE = new Compatibility1_18();
-
-    @Override
-    public String getServerIp(Server server) throws Exception {
-        return Compatibility1_19.INSTANCE.getServerIp(server);
-    }
 
     @Override
     public void sendMessage(Player player, Component component) {

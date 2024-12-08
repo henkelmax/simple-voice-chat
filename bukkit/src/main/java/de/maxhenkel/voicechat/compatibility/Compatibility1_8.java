@@ -5,7 +5,6 @@ import de.maxhenkel.voicechat.BukkitVersion;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 public class Compatibility1_8 extends BaseCompatibility {
@@ -13,13 +12,6 @@ public class Compatibility1_8 extends BaseCompatibility {
     public static final BukkitVersion VERSION_1_8_8 = BukkitVersion.parseBukkitVersion("1.8.8-R0.1");
 
     public static final Compatibility1_8 INSTANCE = new Compatibility1_8();
-
-    @Override
-    public String getServerIp(Server server) throws Exception {
-        Object minecraftServer = callMethod(server, "getServer");
-        Class<?> minecraftServerClass = getBukkitClass("MinecraftServer");
-        return callMethod(minecraftServerClass, minecraftServer, "getServerIp");
-    }
 
     @Override
     public Key createNamespacedKey(String key) {
