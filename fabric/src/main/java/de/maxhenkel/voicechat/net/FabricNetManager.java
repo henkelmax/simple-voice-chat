@@ -62,7 +62,7 @@ public class FabricNetManager extends NetManager {
                         }
                         c.onServerPacket(context.player(), payload);
                     } catch (Exception e) {
-                        Voicechat.LOGGER.error("Failed to register packet receiver", e);
+                        Voicechat.LOGGER.error("Failed to process packet", e);
                     }
                 });
             }
