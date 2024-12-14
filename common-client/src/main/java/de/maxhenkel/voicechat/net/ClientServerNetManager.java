@@ -2,27 +2,28 @@ package de.maxhenkel.voicechat.net;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
+import net.minecraft.client.network.play.ClientPlayNetHandler;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.client.CCustomPayloadPacket;
 
 public abstract class ClientServerNetManager extends NetManager {
 
     public static void sendToServer(Packet<?> packet) {
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
         packet.toBytes(buffer);
-        ClientPacketListener connection = Minecraft.getInstance().getConnection();
+        ClientPlayNetHandler connection = Minecraft.getInstance().getConnection();
         if (connection != null && connection.getLevel() != null) {
-            connection.send(new ServerboundCustomPayloadPacket(packet.getIdentifier(), buffer));
+            connection.send(new CCustomPayloadPacket(packet.getIdentifier(), buffer));
         }
     }
 
     public interface ClientReceiver<T extends Packet<T>> {
-        void onPacket(Minecraft client, ClientPacketListener handler, T packet);
+        void onPacket(Minecraft client, ClientPlayNetHandler handler, T packet);
     }
 
     public static <T extends Packet<T>> void setClientListener(Channel<T> channel, ClientServerNetManager.ClientReceiver<T> packetReceiver) {
-        if (channel instanceof ClientServerChannel<T> c) {
+        if (channel instanceof ClientServerChannel) {
+            ClientServerChannel<T> c = (ClientServerChannel<T>) channel;
             c.setClientListener(packetReceiver);
         } else {
             throw new IllegalStateException("Channel is not a ClientServerChannel");
