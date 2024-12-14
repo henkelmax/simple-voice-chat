@@ -1,3 +1,1 @@
-- Updated German translation
-- Updated Polish translation
-- Fixed potential crash
+- Added useNatives config option for servers
