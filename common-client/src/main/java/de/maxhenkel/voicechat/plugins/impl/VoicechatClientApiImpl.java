@@ -9,6 +9,7 @@ import de.maxhenkel.voicechat.api.audiochannel.ClientEntityAudioChannel;
 import de.maxhenkel.voicechat.api.audiochannel.ClientLocationalAudioChannel;
 import de.maxhenkel.voicechat.api.audiochannel.ClientStaticAudioChannel;
 import de.maxhenkel.voicechat.api.config.ConfigAccessor;
+import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.ClientEntityAudioChannelImpl;
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.ClientLocationalAudioChannelImpl;
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.ClientStaticAudioChannelImpl;
@@ -23,14 +24,15 @@ import java.util.UUID;
 
 public class VoicechatClientApiImpl extends VoicechatApiImpl implements VoicechatClientApi {
 
-    private static final VoicechatClientApiImpl INSTANCE = new VoicechatClientApiImpl();
+    @Deprecated
+    public static final VoicechatClientApiImpl INSTANCE = new VoicechatClientApiImpl();
 
     private VoicechatClientApiImpl() {
 
     }
 
-    public static VoicechatClientApiImpl instance() {
-        return INSTANCE;
+    public static VoicechatClientApi instance() {
+        return ClientCompatibilityManager.INSTANCE.getClientApi();
     }
 
     @Override

@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldServer;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,12 +13,12 @@ import java.util.function.Predicate;
 
 public class ServerWorldUtils {
 
-    public static Collection<EntityPlayerMP> getPlayersInRange(WorldServer level, Vec3d pos, double range, Predicate<EntityPlayerMP> filter) {
+    public static Collection<EntityPlayerMP> getPlayersInRange(WorldServer level, Vec3d pos, double range, @Nullable Predicate<EntityPlayerMP> filter) {
         List<EntityPlayerMP> nearbyPlayers = new ArrayList<>();
         List<EntityPlayer> players = level.playerEntities;
         for (int i = 0; i < players.size(); i++) {
             EntityPlayerMP player = (EntityPlayerMP) players.get(i);
-            if (isInRange(player.getPositionVector(), pos, range) && filter.test(player)) {
+            if (isInRange(player.getPositionVector(), pos, range) && (filter == null || filter.test(player))) {
                 nearbyPlayers.add(player);
             }
         }

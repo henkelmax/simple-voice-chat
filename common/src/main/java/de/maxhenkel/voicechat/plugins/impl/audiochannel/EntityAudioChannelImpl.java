@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.api.Entity;
 import de.maxhenkel.voicechat.api.audiochannel.EntityAudioChannel;
 import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.api.packets.MicrophonePacket;
+import de.maxhenkel.voicechat.plugins.impl.EntityImpl;
 import de.maxhenkel.voicechat.plugins.impl.ServerPlayerImpl;
 import de.maxhenkel.voicechat.voice.common.PlayerSoundPacket;
 import de.maxhenkel.voicechat.voice.common.Utils;
@@ -72,10 +73,11 @@ public class EntityAudioChannelImpl extends AudioChannelImpl implements EntityAu
     }
 
     private void broadcast(PlayerSoundPacket packet) {
-        if (entity.getEntity() instanceof net.minecraft.entity.Entity) {
-            net.minecraft.entity.Entity entity = ((net.minecraft.entity.Entity) this.entity.getEntity());
-            server.broadcast(ServerWorldUtils.getPlayersInRange((WorldServer) entity.world, entity.getPositionEyes(1F), server.getBroadcastRange(distance), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
+        if (!(entity instanceof EntityImpl)) {
+            throw new IllegalArgumentException("entity is not an instance of EntityImpl");
         }
+        EntityImpl entityimpl = (EntityImpl) entity;
+        server.broadcast(ServerWorldUtils.getPlayersInRange((WorldServer) entityimpl.getRealEntity().world, entityimpl.getRealEntity().getPositionEyes(1F), server.getBroadcastRange(distance), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
     }
 
 }

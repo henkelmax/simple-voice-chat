@@ -1,5 +1,7 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
+import de.maxhenkel.voicechat.api.VoicechatClientApi;
+import de.maxhenkel.voicechat.plugins.impl.VoicechatClientApiImpl;
 import de.maxhenkel.voicechat.service.Service;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.settings.KeyBinding;
@@ -42,6 +44,10 @@ public abstract class ClientCompatibilityManager {
     public abstract void onPublishServer(Consumer<Integer> onPublishServer);
 
     public abstract SocketAddress getSocketAddress(NetworkManager connection);
+
+    public VoicechatClientApi getClientApi() {
+        return VoicechatClientApiImpl.INSTANCE;
+    }
 
     public interface RenderNameplateEvent {
         void render(Entity entity, String str, double x, double y, double z, int maxDistance);

@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.plugins.impl;
 
 import de.maxhenkel.voicechat.api.Entity;
 import de.maxhenkel.voicechat.api.Position;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -21,7 +22,7 @@ public class EntityImpl implements Entity {
 
     @Override
     public Object getEntity() {
-        return entity;
+        return CommonCompatibilityManager.INSTANCE.createRawApiEntity(entity);
     }
 
     @Override

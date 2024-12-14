@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.plugins.impl;
 
 import de.maxhenkel.voicechat.api.ServerLevel;
 import net.minecraft.world.WorldServer;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 
 import java.util.Objects;
 
@@ -15,6 +16,10 @@ public class ServerLevelImpl implements ServerLevel {
 
     @Override
     public Object getServerLevel() {
+        return CommonCompatibilityManager.INSTANCE.createRawApiLevel(serverLevel);
+    }
+
+    public ServerWorld getRawServerLevel() {
         return serverLevel;
     }
 

@@ -29,6 +29,9 @@ public class PluginManager {
     private Map<UUID, List<PlayerAudioListener>> playerAudioListeners;
 
     public void init() {
+        if (plugins != null) {
+            return;
+        }
         Voicechat.LOGGER.info("Loading plugins");
         plugins = CommonCompatibilityManager.INSTANCE.loadPlugins();
         Voicechat.LOGGER.info("Loaded {} plugin(s)", plugins.size());
@@ -280,6 +283,7 @@ public class PluginManager {
     public static PluginManager instance() {
         if (instance == null) {
             instance = new PluginManager();
+            instance.init();
         }
         return instance;
     }

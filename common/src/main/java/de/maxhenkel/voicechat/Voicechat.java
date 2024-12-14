@@ -38,6 +38,11 @@ public abstract class Voicechat {
         CommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
         PluginManager.instance().init();
+        initPlugins();
+    }
+
+    protected void initPlugins() {
+        PluginManager.instance().init();
     }
 
     public void initializeConfigs() {
