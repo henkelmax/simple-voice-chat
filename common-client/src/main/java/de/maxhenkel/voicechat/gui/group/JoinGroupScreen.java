@@ -2,10 +2,11 @@ package de.maxhenkel.voicechat.gui.group;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.CreateGroupScreen;
+import de.maxhenkel.voicechat.gui.EnterPasswordScreen;
 import de.maxhenkel.voicechat.gui.widgets.ButtonBase;
 import de.maxhenkel.voicechat.gui.widgets.IngameListScreenBase;
+import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.net.JoinGroupPacket;
-import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
@@ -95,7 +96,7 @@ public class JoinGroupScreen extends IngameListScreenBase {
                 if (group.hasPassword()) {
                     mc.displayGuiScreen(new EnterPasswordScreen(group));
                 } else {
-                    NetManager.sendToServer(new JoinGroupPacket(group.getId(), null));
+                    ClientServerNetManager.sendToServer(new JoinGroupPacket(group.getId(), null));
                 }
                 return;
             }
