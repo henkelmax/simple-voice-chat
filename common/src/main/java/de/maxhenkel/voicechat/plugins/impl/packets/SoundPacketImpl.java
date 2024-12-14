@@ -87,7 +87,7 @@ public class SoundPacketImpl implements SoundPacket {
         } else if (this instanceof LocationalSoundPacket p) {
             return p.getDistance();
         }
-        return Utils.getDefaultDistance();
+        return Utils.getDefaultDistanceServer();
     }
 
     @Override

@@ -56,13 +56,13 @@ public class EntitySoundPacketImpl extends SoundPacketImpl implements EntitySoun
             } else if (soundPacket instanceof LocationalSoundPacketImpl p) {
                 distance = p.getDistance();
             } else {
-                distance = Utils.getDefaultDistance();
+                distance = Utils.getDefaultDistanceServer();
             }
         }
 
         public BuilderImpl(UUID channelId, UUID sender, byte[] opusEncodedData, long sequenceNumber, @Nullable String category) {
             super(channelId, sender, opusEncodedData, sequenceNumber, category);
-            this.distance = Utils.getDefaultDistance();
+            this.distance = Utils.getDefaultDistanceServer();
         }
 
         @Override
