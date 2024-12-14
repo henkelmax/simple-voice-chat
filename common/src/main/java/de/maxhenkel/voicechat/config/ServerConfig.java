@@ -5,6 +5,7 @@ import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.opus4j.OpusEncoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.voice.common.Utils;
 
 public class ServerConfig {
 
@@ -25,6 +26,7 @@ public class ServerConfig {
     public ConfigEntry<Integer> loginTimeout;
     public ConfigEntry<Double> broadcastRange;
     public ConfigEntry<Boolean> allowPings;
+    public ConfigEntry<Boolean> useNatives;
 
     public ServerConfig(ConfigBuilder builder) {
 
@@ -63,7 +65,7 @@ public class ServerConfig {
                         "Valid values are 'VOIP', 'AUDIO', and 'RESTRICTED_LOWDELAY'"
                 );
         voiceChatMtuSize = builder
-                .integerEntry("mtu_size", 1024, 256, 10000,
+                .integerEntry("mtu_size", Utils.DEFAULT_MAX_PAYLOAD_SIZE, 256, 10000,
                         "The maximum size that audio packets are allowed to have (in bytes)",
                         "Set this to a lower value if audio packets don't arrive"
                 );
@@ -111,6 +113,11 @@ public class ServerConfig {
         allowPings = builder
                 .booleanEntry("allow_pings", true,
                         "If the voice chat server should reply to external pings"
+                );
+        useNatives = builder
+                .booleanEntry("use_natives", true,
+                        "If the mod should load native libraries on dedicated servers",
+                        "This is mostly relevant for voice chat addons"
                 );
     }
 

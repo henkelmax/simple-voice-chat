@@ -16,6 +16,7 @@ import de.maxhenkel.voicechat.voice.server.Server;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -157,19 +158,6 @@ public class PluginManager {
         return socket;
     }
 
-    public ClientVoicechatSocket getClientSocketImplementation() {
-        ClientVoicechatInitializationEventImpl event = new ClientVoicechatInitializationEventImpl();
-        dispatchEvent(ClientVoicechatInitializationEvent.class, event);
-        ClientVoicechatSocket socket = event.getSocketImplementation();
-        if (socket == null) {
-            socket = new ClientVoicechatSocketImpl();
-            Voicechat.LOGGER.debug("Using default voicechat client socket implementation");
-        } else {
-            Voicechat.LOGGER.info("Using custom voicechat client socket implementation: {}", socket.getClass().getName());
-        }
-        return socket;
-    }
-
     public String getVoiceHost(String voiceHost) {
         VoiceHostEventImpl event = new VoiceHostEventImpl(voiceHost);
         dispatchEvent(VoiceHostEvent.class, event);
@@ -285,71 +273,6 @@ public class PluginManager {
             ));
         }
         return false;
-    }
-
-    @Nullable
-    public short[] onMergeClientSound(@Nullable short[] rawAudio) {
-        MergeClientSoundEventImpl event = new MergeClientSoundEventImpl();
-        dispatchEvent(MergeClientSoundEvent.class, event);
-        List<short[]> audioToMerge = event.getAudioToMerge();
-        if (audioToMerge == null) {
-            return rawAudio;
-        }
-        if (rawAudio != null) {
-            audioToMerge.add(0, rawAudio);
-        }
-        return Utils.combineAudio(audioToMerge);
-    }
-
-    @Nullable
-    public short[] onClientSound(short[] rawAudio, boolean whispering) {
-        ClientSoundEventImpl clientSoundEvent = new ClientSoundEventImpl(rawAudio, whispering);
-        boolean cancelled = dispatchEvent(ClientSoundEvent.class, clientSoundEvent);
-        if (cancelled) {
-            return null;
-        }
-        return clientSoundEvent.getRawAudio();
-    }
-
-    public short[] onReceiveEntityClientSound(UUID id, short[] rawAudio, boolean whispering, float distance) {
-        ClientReceiveSoundEventImpl.EntitySoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.EntitySoundImpl(id, rawAudio, whispering, distance);
-        dispatchEvent(ClientReceiveSoundEvent.EntitySound.class, clientSoundEvent);
-        return clientSoundEvent.getRawAudio();
-    }
-
-    public short[] onReceiveLocationalClientSound(UUID id, short[] rawAudio, Vector3d pos, float distance) {
-        ClientReceiveSoundEventImpl.LocationalSoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.LocationalSoundImpl(id, rawAudio, new PositionImpl(pos), distance);
-        dispatchEvent(ClientReceiveSoundEvent.LocationalSound.class, clientSoundEvent);
-        return clientSoundEvent.getRawAudio();
-    }
-
-    public short[] onReceiveStaticClientSound(UUID id, short[] rawAudio) {
-        ClientReceiveSoundEventImpl.StaticSoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.StaticSoundImpl(id, rawAudio);
-        dispatchEvent(ClientReceiveSoundEvent.StaticSound.class, clientSoundEvent);
-        return clientSoundEvent.getRawAudio();
-    }
-
-    public void onALSound(int source, @Nullable UUID channelId, @Nullable Vector3d pos, @Nullable String category, Class<? extends OpenALSoundEvent> eventClass) {
-        dispatchEvent(eventClass, new OpenALSoundEventImpl(
-                channelId,
-                pos == null ? null : new PositionImpl(pos),
-                category,
-                source
-        ));
-    }
-
-    public void onCreateALContext(long context, long device) {
-        dispatchEvent(CreateOpenALContextEvent.class, new CreateOpenALContextEventImpl(
-                context,
-                device
-        ));
-    }
-
-    public void onDestroyALContext(long context, long device) {
-        dispatchEvent(DestroyOpenALContextEvent.class, new DestroyOpenALContextEventImpl(
-                context,
-                device
-        ));
     }
 
     private static PluginManager instance;

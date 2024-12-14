@@ -90,7 +90,7 @@ public class SoundPacketImpl implements SoundPacket {
             LocationalSoundPacket p = (LocationalSoundPacket) this;
             return p.getDistance();
         }
-        return Utils.getDefaultDistance();
+        return Utils.getDefaultDistanceServer();
     }
 
     @Override

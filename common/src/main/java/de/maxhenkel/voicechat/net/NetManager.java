@@ -45,15 +45,6 @@ public abstract class NetManager {
 
     public abstract <T extends Packet<T>> Channel<T> registerReceiver(Class<T> packetType, boolean toClient, boolean toServer);
 
-    public static void sendToServer(Packet<?> packet) {
-        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-        packet.toBytes(buffer);
-        ClientPlayNetHandler connection = Minecraft.getInstance().getConnection();
-        if (connection != null && connection.getLevel() != null) {
-            connection.send(new CCustomPayloadPacket(packet.getIdentifier(), buffer));
-        }
-    }
-
     public static void sendToClient(ServerPlayerEntity player, Packet<?> packet) {
         if (!Voicechat.SERVER.isCompatible(player)) {
             return;
@@ -65,10 +56,6 @@ public abstract class NetManager {
 
     public interface ServerReceiver<T extends Packet<T>> {
         void onPacket(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetHandler handler, T packet);
-    }
-
-    public interface ClientReceiver<T extends Packet<T>> {
-        void onPacket(Minecraft client, ClientPlayNetHandler handler, T packet);
     }
 
 }

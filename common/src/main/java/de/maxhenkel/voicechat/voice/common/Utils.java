@@ -1,11 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.voice.client.ClientManager;
-import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
-import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
-import de.maxhenkel.voicechat.voice.client.SoundManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector2f;
 
@@ -14,6 +9,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public class Utils {
+
+    public static final int SAMPLE_RATE = 48000;
+    public static final int FRAME_SIZE = (SAMPLE_RATE / 1000) * 20;
+    public static final int DEFAULT_MAX_PAYLOAD_SIZE = 1024;
 
     public static void sleep(int ms) {
         try {
@@ -254,7 +253,7 @@ public class Utils {
     }
 
     public static short[] combineAudio(Iterable<short[]> audioParts) {
-        short[] result = new short[SoundManager.FRAME_SIZE];
+        short[] result = new short[FRAME_SIZE];
         int sample;
         for (int i = 0; i < result.length; i++) {
             sample = 0;
@@ -316,25 +315,8 @@ public class Utils {
         return createSafe(supplier, null);
     }
 
-    /**
-     * Gets the default voice chat distance
-     *
-     * @return 48 if the voice chat is not connected
-     */
-    public static float getDefaultDistance() {
-        if (VoicechatClient.CLIENT_CONFIG == null) {
-            return Voicechat.SERVER_CONFIG.voiceChatDistance.get().floatValue();
-        }
-
-        ClientVoicechat client = ClientManager.getClient();
-        if (client == null) {
-            return 48F;
-        }
-        ClientVoicechatConnection connection = client.getConnection();
-        if (connection == null) {
-            return 48F;
-        }
-        return (float) connection.getData().getVoiceChatDistance();
+    public static float getDefaultDistanceServer() {
+        return Voicechat.SERVER_CONFIG.voiceChatDistance.get().floatValue();
     }
 
     @FunctionalInterface

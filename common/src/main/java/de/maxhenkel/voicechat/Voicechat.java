@@ -38,19 +38,27 @@ public abstract class Voicechat {
         CommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
         PluginManager.instance().init();
+        registerCommands();
+    }
+
+    protected void registerCommands() {
         CommonCompatibilityManager.INSTANCE.onRegisterServerCommands(VoicechatCommands::register);
     }
 
     public void initializeConfigs() {
-        SERVER_CONFIG = ConfigBuilder.builder(ServerConfig::new).path(getModConfigFolder().resolve("voicechat-server.properties")).build();
-        TRANSLATIONS = ConfigBuilder.builder(Translations::new).path(getModConfigFolder().resolve("translations.properties")).build();
+        SERVER_CONFIG = ConfigBuilder.builder(ServerConfig::new).path(getVoicechatConfigFolderInternal().resolve("voicechat-server.properties")).build();
+        TRANSLATIONS = ConfigBuilder.builder(Translations::new).path(getVoicechatConfigFolderInternal().resolve("translations.properties")).build();
     }
 
     public static boolean debugMode() {
         return CommonCompatibilityManager.INSTANCE.isDevEnvironment() || System.getProperty("voicechat.debug") != null;
     }
 
-    public static Path getModConfigFolder() {
+    protected Path getVoicechatConfigFolderInternal() {
+        return getVoicechatConfigFolder();
+    }
+
+    public static Path getVoicechatConfigFolder() {
         return getConfigFolder().resolve(MODID);
     }
 

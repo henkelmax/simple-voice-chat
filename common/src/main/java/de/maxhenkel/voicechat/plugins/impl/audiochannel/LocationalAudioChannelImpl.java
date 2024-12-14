@@ -25,7 +25,7 @@ public class LocationalAudioChannelImpl extends AudioChannelImpl implements Loca
         super(channelId, server);
         this.level = level;
         this.position = position;
-        this.distance = Utils.getDefaultDistance();
+        this.distance = Utils.getDefaultDistanceServer();
     }
 
     @Override
