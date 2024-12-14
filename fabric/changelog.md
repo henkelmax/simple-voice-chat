@@ -1,1 +1,1 @@
-- Updated to 1.21.4-rc3
+- Added useNatives config option for servers
