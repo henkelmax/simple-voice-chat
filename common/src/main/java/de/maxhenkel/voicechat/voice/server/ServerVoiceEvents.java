@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
@@ -69,7 +69,7 @@ public class ServerVoiceEvents {
             server = null;
         }
 
-        if (!mcServer.isDedicatedServer() && VoicechatClient.CLIENT_CONFIG != null && !VoicechatClient.CLIENT_CONFIG.runLocalServer.get()) {
+        if (!CrossSideManager.get().shouldRunVoiceChatServer(mcServer)) {
             Voicechat.LOGGER.info("Disabling voice chat in singleplayer");
             return;
         }

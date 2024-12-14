@@ -1,6 +1,8 @@
 package de.maxhenkel.voicechat.service;
 
 import de.maxhenkel.voicechat.Voicechat;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
@@ -9,10 +11,13 @@ import java.util.ServiceLoader;
 
 public class Service {
 
+    // We need a separate logger, since the voice chat logger itself needs the serviceloader
+    private static final Logger LOGGER = LogManager.getLogger(Voicechat.MODID);
+
     public static <T> T get(Class<T> serviceClass) {
         Iterator<T> iterator = ServiceLoader.load(serviceClass).iterator();
         if (!iterator.hasNext()) {
-            Voicechat.LOGGER.warn("Failed to load service {} with ServiceLoader", serviceClass.getSimpleName());
+            LOGGER.warn("Failed to load service {} with ServiceLoader", serviceClass.getSimpleName());
             try {
                 return loadFallback(serviceClass);
             } catch (Exception e) {

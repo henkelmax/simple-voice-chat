@@ -49,13 +49,13 @@ public class LocationalSoundPacketImpl extends SoundPacketImpl implements Locati
                 EntitySoundPacketImpl p = (EntitySoundPacketImpl) soundPacket;
                 distance = p.getDistance();
             } else {
-                distance = Utils.getDefaultDistance();
+                distance = Utils.getDefaultDistanceServer();
             }
         }
 
         public BuilderImpl(UUID channelId, UUID sender, byte[] opusEncodedData, long sequenceNumber, @Nullable String category) {
             super(channelId, sender, opusEncodedData, sequenceNumber, category);
-            distance = Utils.getDefaultDistance();
+            distance = Utils.getDefaultDistanceServer();
         }
 
         @Override

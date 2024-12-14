@@ -97,7 +97,7 @@ public abstract class VoicechatApiImpl implements VoicechatApi {
 
     @Override
     public double getVoiceChatDistance() {
-        return Utils.getDefaultDistance();
+        return Utils.getDefaultDistanceServer();
     }
 
 }
