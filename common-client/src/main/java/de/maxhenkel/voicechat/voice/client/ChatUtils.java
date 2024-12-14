@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.*;
 
 import javax.annotation.Nullable;
