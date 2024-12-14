@@ -1,0 +1,51 @@
+buildscript {
+    dependencies {
+        classpath "info.u-team.curse_gradle_uploader:curse_gradle_uploader:${curse_gradle_uploader_version}"
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+apply plugin: 'io.papermc.paperweight.userdev'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.modrinth.minotaur'
+apply plugin: 'info.u_team.curse_gradle_uploader'
+apply plugin: 'io.papermc.hangar-publish-plugin'
+apply plugin: 'xyz.jpenilla.run-paper'
+
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
+
+dependencies {
+    implementation "org.concentus:Concentus:${concentus_version}"
+    shadow "org.concentus:Concentus:${concentus_version}"
+
+    implementation "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
+    shadow "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
+
+    implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
+    shadow "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
+}
+
+processResources {
+    filesMatching('paper-plugin.yml') {
+        expand 'mod_version': mod_version,
+                'minecraft_version': minecraft_version
+    }
+}
+
+tasks.register('generateJava', Copy) {
+    from project(':common').file('src/template/java')
+    into "${layout.buildDirectory.asFile.get()}/generated/java"
+    expand 'compatibility_version': voicechat_compatibility_version
+}
+sourceSets.main.java {
+    srcDir "${layout.buildDirectory.asFile.get()}/generated/java"
+}
+compileJava.dependsOn generateJava
+
+shadowJar {
+    relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'
+    exclude 'natives/*-x86/*'
+}

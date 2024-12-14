@@ -49,6 +49,10 @@ public class Service {
         if (implClass != null) {
             return implClass;
         }
+        implClass = loadClassWithPrefix(serviceClass, "Paper");
+        if (implClass != null) {
+            return implClass;
+        }
         throw new ClassNotFoundException("Implementation of %s not found in package %s".formatted(serviceClass.getSimpleName(), serviceClass.getPackageName()));
     }
 

@@ -1,0 +1,24 @@
+name: voicechat
+main: de.maxhenkel.voicechat.VoicechatPaperPlugin
+bootstrapper: de.maxhenkel.voicechat.VoicechatBootstrap
+version: ${mod_version}
+description: A working voice chat in Minecraft!
+authors:
+  - Max Henkel
+website: https://modrepo.de/minecraft/voicechat/overview
+api-version: ${minecraft_version}
+prefix: voicechat
+load: STARTUP
+permissions:
+  voicechat.listen:
+    description: Hear voice chat
+    default: true
+  voicechat.speak:
+    description: Transmit voice chat
+    default: true
+  voicechat.groups:
+    description: Use voice chat groups
+    default: true
+  voicechat.admin:
+    description: Use admin commands
+    default: op
