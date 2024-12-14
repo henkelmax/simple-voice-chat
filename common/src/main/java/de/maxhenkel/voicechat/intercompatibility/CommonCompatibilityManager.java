@@ -2,12 +2,17 @@ package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.brigadier.CommandDispatcher;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
+import de.maxhenkel.voicechat.api.VoicechatServerApi;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
+import de.maxhenkel.voicechat.plugins.impl.VoicechatServerApiImpl;
 import de.maxhenkel.voicechat.service.Service;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -57,5 +62,21 @@ public abstract class CommonCompatibilityManager {
     public abstract List<VoicechatPlugin> loadPlugins();
 
     public abstract PermissionManager createPermissionManager();
+
+    public VoicechatServerApi getServerApi() {
+        return VoicechatServerApiImpl.INSTANCE;
+    }
+
+    public Object createRawApiEntity(Entity entity) {
+        return entity;
+    }
+
+    public Object createRawApiPlayer(Player player) {
+        return player;
+    }
+
+    public Object createRawApiLevel(ServerLevel level) {
+        return level;
+    }
 
 }
