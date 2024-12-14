@@ -5,7 +5,6 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
 import de.maxhenkel.voicechat.voice.client.DataLines;
 import de.maxhenkel.voicechat.voice.client.PositionalAudioUtils;
-import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.util.math.Vec3d;
 
@@ -49,7 +48,7 @@ public abstract class JavaSpeakerBase implements Speaker {
 
     private void playInternal(short[] data, float volume, @Nullable Vec3d position, @Nullable String category, float maxDistance) {
         if (getAvailableSamples() <= 0) {
-            byte[] emptyData = new byte[Math.min(SoundManager.FRAME_SIZE * 4 * VoicechatClient.CLIENT_CONFIG.outputBufferSize.get(), speaker.getBufferSize() - SoundManager.FRAME_SIZE * 4)];
+            byte[] emptyData = new byte[Math.min(Utils.FRAME_SIZE * 4 * VoicechatClient.CLIENT_CONFIG.outputBufferSize.get(), speaker.getBufferSize() - Utils.FRAME_SIZE * 4)];
             speaker.write(emptyData, 0, emptyData.length);
         }
 

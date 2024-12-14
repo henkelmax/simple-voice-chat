@@ -1,5 +1,5 @@
 apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'fabric-loom'
+apply plugin: 'net.minecraftforge.gradle'
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
@@ -8,10 +8,6 @@ repositories {
 }
 
 dependencies {
-    modApi("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}"){
-        transitive = false
-    }
-
     implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
     implementation "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
     implementation "org.concentus:Concentus:${concentus_version}"

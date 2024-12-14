@@ -19,7 +19,7 @@ public class ServerLevelImpl implements ServerLevel {
         return CommonCompatibilityManager.INSTANCE.createRawApiLevel(serverLevel);
     }
 
-    public ServerWorld getRawServerLevel() {
+    public WorldServer getRawServerLevel() {
         return serverLevel;
     }
 

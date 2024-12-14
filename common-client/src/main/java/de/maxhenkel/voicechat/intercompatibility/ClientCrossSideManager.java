@@ -8,7 +8,6 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.dedicated.DedicatedServer;
 
 public class ClientCrossSideManager extends CrossSideManager {
 
@@ -43,7 +42,7 @@ public class ClientCrossSideManager extends CrossSideManager {
 
     @Override
     public boolean shouldRunVoiceChatServer(MinecraftServer server) {
-        return server instanceof DedicatedServer || VoicechatClient.CLIENT_CONFIG == null || VoicechatClient.CLIENT_CONFIG.runLocalServer.get();
+        return server.isDedicatedServer() || VoicechatClient.CLIENT_CONFIG == null || VoicechatClient.CLIENT_CONFIG.runLocalServer.get();
     }
 
 }

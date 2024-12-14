@@ -7,7 +7,7 @@ import de.maxhenkel.voicechat.plugins.impl.ClientVoicechatSocketImpl;
 import de.maxhenkel.voicechat.plugins.impl.PositionImpl;
 import de.maxhenkel.voicechat.plugins.impl.events.*;
 import de.maxhenkel.voicechat.voice.common.Utils;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -64,7 +64,7 @@ public class ClientPluginManager {
         return clientSoundEvent.getRawAudio();
     }
 
-    public short[] onReceiveLocationalClientSound(UUID id, short[] rawAudio, Vector3d pos, float distance) {
+    public short[] onReceiveLocationalClientSound(UUID id, short[] rawAudio, Vec3d pos, float distance) {
         ClientReceiveSoundEventImpl.LocationalSoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.LocationalSoundImpl(id, rawAudio, new PositionImpl(pos), distance);
         pluginManager.dispatchEvent(ClientReceiveSoundEvent.LocationalSound.class, clientSoundEvent);
         return clientSoundEvent.getRawAudio();
@@ -76,7 +76,7 @@ public class ClientPluginManager {
         return clientSoundEvent.getRawAudio();
     }
 
-    public void onALSound(int source, @Nullable UUID channelId, @Nullable Vector3d pos, @Nullable String category, Class<? extends OpenALSoundEvent> eventClass) {
+    public void onALSound(int source, @Nullable UUID channelId, @Nullable Vec3d pos, @Nullable String category, Class<? extends OpenALSoundEvent> eventClass) {
         pluginManager.dispatchEvent(eventClass, new OpenALSoundEventImpl(
                 channelId,
                 pos == null ? null : new PositionImpl(pos),

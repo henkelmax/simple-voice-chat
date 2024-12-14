@@ -2,23 +2,23 @@ package de.maxhenkel.voicechat.net;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.play.ClientPlayNetHandler;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.CCustomPayloadPacket;
+import net.minecraft.network.play.client.CPacketCustomPayload;
 
 public abstract class ClientServerNetManager extends NetManager {
 
     public static void sendToServer(Packet<?> packet) {
-        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-        packet.toBytes(buffer);
-        ClientPlayNetHandler connection = Minecraft.getInstance().getConnection();
-        if (connection != null && connection.getLevel() != null) {
-            connection.send(new CCustomPayloadPacket(packet.getIdentifier(), buffer));
+        NetHandlerPlayClient connection = Minecraft.getMinecraft().getConnection();
+        if (connection != null && connection.getNetworkManager().isChannelOpen()) {
+            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
+            packet.toBytes(buffer);
+            connection.sendPacket(new CPacketCustomPayload(packet.getIdentifier().toString(), buffer));
         }
     }
 
     public interface ClientReceiver<T extends Packet<T>> {
-        void onPacket(Minecraft client, ClientPlayNetHandler handler, T packet);
+        void onPacket(Minecraft client, NetHandlerPlayClient handler, T packet);
     }
 
     public static <T extends Packet<T>> void setClientListener(Channel<T> channel, ClientServerNetManager.ClientReceiver<T> packetReceiver) {
