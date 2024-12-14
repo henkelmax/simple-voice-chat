@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
 import de.maxhenkel.voicechat.plugins.impl.PositionImpl;
 import de.maxhenkel.voicechat.voice.common.*;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class MicrophonePacketImpl implements MicrophonePacket {
@@ -28,6 +29,11 @@ public class MicrophonePacketImpl implements MicrophonePacket {
     @Override
     public byte[] getOpusEncodedData() {
         return packet.getData();
+    }
+
+    @Override
+    public void setOpusEncodedData(byte[] data) {
+        packet.setData(Objects.requireNonNull(data));
     }
 
     @Override
