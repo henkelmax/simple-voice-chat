@@ -23,7 +23,7 @@ public class QuiltNetManager extends NetManager {
 
     @Override
     public <T extends Packet<T>> Channel<T> registerReceiver(Class<T> packetType, boolean toClient, boolean toServer) {
-        Channel<T> c = new Channel<>();
+        ClientServerChannel<T> c = new ClientServerChannel<>();
         try {
             T dummyPacket = packetType.getDeclaredConstructor().newInstance();
             ResourceLocation identifier = dummyPacket.getIdentifier();

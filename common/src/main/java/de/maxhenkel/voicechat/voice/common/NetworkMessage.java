@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.voice.common;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.RawUdpPacket;
 import de.maxhenkel.voicechat.debug.PingHandler;
-import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
@@ -14,7 +13,6 @@ import javax.annotation.Nullable;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.SocketAddress;
 import java.security.InvalidAlgorithmParameterException;
@@ -80,17 +78,6 @@ public class NetworkMessage {
     }
 
     @Nullable
-    public static NetworkMessage readPacketClient(RawUdpPacket packet, ClientVoicechatConnection client) throws IllegalAccessException, InstantiationException, IOException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvocationTargetException, NoSuchMethodException {
-        byte[] data = packet.getData();
-        FriendlyByteBuf b = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
-        if (b.readByte() != MAGIC_BYTE) {
-            Voicechat.LOGGER.debug("Received invalid packet from {}", client.getAddress());
-            return null;
-        }
-        return readFromBytes(packet.getSocketAddress(), client.getData().getSecret(), b.readByteArray(), System.currentTimeMillis());
-    }
-
-    @Nullable
     public static NetworkMessage readPacketServer(RawUdpPacket packet, Server server) throws IllegalAccessException, InstantiationException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvocationTargetException, NoSuchMethodException {
         byte[] data = packet.getData();
         FriendlyByteBuf b = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
@@ -111,7 +98,7 @@ public class NetworkMessage {
     }
 
     @Nullable
-    private static NetworkMessage readFromBytes(SocketAddress socketAddress, UUID secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, NoSuchMethodException, InvocationTargetException {
+    public static NetworkMessage readFromBytes(SocketAddress socketAddress, UUID secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, NoSuchMethodException, InvocationTargetException {
         byte[] decrypt;
         try {
             decrypt = AES.decrypt(secret, encryptedPayload);
@@ -143,18 +130,6 @@ public class NetworkMessage {
             }
         }
         return -1;
-    }
-
-    public byte[] writeClient(ClientVoicechatConnection client) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        byte[] payload = write(client.getData().getSecret());
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer(1 + 16 + payload.length));
-        buffer.writeByte(MAGIC_BYTE);
-        buffer.writeUUID(client.getData().getPlayerUUID());
-        buffer.writeByteArray(payload);
-
-        byte[] bytes = new byte[buffer.readableBytes()];
-        buffer.readBytes(bytes);
-        return bytes;
     }
 
     public byte[] writeServer(Server server, ClientConnection connection) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {

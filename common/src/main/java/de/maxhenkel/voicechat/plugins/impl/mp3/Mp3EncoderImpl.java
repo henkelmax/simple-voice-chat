@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.plugins.impl.mp3;
 import de.maxhenkel.lame4j.UnknownPlatformException;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.mp3.Mp3Encoder;
-import de.maxhenkel.voicechat.plugins.impl.opus.OpusManager;
+import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
 import javax.annotation.Nullable;
@@ -31,7 +31,7 @@ public class Mp3EncoderImpl implements Mp3Encoder, AutoCloseable {
 
     @Nullable
     public static Mp3Encoder createEncoder(AudioFormat audioFormat, int bitrate, int quality, OutputStream outputStream) {
-        if (!OpusManager.useNatives()) {
+        if (!CrossSideManager.get().useNatives()) {
             return null;
         }
         return Utils.createSafe(() -> new Mp3EncoderImpl(audioFormat, bitrate, quality, outputStream), e -> {
