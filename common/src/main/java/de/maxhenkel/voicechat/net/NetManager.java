@@ -2,11 +2,8 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
-import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -44,8 +41,6 @@ public abstract class NetManager {
     }
 
     public abstract <T extends Packet<T>> Channel<T> registerReceiver(Class<T> packetType, boolean toClient, boolean toServer);
-
-    protected abstract void sendToServerInternal(Packet<?> packet);
 
     public static void sendToClient(ServerPlayer player, Packet<?> packet) {
         if (!Voicechat.SERVER.isCompatible(player)) {

@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 
 import javax.annotation.Nullable;
 
@@ -14,10 +14,10 @@ public class ClientServerChannel<T extends Packet<T>> extends Channel<T> {
         clientListener = packetReceiver;
     }
 
-    public void onClientPacket(LocalPlayer player, T packet) {
-        Minecraft.getInstance().execute(() -> {
+    public void onClientPacket(Minecraft client, ClientPacketListener handler, T packet) {
+        client.execute(() -> {
             if (clientListener != null) {
-                clientListener.onPacket(player, packet);
+                clientListener.onPacket(client, handler, packet);
             }
         });
     }
