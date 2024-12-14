@@ -14,3 +14,8 @@ dependencies {
     implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
     implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
 }
+
+// To make common-client compilation not fail
+tasks.withType(JavaCompile).configureEach {
+    source(project(':common').sourceSets.template.allSource)
+}
