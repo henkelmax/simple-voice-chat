@@ -12,6 +12,7 @@ import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
 import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
 import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.*;
 import de.maxhenkel.voicechat.plugins.impl.audiolistener.PlayerAudioListenerImpl;
@@ -36,14 +37,15 @@ import java.util.stream.Collectors;
 
 public class VoicechatServerApiImpl extends VoicechatApiImpl implements VoicechatServerApi {
 
-    private static final VoicechatServerApiImpl INSTANCE = new VoicechatServerApiImpl();
+    @Deprecated
+    public static final VoicechatServerApiImpl INSTANCE = new VoicechatServerApiImpl();
 
-    private VoicechatServerApiImpl() {
+    protected VoicechatServerApiImpl() {
 
     }
 
-    public static VoicechatServerApiImpl instance() {
-        return INSTANCE;
+    public static VoicechatServerApi instance() {
+        return CommonCompatibilityManager.INSTANCE.getServerApi();
     }
 
     @Override
@@ -166,10 +168,12 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
             return;
         }
 
-        net.minecraft.server.level.ServerPlayer player = (net.minecraft.server.level.ServerPlayer) receiver.getPlayer().getPlayer();
+        if (!(receiver.getPlayer() instanceof ServerPlayerImpl serverPlayerImpl)) {
+            throw new IllegalArgumentException("ServerPlayer is not an instance of ServerPlayerImpl");
+        }
 
         @Nullable ClientConnection c = server.getConnections().get(receiver.getPlayer().getUuid());
-        server.sendSoundPacket(null, null, player, state, c, soundPacket, SoundPacketEvent.SOURCE_PLUGIN);
+        server.sendSoundPacket(null, null, serverPlayerImpl.getRealServerPlayer(), state, c, soundPacket, SoundPacketEvent.SOURCE_PLUGIN);
     }
 
     @Nullable
@@ -240,12 +244,14 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
     }
 
     @Override
-    public Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Position pos, double range, Predicate<ServerPlayer> filter) {
-        if (pos instanceof PositionImpl p) {
-            return ServerWorldUtils.getPlayersInRange((net.minecraft.server.level.ServerLevel) level.getServerLevel(), p.getPosition(), range, player -> filter.test(new ServerPlayerImpl(player))).stream().map(ServerPlayerImpl::new).collect(Collectors.toList());
-        } else {
+    public Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Position pos, double range, @Nullable Predicate<ServerPlayer> filter) {
+        if (!(pos instanceof PositionImpl p)) {
             throw new IllegalArgumentException("Position is not an instance of PositionImpl");
         }
+        if (!(level instanceof ServerLevelImpl serverLevel)) {
+            throw new IllegalArgumentException("ServerLevel is not an instance of ServerLevelImpl");
+        }
+        return ServerWorldUtils.getPlayersInRange(serverLevel.getRawServerLevel(), p.getPosition(), range, filter == null ? null : player -> filter.test(new ServerPlayerImpl(player))).stream().map(ServerPlayerImpl::new).collect(Collectors.toList());
     }
 
     @Override
