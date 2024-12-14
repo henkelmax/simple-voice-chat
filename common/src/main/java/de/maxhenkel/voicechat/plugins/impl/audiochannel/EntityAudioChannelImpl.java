@@ -76,7 +76,7 @@ public class EntityAudioChannelImpl extends AudioChannelImpl implements EntityAu
         if (!(entity instanceof EntityImpl entityimpl)) {
             throw new IllegalArgumentException("entity is not an instance of EntityImpl");
         }
-        server.broadcast(ServerWorldUtils.getPlayersInRange((ServerLevel) entityimpl.level, entityimpl.getEyePosition(), server.getBroadcastRange(distance), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
+        server.broadcast(ServerWorldUtils.getPlayersInRange((ServerLevel) entityimpl.getRealEntity().level, entityimpl.getRealEntity().getEyePosition(), server.getBroadcastRange(distance), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
     }
 
 }
