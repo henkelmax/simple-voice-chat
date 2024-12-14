@@ -17,6 +17,11 @@ apply plugin: 'xyz.jpenilla.run-paper'
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
+repositories {
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+    maven { url = 'https://repo.viaversion.com/' }
+}
+
 dependencies {
     implementation "org.concentus:Concentus:${concentus_version}"
     shadow "org.concentus:Concentus:${concentus_version}"
@@ -26,6 +31,20 @@ dependencies {
 
     implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
     shadow "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
+
+    compileOnly "me.clip:placeholderapi:${placeholder_api_version}"
+
+    compileOnly "com.viaversion:viaversion-bukkit:${viaversion_version}"
+    compileOnly "com.viaversion:viaversion-common:${viaversion_version}"
+}
+
+tasks {
+    runServer {
+        downloadPlugins {
+            modrinth('viaversion', viaversion_version)
+            hangar('PlaceholderAPI', placeholder_api_version)
+        }
+    }
 }
 
 processResources {

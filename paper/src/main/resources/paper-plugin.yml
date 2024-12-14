@@ -22,3 +22,13 @@ permissions:
   voicechat.admin:
     description: Use admin commands
     default: op
+dependencies:
+  - name: ViaVersion
+    required: false
+  - name: PlaceholderAPI
+    required: false
+load-before:
+  - name: ViaVersion
+    boostrap: false
+  - name: PlaceholderAPI
+    boostrap: false

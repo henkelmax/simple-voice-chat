@@ -46,7 +46,11 @@ public abstract class Voicechat {
 
     public void initializeConfigs() {
         SERVER_CONFIG = ConfigBuilder.builder(ServerConfig::new).path(getVoicechatConfigFolderInternal().resolve("voicechat-server.properties")).build();
-        TRANSLATIONS = ConfigBuilder.builder(Translations::new).path(getVoicechatConfigFolderInternal().resolve("translations.properties")).build();
+        TRANSLATIONS = ConfigBuilder.builder(this::createTranslations).path(getVoicechatConfigFolderInternal().resolve("translations.properties")).build();
+    }
+
+    protected Translations createTranslations(ConfigBuilder builder) {
+        return new Translations(builder);
     }
 
     public static boolean debugMode() {
