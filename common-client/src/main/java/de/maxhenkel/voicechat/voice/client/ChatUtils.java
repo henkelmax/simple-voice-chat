@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.*;
