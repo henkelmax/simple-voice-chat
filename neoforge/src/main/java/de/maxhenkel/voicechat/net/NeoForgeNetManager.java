@@ -39,7 +39,7 @@ public class NeoForgeNetManager extends NetManager {
         }
     }
 
-    private <T extends Packet<T>> void register(PayloadRegistrar registrar, Channel<T> channel, Class<T> packetType, boolean toClient, boolean toServer) {
+    private <T extends Packet<T>> void register(PayloadRegistrar registrar, ClientServerChannel<T> channel, Class<T> packetType, boolean toClient, boolean toServer) {
         try {
             T dummyPacket = packetType.getDeclaredConstructor().newInstance();
 
@@ -103,7 +103,7 @@ public class NeoForgeNetManager extends NetManager {
 
     @Override
     public <T extends Packet<T>> Channel<T> registerReceiver(Class<T> packetType, boolean toClient, boolean toServer) {
-        Channel<T> c = new Channel<>();
+        ClientServerChannel<T> c = new ClientServerChannel<>();
         packets.add(new PacketRegister<>(packetType, c, toClient, toServer));
         return c;
     }
@@ -128,11 +128,11 @@ public class NeoForgeNetManager extends NetManager {
     }
 
     @OnlyIn(Dist.CLIENT)
-    private <T extends Packet<T>> void onClientPacket(LocalPlayer player, Channel<T> channel, T packet) {
+    private <T extends Packet<T>> void onClientPacket(LocalPlayer player, ClientServerChannel<T> channel, T packet) {
         channel.onClientPacket(player, packet);
     }
 
-    record PacketRegister<T extends Packet<T>>(Class<T> packetClass, Channel<T> channel, boolean toClient,
+    record PacketRegister<T extends Packet<T>>(Class<T> packetClass, ClientServerChannel<T> channel, boolean toClient,
                                                boolean toServer) {
 
     }
