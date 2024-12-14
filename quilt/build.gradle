@@ -91,10 +91,12 @@ sourceSets {
     main {
         java {
             srcDir '../common/src/main/java'
+            srcDir '../common-client/src/main/java'
             srcDir '../api/src/main/java'
         }
         resources {
             srcDir '../common/src/main/resources'
+            srcDir '../common-client/src/main/resources'
             srcDir '../api/src/main/resources'
         }
     }
