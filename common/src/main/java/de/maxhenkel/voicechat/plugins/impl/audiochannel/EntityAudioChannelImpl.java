@@ -23,7 +23,7 @@ public class EntityAudioChannelImpl extends AudioChannelImpl implements EntityAu
         super(channelId, server);
         this.entity = entity;
         this.whispering = false;
-        this.distance = Utils.getDefaultDistance();
+        this.distance = Utils.getDefaultDistanceServer();
     }
 
     @Override

@@ -1,18 +1,11 @@
 package de.maxhenkel.voicechat.plugins.impl.opus;
 
-import com.sun.jna.Platform;
 import de.maxhenkel.opus4j.OpusEncoder.Application;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.macos.VersionCheck;
-import de.maxhenkel.voicechat.voice.client.ClientManager;
-import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
-import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
-import de.maxhenkel.voicechat.voice.client.SoundManager;
+import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
 import javax.annotation.Nullable;
@@ -23,19 +16,19 @@ public class OpusManager {
 
     public static boolean opusNativeCheck() {
         Voicechat.LOGGER.info("Loading Opus");
-        if (!nativeOpusCompatible || !useNatives()) {
+        if (!nativeOpusCompatible || !CrossSideManager.get().useNatives()) {
             return false;
         }
 
         Boolean success = Utils.createSafe(() -> {
-            NativeOpusEncoderImpl encoder = new NativeOpusEncoderImpl(SoundManager.SAMPLE_RATE, 1, Application.VOIP);
-            encoder.setMaxPayloadSize(SoundManager.MAX_PAYLOAD_SIZE);
-            byte[] encoded = encoder.encode(new short[SoundManager.FRAME_SIZE]);
+            NativeOpusEncoderImpl encoder = new NativeOpusEncoderImpl(Utils.SAMPLE_RATE, 1, Application.VOIP);
+            encoder.setMaxPayloadSize(Utils.DEFAULT_MAX_PAYLOAD_SIZE);
+            byte[] encoded = encoder.encode(new short[Utils.FRAME_SIZE]);
             encoder.resetState();
             encoder.close();
 
-            NativeOpusDecoderImpl decoder = new NativeOpusDecoderImpl(SoundManager.SAMPLE_RATE, 1);
-            decoder.setFrameSize(SoundManager.FRAME_SIZE);
+            NativeOpusDecoderImpl decoder = new NativeOpusDecoderImpl(Utils.SAMPLE_RATE, 1);
+            decoder.setFrameSize(Utils.FRAME_SIZE);
             decoder.decode(encoded);
             decoder.decodeFec();
             decoder.resetState();
@@ -59,7 +52,7 @@ public class OpusManager {
         }
 
         try {
-            NativeOpusEncoderImpl encoder = new NativeOpusEncoderImpl(SoundManager.SAMPLE_RATE, 1, application);
+            NativeOpusEncoderImpl encoder = new NativeOpusEncoderImpl(Utils.SAMPLE_RATE, 1, application);
             encoder.setMaxPayloadSize(mtuSize);
             return encoder;
         } catch (Throwable e) {
@@ -70,16 +63,7 @@ public class OpusManager {
     }
 
     public static OpusEncoder createEncoder(OpusEncoderMode mode) {
-        int mtuSize = SoundManager.MAX_PAYLOAD_SIZE;
-        if (!CommonCompatibilityManager.INSTANCE.isDedicatedServer()) {
-            ClientVoicechat client = ClientManager.getClient();
-            if (client != null) {
-                ClientVoicechatConnection connection = client.getConnection();
-                if (connection != null) {
-                    mtuSize = connection.getData().getMtuSize();
-                }
-            }
-        }
+        int mtuSize = CrossSideManager.get().getMtuSize();
 
         Application application = Application.VOIP;
         if (mode != null) {
@@ -90,14 +74,14 @@ public class OpusManager {
             };
         }
 
-        if (useNatives()) {
+        if (CrossSideManager.get().useNatives()) {
             OpusEncoder encoder = createNativeEncoder(mtuSize, application);
             if (encoder != null) {
                 return encoder;
             }
         }
 
-        return new JavaOpusEncoderImpl(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE, mtuSize, application);
+        return new JavaOpusEncoderImpl(Utils.SAMPLE_RATE, Utils.FRAME_SIZE, mtuSize, application);
     }
 
     @Nullable
@@ -106,8 +90,8 @@ public class OpusManager {
             return null;
         }
         try {
-            NativeOpusDecoderImpl decoder = new NativeOpusDecoderImpl(SoundManager.SAMPLE_RATE, 1);
-            decoder.setFrameSize(SoundManager.FRAME_SIZE);
+            NativeOpusDecoderImpl decoder = new NativeOpusDecoderImpl(Utils.SAMPLE_RATE, 1);
+            decoder.setFrameSize(Utils.FRAME_SIZE);
             return decoder;
         } catch (Throwable e) {
             nativeOpusCompatible = false;
@@ -117,26 +101,13 @@ public class OpusManager {
     }
 
     public static OpusDecoder createDecoder() {
-        if (useNatives()) {
+        if (CrossSideManager.get().useNatives()) {
             OpusDecoder decoder = createNativeDecoder();
             if (decoder != null) {
                 return decoder;
             }
         }
-        return new JavaOpusDecoderImpl(SoundManager.SAMPLE_RATE, SoundManager.FRAME_SIZE);
-    }
-
-    public static boolean useNatives() {
-        if (Platform.isMac()) {
-            if (!VersionCheck.isMacOSNativeCompatible()) {
-                return false;
-            }
-        }
-
-        if (VoicechatClient.CLIENT_CONFIG == null) {
-            return true;
-        }
-        return VoicechatClient.CLIENT_CONFIG.useNatives.get();
+        return new JavaOpusDecoderImpl(Utils.SAMPLE_RATE, Utils.FRAME_SIZE);
     }
 
 }
