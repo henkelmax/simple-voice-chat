@@ -27,6 +27,10 @@ public class MicPacket implements Packet<MicPacket> {
         return data;
     }
 
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
     public long getSequenceNumber() {
         return sequenceNumber;
     }
