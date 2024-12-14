@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
 import de.maxhenkel.voicechat.api.Player;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.minecraft.entity.player.PlayerEntity;
 
 public class PlayerImpl extends EntityImpl implements Player {
@@ -11,7 +12,7 @@ public class PlayerImpl extends EntityImpl implements Player {
 
     @Override
     public Object getPlayer() {
-        return entity;
+        return CommonCompatibilityManager.INSTANCE.createRawApiPlayer(getRealPlayer());
     }
 
     public PlayerEntity getRealPlayer() {
