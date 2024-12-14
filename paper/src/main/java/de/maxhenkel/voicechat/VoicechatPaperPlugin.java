@@ -8,14 +8,18 @@ import de.maxhenkel.voicechat.integration.placeholderapi.VoicechatExpansion;
 import de.maxhenkel.voicechat.integration.viaversion.ViaVersionCompatibility;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.PaperCommonCompatibilityManager;
+import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.BukkitVoicechatServiceImpl;
 import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Path;
 
-public class VoicechatPaperPlugin extends JavaPlugin {
+public class VoicechatPaperPlugin extends JavaPlugin implements Listener {
 
     public static VoicechatPaperPlugin INSTANCE;
     public static BukkitVoicechatServiceImpl apiService;
@@ -38,6 +42,11 @@ public class VoicechatPaperPlugin extends JavaPlugin {
             }
 
             @Override
+            protected void initPlugins() {
+                //NOOP, this is initialized later so the apiService can gather all plugin registrations
+            }
+
+            @Override
             protected void registerCommands() {
                 //NOOP, since commands need to get registered even earlier
             }
@@ -50,6 +59,7 @@ public class VoicechatPaperPlugin extends JavaPlugin {
         voicechat.initialize();
 
         getServer().getPluginManager().registerEvents((PaperCommonCompatibilityManager) CommonCompatibilityManager.INSTANCE, this);
+        getServer().getPluginManager().registerEvents(this, this);
 
         try {
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
@@ -73,6 +83,11 @@ public class VoicechatPaperPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         getServer().getServicesManager().unregister(apiService);
+    }
+
+    @EventHandler
+    public void onServerStart(ServerLoadEvent event) {
+        PluginManager.instance().init();
     }
 
 }

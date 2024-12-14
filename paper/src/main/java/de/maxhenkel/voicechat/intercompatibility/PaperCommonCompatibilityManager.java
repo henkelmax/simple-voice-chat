@@ -4,13 +4,18 @@ import com.mojang.brigadier.CommandDispatcher;
 import de.maxhenkel.voicechat.BukkitUtils;
 import de.maxhenkel.voicechat.VoicechatPaperPlugin;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
+import de.maxhenkel.voicechat.api.VoicechatServerApi;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PaperNetManager;
 import de.maxhenkel.voicechat.permission.PaperPermissionManager;
+import de.maxhenkel.voicechat.plugins.impl.VoicechatPaperApiImpl;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.event.EventHandler;
@@ -185,4 +190,23 @@ public class PaperCommonCompatibilityManager extends CommonCompatibilityManager 
         return new PaperPermissionManager();
     }
 
+    @Override
+    public VoicechatServerApi getServerApi() {
+        return VoicechatPaperApiImpl.PAPER_INSTANCE;
+    }
+
+    @Override
+    public Object createRawApiEntity(Entity entity) {
+        return entity.getBukkitEntity();
+    }
+
+    @Override
+    public Object createRawApiPlayer(Player player) {
+        return player.getBukkitEntity();
+    }
+
+    @Override
+    public Object createRawApiLevel(ServerLevel level) {
+        return level.getWorld();
+    }
 }
