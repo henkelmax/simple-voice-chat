@@ -2,9 +2,6 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 
 public abstract class NetManager {
@@ -41,13 +38,6 @@ public abstract class NetManager {
 
     public abstract <T extends Packet<T>> Channel<T> registerReceiver(Class<T> packetType, boolean toClient, boolean toServer);
 
-    public static void sendToServer(Packet<?> packet) {
-        ClientPacketListener connection = Minecraft.getInstance().getConnection();
-        if (connection != null && connection.getLevel() != null) {
-            CommonCompatibilityManager.INSTANCE.getNetManager().sendToServerInternal(packet);
-        }
-    }
-
     protected abstract void sendToServerInternal(Packet<?> packet);
 
     public static void sendToClient(ServerPlayer player, Packet<?> packet) {
@@ -61,10 +51,6 @@ public abstract class NetManager {
 
     public interface ServerReceiver<T extends Packet<T>> {
         void onPacket(ServerPlayer player, T packet);
-    }
-
-    public interface ClientReceiver<T extends Packet<T>> {
-        void onPacket(LocalPlayer player, T packet);
     }
 
 }

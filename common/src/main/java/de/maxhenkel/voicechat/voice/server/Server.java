@@ -377,7 +377,7 @@ public class Server extends Thread {
 
     private void processProximityPacket(PlayerState senderState, ServerPlayer sender, MicPacket packet) {
         @Nullable UUID groupId = senderState.getGroup();
-        float distance = Utils.getDefaultDistance();
+        float distance = Utils.getDefaultDistanceServer();
 
         SoundPacket<?> soundPacket = null;
         String source = null;
