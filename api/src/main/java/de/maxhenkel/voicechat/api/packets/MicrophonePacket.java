@@ -12,4 +12,11 @@ public interface MicrophonePacket extends Packet, ConvertablePacket {
      */
     byte[] getOpusEncodedData();
 
+    /**
+     * Allows you to modify or replace the opus encoded audio data.
+     *
+     * @param data the opus encoded audio data to replace
+     */
+    void setOpusEncodedData(byte[] data);
+
 }
