@@ -10,6 +10,7 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.PaperCommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.BukkitVoicechatServiceImpl;
+import io.papermc.paper.ServerBuildInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,6 +19,7 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Path;
+import java.util.logging.Level;
 
 public class VoicechatPaperPlugin extends JavaPlugin implements Listener {
 
@@ -32,6 +34,17 @@ public class VoicechatPaperPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        try {
+            if (!BuildConstants.MINECRAFT_VERSION.equals(ServerBuildInfo.buildInfo().minecraftVersionId())) {
+                getLogger().severe("Incompatible Minecraft version - This plugin requires Minecraft %s".formatted(BuildConstants.MINECRAFT_VERSION));
+                Bukkit.getPluginManager().disablePlugin(this);
+                return;
+            }
+        } catch (Throwable t) {
+            getLogger().log(Level.SEVERE, "Failed to check Minecraft version", t);
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
         apiService = new BukkitVoicechatServiceImpl();
         getServer().getServicesManager().register(BukkitVoicechatService.class, apiService, this, ServicePriority.Normal);
 
@@ -82,7 +95,9 @@ public class VoicechatPaperPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        getServer().getServicesManager().unregister(apiService);
+        if (apiService != null) {
+            getServer().getServicesManager().unregister(apiService);
+        }
     }
 
     @EventHandler
