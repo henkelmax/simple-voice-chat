@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat;
 public class BuildConstants {
 
     public static final int COMPATIBILITY_VERSION;
+    public static final String MINECRAFT_VERSION = "${minecraft_version}";
 
     static {
         String compatibilityVersionString = "${compatibility_version}";
