@@ -1,1 +1,2 @@
 - Added useNatives config option for servers
+- Updated Traditional Chinese translation
