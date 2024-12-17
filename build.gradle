@@ -35,7 +35,7 @@ tasks.register('03-publishBukkit') {
 tasks.register('04-publishPaper') {
     group = 'voicechat'
     doLast {
-        runGradleTasks(['bukkit:clean'], ['paper:modrinth', 'paper:publishAllPublicationsToHangar'])
+        runGradleTasks(['common:clean'], ['paper:modrinth', 'paper:publishAllPublicationsToHangar'])
     }
 }
 
@@ -48,28 +48,28 @@ tasks.register('05-publishQuilt', GradleBuild) {
 tasks.register('06-publishForge') {
     group = 'voicechat'
     doLast {
-        runGradleTasks(['common:clean', 'forge:clean'], ['forge:curseforge', 'forge:modrinth', 'forge:modUpdate'])
+        runGradleTasks(['common:clean', 'common-client:clean', 'forge:clean'], ['forge:curseforge', 'forge:modrinth', 'forge:modUpdate'])
     }
 }
 
 tasks.register('07-publishNeoForge') {
     group = 'voicechat'
     doLast {
-        runGradleTasks(['common:clean', 'neoforge:clean'], ['neoforge:curseforge', 'neoforge:modrinth', 'neoforge:modUpdate'])
+        runGradleTasks(['common:clean', 'common-client:clean', 'neoforge:clean'], ['neoforge:curseforge', 'neoforge:modrinth', 'neoforge:modUpdate'])
     }
 }
 
 tasks.register('08-publishFabric') {
     group = 'voicechat'
     doLast {
-        runGradleTasks(['common:clean', 'fabric:clean'], ['fabric:curseforge', 'fabric:modrinth', 'fabric:modUpdate'])
+        runGradleTasks(['common:clean', 'common-client:clean', 'fabric:clean'], ['fabric:curseforge', 'fabric:modrinth', 'fabric:modUpdate'])
     }
 }
 
 tasks.register('publishFabricSnapshot') {
     group = 'voicechat'
     doLast {
-        runGradleTasks(['common:clean', 'fabric:clean'], ['fabric:curseforge', 'fabric:modrinth'])
+        runGradleTasks(['common:clean', 'common-client:clean', 'fabric:clean'], ['fabric:curseforge', 'fabric:modrinth'])
     }
 }
 
