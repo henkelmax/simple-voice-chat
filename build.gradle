@@ -17,13 +17,13 @@ tasks.register('01-publishQuilt', GradleBuild) {
 tasks.register('02-publishForge') {
     group = 'voicechat'
     doLast {
-        runGradleTasks(['common:clean', 'forge:clean'], ['forge:curseforge', 'forge:modrinth', 'forge:modUpdate'])
+        runGradleTasks(['common:clean', 'common-client:clean', 'forge:clean'], ['forge:curseforge', 'forge:modrinth', 'forge:modUpdate'])
     }
 }
 
 tasks.register('03-publishFabric') {
     group = 'voicechat'
     doLast {
-        runGradleTasks(['common:clean', 'fabric:clean'], ['fabric:curseforge', 'fabric:modrinth', 'fabric:modUpdate'])
+        runGradleTasks(['common:clean', 'common-client:clean', 'fabric:clean'], ['fabric:curseforge', 'fabric:modrinth', 'fabric:modUpdate'])
     }
 }
