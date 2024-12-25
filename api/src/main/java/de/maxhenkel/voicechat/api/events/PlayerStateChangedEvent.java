@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 /**
- * Called when a player changes his state.
+ * Called when a player changes its state.
  * For example if voice chat connects/disconnects, the player joins/leaves a group or disables voice chat.
  */
 public interface PlayerStateChangedEvent extends ServerEvent {
