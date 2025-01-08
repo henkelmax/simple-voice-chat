@@ -274,8 +274,8 @@ public class AudioRecorder {
                         Component.literal(location.normalize().toString())
                                 .withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE)
                                 .withStyle(style -> style
-                                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.voicechat.open_folder")))
-                                        .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, location.normalize().toString()))))
+                                        .withHoverEvent(new HoverEvent.ShowText(Component.translatable("message.voicechat.open_folder")))
+                                        .withClickEvent(new ClickEvent.OpenFile(location.normalize().toString()))))
                 );
             } catch (Exception e) {
                 Voicechat.LOGGER.error("Failed to save recording session", e);

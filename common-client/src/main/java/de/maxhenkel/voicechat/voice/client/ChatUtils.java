@@ -15,7 +15,7 @@ public class ChatUtils {
     public static void sendPlayerError(String translationKey, @Nullable Exception e) {
         MutableComponent error = createModMessage(Component.translatable(translationKey).withStyle(ChatFormatting.RED)).withStyle(style -> {
             if (e != null) {
-                return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(e.getMessage()).withStyle(ChatFormatting.RED)));
+                return style.withHoverEvent(new HoverEvent.ShowText(Component.literal(e.getMessage()).withStyle(ChatFormatting.RED)));
             }
             return style;
         });
