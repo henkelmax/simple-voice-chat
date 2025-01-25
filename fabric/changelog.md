@@ -1,1 +1,1 @@
-- Updated to 25w08a
+- Save username cache asynchronously
