@@ -11,8 +11,17 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class UsernameCache {
+
+    private static final ExecutorService SAVE_EXECUTOR_SERVICE = Executors.newSingleThreadExecutor(runnable -> {
+        Thread thread = new Thread(runnable);
+        thread.setName("UsernameCacheSaver");
+        thread.setDaemon(true);
+        return thread;
+    });
 
     private final File file;
     private final Gson gson;
@@ -41,7 +50,7 @@ public class UsernameCache {
         }
     }
 
-    public void save() {
+    public synchronized void save() {
         file.getParentFile().mkdirs();
         try (Writer writer = new FileWriter(file)) {
             gson.toJson(names, writer);
@@ -67,7 +76,7 @@ public class UsernameCache {
         @Nullable String oldName = names.get(uuid);
         if (!name.equals(oldName)) {
             names.put(uuid, name);
-            save();
+            SAVE_EXECUTOR_SERVICE.execute(this::save);
         }
     }
 
