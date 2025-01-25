@@ -48,7 +48,8 @@ public abstract class VoicechatClient {
         fixVolumeConfig();
         CLIENT_CONFIG = ConfigBuilder.builder(ClientConfig::new).path(Voicechat.getVoicechatConfigFolder().resolve("voicechat-client.properties")).build();
         VOLUME_CONFIG = new VolumeConfig(Voicechat.getVoicechatConfigFolder().resolve("voicechat-volumes.properties"));
-        USERNAME_CACHE = new UsernameCache(Voicechat.getVoicechatConfigFolder().resolve("username-cache.json").toFile());
+        USERNAME_CACHE = new UsernameCache(Voicechat.getVoicechatConfigFolder().resolve("username-cache.json").toFile(),
+                Voicechat.getVoicechatConfigFolder().resolve("username-cache.txt").toFile());
     }
 
     public void initializeClient() {

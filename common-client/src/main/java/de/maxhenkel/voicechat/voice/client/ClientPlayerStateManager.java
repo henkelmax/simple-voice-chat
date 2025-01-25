@@ -21,6 +21,7 @@ import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.events.ClientVoicechatConnectionEventImpl;
 import de.maxhenkel.voicechat.plugins.impl.events.MicrophoneMuteEventImpl;
 import de.maxhenkel.voicechat.plugins.impl.events.VoicechatDisableEventImpl;
+import de.maxhenkel.voicechat.profile.UsernameCache;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
@@ -64,10 +65,16 @@ public class ClientPlayerStateManager {
         ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel, (player, packet) -> {
             states = packet.getPlayerStates();
             Voicechat.LOGGER.debug("Received {} state(s)", states.size());
+            Map<UUID, String> saveIds = new HashMap<>();
+            UsernameCache usernameCache = VoicechatClient.USERNAME_CACHE;
             for (PlayerState state : states.values()) {
-                VoicechatClient.USERNAME_CACHE.updateUsername(state.getUuid(), state.getName());
+                if(usernameCache.has(state.getUuid())) {
+                    continue;
+                }
+                usernameCache.updateUsername(state.getUuid(), state.getName());
+                saveIds.put(state.getUuid(), state.getName());
             }
-            VoicechatClient.USERNAME_CACHE.save();
+            VoicechatClient.USERNAME_CACHE.saveMap(saveIds);
             AdjustVolumeList.update();
             JoinGroupList.update();
             GroupList.update();
