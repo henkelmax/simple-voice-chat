@@ -1,2 +1,1 @@
-- Added useNatives config option for servers
-- Updated Traditional Chinese translation
+- Save username cache asynchronously
