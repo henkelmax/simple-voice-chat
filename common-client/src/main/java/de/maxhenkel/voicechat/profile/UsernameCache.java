@@ -4,15 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.VoicechatClient;
 
 import javax.annotation.Nullable;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 public class UsernameCache {
 
@@ -51,12 +52,27 @@ public class UsernameCache {
     }
 
     public synchronized void save() {
+        long time = System.currentTimeMillis();
         file.getParentFile().mkdirs();
+        Set<UUID> volumeIds = VoicechatClient.VOLUME_CONFIG.getPlayerVolumes().keySet();
+
+        Map<UUID, String> usernamesToSave = names.entrySet()
+                .stream()
+                .filter(entry -> volumeIds.contains(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        Voicechat.LOGGER.debug("Reduced cached usernames to save from {} to {}", names.size(), usernamesToSave.size());
+
         try (Writer writer = new FileWriter(file)) {
-            gson.toJson(names, writer);
+            gson.toJson(usernamesToSave, writer);
+            Voicechat.LOGGER.debug("Saved username cache in {}ms", System.currentTimeMillis() - time);
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to save username cache", e);
         }
+    }
+
+    public void saveAsync() {
+        SAVE_EXECUTOR_SERVICE.execute(this::save);
     }
 
     @Nullable
@@ -76,7 +92,9 @@ public class UsernameCache {
         @Nullable String oldName = names.get(uuid);
         if (!name.equals(oldName)) {
             names.put(uuid, name);
-            SAVE_EXECUTOR_SERVICE.execute(this::save);
+            if (VoicechatClient.VOLUME_CONFIG.contains(uuid)) {
+                saveAsync();
+            }
         }
     }
 
