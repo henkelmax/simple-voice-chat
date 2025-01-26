@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.config;
 import de.maxhenkel.configbuilder.CommentedProperties;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 
 import java.nio.file.Path;
@@ -59,8 +60,18 @@ public class VolumeConfig extends CommentedPropertyConfig {
         return value;
     }
 
+    public boolean contains(UUID uuid) {
+        return volumes.containsKey(uuid);
+    }
+
+    @Override
+    public void save() {
+        super.save();
+        VoicechatClient.USERNAME_CACHE.saveAsync();
+    }
+
     public Map<UUID, Double> getPlayerVolumes() {
-        return Collections.unmodifiableMap(volumes);
+        return volumes;
     }
 
     public double getCategoryVolume(String category, double def) {
