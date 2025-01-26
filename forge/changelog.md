@@ -1,1 +1,2 @@
 - Save username cache asynchronously
+- Only store cached usernames that are necessary
