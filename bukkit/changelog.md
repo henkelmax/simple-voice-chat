@@ -1,1 +1,1 @@
-- Improved server-ip detection
+- Fixed issues with config reading
