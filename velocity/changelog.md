@@ -1,1 +1,1 @@
-- Reworked config descriptions
+- Fixed issues with config reading
