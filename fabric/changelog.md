@@ -2,3 +2,4 @@
 - Only store cached usernames that are necessary
 - Fixed issues with config reading
 - Fixed audio devices containing unicode characters not saving properly in some cases
+- Updated Chinese Simplified translation
