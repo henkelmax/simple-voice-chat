@@ -3,3 +3,4 @@
 - Fixed issues with config reading
 - Fixed audio devices containing unicode characters not saving properly in some cases
 - Updated Chinese Simplified translation
+- Fix log spam when another mod ships with a broken version of the Fabric Permissions API 
