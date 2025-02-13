@@ -59,7 +59,7 @@ public class ClientCategoryManager extends CategoryManager {
 
     private void registerImage(String id, NativeImage image) {
         ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, id);
-        Minecraft.getInstance().getEntityRenderDispatcher().textureManager.register(resourceLocation, new DynamicTexture(image));
+        Minecraft.getInstance().getEntityRenderDispatcher().textureManager.register(resourceLocation, new DynamicTexture(resourceLocation::toString, image));
         images.put(id, resourceLocation);
     }
 
