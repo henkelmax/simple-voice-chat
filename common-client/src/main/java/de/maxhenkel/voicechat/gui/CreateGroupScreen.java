@@ -44,17 +44,17 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
 
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
-        groupName = new TextFieldWidget(font, guiLeft + 7, guiTop + 32, xSize - 7 * 2, 10, new StringTextComponent(""));
+        groupName = new TextFieldWidget(font, guiLeft + 7, guiTop + 30, xSize - 7 * 2, 14, new StringTextComponent(""));
         groupName.setMaxLength(24);
         groupName.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addButton(groupName);
 
-        password = new TextFieldWidget(font, guiLeft + 7, guiTop + 58, xSize - 7 * 2, 10, new StringTextComponent(""));
+        password = new TextFieldWidget(font, guiLeft + 7, guiTop + 56, xSize - 7 * 2, 14, new StringTextComponent(""));
         password.setMaxLength(32);
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addButton(password);
 
-        groupTypeButton = new Button(guiLeft + 6, guiTop + 71, xSize - 12, 20, GROUP_TYPE, (button) -> {
+        groupTypeButton = new Button(guiLeft + 6, guiTop + 74, xSize - 12, 20, GROUP_TYPE, (button) -> {
             groupType = GroupType.values()[(groupType.ordinal() + 1) % GroupType.values().length];
         }) {
             public ITextComponent getMessage() {
