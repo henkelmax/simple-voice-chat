@@ -41,19 +41,19 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         hoverAreas.clear();
         clearWidgets();
 
-        groupName = new EditBox(font, guiLeft + 7, guiTop + 32, xSize - 7 * 2, 10, Component.empty());
+        groupName = new EditBox(font, guiLeft + 7, guiTop + 30, xSize - 7 * 2, 14, Component.empty());
         groupName.setMaxLength(24);
         groupName.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(groupName);
 
-        password = new EditBox(font, guiLeft + 7, guiTop + 58, xSize - 7 * 2, 10, Component.empty());
+        password = new EditBox(font, guiLeft + 7, guiTop + 56, xSize - 7 * 2, 14, Component.empty());
         password.setMaxLength(32);
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(password);
 
         addRenderableWidget(CycleButton.builder(GroupType::getTranslation).withValues(GroupType.values()).withInitialValue(GroupType.NORMAL).withTooltip(object -> {
             return Tooltip.create(object.getDescription());
-        }).create(guiLeft + 6, guiTop + 71, xSize - 12, 20, GROUP_TYPE, (button, type) -> {
+        }).create(guiLeft + 6, guiTop + 74, xSize - 12, 20, GROUP_TYPE, (button, type) -> {
             groupType = type;
         }));
 
