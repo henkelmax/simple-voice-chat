@@ -3,3 +3,5 @@
 - Fixed issues with config reading
 - Fixed audio devices containing unicode characters not saving properly in some cases
 - Updated Chinese Simplified translation
+- Fixed create group screen text field size
+- Fixed join group password screen text field size
