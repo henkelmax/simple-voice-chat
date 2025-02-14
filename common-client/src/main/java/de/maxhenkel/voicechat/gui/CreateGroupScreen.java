@@ -43,15 +43,15 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
 
         Keyboard.enableRepeatEvents(true);
 
-        groupName = new GuiTextField(0, fontRenderer, guiLeft + 7, guiTop + 32, xSize - 7 * 2, 10);
+        groupName = new GuiTextField(0, fontRenderer, guiLeft + 7, guiTop + 31, xSize - 7 * 2, 12);
         groupName.setMaxStringLength(24);
         groupName.setValidator(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
 
-        password = new GuiTextField(1, fontRenderer, guiLeft + 7, guiTop + 58, xSize - 7 * 2, 10);
+        password = new GuiTextField(1, fontRenderer, guiLeft + 7, guiTop + 57, xSize - 7 * 2, 12);
         password.setMaxStringLength(32);
         password.setValidator(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
 
-        groupTypeButton = new ButtonBase(2, guiLeft + 6, guiTop + 71, xSize - 12, 20, GROUP_TYPE.getUnformattedComponentText() + ": " + groupType.getTranslation().getUnformattedComponentText()) {
+        groupTypeButton = new ButtonBase(2, guiLeft + 6, guiTop + 74, xSize - 12, 20, GROUP_TYPE.getUnformattedComponentText() + ": " + groupType.getTranslation().getUnformattedComponentText()) {
             @Override
             public void onPress() {
                 groupType = GroupType.values()[(groupType.ordinal() + 1) % GroupType.values().length];
