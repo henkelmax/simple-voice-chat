@@ -40,7 +40,7 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
 
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
-        password = new TextFieldWidget(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 2 - 5, xSize - 7 * 2, 14, new StringTextComponent(""));
+        password = new TextFieldWidget(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 2 - 5 + 1, xSize - 7 * 2, 12, new StringTextComponent(""));
         password.setMaxLength(32);
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addButton(password);
