@@ -6,3 +6,4 @@
 - Fixed log spam when another mod ships with a broken version of the Fabric Permissions API
 - Fixed create group screen text field size
 - Fixed join group password screen text field size
+- Added Persian translation

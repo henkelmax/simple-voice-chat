@@ -5,3 +5,4 @@
 - Updated Chinese Simplified translation
 - Fixed create group screen text field size
 - Fixed join group password screen text field size
+- Added Persian translation
