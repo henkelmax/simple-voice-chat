@@ -69,8 +69,6 @@ public class GroupChatManager {
                 guiGraphics.blit(RenderType::guiTextured, TALK_OUTLINE, posX < 0 ? -10 : 0, posY < 0 ? -10 : 0, 0, 0, 10, 10, 16, 16);
             }
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
             guiGraphics.blit(RenderType::guiTextured, skin.texture(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
             guiGraphics.blit(RenderType::guiTextured, skin.texture(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 40, 8, 8, 8, 64, 64);

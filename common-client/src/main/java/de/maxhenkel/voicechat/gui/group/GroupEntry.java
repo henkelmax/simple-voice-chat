@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.gui.group;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeSlider;
@@ -60,9 +59,7 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
 
         PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
         guiGraphics.blit(RenderType::guiTextured, skin.texture(), 1, 1, 8, 8, 8, 8, 64, 64);
-        RenderSystem.enableBlend();
         guiGraphics.blit(RenderType::guiTextured, skin.texture(), 1, 1, 40, 8, 8, 8, 64, 64);
-        RenderSystem.disableBlend();
 
         if (state.isDisabled()) {
             guiGraphics.pose().pushPose();

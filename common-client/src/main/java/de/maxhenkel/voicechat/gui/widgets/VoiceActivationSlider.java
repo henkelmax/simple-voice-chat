@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.common.Utils;
@@ -33,10 +32,6 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
         Minecraft minecraft = Minecraft.getInstance();
-        //guiGraphics.setColor(1F, 1F, 1F, 1F);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
         guiGraphics.blitSprite(RenderType::guiTextured, getSlider(), getX(), getY(), getWidth(), getHeight());
 
         int micWidth = (int) ((width - 2) * micValue);

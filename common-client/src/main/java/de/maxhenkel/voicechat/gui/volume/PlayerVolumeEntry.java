@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.gui.volume;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
@@ -32,9 +31,7 @@ public class PlayerVolumeEntry extends VolumeEntry {
         if (state != null) {
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
             guiGraphics.blit(RenderType::guiTextured, skin.texture(), skinX, skinY, 8, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
-            RenderSystem.enableBlend();
             guiGraphics.blit(RenderType::guiTextured, skin.texture(), skinX, skinY, 40, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
-            RenderSystem.disableBlend();
             guiGraphics.drawString(minecraft.font, state.getName(), textX, textY, PLAYER_NAME_COLOR, false);
         } else {
             guiGraphics.blit(RenderType::guiTextured, OTHER_VOLUME_ICON, skinX, skinY, 16, 16, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16);

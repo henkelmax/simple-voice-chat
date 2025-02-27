@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.gui.group;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.gui.GroupType;
@@ -90,9 +89,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             guiGraphics.pose().scale(scale, scale, scale);
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
             guiGraphics.blit(RenderType::guiTextured, skin.texture(), 0, 0, 8, 8, 8, 8, 64, 64);
-            RenderSystem.enableBlend();
             guiGraphics.blit(RenderType::guiTextured, skin.texture(), 0, 0, 40, 8, 8, 8, 64, 64);
-            RenderSystem.disableBlend();
             guiGraphics.pose().popPose();
         }
 
