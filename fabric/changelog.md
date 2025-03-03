@@ -1,9 +1,1 @@
-- Save username cache asynchronously
-- Only store cached usernames that are necessary
-- Fixed issues with config reading
-- Fixed audio devices containing unicode characters not saving properly in some cases
-- Updated Chinese Simplified translation
-- Fixed log spam when another mod ships with a broken version of the Fabric Permissions API
-- Fixed create group screen text field size
-- Fixed join group password screen text field size
-- Added Persian translation
+- Updated Turkish translation
