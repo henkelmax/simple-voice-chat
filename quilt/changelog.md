@@ -1,1 +1,2 @@
 - Updated Turkish translation
+- Updated Brazilian Portuguese translation
