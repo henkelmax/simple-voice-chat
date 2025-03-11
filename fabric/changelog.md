@@ -1,1 +1,1 @@
-- Updated to 25w10a
+- Updated to 1.21.5-pre1
