@@ -15,9 +15,11 @@ public class ClientServerChannel<T extends Packet<T>> extends Channel<T> {
     }
 
     public void onClientPacket(Minecraft client, NetHandlerPlayClient handler, T packet) {
-        if (clientListener != null) {
-            clientListener.onPacket(client, handler, packet);
-        }
+        client.addScheduledTask(() -> {
+            if (clientListener != null) {
+                clientListener.onPacket(client, handler, packet);
+            }
+        });
     }
 
 }

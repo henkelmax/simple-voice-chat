@@ -20,9 +20,11 @@ public class Channel<T extends Packet<T>> {
     }
 
     public void onServerPacket(MinecraftServer server, EntityPlayerMP player, NetHandlerPlayServer handler, T packet) {
-        if (serverListener != null) {
-            serverListener.onPacket(server, player, handler, packet);
-        }
+        server.addScheduledTask(() -> {
+            if (serverListener != null) {
+                serverListener.onPacket(server, player, handler, packet);
+            }
+        });
     }
 
 }
