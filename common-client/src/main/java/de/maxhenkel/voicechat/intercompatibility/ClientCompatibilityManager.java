@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
 
 import java.net.SocketAddress;
@@ -54,7 +53,7 @@ public abstract class ClientCompatibilityManager {
 
     public abstract SocketAddress getSocketAddress(Connection connection);
 
-    public abstract void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource);
+    public abstract void addResourcePackSource(RepositorySource repositorySource);
 
     public VoicechatClientApi getClientApi() {
         return VoicechatClientApiImpl.INSTANCE;

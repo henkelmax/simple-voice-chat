@@ -12,7 +12,6 @@ import de.maxhenkel.voicechat.profile.UsernameCache;
 import de.maxhenkel.voicechat.resourcepacks.VoiceChatResourcePack;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.KeyEvents;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 import java.io.IOException;
@@ -37,7 +36,7 @@ public abstract class VoicechatClient {
         WHITE_ICONS = new VoiceChatResourcePack("white_icons", Component.translatable("resourcepack.voicechat.white_icons"));
         BLACK_ICONS = new VoiceChatResourcePack("black_icons", Component.translatable("resourcepack.voicechat.black_icons"));
 
-        ClientCompatibilityManager.INSTANCE.addResourcePackSource(Minecraft.getInstance().getResourcePackRepository(), consumer -> {
+        ClientCompatibilityManager.INSTANCE.addResourcePackSource(consumer -> {
             consumer.accept(CLASSIC_ICONS.toPack());
             consumer.accept(WHITE_ICONS.toPack());
             consumer.accept(BLACK_ICONS.toPack());

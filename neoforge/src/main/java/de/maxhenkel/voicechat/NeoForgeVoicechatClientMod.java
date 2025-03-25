@@ -17,6 +17,7 @@ public class NeoForgeVoicechatClientMod extends VoicechatClient {
     public NeoForgeVoicechatClientMod(IEventBus eventBus) {
         eventBus.addListener(this::clientSetup);
         eventBus.addListener(((NeoForgeClientCompatibilityManager) ClientCompatibilityManager.INSTANCE)::onRegisterKeyBinds);
+        eventBus.addListener(((NeoForgeClientCompatibilityManager) ClientCompatibilityManager.INSTANCE)::onAddPackFindersEvent);
     }
 
     public void clientSetup(FMLClientSetupEvent event) {

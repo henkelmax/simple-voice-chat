@@ -8,12 +8,12 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.Connection;
-import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
@@ -23,8 +23,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManager {
-
-    private final Minecraft minecraft;
 
     private final List<RenderNameplateEvent> renderNameplateEvents;
     private final List<RenderHUDEvent> renderHUDEvents;
@@ -37,10 +35,10 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
     private final List<Consumer<ClientVoicechatConnection>> voicechatConnectEvents;
     private final List<Runnable> voicechatDisconnectEvents;
     private final List<Consumer<Integer>> publishServerEvents;
+    private final List<RepositorySource> repositorySources;
     private final List<KeyMapping> keyMappings;
 
     public NeoForgeClientCompatibilityManager() {
-        minecraft = Minecraft.getInstance();
         renderNameplateEvents = new CopyOnWriteArrayList<>();
         renderHUDEvents = new CopyOnWriteArrayList<>();
         keyboardEvents = new CopyOnWriteArrayList<>();
@@ -52,6 +50,7 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
         voicechatConnectEvents = new CopyOnWriteArrayList<>();
         voicechatDisconnectEvents = new CopyOnWriteArrayList<>();
         publishServerEvents = new CopyOnWriteArrayList<>();
+        repositorySources = new CopyOnWriteArrayList<>();
         keyMappings = new CopyOnWriteArrayList<>();
     }
 
@@ -70,12 +69,12 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
 
     @SubscribeEvent
     public void onKey(InputEvent.Key event) {
-        keyboardEvents.forEach(keyboardEvent -> keyboardEvent.onKeyboardEvent(minecraft.getWindow().getWindow(), event.getKey(), event.getScanCode()));
+        keyboardEvents.forEach(keyboardEvent -> keyboardEvent.onKeyboardEvent(Minecraft.getInstance().getWindow().getWindow(), event.getKey(), event.getScanCode()));
     }
 
     @SubscribeEvent
     public void onMouse(InputEvent.MouseButton.Pre event) {
-        mouseEvents.forEach(mouseEvent -> mouseEvent.onMouseEvent(minecraft.getWindow().getWindow(), event.getButton(), event.getAction(), event.getModifiers()));
+        mouseEvents.forEach(mouseEvent -> mouseEvent.onMouseEvent(Minecraft.getInstance().getWindow().getWindow(), event.getButton(), event.getAction(), event.getModifiers()));
     }
 
     @SubscribeEvent
@@ -87,14 +86,14 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
     @SubscribeEvent
     public void onDisconnect(LevelEvent.Unload event) {
         // Not just changing the world - Disconnecting
-        if (minecraft.gameMode == null) {
+        if (Minecraft.getInstance().gameMode == null) {
             disconnectEvents.forEach(Runnable::run);
         }
     }
 
     @SubscribeEvent
     public void onJoinServer(ClientPlayerNetworkEvent.LoggingIn event) {
-        if (event.getPlayer() != minecraft.player) {
+        if (event.getPlayer() != Minecraft.getInstance().player) {
             return;
         }
         joinWorldEvents.forEach(Runnable::run);
@@ -121,6 +120,12 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
     public void onRegisterKeyBinds(RegisterKeyMappingsEvent event) {
         for (KeyMapping mapping : keyMappings) {
             event.register(mapping);
+        }
+    }
+
+    public void onAddPackFindersEvent(AddPackFindersEvent event) {
+        for (RepositorySource repositorySource : repositorySources) {
+            event.addRepositorySource(repositorySource);
         }
     }
 
@@ -208,8 +213,8 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
     }
 
     @Override
-    public void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource) {
-        packRepository.addPackFinder(repositorySource);
+    public void addResourcePackSource(RepositorySource repositorySource) {
+        repositorySources.add(repositorySource);
     }
 
 }
