@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.Connection;
-import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.InputEvent;
@@ -217,7 +216,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @Override
-    public void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource) {
-        packRepository.addPackFinder(repositorySource);
+    public void addResourcePackSource(RepositorySource repositorySource) {
+        minecraft.getResourcePackRepository().addPackFinder(repositorySource);
     }
 }
