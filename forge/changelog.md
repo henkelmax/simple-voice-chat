@@ -1,1 +1,3 @@
+- Updated Turkish translation
+- Updated Brazilian Portuguese translation
 - Fixed potential network threading issues
