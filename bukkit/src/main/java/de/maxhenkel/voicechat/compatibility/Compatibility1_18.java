@@ -2,8 +2,6 @@ package de.maxhenkel.voicechat.compatibility;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import de.maxhenkel.voicechat.BukkitVersion;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -17,17 +15,32 @@ public class Compatibility1_18 extends BaseCompatibility {
     public static final Compatibility1_18 INSTANCE = new Compatibility1_18();
 
     @Override
-    public void sendMessage(Player player, Component component) {
+    public void sendJsonMessage(Player player, String json) {
         Class<?> chatMessageTypeClass = getClass("net.minecraft.network.chat.ChatMessageType");
         Object b = getField(chatMessageTypeClass, "b");
-        send(player, component, b);
+        send(player, json, b);
     }
 
     @Override
-    public void sendStatusMessage(Player player, Component component) {
+    public void sendJsonStatusMessage(Player player, String json) {
         Class<?> chatMessageTypeClass = getClass("net.minecraft.network.chat.ChatMessageType");
         Object b = getField(chatMessageTypeClass, "c");
-        send(player, component, b);
+        send(player, json, b);
+    }
+
+    @Override
+    public String createTranslationMessage(String key, String... args) {
+        return Compatibility1_8.constructTranslationMessage(key, args);
+    }
+
+    @Override
+    public void sendInviteMessage(Player player, Player commandSender, String groupName, String joinCommand) {
+        sendJsonMessage(player, Compatibility1_8.constructInviteMessage(commandSender, groupName, joinCommand));
+    }
+
+    @Override
+    public void sendIncompatibleMessage(Player player, String pluginVersion, String pluginName) {
+        sendJsonMessage(player, Compatibility1_8.constructIncompatibleMessage(pluginVersion, pluginName));
     }
 
     @Override
@@ -42,9 +55,7 @@ public class Compatibility1_18 extends BaseCompatibility {
 
     private static final UUID NUL_UUID = new UUID(0L, 0L);
 
-    private void send(Player player, Component component, Object chatMessageType) {
-        String json = GsonComponentSerializer.gson().serialize(component);
-
+    private void send(Player player, String json, Object chatMessageType) {
         Object entityPlayer = callMethod(player, "getHandle");
         Object playerConnection = getField(entityPlayer, "b");
         Class<?> packet = getClass("net.minecraft.network.protocol.Packet");

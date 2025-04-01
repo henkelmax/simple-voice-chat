@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
 import io.netty.buffer.Unpooled;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -116,12 +115,12 @@ public class NetManager implements Listener {
         });
     }
 
-    public static void sendMessage(Player player, Component component) {
-        Voicechat.compatibility.sendMessage(player, component);
+    public static void sendMessage(Player player, String key, String... args) {
+        Voicechat.compatibility.sendTranslationMessage(player, key, args);
     }
 
-    public static void sendStatusMessage(Player player, Component component) {
-        Voicechat.compatibility.sendStatusMessage(player, component);
+    public static void sendStatusMessage(Player player, String key, String... args) {
+        Voicechat.compatibility.sendStatusMessage(player, key, args);
     }
 
 }

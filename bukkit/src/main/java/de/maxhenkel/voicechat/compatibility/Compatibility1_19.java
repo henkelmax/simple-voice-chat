@@ -2,8 +2,6 @@ package de.maxhenkel.voicechat.compatibility;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import de.maxhenkel.voicechat.BukkitVersion;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.entity.Player;
 
 public class Compatibility1_19 extends BaseCompatibility {
@@ -13,13 +11,28 @@ public class Compatibility1_19 extends BaseCompatibility {
     public static final Compatibility1_19 INSTANCE = new Compatibility1_19();
 
     @Override
-    public void sendMessage(Player player, Component component) {
-        send(player, component, false);
+    public void sendJsonMessage(Player player, String json) {
+        send(player, json, false);
     }
 
     @Override
-    public void sendStatusMessage(Player player, Component component) {
-        send(player, component, true);
+    public void sendJsonStatusMessage(Player player, String json) {
+        send(player, json, true);
+    }
+
+    @Override
+    public String createTranslationMessage(String key, String... args) {
+        return Compatibility1_8.constructTranslationMessage(key, args);
+    }
+
+    @Override
+    public void sendInviteMessage(Player player, Player commandSender, String groupName, String joinCommand) {
+        sendJsonMessage(player, Compatibility1_8.constructInviteMessage(commandSender, groupName, joinCommand));
+    }
+
+    @Override
+    public void sendIncompatibleMessage(Player player, String pluginVersion, String pluginName) {
+        sendJsonMessage(player, Compatibility1_8.constructIncompatibleMessage(pluginVersion, pluginName));
     }
 
     @Override
@@ -32,9 +45,7 @@ public class Compatibility1_19 extends BaseCompatibility {
         return Compatibility1_19_1.INSTANCE.uuidArgument();
     }
 
-    private void send(Player player, Component component, boolean status) {
-        String json = GsonComponentSerializer.gson().serialize(component);
-
+    private void send(Player player, String json, boolean status) {
         Object entityPlayer = callMethod(player, "getHandle");
         Object playerConnection = getField(entityPlayer, "b");
         Class<?> packet = getClass("net.minecraft.network.protocol.Packet");

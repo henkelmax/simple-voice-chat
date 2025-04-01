@@ -2,9 +2,7 @@ package de.maxhenkel.voicechat.compatibility;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import de.maxhenkel.voicechat.BukkitVersion;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.adventure.key.Key;
+import de.maxhenkel.voicechat.util.Key;
 import org.bukkit.entity.Player;
 
 public class Compatibility1_12 extends BaseCompatibility {
@@ -19,21 +17,36 @@ public class Compatibility1_12 extends BaseCompatibility {
 
     @Override
     public Key createNamespacedKey(String key) {
-        return Key.key(CHANNEL, key);
+        return Key.of(CHANNEL, key);
     }
 
     @Override
-    public void sendMessage(Player player, Component component) {
-        Class<?> chatMessageTypeClass = getBukkitClass("ChatMessageType");
+    public void sendJsonMessage(Player player, String json) {
+        Class<?> chatMessageTypeClass = getServerClass("ChatMessageType");
         Object b = getField(chatMessageTypeClass, "CHAT");
-        send(player, component, b);
+        send(player, json, b);
     }
 
     @Override
-    public void sendStatusMessage(Player player, Component component) {
-        Class<?> chatMessageTypeClass = getBukkitClass("ChatMessageType");
+    public void sendJsonStatusMessage(Player player, String json) {
+        Class<?> chatMessageTypeClass = getServerClass("ChatMessageType");
         Object b = getField(chatMessageTypeClass, "GAME_INFO");
-        send(player, component, b);
+        send(player, json, b);
+    }
+
+    @Override
+    public String createTranslationMessage(String key, String... args) {
+        return Compatibility1_8.constructTranslationMessage(key, args);
+    }
+
+    @Override
+    public void sendInviteMessage(Player player, Player commandSender, String groupName, String joinCommand) {
+        sendJsonMessage(player, Compatibility1_8.constructInviteMessage(commandSender, groupName, joinCommand));
+    }
+
+    @Override
+    public void sendIncompatibleMessage(Player player, String pluginVersion, String pluginName) {
+        sendJsonMessage(player, Compatibility1_8.constructIncompatibleMessage(pluginVersion, pluginName));
     }
 
     @Override
@@ -46,20 +59,18 @@ public class Compatibility1_12 extends BaseCompatibility {
         return null;
     }
 
-    private void send(Player player, Component component, Object chatMessageType) {
-        String json = GsonComponentSerializer.gson().serialize(component);
-
+    private void send(Player player, String json, Object chatMessageType) {
         Object entityPlayer = callMethod(player, "getHandle");
         Object playerConnection = getField(entityPlayer, "playerConnection");
-        Class<?> packet = getBukkitClass("Packet");
-        Class<?> chatSerializer = getBukkitClass("IChatBaseComponent$ChatSerializer");
+        Class<?> packet = getServerClass("Packet");
+        Class<?> chatSerializer = getServerClass("IChatBaseComponent$ChatSerializer");
 
-        Class<?> iChatBaseComponentClass = getBukkitClass("IChatBaseComponent");
+        Class<?> iChatBaseComponentClass = getServerClass("IChatBaseComponent");
         Object iChatBaseComponent = callMethod(chatSerializer, "a", new Class[]{String.class}, json);
 
-        Class<?> packetPlayOutChatClass = getBukkitClass("PacketPlayOutChat");
+        Class<?> packetPlayOutChatClass = getServerClass("PacketPlayOutChat");
 
-        Class<?> chatMessageTypeClass = getBukkitClass("ChatMessageType");
+        Class<?> chatMessageTypeClass = getServerClass("ChatMessageType");
 
         Object clientboundSystemChatPacket = callConstructor(packetPlayOutChatClass, new Class[]{iChatBaseComponentClass, chatMessageTypeClass}, iChatBaseComponent, chatMessageType);
 

@@ -26,11 +26,8 @@ repositories {
 }
 
 dependencies {
-    implementation "net.kyori:adventure-api:${adventure_api_version}"
-    shadow "net.kyori:adventure-api:${adventure_api_version}"
-
-    implementation "net.kyori:adventure-text-serializer-gson:${adventure_api_version}"
-    shadow "net.kyori:adventure-text-serializer-gson:${adventure_api_version}"
+    implementation "org.json:json:${json_version}"
+    shadow "org.json:json:${json_version}"
 
     implementation "me.lucko:commodore:${commodore_version}"
     shadow "me.lucko:commodore:${commodore_version}"
@@ -75,7 +72,7 @@ sourceSets.main.java {
 compileJava.dependsOn generateJava
 
 shadowJar {
-    relocate 'net.kyori', 'de.maxhenkel.voicechat.net.kyori'
+    relocate 'org.json', 'de.maxhenkel.voicechat.org.json'
     relocate 'com.google.gson', 'de.maxhenkel.voicechat.gson'
     relocate 'me.lucko.commodore', 'de.maxhenkel.voicechat.commodore'
     relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'

@@ -2,8 +2,8 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
+import de.maxhenkel.voicechat.util.Key;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
-import net.kyori.adventure.key.Key;
 
 public class AddGroupPacket implements Packet<AddGroupPacket> {
 

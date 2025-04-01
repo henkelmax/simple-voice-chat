@@ -5,7 +5,6 @@ import de.maxhenkel.voicechat.net.*;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -29,7 +28,7 @@ public class ServerGroupManager {
             return;
         }
         if (!player.hasPermission(PermissionManager.GROUPS_PERMISSION)) {
-            NetManager.sendStatusMessage(player, Component.translatable("message.voicechat.no_group_permission"));
+            NetManager.sendStatusMessage(player, "message.voicechat.no_group_permission");
             return;
         }
         joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
@@ -40,7 +39,7 @@ public class ServerGroupManager {
             return;
         }
         if (!player.hasPermission(PermissionManager.GROUPS_PERMISSION)) {
-            NetManager.sendStatusMessage(player, Component.translatable("message.voicechat.no_group_permission"));
+            NetManager.sendStatusMessage(player, "message.voicechat.no_group_permission");
             return;
         }
         if (!Voicechat.GROUP_REGEX.matcher(packet.getName()).matches()) {

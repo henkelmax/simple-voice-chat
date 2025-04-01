@@ -8,10 +8,6 @@ import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Group;
 import de.maxhenkel.voicechat.voice.server.PingManager;
 import de.maxhenkel.voicechat.voice.server.Server;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -107,48 +103,48 @@ public class VoiceChatCommands implements CommandExecutor, TabCompleter {
         Player player = parsePlayer(commandSender, args[1]);
 
         if (player == null) {
-            NetManager.sendMessage(commandSender, Component.translatable("argument.entity.notfound.player"));
+            NetManager.sendMessage(commandSender, "argument.entity.notfound.player");
             return true;
         }
 
         if (!Voicechat.SERVER.isCompatible(player)) {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.player_no_voicechat", Component.text(player.getDisplayName()), Component.text("Simple Voice Chat")));
+            NetManager.sendMessage(commandSender, "message.voicechat.player_no_voicechat", player.getDisplayName(), "Simple Voice Chat");
             return true;
         }
 
         ClientConnection clientConnection = Voicechat.SERVER.getServer().getConnections().get(player.getUniqueId());
 
         if (clientConnection == null) {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.client_not_connected"));
+            NetManager.sendMessage(commandSender, "message.voicechat.client_not_connected");
             return true;
         }
 
         try {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.sending_ping"));
+            NetManager.sendMessage(commandSender, "message.voicechat.sending_ping");
             Voicechat.SERVER.getServer().getPingManager().sendPing(clientConnection, 500, 10, new PingManager.PingListener() {
 
                 @Override
                 public void onPong(int attempts, long pingMilliseconds) {
                     if (attempts <= 1) {
-                        NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.ping_received", Component.text(pingMilliseconds)));
+                        NetManager.sendMessage(commandSender, "message.voicechat.ping_received", String.valueOf(pingMilliseconds));
                     } else {
-                        NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.ping_received_attempt", Component.text(pingMilliseconds), Component.text(attempts)));
+                        NetManager.sendMessage(commandSender, "message.voicechat.ping_received_attempt", String.valueOf(pingMilliseconds), String.valueOf(attempts));
                     }
                 }
 
                 @Override
                 public void onFailedAttempt(int attempts) {
-                    NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.ping_retry"));
+                    NetManager.sendMessage(commandSender, "message.voicechat.ping_retry");
                 }
 
                 @Override
                 public void onTimeout(int attempts) {
-                    NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.ping_timed_out", Component.text(attempts)));
+                    NetManager.sendMessage(commandSender, "message.voicechat.ping_timed_out", String.valueOf(attempts));
                 }
             });
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.ping_sent_waiting"));
+            NetManager.sendMessage(commandSender, "message.voicechat.ping_sent_waiting");
         } catch (Exception e) {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.failed_to_send_ping", Component.text(e.getMessage())));
+            NetManager.sendMessage(commandSender, "message.voicechat.failed_to_send_ping", e.getMessage());
             Voicechat.LOGGER.warn("Failed to send ping", e);
         }
         return true;
@@ -162,14 +158,14 @@ public class VoiceChatCommands implements CommandExecutor, TabCompleter {
         Player player = parsePlayer(commandSender, args[1]);
 
         if (player == null) {
-            NetManager.sendMessage(commandSender, Component.translatable("argument.entity.notfound.player"));
+            NetManager.sendMessage(commandSender, "argument.entity.notfound.player");
             return true;
         }
 
         PlayerState state = Voicechat.SERVER.getServer().getPlayerStateManager().getState(commandSender.getUniqueId());
 
         if (state == null || !state.hasGroup()) {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.not_in_group"));
+            NetManager.sendMessage(commandSender, "message.voicechat.not_in_group");
             return true;
         }
 
@@ -179,24 +175,15 @@ public class VoiceChatCommands implements CommandExecutor, TabCompleter {
         }
 
         if (!Voicechat.SERVER.isCompatible(player)) {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.player_no_voicechat", Component.text(player.getDisplayName()), Component.text("Simple Voice Chat")));
+            NetManager.sendMessage(commandSender, "message.voicechat.player_no_voicechat", player.getDisplayName(), "Simple Voice Chat");
             return true;
         }
 
         String passwordSuffix = group.getPassword() == null ? "" : " \"" + group.getPassword() + "\"";
-        NetManager.sendMessage(player, Component.translatable("message.voicechat.invite",
-                Component.text(commandSender.getName()),
-                Component.text(group.getName()).toBuilder().color(NamedTextColor.GRAY).asComponent(),
-                Component.text("[").toBuilder().append(
-                        Component.translatable("message.voicechat.accept_invite")
-                                .toBuilder()
-                                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/voicechat join " + group.getId().toString() + passwordSuffix))
-                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.voicechat.accept_invite.hover")))
-                                .color(NamedTextColor.GREEN)
-                                .build()
-                ).append(Component.text("]")).color(NamedTextColor.GREEN).asComponent()
-        ));
-        NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.invite_successful", Component.text(player.getName())));
+        String cmd = "/voicechat join " + group.getId().toString() + passwordSuffix;
+        Voicechat.compatibility.sendInviteMessage(player, commandSender, group.getName(), cmd);
+
+        NetManager.sendMessage(commandSender, "message.voicechat.invite_successful", player.getName());
 
         return true;
     }
@@ -260,12 +247,12 @@ public class VoiceChatCommands implements CommandExecutor, TabCompleter {
         List<Group> groups = server.getGroupManager().getGroups().values().stream().filter(group -> group.getName().equals(groupName)).collect(Collectors.toList());
 
         if (groups.isEmpty()) {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.group_does_not_exist"));
+            NetManager.sendMessage(commandSender, "message.voicechat.group_does_not_exist");
             return null;
         }
 
         if (groups.size() > 1) {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.group_name_not_unique"));
+            NetManager.sendMessage(commandSender, "message.voicechat.group_name_not_unique");
             return null;
         }
 
@@ -274,43 +261,43 @@ public class VoiceChatCommands implements CommandExecutor, TabCompleter {
 
     private static void joinGroup(Player commandSender, UUID groupID, @Nullable String password) {
         if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.groups_disabled"));
+            NetManager.sendMessage(commandSender, "message.voicechat.groups_disabled");
             return;
         }
 
         Server server = Voicechat.SERVER.getServer();
 
         if (!commandSender.hasPermission(PermissionManager.GROUPS_PERMISSION)) {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.no_group_permission"));
+            NetManager.sendMessage(commandSender, "message.voicechat.no_group_permission");
             return;
         }
 
         Group group = server.getGroupManager().getGroup(groupID);
 
         if (group == null) {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.group_does_not_exist"));
+            NetManager.sendMessage(commandSender, "message.voicechat.group_does_not_exist");
             return;
         }
 
         server.getGroupManager().joinGroup(group, commandSender, password);
-        NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.join_successful", Component.text(group.getName()).toBuilder().color(NamedTextColor.GREEN).asComponent()));
+        NetManager.sendMessage(commandSender, "message.voicechat.join_successful", group.getName()); //TODO Make group name green
     }
 
     private boolean leaveCommand(Player commandSender, Command command, String label, String[] args) {
         if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.groups_disabled"));
+            NetManager.sendMessage(commandSender, "message.voicechat.groups_disabled");
             return true;
         }
 
         Server server = Voicechat.SERVER.getServer();
         PlayerState state = server.getPlayerStateManager().getState(commandSender.getUniqueId());
         if (state == null || !state.hasGroup()) {
-            NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.not_in_group"));
+            NetManager.sendMessage(commandSender, "message.voicechat.not_in_group");
             return true;
         }
 
         server.getGroupManager().leaveGroup(commandSender);
-        NetManager.sendMessage(commandSender, Component.translatable("message.voicechat.leave_successful"));
+        NetManager.sendMessage(commandSender, "message.voicechat.leave_successful");
         return true;
     }
 

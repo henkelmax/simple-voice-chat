@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.integration.viaversion;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.compatibility.Compatibility1_12;
-import net.kyori.adventure.key.Key;
+import de.maxhenkel.voicechat.util.Key;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -32,8 +32,8 @@ public class ViaVersionCompatibility {
         Object mappingMap = getChannelMappings.invoke(mappings);
         Method put = mappingMap.getClass().getDeclaredMethod("put", Object.class, Object.class);
         for (String id : Voicechat.netManager.getPackets()) {
-            Key key = Key.key(id);
-            put.invoke(mappingMap, String.format("%s:%s", Compatibility1_12.CHANNEL, key.value()), String.format("%s:%s", Voicechat.MODID, key.value()));
+            Key key = Key.parse(id);
+            put.invoke(mappingMap, String.format("%s:%s", Compatibility1_12.CHANNEL, key.getValue()), String.format("%s:%s", Voicechat.MODID, key.getValue()));
         }
     }
 

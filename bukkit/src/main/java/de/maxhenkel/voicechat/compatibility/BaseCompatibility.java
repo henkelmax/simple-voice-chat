@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.compatibility;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.util.Key;
 import org.bukkit.Bukkit;
-import net.kyori.adventure.key.Key;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -22,7 +22,17 @@ public abstract class BaseCompatibility implements Compatibility {
 
     @Override
     public Key createNamespacedKey(String key) {
-        return Key.key(Voicechat.MODID, key);
+        return Key.of(key);
+    }
+
+    @Override
+    public void sendTranslationMessage(Player player, String key, String... args) {
+        sendJsonMessage(player, createTranslationMessage(key, args));
+    }
+
+    @Override
+    public void sendStatusMessage(Player player, String key, String... args) {
+        sendJsonStatusMessage(player, createTranslationMessage(key, args));
     }
 
     @Override
@@ -50,5 +60,10 @@ public abstract class BaseCompatibility implements Compatibility {
     @Override
     public String getBaseBukkitPackage() {
         return Bukkit.getServer().getClass().getPackage().getName();
+    }
+
+    @Override
+    public String getBaseServerPackage() {
+        return callMethod(Bukkit.getServer(), "getServer").getClass().getPackage().getName();
     }
 }

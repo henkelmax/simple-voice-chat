@@ -4,7 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import net.kyori.adventure.key.Key;
+import de.maxhenkel.voicechat.util.Key;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;

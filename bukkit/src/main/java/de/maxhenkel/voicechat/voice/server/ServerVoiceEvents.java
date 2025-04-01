@@ -5,8 +5,6 @@ import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -58,7 +56,7 @@ public class ServerVoiceEvents implements Listener {
         clientCompatibilities.put(playerUUID, packet.getCompatibilityVersion());
         if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
             Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
-            NetManager.sendMessage(player, getIncompatibleMessage(packet.getCompatibilityVersion()));
+            sendIncompatibleMessage(player, packet.getCompatibilityVersion());
         } else {
             initializePlayerConnection(player);
         }
@@ -72,15 +70,13 @@ public class ServerVoiceEvents implements Listener {
         return clientCompatibilities.getOrDefault(playerUuid, -1) == Voicechat.COMPATIBILITY_VERSION;
     }
 
-    public static Component getIncompatibleMessage(int clientCompatibilityVersion) {
+    public static void sendIncompatibleMessage(Player player, int clientCompatibilityVersion) {
         if (clientCompatibilityVersion <= 6) {
             // Send a literal string, as we don't know if the translations exist on these versions
-            return Component.text(String.format(Voicechat.TRANSLATIONS.voicechatNotCompatibleMessage.get(), Voicechat.INSTANCE.getDescription().getVersion(), "Simple Voice Chat"));
+            player.sendMessage(String.format(Voicechat.TRANSLATIONS.voicechatNotCompatibleMessage.get(), Voicechat.INSTANCE.getDescription().getVersion(), "Simple Voice Chat"));
         } else {
             // This translation key is only available for compatibility version 7+
-            return Component.translatable("message.voicechat.incompatible_version",
-                    Component.text(Voicechat.INSTANCE.getDescription().getVersion()).toBuilder().decorate(TextDecoration.BOLD).build(),
-                    Component.text("Simple Voice Chat").toBuilder().decorate(TextDecoration.BOLD).build());
+            Voicechat.compatibility.sendIncompatibleMessage(player, Voicechat.INSTANCE.getDescription().getVersion(), "Simple Voice Chat");
         }
     }
 

@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import net.kyori.adventure.key.Key;
+import de.maxhenkel.voicechat.util.Key;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;

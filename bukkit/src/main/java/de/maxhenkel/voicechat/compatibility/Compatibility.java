@@ -1,9 +1,7 @@
 package de.maxhenkel.voicechat.compatibility;
 
 import com.mojang.brigadier.arguments.ArgumentType;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.key.Key;
-import org.bukkit.Server;
+import de.maxhenkel.voicechat.util.Key;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;
@@ -18,9 +16,19 @@ public interface Compatibility {
 
     Key createNamespacedKey(String key);
 
-    void sendMessage(Player player, Component component);
+    void sendJsonMessage(Player player, String json);
 
-    void sendStatusMessage(Player player, Component component);
+    void sendJsonStatusMessage(Player player, String json);
+
+    void sendTranslationMessage(Player player, String key, String... args);
+
+    void sendStatusMessage(Player player, String key, String... args);
+
+    String createTranslationMessage(String key, String... args);
+
+    void sendInviteMessage(Player player, Player commandSender, String groupName, String joinCommand);
+
+    void sendIncompatibleMessage(Player player, String pluginVersion, String pluginName);
 
     void runTask(Runnable runnable);
 
@@ -31,6 +39,8 @@ public interface Compatibility {
     ArgumentType<?> uuidArgument();
 
     String getBaseBukkitPackage();
+
+    String getBaseServerPackage();
 
     default <T> T callMethod(Object object, String... methodNames) {
         return callMethod(object, methodNames, new Class[]{});
@@ -136,6 +146,16 @@ public interface Compatibility {
         for (String className : classNames) {
             try {
                 return Class.forName(String.format("%s.%s", getBaseBukkitPackage(), className));
+            } catch (Throwable ignored) {
+            }
+        }
+        throw new IllegalStateException(String.format("Could not find any of the following classes: %s", String.join(", ", classNames)));
+    }
+
+    default Class<?> getServerClass(String... classNames) {
+        for (String className : classNames) {
+            try {
+                return Class.forName(String.format("%s.%s", getBaseServerPackage(), className));
             } catch (Throwable ignored) {
             }
         }

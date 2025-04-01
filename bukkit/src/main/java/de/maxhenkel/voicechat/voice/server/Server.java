@@ -10,7 +10,6 @@ import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.*;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -291,7 +290,7 @@ public class Server extends Thread {
         }
         if (!player.hasPermission(PermissionManager.SPEAK_PERMISSION)) {
             CooldownTimer.run("no-speak-" + playerUuid, () -> {
-                NetManager.sendStatusMessage(player, Component.translatable("message.voicechat.no_speak_permission"));
+                NetManager.sendStatusMessage(player, "message.voicechat.no_speak_permission");
             });
             return;
         }
@@ -396,7 +395,7 @@ public class Server extends Thread {
 
         if (!receiver.hasPermission(PermissionManager.LISTEN_PERMISSION)) {
             CooldownTimer.run(String.format("no-listen-%s", receiver.getUniqueId()), 30_000L, () -> {
-                NetManager.sendStatusMessage(receiver, Component.translatable("message.voicechat.no_listen_permission"));
+                NetManager.sendStatusMessage(receiver, "message.voicechat.no_listen_permission");
             });
             return;
         }

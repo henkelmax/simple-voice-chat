@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
-import net.kyori.adventure.key.Key;
+import de.maxhenkel.voicechat.util.Key;
 
 public class AddCategoryPacket implements Packet<AddCategoryPacket> {
 
