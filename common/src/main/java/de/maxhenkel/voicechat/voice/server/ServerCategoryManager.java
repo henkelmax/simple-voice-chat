@@ -45,12 +45,12 @@ public class ServerCategoryManager extends CategoryManager {
 
     private void broadcastAddCategory(MinecraftServer server, VolumeCategoryImpl category) {
         AddCategoryPacket packet = new AddCategoryPacket(category);
-        server.getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
+        server.theGame().playerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
     private void broadcastRemoveCategory(MinecraftServer server, String categoryId) {
         RemoveCategoryPacket packet = new RemoveCategoryPacket(categoryId);
-        server.getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
+        server.theGame().playerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
 }

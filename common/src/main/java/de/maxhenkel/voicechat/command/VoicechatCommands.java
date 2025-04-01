@@ -292,7 +292,7 @@ public class VoicechatCommands {
         try {
             return permission.hasPermission(stack.getPlayerOrException());
         } catch (CommandSyntaxException e) {
-            return stack.hasPermission(stack.getServer().getOperatorUserPermissionLevel());
+            return stack.hasPermission(stack.theGame().server().getOperatorUserPermissionLevel());
         }
     }
 

@@ -183,7 +183,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (server == null) {
             return null;
         }
-        net.minecraft.server.level.ServerPlayer player = server.getServer().getPlayerList().getPlayer(playerUuid);
+        net.minecraft.server.level.ServerPlayer player = server.getServer().theGame().playerList().getPlayer(playerUuid);
         if (player == null) {
             return null;
         }

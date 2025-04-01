@@ -158,12 +158,12 @@ public class ServerGroupManager {
 
     private void broadcastAddGroup(Group group) {
         AddGroupPacket packet = new AddGroupPacket(group.toClientGroup());
-        server.getServer().getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
+        server.getServer().theGame().playerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
     private void broadcastRemoveGroup(UUID group) {
         RemoveGroupPacket packet = new RemoveGroupPacket(group);
-        server.getServer().getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
+        server.getServer().theGame().playerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
     @Nullable

@@ -18,7 +18,7 @@ public class Channel<T extends Packet<T>> {
     }
 
     public void onServerPacket(ServerPlayer player, T packet) {
-        player.getServer().execute(() -> {
+        player.theGame().server().execute(() -> {
             if (serverListener != null) {
                 serverListener.onPacket(player, packet);
             }

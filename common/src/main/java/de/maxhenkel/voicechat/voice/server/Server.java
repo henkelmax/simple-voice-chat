@@ -288,7 +288,7 @@ public class Server extends Thread {
                         connections.put(connection.getPlayerUUID(), connection);
                         unCheckedConnections.remove(connection.getPlayerUUID());
                         Voicechat.LOGGER.info("Successfully validated connection of player {}", connection.getPlayerUUID());
-                        ServerPlayer player = server.getPlayerList().getPlayer(connection.getPlayerUUID());
+                        ServerPlayer player = server.theGame().playerList().getPlayer(connection.getPlayerUUID());
                         if (player != null) {
                             CommonCompatibilityManager.INSTANCE.emitServerVoiceChatConnectedEvent(player);
                             PluginManager.instance().onPlayerConnected(player);
@@ -322,7 +322,7 @@ public class Server extends Thread {
     }
 
     public void onMicPacket(UUID playerUuid, MicPacket packet) {
-        ServerPlayer player = server.getPlayerList().getPlayer(playerUuid);
+        ServerPlayer player = server.theGame().playerList().getPlayer(playerUuid);
         if (player == null) {
             return;
         }
@@ -366,7 +366,7 @@ public class Server extends Thread {
             if (senderState.getUuid().equals(state.getUuid())) {
                 continue;
             }
-            ServerPlayer p = server.getPlayerList().getPlayer(state.getUuid());
+            ServerPlayer p = server.theGame().playerList().getPlayer(state.getUuid());
             if (p == null) {
                 continue;
             }
@@ -476,7 +476,7 @@ public class Server extends Thread {
                 // Don't call disconnectClient here!
                 secrets.remove(connection.getPlayerUUID());
                 Voicechat.LOGGER.info("Player {} timed out", connection.getPlayerUUID());
-                ServerPlayer player = server.getPlayerList().getPlayer(connection.getPlayerUUID());
+                ServerPlayer player = server.theGame().playerList().getPlayer(connection.getPlayerUUID());
                 if (player != null) {
                     Voicechat.LOGGER.info("Reconnecting player {}", player.getName().getString());
                     Voicechat.SERVER.initializePlayerConnection(player);

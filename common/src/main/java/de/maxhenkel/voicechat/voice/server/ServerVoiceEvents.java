@@ -122,14 +122,14 @@ public class ServerVoiceEvents {
             public void run() {
                 timer.cancel();
                 timer.purge();
-                if (!serverPlayer.server.isRunning()) {
+                if (!serverPlayer.theGame().server().isRunning()) {
                     return;
                 }
                 if (!serverPlayer.connection.isAcceptingMessages()) {
                     return;
                 }
                 if (!isCompatible(serverPlayer)) {
-                    serverPlayer.server.execute(() -> {
+                    serverPlayer.theGame().server().execute(() -> {
                         serverPlayer.connection.disconnect(
                                 Component.literal(Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get().formatted(
                                         CommonCompatibilityManager.INSTANCE.getModName(),

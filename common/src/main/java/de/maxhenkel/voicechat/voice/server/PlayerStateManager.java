@@ -41,7 +41,7 @@ public class PlayerStateManager {
 
     public void broadcastState(PlayerState state) {
         PlayerStatePacket packet = new PlayerStatePacket(state);
-        voicechatServer.getServer().getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
+        voicechatServer.getServer().theGame().playerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
         PluginManager.instance().onPlayerStateChanged(state);
     }
 

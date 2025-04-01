@@ -44,7 +44,7 @@ public class PlayerStateChangedEventImpl extends ServerEventImpl implements Play
             if (server == null) {
                 return null;
             }
-            ServerPlayer player = server.getServer().getPlayerList().getPlayer(state.getUuid());
+            ServerPlayer player = server.getServer().theGame().playerList().getPlayer(state.getUuid());
             if (player == null) {
                 return null;
             }
