@@ -57,6 +57,7 @@ public final class Voicechat extends JavaPlugin {
 
         try {
             compatibility = BukkitCompatibilityManager.getCompatibility();
+            compatibility.init();
         } catch (IncompatibleBukkitVersionException e) {
             LOGGER.fatal("Incompatible Bukkit version: {}", e.getVersion());
             LOGGER.fatal("Disabling Simple Voice Chat");

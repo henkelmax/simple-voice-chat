@@ -1,2 +1,1 @@
-- Updated to 1.21.5
-- Fixed errors when sending chat messages in older versions
+- Improved performance

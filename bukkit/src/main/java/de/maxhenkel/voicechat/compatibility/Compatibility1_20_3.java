@@ -4,6 +4,8 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import de.maxhenkel.voicechat.BukkitVersion;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Method;
+
 public class Compatibility1_20_3 extends BaseCompatibility {
 
     public static final BukkitVersion VERSION_1_20_3 = BukkitVersion.parseBukkitVersion("1.20.3-R0.1");
@@ -17,6 +19,39 @@ public class Compatibility1_20_3 extends BaseCompatibility {
     public static final BukkitVersion VERSION_1_21_4 = BukkitVersion.parseBukkitVersion("1.21.4-R0.1");
 
     public static final Compatibility1_20_3 INSTANCE = new Compatibility1_20_3();
+
+    private Method playerArgument;
+    private Method uuidArgument;
+    private Method fromJson;
+    private Method getHandle;
+    private Method sendSystemMessage;
+
+    public void init() throws Exception {
+        super.init();
+
+        Class<?> argumentEntityClass = getClass(
+                "net.minecraft.commands.arguments.ArgumentEntity",
+                "net.minecraft.commands.arguments.EntityArgument"
+        );
+        playerArgument = getMethod(argumentEntityClass, "c", "entity");
+
+        Class<?> argumentUuidClass = getClass(
+                "net.minecraft.commands.arguments.ArgumentUUID",
+                "net.minecraft.commands.arguments.UuidArgument"
+        );
+        uuidArgument = getMethod(argumentUuidClass, "a", "uuid");
+
+        Class<?> craftPlayer = getBukkitClass("entity.CraftPlayer");
+        getHandle = getMethod(craftPlayer, "getHandle");
+        Class<?> componentClass = getClass(
+                "net.minecraft.network.chat.IChatBaseComponent",
+                "net.minecraft.network.chat.Component"
+        );
+        Class<?> craftChatMessageClass = getBukkitClass("util.CraftChatMessage");
+        fromJson = getMethod(craftChatMessageClass, new String[]{"fromJSON"}, new Class[]{String.class});
+        Class<?> player = getClass("net.minecraft.server.level.EntityPlayer");
+        sendSystemMessage = getMethod(player, new String[]{"a", "sendSystemMessage"}, new Class[]{componentClass, boolean.class});
+    }
 
     @Override
     public void sendJsonMessage(Player player, String json) {
@@ -45,31 +80,16 @@ public class Compatibility1_20_3 extends BaseCompatibility {
 
     @Override
     public ArgumentType<?> playerArgument() {
-        Class<?> argumentEntity = getClass(
-                "net.minecraft.commands.arguments.ArgumentEntity",
-                "net.minecraft.commands.arguments.EntityArgument"
-        );
-        return callMethod(argumentEntity, "c", "entity");
+        return call(playerArgument, null);
     }
 
     @Override
     public ArgumentType<?> uuidArgument() {
-        Class<?> argumentEntity = getClass(
-                "net.minecraft.commands.arguments.ArgumentUUID",
-                "net.minecraft.commands.arguments.UuidArgument"
-        );
-        return callMethod(argumentEntity, "a", "uuid");
+        return call(uuidArgument, null);
     }
 
     protected void send(Player player, String json, boolean status) {
-        Object entityPlayer = callMethod(player, "getHandle");
-        Class<?> iChatBaseComponentClass = getClass(
-                "net.minecraft.network.chat.IChatBaseComponent",
-                "net.minecraft.network.chat.Component"
-        );
-        Class<?> craftChatMessage = getBukkitClass("util.CraftChatMessage");
-        Object iChatBaseComponent = callMethod(craftChatMessage, "fromJSON", new Class[]{String.class}, json);
-        callMethod(entityPlayer, new String[]{"a", "sendSystemMessage"}, new Class[]{iChatBaseComponentClass, boolean.class}, iChatBaseComponent, status);
+        call(sendSystemMessage, call(getHandle, player), call(fromJson, null, json), status);
     }
 
 }

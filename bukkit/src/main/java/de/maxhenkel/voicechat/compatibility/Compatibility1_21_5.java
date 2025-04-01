@@ -16,18 +16,6 @@ public class Compatibility1_21_5 extends Compatibility1_20_3 {
         sendJsonMessage(player, constructInviteMessage(commandSender, groupName, joinCommand));
     }
 
-    @Override
-    public String createTranslationMessage(String key, String... args) {
-        return constructTranslationMessage(key, args);
-    }
-
-    public static String constructTranslationMessage(String key, String... args) {
-        JSONObject msg = new JSONObject();
-        msg.put("translate", key);
-        msg.put("with", args);
-        return msg.toString();
-    }
-
     public static String constructInviteMessage(Player commandSender, String groupName, String joinCommand) {
         JSONObject msg = new JSONObject();
         msg.put("translate", "message.voicechat.invite");
