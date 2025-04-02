@@ -14,8 +14,7 @@ public class CommodoreCommands {
         ArgumentType<?> playerArgument = playerArgument();
         ArgumentType<?> uuidArgument = uuidArgument();
         if (playerArgument == null || uuidArgument == null) {
-            //TODO
-            return;
+            throw new UnsupportedOperationException("Could not acquire argument types");
         }
         LiteralArgumentBuilder<?> literalBuilder = LiteralArgumentBuilder.literal(VoiceChatCommands.VOICECHAT_COMMAND)
                 .then(LiteralArgumentBuilder.literal("help"))
