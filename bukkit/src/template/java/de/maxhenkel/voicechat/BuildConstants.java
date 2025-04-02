@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat;
 public class BuildConstants {
 
     public static final int COMPATIBILITY_VERSION;
+    public static final String PLUGIN_NAME = "${plugin_name}";
     public static final String TARGET_BUKKIT_VERSION = "${target_bukkit_version}";
 
     static {

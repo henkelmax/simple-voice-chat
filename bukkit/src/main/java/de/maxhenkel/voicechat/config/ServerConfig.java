@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.config;
 
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
+import de.maxhenkel.voicechat.BuildConstants;
 import de.maxhenkel.voicechat.Voicechat;
 
 public class ServerConfig {
@@ -25,7 +26,7 @@ public class ServerConfig {
     public ConfigEntry<Boolean> allowPings;
 
     public ServerConfig(ConfigBuilder builder) {
-        builder.header(String.format("Simple Voice Chat server config v%s", Voicechat.INSTANCE.getDescription().getVersion()));
+        builder.header(String.format("%s server config v%s", BuildConstants.PLUGIN_NAME, Voicechat.INSTANCE.getDescription().getVersion()));
 
         voiceChatPort = builder
                 .integerEntry("port", 24454, -1, 65535,

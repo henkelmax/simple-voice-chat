@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
+import de.maxhenkel.voicechat.BuildConstants;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.RawUdpPacket;
 import de.maxhenkel.voicechat.api.VoicechatSocket;
@@ -41,7 +42,7 @@ public class VoicechatSocketImpl extends VoicechatSocketBase implements Voicecha
         } catch (BindException e) {
             Voicechat.LOGGER.fatal("Failed to run voice chat at UDP port {}, make sure no other application is running at that port", port);
             Bukkit.getScheduler().runTask(Voicechat.INSTANCE, () -> {
-                Voicechat.LOGGER.fatal("Disabling Simple Voice Chat");
+                Voicechat.LOGGER.fatal("Disabling {}", BuildConstants.PLUGIN_NAME);
                 Bukkit.getPluginManager().disablePlugin(Voicechat.INSTANCE);
             });
             throw e;

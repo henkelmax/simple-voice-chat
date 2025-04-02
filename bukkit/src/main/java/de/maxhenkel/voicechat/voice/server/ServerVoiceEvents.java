@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.voice.server;
 
+import de.maxhenkel.voicechat.BuildConstants;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
@@ -73,10 +74,10 @@ public class ServerVoiceEvents implements Listener {
     public static void sendIncompatibleMessage(Player player, int clientCompatibilityVersion) {
         if (clientCompatibilityVersion <= 6) {
             // Send a literal string, as we don't know if the translations exist on these versions
-            player.sendMessage(String.format(Voicechat.TRANSLATIONS.voicechatNotCompatibleMessage.get(), Voicechat.INSTANCE.getDescription().getVersion(), "Simple Voice Chat"));
+            player.sendMessage(String.format(Voicechat.TRANSLATIONS.voicechatNotCompatibleMessage.get(), Voicechat.INSTANCE.getDescription().getVersion(), BuildConstants.PLUGIN_NAME));
         } else {
             // This translation key is only available for compatibility version 7+
-            Voicechat.compatibility.sendIncompatibleMessage(player, Voicechat.INSTANCE.getDescription().getVersion(), "Simple Voice Chat");
+            Voicechat.compatibility.sendIncompatibleMessage(player, Voicechat.INSTANCE.getDescription().getVersion(), BuildConstants.PLUGIN_NAME);
         }
     }
 
@@ -111,7 +112,7 @@ public class ServerVoiceEvents implements Listener {
             if (!isCompatible(player)) {
                 player.kickPlayer(String.format(
                         Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get(),
-                        "Simple Voice Chat",
+                        BuildConstants.PLUGIN_NAME,
                         Voicechat.INSTANCE.getDescription().getVersion()
                 ));
             }

@@ -119,7 +119,7 @@ public final class Voicechat extends JavaPlugin {
         }
 
         if (System.getProperty("VOICECHAT_RELOADED") != null) {
-            LOGGER.error("Simple Voice Chat does not support reloads! Expect that things will break!");
+            LOGGER.error("{} does not support reloads! Expect that things will break!", BuildConstants.PLUGIN_NAME);
         }
         System.setProperty("VOICECHAT_RELOADED", "true");
 
@@ -134,7 +134,7 @@ public final class Voicechat extends JavaPlugin {
     }
 
     private void disablePlugin() {
-        LOGGER.fatal("Disabling Simple Voice Chat");
+        LOGGER.fatal("Disabling {}", BuildConstants.PLUGIN_NAME);
         Bukkit.getPluginManager().disablePlugin(this);
     }
 

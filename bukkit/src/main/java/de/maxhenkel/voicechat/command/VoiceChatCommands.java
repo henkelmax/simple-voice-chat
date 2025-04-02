@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.command;
 
+import de.maxhenkel.voicechat.BuildConstants;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
@@ -108,7 +109,7 @@ public class VoiceChatCommands implements CommandExecutor, TabCompleter {
         }
 
         if (!Voicechat.SERVER.isCompatible(player)) {
-            NetManager.sendMessage(commandSender, "message.voicechat.player_no_voicechat", player.getDisplayName(), "Simple Voice Chat");
+            NetManager.sendMessage(commandSender, "message.voicechat.player_no_voicechat", player.getDisplayName(), BuildConstants.PLUGIN_NAME);
             return true;
         }
 
@@ -175,7 +176,7 @@ public class VoiceChatCommands implements CommandExecutor, TabCompleter {
         }
 
         if (!Voicechat.SERVER.isCompatible(player)) {
-            NetManager.sendMessage(commandSender, "message.voicechat.player_no_voicechat", player.getDisplayName(), "Simple Voice Chat");
+            NetManager.sendMessage(commandSender, "message.voicechat.player_no_voicechat", player.getDisplayName(), BuildConstants.PLUGIN_NAME);
             return true;
         }
 
