@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +30,8 @@ import java.util.function.Supplier;
 @Mixin(PlayerEntry.class)
 public class PlayerEntryMixin {
 
-    private static final ResourceLocation GROUP_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/invite_button.png");
+    private static final ResourceLocation GROUP_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/invite_button.png");
+    private static final Duration TOOLTIP_DELAY = Duration.ofMillis(500L);
 
     @Shadow
     @Nullable
@@ -47,6 +49,7 @@ public class PlayerEntryMixin {
     @Shadow
     @Final
     private List<AbstractWidget> children;
+
     private ImageButton inviteButton;
     private boolean invited;
 
@@ -58,7 +61,7 @@ public class PlayerEntryMixin {
                 invited = true;
             });
             inviteButton.setTooltip(Tooltip.create(Component.translatable("message.voicechat.invite_player", playerName)));
-            inviteButton.setTooltipDelay(10);
+            inviteButton.setTooltipDelay(TOOLTIP_DELAY);
             this.children.add(inviteButton);
         }
     }
