@@ -55,6 +55,22 @@ public class BukkitVersion {
         return parseBukkitVersion(BuildConstants.TARGET_BUKKIT_VERSION);
     }
 
+    public int getMajor() {
+        return major;
+    }
+
+    public int getMinor() {
+        return minor;
+    }
+
+    public int getPatch() {
+        return patch;
+    }
+
+    public String getRevision() {
+        return revision;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

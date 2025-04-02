@@ -38,7 +38,7 @@ public class NetManager implements Listener {
             registerOutgoingPacket(AddCategoryPacket.class);
             registerOutgoingPacket(RemoveCategoryPacket.class);
         } catch (Exception e) {
-            throw new IllegalStateException("Failed to register voice chat packets");
+            throw new IllegalStateException("Failed to register voice chat packets", e);
         }
     }
 

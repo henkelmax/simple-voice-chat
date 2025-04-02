@@ -1,6 +1,8 @@
 package de.maxhenkel.voicechat.compatibility;
 
 import com.mojang.brigadier.arguments.ArgumentType;
+import de.maxhenkel.voicechat.BukkitVersion;
+import de.maxhenkel.voicechat.util.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -41,6 +43,22 @@ public class SpigotCompatibility extends BaseCompatibility {
 
     public static boolean isSpigotCompatible() {
         return doesMethodExist(Bukkit.class, "spigot");
+    }
+
+    @Override
+    public Key createNamespacedKey(String key) {
+        BukkitVersion version = BukkitVersion.getVersion();
+        if (version == null) {
+            return super.createNamespacedKey(key);
+        }
+        if (version.getMajor() != 1) {
+            return super.createNamespacedKey(key);
+        }
+        if (version.getMinor() >= 13) {
+            return super.createNamespacedKey(key);
+        }
+        // Use old channels for versions older than 1.13
+        return Key.of(Compatibility1_12.CHANNEL, key);
     }
 
     @Override
