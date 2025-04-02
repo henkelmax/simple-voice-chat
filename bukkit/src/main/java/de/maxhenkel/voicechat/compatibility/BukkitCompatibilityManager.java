@@ -70,9 +70,13 @@ public class BukkitCompatibilityManager {
                 compatibility = SpigotCompatibility.INSTANCE;
                 try {
                     compatibility.init();
+                } catch (CompatibilityReflectionException e) {
+                    compatibility = null;
+                    // Only log the message in case reflection fails
+                    Voicechat.LOGGER.error("Failed to load Spigot API compatibility mode: {}", e.getMessage());
                 } catch (Throwable t) {
                     compatibility = null;
-                    Voicechat.LOGGER.warn("Failed to load Spigot API compatibility mode", t);
+                    Voicechat.LOGGER.error("Failed to load Spigot API compatibility mode", t);
                 }
             } else {
                 Voicechat.LOGGER.error("Spigot API not found");

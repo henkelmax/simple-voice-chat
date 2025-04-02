@@ -51,7 +51,7 @@ public interface Compatibility {
             } catch (Throwable ignored) {
             }
         }
-        throw new IllegalStateException(String.format("Could not find any of the following classes: %s", String.join(", ", classNames)));
+        throw new CompatibilityReflectionException(String.format("Could not find any of the following classes: %s", String.join(", ", classNames)));
     }
 
     default Class<?> getServerClass(String... classNames) {
@@ -61,7 +61,7 @@ public interface Compatibility {
             } catch (Throwable ignored) {
             }
         }
-        throw new IllegalStateException(String.format("Could not find any of the following classes: %s", String.join(", ", classNames)));
+        throw new CompatibilityReflectionException(String.format("Could not find any of the following classes: %s", String.join(", ", classNames)));
     }
 
 }

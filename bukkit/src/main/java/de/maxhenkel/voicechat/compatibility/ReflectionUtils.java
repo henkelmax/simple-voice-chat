@@ -36,7 +36,7 @@ public class ReflectionUtils {
             } catch (Throwable ignored) {
             }
         }
-        throw new IllegalStateException(String.format("Could not find any of the following methods in the class %s: %s", clazz.getSimpleName(), String.join(", ", methodNames)));
+        throw new CompatibilityReflectionException(String.format("Could not find any of the following methods in the class %s: %s", clazz.getSimpleName(), String.join(", ", methodNames)));
     }
 
     public static <T> T callMethod(Class<?> object, String... methodNames) {
@@ -64,14 +64,14 @@ public class ReflectionUtils {
             } catch (Throwable ignored) {
             }
         }
-        throw new IllegalStateException(String.format("Could not find any of the following methods in the class %s: %s", clazz.getSimpleName(), String.join(", ", methodNames)));
+        throw new CompatibilityReflectionException(String.format("Could not find any of the following methods in the class %s: %s", clazz.getSimpleName(), String.join(", ", methodNames)));
     }
 
     public static <T> T call(Method method, @Nullable Object instance, Object... args) {
         try {
             return (T) method.invoke(instance, args);
-        } catch (Exception e) {
-            throw new IllegalStateException(String.format("Failed to call method %s", method.getName()));
+        } catch (Throwable t) {
+            throw new CompatibilityReflectionException(String.format("Failed to invoke method %s", method.getName()), t);
         }
     }
 
@@ -85,7 +85,7 @@ public class ReflectionUtils {
             constructor.setAccessible(true);
             return (T) constructor.newInstance(args);
         } catch (Throwable t) {
-            throw new IllegalStateException(t);
+            throw new CompatibilityReflectionException(String.format("Failed to invoke constructor of %s", object.getName()), t);
         }
     }
 
@@ -95,7 +95,7 @@ public class ReflectionUtils {
             constructor.setAccessible(true);
             return constructor;
         } catch (Throwable t) {
-            throw new IllegalStateException(t);
+            throw new CompatibilityReflectionException(String.format("Failed to get constructor of %s", object.getName()), t);
         }
     }
 
@@ -103,7 +103,7 @@ public class ReflectionUtils {
         try {
             return constructor.newInstance(args);
         } catch (Throwable t) {
-            throw new IllegalStateException(t);
+            throw new CompatibilityReflectionException(String.format("Failed to invoke constructor of %s", constructor.getDeclaringClass().getName()), t);
         }
     }
 
@@ -116,7 +116,7 @@ public class ReflectionUtils {
             } catch (Throwable ignored) {
             }
         }
-        throw new IllegalStateException(String.format("Could not find any of the following fields in the class %s: %s", object.getClass().getSimpleName(), String.join(", ", fieldNames)));
+        throw new CompatibilityReflectionException(String.format("Could not find any of the following fields in the class %s: %s", object.getClass().getSimpleName(), String.join(", ", fieldNames)));
     }
 
     public static <T> T getField(Class<?> clazz, String... fieldNames) {
@@ -128,7 +128,7 @@ public class ReflectionUtils {
             } catch (Throwable ignored) {
             }
         }
-        throw new IllegalStateException(String.format("Could not find any of the following fields in the class %s: %s", clazz.getSimpleName(), String.join(", ", fieldNames)));
+        throw new CompatibilityReflectionException(String.format("Could not find any of the following fields in the class %s: %s", clazz.getSimpleName(), String.join(", ", fieldNames)));
     }
 
     /**
@@ -142,7 +142,7 @@ public class ReflectionUtils {
             } catch (Throwable ignored) {
             }
         }
-        throw new IllegalStateException(String.format("Could not find any of the following classes: %s", String.join(", ", classNames)));
+        throw new CompatibilityReflectionException(String.format("Could not find any of the following classes: %s", String.join(", ", classNames)));
     }
 
     public static boolean doesClassExist(String... classNames) {
