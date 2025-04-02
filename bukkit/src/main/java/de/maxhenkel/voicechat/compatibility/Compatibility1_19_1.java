@@ -4,7 +4,9 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import de.maxhenkel.voicechat.BukkitVersion;
 import org.bukkit.entity.Player;
 
-public class Compatibility1_19_1 extends BaseCompatibility {
+import static de.maxhenkel.voicechat.compatibility.ReflectionUtils.*;
+
+public class Compatibility1_19_1 extends JsonMessageBaseCompatibility {
 
     public static final BukkitVersion VERSION_1_19_4 = BukkitVersion.parseBukkitVersion("1.19.4-R0.1");
     public static final BukkitVersion VERSION_1_19_3 = BukkitVersion.parseBukkitVersion("1.19.3-R0.1");
@@ -40,26 +42,26 @@ public class Compatibility1_19_1 extends BaseCompatibility {
 
     @Override
     public ArgumentType<?> playerArgument() {
-        Class<?> argumentEntity = getClass("net.minecraft.commands.arguments.ArgumentEntity");
+        Class<?> argumentEntity = getClazz("net.minecraft.commands.arguments.ArgumentEntity");
         return callMethod(argumentEntity, "c");
     }
 
     @Override
     public ArgumentType<?> uuidArgument() {
-        Class<?> argumentEntity = getClass("net.minecraft.commands.arguments.ArgumentUUID");
+        Class<?> argumentEntity = getClazz("net.minecraft.commands.arguments.ArgumentUUID");
         return callMethod(argumentEntity, "a");
     }
 
     private void send(Player player, String json, boolean status) {
         Object entityPlayer = callMethod(player, "getHandle");
         Object playerConnection = getField(entityPlayer, "b");
-        Class<?> packet = getClass("net.minecraft.network.protocol.Packet");
+        Class<?> packet = getClazz("net.minecraft.network.protocol.Packet");
         Class<?> craftChatMessage = getBukkitClass("util.CraftChatMessage");
 
-        Class<?> iChatBaseComponentClass = getClass("net.minecraft.network.chat.IChatBaseComponent");
+        Class<?> iChatBaseComponentClass = getClazz("net.minecraft.network.chat.IChatBaseComponent");
         Object iChatBaseComponent = callMethod(craftChatMessage, "fromJSON", new Class[]{String.class}, json);
 
-        Class<?> clientboundSystemChatPacketClass = getClass("net.minecraft.network.protocol.game.ClientboundSystemChatPacket");
+        Class<?> clientboundSystemChatPacketClass = getClazz("net.minecraft.network.protocol.game.ClientboundSystemChatPacket");
 
         Object clientboundSystemChatPacket = callConstructor(clientboundSystemChatPacketClass, new Class[]{iChatBaseComponentClass, boolean.class}, iChatBaseComponent, status);
 

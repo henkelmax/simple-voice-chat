@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.compatibility;
 import de.maxhenkel.voicechat.BukkitVersion;
 import de.maxhenkel.voicechat.Voicechat;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,13 +47,42 @@ public class BukkitCompatibilityManager {
         COMPATIBILITIES.put(Compatibility1_8.VERSION_1_8_8, Compatibility1_8.INSTANCE);
     }
 
-    public static Compatibility getCompatibility() throws Exception {
+    @Nullable
+    public static Compatibility loadCompatibility() {
         BukkitVersion version = BukkitVersion.getVersion();
+        if (version == null) {
+            return null;
+        }
         Voicechat.LOGGER.info("Initializing compatibility for Bukkit version {}", version);
         Compatibility compatibility = COMPATIBILITIES.get(version);
-        if (compatibility == null) {
-            throw new IncompatibleBukkitVersionException(version, String.format("Incompatible Bukkit version: %s", version));
+        if (compatibility != null) {
+            try {
+                compatibility.init();
+            } catch (Throwable t) {
+                compatibility = null;
+                Voicechat.LOGGER.warn("Failed to load compatibility for Bukkit version {}", version, t);
+            }
         }
+        if (compatibility == null) {
+            Voicechat.LOGGER.warn("Incompatible bukkit version {}, trying to fall back to Spigot API compatibility mode", version);
+            if (SpigotCompatibility.isSpigotCompatible()) {
+                Voicechat.LOGGER.warn("Falling back to compatibility mode, expect issues and lack of features");
+                compatibility = SpigotCompatibility.INSTANCE;
+                try {
+                    compatibility.init();
+                } catch (Throwable t) {
+                    compatibility = null;
+                    Voicechat.LOGGER.warn("Failed to load Spigot API compatibility mode", t);
+                }
+            } else {
+                Voicechat.LOGGER.error("Spigot API not found");
+            }
+        }
+
+        if (compatibility == null) {
+            Voicechat.LOGGER.fatal("Incompatible Bukkit version {}", version);
+        }
+
         return compatibility;
     }
 

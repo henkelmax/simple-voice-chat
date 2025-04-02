@@ -6,7 +6,9 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class Compatibility1_16 extends BaseCompatibility {
+import static de.maxhenkel.voicechat.compatibility.ReflectionUtils.*;
+
+public class Compatibility1_16 extends JsonMessageBaseCompatibility {
 
     public static final BukkitVersion VERSION_1_16_5 = BukkitVersion.parseBukkitVersion("1.16.5-R0.1");
     public static final BukkitVersion VERSION_1_16_4 = BukkitVersion.parseBukkitVersion("1.16.4-R0.1");

@@ -6,7 +6,9 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.Method;
 
-public class Compatibility1_20_3 extends BaseCompatibility {
+import static de.maxhenkel.voicechat.compatibility.ReflectionUtils.*;
+
+public class Compatibility1_20_3 extends JsonMessageBaseCompatibility {
 
     public static final BukkitVersion VERSION_1_20_3 = BukkitVersion.parseBukkitVersion("1.20.3-R0.1");
     public static final BukkitVersion VERSION_1_20_4 = BukkitVersion.parseBukkitVersion("1.20.4-R0.1");
@@ -29,13 +31,13 @@ public class Compatibility1_20_3 extends BaseCompatibility {
     public void init() throws Exception {
         super.init();
 
-        Class<?> argumentEntityClass = getClass(
+        Class<?> argumentEntityClass = getClazz(
                 "net.minecraft.commands.arguments.ArgumentEntity",
                 "net.minecraft.commands.arguments.EntityArgument"
         );
         playerArgument = getMethod(argumentEntityClass, "c", "entity");
 
-        Class<?> argumentUuidClass = getClass(
+        Class<?> argumentUuidClass = getClazz(
                 "net.minecraft.commands.arguments.ArgumentUUID",
                 "net.minecraft.commands.arguments.UuidArgument"
         );
@@ -43,13 +45,13 @@ public class Compatibility1_20_3 extends BaseCompatibility {
 
         Class<?> craftPlayer = getBukkitClass("entity.CraftPlayer");
         getHandle = getMethod(craftPlayer, "getHandle");
-        Class<?> componentClass = getClass(
+        Class<?> componentClass = getClazz(
                 "net.minecraft.network.chat.IChatBaseComponent",
                 "net.minecraft.network.chat.Component"
         );
         Class<?> craftChatMessageClass = getBukkitClass("util.CraftChatMessage");
         fromJson = getMethod(craftChatMessageClass, new String[]{"fromJSON"}, new Class[]{String.class});
-        Class<?> player = getClass("net.minecraft.server.level.EntityPlayer");
+        Class<?> player = getClazz("net.minecraft.server.level.EntityPlayer");
         sendSystemMessage = getMethod(player, new String[]{"a", "sendSystemMessage"}, new Class[]{componentClass, boolean.class});
     }
 

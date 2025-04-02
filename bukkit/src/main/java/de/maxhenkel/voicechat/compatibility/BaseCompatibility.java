@@ -9,6 +9,8 @@ import org.bukkit.plugin.Plugin;
 import java.lang.reflect.Method;
 import java.util.function.Consumer;
 
+import static de.maxhenkel.voicechat.compatibility.ReflectionUtils.*;
+
 public abstract class BaseCompatibility implements Compatibility {
 
     private String baseBukkitPackage;
@@ -58,16 +60,6 @@ public abstract class BaseCompatibility implements Compatibility {
     @Override
     public Key createNamespacedKey(String key) {
         return Key.of(key);
-    }
-
-    @Override
-    public void sendTranslationMessage(Player player, String key, String... args) {
-        sendJsonMessage(player, createTranslationMessage(key, args));
-    }
-
-    @Override
-    public void sendStatusMessage(Player player, String key, String... args) {
-        sendJsonStatusMessage(player, createTranslationMessage(key, args));
     }
 
     @Override

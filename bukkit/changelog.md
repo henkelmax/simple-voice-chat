@@ -1,1 +1,2 @@
 - Improved performance
+- Added fallback compatibility mode

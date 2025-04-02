@@ -6,7 +6,9 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class Compatibility1_17 extends BaseCompatibility {
+import static de.maxhenkel.voicechat.compatibility.ReflectionUtils.*;
+
+public class Compatibility1_17 extends JsonMessageBaseCompatibility {
 
     public static final BukkitVersion VERSION_1_17_1 = BukkitVersion.parseBukkitVersion("1.17.1-R0.1");
     public static final BukkitVersion VERSION_1_17 = BukkitVersion.parseBukkitVersion("1.17-R0.1");
@@ -15,14 +17,14 @@ public class Compatibility1_17 extends BaseCompatibility {
 
     @Override
     public void sendJsonMessage(Player player, String json) {
-        Class<?> chatMessageTypeClass = getClass("net.minecraft.network.chat.ChatMessageType");
+        Class<?> chatMessageTypeClass = getClazz("net.minecraft.network.chat.ChatMessageType");
         Object b = getField(chatMessageTypeClass, "b");
         send(player, json, b);
     }
 
     @Override
     public void sendJsonStatusMessage(Player player, String json) {
-        Class<?> chatMessageTypeClass = getClass("net.minecraft.network.chat.ChatMessageType");
+        Class<?> chatMessageTypeClass = getClazz("net.minecraft.network.chat.ChatMessageType");
         Object b = getField(chatMessageTypeClass, "c");
         send(player, json, b);
     }
@@ -57,15 +59,15 @@ public class Compatibility1_17 extends BaseCompatibility {
     private void send(Player player, String json, Object chatMessageType) {
         Object entityPlayer = callMethod(player, "getHandle");
         Object playerConnection = getField(entityPlayer, "b");
-        Class<?> packet = getClass("net.minecraft.network.protocol.Packet");
+        Class<?> packet = getClazz("net.minecraft.network.protocol.Packet");
         Class<?> craftChatMessage = getBukkitClass("util.CraftChatMessage");
 
-        Class<?> iChatBaseComponentClass = getClass("net.minecraft.network.chat.IChatBaseComponent");
+        Class<?> iChatBaseComponentClass = getClazz("net.minecraft.network.chat.IChatBaseComponent");
         Object iChatBaseComponent = callMethod(craftChatMessage, "fromJSON", new Class[]{String.class}, json);
 
-        Class<?> packetPlayOutChatClass = getClass("net.minecraft.network.protocol.game.PacketPlayOutChat");
+        Class<?> packetPlayOutChatClass = getClazz("net.minecraft.network.protocol.game.PacketPlayOutChat");
 
-        Class<?> chatMessageTypeClass = getClass("net.minecraft.network.chat.ChatMessageType");
+        Class<?> chatMessageTypeClass = getClazz("net.minecraft.network.chat.ChatMessageType");
 
         Object clientboundSystemChatPacket = callConstructor(packetPlayOutChatClass, new Class[]{iChatBaseComponentClass, chatMessageTypeClass, UUID.class}, iChatBaseComponent, chatMessageType, NUL_UUID);
 

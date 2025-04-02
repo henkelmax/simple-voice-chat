@@ -7,7 +7,9 @@ import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class Compatibility1_8 extends BaseCompatibility {
+import static de.maxhenkel.voicechat.compatibility.ReflectionUtils.*;
+
+public class Compatibility1_8 extends JsonMessageBaseCompatibility {
 
     public static final BukkitVersion VERSION_1_8_8 = BukkitVersion.parseBukkitVersion("1.8.8-R0.1");
 

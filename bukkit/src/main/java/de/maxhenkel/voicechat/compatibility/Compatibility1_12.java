@@ -5,7 +5,9 @@ import de.maxhenkel.voicechat.BukkitVersion;
 import de.maxhenkel.voicechat.util.Key;
 import org.bukkit.entity.Player;
 
-public class Compatibility1_12 extends BaseCompatibility {
+import static de.maxhenkel.voicechat.compatibility.ReflectionUtils.*;
+
+public class Compatibility1_12 extends JsonMessageBaseCompatibility {
 
     public static final String CHANNEL = "vc";
 

@@ -5,7 +5,6 @@ import de.maxhenkel.voicechat.api.BukkitVoicechatService;
 import de.maxhenkel.voicechat.command.VoiceChatCommands;
 import de.maxhenkel.voicechat.compatibility.BukkitCompatibilityManager;
 import de.maxhenkel.voicechat.compatibility.Compatibility;
-import de.maxhenkel.voicechat.compatibility.IncompatibleBukkitVersionException;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.config.Translations;
 import de.maxhenkel.voicechat.integration.commodore.CommodoreCommands;
@@ -56,17 +55,14 @@ public final class Voicechat extends JavaPlugin {
         }
 
         try {
-            compatibility = BukkitCompatibilityManager.getCompatibility();
-            compatibility.init();
-        } catch (IncompatibleBukkitVersionException e) {
-            LOGGER.fatal("Incompatible Bukkit version: {}", e.getVersion());
-            LOGGER.fatal("Disabling Simple Voice Chat");
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
+            compatibility = BukkitCompatibilityManager.loadCompatibility();
+            if (compatibility == null) {
+                disablePlugin();
+                return;
+            }
         } catch (Throwable t) {
-            LOGGER.fatal("Failed to load compatibility", t);
-            LOGGER.fatal("Disabling Simple Voice Chat");
-            Bukkit.getPluginManager().disablePlugin(this);
+            LOGGER.fatal("An unexpected error occurred while loading compatibility", t);
+            disablePlugin();
             return;
         }
 
@@ -132,6 +128,11 @@ public final class Voicechat extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(SERVER, this);
             ServerPlayerManager.init(this);
         });
+    }
+
+    private void disablePlugin() {
+        LOGGER.fatal("Disabling Simple Voice Chat");
+        Bukkit.getPluginManager().disablePlugin(this);
     }
 
     @Override
