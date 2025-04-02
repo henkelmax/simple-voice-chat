@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.compatibility.Compatibility;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.config.Translations;
 import de.maxhenkel.voicechat.integration.commodore.CommodoreCommands;
+import de.maxhenkel.voicechat.integration.commodore.MissingArgumentTypeException;
 import de.maxhenkel.voicechat.integration.placeholderapi.VoicechatExpansion;
 import de.maxhenkel.voicechat.integration.viaversion.ViaVersionCompatibility;
 import de.maxhenkel.voicechat.logging.JavaLoggingLogger;
@@ -90,6 +91,8 @@ public final class Voicechat extends JavaPlugin {
                 } else {
                     LOGGER.warn("Commodore command completion is not supported");
                 }
+            } catch (MissingArgumentTypeException t) {
+                LOGGER.warn("Failed to initialize commodore command completion: {}", t.getMessage());
             } catch (Throwable t) {
                 LOGGER.warn("Failed to initialize commodore command completion", t);
             }

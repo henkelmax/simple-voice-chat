@@ -10,11 +10,11 @@ import me.lucko.commodore.Commodore;
 
 public class CommodoreCommands {
 
-    public static void registerCompletions(Commodore commodore) {
+    public static void registerCompletions(Commodore commodore) throws MissingArgumentTypeException {
         ArgumentType<?> playerArgument = playerArgument();
         ArgumentType<?> uuidArgument = uuidArgument();
         if (playerArgument == null || uuidArgument == null) {
-            throw new UnsupportedOperationException("Could not acquire argument types");
+            throw new MissingArgumentTypeException("Could not acquire argument types");
         }
         LiteralArgumentBuilder<?> literalBuilder = LiteralArgumentBuilder.literal(VoiceChatCommands.VOICECHAT_COMMAND)
                 .then(LiteralArgumentBuilder.literal("help"))
