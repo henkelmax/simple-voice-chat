@@ -53,38 +53,54 @@ public class BukkitCompatibilityManager {
         if (version == null) {
             return null;
         }
-        Voicechat.LOGGER.info("Initializing compatibility for Bukkit version {}", version);
+        Voicechat.LOGGER.info("Initializing compatibility for version {}", version);
         Compatibility compatibility = COMPATIBILITIES.get(version);
         if (compatibility != null) {
             try {
                 compatibility.init();
             } catch (Throwable t) {
                 compatibility = null;
-                Voicechat.LOGGER.warn("Failed to load compatibility for Bukkit version {}", version, t);
+                Voicechat.LOGGER.warn("Failed to load compatibility for version {}", version, t);
             }
         }
         if (compatibility == null) {
-            Voicechat.LOGGER.warn("Incompatible bukkit version {}, trying to fall back to Spigot API compatibility mode", version);
+            Voicechat.LOGGER.warn("Incompatible version {}, trying to fall back to Spigot API compatibility mode", version);
             if (SpigotCompatibility.isSpigotCompatible()) {
-                Voicechat.LOGGER.warn("Falling back to compatibility mode, expect issues and lack of features");
                 compatibility = SpigotCompatibility.INSTANCE;
                 try {
                     compatibility.init();
+                    Voicechat.LOGGER.warn("Falling back to Spigot API compatibility mode, expect issues and lack of features");
                 } catch (CompatibilityReflectionException e) {
                     compatibility = null;
                     // Only log the message in case reflection fails
-                    Voicechat.LOGGER.error("Failed to load Spigot API compatibility mode: {}", e.getMessage());
+                    Voicechat.LOGGER.warn("Failed to load Spigot API compatibility mode: {}", e.getMessage());
                 } catch (Throwable t) {
                     compatibility = null;
-                    Voicechat.LOGGER.error("Failed to load Spigot API compatibility mode", t);
+                    Voicechat.LOGGER.warn("Failed to load Spigot API compatibility mode", t);
                 }
             } else {
-                Voicechat.LOGGER.error("Spigot API not found");
+                Voicechat.LOGGER.warn("Spigot API not found");
             }
         }
 
         if (compatibility == null) {
-            Voicechat.LOGGER.fatal("Incompatible Bukkit version {}", version);
+            compatibility = FallbackCompatibility.INSTANCE;
+            try {
+                compatibility.init();
+                Voicechat.LOGGER.warn("Falling back to Bukkit compatibility mode, expect issues and lack of features");
+                Voicechat.LOGGER.warn("Chat messages won't be translatable");
+            } catch (CompatibilityReflectionException e) {
+                compatibility = null;
+                // Only log the message in case reflection fails
+                Voicechat.LOGGER.warn("Failed to load Bukkit compatibility mode: {}", e.getMessage());
+            } catch (Throwable t) {
+                compatibility = null;
+                Voicechat.LOGGER.warn("Failed to load Bukkit compatibility mode", t);
+            }
+        }
+
+        if (compatibility == null) {
+            Voicechat.LOGGER.fatal("Could not load any compatibility for {}", version);
         }
 
         return compatibility;

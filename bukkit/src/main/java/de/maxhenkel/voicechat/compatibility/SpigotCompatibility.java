@@ -1,8 +1,6 @@
 package de.maxhenkel.voicechat.compatibility;
 
 import com.mojang.brigadier.arguments.ArgumentType;
-import de.maxhenkel.voicechat.BukkitVersion;
-import de.maxhenkel.voicechat.util.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -12,7 +10,7 @@ import java.lang.reflect.Method;
 
 import static de.maxhenkel.voicechat.compatibility.ReflectionUtils.*;
 
-public class SpigotCompatibility extends BaseCompatibility {
+public class SpigotCompatibility extends FallbackCompatibility {
 
     public static final SpigotCompatibility INSTANCE = new SpigotCompatibility();
 
@@ -46,22 +44,6 @@ public class SpigotCompatibility extends BaseCompatibility {
     }
 
     @Override
-    public Key createNamespacedKey(String key) {
-        BukkitVersion version = BukkitVersion.getVersion();
-        if (version == null) {
-            return super.createNamespacedKey(key);
-        }
-        if (version.getMajor() != 1) {
-            return super.createNamespacedKey(key);
-        }
-        if (version.getMinor() >= 13) {
-            return super.createNamespacedKey(key);
-        }
-        // Use old channels for versions older than 1.13
-        return Key.of(Compatibility1_12.CHANNEL, key);
-    }
-
-    @Override
     public void sendTranslationMessage(Player player, String key, String... args) {
         messageSender.send(player, false, key, args);
     }
@@ -69,16 +51,6 @@ public class SpigotCompatibility extends BaseCompatibility {
     @Override
     public void sendStatusMessage(Player player, String key, String... args) {
         messageSender.send(player, true, key, args);
-    }
-
-    @Override
-    public void sendInviteMessage(Player player, Player commandSender, String groupName, String joinCommand) {
-        sendTranslationMessage(player, "message.voicechat.invite", commandSender.getName(), groupName, "");
-    }
-
-    @Override
-    public void sendIncompatibleMessage(Player player, String pluginVersion, String pluginName) {
-        sendTranslationMessage(player, "message.voicechat.incompatible_version", pluginVersion, pluginName);
     }
 
     @Override

@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 buildscript {
     dependencies {
         classpath "info.u-team.curse_gradle_uploader:curse_gradle_uploader:${curse_gradle_uploader_version}"
@@ -59,17 +61,55 @@ sourceSets {
     }
 }
 
-tasks.register('generateJava', Copy) {
+tasks.register('generateBuildConstants', Copy) {
     from 'src/template/java'
     into "${layout.buildDirectory.asFile.get()}/generated/java"
     expand 'compatibility_version': voicechat_compatibility_version,
             'target_bukkit_version': bukkit_version
 }
+compileJava.dependsOn generateBuildConstants
+
+tasks.register('generateFallbackTranslations') {
+    def inputFile = project(":common").file('src/main/resources/assets/voicechat/lang/en_us.json')
+    def outputFile = file("${layout.buildDirectory.asFile.get()}/generated/java/de/maxhenkel/voicechat/FallbackTranslations.java")
+    inputs.file inputFile
+    outputs.file outputFile
+
+    doLast {
+        def json = new JsonSlurper().parse(inputFile)
+        outputFile.getParentFile().mkdirs()
+
+        def stringBuilder = new StringBuilder()
+        json.each { key, value ->
+            def escapedKey = key.toString().replace('\\', '\\\\').replace('\n', '\\n').replace('"', '\\"')
+            def escapedValue = value.toString().replace('\\', '\\\\').replace('\n', '\\n').replace('"', '\\"')
+            stringBuilder.append("        translations.put(\"${escapedKey}\", \"${escapedValue}\");\n")
+        }
+
+        outputFile.text = """package de.maxhenkel.voicechat;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+public class FallbackTranslations {
+
+    public static final Map<String, String> FALLBACK_TRANSLATIONS;
+
+    static {
+        Map<String, String> translations = new HashMap<>();
+${stringBuilder.toString()}
+        FALLBACK_TRANSLATIONS = Collections.unmodifiableMap(translations);
+    }
+}
+"""
+    }
+}
+compileJava.dependsOn generateFallbackTranslations
 
 sourceSets.main.java {
     srcDir "${layout.buildDirectory.asFile.get()}/generated/java"
 }
-compileJava.dependsOn generateJava
 
 shadowJar {
     relocate 'org.json', 'de.maxhenkel.voicechat.org.json'
