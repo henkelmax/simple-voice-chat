@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import javax.annotation.Nullable;
 
 @Mixin(IntegratedServer.class)
-public class IntegratedServerMixin {
+public abstract class IntegratedServerMixin {
 
     @Inject(method = "publishServer", at = @At(value = "RETURN"))
     public void publishServer(@Nullable GameType gameType, boolean cheats, int port, CallbackInfoReturnable<Boolean> callbackInfo) {

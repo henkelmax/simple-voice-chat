@@ -42,7 +42,7 @@ repositories {
 dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
 
-    include(modImplementation('org.quiltmc.quilted-fabric-api:fabric-key-binding-api-v1:11.0.0-alpha.1+0.100.4-1.21'))
+    include(modImplementation('org.quiltmc.quilted-fabric-api:fabric-key-binding-api-v1:11.0.0-alpha.3+0.102.0-1.21'))
 
     include(modImplementation("org.quiltmc.qsl.core:qsl_base:${qsl_version}"))
     include(modImplementation("org.quiltmc.qsl.core:registry:${qsl_version}"))
@@ -60,7 +60,7 @@ dependencies {
     modCompileOnly("me.lucko:fabric-permissions-api:${fabric_permission_api_version}") {
         transitive false
     }
-    modCompileOnly("com.viaversion:viaversion-fabric:${viaversion_version}") {
+    modCompileOnly("com.viaversion:viaversion-common:${viaversion_version}") {
         transitive false
     }
 
