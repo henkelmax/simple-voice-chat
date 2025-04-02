@@ -53,7 +53,14 @@ public class BukkitCompatibilityManager {
         if (version == null) {
             return null;
         }
+
         Voicechat.LOGGER.info("Initializing compatibility for version {}", version);
+
+        if (version.getMajor() == 1 && version.getMinor() <= 7) {
+            Voicechat.LOGGER.fatal("You are running a server that's too old to be able to join with any voice chat client");
+            return null;
+        }
+
         Compatibility compatibility = COMPATIBILITIES.get(version);
         if (compatibility != null) {
             try {
