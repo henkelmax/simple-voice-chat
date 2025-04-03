@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.config;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
 
-public class PaperTranslations extends Translations{
+public class PaperTranslations extends Translations {
 
     public final ConfigEntry<String> placeholderVoicechatInstalled;
     public final ConfigEntry<String> placeholderVoicechatNotInstalled;
