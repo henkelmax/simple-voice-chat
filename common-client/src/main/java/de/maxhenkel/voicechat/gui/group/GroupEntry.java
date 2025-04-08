@@ -11,7 +11,6 @@ import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -43,32 +42,32 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
     public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
         guiGraphics.fill(left, top, left + width, top + height, BG_FILL);
 
-        guiGraphics.pose().pushPose();
+        guiGraphics.pose().pushMatrix();
         int outlineSize = height - PADDING * 2;
 
-        guiGraphics.pose().translate(left + PADDING, top + PADDING, 0D);
+        guiGraphics.pose().translate(left + PADDING, top + PADDING);
         float scale = outlineSize / 10F;
-        guiGraphics.pose().scale(scale, scale, scale);
+        guiGraphics.pose().scale(scale, scale);
 
         if (!state.isDisabled()) {
             ClientVoicechat client = ClientManager.getClient();
             if (client != null && client.getTalkCache().isTalking(state.getUuid())) {
-                guiGraphics.blit(RenderType::guiTextured, TALK_OUTLINE, 0, 0, 0, 0, 10, 10, 16, 16);
+                guiGraphics.blit(TALK_OUTLINE, 0, 0, 0, 0, 10, 10, 16, 16);
             }
         }
 
         PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
-        guiGraphics.blit(RenderType::guiTextured, skin.texture(), 1, 1, 8, 8, 8, 8, 64, 64);
-        guiGraphics.blit(RenderType::guiTextured, skin.texture(), 1, 1, 40, 8, 8, 8, 64, 64);
+        guiGraphics.blit(skin.texture(), 1, 1, 8, 8, 8, 8, 64, 64);
+        guiGraphics.blit(skin.texture(), 1, 1, 40, 8, 8, 8, 64, 64);
 
         if (state.isDisabled()) {
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(1D, 1D, 0D);
-            guiGraphics.pose().scale(0.5F, 0.5F, 1F);
-            guiGraphics.blit(RenderType::guiTextured, SPEAKER_OFF, 0, 0, 0, 0, 16, 16, 16, 16);
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().pushMatrix();
+            guiGraphics.pose().translate(1F, 1F);
+            guiGraphics.pose().scale(0.5F, 0.5F);
+            guiGraphics.blit(SPEAKER_OFF, 0, 0, 0, 0, 16, 16, 16, 16);
+            guiGraphics.pose().popMatrix();
         }
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
 
         Component name = Component.literal(state.getName());
         guiGraphics.drawString(minecraft.font, name, left + PADDING + outlineSize + PADDING, top + height / 2 - minecraft.font.lineHeight / 2, PLAYER_NAME_COLOR, false);

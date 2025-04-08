@@ -158,13 +158,13 @@ public class DebugOverlay {
             if (text == null || text.isEmpty()) {
                 continue;
             }
-            gui.pose().pushPose();
+            gui.pose().pushMatrix();
             int width = mc.font.width(text);
-            gui.pose().translate(mc.getWindow().getGuiScaledWidth() - width - LEFT_PADDING, 25F + i * (mc.font.lineHeight + 1F), 0F);
+            gui.pose().translate(mc.getWindow().getGuiScaledWidth() - width - LEFT_PADDING, 25F + i * (mc.font.lineHeight + 1F));
             gui.fill(-1, -1, width, mc.font.lineHeight, 0x90505050);
             gui.drawString(mc.font, text, 0, 0, 0xFFFFFF, false);
 
-            gui.pose().popPose();
+            gui.pose().popMatrix();
         }
     }
 

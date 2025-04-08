@@ -27,7 +27,7 @@ public class VoiceChatResourcePack extends AbstractPackResources implements Pack
     }
 
     public Pack toPack() {
-        int packVersion = SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES);
+        int packVersion = SharedConstants.getCurrentVersion().packVersion(PackType.CLIENT_RESOURCES);
         Pack.Metadata meta = Pack.readPackMetadata(location(), this, packVersion);
         if (meta == null) {
             throw new IllegalStateException("Could not find builtin resource pack info");

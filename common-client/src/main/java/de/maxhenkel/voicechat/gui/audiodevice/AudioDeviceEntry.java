@@ -4,7 +4,6 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 
@@ -48,22 +47,22 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
         }
 
         if (icon != null) {
-            guiGraphics.blit(RenderType::guiTextured, icon, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
+            guiGraphics.blit(icon, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
         }
         if (selected) {
-            guiGraphics.blit(RenderType::guiTextured, SELECTED, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
+            guiGraphics.blit(SELECTED, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
         }
 
         float deviceWidth = minecraft.font.width(visibleDeviceName);
         float space = width - PADDING - 16 - PADDING - PADDING;
         float scale = Math.min(space / deviceWidth, 1F);
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(left + PADDING + 16 + PADDING, top + height / 2 - (minecraft.font.lineHeight * scale) / 2, 0D);
-        guiGraphics.pose().scale(scale, scale, 1F);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(left + PADDING + 16 + PADDING, top + height / 2 - (minecraft.font.lineHeight * scale) / 2);
+        guiGraphics.pose().scale(scale, scale);
 
         guiGraphics.drawString(minecraft.font, visibleDeviceName, 0, 0, DEVICE_NAME_COLOR, false);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
     }
 
     public String getDevice() {

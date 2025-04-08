@@ -1,2 +1,1 @@
-- Updated Turkish translation
-- Updated Brazilian Portuguese translation
+- Updated to 25w15a

@@ -79,22 +79,22 @@ public class RenderEvents {
     }
 
     private void renderIcon(GuiGraphics guiGraphics, ResourceLocation texture) {
-        guiGraphics.pose().pushPose();
+        guiGraphics.pose().pushMatrix();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         int posX = VoicechatClient.CLIENT_CONFIG.hudIconPosX.get();
         int posY = VoicechatClient.CLIENT_CONFIG.hudIconPosY.get();
         if (posX < 0) {
-            guiGraphics.pose().translate(minecraft.getWindow().getGuiScaledWidth(), 0D, 0D);
+            guiGraphics.pose().translate(minecraft.getWindow().getGuiScaledWidth(), 0F);
         }
         if (posY < 0) {
-            guiGraphics.pose().translate(0D, minecraft.getWindow().getGuiScaledHeight(), 0D);
+            guiGraphics.pose().translate(0F, minecraft.getWindow().getGuiScaledHeight());
         }
-        guiGraphics.pose().translate(posX, posY, 0D);
+        guiGraphics.pose().translate(posX, posY);
         float scale = VoicechatClient.CLIENT_CONFIG.hudIconScale.get().floatValue();
-        guiGraphics.pose().scale(scale, scale, 1F);
+        guiGraphics.pose().scale(scale, scale);
 
-        guiGraphics.blit(RenderType::guiTextured, texture, posX < 0 ? -16 : 0, posY < 0 ? -16 : 0, 0, 0, 16, 16, 16, 16);
-        guiGraphics.pose().popPose();
+        guiGraphics.blit(texture, posX < 0 ? -16 : 0, posY < 0 ? -16 : 0, 0, 0, 16, 16, 16, 16);
+        guiGraphics.pose().popMatrix();
     }
 
     private void onRenderName(EntityRenderState renderState, Component component, PoseStack stack, MultiBufferSource vertexConsumers, int light) {

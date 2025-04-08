@@ -11,7 +11,6 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -55,11 +54,11 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
         boolean hasPassword = group.group.hasPassword();
 
         if (hasPassword) {
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(left + PADDING, top + height / 2F - 8F, 0F);
-            guiGraphics.pose().scale(16F / 12F, 16F / 12F, 1F);
-            guiGraphics.blit(RenderType::guiTextured, LOCK, 0, 0, 0, 0, 12, 12, 16, 16);
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().pushMatrix();
+            guiGraphics.pose().translate(left + PADDING, top + height / 2F - 8F);
+            guiGraphics.pose().scale(16F / 12F, 16F / 12F);
+            guiGraphics.blit(LOCK, 0, 0, 0, 0, 12, 12, 16, 16);
+            guiGraphics.pose().popMatrix();
         }
 
         MutableComponent groupName = Component.literal(group.group.getName());
@@ -83,14 +82,14 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             int headPosX = left + width - SKIN_SIZE - PADDING - headXIndex * (SKIN_SIZE + 1);
             int headPosY = top + height / 2 - ((SKIN_SIZE * 2 + 2) / 2) + ((SKIN_SIZE * 2 + 2) / 2) * headYIndex;
 
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(headPosX, headPosY, 0);
+            guiGraphics.pose().pushMatrix();
+            guiGraphics.pose().translate(headPosX, headPosY);
             float scale = (float) SKIN_SIZE / 8F;
-            guiGraphics.pose().scale(scale, scale, scale);
+            guiGraphics.pose().scale(scale, scale);
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
-            guiGraphics.blit(RenderType::guiTextured, skin.texture(), 0, 0, 8, 8, 8, 8, 64, 64);
-            guiGraphics.blit(RenderType::guiTextured, skin.texture(), 0, 0, 40, 8, 8, 8, 64, 64);
-            guiGraphics.pose().popPose();
+            guiGraphics.blit(skin.texture(), 0, 0, 8, 8, 8, 8, 64, 64);
+            guiGraphics.blit(skin.texture(), 0, 0, 40, 8, 8, 8, 64, 64);
+            guiGraphics.pose().popMatrix();
         }
 
         if (!hovered) {
