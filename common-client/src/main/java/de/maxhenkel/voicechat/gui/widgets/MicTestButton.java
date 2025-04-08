@@ -9,8 +9,8 @@ import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -93,16 +93,41 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
         defaultButtonNarrationText(narrationElementOutput);
     }
 
+    @Nullable
+    private State lastState;
+
     @Override
-    public void onTooltip(ImageButton button, GuiGraphics guiGraphics, Font font, int mouseX, int mouseY) {
-        if (!active) {
-            guiGraphics.renderTooltip(font, TEST_UNAVAILABLE, mouseX, mouseY);
-            return;
+    public void updateTooltip(ImageButton button) {
+        State state = getState();
+        if (state != lastState) {
+            lastState = state;
+            button.setTooltip(Tooltip.create(state.getComponent()));
         }
-        if (micActive) {
-            guiGraphics.renderTooltip(font, TEST_ENABLED, mouseX, mouseY);
+    }
+
+    private State getState() {
+        if (!active) {
+            return State.UNAVAILABLE;
+        } else if (micActive) {
+            return State.ENABLED;
         } else {
-            guiGraphics.renderTooltip(font, TEST_DISABLED, mouseX, mouseY);
+            return State.DISABLED;
+        }
+    }
+
+    private enum State {
+        ENABLED(TEST_ENABLED),
+        DISABLED(TEST_DISABLED),
+        UNAVAILABLE(TEST_UNAVAILABLE);
+
+        private final Component component;
+
+        State(Component component) {
+            this.component = component;
+        }
+
+        public Component getComponent() {
+            return component;
         }
     }
 
