@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -52,16 +51,9 @@ public class ImageButton extends AbstractButton {
         super.renderWidget(guiGraphics, mouseX, mouseY, f);
         renderImage(guiGraphics, mouseX, mouseY);
 
-        if (isHovered) {
-            renderToolTip(guiGraphics, mc.font, mouseX, mouseY);
+        if (tooltipSupplier != null) {
+            tooltipSupplier.updateTooltip(this);
         }
-    }
-
-    public void renderToolTip(GuiGraphics guiGraphics, Font font, int mouseX, int mouseY) {
-        if (tooltipSupplier == null) {
-            return;
-        }
-        tooltipSupplier.onTooltip(this, guiGraphics, font, mouseX, mouseY);
     }
 
     @Override
@@ -70,7 +62,7 @@ public class ImageButton extends AbstractButton {
     }
 
     public interface TooltipSupplier {
-        void onTooltip(ImageButton button, GuiGraphics guiGraphics, Font font, int mouseX, int mouseY);
+        void updateTooltip(ImageButton button);
     }
 
     public interface PressAction {
