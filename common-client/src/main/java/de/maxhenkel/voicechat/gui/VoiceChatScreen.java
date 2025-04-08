@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.group.GroupScreen;
@@ -18,6 +17,7 @@ import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -66,9 +66,8 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
 
         ImageButton volumes = new ImageButton(guiLeft + 6 + 20 + 2 + 20 + 2, guiTop + ySize - 6 - 20, VOLUMES, button -> {
             minecraft.setScreen(new AdjustVolumesScreen());
-        }, (button, guiGraphics, font, mouseX, mouseY) -> {
-            guiGraphics.renderTooltip(font, ADJUST_PLAYER_VOLUMES, mouseX, mouseY);
         });
+        volumes.setTooltip(Tooltip.create(ADJUST_PLAYER_VOLUMES));
         addRenderableWidget(volumes);
 
         if (client != null && VoicechatClient.CLIENT_CONFIG.useNatives.get()) {
