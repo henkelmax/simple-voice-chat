@@ -1,1 +1,2 @@
 - Improved tooltip rendering performance
+- Fixed ping buffer size
