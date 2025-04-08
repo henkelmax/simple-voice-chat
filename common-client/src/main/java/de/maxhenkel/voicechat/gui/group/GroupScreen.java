@@ -17,12 +17,11 @@ import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-
-import java.util.Collections;
 
 public class GroupScreen extends ListScreenBase {
 
@@ -92,9 +91,8 @@ public class GroupScreen extends ListScreenBase {
         leave = new ImageButton(guiLeft + xSize - buttonSize - 7, buttonY, LEAVE, button -> {
             ClientServerNetManager.sendToServer(new LeaveGroupPacket());
             minecraft.setScreen(new JoinGroupScreen());
-        }, (button, guiGraphics, font, mouseX, mouseY) -> {
-            guiGraphics.renderTooltip(font, Collections.singletonList(LEAVE_GROUP.getVisualOrderText()), mouseX, mouseY);
         });
+        leave.setTooltip(Tooltip.create(LEAVE_GROUP));
         addRenderableWidget(leave);
 
         checkButtons();
