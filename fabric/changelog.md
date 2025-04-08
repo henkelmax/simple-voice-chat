@@ -1,1 +1,2 @@
-- Updated to 1.21.6-pre3
+- Improved tooltip rendering performance
+- Fixed ping buffer size
