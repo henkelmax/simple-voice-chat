@@ -12,9 +12,9 @@ import java.util.List;
 
 public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
 
-    public static final Component DISABLE_ENABLED = new TranslatableComponent("message.voicechat.disable.enabled");
-    public static final Component DISABLE_DISABLED = new TranslatableComponent("message.voicechat.disable.disabled");
-    public static final Component DISABLE_NO_SPEAKER = new TranslatableComponent("message.voicechat.disable.no_speaker");
+    public static final TranslatableComponent DISABLE_ENABLED = new TranslatableComponent("message.voicechat.disable.enabled");
+    public static final TranslatableComponent DISABLE_DISABLED = new TranslatableComponent("message.voicechat.disable.disabled");
+    public static final TranslatableComponent DISABLE_NO_SPEAKER = new TranslatableComponent("message.voicechat.disable.no_speaker");
 
     private final Screen screen;
     private final ClientPlayerStateManager stateManager;

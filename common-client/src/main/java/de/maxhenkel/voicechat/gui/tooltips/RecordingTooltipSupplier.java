@@ -13,8 +13,8 @@ import java.util.List;
 
 public class RecordingTooltipSupplier implements ImageButton.TooltipSupplier {
 
-    public static final Component RECORDING_ENABLED = new TranslatableComponent("message.voicechat.recording.enabled");
-    public static final Component RECORDING_DISABLED = new TranslatableComponent("message.voicechat.recording.disabled");
+    public static final TranslatableComponent RECORDING_ENABLED = new TranslatableComponent("message.voicechat.recording.enabled");
+    public static final TranslatableComponent RECORDING_DISABLED = new TranslatableComponent("message.voicechat.recording.disabled");
 
     private final Screen screen;
 

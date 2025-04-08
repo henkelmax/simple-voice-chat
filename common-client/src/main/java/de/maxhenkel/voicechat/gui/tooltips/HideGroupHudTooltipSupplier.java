@@ -12,8 +12,8 @@ import java.util.List;
 
 public class HideGroupHudTooltipSupplier implements ImageButton.TooltipSupplier {
 
-    public static final Component SHOW_GROUP_HUD_ENABLED = new TranslatableComponent("message.voicechat.show_group_hud.enabled");
-    public static final Component SHOW_GROUP_HUD_DISABLED = new TranslatableComponent("message.voicechat.show_group_hud.disabled");
+    public static final TranslatableComponent SHOW_GROUP_HUD_ENABLED = new TranslatableComponent("message.voicechat.show_group_hud.enabled");
+    public static final TranslatableComponent SHOW_GROUP_HUD_DISABLED = new TranslatableComponent("message.voicechat.show_group_hud.disabled");
 
 
     private final Screen screen;
