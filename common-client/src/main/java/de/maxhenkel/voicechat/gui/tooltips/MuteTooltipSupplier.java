@@ -12,9 +12,9 @@ import java.util.List;
 
 public class MuteTooltipSupplier implements ImageButton.TooltipSupplier {
 
-    public static final TranslationTextComponent MUTE_UNMUTED = new TranslationTextComponent("message.voicechat.mute.disabled");
-    public static final TranslationTextComponent MUTE_MUTED = new TranslationTextComponent("message.voicechat.mute.enabled");
-    public static final TranslationTextComponent MUTE_DISABLED_PTT = new TranslationTextComponent("message.voicechat.mute.disabled_ptt");
+    public static final TextComponentTranslation MUTE_UNMUTED = new TextComponentTranslation("message.voicechat.mute.disabled");
+    public static final TextComponentTranslation MUTE_MUTED = new TextComponentTranslation("message.voicechat.mute.enabled");
+    public static final TextComponentTranslation MUTE_DISABLED_PTT = new TextComponentTranslation("message.voicechat.mute.disabled_ptt");
 
     private GuiScreen screen;
     private ClientPlayerStateManager stateManager;

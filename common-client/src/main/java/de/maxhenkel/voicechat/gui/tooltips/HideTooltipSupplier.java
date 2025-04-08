@@ -10,8 +10,8 @@ import java.util.List;
 
 public class HideTooltipSupplier implements ImageButton.TooltipSupplier {
 
-    public static final TranslationTextComponent HIDE_ICONS_ENABLED = new TranslationTextComponent("message.voicechat.hide_icons.enabled");
-    public static final TranslationTextComponent HIDE_ICONS_DISABLED = new TranslationTextComponent("message.voicechat.hide_icons.disabled");
+    public static final TextComponentTranslation HIDE_ICONS_ENABLED = new TextComponentTranslation("message.voicechat.hide_icons.enabled");
+    public static final TextComponentTranslation HIDE_ICONS_DISABLED = new TextComponentTranslation("message.voicechat.hide_icons.disabled");
 
     private final GuiScreen screen;
 
