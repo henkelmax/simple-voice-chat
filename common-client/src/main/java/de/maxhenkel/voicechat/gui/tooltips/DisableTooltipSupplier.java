@@ -2,19 +2,22 @@ package de.maxhenkel.voicechat.gui.tooltips;
 
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.FormattedCharSequence;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.annotation.Nullable;
 
 public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
 
+    public static final Component DISABLE_ENABLED = Component.translatable("message.voicechat.disable.enabled");
+    public static final Component DISABLE_DISABLED = Component.translatable("message.voicechat.disable.disabled");
+    public static final Component DISABLE_NO_SPEAKER = Component.translatable("message.voicechat.disable.no_speaker");
+
     private final Screen screen;
     private final ClientPlayerStateManager stateManager;
+    @Nullable
+    private State lastState;
 
     public DisableTooltipSupplier(Screen screen, ClientPlayerStateManager stateManager) {
         this.screen = screen;
@@ -22,18 +25,38 @@ public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
     }
 
     @Override
-    public void onTooltip(ImageButton button, GuiGraphics guiGraphics, Font font, int mouseX, int mouseY) {
-        List<FormattedCharSequence> tooltip = new ArrayList<>();
+    public void updateTooltip(ImageButton button) {
+        State state = getState();
+        if (state != lastState) {
+            lastState = state;
+            button.setTooltip(Tooltip.create(state.getComponent()));
+        }
+    }
 
+    private State getState() {
         if (!stateManager.canEnable()) {
-            tooltip.add(Component.translatable("message.voicechat.disable.no_speaker").getVisualOrderText());
+            return State.NO_SPEAKER;
         } else if (stateManager.isDisabled()) {
-            tooltip.add(Component.translatable("message.voicechat.disable.enabled").getVisualOrderText());
+            return State.DISABLED;
         } else {
-            tooltip.add(Component.translatable("message.voicechat.disable.disabled").getVisualOrderText());
+            return State.ENABLED;
+        }
+    }
+
+    private enum State {
+        ENABLED(DISABLE_DISABLED),
+        DISABLED(DISABLE_ENABLED),
+        NO_SPEAKER(DISABLE_NO_SPEAKER);
+
+        private final Component component;
+
+        State(Component component) {
+            this.component = component;
         }
 
-        guiGraphics.renderTooltip(font, tooltip, mouseX, mouseY);
+        public Component getComponent() {
+            return component;
+        }
     }
 
 }
