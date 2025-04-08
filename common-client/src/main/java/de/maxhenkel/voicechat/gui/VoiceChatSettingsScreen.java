@@ -15,6 +15,7 @@ import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -117,7 +118,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         }
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         if (isIngame()) {
-            guiGraphics.blit(TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
         }
     }
 

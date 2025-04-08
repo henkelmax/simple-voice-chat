@@ -11,6 +11,7 @@ import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -52,19 +53,19 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
         if (!state.isDisabled()) {
             ClientVoicechat client = ClientManager.getClient();
             if (client != null && client.getTalkCache().isTalking(state.getUuid())) {
-                guiGraphics.blit(TALK_OUTLINE, 0, 0, 0, 0, 10, 10, 16, 16);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TALK_OUTLINE, 0, 0, 0, 0, 10, 10, 16, 16);
             }
         }
 
         PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
-        guiGraphics.blit(skin.texture(), 1, 1, 8, 8, 8, 8, 64, 64);
-        guiGraphics.blit(skin.texture(), 1, 1, 40, 8, 8, 8, 64, 64);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), 1, 1, 8, 8, 8, 8, 64, 64);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), 1, 1, 40, 8, 8, 8, 64, 64);
 
         if (state.isDisabled()) {
             guiGraphics.pose().pushMatrix();
             guiGraphics.pose().translate(1F, 1F);
             guiGraphics.pose().scale(0.5F, 0.5F);
-            guiGraphics.blit(SPEAKER_OFF, 0, 0, 0, 0, 16, 16, 16, 16);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SPEAKER_OFF, 0, 0, 0, 0, 16, 16, 16, 16);
             guiGraphics.pose().popMatrix();
         }
         guiGraphics.pose().popMatrix();
