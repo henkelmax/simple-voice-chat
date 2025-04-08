@@ -12,6 +12,9 @@ import java.util.List;
 
 public class HideTooltipSupplier implements ImageButton.TooltipSupplier {
 
+    public static final Component HIDE_ICONS_ENABLED = Component.translatable("message.voicechat.hide_icons.enabled");
+    public static final Component HIDE_ICONS_DISABLED = Component.translatable("message.voicechat.hide_icons.disabled");
+
     private final Screen screen;
 
     public HideTooltipSupplier(Screen screen) {
@@ -23,9 +26,9 @@ public class HideTooltipSupplier implements ImageButton.TooltipSupplier {
         List<FormattedCharSequence> tooltip = new ArrayList<>();
 
         if (VoicechatClient.CLIENT_CONFIG.hideIcons.get()) {
-            tooltip.add(Component.translatable("message.voicechat.hide_icons.enabled").getVisualOrderText());
+            tooltip.add(HIDE_ICONS_ENABLED.getVisualOrderText());
         } else {
-            tooltip.add(Component.translatable("message.voicechat.hide_icons.disabled").getVisualOrderText());
+            tooltip.add(HIDE_ICONS_DISABLED.getVisualOrderText());
         }
 
         screen.renderTooltip(matrices, tooltip, mouseX, mouseY);

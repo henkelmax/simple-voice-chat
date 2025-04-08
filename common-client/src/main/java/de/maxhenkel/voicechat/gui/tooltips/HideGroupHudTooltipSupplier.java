@@ -12,6 +12,10 @@ import java.util.List;
 
 public class HideGroupHudTooltipSupplier implements ImageButton.TooltipSupplier {
 
+    public static final Component SHOW_GROUP_HUD_ENABLED = Component.translatable("message.voicechat.show_group_hud.enabled");
+    public static final Component SHOW_GROUP_HUD_DISABLED = Component.translatable("message.voicechat.show_group_hud.disabled");
+
+
     private final Screen screen;
 
     public HideGroupHudTooltipSupplier(Screen screen) {
@@ -23,9 +27,9 @@ public class HideGroupHudTooltipSupplier implements ImageButton.TooltipSupplier 
         List<FormattedCharSequence> tooltip = new ArrayList<>();
 
         if (VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()) {
-            tooltip.add(Component.translatable("message.voicechat.show_group_hud.enabled").getVisualOrderText());
+            tooltip.add(SHOW_GROUP_HUD_ENABLED.getVisualOrderText());
         } else {
-            tooltip.add(Component.translatable("message.voicechat.show_group_hud.disabled").getVisualOrderText());
+            tooltip.add(SHOW_GROUP_HUD_DISABLED.getVisualOrderText());
         }
 
         screen.renderTooltip(matrices, tooltip, mouseX, mouseY);

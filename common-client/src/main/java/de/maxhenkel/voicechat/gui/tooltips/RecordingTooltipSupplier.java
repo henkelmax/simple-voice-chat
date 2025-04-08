@@ -13,6 +13,9 @@ import java.util.List;
 
 public class RecordingTooltipSupplier implements ImageButton.TooltipSupplier {
 
+    public static final Component RECORDING_ENABLED = Component.translatable("message.voicechat.recording.enabled");
+    public static final Component RECORDING_DISABLED = Component.translatable("message.voicechat.recording.disabled");
+
     private final Screen screen;
 
     public RecordingTooltipSupplier(Screen screen) {
@@ -29,9 +32,9 @@ public class RecordingTooltipSupplier implements ImageButton.TooltipSupplier {
         List<FormattedCharSequence> tooltip = new ArrayList<>();
 
         if (client.getRecorder() == null) {
-            tooltip.add(Component.translatable("message.voicechat.recording.disabled").getVisualOrderText());
+            tooltip.add(RECORDING_DISABLED.getVisualOrderText());
         } else {
-            tooltip.add(Component.translatable("message.voicechat.recording.enabled").getVisualOrderText());
+            tooltip.add(RECORDING_ENABLED.getVisualOrderText());
         }
 
         screen.renderTooltip(matrices, tooltip, mouseX, mouseY);
