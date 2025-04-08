@@ -1,2 +1,2 @@
-- Updated Turkish translation
-- Updated Brazilian Portuguese translation
+- Improved tooltip rendering performance
+- Fixed ping buffer size

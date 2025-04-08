@@ -1,1 +1,2 @@
-- Updated to 25w16a
+- Improved tooltip rendering performance
+- Fixed ping buffer size

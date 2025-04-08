@@ -26,7 +26,7 @@ public class PingHandler {
             UUID id = buffer.readUUID();
             long timestamp = buffer.readLong();
             proxy.getVoiceProxy().getLogger().debug("Received ping {} from {}", id, socketAddress);
-            ByteBufferWrapper responseBuffer = new ByteBufferWrapper(ByteBuffer.allocate((128 + 64)));
+            ByteBufferWrapper responseBuffer = new ByteBufferWrapper(ByteBuffer.allocate(24));
 
             responseBuffer.writeUUID(id);
             responseBuffer.writeLong(timestamp);

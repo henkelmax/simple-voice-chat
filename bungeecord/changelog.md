@@ -1,1 +1,1 @@
-- Fixed issues with config reading
+- Fixed ping buffer size
