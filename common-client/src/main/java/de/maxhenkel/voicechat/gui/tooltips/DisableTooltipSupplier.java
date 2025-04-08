@@ -10,6 +10,10 @@ import java.util.List;
 
 public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
 
+    public static final TranslationTextComponent DISABLE_ENABLED = new TranslationTextComponent("message.voicechat.disable.enabled");
+    public static final TranslationTextComponent DISABLE_DISABLED = new TranslationTextComponent("message.voicechat.disable.disabled");
+    public static final TranslationTextComponent DISABLE_NO_SPEAKER = new TranslationTextComponent("message.voicechat.disable.no_speaker");
+
     private final GuiScreen screen;
     private final ClientPlayerStateManager stateManager;
 
@@ -23,11 +27,11 @@ public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
         List<String> tooltip = new ArrayList<>();
 
         if (!stateManager.canEnable()) {
-            tooltip.add(new TextComponentTranslation("message.voicechat.disable.no_speaker").getUnformattedComponentText());
+            tooltip.add(DISABLE_NO_SPEAKER.getUnformattedComponentText());
         } else if (stateManager.isDisabled()) {
-            tooltip.add(new TextComponentTranslation("message.voicechat.disable.enabled").getUnformattedComponentText());
+            tooltip.add(DISABLE_ENABLED.getUnformattedComponentText());
         } else {
-            tooltip.add(new TextComponentTranslation("message.voicechat.disable.disabled").getUnformattedComponentText());
+            tooltip.add(DISABLE_DISABLED.getUnformattedComponentText());
         }
 
         screen.drawHoveringText(tooltip, mouseX, mouseY);

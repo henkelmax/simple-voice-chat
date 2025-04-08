@@ -12,6 +12,10 @@ import java.util.List;
 
 public class MuteTooltipSupplier implements ImageButton.TooltipSupplier {
 
+    public static final TranslationTextComponent MUTE_UNMUTED = new TranslationTextComponent("message.voicechat.mute.disabled");
+    public static final TranslationTextComponent MUTE_MUTED = new TranslationTextComponent("message.voicechat.mute.enabled");
+    public static final TranslationTextComponent MUTE_DISABLED_PTT = new TranslationTextComponent("message.voicechat.mute.disabled_ptt");
+
     private GuiScreen screen;
     private ClientPlayerStateManager stateManager;
 
@@ -25,11 +29,11 @@ public class MuteTooltipSupplier implements ImageButton.TooltipSupplier {
         List<String> tooltip = new ArrayList<>();
 
         if (!canMuteMic()) {
-            tooltip.add(new TextComponentTranslation("message.voicechat.mute.disabled_ptt").getUnformattedComponentText());
+            tooltip.add(MUTE_DISABLED_PTT.getUnformattedComponentText());
         } else if (stateManager.isMuted()) {
-            tooltip.add(new TextComponentTranslation("message.voicechat.mute.enabled").getUnformattedComponentText());
+            tooltip.add(MUTE_MUTED.getUnformattedComponentText());
         } else {
-            tooltip.add(new TextComponentTranslation("message.voicechat.mute.disabled").getUnformattedComponentText());
+            tooltip.add(MUTE_UNMUTED.getUnformattedComponentText());
         }
 
         screen.drawHoveringText(tooltip, mouseX, mouseY);

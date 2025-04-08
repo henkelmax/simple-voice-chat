@@ -1,3 +1,1 @@
-- Updated Turkish translation
-- Updated Brazilian Portuguese translation
-- Fixed potential network threading issues
+- Improved tooltip rendering performance
