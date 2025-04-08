@@ -26,7 +26,7 @@ public class PingHandler {
             long timestamp = buffer.readLong();
             Voicechat.LOGGER.debug("Received ping {} from {}", id, socketAddress);
 
-            PacketBuffer responseBuffer = new PacketBuffer(Unpooled.buffer(128 + 64));
+            PacketBuffer responseBuffer = new PacketBuffer(Unpooled.buffer(24));
 
             responseBuffer.writeUniqueId(id);
             responseBuffer.writeLong(timestamp);
