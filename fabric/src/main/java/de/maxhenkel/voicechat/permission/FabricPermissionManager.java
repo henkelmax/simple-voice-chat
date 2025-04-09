@@ -12,8 +12,14 @@ public class FabricPermissionManager extends PermissionManager {
         return new Permission() {
             @Override
             public boolean hasPermission(ServerPlayer player) {
-                if (isFabricPermissionsAPILoaded()) {
-                    return Permissions.check(player, modId + "." + node, type.hasPermission(player));
+                try {
+                    if (isFabricPermissionsAPILoaded()) {
+                        return Permissions.check(player, modId + "." + node, type.hasPermission(player));
+                    }
+                } catch (Throwable t) {
+                    loaded = false;
+                    Voicechat.LOGGER.warn("Failed to use fabric-permissions-api-v0", t);
+                    Voicechat.LOGGER.info("Disabling fabric-permissions-api-v0 integration");
                 }
                 return type.hasPermission(player);
             }
