@@ -49,7 +49,15 @@ public class BukkitCompatibilityManager {
 
     @Nullable
     public static Compatibility loadCompatibility() {
-        BukkitVersion version = BukkitVersion.getVersion();
+        BukkitVersion version;
+
+        BukkitVersion forcedVersion = getForcedVersion();
+        if (forcedVersion != null) {
+            version = forcedVersion;
+        } else {
+            version = BukkitVersion.getVersion();
+        }
+
         if (version == null) {
             return null;
         }
@@ -111,6 +119,22 @@ public class BukkitCompatibilityManager {
         }
 
         return compatibility;
+    }
+
+    @Nullable
+    public static BukkitVersion getForcedVersion() {
+        String property = System.getProperty("voicechat.compatibility");
+        if (property == null) {
+            return null;
+        }
+        BukkitVersion forcedVersion = BukkitVersion.parseBukkitVersion(property);
+        if (forcedVersion == null) {
+            Voicechat.LOGGER.warn("Failed to parse forced compatibility version: {}", property);
+            return null;
+        }
+        Voicechat.LOGGER.info("Forcing compatibility for {}", forcedVersion);
+        Voicechat.LOGGER.warn("Forcing version compatibility could lead to issues - use with caution!");
+        return forcedVersion;
     }
 
 }
