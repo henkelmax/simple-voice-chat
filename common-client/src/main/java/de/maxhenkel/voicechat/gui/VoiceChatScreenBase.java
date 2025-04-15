@@ -45,7 +45,9 @@ public abstract class VoiceChatScreenBase extends Screen {
             renderBlurredBackground();
         }
         renderBackground(guiGraphics, mouseX, mouseY, delta);
+        guiGraphics.depthTreeUp();
         super.render(guiGraphics, mouseX, mouseY, delta);
+        guiGraphics.depthTreeBack();
         renderForeground(guiGraphics, mouseX, mouseY, delta);
     }
 

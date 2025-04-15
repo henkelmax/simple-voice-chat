@@ -51,6 +51,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
         } else {
             guiGraphics.fill(left, top, left + width, top + height, BG_FILL);
         }
+        guiGraphics.depthTreeUp();
 
         boolean hasPassword = group.group.hasPassword();
 
@@ -122,6 +123,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
         parent.postRender(() -> {
             guiGraphics.renderTooltip(minecraft.font, tooltip, mouseX, mouseY);
         });
+        guiGraphics.depthTreeBack();
     }
 
     public Group getGroup() {

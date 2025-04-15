@@ -34,11 +34,15 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         Minecraft minecraft = Minecraft.getInstance();
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getSlider(), getX(), getY(), getWidth(), getHeight());
 
+        guiGraphics.depthTreeUp();
         int micWidth = (int) ((width - 2) * micValue);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, VOICE_ACTIVATION_SLIDER, getX() + 1, getY() + 1, 0, 0, micWidth, 18, 256, 256);
 
+        guiGraphics.depthTreeUp();
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getHandle(), getX() + (int) (value * (double) (width - 8)), getY(), 8, 20);
+        guiGraphics.depthTreeUp();
         renderScrollingString(guiGraphics, minecraft.font, 2, 16777215);
+        guiGraphics.depthTreeBack(3);
     }
 
     private ResourceLocation getSlider() {

@@ -28,10 +28,13 @@ public class PlayerVolumeEntry extends VolumeEntry {
 
     @Override
     public void renderElement(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
+        guiGraphics.depthTreeUp();
         if (state != null) {
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), skinX, skinY, 8, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
+            guiGraphics.depthTreeUp();
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), skinX, skinY, 40, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
+            guiGraphics.depthTreeBack();
             guiGraphics.drawString(minecraft.font, state.getName(), textX, textY, PLAYER_NAME_COLOR, false);
         } else {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, OTHER_VOLUME_ICON, skinX, skinY, 16, 16, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16);
@@ -42,6 +45,7 @@ public class PlayerVolumeEntry extends VolumeEntry {
                 });
             }
         }
+        guiGraphics.depthTreeBack();
     }
 
     public static class PlayerVolumeConfigEntry implements AdjustVolumeSlider.VolumeConfigEntry {

@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
@@ -65,10 +64,8 @@ public class GroupChatManager {
             }
 
             if (client.getTalkCache().isTalking(state.getUuid())) {
-                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TALK_OUTLINE, posX < 0 ? -10 : 0, posY < 0 ? -10 : 0, 0, 0, 10, 10, 16, 16);
             }
-            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 40, 8, 8, 8, 64, 64);
@@ -77,7 +74,6 @@ public class GroupChatManager {
                 guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate((posX < 0 ? -1F - 8F : 1F), posY < 0 ? -1F - 8F : 1F);
                 guiGraphics.pose().scale(0.5F, 0.5F);
-                RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SPEAKER_OFF_ICON, 0, 0, 0, 0, 16, 16, 16, 16);
                 guiGraphics.pose().popMatrix();
             }

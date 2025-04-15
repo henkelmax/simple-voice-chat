@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.audiodevice.SelectMicrophoneScreen;
@@ -116,7 +115,6 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
             renderPanorama(guiGraphics, delta);
             renderBlurredBackground();
         }
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         if (isIngame()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
         }
@@ -124,9 +122,11 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        guiGraphics.depthTreeUp();
         int titleWidth = font.width(TITLE);
         guiGraphics.drawString(font, TITLE.getVisualOrderText(), guiLeft + (xSize - titleWidth) / 2, guiTop + 7, getFontColor(), false);
 
+        guiGraphics.depthTreeBack();
         Component sliderTooltip = voiceActivationSlider.getHoverText();
         if (voiceActivationSlider.isHovered() && sliderTooltip != null) {
             guiGraphics.renderTooltip(font, sliderTooltip, mouseX, mouseY);

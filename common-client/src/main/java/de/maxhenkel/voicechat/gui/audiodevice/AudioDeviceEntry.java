@@ -51,7 +51,9 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, icon, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
         }
         if (selected) {
+            guiGraphics.depthTreeUp();
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SELECTED, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
+            guiGraphics.depthTreeBack();
         }
 
         float deviceWidth = minecraft.font.width(visibleDeviceName);
@@ -62,7 +64,9 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
         guiGraphics.pose().translate(left + PADDING + 16 + PADDING, top + height / 2 - (minecraft.font.lineHeight * scale) / 2);
         guiGraphics.pose().scale(scale, scale);
 
+        guiGraphics.depthTreeUp();
         guiGraphics.drawString(minecraft.font, visibleDeviceName, 0, 0, DEVICE_NAME_COLOR, false);
+        guiGraphics.depthTreeBack();
         guiGraphics.pose().popMatrix();
     }
 

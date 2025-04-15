@@ -83,11 +83,15 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        guiGraphics.depthTreeUp();
         guiGraphics.drawString(font, title, width / 2 - font.width(title) / 2, guiTop + 5, isIngame() ? FONT_COLOR : ChatFormatting.WHITE.getColor(), false);
+        guiGraphics.depthTreeBack();
         if (!deviceList.isEmpty()) {
             deviceList.render(guiGraphics, mouseX, mouseY, delta);
         } else {
+            guiGraphics.depthTreeUp();
             guiGraphics.drawCenteredString(font, getEmptyListComponent(), width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - font.lineHeight / 2, -1);
+            guiGraphics.depthTreeBack();
         }
     }
 

@@ -1,6 +1,6 @@
 {
   "pack": {
-    "pack_format": 56,
+    "pack_format": 57,
     "description": {
       "type": "translatable",
       "translate": "resourcepack.voicechat.white_icons.description",

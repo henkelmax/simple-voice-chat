@@ -41,8 +41,8 @@ public class PttOnboardingScreen extends OnboardingScreenBase {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
         renderTitle(guiGraphics, TITLE);
         renderMultilineText(guiGraphics, DESCRIPTION);
         guiGraphics.drawString(font, BUTTON_DESCRIPTION.getVisualOrderText(), width / 2 - font.width(BUTTON_DESCRIPTION) / 2, keybindButtonPos - font.lineHeight - PADDING, TEXT_COLOR, true);

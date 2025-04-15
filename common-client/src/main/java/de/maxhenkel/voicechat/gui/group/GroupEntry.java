@@ -70,8 +70,10 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
         }
         guiGraphics.pose().popMatrix();
 
+        guiGraphics.depthTreeUp();
         Component name = Component.literal(state.getName());
         guiGraphics.drawString(minecraft.font, name, left + PADDING + outlineSize + PADDING, top + height / 2 - minecraft.font.lineHeight / 2, PLAYER_NAME_COLOR, false);
+        guiGraphics.depthTreeBack();
 
         if (hovered && !ClientManager.getPlayerStateManager().getOwnID().equals(state.getUuid())) {
             volumeSlider.setWidth(Math.min(width - (PADDING + outlineSize + PADDING + minecraft.font.width(name) + PADDING + PADDING), 100));

@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
@@ -40,14 +39,15 @@ public class ImageButton extends AbstractButton {
     }
 
     protected void renderImage(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, getX() + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
     }
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
         super.renderWidget(guiGraphics, mouseX, mouseY, f);
+        guiGraphics.depthTreeUp();
         renderImage(guiGraphics, mouseX, mouseY);
+        guiGraphics.depthTreeBack();
 
         if (tooltipSupplier != null) {
             tooltipSupplier.updateTooltip(this);

@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.net.JoinGroupPacket;
@@ -62,7 +61,6 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
     }
 

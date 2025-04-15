@@ -138,6 +138,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        guiGraphics.depthTreeUp();
         int titleWidth = font.width(TITLE);
         guiGraphics.drawString(font, TITLE.getVisualOrderText(), guiLeft + (xSize - titleWidth) / 2, guiTop + 7, FONT_COLOR, false);
 
@@ -151,6 +152,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
                 guiGraphics.renderTooltip(font, Component.translatable("message.voicechat.storage_size", recorder.getStorage()), mouseX, mouseY);
             }
         }
+        guiGraphics.depthTreeBack();
     }
 
 }

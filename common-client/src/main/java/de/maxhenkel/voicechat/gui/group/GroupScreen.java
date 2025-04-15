@@ -122,6 +122,8 @@ public class GroupScreen extends ListScreenBase {
 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        groupList.render(guiGraphics, mouseX, mouseY, delta);
+
         MutableComponent title;
         if (group.getType().equals(Group.Type.NORMAL)) {
             title = Component.translatable("message.voicechat.group_title", Component.literal(group.getName()));
@@ -129,9 +131,9 @@ public class GroupScreen extends ListScreenBase {
             title = Component.translatable("message.voicechat.group_type_title", Component.literal(group.getName()), GroupType.fromType(group.getType()).getTranslation());
         }
 
+        guiGraphics.depthTreeUp();
         guiGraphics.drawString(font, title, guiLeft + xSize / 2 - font.width(title) / 2, guiTop + 5, FONT_COLOR, false);
-
-        groupList.render(guiGraphics, mouseX, mouseY, delta);
+        guiGraphics.depthTreeBack();
     }
 
 }
