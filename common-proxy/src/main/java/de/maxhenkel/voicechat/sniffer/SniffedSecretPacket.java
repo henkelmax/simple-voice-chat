@@ -8,6 +8,8 @@ import java.util.UUID;
 
 public class SniffedSecretPacket {
 
+    protected int compatibilityVersion;
+
     protected UUID secret;
     protected int serverPort;
     protected UUID playerUUID;
@@ -23,7 +25,14 @@ public class SniffedSecretPacket {
 
     }
 
-    public static SniffedSecretPacket fromBytes(ByteBuffer buffer) {
+    public static SniffedSecretPacket fromBytes(ByteBuffer buffer, int compatibilityVersion) throws IncompatibleVoiceChatException {
+        if (compatibilityVersion < 10) {
+            throw new IncompatibleVoiceChatException(String.format("Client has an outdated voice chat compatibility version (%s)", compatibilityVersion));
+        }
+        if (compatibilityVersion > VoiceProxy.COMPATIBILITY_VERSION) {
+            throw new IncompatibleVoiceChatException(String.format("Client has a newer voice chat compatibility version (%s)", compatibilityVersion));
+        }
+
         ByteBufferWrapper buf = new ByteBufferWrapper(buffer);
         SniffedSecretPacket packet = new SniffedSecretPacket();
         packet.secret = buf.readUUID();
@@ -58,8 +67,8 @@ public class SniffedSecretPacket {
         return ByteBuffer.wrap(buf.toBytes());
     }
 
-    public UUID getSecret() {
-        return secret;
+    public int getCompatibilityVersion() {
+        return compatibilityVersion;
     }
 
     public int getServerPort() {
@@ -68,34 +77,6 @@ public class SniffedSecretPacket {
 
     public UUID getPlayerUUID() {
         return playerUUID;
-    }
-
-    public byte getCodec() {
-        return codec;
-    }
-
-    public int getMtuSize() {
-        return mtuSize;
-    }
-
-    public double getVoiceChatDistance() {
-        return voiceChatDistance;
-    }
-
-    public int getKeepAlive() {
-        return keepAlive;
-    }
-
-    public boolean isGroupsEnabled() {
-        return groupsEnabled;
-    }
-
-    public String getVoiceHost() {
-        return voiceHost;
-    }
-
-    public boolean isAllowRecording() {
-        return allowRecording;
     }
 
     /**

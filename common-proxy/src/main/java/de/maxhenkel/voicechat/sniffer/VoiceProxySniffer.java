@@ -24,6 +24,11 @@ public class VoiceProxySniffer {
      */
     private final Map<UUID, Integer> serverUDPPortMap = new ConcurrentHashMap<>();
 
+    /**
+     * Maps a given player UUID to the sniffed compatibility version.
+     */
+    private final Map<UUID, Integer> compatibilityVersionMap = new ConcurrentHashMap<>();
+
     private final VoiceProxy voiceProxy;
 
     public VoiceProxySniffer(VoiceProxy voiceProxy) {
@@ -68,8 +73,11 @@ public class VoiceProxySniffer {
      * @param playerUUID the UUID of the player that sent or received the message
      * @return ByteBuffer if the plugin message should be replaced, <code>null</code> otherwise
      */
-    public ByteBuffer onPluginMessage(String channel, ByteBuffer message, UUID playerUUID) {
-        if (channel.endsWith(":secret")) {
+    public ByteBuffer onPluginMessage(String channel, ByteBuffer message, UUID playerUUID) throws IncompatibleVoiceChatException {
+        if (channel.equals(VoiceProxy.REQUEST_SECRET_CHANNEL) || channel.equals(VoiceProxy.REQUEST_SECRET_CHANNEL_1_12)) {
+            return handleRequestSecretPacket(message, playerUUID);
+        }
+        if (channel.equals(VoiceProxy.SECRET_CHANNEL) || channel.equals(VoiceProxy.SECRET_CHANNEL_1_12)) {
             return handleSecretPacket(message, playerUUID);
         }
         return null;
@@ -83,6 +91,7 @@ public class VoiceProxySniffer {
     public void onPlayerServerDisconnect(UUID playerUUID) {
         serverUDPPortMap.remove(playerUUID);
         playerUUIDMap.remove(playerUUID);
+        compatibilityVersionMap.remove(playerUUID);
     }
 
     /**
@@ -91,11 +100,26 @@ public class VoiceProxySniffer {
      * @param message    the SecretPacket in bytes
      * @param playerUUID the UUID of the player this packet was intended for
      */
-    private ByteBuffer handleSecretPacket(ByteBuffer message, UUID playerUUID) {
-        SniffedSecretPacket packet = SniffedSecretPacket.fromBytes(message);
+    private ByteBuffer handleSecretPacket(ByteBuffer message, UUID playerUUID) throws IncompatibleVoiceChatException {
+        Integer compatibilityVersion = compatibilityVersionMap.get(playerUUID);
+        if (compatibilityVersion == null) {
+            throw new IncompatibleVoiceChatException("No compatibility version found");
+        }
+        SniffedSecretPacket packet = SniffedSecretPacket.fromBytes(message, compatibilityVersion);
         playerUUIDMap.put(packet.getPlayerUUID(), playerUUID);
         serverUDPPortMap.put(playerUUID, packet.getServerPort());
         return packet.patch(voiceProxy);
+    }
+
+    /**
+     * Called whenever a RequestSecretPacket has been sniffed.
+     *
+     * @param message    the RequestSecretPacket in bytes
+     * @param playerUUID the UUID of the player this packet was from
+     */
+    private ByteBuffer handleRequestSecretPacket(ByteBuffer message, UUID playerUUID) {
+        compatibilityVersionMap.put(playerUUID, message.getInt());
+        return null;
     }
 
 }

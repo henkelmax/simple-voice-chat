@@ -15,6 +15,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import de.maxhenkel.voicechat.logging.JavaLoggingLogger;
+import de.maxhenkel.voicechat.sniffer.IncompatibleVoiceChatException;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -32,8 +33,6 @@ import java.util.logging.Logger;
         description = "Run multiple servers with Simple Voice Chat behind a single public port"
 )
 public class SimpleVoiceChatVelocity extends VoiceProxy {
-
-    public static final String MOD_ID = "voicechat";
 
     @DataDirectory
     @Inject
@@ -77,7 +76,12 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        this.proxyServer.getChannelRegistrar().register(MinecraftChannelIdentifier.from("vc:secret"), MinecraftChannelIdentifier.from("voicechat:secret"));
+        this.proxyServer.getChannelRegistrar().register(
+                MinecraftChannelIdentifier.from(REQUEST_SECRET_CHANNEL),
+                MinecraftChannelIdentifier.from(REQUEST_SECRET_CHANNEL_1_12),
+                MinecraftChannelIdentifier.from(SECRET_CHANNEL),
+                MinecraftChannelIdentifier.from(SECRET_CHANNEL_1_12)
+        );
         this.reloadVoiceProxyServer();
     }
 
@@ -128,12 +132,17 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
         if (p == null) {
             return;
         }
-        ByteBuffer replacement = voiceProxySniffer.onPluginMessage(event.getIdentifier().getId(), ByteBuffer.wrap(event.getData()), p.getUniqueId());
-        if (replacement == null) {
-            return;
-        }
 
-        event.setResult(PluginMessageEvent.ForwardResult.handled());
-        event.getTarget().sendPluginMessage(event.getIdentifier(), replacement.array());
+        try {
+            ByteBuffer replacement = voiceProxySniffer.onPluginMessage(event.getIdentifier().getId(), ByteBuffer.wrap(event.getData()), p.getUniqueId());
+            if (replacement == null) {
+                return;
+            }
+            event.setResult(PluginMessageEvent.ForwardResult.handled());
+            event.getTarget().sendPluginMessage(event.getIdentifier(), replacement.array());
+        } catch (IncompatibleVoiceChatException e) {
+            event.setResult(PluginMessageEvent.ForwardResult.handled());
+            getLogger().info("Player {} has an incompatible voice chat version: {}", p.getUsername(), e.getMessage());
+        }
     }
 }
