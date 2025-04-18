@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat;
 
 import de.maxhenkel.voicechat.logging.JavaLoggingLogger;
+import de.maxhenkel.voicechat.sniffer.IncompatibleVoiceChatException;
 import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
@@ -20,9 +21,6 @@ import java.nio.file.Path;
 import java.util.UUID;
 
 public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
-
-    private final String CHANNEL = "voicechat:secret";
-    private final String CHANNEL_1_12 = "vc:secret";
 
     private final Plugin plugin;
 
@@ -73,8 +71,10 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
     }
 
     public void onProxyInitialization() {
-        plugin.getProxy().registerChannel(CHANNEL);
-        plugin.getProxy().registerChannel(CHANNEL_1_12);
+        plugin.getProxy().registerChannel(REQUEST_SECRET_CHANNEL);
+        plugin.getProxy().registerChannel(REQUEST_SECRET_CHANNEL_1_12);
+        plugin.getProxy().registerChannel(SECRET_CHANNEL);
+        plugin.getProxy().registerChannel(SECRET_CHANNEL_1_12);
         reloadVoiceProxyServer();
     }
 
@@ -82,8 +82,10 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
         if (voiceProxyServer != null) {
             voiceProxyServer.interrupt();
         }
-        plugin.getProxy().unregisterChannel(CHANNEL);
-        plugin.getProxy().unregisterChannel(CHANNEL_1_12);
+        plugin.getProxy().unregisterChannel(REQUEST_SECRET_CHANNEL);
+        plugin.getProxy().unregisterChannel(REQUEST_SECRET_CHANNEL_1_12);
+        plugin.getProxy().unregisterChannel(SECRET_CHANNEL);
+        plugin.getProxy().unregisterChannel(SECRET_CHANNEL_1_12);
     }
 
     /**
@@ -129,12 +131,17 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
         if (p == null) {
             return;
         }
-        ByteBuffer replacement = voiceProxySniffer.onPluginMessage(event.getTag(), ByteBuffer.wrap(event.getData()), p.getUniqueId());
-        if (replacement == null) {
-            return;
-        }
 
-        event.setCancelled(true);
-        event.getReceiver().unsafe().sendPacket(new PluginMessage(event.getTag(), replacement.array(), true));
+        try {
+            ByteBuffer replacement = voiceProxySniffer.onPluginMessage(event.getTag(), ByteBuffer.wrap(event.getData()), p.getUniqueId());
+            if (replacement == null) {
+                return;
+            }
+            event.setCancelled(true);
+            event.getReceiver().unsafe().sendPacket(new PluginMessage(event.getTag(), replacement.array(), true));
+        } catch (IncompatibleVoiceChatException e) {
+            event.setCancelled(true);
+            getLogger().info("Player {} has an incompatible voice chat version: {}", p.getName(), e.getMessage());
+        }
     }
 }
