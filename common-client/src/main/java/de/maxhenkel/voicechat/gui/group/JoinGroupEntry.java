@@ -121,7 +121,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
         }
 
         parent.postRender(() -> {
-            guiGraphics.renderTooltip(minecraft.font, tooltip, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(minecraft.font, tooltip, mouseX, mouseY);
         });
         guiGraphics.depthTreeBack();
     }

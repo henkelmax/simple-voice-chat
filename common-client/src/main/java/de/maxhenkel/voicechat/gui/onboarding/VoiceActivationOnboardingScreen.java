@@ -55,7 +55,7 @@ public class VoiceActivationOnboardingScreen extends OnboardingScreenBase {
 
         Component sliderTooltip = slider.getHoverText();
         if (slider.isHovered() && sliderTooltip != null) {
-            guiGraphics.renderTooltip(font, sliderTooltip, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(font, sliderTooltip, mouseX, mouseY);
         }
     }
 

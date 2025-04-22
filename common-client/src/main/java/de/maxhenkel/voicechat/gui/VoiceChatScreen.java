@@ -149,7 +149,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
             guiGraphics.drawString(font, time.withStyle(ChatFormatting.DARK_RED), guiLeft + recordingHoverArea.getPosX() + recordingHoverArea.getWidth() / 2 - font.width(time) / 2, guiTop + recordingHoverArea.getPosY() + recordingHoverArea.getHeight() / 2 - font.lineHeight / 2, 0, false);
 
             if (recordingHoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
-                guiGraphics.renderTooltip(font, Component.translatable("message.voicechat.storage_size", recorder.getStorage()), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(font, Component.translatable("message.voicechat.storage_size", recorder.getStorage()), mouseX, mouseY);
             }
         }
         guiGraphics.depthTreeBack();

@@ -1,3 +1,1 @@
-- Improved tooltip rendering performance
-- Fixed ping buffer size
-- Make permission manager more resilient against errors
+- Updated to 25w17a

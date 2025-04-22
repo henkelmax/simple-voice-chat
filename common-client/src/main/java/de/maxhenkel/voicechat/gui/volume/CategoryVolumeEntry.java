@@ -30,7 +30,7 @@ public class CategoryVolumeEntry extends VolumeEntry {
         guiGraphics.drawString(minecraft.font, Component.literal(category.getName()), textX, textY, PLAYER_NAME_COLOR, false);
         if (hovered && category.getDescription() != null) {
             screen.postRender(() -> {
-                guiGraphics.renderTooltip(minecraft.font, Component.literal(category.getDescription()), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(minecraft.font, Component.literal(category.getDescription()), mouseX, mouseY);
             });
         }
         guiGraphics.depthTreeBack();

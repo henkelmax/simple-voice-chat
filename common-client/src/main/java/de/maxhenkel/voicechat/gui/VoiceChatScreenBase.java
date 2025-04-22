@@ -42,7 +42,7 @@ public abstract class VoiceChatScreenBase extends Screen {
         if (isIngame()) {
             renderTransparentBackground(guiGraphics);
         } else {
-            renderBlurredBackground();
+            renderBlurredBackground(guiGraphics);
         }
         renderBackground(guiGraphics, mouseX, mouseY, delta);
         guiGraphics.depthTreeUp();
@@ -78,7 +78,7 @@ public abstract class VoiceChatScreenBase extends Screen {
     public void drawHoverAreas(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         for (HoverArea hoverArea : hoverAreas) {
             if (hoverArea.tooltip != null && hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
-                guiGraphics.renderTooltip(minecraft.font, hoverArea.tooltip.get(), mouseX - guiLeft, mouseY - guiTop);
+                guiGraphics.setTooltipForNextFrame(minecraft.font, hoverArea.tooltip.get(), mouseX - guiLeft, mouseY - guiTop);
             }
         }
     }

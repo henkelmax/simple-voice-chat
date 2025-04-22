@@ -113,7 +113,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         if (!isIngame()) {
             renderPanorama(guiGraphics, delta);
-            renderBlurredBackground();
+            renderBlurredBackground(guiGraphics);
         }
         if (isIngame()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
@@ -129,9 +129,9 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         guiGraphics.depthTreeBack();
         Component sliderTooltip = voiceActivationSlider.getHoverText();
         if (voiceActivationSlider.isHovered() && sliderTooltip != null) {
-            guiGraphics.renderTooltip(font, sliderTooltip, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(font, sliderTooltip, mouseX, mouseY);
         } else if (keybindButton.isHovered()) {
-            guiGraphics.renderTooltip(font, ASSIGN_TOOLTIP, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(font, ASSIGN_TOOLTIP, mouseX, mouseY);
         }
     }
 

@@ -41,7 +41,7 @@ public class PlayerVolumeEntry extends VolumeEntry {
             guiGraphics.drawString(minecraft.font, OTHER_VOLUME, textX, textY, PLAYER_NAME_COLOR, false);
             if (hovered) {
                 screen.postRender(() -> {
-                    guiGraphics.renderTooltip(minecraft.font, OTHER_VOLUME_DESCRIPTION, mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(minecraft.font, OTHER_VOLUME_DESCRIPTION, mouseX, mouseY);
                 });
             }
         }
