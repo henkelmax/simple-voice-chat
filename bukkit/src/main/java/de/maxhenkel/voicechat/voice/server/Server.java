@@ -20,6 +20,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 import java.util.Collection;
@@ -74,6 +75,13 @@ public class Server extends Thread {
     public void run() {
         try {
             String bindAddress = getBindAddress();
+            try {
+                InetAddress.getByName(bindAddress);
+            } catch (UnknownHostException e) {
+                Voicechat.LOGGER.error("Failed to parse bind IP address '{}'", bindAddress, e);
+                Voicechat.LOGGER.info("Binding to wildcard IP address");
+                bindAddress = "";
+            }
             socket.open(port, bindAddress);
 
             if (bindAddress.isEmpty()) {
