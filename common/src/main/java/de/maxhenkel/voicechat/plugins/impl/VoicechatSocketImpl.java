@@ -25,8 +25,8 @@ public class VoicechatSocketImpl extends VoicechatSocketBase implements Voicecha
                 address = InetAddress.getByName(bindAddress);
             }
         } catch (Exception e) {
+            bindAddress = "";
             Voicechat.LOGGER.error("Failed to parse bind IP address '{}'", bindAddress, e);
-            Voicechat.LOGGER.info("Binding to wildcard IP address");
         }
 
         try {
