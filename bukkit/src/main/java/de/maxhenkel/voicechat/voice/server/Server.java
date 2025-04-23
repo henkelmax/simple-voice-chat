@@ -20,6 +20,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.InvalidKeyException;
 import java.security.SecureRandom;
@@ -94,8 +95,11 @@ public class Server extends Thread {
                 try {
                     packetQueue.add(socket.read());
                 } catch (Exception e) {
-                    if (Voicechat.debugMode()) {
-                        Voicechat.LOGGER.error("Failed to read from socket", e);
+                    // Only log an error if the error isn't caused by the socket being closed
+                    if (!socket.isClosed() || !(e instanceof SocketException)) {
+                        if (Voicechat.debugMode()) {
+                            Voicechat.LOGGER.error("Failed to read from socket", e);
+                        }
                     }
                 }
             }
