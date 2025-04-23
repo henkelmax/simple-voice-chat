@@ -18,6 +18,7 @@ import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nullable;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.Map;
@@ -99,6 +100,13 @@ public class Server extends Thread {
     public void run() {
         try {
             String bindAddress = getBindAddress();
+            try {
+                InetAddress.getByName(bindAddress);
+            } catch (UnknownHostException e) {
+                Voicechat.LOGGER.error("Failed to parse bind IP address '{}'", bindAddress, e);
+                Voicechat.LOGGER.info("Binding to wildcard IP address");
+                bindAddress = "";
+            }
             socket.open(port, bindAddress);
 
             if (bindAddress.isEmpty()) {
