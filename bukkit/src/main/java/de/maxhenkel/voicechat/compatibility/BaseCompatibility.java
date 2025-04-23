@@ -40,9 +40,9 @@ public abstract class BaseCompatibility implements Compatibility {
             Method run = getMethod(globalRegionScheduler.getClass(), new String[]{"run"}, new Class[]{Plugin.class, Consumer.class});
             runTask = runnable -> call(run, globalRegionScheduler, Voicechat.INSTANCE, (Consumer<?>) (task) -> runnable.run());
 
-            if (doesMethodExist(globalRegionScheduler.getClass(), "runAtFixedRate")) {
-                Method runAtFixedRate = getMethod(globalRegionScheduler.getClass(), new String[]{"runAtFixedRate"}, new Class[]{Plugin.class, Consumer.class, Long.class, Long.class});
-                taskScheduler = (runnable, delay, period) -> call(runAtFixedRate, globalRegionScheduler, Voicechat.INSTANCE, (Consumer<?>) (task) -> runnable.run(), delay, period);
+            if (doesMethodExist(globalRegionScheduler.getClass(), "runAtFixedRate", Plugin.class, Consumer.class, long.class, long.class)) {
+                Method runAtFixedRate = getMethod(globalRegionScheduler.getClass(), new String[]{"runAtFixedRate"}, new Class[]{Plugin.class, Consumer.class, long.class, long.class});
+                taskScheduler = (runnable, delay, period) -> call(runAtFixedRate, globalRegionScheduler, Voicechat.INSTANCE, (Consumer<?>) (task) -> runnable.run(), delay <= 0 ? 1 : delay, period);
             }
         }
     }
