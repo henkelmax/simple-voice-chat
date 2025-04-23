@@ -93,7 +93,10 @@ public class Server extends Thread {
             while (!socket.isClosed()) {
                 try {
                     packetQueue.add(socket.read());
-                } catch (Exception ignored) {
+                } catch (Exception e) {
+                    if (Voicechat.debugMode()) {
+                        Voicechat.LOGGER.error("Failed to read from socket", e);
+                    }
                 }
             }
         } catch (Exception e) {
