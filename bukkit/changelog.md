@@ -1,5 +1,1 @@
-- Improved performance
-- Added Spigot fallback compatibility mode
-- Added Bukkit fallback compatibility mode that's compatible with all Minecraft versions starting from 1.8
-- Fixed ping buffer size
-- Allow overriding compatibility versions
+- Improved handling of invalid bind addresses

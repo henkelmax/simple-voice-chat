@@ -1,2 +1,1 @@
-- Improved tooltip rendering performance
-- Fixed ping buffer size
+- Improved handling of invalid bind addresses
