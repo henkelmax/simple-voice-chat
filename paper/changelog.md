@@ -1,1 +1,1 @@
-- Fixed ping buffer size
+- Improved handling of invalid bind addresses
