@@ -1,1 +1,2 @@
 - Improved handling of invalid bind addresses
+- Improved HUD rendering compatibility
