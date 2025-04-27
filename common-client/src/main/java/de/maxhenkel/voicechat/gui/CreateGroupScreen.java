@@ -81,11 +81,9 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.depthTreeUp();
         guiGraphics.drawString(font, CREATE_GROUP, guiLeft + xSize / 2 - font.width(CREATE_GROUP) / 2, guiTop + 7, FONT_COLOR, false);
         guiGraphics.drawString(font, GROUP_NAME, guiLeft + 8, guiTop + 7 + font.lineHeight + 5, FONT_COLOR, false);
         guiGraphics.drawString(font, OPTIONAL_PASSWORD, guiLeft + 8, guiTop + 7 + (font.lineHeight + 5) * 2 + 10 + 2, FONT_COLOR, false);
-        guiGraphics.depthTreeBack();
     }
 
     @Override

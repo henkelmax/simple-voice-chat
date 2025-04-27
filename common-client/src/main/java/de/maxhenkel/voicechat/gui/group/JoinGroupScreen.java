@@ -66,15 +66,11 @@ public class JoinGroupScreen extends ListScreenBase {
 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.depthTreeUp();
         guiGraphics.drawString(font, JOIN_CREATE_GROUP, guiLeft + xSize / 2 - font.width(JOIN_CREATE_GROUP) / 2, guiTop + 5, FONT_COLOR, false);
-        guiGraphics.depthTreeBack();
         if (!groupList.isEmpty()) {
             groupList.render(guiGraphics, mouseX, mouseY, delta);
         } else {
-            guiGraphics.depthTreeUp();
             guiGraphics.drawCenteredString(font, NO_GROUPS, width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - font.lineHeight / 2, -1);
-            guiGraphics.depthTreeBack();
         }
     }
 

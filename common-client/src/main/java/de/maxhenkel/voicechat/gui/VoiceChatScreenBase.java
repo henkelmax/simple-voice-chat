@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public abstract class VoiceChatScreenBase extends Screen {
 
-    public static final int FONT_COLOR = 4210752;
+    public static final int FONT_COLOR = -12566464;
 
     protected List<HoverArea> hoverAreas;
     protected int guiLeft;
@@ -45,9 +45,7 @@ public abstract class VoiceChatScreenBase extends Screen {
             renderBlurredBackground(guiGraphics);
         }
         renderBackground(guiGraphics, mouseX, mouseY, delta);
-        guiGraphics.depthTreeUp();
         super.render(guiGraphics, mouseX, mouseY, delta);
-        guiGraphics.depthTreeBack();
         renderForeground(guiGraphics, mouseX, mouseY, delta);
     }
 

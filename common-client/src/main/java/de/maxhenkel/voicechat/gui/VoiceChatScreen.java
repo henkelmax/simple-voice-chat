@@ -138,9 +138,8 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.depthTreeUp();
         int titleWidth = font.width(TITLE);
-        guiGraphics.drawString(font, TITLE.getVisualOrderText(), guiLeft + (xSize - titleWidth) / 2, guiTop + 7, FONT_COLOR, false);
+        guiGraphics.drawString(font, TITLE, guiLeft + (xSize - titleWidth) / 2, guiTop + 7, FONT_COLOR, false);
 
         ClientVoicechat client = ClientManager.getClient();
         if (client != null && client.getRecorder() != null) {
@@ -152,7 +151,6 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
                 guiGraphics.setTooltipForNextFrame(font, Component.translatable("message.voicechat.storage_size", recorder.getStorage()), mouseX, mouseY);
             }
         }
-        guiGraphics.depthTreeBack();
     }
 
 }

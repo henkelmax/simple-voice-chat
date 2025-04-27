@@ -45,9 +45,7 @@ public class ImageButton extends AbstractButton {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
         super.renderWidget(guiGraphics, mouseX, mouseY, f);
-        guiGraphics.depthTreeUp();
         renderImage(guiGraphics, mouseX, mouseY);
-        guiGraphics.depthTreeBack();
 
         if (tooltipSupplier != null) {
             tooltipSupplier.updateTooltip(this);

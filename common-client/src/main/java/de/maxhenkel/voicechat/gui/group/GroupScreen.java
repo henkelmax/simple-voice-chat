@@ -131,9 +131,7 @@ public class GroupScreen extends ListScreenBase {
             title = Component.translatable("message.voicechat.group_type_title", Component.literal(group.getName()), GroupType.fromType(group.getType()).getTranslation());
         }
 
-        guiGraphics.depthTreeUp();
         guiGraphics.drawString(font, title, guiLeft + xSize / 2 - font.width(title) / 2, guiTop + 5, FONT_COLOR, false);
-        guiGraphics.depthTreeBack();
     }
 
 }

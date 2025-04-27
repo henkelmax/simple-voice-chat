@@ -122,11 +122,9 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.depthTreeUp();
         int titleWidth = font.width(TITLE);
         guiGraphics.drawString(font, TITLE.getVisualOrderText(), guiLeft + (xSize - titleWidth) / 2, guiTop + 7, getFontColor(), false);
 
-        guiGraphics.depthTreeBack();
         Component sliderTooltip = voiceActivationSlider.getHoverText();
         if (voiceActivationSlider.isHovered() && sliderTooltip != null) {
             guiGraphics.setTooltipForNextFrame(font, sliderTooltip, mouseX, mouseY);

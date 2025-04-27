@@ -60,7 +60,7 @@ public class AdjustVolumesScreen extends ListScreenBase {
         searchBox.setMaxLength(16);
         searchBox.setBordered(false);
         searchBox.setVisible(true);
-        searchBox.setTextColor(0xFFFFFF);
+        searchBox.setTextColor(-1);
         searchBox.setValue(string);
         searchBox.setResponder(this::checkSearchStringUpdate);
         addWidget(searchBox);
@@ -79,20 +79,14 @@ public class AdjustVolumesScreen extends ListScreenBase {
 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.depthTreeUp();
         guiGraphics.drawString(font, TITLE, width / 2 - font.width(TITLE) / 2, guiTop + 5, VoiceChatScreenBase.FONT_COLOR, false);
-        guiGraphics.depthTreeBack();
         if (!volumeList.isEmpty()) {
             volumeList.render(guiGraphics, mouseX, mouseY, delta);
         } else if (!searchBox.getValue().isEmpty()) {
-            guiGraphics.depthTreeUp();
             guiGraphics.drawCenteredString(font, EMPTY_SEARCH, width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - font.lineHeight / 2, -1);
-            guiGraphics.depthTreeBack();
         }
         if (!searchBox.isFocused() && searchBox.getValue().isEmpty()) {
-            guiGraphics.depthTreeUp();
             guiGraphics.drawString(font, SEARCH_HINT, searchBox.getX(), searchBox.getY(), -1, false);
-            guiGraphics.depthTreeBack();
         } else {
             searchBox.render(guiGraphics, mouseX, mouseY, delta);
         }

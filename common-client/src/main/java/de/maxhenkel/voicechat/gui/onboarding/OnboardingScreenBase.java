@@ -80,21 +80,17 @@ public abstract class OnboardingScreenBase extends Screen {
     }
 
     protected void renderTitle(GuiGraphics guiGraphics, Component titleComponent) {
-        guiGraphics.depthTreeUp();
         int titleWidth = font.width(titleComponent);
         guiGraphics.drawString(font, titleComponent.getVisualOrderText(), width / 2 - titleWidth / 2, guiTop, TEXT_COLOR, true);
-        guiGraphics.depthTreeBack();
     }
 
     protected void renderMultilineText(GuiGraphics guiGraphics, Component textComponent) {
-        guiGraphics.depthTreeUp();
         List<FormattedCharSequence> text = font.split(textComponent, contentWidth);
 
         for (int i = 0; i < text.size(); i++) {
             FormattedCharSequence line = text.get(i);
             guiGraphics.drawString(font, line, width / 2 - font.width(line) / 2, guiTop + font.lineHeight + 20 + i * (font.lineHeight + 1), TEXT_COLOR, true);
         }
-        guiGraphics.depthTreeBack();
     }
 
 }
