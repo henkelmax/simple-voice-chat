@@ -17,6 +17,7 @@ processResources {
 repositories {
     mavenCentral()
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url = 'https://repo.glaremasters.me/repository/public' }
 }
 
 dependencies {
