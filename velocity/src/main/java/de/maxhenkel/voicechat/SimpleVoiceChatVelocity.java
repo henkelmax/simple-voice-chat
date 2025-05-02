@@ -16,6 +16,7 @@ import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import de.maxhenkel.voicechat.logging.JavaLoggingLogger;
 import de.maxhenkel.voicechat.sniffer.IncompatibleVoiceChatException;
+import de.maxhenkel.voicechat.integration.viaversion.ViaVersionCompatibility;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -82,11 +83,13 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
                 MinecraftChannelIdentifier.from(SECRET_CHANNEL),
                 MinecraftChannelIdentifier.from(SECRET_CHANNEL_1_12)
         );
+        viaVersionIntegration();
         this.reloadVoiceProxyServer();
     }
 
     @Subscribe
     public void onProxyReload(ProxyReloadEvent event) {
+        viaVersionIntegration();
         this.reloadVoiceProxyServer();
     }
 
@@ -144,5 +147,17 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
             event.setResult(PluginMessageEvent.ForwardResult.handled());
             getLogger().info("Player {} has an incompatible voice chat version: {}", p.getUsername(), e.getMessage());
         }
+    }
+
+    private void viaVersionIntegration() {
+        try {
+            if (this.proxyServer.getPluginManager().getPlugin("viaversion") != null) {
+                ViaVersionCompatibility.register();
+                getLogger().info("Successfully added ViaVersion mappings");
+            }
+        } catch (Throwable t) {
+            getLogger().error("Failed to add ViaVersion mappings", t);
+        }
+        
     }
 }
