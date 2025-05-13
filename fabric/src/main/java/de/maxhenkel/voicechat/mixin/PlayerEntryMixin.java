@@ -57,7 +57,7 @@ public class PlayerEntryMixin {
     private void onCreate(Minecraft minecraft, SocialInteractionsScreen socialInteractionsScreen, UUID uUID, String string, Supplier<ResourceLocation> supplier, boolean bl, CallbackInfo ci) {
         if (this.children instanceof ArrayList) {
             inviteButton = new ImageButton(0, 0, GROUP_ICON, button -> {
-                minecraft.player.connection.sendUnsignedCommand("voicechat invite %s".formatted(playerName));
+                minecraft.player.connection.sendCommand("voicechat invite %s".formatted(playerName));
                 invited = true;
             });
             inviteButton.setTooltip(Tooltip.create(Component.translatable("message.voicechat.invite_player", playerName)));
