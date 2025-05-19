@@ -45,7 +45,7 @@ public interface VoicechatServerApi extends VoicechatApi {
     /**
      * Creates a sound channel for the specified entity.
      *
-     * @param channelId the ID of the channel - Has to be unique
+     * @param channelId the ID of the channel - Has to be the UUID of the entity
      * @param entity    the entity to attach the channel to
      * @return the channel
      */
