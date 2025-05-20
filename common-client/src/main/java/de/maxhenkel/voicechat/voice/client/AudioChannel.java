@@ -52,7 +52,7 @@ public class AudioChannel extends Thread {
         setDaemon(true);
         setName("AudioChannelThread-" + uuid.toString());
         setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
-        Voicechat.LOGGER.info("Creating audio channel for {}", uuid);
+        Voicechat.LOGGER.info("Creating audio channel {}", uuid);
     }
 
     public boolean canKill() {
@@ -60,7 +60,7 @@ public class AudioChannel extends Thread {
     }
 
     public void closeAndKill() {
-        Voicechat.LOGGER.info("Closing audio channel for {}", uuid);
+        Voicechat.LOGGER.info("Closing audio channel {}", uuid);
         stopped = true;
         queue.clear();
         if (Thread.currentThread() == this) {
@@ -74,7 +74,7 @@ public class AudioChannel extends Thread {
         }
     }
 
-    public UUID getUUID() {
+    public UUID getChannelId() {
         return uuid;
     }
 
@@ -114,7 +114,7 @@ public class AudioChannel extends Thread {
                 if (packet.getData().length == 0) {
                     if (packet instanceof PlayerSoundPacket) {
                         PlayerSoundPacket playerSoundPacket = (PlayerSoundPacket) packet;
-                        ClientPluginManager.instance().onReceiveEntityClientSound(uuid, new short[0], playerSoundPacket.isWhispering(), playerSoundPacket.getDistance());
+                        ClientPluginManager.instance().onReceiveEntityClientSound(uuid, playerSoundPacket.getSender(), new short[0], playerSoundPacket.isWhispering(), playerSoundPacket.getDistance());
                     } else if (packet instanceof LocationSoundPacket) {
                         LocationSoundPacket locationSoundPacket = (LocationSoundPacket) packet;
                         ClientPluginManager.instance().onReceiveLocationalClientSound(uuid, new short[0], locationSoundPacket.getLocation(), locationSoundPacket.getDistance());
@@ -165,7 +165,7 @@ public class AudioChannel extends Thread {
                 speaker.close();
             }
             decoder.close();
-            Voicechat.LOGGER.info("Closed audio channel for {}", uuid);
+            Voicechat.LOGGER.info("Closed audio channel {}", uuid);
         }
     }
 
@@ -197,7 +197,7 @@ public class AudioChannel extends Thread {
             appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData));
         } else if (packet instanceof PlayerSoundPacket) {
             PlayerSoundPacket soundPacket = (PlayerSoundPacket) packet;
-            @Nullable Entity entity = minecraft.world.getPlayerEntityByUUID(uuid);
+            @Nullable Entity entity = minecraft.world.getPlayerEntityByUUID(soundPacket.getSender());
             if (entity == null) {
                 Vec3d position = PositionalAudioUtils.getCameraPosition();
                 AxisAlignedBB box = new AxisAlignedBB(
@@ -208,7 +208,7 @@ public class AudioChannel extends Thread {
                         position.y + soundPacket.getDistance() + 1F,
                         position.z + soundPacket.getDistance() + 1F
                 );
-                entity = minecraft.world.getEntitiesInAABBexcluding(null, box, e -> e.getUniqueID().equals(uuid)).stream().findAny().orElse(null);
+                entity = minecraft.world.getEntitiesInAABBexcluding(null, box, e -> e.getUniqueID().equals(soundPacket.getSender())).stream().findAny().orElse(null);
                 if (entity == null) {
                     return;
                 }
@@ -228,7 +228,7 @@ public class AudioChannel extends Thread {
             volume *= deathVolume;
             Vec3d pos = entity.getPositionEyes(1F);
 
-            short[] processedMonoData = ClientPluginManager.instance().onReceiveEntityClientSound(uuid, monoData, soundPacket.isWhispering(), soundPacket.getDistance());
+            short[] processedMonoData = ClientPluginManager.instance().onReceiveEntityClientSound(uuid, soundPacket.getSender(), monoData, soundPacket.isWhispering(), soundPacket.getDistance());
 
             if (FreecamUtil.getDistanceTo(pos) > soundPacket.getDistance() + 1D) {
                 return;
@@ -241,7 +241,7 @@ public class AudioChannel extends Thread {
                 volume *= distanceVolume;
                 speaker.play(processedMonoData, volume, soundPacket.getCategory());
                 if (distanceVolume > 0F) {
-                    client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
+                    client.getTalkCache().updateTalking(soundPacket.getSender(), soundPacket.isWhispering());
                 }
                 float recordingVolume = volume;
                 appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData, recordingVolume));
@@ -250,7 +250,7 @@ public class AudioChannel extends Thread {
 
             speaker.play(processedMonoData, volume, pos, soundPacket.getCategory(), soundPacket.getDistance());
             if (distanceVolume > 0F) {
-                client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
+                client.getTalkCache().updateTalking(soundPacket.getSender(), soundPacket.isWhispering());
             }
             float recordingVolume = deathVolume;
             appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(soundPacket.getDistance(), pos, processedMonoData, recordingVolume));
