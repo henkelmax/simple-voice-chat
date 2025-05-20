@@ -1,6 +1,13 @@
 package de.maxhenkel.voicechat.api.audiochannel;
 
+import java.util.UUID;
+
 public interface ClientEntityAudioChannel extends ClientAudioChannel {
+
+    /**
+     * @return the UUID of the entity
+     */
+    UUID getEntityId();
 
     /**
      * @param whispering if the entity should whisper
