@@ -39,13 +39,20 @@ public class ClientReceiveSoundEventImpl extends ClientEventImpl implements Clie
     }
 
     public static class EntitySoundImpl extends ClientReceiveSoundEventImpl implements EntitySound {
+        private UUID entity;
         private boolean whispering;
         private float distance;
 
-        public EntitySoundImpl(UUID id, short[] rawAudio, boolean whispering, float distance) {
+        public EntitySoundImpl(UUID id, UUID entity, short[] rawAudio, boolean whispering, float distance) {
             super(id, rawAudio);
+            this.entity = entity;
             this.whispering = whispering;
             this.distance = distance;
+        }
+
+        @Override
+        public UUID getEntityId() {
+            return entity;
         }
 
         @Override

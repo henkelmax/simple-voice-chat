@@ -33,8 +33,19 @@ public interface VoicechatClientApi extends VoicechatApi {
      *
      * @param uuid the UUID of the entity
      * @return the audio channel
+     * @deprecated use {@link #createEntityAudioChannel(UUID, Entity)}
      */
+    @Deprecated
     ClientEntityAudioChannel createEntityAudioChannel(UUID uuid);
+
+    /**
+     * Creates a client side entity audio channel.
+     *
+     * @param uuid the UUID of the entity
+     * @param entity the entity
+     * @return the audio channel
+     */
+    ClientEntityAudioChannel createEntityAudioChannel(UUID uuid, Entity entity);
 
     /**
      * Creates a client side locational audio channel.
