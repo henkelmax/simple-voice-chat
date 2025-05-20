@@ -58,8 +58,8 @@ public class ClientPluginManager {
         return clientSoundEvent.getRawAudio();
     }
 
-    public short[] onReceiveEntityClientSound(UUID id, short[] rawAudio, boolean whispering, float distance) {
-        ClientReceiveSoundEventImpl.EntitySoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.EntitySoundImpl(id, rawAudio, whispering, distance);
+    public short[] onReceiveEntityClientSound(UUID id, UUID entity, short[] rawAudio, boolean whispering, float distance) {
+        ClientReceiveSoundEventImpl.EntitySoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.EntitySoundImpl(id, entity, rawAudio, whispering, distance);
         pluginManager.dispatchEvent(ClientReceiveSoundEvent.EntitySound.class, clientSoundEvent);
         return clientSoundEvent.getRawAudio();
     }
