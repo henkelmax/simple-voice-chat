@@ -34,6 +34,12 @@ public interface ClientReceiveSoundEvent extends ClientEvent {
     void setRawAudio(@Nullable short[] rawAudio);
 
     public static interface EntitySound extends ClientReceiveSoundEvent {
+
+        /**
+         * @return the UUID of the entity
+         */
+        UUID getEntityId();
+
         /**
          * @return if the player is whispering
          */
