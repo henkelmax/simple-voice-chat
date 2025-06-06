@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.gradleup.shadow'
 apply plugin: 'com.modrinth.minotaur'
 apply plugin: 'io.papermc.hangar-publish-plugin'
 apply plugin: 'xyz.jpenilla.run-velocity'
