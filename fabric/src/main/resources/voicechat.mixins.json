@@ -13,6 +13,7 @@
     "KeyboardMixin",
     "MouseMixin",
     "PackRepositoryMixin",
+    "GuiMixin",
     "IntegratedServerMixin",
     "PlayerEntryMixin"
   ],
