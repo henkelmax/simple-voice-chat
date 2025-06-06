@@ -1,5 +1,5 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version "${shadow_version}" apply false
+    id 'com.gradleup.shadow' version "${shadow_version}" apply false
     id 'com.matthewprenger.cursegradle' version "${cursegradle_version}" apply false
     id 'com.modrinth.minotaur' version "${minotaur_version}" apply false
     id 'mod-update' version "${mod_update_version}" apply false
