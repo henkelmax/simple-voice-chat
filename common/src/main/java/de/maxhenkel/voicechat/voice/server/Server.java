@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.channels.AsynchronousCloseException;
 import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.Map;
@@ -123,7 +124,7 @@ public class Server extends Thread {
                     packetQueue.add(socket.read());
                 } catch (Exception e) {
                     // Only log an error if the error isn't caused by the socket being closed
-                    if (!socket.isClosed() || !(e instanceof SocketException)) {
+                    if (!(e instanceof SocketException && e.getCause() instanceof AsynchronousCloseException)) {
                         if (Voicechat.debugMode()) {
                             Voicechat.LOGGER.error("Failed to read from socket", e);
                         }
