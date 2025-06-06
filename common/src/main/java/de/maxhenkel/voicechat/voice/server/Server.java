@@ -34,6 +34,7 @@ public class Server extends Thread {
     private final Map<UUID, ClientConnection> connections;
     private final Map<UUID, ClientConnection> unCheckedConnections;
     private final Map<UUID, UUID> secrets;
+    private final boolean dedicated;
     private int port;
     private final MinecraftServer server;
     private VoicechatSocket socket;
@@ -45,7 +46,8 @@ public class Server extends Thread {
     private final ServerCategoryManager categoryManager;
 
     public Server(MinecraftServer server) {
-        if (server.isDedicatedServer()) {
+        dedicated = server.isDedicatedServer();
+        if (dedicated) {
             int configPort = Voicechat.SERVER_CONFIG.voiceChatPort.get();
             if (configPort < 0) {
                 Voicechat.LOGGER.info("Using the Minecraft servers port as voice chat port");
@@ -134,6 +136,10 @@ public class Server extends Thread {
     }
 
     private String getBindAddress() {
+        if (!dedicated) {
+            return "";
+        }
+
         String bindAddress = Voicechat.SERVER_CONFIG.voiceChatBindAddress.get();
 
         if (bindAddress.trim().equals("*")) {
