@@ -1,2 +1,1 @@
-- Fixed ping buffer size
-- Added compatibility check
+- Updated to 1.21.6
