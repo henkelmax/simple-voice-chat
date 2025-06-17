@@ -1,1 +1,1 @@
-- Improved handling of invalid bind addresses
+- Updated to 1.21.6
