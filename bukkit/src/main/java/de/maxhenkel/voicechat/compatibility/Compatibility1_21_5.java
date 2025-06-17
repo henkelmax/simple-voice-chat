@@ -8,6 +8,7 @@ import org.json.JSONObject;
 public class Compatibility1_21_5 extends Compatibility1_20_3 {
 
     public static final BukkitVersion VERSION_1_21_5 = BukkitVersion.parseBukkitVersion("1.21.5-R0.1");
+    public static final BukkitVersion VERSION_1_21_6 = BukkitVersion.parseBukkitVersion("1.21.6-R0.1");
 
     public static final Compatibility1_21_5 INSTANCE = new Compatibility1_21_5();
 
