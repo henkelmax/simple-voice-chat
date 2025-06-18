@@ -1,2 +1,0 @@
-- Improved handling of invalid bind addresses
-- Fixed compatibility with Folia

@@ -1,2 +1,0 @@
-- Fixed ping buffer size
-- Added compatibility check
