@@ -2,3 +2,4 @@
 - Improved HUD rendering compatibility
 - Fixed bind_address being used in LAN worlds
 - Updated Swedish translation
+- Removed default `G` keybind for the group GUI due to conflicts
