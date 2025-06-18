@@ -1,8 +1,6 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import de.maxhenkel.voicechat.events.ClientVoiceChatConnectedEvent;
-import de.maxhenkel.voicechat.events.ClientVoiceChatDisconnectedEvent;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -13,10 +11,8 @@ import net.minecraft.server.packs.repository.RepositorySource;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.net.SocketAddress;
 import java.util.List;
@@ -56,7 +52,6 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         keyMappings = new CopyOnWriteArrayList<>();
     }
 
-    @SubscribeEvent
     public void onRenderName(net.minecraftforge.client.event.RenderNameTagEvent event) {
         renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getState(), event.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
     }
@@ -66,30 +61,22 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(guiGraphics, partialTick));
     }
 
-    @SubscribeEvent
     public void onKey(InputEvent.Key event) {
         keyboardEvents.forEach(keyboardEvent -> keyboardEvent.onKeyboardEvent(minecraft.getWindow().getWindow(), event.getKey(), event.getScanCode()));
     }
 
-    @SubscribeEvent
     public void onMouse(InputEvent.MouseButton.Pre event) {
         mouseEvents.forEach(mouseEvent -> mouseEvent.onMouseEvent(minecraft.getWindow().getWindow(), event.getButton(), event.getAction(), event.getModifiers()));
     }
 
-    @SubscribeEvent
-    public void onKeyInput(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.START) {
-            return;
-        }
+    public void onClientTick(TickEvent.ClientTickEvent.Pre event) {
         clientTickEvents.forEach(Runnable::run);
     }
 
-    @SubscribeEvent
-    public void onInput(TickEvent.ClientTickEvent event) {
+    public void onKeyInput(TickEvent.ClientTickEvent.Post event) {
         inputEvents.forEach(Runnable::run);
     }
 
-    @SubscribeEvent
     public void onDisconnect(LevelEvent.Unload event) {
         // Not just changing the world - Disconnecting
         if (minecraft.gameMode == null) {
@@ -97,7 +84,6 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         }
     }
 
-    @SubscribeEvent
     public void onJoinServer(ClientPlayerNetworkEvent.LoggingIn event) {
         if (event.getPlayer() != minecraft.player) {
             return;
@@ -107,11 +93,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
 
     private boolean wasPublished;
 
-    @SubscribeEvent
     public void onServer(TickEvent.ServerTickEvent event) {
-        if (!event.phase.equals(TickEvent.Phase.END)) {
-            return;
-        }
         IntegratedServer server = Minecraft.getInstance().getSingleplayerServer();
         if (server == null) {
             return;
@@ -176,13 +158,11 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @Override
     public void emitVoiceChatConnectedEvent(ClientVoicechatConnection client) {
         voicechatConnectEvents.forEach(consumer -> consumer.accept(client));
-        MinecraftForge.EVENT_BUS.post(new ClientVoiceChatConnectedEvent(client));
     }
 
     @Override
     public void emitVoiceChatDisconnectedEvent() {
         voicechatDisconnectEvents.forEach(Runnable::run);
-        MinecraftForge.EVENT_BUS.post(new ClientVoiceChatDisconnectedEvent());
     }
 
     @Override
