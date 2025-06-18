@@ -4,9 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.ForgeVoicechatPlugin;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
-import de.maxhenkel.voicechat.events.ServerVoiceChatConnectedEvent;
-import de.maxhenkel.voicechat.events.ServerVoiceChatDisconnectedEvent;
-import de.maxhenkel.voicechat.events.VoiceChatCompatibilityCheckSucceededEvent;
 import de.maxhenkel.voicechat.net.ForgeNetManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.ForgePermissionManager;
@@ -14,12 +11,10 @@ import de.maxhenkel.voicechat.permission.PermissionManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -54,29 +49,24 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
         voicechatDisconnectEvents = new CopyOnWriteArrayList<>();
     }
 
-    @SubscribeEvent
     public void serverStarting(ServerStartedEvent event) {
         serverStartingEvents.forEach(consumer -> consumer.accept(event.getServer()));
     }
 
-    @SubscribeEvent
     public void serverStopping(ServerStoppingEvent event) {
         serverStoppingEvents.forEach(consumer -> consumer.accept(event.getServer()));
     }
 
-    @SubscribeEvent
     public void onRegisterCommands(RegisterCommandsEvent event) {
         registerServerCommandsEvents.forEach(consumer -> consumer.accept(event.getDispatcher()));
     }
 
-    @SubscribeEvent
     public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             playerLoggedInEvents.forEach(consumer -> consumer.accept(player));
         }
     }
 
-    @SubscribeEvent
     public void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             playerLoggedOutEvents.forEach(consumer -> consumer.accept(player));
@@ -101,19 +91,16 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     @Override
     public void emitServerVoiceChatConnectedEvent(ServerPlayer player) {
         voicechatConnectEvents.forEach(consumer -> consumer.accept(player));
-        MinecraftForge.EVENT_BUS.post(new ServerVoiceChatConnectedEvent(player));
     }
 
     @Override
     public void emitServerVoiceChatDisconnectedEvent(UUID clientID) {
         voicechatDisconnectEvents.forEach(consumer -> consumer.accept(clientID));
-        MinecraftForge.EVENT_BUS.post(new ServerVoiceChatDisconnectedEvent(clientID));
     }
 
     @Override
     public void emitPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
         voicechatCompatibilityCheckSucceededEvents.forEach(consumer -> consumer.accept(player));
-        MinecraftForge.EVENT_BUS.post(new VoiceChatCompatibilityCheckSucceededEvent(player));
     }
 
     @Override
