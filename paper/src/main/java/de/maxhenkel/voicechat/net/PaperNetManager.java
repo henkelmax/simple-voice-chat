@@ -7,6 +7,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.common.custom.DiscardedPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
@@ -69,7 +70,9 @@ public class PaperNetManager extends NetManager {
         Bukkit.getGlobalRegionScheduler().run(VoicechatPaperPlugin.INSTANCE, (t) -> {
             FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
             packet.toBytes(buffer);
-            player.connection.send(new ClientboundCustomPayloadPacket(packet));
+            byte[] bytes = new byte[buffer.readableBytes()];
+            buffer.readBytes(bytes);
+            player.connection.send(new ClientboundCustomPayloadPacket(new DiscardedPayload(packet.type().id(), bytes)));
         });
     }
 
