@@ -42,6 +42,7 @@ public abstract class VoiceChatScreenBase extends Screen {
         if (isIngame()) {
             renderTransparentBackground(guiGraphics);
         } else {
+            renderPanorama(guiGraphics, delta);
             renderBlurredBackground(guiGraphics);
         }
         renderBackground(guiGraphics, mouseX, mouseY, delta);

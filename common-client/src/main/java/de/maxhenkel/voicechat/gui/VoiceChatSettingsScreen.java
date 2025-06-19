@@ -111,10 +111,6 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        if (!isIngame()) {
-            renderPanorama(guiGraphics, delta);
-            renderBlurredBackground(guiGraphics);
-        }
         if (isIngame()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
         }
