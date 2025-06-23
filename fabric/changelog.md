@@ -1,4 +1,1 @@
-- Improved handling of invalid bind addresses
-- Improved HUD rendering compatibility
-- Fixed bind_address being used in LAN worlds
-- Updated Swedish translation
+- Added "Default microphone" and "Default speaker" options
