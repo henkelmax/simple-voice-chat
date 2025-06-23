@@ -1,13 +1,11 @@
 package de.maxhenkel.voicechat.gui.audiodevice;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -39,11 +37,9 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
 
     public abstract List<String> getDevices();
 
-    public abstract ResourceLocation getIcon();
-
     public abstract ITextComponent getEmptyListComponent();
 
-    public abstract ConfigEntry<String> getConfigEntry();
+    public abstract AudioDeviceList createAudioDeviceList(int width, int height, int top);
 
     @Override
     protected void init() {
@@ -57,7 +53,7 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
         if (deviceList != null) {
             deviceList.updateSize(width, units * UNIT_SIZE, guiTop + HEADER_SIZE);
         } else {
-            deviceList = new AudioDeviceList(width, units * UNIT_SIZE, guiTop + HEADER_SIZE).setIcon(getIcon()).setConfigEntry(getConfigEntry());
+            deviceList = createAudioDeviceList(width, units * UNIT_SIZE, guiTop + HEADER_SIZE);
         }
         addWidget(deviceList);
 
@@ -68,7 +64,6 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
 
         deviceList.setAudioDevices(getDevices());
     }
-
 
     @Override
     public void renderBackground(MatrixStack poseStack, int mouseX, int mouseY, float delta) {

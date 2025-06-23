@@ -8,9 +8,12 @@ import de.maxhenkel.voicechat.voice.client.SoundManager;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.stream.Stream;
 import java.util.stream.Collectors;
 
 public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
@@ -19,6 +22,8 @@ public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
 
     @Nullable
     protected ResourceLocation icon;
+    @Nullable
+    protected ITextComponent defaultDeviceText;
 
     @Nullable
     protected ConfigEntry<String> configEntry;
@@ -59,23 +64,17 @@ public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
         }
     }
 
-    public AudioDeviceList setIcon(@Nullable ResourceLocation icon) {
-        this.icon = icon;
-        return this;
-    }
-
-    public AudioDeviceList setConfigEntry(@Nullable ConfigEntry<String> configEntry) {
-        this.configEntry = configEntry;
-        return this;
-    }
-
     @Override
     public void replaceEntries(Collection<AudioDeviceEntry> entries) {
         super.replaceEntries(entries);
     }
 
     public void setAudioDevices(Collection<String> entries) {
-        replaceEntries(entries.stream().map(s -> new AudioDeviceEntry(s, getVisibleName(s), icon, () -> isSelected(s))).collect(Collectors.toList()));
+        replaceEntries(
+                Stream.concat(Stream.of(""), entries.stream())
+                        .map(s -> new AudioDeviceEntry(s, getVisibleName(s), icon, () -> isSelected(s)))
+                        .collect(Collectors.toList()
+                        ));
     }
 
     public boolean isSelected(String name) {
@@ -85,8 +84,11 @@ public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
         return configEntry.get().equals(name);
     }
 
-    public String getVisibleName(String device) {
-        return SoundManager.cleanDeviceName(device);
+    public ITextComponent getVisibleName(String device) {
+        if (device.isEmpty() && defaultDeviceText != null) {
+            return defaultDeviceText;
+        }
+        return new StringTextComponent(SoundManager.cleanDeviceName(device));
     }
 
     public boolean isEmpty() {

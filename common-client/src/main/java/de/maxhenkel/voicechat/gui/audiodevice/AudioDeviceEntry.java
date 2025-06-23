@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.ColorHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -23,16 +24,16 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
 
     protected final Minecraft minecraft;
     protected final String device;
-    protected final String visibleDeviceName;
+    protected final ITextComponent name;
     @Nullable
     protected final ResourceLocation icon;
     protected final Supplier<Boolean> isSelected;
 
-    public AudioDeviceEntry(String device, String name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
+    public AudioDeviceEntry(String device, ITextComponent name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
         this.device = device;
         this.icon = icon;
         this.isSelected = isSelected;
-        this.visibleDeviceName = name;
+        this.name = name;
         this.minecraft = Minecraft.getInstance();
     }
 
@@ -56,7 +57,7 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
             AbstractGui.blit(poseStack, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
         }
 
-        float deviceWidth = minecraft.font.width(visibleDeviceName);
+        float deviceWidth = minecraft.font.width(name);
         float space = width - PADDING - 16 - PADDING - PADDING;
         float scale = Math.min(space / deviceWidth, 1F);
 
@@ -64,7 +65,7 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
         poseStack.translate(left + PADDING + 16 + PADDING, top + height / 2 - (minecraft.font.lineHeight * scale) / 2, 0D);
         poseStack.scale(scale, scale, 1F);
 
-        minecraft.font.draw(poseStack, visibleDeviceName, 0, 0, DEVICE_NAME_COLOR);
+        minecraft.font.draw(poseStack, name, 0, 0, DEVICE_NAME_COLOR);
         poseStack.popPose();
     }
 
