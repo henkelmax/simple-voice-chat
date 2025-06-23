@@ -1,5 +1,1 @@
-- Improved handling of invalid bind addresses
-- Fixed bind_address being used in LAN worlds
-- Updated Swedish translation
-- Removed default `G` keybind for the group GUI due to conflicts
-- Fixed crash when opening in-game settings through cloth config
+- Added "Default microphone" and "Default speaker" options

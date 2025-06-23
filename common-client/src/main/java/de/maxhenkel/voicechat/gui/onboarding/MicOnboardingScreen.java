@@ -1,16 +1,12 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
-import de.maxhenkel.configbuilder.entry.ConfigEntry;
-import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.gui.audiodevice.SelectMicrophoneScreen;
-import de.maxhenkel.voicechat.voice.client.microphone.MicrophoneManager;
+import de.maxhenkel.voicechat.gui.audiodevice.AudioDeviceList;
+import de.maxhenkel.voicechat.gui.audiodevice.MicrophoneAudioDeviceList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class MicOnboardingScreen extends DeviceOnboardingScreen {
 
@@ -21,18 +17,8 @@ public class MicOnboardingScreen extends DeviceOnboardingScreen {
     }
 
     @Override
-    public List<String> getNames() {
-        return MicrophoneManager.deviceNames();
-    }
-
-    @Override
-    public ResourceLocation getIcon() {
-        return SelectMicrophoneScreen.MICROPHONE_ICON;
-    }
-
-    @Override
-    public ConfigEntry<String> getConfigEntry() {
-        return VoicechatClient.CLIENT_CONFIG.microphone;
+    public AudioDeviceList createAudioDeviceList(int width, int height, int top) {
+        return new MicrophoneAudioDeviceList(width, height, top);
     }
 
     @Override

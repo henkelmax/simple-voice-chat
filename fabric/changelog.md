@@ -1,1 +1,1 @@
-- Updated to 1.21.7
+- Added "Default microphone" and "Default speaker" options

@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 
@@ -23,16 +24,16 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
 
     protected final Minecraft minecraft;
     protected final String device;
-    protected final String visibleDeviceName;
+    protected final Component name;
     @Nullable
     protected final ResourceLocation icon;
     protected final Supplier<Boolean> isSelected;
 
-    public AudioDeviceEntry(String device, String name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
+    public AudioDeviceEntry(String device, Component name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
         this.device = device;
         this.icon = icon;
         this.isSelected = isSelected;
-        this.visibleDeviceName = name;
+        this.name = name;
         this.minecraft = Minecraft.getInstance();
     }
 
@@ -54,7 +55,7 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SELECTED, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
         }
 
-        float deviceWidth = minecraft.font.width(visibleDeviceName);
+        float deviceWidth = minecraft.font.width(name);
         float space = width - PADDING - 16 - PADDING - PADDING;
         float scale = Math.min(space / deviceWidth, 1F);
 
@@ -62,7 +63,7 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
         guiGraphics.pose().translate(left + PADDING + 16 + PADDING, top + height / 2 - (minecraft.font.lineHeight * scale) / 2);
         guiGraphics.pose().scale(scale, scale);
 
-        guiGraphics.drawString(minecraft.font, visibleDeviceName, 0, 0, DEVICE_NAME_COLOR, false);
+        guiGraphics.drawString(minecraft.font, name, 0, 0, DEVICE_NAME_COLOR, false);
         guiGraphics.pose().popMatrix();
     }
 

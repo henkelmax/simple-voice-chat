@@ -1,36 +1,23 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
-import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.voicechat.gui.audiodevice.AudioDeviceList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public abstract class DeviceOnboardingScreen extends OnboardingScreenBase {
 
     protected AudioDeviceList deviceList;
 
-    protected List<String> micNames;
-
     public DeviceOnboardingScreen(Component title, @Nullable Screen previous) {
         super(title, previous);
         minecraft = Minecraft.getInstance();
-        micNames = getNames();
-        if (micNames.isEmpty()) {
-            minecraft.schedule(() -> minecraft.setScreen(getNextScreen()));
-        }
     }
 
-    public abstract List<String> getNames();
-
-    public abstract ResourceLocation getIcon();
-
-    public abstract ConfigEntry<String> getConfigEntry();
+    public abstract AudioDeviceList createAudioDeviceList(int width, int height, int top);
 
     @Override
     protected void init() {
@@ -39,9 +26,8 @@ public abstract class DeviceOnboardingScreen extends OnboardingScreenBase {
         if (deviceList != null) {
             deviceList.setRectangle(width, contentHeight - font.lineHeight - BUTTON_HEIGHT - PADDING * 2, 0, guiTop + font.lineHeight + PADDING);
         } else {
-            deviceList = new AudioDeviceList(width, contentHeight - font.lineHeight - BUTTON_HEIGHT - PADDING * 2, guiTop + font.lineHeight + PADDING).setIcon(getIcon()).setConfigEntry(getConfigEntry());
+            deviceList = createAudioDeviceList(width, contentHeight - font.lineHeight - BUTTON_HEIGHT - PADDING * 2, guiTop + font.lineHeight + PADDING);
         }
-        deviceList.setAudioDevices(getNames());
         addWidget(deviceList);
 
         addBackOrCancelButton();
