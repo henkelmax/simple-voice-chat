@@ -12,6 +12,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.net.SocketAddress;
 import java.util.List;
@@ -79,6 +80,24 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
 
     public void onDisconnect() {
         disconnectEvents.forEach(Runnable::run);
+    }
+
+    private boolean changingServer;
+
+    @SubscribeEvent
+    public void onChangeServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
+        // Only run if changing the server while already in game
+        if (minecraft.player == null) {
+            return;
+        }
+        changingServer = true;
+    }
+
+    public void onRespawn() {
+        if (changingServer) {
+            changingServer = false;
+            onJoinWorld();
+        }
     }
 
     public void onJoinWorld() {

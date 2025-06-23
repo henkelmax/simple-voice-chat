@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.net.ForgeNetworkEvents;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketJoinGame;
+import net.minecraft.network.play.server.SPacketRespawn;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,6 +25,11 @@ public class NetHandlerPlayClientMixin {
     @Inject(method = "handleJoinGame", at = @At("TAIL"))
     private void handleJoinGame(SPacketJoinGame packetIn, CallbackInfo ci) {
         ((ForgeClientCompatibilityManager) ClientCompatibilityManager.INSTANCE).onJoinWorld();
+    }
+
+    @Inject(method = "handleRespawn", at = @At("TAIL"))
+    private void handleRespawn(SPacketRespawn packetIn, CallbackInfo ci) {
+        ((ForgeClientCompatibilityManager) ClientCompatibilityManager.INSTANCE).onRespawn();
     }
 
 }

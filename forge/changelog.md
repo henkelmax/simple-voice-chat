@@ -1,1 +1,2 @@
 - Added "Default microphone" and "Default speaker" options
+- Fixed switching servers on a proxy does not work
