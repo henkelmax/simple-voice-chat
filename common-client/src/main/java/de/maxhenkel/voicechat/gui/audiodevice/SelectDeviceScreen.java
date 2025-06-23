@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.gui.audiodevice;
 
-import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import net.minecraft.ChatFormatting;
@@ -37,11 +36,9 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
 
     public abstract List<String> getDevices();
 
-    public abstract ResourceLocation getIcon();
-
     public abstract Component getEmptyListComponent();
 
-    public abstract ConfigEntry<String> getConfigEntry();
+    public abstract AudioDeviceList createAudioDeviceList(int width, int height, int top);
 
     @Override
     protected void init() {
@@ -55,7 +52,7 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
         if (deviceList != null) {
             deviceList.setRectangle(width, units * UNIT_SIZE, 0, guiTop + HEADER_SIZE);
         } else {
-            deviceList = new AudioDeviceList(width, units * UNIT_SIZE, guiTop + HEADER_SIZE).setIcon(getIcon()).setConfigEntry(getConfigEntry());
+            deviceList = createAudioDeviceList(width, units * UNIT_SIZE, guiTop + HEADER_SIZE);
         }
         addWidget(deviceList);
 
@@ -66,7 +63,6 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
 
         deviceList.setAudioDevices(getDevices());
     }
-
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
