@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -23,16 +24,16 @@ public class AudioDeviceEntry extends ListScreenEntryBase {
 
     protected final Minecraft minecraft;
     protected final String device;
-    protected final String visibleDeviceName;
+    protected final ITextComponent name;
     @Nullable
     protected final ResourceLocation icon;
     protected final Supplier<Boolean> isSelected;
 
-    public AudioDeviceEntry(String device, String name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
+    public AudioDeviceEntry(String device, ITextComponent name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
         this.device = device;
         this.icon = icon;
         this.isSelected = isSelected;
-        this.visibleDeviceName = name;
+        this.name = name;
         this.minecraft = Minecraft.getMinecraft();
     }
 
@@ -58,7 +59,7 @@ public class AudioDeviceEntry extends ListScreenEntryBase {
             GuiScreen.drawModalRectWithCustomSizedTexture(x + PADDING, y + slotHeight / 2 - 8, 16, 16, 16, 16, 16, 16);
         }
 
-        float deviceWidth = minecraft.fontRenderer.getStringWidth(visibleDeviceName);
+        float deviceWidth = minecraft.fontRenderer.getStringWidth(name.getFormattedText());
         float space = listWidth - PADDING - 16 - PADDING - PADDING;
         float scale = Math.min(space / deviceWidth, 1F);
 
@@ -66,7 +67,7 @@ public class AudioDeviceEntry extends ListScreenEntryBase {
         GlStateManager.translate(x + PADDING + 16 + PADDING, y + slotHeight / 2 - (minecraft.fontRenderer.FONT_HEIGHT * scale) / 2, 0D);
         GlStateManager.scale(scale, scale, 1F);
 
-        minecraft.fontRenderer.drawString(visibleDeviceName, 0, 0, DEVICE_NAME_COLOR);
+        minecraft.fontRenderer.drawString(name.getFormattedText(), 0, 0, DEVICE_NAME_COLOR);
         GlStateManager.popMatrix();
     }
 

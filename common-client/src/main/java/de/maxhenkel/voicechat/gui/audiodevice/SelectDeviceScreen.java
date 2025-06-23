@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.gui.audiodevice;
 
-import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.widgets.ButtonBase;
 import de.maxhenkel.voicechat.gui.widgets.IngameListScreenBase;
@@ -36,11 +35,9 @@ public abstract class SelectDeviceScreen extends IngameListScreenBase {
 
     public abstract List<String> getDevices();
 
-    public abstract ResourceLocation getIcon();
-
     public abstract ITextComponent getEmptyListComponent();
 
-    public abstract ConfigEntry<String> getConfigEntry();
+    public abstract AudioDeviceList createAudioDeviceList(int width, int height, int top);
 
     @Override
     public void initGui() {
@@ -51,7 +48,7 @@ public abstract class SelectDeviceScreen extends IngameListScreenBase {
         units = Math.max(minUnits, (height - HEADER_SIZE - FOOTER_SIZE - guiTop * 2) / UNIT_SIZE);
         ySize = HEADER_SIZE + units * UNIT_SIZE + FOOTER_SIZE;
 
-        deviceList = new AudioDeviceList(width, units * UNIT_SIZE, guiTop + HEADER_SIZE).setIcon(getIcon()).setConfigEntry(getConfigEntry());
+        deviceList = createAudioDeviceList(width, units * UNIT_SIZE, guiTop + HEADER_SIZE);
         setList(deviceList);
 
         back = new ButtonBase(0, guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 14, 20, BACK) {
