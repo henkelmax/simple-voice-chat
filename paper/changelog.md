@@ -1,1 +1,1 @@
-- Improved handling of invalid bind addresses
+- Fixed antivirus software detecting the jar as a trojan (This was a false positive)
