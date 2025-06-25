@@ -1,1 +1,1 @@
-- Updated to 1.21.6
+- Fixed antivirus software detecting the jar as a trojan (This was a false positive)
