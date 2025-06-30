@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
@@ -112,7 +113,7 @@ public class NeoForgeNetManager extends NetManager {
     @OnlyIn(Dist.CLIENT)
     protected void sendToServerInternal(Packet<?> packet) {
         try {
-            PacketDistributor.sendToServer(packet);
+            ClientPacketDistributor.sendToServer(packet);
         } catch (UnsupportedOperationException e) {
             if (Voicechat.debugMode()) {
                 Voicechat.LOGGER.warn("Server does not accept voice chat packets", e);
