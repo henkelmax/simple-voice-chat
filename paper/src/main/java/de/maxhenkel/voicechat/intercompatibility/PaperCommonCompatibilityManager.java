@@ -20,7 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.ServerLoadEvent;
@@ -74,7 +74,7 @@ public class PaperCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @EventHandler
-    public void playerLoggedIn(PlayerLoginEvent event) {
+    public void playerLoggedIn(PlayerJoinEvent event) {
         ServerPlayer serverPlayer = BukkitUtils.getPlayer(event.getPlayer());
         playerLoggedInEvents.forEach(consumer -> consumer.accept(serverPlayer));
     }

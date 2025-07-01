@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.Map;
@@ -99,7 +98,9 @@ public class ServerVoiceEvents implements Listener {
     }
 
     @EventHandler
-    public void playerLoggedIn(PlayerLoginEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        server.getPlayerStateManager().onPlayerJoin(event);
+
         if (!Voicechat.SERVER_CONFIG.forceVoiceChat.get()) {
             return;
         }
@@ -117,11 +118,6 @@ public class ServerVoiceEvents implements Listener {
                 ));
             }
         }, Voicechat.SERVER_CONFIG.loginTimeout.get() / 50L);
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        server.getPlayerStateManager().onPlayerJoin(event);
     }
 
     @EventHandler

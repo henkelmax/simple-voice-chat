@@ -1,1 +1,1 @@
-- Updated to 1.21.7
+- Removed deprecated PlayerLoginEvent
