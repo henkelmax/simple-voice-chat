@@ -1,2 +1,1 @@
-- Added "Default microphone" and "Default speaker" options
-- Fixed antivirus software detecting the jar as a trojan (This was a false positive)
+- Rename "Default microphone"/"Default speaker" to "System Default"
