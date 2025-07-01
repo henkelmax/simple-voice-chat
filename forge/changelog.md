@@ -1,1 +1,1 @@
-- Updated to 1.21.7
+- Rename "Default microphone"/"Default speaker" to "System Default"
