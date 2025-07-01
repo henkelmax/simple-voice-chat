@@ -1,1 +1,1 @@
-- Added "Default microphone" and "Default speaker" options
+- Rename "Default microphone"/"Default speaker" to "System Default"
