@@ -1,3 +1,1 @@
-- Added "Default microphone" and "Default speaker" options
-- Fixed switching servers on a proxy does not work
-- Fixed antivirus software detecting the jar as a trojan (This was a false positive)
+- Rename "Default microphone"/"Default speaker" to "System Default"
