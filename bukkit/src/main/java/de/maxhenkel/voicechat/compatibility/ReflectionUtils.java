@@ -34,6 +34,12 @@ public class ReflectionUtils {
                 method.setAccessible(true);
                 return (T) method.invoke(object, args);
             } catch (Throwable ignored) {
+                try {
+                    Method method = clazz.getMethod(name, parameterTypes);
+                    method.setAccessible(true);
+                    return (T) method.invoke(object, args);
+                } catch (Throwable ignored2) {
+                }
             }
         }
         throw new CompatibilityReflectionException(String.format("Could not find any of the following methods in the class %s: %s", clazz.getSimpleName(), String.join(", ", methodNames)));
@@ -62,6 +68,12 @@ public class ReflectionUtils {
                 method.setAccessible(true);
                 return method;
             } catch (Throwable ignored) {
+                try {
+                    Method method = clazz.getMethod(name, parameterTypes);
+                    method.setAccessible(true);
+                    return method;
+                } catch (Throwable ignored2) {
+                }
             }
         }
         throw new CompatibilityReflectionException(String.format("Could not find any of the following methods in the class %s: %s", clazz.getSimpleName(), String.join(", ", methodNames)));
@@ -114,6 +126,12 @@ public class ReflectionUtils {
                 field.setAccessible(true);
                 return (T) field.get(object);
             } catch (Throwable ignored) {
+                try {
+                    Field field = object.getClass().getField(fieldName);
+                    field.setAccessible(true);
+                    return (T) field.get(object);
+                } catch (Throwable ignored2) {
+                }
             }
         }
         throw new CompatibilityReflectionException(String.format("Could not find any of the following fields in the class %s: %s", object.getClass().getSimpleName(), String.join(", ", fieldNames)));
@@ -126,6 +144,12 @@ public class ReflectionUtils {
                 field.setAccessible(true);
                 return (T) field.get(null);
             } catch (Throwable ignored) {
+                try {
+                    Field field = clazz.getField(fieldName);
+                    field.setAccessible(true);
+                    return (T) field.get(null);
+                } catch (Throwable ignored2) {
+                }
             }
         }
         throw new CompatibilityReflectionException(String.format("Could not find any of the following fields in the class %s: %s", clazz.getSimpleName(), String.join(", ", fieldNames)));
@@ -161,6 +185,11 @@ public class ReflectionUtils {
             clazz.getDeclaredMethod(methodName, parameterTypes);
             return true;
         } catch (Throwable ignored) {
+            try {
+                clazz.getMethod(methodName, parameterTypes);
+                return true;
+            } catch (Throwable ignored2) {
+            }
         }
         return false;
     }

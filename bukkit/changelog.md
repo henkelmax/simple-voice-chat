@@ -1,1 +1,1 @@
-- Added compatibility with 1.21.7
+- Added compatibility with Paper 1.21.7
