@@ -1,1 +1,1 @@
-- Rename "Default microphone"/"Default speaker" to "System Default"
+- Fixed compatibility with newer NeoForge versions

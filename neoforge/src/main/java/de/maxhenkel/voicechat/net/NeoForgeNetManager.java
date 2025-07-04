@@ -6,8 +6,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -82,7 +80,7 @@ public class NeoForgeNetManager extends NetManager {
                             return;
                         }
                         try {
-                            onClientPacket(player, channel, payload);
+                            NeoForgeClientNetManager.onClientPacket(player, channel, payload);
                         } catch (Exception e) {
                             Voicechat.LOGGER.error("Failed to process packet", e);
                         }
@@ -110,7 +108,6 @@ public class NeoForgeNetManager extends NetManager {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     protected void sendToServerInternal(Packet<?> packet) {
         try {
             ClientPacketDistributor.sendToServer(packet);
@@ -126,11 +123,6 @@ public class NeoForgeNetManager extends NetManager {
     @Override
     public void sendToClient(Packet<?> packet, ServerPlayer player) {
         PacketDistributor.sendToPlayer(player, packet);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private <T extends Packet<T>> void onClientPacket(LocalPlayer player, ClientServerChannel<T> channel, T packet) {
-        channel.onClientPacket(player, packet);
     }
 
     record PacketRegister<T extends Packet<T>>(Class<T> packetClass, ClientServerChannel<T> channel, boolean toClient,
