@@ -106,7 +106,7 @@ public class ServerVoiceEvents implements Listener {
         }
         Player player = event.getPlayer();
 
-        Bukkit.getScheduler().runTaskLater(Voicechat.INSTANCE, () -> {
+        Voicechat.compatibility.runTaskLater(() -> {
             if (!player.isOnline()) {
                 return;
             }

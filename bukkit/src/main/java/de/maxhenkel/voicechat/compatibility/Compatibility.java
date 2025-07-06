@@ -30,6 +30,8 @@ public interface Compatibility {
 
     void scheduleSyncRepeatingTask(Runnable runnable, long delay, long period);
 
+    void runTaskLater(Runnable runnable, long delay);
+
     @Nullable
     ArgumentType<?> playerArgument();
 

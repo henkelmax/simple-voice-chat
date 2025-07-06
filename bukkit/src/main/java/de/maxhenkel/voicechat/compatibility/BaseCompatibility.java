@@ -19,6 +19,7 @@ public abstract class BaseCompatibility implements Compatibility {
     private Method addChannel;
     private Method removeChannel;
     private Consumer<Runnable> runTask;
+    private Consumer<Runnable> runDelayed;
     private TaskScheduler taskScheduler;
 
     @Override
@@ -33,16 +34,40 @@ public abstract class BaseCompatibility implements Compatibility {
         removeChannel = getMethod(craftPlayer, new String[]{"removeChannel"}, new Class[]{String.class});
 
         runTask = runnable -> Bukkit.getScheduler().runTask(Voicechat.INSTANCE, runnable);
-        taskScheduler = (runnable, delay, period) -> Bukkit.getScheduler().scheduleSyncRepeatingTask(Voicechat.INSTANCE, runnable, delay, period);
+        taskScheduler = new TaskScheduler() {
+            @Override
+            public void scheduleSyncRepeatingTask(Runnable runnable, long delay, long period) {
+                Bukkit.getScheduler().scheduleSyncRepeatingTask(Voicechat.INSTANCE, runnable, delay, period);
+            }
+
+            @Override
+            public void runTaskLater(Runnable runnable, long delay) {
+                Bukkit.getScheduler().runTaskLater(Voicechat.INSTANCE, runnable, delay);
+            }
+        };
         if (doesMethodExist(Bukkit.class, "getGlobalRegionScheduler")) {
             Object globalRegionScheduler = callMethod(Bukkit.class, "getGlobalRegionScheduler");
 
             Method run = getMethod(globalRegionScheduler.getClass(), new String[]{"run"}, new Class[]{Plugin.class, Consumer.class});
             runTask = runnable -> call(run, globalRegionScheduler, Voicechat.INSTANCE, (Consumer<?>) (task) -> runnable.run());
 
-            if (doesMethodExist(globalRegionScheduler.getClass(), "runAtFixedRate", Plugin.class, Consumer.class, long.class, long.class)) {
+            if (
+                    doesMethodExist(globalRegionScheduler.getClass(), "runAtFixedRate", Plugin.class, Consumer.class, long.class, long.class)
+                            && doesMethodExist(globalRegionScheduler.getClass(), "runDelayed", Plugin.class, Consumer.class, long.class)
+            ) {
                 Method runAtFixedRate = getMethod(globalRegionScheduler.getClass(), new String[]{"runAtFixedRate"}, new Class[]{Plugin.class, Consumer.class, long.class, long.class});
-                taskScheduler = (runnable, delay, period) -> call(runAtFixedRate, globalRegionScheduler, Voicechat.INSTANCE, (Consumer<?>) (task) -> runnable.run(), delay <= 0 ? 1 : delay, period);
+                Method runDelayed = getMethod(globalRegionScheduler.getClass(), new String[]{"runDelayed"}, new Class[]{Plugin.class, Consumer.class, long.class});
+                taskScheduler = new TaskScheduler() {
+                    @Override
+                    public void scheduleSyncRepeatingTask(Runnable runnable, long delay, long period) {
+                        call(runAtFixedRate, globalRegionScheduler, Voicechat.INSTANCE, (Consumer<?>) (task) -> runnable.run(), delay <= 0 ? 1 : delay, period);
+                    }
+
+                    @Override
+                    public void runTaskLater(Runnable runnable, long delay) {
+                        call(runDelayed, globalRegionScheduler, Voicechat.INSTANCE, (Consumer<?>) (task) -> runnable.run(), delay <= 0 ? 1 : delay);
+                    }
+                };
             }
         }
     }
@@ -73,6 +98,11 @@ public abstract class BaseCompatibility implements Compatibility {
     }
 
     @Override
+    public void runTaskLater(Runnable runnable, long delay) {
+        taskScheduler.runTaskLater(runnable, delay);
+    }
+
+    @Override
     public String getBaseBukkitPackage() {
         return baseBukkitPackage;
     }
@@ -84,6 +114,8 @@ public abstract class BaseCompatibility implements Compatibility {
 
     private interface TaskScheduler {
         void scheduleSyncRepeatingTask(Runnable runnable, long delay, long period);
+
+        void runTaskLater(Runnable runnable, long delay);
     }
 
 }
