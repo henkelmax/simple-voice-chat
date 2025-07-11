@@ -1,1 +1,2 @@
 - Fixed compatibility with newer NeoForge versions
+- Updated German translation
