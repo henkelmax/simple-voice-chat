@@ -1,1 +1,1 @@
-- Rename "Default microphone"/"Default speaker" to "System Default"
+- Updated German translation
