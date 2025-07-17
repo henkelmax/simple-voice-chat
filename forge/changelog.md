@@ -1,1 +1,1 @@
-- Updated German translation
+- Updated to 1.21.8
