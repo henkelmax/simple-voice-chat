@@ -1,1 +1,1 @@
-- Fixed `force_voicechat` not working on Folia
+- Added 1.21.8 support
