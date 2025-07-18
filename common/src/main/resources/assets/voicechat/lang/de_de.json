@@ -194,5 +194,21 @@
   "cloth_config.voicechat.config.group_hud_icon_scale": "Gruppenoberflächen Symbol Skalierung",
   "cloth_config.voicechat.config.group_player_icon_pos_x": "Gruppenoberflächen Symbol X position",
   "cloth_config.voicechat.config.group_player_icon_pos_y": "Gruppenoberflächen Symbol Y position",
-  "cloth_config.voicechat.config.show_own_group_icon": "Eigenes Gruppenoberflächen Symbol anzeigen"
+  "cloth_config.voicechat.config.show_own_group_icon": "Eigenes Gruppenoberflächen Symbol anzeigen",
+  "cloth_config.voicechat.config.recording_destination.description": "Der Ort, an dem die Aufnahmen gespeichert werden sollen.\nLassen Sie ihn leer, um den Standardspeicherort zu verwenden.",
+  "cloth_config.voicechat.config.run_local_server.description": "Ob der Sprachchat im Einzelspieler oder in über LAN geteilten Welten funktionieren soll.",
+  "cloth_config.voicechat.config.offline_player_volume_adjustment.description": "Ob die Schnittstelle zur Lautstärkeregelung auch Offline-Spieler anzeigen soll.",
+  "cloth_config.voicechat.config.freecam_mode.description": "Wie das Hören von anderen Spielern bei der Verwendung von Freecam-Mods funktionieren sollte.\nCAMERA: Sie hören den Sprachchat in der Nähe Ihrer Kamera. Ob Sie den Sprachchat auch dann noch hören können, wenn die Kamera weit von Ihrem Charakter entfernt ist, hängt von der Reichweite der Sprachchat-Übertragung auf dem Server ab.\nPLAYER: Sie hören den Voice-Chat um Ihren Charakter herum, egal wo sich die Kamera befindet.",
+  "cloth_config.voicechat.config.mute_on_join.description": "Wenn diese Option aktiviert ist, werden Sie automatisch stummgeschaltet, wenn Sie eine Welt betreten.",
+  "cloth_config.voicechat.config.audio_packet_threshold.description": "Die maximale Anzahl von Audiopaketen, die zurückgehalten werden sollen, wenn ein Paket nicht in der richtigen Reihenfolge ankommt oder verworfen wird.\nDadurch wird verhindert, dass Audiopakete, die nur leicht ungeordnet sind, verworfen werden.\nSetzen Sie diesen Wert auf 0, um die Funktion zu deaktivieren.",
+  "cloth_config.voicechat.config.voice_deactivation_delay.description": "Die Zeit, die benötigt wird, um das Mikrofon bei Verwendung der Sprachaktivierung zu deaktivieren.\nEin Wert von 1 bedeutet 20 Millisekunden, 2=40 ms, 3=60 ms, und so weiter.",
+  "cloth_config.voicechat.config.output_buffer_size.description": "Die Größe des Audio-Ausgangspuffers (in Paketen).\nHöhere Werte bedeuten eine höhere Latenz, aber weniger Knistern.\nErhöhen Sie diesen Wert, wenn Sie eine instabile Internetverbindung haben.",
+  "cloth_config.voicechat.config.hud_icon_scale.description": "Die Skalierung der Symbole im Sprachchat-HUD, z. B. Mikrofon oder Verbindungsstatus.",
+  "cloth_config.voicechat.config.hud_icon_pos_x.description": "Die X-Position der Symbole im Sprachchat-HUD.\nNegative Werte bedeuten eine Verankerung nach rechts.",
+  "cloth_config.voicechat.config.hud_icon_pos_y.description": "Die Y-Position der Symbole im Sprachchat-HUD.\nNegative Werte bedeuten eine Verankerung nach unten.",
+  "cloth_config.voicechat.config.group_player_icon_orientation.description": "Die Ausrichtung der Spielersymbole im Gruppenchat-HUD.",
+  "cloth_config.voicechat.config.group_hud_icon_scale.description": "Der Skalierung der Spielersymbole im Gruppenchat-HUD.",
+  "cloth_config.voicechat.config.group_player_icon_pos_x.description": "Die X-Position der Spielersymbole im Gruppenchat-HUD.\nNegative Werte bedeuten stattdessen eine Verankerung nach rechts.",
+  "cloth_config.voicechat.config.group_player_icon_pos_y.description": "Die Y-Position der Spielersymbole im Gruppenchat-HUD.\nNegative Werte bedeuten stattdessen eine Verankerung nach unten.",
+  "cloth_config.voicechat.config.show_own_group_icon.description": "Ob Ihr eigenes Spielersymbol im Gruppenchat-HUD angezeigt werden soll, wenn Sie sich in einer Gruppe befinden."
 }
