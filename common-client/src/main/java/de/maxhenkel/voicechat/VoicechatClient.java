@@ -40,11 +40,16 @@ public abstract class VoicechatClient {
         WHITE_ICONS = new VoiceChatResourcePack("white_icons", Component.translatable("resourcepack.voicechat.white_icons"));
         BLACK_ICONS = new VoiceChatResourcePack("black_icons", Component.translatable("resourcepack.voicechat.black_icons"));
 
-        ClientCompatibilityManager.INSTANCE.addResourcePackSource(Minecraft.getInstance().getResourcePackRepository(), (Consumer<Pack> consumer, Pack.PackConstructor packConstructor) -> {
-            consumer.accept(CLASSIC_ICONS.toPack());
-            consumer.accept(WHITE_ICONS.toPack());
-            consumer.accept(BLACK_ICONS.toPack());
-        });
+        Minecraft mc = Minecraft.getInstance();
+        // Don't add a pack source while datagen is running
+        if (mc != null) {
+            ClientCompatibilityManager.INSTANCE.addResourcePackSource(mc.getResourcePackRepository(), (Consumer<Pack> consumer, Pack.PackConstructor packConstructor) -> {
+                consumer.accept(CLASSIC_ICONS.toPack());
+                consumer.accept(WHITE_ICONS.toPack());
+                consumer.accept(BLACK_ICONS.toPack());
+            });
+        }
+
     }
 
     public void initializeConfigs() {
