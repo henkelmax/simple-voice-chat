@@ -57,7 +57,7 @@ public class KeybindButton extends AbstractButton {
     }
 
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, int button, boolean b) {
         if (listening) {
             keyMapping.setKey(InputConstants.Type.MOUSE.getOrCreate(button));
             mc.options.save();
@@ -65,7 +65,7 @@ public class KeybindButton extends AbstractButton {
             updateText();
             return true;
         }
-        return super.mouseClicked(x, y, button);
+        return super.mouseClicked(x, y, button, b);
 
     }
 

@@ -26,7 +26,7 @@ public class JoinGroupList extends ListScreenListBase<JoinGroupEntry> {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button, boolean b) {
         JoinGroupEntry entry = getEntryAtPosition(mouseX, mouseY);
         if (entry == null) {
             return false;

@@ -6,6 +6,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.*;
+import net.minecraft.server.packs.metadata.pack.PackFormat;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.IoSupplier;
@@ -27,8 +28,8 @@ public class VoiceChatResourcePack extends AbstractPackResources implements Pack
     }
 
     public Pack toPack() {
-        int packVersion = SharedConstants.getCurrentVersion().packVersion(PackType.CLIENT_RESOURCES);
-        Pack.Metadata meta = Pack.readPackMetadata(location(), this, packVersion);
+        PackFormat format = SharedConstants.getCurrentVersion().packVersion(PackType.CLIENT_RESOURCES);
+        Pack.Metadata meta = Pack.readPackMetadata(location(), this, format, PackType.CLIENT_RESOURCES);
         if (meta == null) {
             throw new IllegalStateException("Could not find builtin resource pack info");
         }

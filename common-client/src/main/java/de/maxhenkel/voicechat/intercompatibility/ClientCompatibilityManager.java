@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.repository.RepositorySource;
 
 import java.net.SocketAddress;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public abstract class ClientCompatibilityManager {
@@ -60,7 +61,7 @@ public abstract class ClientCompatibilityManager {
     }
 
     public interface RenderNameplateEvent {
-        void render(EntityRenderState renderState, Component component, PoseStack stack, MultiBufferSource bufferSource, int light);
+        void render(UUID uuid, boolean discrete, Component component, PoseStack.Pose pose, MultiBufferSource bufferSource, int light);
     }
 
     public interface RenderHUDEvent {

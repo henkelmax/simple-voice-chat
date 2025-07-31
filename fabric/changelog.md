@@ -1,1 +1,1 @@
-- Updated German translation
+- Updated to 25w31a

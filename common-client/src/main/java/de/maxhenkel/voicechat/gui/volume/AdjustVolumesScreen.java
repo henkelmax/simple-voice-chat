@@ -93,11 +93,11 @@ public class AdjustVolumesScreen extends ListScreenBase {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button, boolean b) {
         if (searchBox.isFocused()) {
-            searchBox.mouseClicked(mouseX, mouseY, button);
+            searchBox.mouseClicked(mouseX, mouseY, button, b);
         }
-        return super.mouseClicked(mouseX, mouseY, button) || volumeList.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(mouseX, mouseY, button, b) || volumeList.mouseClicked(mouseX, mouseY, button, b);
     }
 
     private void checkSearchStringUpdate(String string) {

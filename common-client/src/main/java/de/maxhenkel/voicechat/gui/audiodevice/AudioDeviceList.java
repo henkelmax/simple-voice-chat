@@ -31,7 +31,7 @@ public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button, boolean bl) {
         AudioDeviceEntry entry = getEntryAtPosition(mouseX, mouseY);
         if (entry == null) {
             return false;

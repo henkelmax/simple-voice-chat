@@ -24,8 +24,8 @@ public abstract class DebouncedSlider extends AbstractSliderButton {
     }
 
     @Override
-    public void onClick(double d, double e) {
-        super.onClick(d, e);
+    public void onClick(double d, double e, boolean b) {
+        super.onClick(d, e, b);
         applyDebouncedInternal();
     }
 
