@@ -1,1 +1,1 @@
-- Updated German translation
+- Fixed debug overlay rendering

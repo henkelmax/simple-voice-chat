@@ -1,1 +1,1 @@
-- Updated to 25w32a
+- Fixed debug overlay rendering
