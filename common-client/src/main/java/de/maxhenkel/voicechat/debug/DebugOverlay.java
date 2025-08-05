@@ -162,7 +162,7 @@ public class DebugOverlay {
             int width = mc.font.width(text);
             gui.pose().translate(mc.getWindow().getGuiScaledWidth() - width - LEFT_PADDING, 25F + i * (mc.font.lineHeight + 1F));
             gui.fill(-1, -1, width, mc.font.lineHeight, 0x90505050);
-            gui.drawString(mc.font, text, 0, 0, 0xFFFFFF, false);
+            gui.drawString(mc.font, text, 0, 0, 0xFFFFFFFF, false);
 
             gui.pose().popMatrix();
         }
