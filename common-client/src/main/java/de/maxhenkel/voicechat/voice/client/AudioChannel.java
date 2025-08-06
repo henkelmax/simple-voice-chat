@@ -127,33 +127,35 @@ public class AudioChannel extends Thread {
                     continue;
                 }
 
-                if (!packet.isFromClientAudioChannel() && lastSequenceNumber >= 0) {
-                    int packetsToCompensate = (int) (packet.getSequenceNumber() - (lastSequenceNumber + 1));
+                if (packet.isFromClientAudioChannel()) {
+                    writeToSpeaker(packet, Utils.bytesToShorts(packet.getData()));
+                    continue;
+                }
+
+                int packetsToCompensate = 0;
+                if (lastSequenceNumber >= 0) {
+                    packetsToCompensate = (int) (packet.getSequenceNumber() - (lastSequenceNumber + 1));
 
                     if (packetsToCompensate > 0) {
-                        Voicechat.LOGGER.debug("Compensating {}/{} packets ", packetsToCompensate >= 4 ? 0 : packetsToCompensate, packetsToCompensate);
+                        lostPackets += packetsToCompensate;
                     }
 
-                    if (packetsToCompensate <= 4) {
-                        lostPackets += packetsToCompensate;
-                        for (int i = 0; i < packetsToCompensate; i++) {
-                            writeToSpeaker(packet, decoder.decode(null));
-                        }
-                    } else {
+                    if (packetsToCompensate > VoicechatClient.CLIENT_CONFIG.outputBufferSize.get()) {
                         Voicechat.LOGGER.debug("Skipping compensation for {} packets", packetsToCompensate);
+                        packetsToCompensate = 0;
+                        decoder.resetState();
+                        flushRecording();
+                    } else if (packetsToCompensate > 0) {
+                        Voicechat.LOGGER.debug("Compensating {} packet(s) ", packetsToCompensate);
                     }
                 }
 
                 lastSequenceNumber = packet.getSequenceNumber();
 
-                short[] decodedAudio;
-                if (packet.isFromClientAudioChannel()) {
-                    decodedAudio = Utils.bytesToShorts(packet.getData());
-                } else {
-                    decodedAudio = decoder.decode(packet.getData());
+                short[][] decodedFrames = decoder.decode(packet.getData(), packetsToCompensate + 1);
+                for (short[] decodedFrame : decodedFrames) {
+                    writeToSpeaker(packet, decodedFrame);
                 }
-
-                writeToSpeaker(packet, decodedAudio);
             }
         } catch (InterruptedException ignored) {
         } catch (Throwable e) {

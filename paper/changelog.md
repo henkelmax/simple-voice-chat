@@ -1,1 +1,2 @@
-- Fixed antivirus software detecting the jar as a trojan (This was a false positive)
+- Improved audio quality in bad networking conditions
+- Added FEC to opus encoder/decoder
