@@ -9,6 +9,8 @@ public class NativeOpusEncoderImpl extends de.maxhenkel.opus4j.OpusEncoder imple
 
     public NativeOpusEncoderImpl(int sampleRate, int channels, Application application) throws IOException, UnknownPlatformException {
         super(sampleRate, channels, application);
+        // This enables in-band FEC
+        setMaxPacketLossPercentage(0.05F);
     }
 
 }

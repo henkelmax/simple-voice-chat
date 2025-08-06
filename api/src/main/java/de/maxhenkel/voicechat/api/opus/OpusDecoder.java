@@ -10,15 +10,24 @@ import javax.annotation.Nullable;
 public interface OpusDecoder {
 
     /**
-     * Decodes opus encoded audio data to 16 bit PCM audio
+     * Decodes opus encoded audio data to 16 bit PCM audio.
      *
-     * @param data the opus encoded data
+     * @param data the opus encoded data or <code>null</code> to do PLC
      * @return the 16 bit PCM audio data
      */
     short[] decode(@Nullable byte[] data);
 
     /**
-     * Resets the decoders state
+     * Decodes the provided packet and recovers previous lost frames using FEC.
+     *
+     * @param input  the input packet
+     * @param frames the number of frames to return (min 1 for just the current frame)
+     * @return an array containing the decoded frames - the length of the array is equal to {@param frames}
+     */
+    short[][] decode(byte[] input, int frames);
+
+    /**
+     * Resets the decoders state.
      */
     void resetState();
 
@@ -28,8 +37,8 @@ public interface OpusDecoder {
     boolean isClosed();
 
     /**
-     * Closes the decoder
-     * Not doing this would result in a memory leak
+     * Closes the decoder.
+     * Not doing this will result in a memory leak!
      */
     void close();
 

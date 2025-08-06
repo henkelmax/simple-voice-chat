@@ -1,2 +1,2 @@
-- Updated German translation
-- Fixed datagen failing
+- Improved audio quality in bad networking conditions
+- Added FEC to opus encoder/decoder
