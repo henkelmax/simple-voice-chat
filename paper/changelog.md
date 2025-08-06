@@ -1,1 +1,2 @@
-- Updated to 1.21.8
+- Improved audio quality in bad networking conditions
+- Added FEC to opus encoder/decoder

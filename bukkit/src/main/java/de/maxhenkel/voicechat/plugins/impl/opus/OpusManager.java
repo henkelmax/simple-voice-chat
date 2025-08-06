@@ -32,12 +32,12 @@ public class OpusManager {
         return createEncoder(SAMPLE_RATE, FRAME_SIZE, 1024, application);
     }
 
-    public static OpusDecoder createDecoder(int sampleRate, int frameSize, int maxPayloadSize) {
-        return new JavaOpusDecoderImpl(sampleRate, frameSize, maxPayloadSize);
+    public static OpusDecoder createDecoder(int sampleRate, int frameSize) {
+        return new JavaOpusDecoderImpl(sampleRate, frameSize);
     }
 
     public static OpusDecoder createDecoder() {
-        return createDecoder(SAMPLE_RATE, FRAME_SIZE, 1024);
+        return createDecoder(SAMPLE_RATE, FRAME_SIZE);
     }
 
 }
