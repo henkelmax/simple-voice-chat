@@ -26,6 +26,8 @@ public class JavaOpusEncoderImpl implements de.maxhenkel.voicechat.api.opus.Opus
         }
         try {
             opusEncoder = new OpusEncoder(sampleRate, 1, getApplication(application));
+            opusEncoder.setUseInbandFEC(true);
+            opusEncoder.setPacketLossPercent(5);
         } catch (Exception e) {
             throw new IllegalStateException("Failed to create Opus encoder", e);
         }
