@@ -53,6 +53,47 @@ public class JavaOpusDecoderImpl implements de.maxhenkel.voicechat.api.opus.Opus
     }
 
     @Override
+    public short[][] decode(byte[] data, int frames) {
+        if (isClosed()) {
+            throw new IllegalStateException("Decoder is closed");
+        }
+        if (frames <= 0) {
+            throw new IllegalArgumentException("Frames must be greater than 0");
+        }
+        if (data == null || data.length == 0) {
+            throw new IllegalArgumentException("Data must not be null or empty");
+        }
+
+        short[][] recovered = new short[frames][];
+        try {
+            int result;
+            if (frames > 2) {
+                for (int i = 0; i < frames - 2; i++) {
+                    result = opusDecoder.decode(null, 0, 0, buffer, 0, buffer.length, true);
+                    short[] audio = new short[result];
+                    System.arraycopy(buffer, 0, audio, 0, result);
+                    recovered[i] = audio;
+                }
+            }
+            if (frames > 1) {
+                result = opusDecoder.decode(data, 0, data.length, buffer, 0, buffer.length, true);
+                short[] audio = new short[result];
+                System.arraycopy(buffer, 0, audio, 0, result);
+                recovered[frames - 2] = audio;
+            }
+
+            result = opusDecoder.decode(data, 0, data.length, buffer, 0, buffer.length, false);
+            short[] audio = new short[result];
+            System.arraycopy(buffer, 0, audio, 0, result);
+            recovered[frames - 1] = audio;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to decode audio", e);
+        }
+
+        return recovered;
+    }
+
+    @Override
     public boolean isClosed() {
         return opusDecoder == null;
     }
