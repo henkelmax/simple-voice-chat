@@ -40,7 +40,7 @@ public class VersionCheck {
     }
 
     public static boolean isMacOSNativeCompatible() {
-        return Platform.isMac() && isMinimumVersion(11, 0, 0);
+        return Platform.isMac() && isMinimumVersion(13, 0, 0);
     }
 
 }

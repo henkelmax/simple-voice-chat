@@ -1,1 +1,3 @@
-- Updated German translation
+- Fixed debug overlay rendering
+- Improved audio quality in bad networking conditions
+- Added FEC to opus encoder/decoder
