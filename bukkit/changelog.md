@@ -1,1 +1,1 @@
-- Added 1.21.8 support
+- Added FEC to opus encoder/decoder
