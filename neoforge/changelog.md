@@ -1,3 +1,4 @@
 - Fixed debug overlay rendering
+- Fixed recording time being invisible
 - Improved audio quality in bad networking conditions
 - Added FEC to opus encoder/decoder

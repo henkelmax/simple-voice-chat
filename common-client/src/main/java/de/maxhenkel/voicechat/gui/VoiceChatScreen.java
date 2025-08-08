@@ -145,7 +145,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         if (client != null && client.getRecorder() != null) {
             AudioRecorder recorder = client.getRecorder();
             MutableComponent time = Component.literal(recorder.getDuration());
-            guiGraphics.drawString(font, time.withStyle(ChatFormatting.DARK_RED), guiLeft + recordingHoverArea.getPosX() + recordingHoverArea.getWidth() / 2 - font.width(time) / 2, guiTop + recordingHoverArea.getPosY() + recordingHoverArea.getHeight() / 2 - font.lineHeight / 2, 0, false);
+            guiGraphics.drawString(font, time.withStyle(ChatFormatting.DARK_RED), guiLeft + recordingHoverArea.getPosX() + recordingHoverArea.getWidth() / 2 - font.width(time) / 2, guiTop + recordingHoverArea.getPosY() + recordingHoverArea.getHeight() / 2 - font.lineHeight / 2, 0xFF000000, false);
 
             if (recordingHoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
                 guiGraphics.setTooltipForNextFrame(font, Component.translatable("message.voicechat.storage_size", recorder.getStorage()), mouseX, mouseY);
