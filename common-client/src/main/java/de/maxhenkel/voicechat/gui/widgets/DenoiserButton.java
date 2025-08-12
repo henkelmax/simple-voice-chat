@@ -14,8 +14,11 @@ public class DenoiserButton extends BooleanConfigButton {
         super(id, x, y, width, height, VoicechatClient.CLIENT_CONFIG.denoiser, enabled -> {
             return new TextComponentTranslation("message.voicechat.denoiser", enabled ? ENABLED : DISABLED);
         });
-        if (Denoiser.createDenoiser() == null) {
+        Denoiser denoiser = Denoiser.createDenoiser();
+        if (denoiser == null) {
             enabled = false;
+        } else {
+            denoiser.close();
         }
     }
 
