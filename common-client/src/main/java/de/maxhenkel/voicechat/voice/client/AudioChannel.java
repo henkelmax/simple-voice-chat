@@ -213,7 +213,7 @@ public class AudioChannel extends Thread {
                     return;
                 }
             }
-            if (entity == minecraft.cameraEntity) {
+            if (entity == minecraft.getCameraEntity()) {
                 short[] processedMonoData = ClientPluginManager.instance().onReceiveStaticClientSound(uuid, monoData);
                 speaker.play(processedMonoData, volume, soundPacket.getCategory());
                 client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
