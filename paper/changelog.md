@@ -1,2 +1,3 @@
-- Improved audio quality in bad networking conditions
-- Added FEC to opus encoder/decoder
+- Updated Lame4J
+- Updated Opus4J
+- Reduced plugin jar size 
