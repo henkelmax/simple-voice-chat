@@ -1,1 +1,4 @@
-- Update to 25w33a
+- Updated Lame4J
+- Updated RNNoise4J
+- Updated Opus4J
+- Reduced mod jar size 
