@@ -1,4 +1,5 @@
 - Updated Lame4J
 - Updated RNNoise4J
 - Updated Opus4J
-- Reduced mod jar size 
+- Reduced mod jar size
+- Fixed memory leak when enabling and disabling noise cancellation
