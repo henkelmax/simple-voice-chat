@@ -25,7 +25,7 @@
   "message.voicechat.gain": "Gain: %s",
   "message.voicechat.gain.auto": "Auto",
   "message.voicechat.gain.manual": "Manual",
-  "message.voicechat.microphone_amplification": "Microphone Amplification: %s",
+  "message.voicechat.microphone_gain": "Microphone Gain: %s dB",
   "message.voicechat.mic_test_unavailable": "Microphone testing unavailable!",
   "message.voicechat.mic_test.disabled": "Press to enable microphone testing.",
   "message.voicechat.mic_test.enabled": "Press to disable microphone testing.",

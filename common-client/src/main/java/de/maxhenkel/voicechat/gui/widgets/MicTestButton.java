@@ -175,7 +175,7 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
                     continue;
                 }
 
-                micListener.onMicValue(AudioUtils.dbToPerc(AudioUtils.getHighestAudioLevel(buff)));
+                micListener.onMicValue(AudioUtils.getHighestAudioLevel(buff));
 
                 if (VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE)) {
                     if (micActivator.push(buff, a -> {
@@ -228,7 +228,8 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
     }
 
     public interface MicListener {
-        void onMicValue(double percentage);
+        void onMicValue(double dB);
+
         void onStop();
     }
 }
