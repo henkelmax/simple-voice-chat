@@ -3,3 +3,5 @@
 - Updated Opus4J
 - Reduced mod jar size
 - Fixed memory leak when enabling and disabling noise cancellation
+- Made microphone activation slider smoother
+- Added automatic gain control
