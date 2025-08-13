@@ -52,6 +52,9 @@ dependencies {
 
     implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
     shadow "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
+
+    implementation "de.maxhenkel.speex4j:speex4j:${speex4j_version}"
+    shadow "de.maxhenkel.speex4j:speex4j:${speex4j_version}"
 }
 
 tasks.register('generateJava', Copy) {

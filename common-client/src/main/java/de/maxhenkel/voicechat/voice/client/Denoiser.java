@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.rnnoise4j.UnknownPlatformException;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.intercompatibility.ClientCrossSideManager;
 import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
@@ -23,6 +22,22 @@ public class Denoiser extends de.maxhenkel.rnnoise4j.Denoiser {
         return Utils.createSafe(Denoiser::new, e -> {
             Voicechat.LOGGER.warn("Failed to load RNNoise", e);
         });
+    }
+
+    private static Boolean canUseDenoiser = null;
+
+    public static synchronized boolean canUseDenoiser() {
+        if (canUseDenoiser != null) {
+            return canUseDenoiser;
+        }
+        Denoiser denoiser = createDenoiser();
+        if (denoiser == null) {
+            canUseDenoiser = false;
+            return false;
+        }
+        denoiser.close();
+        canUseDenoiser = true;
+        return true;
     }
 
 }
