@@ -9,6 +9,7 @@ import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import de.maxhenkel.voicechat.plugins.impl.opus.OpusManager;
 import de.maxhenkel.voicechat.voice.client.microphone.Microphone;
 import de.maxhenkel.voicechat.voice.client.microphone.MicrophoneManager;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import de.maxhenkel.voicechat.voice.common.MicPacket;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.Utils;
@@ -137,7 +138,7 @@ public class MicThread extends Thread {
             agc = AutomaticGainControl.createAgc();
         }
 
-        if (mic.available() < Utils.FRAME_SIZE) {
+        if (mic.available() < AudioUtils.FRAME_SIZE) {
             Utils.sleep(5);
             return null;
         }
