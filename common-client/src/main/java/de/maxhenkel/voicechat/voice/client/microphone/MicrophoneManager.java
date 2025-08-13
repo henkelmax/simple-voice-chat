@@ -3,8 +3,7 @@ package de.maxhenkel.voicechat.voice.client.microphone;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.MicrophoneException;
-import de.maxhenkel.voicechat.voice.client.SoundManager;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
 import java.util.List;
 
@@ -30,13 +29,13 @@ public class MicrophoneManager {
     }
 
     private static Microphone createJavaMicrophone() throws MicrophoneException {
-        Microphone mic = new JavaxMicrophone(Utils.SAMPLE_RATE, Utils.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get());
+        Microphone mic = new JavaxMicrophone(AudioUtils.SAMPLE_RATE, AudioUtils.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get());
         mic.open();
         return mic;
     }
 
     private static Microphone createALMicrophone() throws MicrophoneException {
-        Microphone mic = new ALMicrophone(Utils.SAMPLE_RATE, Utils.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get());
+        Microphone mic = new ALMicrophone(AudioUtils.SAMPLE_RATE, AudioUtils.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get());
         mic.open();
         return mic;
     }

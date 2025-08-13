@@ -5,7 +5,7 @@ import de.maxhenkel.voicechat.api.audiochannel.AudioChannel;
 import de.maxhenkel.voicechat.api.audiochannel.AudioPlayer;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -74,8 +74,8 @@ public class AudioPlayerImpl extends Thread implements AudioPlayer {
         short[] frame;
 
         while ((frame = audioSupplier.get()) != null) {
-            if (frame.length != Utils.FRAME_SIZE) {
-                Voicechat.LOGGER.error("Got invalid audio frame size {}!={}", frame.length, Utils.FRAME_SIZE);
+            if (frame.length != AudioUtils.FRAME_SIZE) {
+                Voicechat.LOGGER.error("Got invalid audio frame size {}!={}", frame.length, AudioUtils.FRAME_SIZE);
                 break;
             }
             audioChannel.send(encoder.encode(frame));

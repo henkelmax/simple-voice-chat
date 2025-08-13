@@ -5,7 +5,7 @@ import de.maxhenkel.lame4j.UnknownPlatformException;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.mp3.Mp3Decoder;
 import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.NativeUtils;
 
 import javax.annotation.Nullable;
 import javax.sound.sampled.AudioFormat;
@@ -71,7 +71,7 @@ public class Mp3DecoderImpl implements Mp3Decoder {
         if (!CrossSideManager.get().useNatives()) {
             return null;
         }
-        return Utils.createSafe(() -> new Mp3DecoderImpl(inputStream), e -> {
+        return NativeUtils.createSafe(() -> new Mp3DecoderImpl(inputStream), e -> {
             Voicechat.LOGGER.error("Failed to load mp3 decoder", e);
         });
     }
