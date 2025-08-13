@@ -22,7 +22,7 @@
   "message.voicechat.settings": "設定",
   "message.voicechat.group": "グループ",
   "message.voicechat.voice_chat_volume": "ボイスチャット音量：%s",
-  "message.voicechat.microphone_amplification": "マイクの音量増幅：%s",
+  "message.voicechat.microphone_gain": "マイクの音量増幅：%s dB",
   "message.voicechat.mic_test_unavailable": "マイクテストが利用できません",
   "message.voicechat.mic_test.disabled": "マイクテストをオン",
   "message.voicechat.mic_test.enabled": "マイクテストをオフ",

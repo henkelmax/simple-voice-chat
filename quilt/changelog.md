@@ -5,3 +5,5 @@
 - Fixed memory leak when enabling and disabling noise cancellation
 - Made microphone activation slider smoother
 - Added automatic gain control
+- Reworked microphone amplification
+- Renamed microphone amplification to microphone gain
