@@ -19,18 +19,19 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     private static final ResourceLocation SLIDER = new ResourceLocation(Voicechat.MODID, "textures/gui/voice_activation_slider.png");
     private static final ITextComponent NO_ACTIVATION = new TranslationTextComponent("message.voicechat.voice_activation.disabled").withStyle(TextFormatting.RED);
 
-    private double micValue;
+    private final SlidingAverage micValue;
 
     public VoiceActivationSlider(int x, int y, int width, int height) {
         super(x, y, width, height, new StringTextComponent(""), Utils.dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
         updateMessage();
+        micValue = new SlidingAverage();
     }
 
     @Override
     protected void renderBg(MatrixStack poseStack, Minecraft minecraft, int i, int j) {
         minecraft.getTextureManager().bind(SLIDER);
         RenderSystem.color4f(1F, 1F, 1F, 1F);
-        int width = (int) ((getWidth() - 2) * micValue);
+        int width = (int) ((getWidth() - 2) * micValue.average());
         blit(poseStack, x + 1, y + 1, 0, 0, width, 18);
         super.renderBg(poseStack, minecraft, i, j);
     }
@@ -66,6 +67,39 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
 
     @Override
     public void onMicValue(double percentage) {
-        this.micValue = percentage;
+        micValue.add(percentage);
     }
+
+    @Override
+    public void onStop() {
+        micValue.reset();
+    }
+
+    private static class SlidingAverage {
+        private final double[] values = new double[5];
+        private int n, p;
+        private double s;
+
+        public void add(double x) {
+            if (n < values.length) {
+                n++;
+            } else {
+                s -= values[p];
+            }
+            s += x;
+            values[p] = x;
+            p = (p + 1) % values.length;
+        }
+
+        public double average() {
+            return n == 0 ? 0D : s / n;
+        }
+
+        public void reset() {
+            n = 0;
+            p = 0;
+            s = 0D;
+        }
+    }
+
 }

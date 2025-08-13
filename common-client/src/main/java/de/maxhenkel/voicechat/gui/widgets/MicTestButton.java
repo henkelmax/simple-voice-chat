@@ -178,7 +178,7 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
             }
             speaker.close();
             setMicLocked(false);
-            micListener.onMicValue(0D);
+            micListener.onStop();
             if (usesOwnMicThread) {
                 micThread.close();
             }
@@ -217,5 +217,6 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
 
     public interface MicListener {
         void onMicValue(double percentage);
+        void onStop();
     }
 }
