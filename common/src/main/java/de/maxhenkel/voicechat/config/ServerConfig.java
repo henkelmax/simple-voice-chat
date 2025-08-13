@@ -5,7 +5,7 @@ import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.opus4j.OpusEncoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
 public class ServerConfig {
 
@@ -65,7 +65,7 @@ public class ServerConfig {
                         "Valid values are 'VOIP', 'AUDIO', and 'RESTRICTED_LOWDELAY'"
                 );
         voiceChatMtuSize = builder
-                .integerEntry("mtu_size", Utils.DEFAULT_MAX_PAYLOAD_SIZE, 256, 10000,
+                .integerEntry("mtu_size", AudioUtils.DEFAULT_MAX_PAYLOAD_SIZE, 256, 10000,
                         "The maximum size that audio packets are allowed to have (in bytes)",
                         "Set this to a lower value if audio packets don't arrive"
                 );

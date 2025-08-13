@@ -6,7 +6,7 @@ import de.maxhenkel.voicechat.api.events.*;
 import de.maxhenkel.voicechat.plugins.impl.ClientVoicechatSocketImpl;
 import de.maxhenkel.voicechat.plugins.impl.PositionImpl;
 import de.maxhenkel.voicechat.plugins.impl.events.*;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
@@ -45,7 +45,7 @@ public class ClientPluginManager {
         if (rawAudio != null) {
             audioToMerge.add(0, rawAudio);
         }
-        return Utils.combineAudio(audioToMerge);
+        return AudioUtils.combineAudio(audioToMerge);
     }
 
     @Nullable

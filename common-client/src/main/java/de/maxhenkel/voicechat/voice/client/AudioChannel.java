@@ -129,7 +129,7 @@ public class AudioChannel extends Thread {
                 }
 
                 if (packet.isFromClientAudioChannel()) {
-                    writeToSpeaker(packet, Utils.bytesToShorts(packet.getData()));
+                    writeToSpeaker(packet, AudioUtils.bytesToShorts(packet.getData()));
                     continue;
                 }
 

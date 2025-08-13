@@ -9,7 +9,7 @@ import de.maxhenkel.voicechat.macos.VersionCheck;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
 public class ClientConfig {
 
@@ -61,7 +61,7 @@ public class ClientConfig {
                         "The voice chat volume"
                 );
         voiceActivationThreshold = builder
-                .doubleEntry("voice_activation_threshold", -50D, Utils.LOWEST_DB, 0D,
+                .doubleEntry("voice_activation_threshold", -50D, AudioUtils.LOWEST_DB, 0D,
                         "The threshold for the voice activation method (in dB)"
                 );
         microphoneAmplification = builder

@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.voice.client.speaker;
 
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
-import de.maxhenkel.voicechat.voice.common.Utils;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
