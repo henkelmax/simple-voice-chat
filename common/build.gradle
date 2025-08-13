@@ -13,6 +13,7 @@ dependencies {
     implementation "org.concentus:Concentus:${concentus_version}"
     implementation "de.maxhenkel.rnnoise4j:rnnoise4j:${rnnoise4j_version}"
     implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
+    implementation "de.maxhenkel.speex4j:speex4j:${speex4j_version}"
 }
 
 sourceSets {
