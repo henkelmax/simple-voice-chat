@@ -21,7 +21,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     private final SlidingAverage micValue;
 
     public VoiceActivationSlider(int id, int x, int y, int width, int height) {
-        super(id, x, y, width, height, AudioUtils.dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
+        super(id, x, y, width, height, dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
         updateMessage();
         micValue = new SlidingAverage();
     }
@@ -37,7 +37,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
 
     @Override
     protected void updateMessage() {
-        long db = Math.round(AudioUtils.percToDb(value));
+        long db = Math.round(percToDb(value));
         TextComponentTranslation component = new TextComponentTranslation("message.voicechat.voice_activation", db);
 
         if (db >= -10L) {
@@ -57,12 +57,12 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
 
     @Override
     public void applyDebounced() {
-        VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.set(AudioUtils.percToDb(value)).save();
+        VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.set(percToDb(value)).save();
     }
 
     @Override
-    public void onMicValue(double percentage) {
-        micValue.add(percentage);
+    public void onMicValue(double dB) {
+        micValue.add(dbToPerc(dB));
     }
 
     public boolean isHovered() {
@@ -72,6 +72,28 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     @Override
     public void onStop() {
         micValue.reset();
+    }
+
+    /**
+     * Converts a dB value to a percentage value ({@link AudioUtils#LOWEST_DB} - 0) - (0 - 1)
+     *
+     * @param db the decibel value
+     * @return the percentage
+     */
+    public static double dbToPerc(double db) {
+        db = Math.min(Math.max(db, AudioUtils.LOWEST_DB), 0D);
+        return (db + Math.abs(AudioUtils.LOWEST_DB)) / Math.abs(AudioUtils.LOWEST_DB);
+    }
+
+    /**
+     * Converts a percentage to a dB value (0 - 1) - ({@link AudioUtils#LOWEST_DB} - 0)
+     *
+     * @param perc the percentage
+     * @return the decibel value
+     */
+    public static double percToDb(double perc) {
+        perc = Math.min(Math.max(perc, 0D), 1D);
+        return (1D - perc) * AudioUtils.LOWEST_DB;
     }
 
     private static class SlidingAverage {

@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.VersionCheck;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
+import de.maxhenkel.voicechat.voice.client.VolumeManager;
 import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
@@ -16,7 +17,7 @@ public class ClientConfig {
     public ConfigEntry<Boolean> onboardingFinished;
     public ConfigEntry<Double> voiceChatVolume;
     public ConfigEntry<Double> voiceActivationThreshold;
-    public ConfigEntry<Double> microphoneAmplification;
+    public ConfigEntry<Double> microphoneGain;
     public ConfigEntry<Boolean> agc;
     public ConfigEntry<MicrophoneActivationType> microphoneActivationType;
     public ConfigEntry<Integer> outputBufferSize;
@@ -64,9 +65,9 @@ public class ClientConfig {
                 .doubleEntry("voice_activation_threshold", -50D, AudioUtils.LOWEST_DB, 0D,
                         "The threshold for the voice activation method (in dB)"
                 );
-        microphoneAmplification = builder
-                .doubleEntry("microphone_amplification", 1D, 0D, 4D,
-                        "The voice chat microphone amplification"
+        microphoneGain = builder
+                .doubleEntry("microphone_gain", 0D, VolumeManager.MIN_GAIN, VolumeManager.MAX_GAIN,
+                        "The voice chat microphone gain"
                 );
         agc = builder
                 .booleanEntry("automatic_gain_control", true,

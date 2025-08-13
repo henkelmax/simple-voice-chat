@@ -166,7 +166,7 @@ public class MicThread extends Thread {
         if (VoicechatClient.CLIENT_CONFIG.agc.get() && agc != null) {
             agc.agc(audio);
         } else {
-            volumeManager.adjustVolumeMono(audio, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
+            volumeManager.adjustVolume(audio, VoicechatClient.CLIENT_CONFIG.microphoneGain.get());
         }
     }
 

@@ -1,36 +1,45 @@
 package de.maxhenkel.voicechat.voice.client;
 
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
+
 import java.util.Arrays;
 
 public class VolumeManager {
 
+    public static final double MIN_GAIN = -40D;
+    public static final double MAX_GAIN = 24D;
     private static final short MAX_AMPLIFICATION = Short.MAX_VALUE - 1;
 
-    private final float[] maxVolumes;
+    private final double[] maxVolumes;
     private int index;
 
     public VolumeManager() {
-        maxVolumes = new float[50];
-        Arrays.fill(maxVolumes, -1F);
+        maxVolumes = new double[50];
+        Arrays.fill(maxVolumes, -1D);
     }
 
     /**
-     * Changes the volume of 16 bit audio
-     * Note that this modifies the input array
+     * Changes the volume of 16-bit mono audio.
+     * Note that this modifies the input array in place.
      *
      * @param audio  the audio data
-     * @param volume the amplification
-     * @return the adjusted audio
+     * @param gainDb the gain in dB
      */
-    public short[] adjustVolumeMono(short[] audio, float volume) {
-        maxVolumes[index] = getMaximumMultiplier(audio, volume);
+    public void adjustVolume(short[] audio, double gainDb) {
+        double maxMultiplier;
+        if (gainDb <= MIN_GAIN) {
+            maxMultiplier = 0D;
+        } else {
+            maxMultiplier = AudioUtils.dbToLinear(gainDb);
+        }
+        maxVolumes[index] = getMaximumMultiplier(audio, maxMultiplier);
         index = (index + 1) % maxVolumes.length;
-        float min = -1F;
-        for (float mul : maxVolumes) {
-            if (mul < 0F) {
+        double min = -1D;
+        for (double mul : maxVolumes) {
+            if (mul < 0D) {
                 continue;
             }
-            if (min < 0F) {
+            if (min < 0D) {
                 min = mul;
                 continue;
             }
@@ -39,15 +48,14 @@ public class VolumeManager {
             }
         }
 
-        float maxVolume = Math.min(min, volume);
+        double maxVolume = Math.min(min, maxMultiplier);
 
         for (int i = 0; i < audio.length; i++) {
-            audio[i] = (short) ((float) audio[i] * maxVolume);
+            audio[i] = (short) ((double) audio[i] * maxVolume);
         }
-        return audio;
     }
 
-    private static float getMaximumMultiplier(short[] audio, float multiplier) {
+    private static double getMaximumMultiplier(short[] audio, double multiplier) {
         short max = 0;
 
         for (short value : audio) {
@@ -62,7 +70,10 @@ public class VolumeManager {
             }
         }
 
-        return Math.min(multiplier, (float) MAX_AMPLIFICATION / (float) max);
+        if (max == 0) {
+            return 1D;
+        }
+        return Math.min(multiplier, (double) MAX_AMPLIFICATION / (double) max);
     }
 
 }
