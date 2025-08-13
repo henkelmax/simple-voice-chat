@@ -10,7 +10,7 @@
   "gui.voicechat.select_microphone.title": "Seleziona microfono",
   "gui.voicechat.select_speaker.title": "Seleziona altoparlante",
   "message.voicechat.voice_chat_volume": "Volume chat vocale: %s",
-  "message.voicechat.microphone_amplification": "Amplificazione microfono: %s",
+  "message.voicechat.microphone_gain": "Amplificazione microfono: %s dB",
   "message.voicechat.mic_test_unavailable": "Prova microfono non disponibile",
   "message.voicechat.voice_chat_unavailable": "Chat Vocale non disponibile",
   "message.voicechat.voice_chat_not_connected": "Chat Vocale non disponibile",
