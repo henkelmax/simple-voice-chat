@@ -22,7 +22,7 @@
   "message.voicechat.settings": "Opciones",
   "message.voicechat.group": "Grupo",
   "message.voicechat.voice_chat_volume": "Volumen del chat de voz: %s",
-  "message.voicechat.microphone_amplification": "Amplificador de micrófono: %s",
+  "message.voicechat.microphone_gain": "Amplificador de micrófono: %s dB",
   "message.voicechat.mic_test_unavailable": "Prueba de micrófono no disponible",
   "message.voicechat.mic_test.disabled": "Presiona para activar la prueba del micrófono",
   "message.voicechat.mic_test.enabled": "Presiona para desactivar la prueba del micrófono",
