@@ -26,7 +26,7 @@ public abstract class SoundPacket<T extends SoundPacket> implements Packet<T> {
     public SoundPacket(UUID channelId, UUID sender, short[] data, @Nullable String category) {
         this.channelId = channelId;
         this.sender = sender;
-        this.data = Utils.shortsToBytes(data);
+        this.data = AudioUtils.shortsToBytes(data);
         this.sequenceNumber = -1L;
         this.category = category;
     }
