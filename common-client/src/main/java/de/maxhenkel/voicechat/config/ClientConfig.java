@@ -17,6 +17,7 @@ public class ClientConfig {
     public ConfigEntry<Double> voiceChatVolume;
     public ConfigEntry<Double> voiceActivationThreshold;
     public ConfigEntry<Double> microphoneAmplification;
+    public ConfigEntry<Boolean> agc;
     public ConfigEntry<MicrophoneActivationType> microphoneActivationType;
     public ConfigEntry<Integer> outputBufferSize;
     public ConfigEntry<Integer> audioPacketThreshold;
@@ -66,6 +67,10 @@ public class ClientConfig {
         microphoneAmplification = builder
                 .doubleEntry("microphone_amplification", 1D, 0D, 4D,
                         "The voice chat microphone amplification"
+                );
+        agc = builder
+                .booleanEntry("automatic_gain_control", true,
+                        "Enable automatic gain control"
                 );
         microphoneActivationType = builder
                 .enumEntry("microphone_activation_type", MicrophoneActivationType.PTT,

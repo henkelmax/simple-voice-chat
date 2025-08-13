@@ -14,7 +14,6 @@ public class Utils {
     public static final int FRAME_SIZE = (SAMPLE_RATE / 1000) * 20;
     public static final int DEFAULT_MAX_PAYLOAD_SIZE = 1024;
     public static final double LOWEST_DB = -127D;
-    public static final int SAMPLE_INTERVAL = FRAME_SIZE / 4;
 
     public static void sleep(int ms) {
         try {
@@ -150,75 +149,40 @@ public class Utils {
     }
 
     /**
-     * Calculates the audio level of a signal with specific samples.
-     *
-     * @param samples the samples of the signal to calculate the audio level of
-     * @param start   the start in samples in which the samples start
-     * @param end     the end in samples of the signal in samples
-     * @return the audio level of the specified signal in db
-     */
-    public static double calculateAudioLevel(short[] samples, int start, int end) {
-        int s = Math.max(0, start);
-        int e = Math.min(samples.length, end);
-        int amount = e - s;
-        if (amount <= 0) {
-            return LOWEST_DB;
-        }
-
-        double squaredSampleSum = 0D;
-        for (int i = s; i < e; i++) {
-            double normalized = samples[i] / 32768D;
-            squaredSampleSum += normalized * normalized;
-        }
-
-        double rms = Math.sqrt(squaredSampleSum / amount);
-        if (rms <= 0D) {
-            return LOWEST_DB;
-        }
-        double db = 20D * Math.log10(rms);
-
-        if (!Double.isFinite(db)) {
-            return LOWEST_DB;
-        }
-        if (db > 0D) {
-            return 0D;
-        }
-        return Math.max(db, LOWEST_DB);
-    }
-
-    /**
-     * Calculates the highest audio level in packs of {@link #SAMPLE_INTERVAL}.
+     * Calculates the highest audio level of this frame
      *
      * @param samples the audio samples
      * @return the audio level in db
      */
     public static double getHighestAudioLevel(short[] samples) {
-        double highest = LOWEST_DB;
-        for (int i = 0; i < samples.length; i += SAMPLE_INTERVAL) {
-            double level = Utils.calculateAudioLevel(samples, i, Math.min(i + SAMPLE_INTERVAL, samples.length));
-            if (level > highest) {
-                highest = level;
+        short highest = 0;
+        for (short sample : samples) {
+            if (Math.abs(sample) > highest) {
+                highest = (short) Math.abs(sample);
             }
         }
-        return highest;
+        return sampleDb(highest);
     }
 
-    /**
-     * Gets the offset of the highest audio level in packs of {@link #SAMPLE_INTERVAL}.
-     *
-     * @param samples         the audio samples
-     * @param activationLevel the activation threshold
-     * @return the audio level in db
-     */
-    public static int getActivationOffset(short[] samples, double activationLevel) {
-        int highestPos = -1;
-        for (int i = 0; i < samples.length; i += SAMPLE_INTERVAL) {
-            double level = Utils.calculateAudioLevel(samples, i, Math.min(i + SAMPLE_INTERVAL, samples.length));
-            if (level >= activationLevel) {
-                highestPos = i;
-            }
+    public static double sampleDb(short sample) {
+        if (sample == 0) {
+            return LOWEST_DB;
         }
-        return highestPos;
+        int mag = Math.abs(sample);
+        double norm = mag / 32768D;
+
+        double db = 20D * Math.log10(norm);
+
+        if (!Double.isFinite(db)) {
+            return LOWEST_DB;
+        }
+        if (db > 0D) {
+            db = 0D;
+        }
+        if (db < LOWEST_DB) {
+            db = LOWEST_DB;
+        }
+        return db;
     }
 
     /**
@@ -227,13 +191,7 @@ public class Utils {
      * @return if the audio level was above the threshold
      */
     public static boolean isAboveThreshold(short[] samples, double threshold) {
-        for (int i = 0; i < samples.length; i += SAMPLE_INTERVAL) {
-            double level = Utils.calculateAudioLevel(samples, i, Math.min(i + SAMPLE_INTERVAL, samples.length));
-            if (level >= threshold) {
-                return true;
-            }
-        }
-        return false;
+        return getHighestAudioLevel(samples) > threshold;
     }
 
     /**

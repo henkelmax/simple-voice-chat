@@ -6,10 +6,7 @@ import de.maxhenkel.voicechat.gui.audiodevice.SelectMicrophoneScreen;
 import de.maxhenkel.voicechat.gui.audiodevice.SelectSpeakerScreen;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
 import de.maxhenkel.voicechat.gui.widgets.*;
-import de.maxhenkel.voicechat.voice.client.ClientManager;
-import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
-import de.maxhenkel.voicechat.voice.client.KeyEvents;
-import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
+import de.maxhenkel.voicechat.voice.client.*;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -54,7 +51,12 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
         addButton(new VoiceSoundSlider(0, guiLeft + 10, y, xSize - 20, 20));
         y += 21;
-        addButton(new MicAmplificationSlider(1, guiLeft + 10, y, xSize - 20, 20));
+        boolean agc = AutomaticGainControl.canUseAgc();
+        MicAmplificationSlider micAmp = new MicAmplificationSlider(1, guiLeft + 10 + (agc ? 80 + 1 : 0), y, xSize - 20 - (agc ? 80 : 0) - 1, 20);
+        if (agc) {
+            addButton(new AgcButton(guiLeft + 10, y, 80, 20, active -> micAmp.active = !active));
+        }
+        addButton(micAmp);
         y += 21;
         addButton(new DenoiserButton(2, guiLeft + 10, y, xSize - 20, 20));
         y += 21;
