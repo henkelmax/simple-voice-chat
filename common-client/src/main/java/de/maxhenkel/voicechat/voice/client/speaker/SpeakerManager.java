@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.voice.client.speaker;
 
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -14,13 +14,13 @@ public class SpeakerManager {
         switch (VoicechatClient.CLIENT_CONFIG.audioType.get()) {
             case NORMAL:
             default:
-                speaker = new ALSpeaker(soundManager, Utils.SAMPLE_RATE, Utils.FRAME_SIZE, audioChannel);
+                speaker = new ALSpeaker(soundManager, AudioUtils.SAMPLE_RATE, AudioUtils.FRAME_SIZE, audioChannel);
                 break;
             case REDUCED:
-                speaker = new FakeALSpeaker(soundManager, Utils.SAMPLE_RATE, Utils.FRAME_SIZE, audioChannel);
+                speaker = new FakeALSpeaker(soundManager, AudioUtils.SAMPLE_RATE, AudioUtils.FRAME_SIZE, audioChannel);
                 break;
             case OFF:
-                speaker = new MonoALSpeaker(soundManager, Utils.SAMPLE_RATE, Utils.FRAME_SIZE, audioChannel);
+                speaker = new MonoALSpeaker(soundManager, AudioUtils.SAMPLE_RATE, AudioUtils.FRAME_SIZE, audioChannel);
                 break;
         }
         speaker.open();
