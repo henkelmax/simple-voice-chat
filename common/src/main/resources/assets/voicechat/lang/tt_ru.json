@@ -22,7 +22,7 @@
   "message.voicechat.settings": "Көйләүләр",
   "message.voicechat.group": "Төркем",
   "message.voicechat.voice_chat_volume": "Тавышлы чат катылыгы: %s",
-  "message.voicechat.microphone_amplification": "Микрофон көчәйтү: %s",
+  "message.voicechat.microphone_gain": "Микрофон көчәйтү: %s dB",
   "message.voicechat.mic_test_unavailable": "Микрофон тикшерү эшләми",
   "message.voicechat.voice_chat_unavailable": "Тавышлы чат эшләми",
   "message.voicechat.voice_chat_not_connected": "Тавышлы чат тоташылмады",
