@@ -22,11 +22,12 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     private static final ResourceLocation VOICE_ACTIVATION_SLIDER = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/voice_activation_slider.png");
     private static final Component NO_ACTIVATION = Component.translatable("message.voicechat.voice_activation.disabled").withStyle(ChatFormatting.RED);
 
-    private double micValue;
+    private final SlidingAverage micValue;
 
     public VoiceActivationSlider(int x, int y, int width, int height) {
         super(x, y, width, height, Component.empty(), Utils.dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
         updateMessage();
+        micValue = new SlidingAverage();
     }
 
     @Override
@@ -38,7 +39,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         RenderSystem.enableDepthTest();
         guiGraphics.blitSprite(getSlider(), getX(), getY(), getWidth(), getHeight());
 
-        int micWidth = (int) ((width - 2) * micValue);
+        int micWidth = (int) ((width - 2) * micValue.average());
         guiGraphics.blit(VOICE_ACTIVATION_SLIDER, getX() + 1, getY() + 1, 0, 0, micWidth, 18);
 
         guiGraphics.blitSprite(getHandle(), getX() + (int) (value * (double) (width - 8)), getY(), 8, 20);
@@ -84,6 +85,39 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
 
     @Override
     public void onMicValue(double percentage) {
-        this.micValue = percentage;
+        micValue.add(percentage);
     }
+
+    @Override
+    public void onStop() {
+        micValue.reset();
+    }
+
+    private static class SlidingAverage {
+        private final double[] values = new double[5];
+        private int n, p;
+        private double s;
+
+        public void add(double x) {
+            if (n < values.length) {
+                n++;
+            } else {
+                s -= values[p];
+            }
+            s += x;
+            values[p] = x;
+            p = (p + 1) % values.length;
+        }
+
+        public double average() {
+            return n == 0 ? 0D : s / n;
+        }
+
+        public void reset() {
+            n = 0;
+            p = 0;
+            s = 0D;
+        }
+    }
+
 }
