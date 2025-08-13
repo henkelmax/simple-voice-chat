@@ -18,11 +18,12 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     private static final ResourceLocation SLIDER = new ResourceLocation(Voicechat.MODID, "textures/gui/voice_activation_slider.png");
     private static final ITextComponent NO_ACTIVATION = new TextComponentTranslation("message.voicechat.voice_activation.disabled").setStyle(new Style().setColor(TextFormatting.RED));
 
-    private double micValue;
+    private final SlidingAverage micValue;
 
     public VoiceActivationSlider(int id, int x, int y, int width, int height) {
         super(id, x, y, width, height, Utils.dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
         updateMessage();
+        micValue = new SlidingAverage();
     }
 
     @Override
@@ -30,7 +31,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         super.mouseDragged(mc, mouseX, mouseY);
         mc.getTextureManager().bindTexture(SLIDER);
         GlStateManager.color(1F, 1F, 1F, 1F);
-        int width = (int) ((getButtonWidth() - 2) * micValue);
+        int width = (int) ((getButtonWidth() - 2) * micValue.average());
         drawTexturedModalRect(x + 1, y + 1, 0, 0, width, 18);
     }
 
@@ -61,11 +62,43 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
 
     @Override
     public void onMicValue(double percentage) {
-        this.micValue = percentage;
+        micValue.add(percentage);
     }
 
     public boolean isHovered() {
         return hovered;
+    }
+
+    @Override
+    public void onStop() {
+        micValue.reset();
+    }
+
+    private static class SlidingAverage {
+        private final double[] values = new double[5];
+        private int n, p;
+        private double s;
+
+        public void add(double x) {
+            if (n < values.length) {
+                n++;
+            } else {
+                s -= values[p];
+            }
+            s += x;
+            values[p] = x;
+            p = (p + 1) % values.length;
+        }
+
+        public double average() {
+            return n == 0 ? 0D : s / n;
+        }
+
+        public void reset() {
+            n = 0;
+            p = 0;
+            s = 0D;
+        }
     }
 
 }
