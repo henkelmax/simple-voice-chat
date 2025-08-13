@@ -34,6 +34,8 @@ public class MicThread extends Thread {
     private final OpusEncoder encoder;
     @Nullable
     private Denoiser denoiser;
+    @Nullable
+    private AutomaticGainControl agc;
 
     public MicThread(@Nullable ClientVoicechat client, @Nullable ClientVoicechatConnection connection) throws MicrophoneException {
         this.client = client;
@@ -44,6 +46,10 @@ public class MicThread extends Thread {
         this.denoiser = Denoiser.createDenoiser();
         if (denoiser == null) {
             Voicechat.LOGGER.warn("Denoiser not available");
+        }
+        this.agc = AutomaticGainControl.createAgc();
+        if (agc == null) {
+            Voicechat.LOGGER.warn("AGC not available");
         }
         volumeManager = new VolumeManager();
 
@@ -109,13 +115,16 @@ public class MicThread extends Thread {
         if (denoiser != null && denoiser.isClosed()) {
             denoiser = Denoiser.createDenoiser();
         }
+        if (agc != null && agc.isClosed()) {
+            agc = AutomaticGainControl.createAgc();
+        }
 
         if (mic.available() < Utils.FRAME_SIZE) {
             Utils.sleep(5);
             return null;
         }
         short[] buff = mic.read();
-        volumeManager.adjustVolumeMono(buff, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
+        adjustVolume(buff);
         return denoiseIfEnabled(buff);
     }
 
@@ -150,6 +159,14 @@ public class MicThread extends Thread {
         wasWhispering = ClientManager.getPttKeyHandler().isWhisperDown();
         sendAudio(audio, wasWhispering);
         return true;
+    }
+
+    public void adjustVolume(short[] audio) {
+        if (VoicechatClient.CLIENT_CONFIG.agc.get() && agc != null) {
+            agc.agc(audio);
+        } else {
+            volumeManager.adjustVolumeMono(audio, VoicechatClient.CLIENT_CONFIG.microphoneAmplification.get().floatValue());
+        }
     }
 
     public short[] denoiseIfEnabled(short[] audio) {
@@ -242,6 +259,9 @@ public class MicThread extends Thread {
         encoder.close();
         if (denoiser != null) {
             denoiser.close();
+        }
+        if (agc != null) {
+            agc.close();
         }
         flush();
     }
