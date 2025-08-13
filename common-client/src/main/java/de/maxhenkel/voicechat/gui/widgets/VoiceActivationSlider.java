@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.gui.widgets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,7 +25,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     private final SlidingAverage micValue;
 
     public VoiceActivationSlider(int x, int y, int width, int height) {
-        super(x, y, width, height, Component.empty(), Utils.dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
+        super(x, y, width, height, Component.empty(), AudioUtils.dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
         updateMessage();
         micValue = new SlidingAverage();
     }
@@ -56,7 +56,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
 
     @Override
     protected void updateMessage() {
-        long db = Math.round(Utils.percToDb(value));
+        long db = Math.round(AudioUtils.percToDb(value));
         MutableComponent component = Component.translatable("message.voicechat.voice_activation", db);
 
         if (db >= -10L) {
@@ -80,7 +80,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
 
     @Override
     public void applyDebounced() {
-        VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.set(Utils.percToDb(value)).save();
+        VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.set(AudioUtils.percToDb(value)).save();
     }
 
     @Override
