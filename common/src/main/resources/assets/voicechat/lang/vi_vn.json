@@ -22,7 +22,7 @@
   "message.voicechat.settings": "Cài đặt",
   "message.voicechat.group": "Nhóm",
   "message.voicechat.voice_chat_volume": "Âm lượng: %s",
-  "message.voicechat.microphone_amplification": "Khuếch đại micro: %s",
+  "message.voicechat.microphone_gain": "Khuếch đại micro: %s dB",
   "message.voicechat.mic_test_unavailable": "Kiểm tra micro không có sẵn",
   "message.voicechat.mic_test.disabled": "Nhấn để bắt đầu kiểm tra micro",
   "message.voicechat.mic_test.enabled": "Nhấn để dừng kiểm tra micro",
