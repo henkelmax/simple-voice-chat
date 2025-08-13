@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.voice.client.microphone;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.client.MicrophoneException;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import org.lwjgl.openal.*;
 
 import javax.annotation.Nullable;
@@ -107,7 +107,7 @@ public class ALMicrophone implements Microphone {
         ALC11.alcCaptureSamples(device, buff, buff.length);
         SoundManager.checkAlcError(device);
 
-        return Utils.floatsToShortsNormalized(buff);
+        return AudioUtils.floatsToShortsNormalized(buff);
     }
 
     private long openMic(@Nullable String name) throws MicrophoneException {

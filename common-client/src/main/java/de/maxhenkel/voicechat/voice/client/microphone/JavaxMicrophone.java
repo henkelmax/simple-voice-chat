@@ -2,8 +2,7 @@ package de.maxhenkel.voicechat.voice.client.microphone;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.client.MicrophoneException;
-import de.maxhenkel.voicechat.voice.client.SoundManager;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
 import javax.annotation.Nullable;
 import javax.sound.sampled.*;
@@ -119,7 +118,7 @@ public class JavaxMicrophone implements Microphone {
         }
         byte[] buff = new byte[bufferSize * 2];
         mic.read(buff, 0, buff.length);
-        return Utils.bytesToShorts(buff);
+        return AudioUtils.bytesToShorts(buff);
     }
 
     @Nullable
@@ -161,7 +160,7 @@ public class JavaxMicrophone implements Microphone {
     }
 
     public static List<String> getAllMicrophones() {
-        return getAllMicrophones(new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, Utils.SAMPLE_RATE, 16, 1, 2, Utils.SAMPLE_RATE, false));
+        return getAllMicrophones(new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioUtils.SAMPLE_RATE, 16, 1, 2, AudioUtils.SAMPLE_RATE, false));
     }
 
     private static List<String> getAllMicrophones(AudioFormat format) {
