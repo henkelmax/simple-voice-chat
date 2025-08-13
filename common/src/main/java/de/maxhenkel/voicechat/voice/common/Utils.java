@@ -13,6 +13,8 @@ public class Utils {
     public static final int SAMPLE_RATE = 48000;
     public static final int FRAME_SIZE = (SAMPLE_RATE / 1000) * 20;
     public static final int DEFAULT_MAX_PAYLOAD_SIZE = 1024;
+    public static final double LOWEST_DB = -127D;
+    public static final int SAMPLE_INTERVAL = FRAME_SIZE / 4;
 
     public static void sleep(int ms) {
         try {
@@ -40,10 +42,6 @@ public class Utils {
             data[i * 2 + 1] = split[1];
         }
         return data;
-    }
-
-    public static float percentageToDB(float percentage) {
-        return (float) (10D * Math.log(percentage));
     }
 
     public static short bytesToShort(byte b1, byte b2) {
@@ -155,43 +153,49 @@ public class Utils {
      * Calculates the audio level of a signal with specific samples.
      *
      * @param samples the samples of the signal to calculate the audio level of
-     * @param offset  the offset in samples in which the samples start
-     * @param length  the length in bytes of the signal in samples starting at offset
+     * @param start   the start in samples in which the samples start
+     * @param end     the end in samples of the signal in samples
      * @return the audio level of the specified signal in db
      */
-    public static double calculateAudioLevel(short[] samples, int offset, int length) {
-        double rms = 0D; // root mean square (RMS) amplitude
-
-        for (int i = offset; i < length; i++) {
-            double sample = (double) samples[i] / (double) Short.MAX_VALUE;
-            rms += sample * sample;
+    public static double calculateAudioLevel(short[] samples, int start, int end) {
+        int s = Math.max(0, start);
+        int e = Math.min(samples.length, end);
+        int amount = e - s;
+        if (amount <= 0) {
+            return LOWEST_DB;
         }
 
-        int sampleCount = length / 2;
-
-        rms = (sampleCount == 0) ? 0 : Math.sqrt(rms / sampleCount);
-
-        double db;
-
-        if (rms > 0D) {
-            db = Math.min(Math.max(20D * Math.log10(rms), -127D), 0D);
-        } else {
-            db = -127D;
+        double squaredSampleSum = 0D;
+        for (int i = s; i < e; i++) {
+            double normalized = samples[i] / 32768D;
+            squaredSampleSum += normalized * normalized;
         }
 
-        return db;
+        double rms = Math.sqrt(squaredSampleSum / amount);
+        if (rms <= 0D) {
+            return LOWEST_DB;
+        }
+        double db = 20D * Math.log10(rms);
+
+        if (!Double.isFinite(db)) {
+            return LOWEST_DB;
+        }
+        if (db > 0D) {
+            return 0D;
+        }
+        return Math.max(db, LOWEST_DB);
     }
 
     /**
-     * Calculates the highest audio level in packs of 100
+     * Calculates the highest audio level in packs of {@link #SAMPLE_INTERVAL}.
      *
      * @param samples the audio samples
      * @return the audio level in db
      */
     public static double getHighestAudioLevel(short[] samples) {
-        double highest = -127D;
-        for (int i = 0; i < samples.length; i += 100) {
-            double level = Utils.calculateAudioLevel(samples, i, Math.min(i + 100, samples.length));
+        double highest = LOWEST_DB;
+        for (int i = 0; i < samples.length; i += SAMPLE_INTERVAL) {
+            double level = Utils.calculateAudioLevel(samples, i, Math.min(i + SAMPLE_INTERVAL, samples.length));
             if (level > highest) {
                 highest = level;
             }
@@ -200,7 +204,7 @@ public class Utils {
     }
 
     /**
-     * Gets the offset of the highest audio level in packs of 100
+     * Gets the offset of the highest audio level in packs of {@link #SAMPLE_INTERVAL}.
      *
      * @param samples         the audio samples
      * @param activationLevel the activation threshold
@@ -208,8 +212,8 @@ public class Utils {
      */
     public static int getActivationOffset(short[] samples, double activationLevel) {
         int highestPos = -1;
-        for (int i = 0; i < samples.length; i += 100) {
-            double level = Utils.calculateAudioLevel(samples, i, Math.min(i + 100, samples.length));
+        for (int i = 0; i < samples.length; i += SAMPLE_INTERVAL) {
+            double level = Utils.calculateAudioLevel(samples, i, Math.min(i + SAMPLE_INTERVAL, samples.length));
             if (level >= activationLevel) {
                 highestPos = i;
             }
@@ -223,8 +227,8 @@ public class Utils {
      * @return if the audio level was above the threshold
      */
     public static boolean isAboveThreshold(short[] samples, double threshold) {
-        for (int i = 0; i < samples.length; i += 100) {
-            double level = Utils.calculateAudioLevel(samples, i, Math.min(i + 100, samples.length));
+        for (int i = 0; i < samples.length; i += SAMPLE_INTERVAL) {
+            double level = Utils.calculateAudioLevel(samples, i, Math.min(i + SAMPLE_INTERVAL, samples.length));
             if (level >= threshold) {
                 return true;
             }
@@ -233,23 +237,25 @@ public class Utils {
     }
 
     /**
-     * Converts a dB value to a percentage value (-127 - 0) - (0 - 1)
+     * Converts a dB value to a percentage value ({@link #LOWEST_DB} - 0) - (0 - 1)
      *
      * @param db the decibel value
-     * @return the percantage
+     * @return the percentage
      */
     public static double dbToPerc(double db) {
-        return (db + 127D) / 127D;
+        db = Math.min(Math.max(db, LOWEST_DB), 0D);
+        return (db + Math.abs(LOWEST_DB)) / Math.abs(LOWEST_DB);
     }
 
     /**
-     * Converts a percentage to a dB value (0 - 1) - (-127 - 0)
+     * Converts a percentage to a dB value (0 - 1) - ({@link #LOWEST_DB} - 0)
      *
      * @param perc the percentage
      * @return the decibel value
      */
     public static double percToDb(double perc) {
-        return (perc * 127D) - 127D;
+        perc = Math.min(Math.max(perc, 0D), 1D);
+        return (1D - perc) * LOWEST_DB;
     }
 
     public static short[] combineAudio(Iterable<short[]> audioParts) {
