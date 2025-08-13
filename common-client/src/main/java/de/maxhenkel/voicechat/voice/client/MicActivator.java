@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
@@ -19,7 +19,7 @@ public class MicActivator {
 
     public boolean push(short[] audio, Consumer<short[]> audioConsumer) {
         boolean consumedAudio = false;
-        boolean aboveThreshold = Utils.isAboveThreshold(audio, VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get());
+        boolean aboveThreshold = AudioUtils.isAboveThreshold(audio, VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get());
         if (activating) {
             if (!aboveThreshold) {
                 if (deactivationDelay >= VoicechatClient.CLIENT_CONFIG.deactivationDelay.get()) {
