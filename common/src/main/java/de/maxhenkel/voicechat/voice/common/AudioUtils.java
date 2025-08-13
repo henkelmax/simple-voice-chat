@@ -145,34 +145,22 @@ public class AudioUtils {
     }
 
     /**
+     * Convert gain in dB to linear multiplier (+6 dB ~ 1.995, -6 dB ~ 0.501).
+     *
+     * @param db the gain in dB
+     * @return the multiplier
+     */
+    public static double dbToLinear(double db) {
+        return Math.pow(10D, db / 20D);
+    }
+
+    /**
      * @param samples   the audio samples
      * @param threshold the activation threshold
      * @return if the audio level was above the threshold
      */
     public static boolean isAboveThreshold(short[] samples, double threshold) {
         return getHighestAudioLevel(samples) > threshold;
-    }
-
-    /**
-     * Converts a dB value to a percentage value ({@link AudioUtils#LOWEST_DB} - 0) - (0 - 1)
-     *
-     * @param db the decibel value
-     * @return the percentage
-     */
-    public static double dbToPerc(double db) {
-        db = Math.min(Math.max(db, LOWEST_DB), 0D);
-        return (db + Math.abs(LOWEST_DB)) / Math.abs(LOWEST_DB);
-    }
-
-    /**
-     * Converts a percentage to a dB value (0 - 1) - ({@link AudioUtils#LOWEST_DB} - 0)
-     *
-     * @param perc the percentage
-     * @return the decibel value
-     */
-    public static double percToDb(double perc) {
-        perc = Math.min(Math.max(perc, 0D), 1D);
-        return (1D - perc) * LOWEST_DB;
     }
 
     public static short[] combineAudio(Iterable<short[]> audioParts) {

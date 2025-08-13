@@ -22,7 +22,7 @@
   "message.voicechat.settings": "설정",
   "message.voicechat.group": "그룹",
   "message.voicechat.voice_chat_volume": "음성 채팅 볼륨: %s",
-  "message.voicechat.microphone_amplification": "마이크 증폭: %s",
+  "message.voicechat.microphone_gain": "마이크 증폭: %s dB",
   "message.voicechat.mic_test_unavailable": "마이크 테스트를 할 수 없음",
   "message.voicechat.mic_test.disabled": "마이크 테스트를 활성화하려면 누르세요",
   "message.voicechat.mic_test.enabled": "마이크 테스트를 비활성화하려면 누르세요",

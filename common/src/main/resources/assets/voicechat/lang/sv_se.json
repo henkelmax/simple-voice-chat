@@ -22,7 +22,7 @@
   "message.voicechat.settings": "Inställningar",
   "message.voicechat.group": "Grupp",
   "message.voicechat.voice_chat_volume": "Röstchattsvolym: %s",
-  "message.voicechat.microphone_amplification": "Mikrofonförstärkning: %s",
+  "message.voicechat.microphone_gain": "Mikrofonförstärkning: %s dB",
   "message.voicechat.mic_test_unavailable": "Mikrofontestning ej tillgänglig!",
   "message.voicechat.mic_test.disabled": "Tryck för att aktivera mikrofontestning.",
   "message.voicechat.mic_test.enabled": "Tryck för att inaktivera mikrofontestning.",
