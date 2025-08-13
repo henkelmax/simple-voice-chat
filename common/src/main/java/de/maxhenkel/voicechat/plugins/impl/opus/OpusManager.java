@@ -6,7 +6,8 @@ import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
 import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
+import de.maxhenkel.voicechat.voice.common.NativeUtils;
 
 import javax.annotation.Nullable;
 
@@ -20,15 +21,15 @@ public class OpusManager {
             return false;
         }
 
-        Boolean success = Utils.createSafe(() -> {
-            NativeOpusEncoderImpl encoder = new NativeOpusEncoderImpl(Utils.SAMPLE_RATE, 1, Application.VOIP);
-            encoder.setMaxPayloadSize(Utils.DEFAULT_MAX_PAYLOAD_SIZE);
-            byte[] encoded = encoder.encode(new short[Utils.FRAME_SIZE]);
+        Boolean success = NativeUtils.createSafe(() -> {
+            NativeOpusEncoderImpl encoder = new NativeOpusEncoderImpl(AudioUtils.SAMPLE_RATE, 1, Application.VOIP);
+            encoder.setMaxPayloadSize(AudioUtils.DEFAULT_MAX_PAYLOAD_SIZE);
+            byte[] encoded = encoder.encode(new short[AudioUtils.FRAME_SIZE]);
             encoder.resetState();
             encoder.close();
 
-            NativeOpusDecoderImpl decoder = new NativeOpusDecoderImpl(Utils.SAMPLE_RATE, 1);
-            decoder.setFrameSize(Utils.FRAME_SIZE);
+            NativeOpusDecoderImpl decoder = new NativeOpusDecoderImpl(AudioUtils.SAMPLE_RATE, 1);
+            decoder.setFrameSize(AudioUtils.FRAME_SIZE);
             decoder.decode(encoded);
             decoder.decodeFec();
             decoder.resetState();
@@ -52,7 +53,7 @@ public class OpusManager {
         }
 
         try {
-            NativeOpusEncoderImpl encoder = new NativeOpusEncoderImpl(Utils.SAMPLE_RATE, 1, application);
+            NativeOpusEncoderImpl encoder = new NativeOpusEncoderImpl(AudioUtils.SAMPLE_RATE, 1, application);
             encoder.setMaxPayloadSize(mtuSize);
             return encoder;
         } catch (Throwable e) {
@@ -81,7 +82,7 @@ public class OpusManager {
             }
         }
 
-        return new JavaOpusEncoderImpl(Utils.SAMPLE_RATE, Utils.FRAME_SIZE, mtuSize, application);
+        return new JavaOpusEncoderImpl(AudioUtils.SAMPLE_RATE, AudioUtils.FRAME_SIZE, mtuSize, application);
     }
 
     @Nullable
@@ -90,8 +91,8 @@ public class OpusManager {
             return null;
         }
         try {
-            NativeOpusDecoderImpl decoder = new NativeOpusDecoderImpl(Utils.SAMPLE_RATE, 1);
-            decoder.setFrameSize(Utils.FRAME_SIZE);
+            NativeOpusDecoderImpl decoder = new NativeOpusDecoderImpl(AudioUtils.SAMPLE_RATE, 1);
+            decoder.setFrameSize(AudioUtils.FRAME_SIZE);
             return decoder;
         } catch (Throwable e) {
             nativeOpusCompatible = false;
@@ -107,7 +108,7 @@ public class OpusManager {
                 return decoder;
             }
         }
-        return new JavaOpusDecoderImpl(Utils.SAMPLE_RATE, Utils.FRAME_SIZE);
+        return new JavaOpusDecoderImpl(AudioUtils.SAMPLE_RATE, AudioUtils.FRAME_SIZE);
     }
 
 }

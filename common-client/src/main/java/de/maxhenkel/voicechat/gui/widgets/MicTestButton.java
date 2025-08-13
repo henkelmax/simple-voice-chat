@@ -8,7 +8,7 @@ import de.maxhenkel.voicechat.voice.client.*;
 import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerManager;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
@@ -176,7 +176,7 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
                     continue;
                 }
 
-                micListener.onMicValue(Utils.dbToPerc(Utils.getHighestAudioLevel(buff)));
+                micListener.onMicValue(AudioUtils.dbToPerc(AudioUtils.getHighestAudioLevel(buff)));
 
                 if (VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE)) {
                     if (micActivator.push(buff, a -> {

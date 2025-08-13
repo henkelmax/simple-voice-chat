@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.plugins.impl.audiochannel;
 
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
@@ -13,7 +13,7 @@ public class AudioSupplier implements Supplier<short[]> {
 
     public AudioSupplier(short[] audioData) {
         this.audioData = audioData;
-        this.frame = new short[Utils.FRAME_SIZE];
+        this.frame = new short[AudioUtils.FRAME_SIZE];
     }
 
     @Override
