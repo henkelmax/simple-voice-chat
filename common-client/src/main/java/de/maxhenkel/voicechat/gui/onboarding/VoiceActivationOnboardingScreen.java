@@ -1,9 +1,7 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
-import de.maxhenkel.voicechat.gui.widgets.DenoiserButton;
-import de.maxhenkel.voicechat.gui.widgets.MicAmplificationSlider;
-import de.maxhenkel.voicechat.gui.widgets.MicTestButton;
-import de.maxhenkel.voicechat.gui.widgets.VoiceActivationSlider;
+import de.maxhenkel.voicechat.gui.widgets.*;
+import de.maxhenkel.voicechat.voice.client.AutomaticGainControl;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -30,7 +28,12 @@ public class VoiceActivationOnboardingScreen extends OnboardingScreenBase {
         int bottom = guiTop + contentHeight - PADDING * 3 - BUTTON_HEIGHT * 2;
         int space = BUTTON_HEIGHT + SMALL_PADDING;
 
-        addRenderableWidget(new MicAmplificationSlider(guiLeft, bottom - space * 2, contentWidth, BUTTON_HEIGHT));
+        boolean agc = AutomaticGainControl.canUseAgc();
+        MicAmplificationSlider micAmp = new MicAmplificationSlider(guiLeft + (agc ? 80 + 1 : 0), bottom - space * 2, contentWidth - (agc ? 80 : 0) - 1, BUTTON_HEIGHT);
+        if (agc) {
+            addRenderableWidget(new AgcButton(guiLeft, bottom - space * 2, 80, BUTTON_HEIGHT, active -> micAmp.active = !active));
+        }
+        addRenderableWidget(micAmp);
         addRenderableWidget(new DenoiserButton(guiLeft, bottom - space, contentWidth, BUTTON_HEIGHT));
 
         slider = new VoiceActivationSlider(guiLeft + 20 + SMALL_PADDING, bottom, contentWidth - 20 - SMALL_PADDING, BUTTON_HEIGHT);
