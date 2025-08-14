@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.voice.common;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
 public class AudioUtils {
@@ -14,14 +15,14 @@ public class AudioUtils {
         if (bytes.length % 2 != 0) {
             throw new IllegalArgumentException("Input bytes need to be divisible by 2");
         }
-        ShortBuffer sb = ByteBuffer.wrap(bytes).asShortBuffer();
+        ShortBuffer sb = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
         short[] out = new short[sb.remaining()];
         sb.get(out);
         return out;
     }
 
     public static byte[] shortsToBytes(short[] shorts) {
-        ByteBuffer bb = ByteBuffer.allocate(shorts.length * 2);
+        ByteBuffer bb = ByteBuffer.allocate(shorts.length * 2).order(ByteOrder.LITTLE_ENDIAN);
         for (short s : shorts) {
             bb.putShort(s);
         }
