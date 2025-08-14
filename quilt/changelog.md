@@ -7,3 +7,4 @@
 - Added automatic gain control
 - Reworked microphone amplification
 - Renamed microphone amplification to microphone gain
+- Fixed French translation
