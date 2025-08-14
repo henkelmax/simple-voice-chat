@@ -54,17 +54,17 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         boolean agc = AutomaticGainControl.canUseAgc();
         MicAmplificationSlider micAmp = new MicAmplificationSlider(1, guiLeft + 10 + (agc ? 80 + 1 : 0), y, xSize - 20 - (agc ? 80 : 0) - 1, 20);
         if (agc) {
-            addButton(new AgcButton(guiLeft + 10, y, 80, 20, active -> micAmp.active = !active));
+            addButton(new AgcButton(2, guiLeft + 10, y, 80, 20, active -> micAmp.enabled = !active));
         }
         addButton(micAmp);
         y += 21;
-        addButton(new DenoiserButton(2, guiLeft + 10, y, xSize - 20, 20));
+        addButton(new DenoiserButton(3, guiLeft + 10, y, xSize - 20, 20));
         y += 21;
 
-        voiceActivationSlider = new VoiceActivationSlider(5, guiLeft + 10 + 20 + 1, y + 21, xSize - 20 - 20 - 1, 20);
-        micTestButton = new MicTestButton(4, guiLeft + 10, y + 21, voiceActivationSlider);
+        voiceActivationSlider = new VoiceActivationSlider(4, guiLeft + 10 + 20 + 1, y + 21, xSize - 20 - 20 - 1, 20);
+        micTestButton = new MicTestButton(5, guiLeft + 10, y + 21, voiceActivationSlider);
         keybindButton = new KeybindButton(6, KeyEvents.KEY_PTT, guiLeft + 10 + 20 + 1, y + 21, xSize - 20 - 20 - 1, 20, PUSH_TO_TALK);
-        addButton(new MicActivationButton(3, guiLeft + 10, y, xSize - 20, 20, type -> {
+        addButton(new MicActivationButton(7, guiLeft + 10, y, xSize - 20, 20, type -> {
             voiceActivationSlider.visible = MicrophoneActivationType.VOICE.equals(type);
             keybindButton.visible = MicrophoneActivationType.PTT.equals(type);
         }));
@@ -73,7 +73,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         addButton(keybindButton);
         y += 21 * 2;
 
-        addButton(new EnumButton<AudioType>(7, guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.audioType) {
+        addButton(new EnumButton<AudioType>(8, guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.audioType) {
 
             @Override
             protected ITextComponent getText(AudioType type) {
@@ -91,7 +91,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         });
         y += 21;
         if (isIngame()) {
-            addButton(new ButtonBase(8, guiLeft + 10, y, xSize - 20, 20, ADJUST_VOLUMES) {
+            addButton(new ButtonBase(9, guiLeft + 10, y, xSize - 20, 20, ADJUST_VOLUMES) {
                 @Override
                 public void onPress() {
                     mc.displayGuiScreen(new AdjustVolumesScreen());
@@ -99,13 +99,13 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
             });
             y += 21;
         }
-        addButton(new ButtonBase(9, guiLeft + 10, y, xSize / 2 - 15, 20, SELECT_MICROPHONE) {
+        addButton(new ButtonBase(10, guiLeft + 10, y, xSize / 2 - 15, 20, SELECT_MICROPHONE) {
             @Override
             public void onPress() {
                 mc.displayGuiScreen(new SelectMicrophoneScreen(VoiceChatSettingsScreen.this));
             }
         });
-        addButton(new ButtonBase(10, guiLeft + xSize / 2 + 1, y, (xSize - 20) / 2 - 1, 20, SELECT_SPEAKER) {
+        addButton(new ButtonBase(11, guiLeft + xSize / 2 + 1, y, (xSize - 20) / 2 - 1, 20, SELECT_SPEAKER) {
             @Override
             public void onPress() {
                 mc.displayGuiScreen(new SelectSpeakerScreen(VoiceChatSettingsScreen.this));
@@ -113,7 +113,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         });
         y += 21;
         if (!isIngame() && parent != null) {
-            addButton(new ButtonBase(11, guiLeft + 10, y, xSize - 20, 20, BACK) {
+            addButton(new ButtonBase(12, guiLeft + 10, y, xSize - 20, 20, BACK) {
                 @Override
                 public void onPress() {
                     mc.displayGuiScreen(parent);

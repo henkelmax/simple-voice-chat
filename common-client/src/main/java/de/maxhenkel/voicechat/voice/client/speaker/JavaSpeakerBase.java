@@ -5,7 +5,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
 import de.maxhenkel.voicechat.voice.client.DataLines;
 import de.maxhenkel.voicechat.voice.client.PositionalAudioUtils;
-import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
@@ -48,7 +48,7 @@ public abstract class JavaSpeakerBase implements Speaker {
 
     private void playInternal(short[] data, float volume, @Nullable Vec3d position, @Nullable String category, float maxDistance) {
         if (getAvailableSamples() <= 0) {
-            byte[] emptyData = new byte[Math.min(Utils.FRAME_SIZE * 4 * VoicechatClient.CLIENT_CONFIG.outputBufferSize.get(), speaker.getBufferSize() - Utils.FRAME_SIZE * 4)];
+            byte[] emptyData = new byte[Math.min(AudioUtils.FRAME_SIZE * 4 * VoicechatClient.CLIENT_CONFIG.outputBufferSize.get(), speaker.getBufferSize() - AudioUtils.FRAME_SIZE * 4)];
             speaker.write(emptyData, 0, emptyData.length);
         }
 
@@ -58,11 +58,16 @@ public abstract class JavaSpeakerBase implements Speaker {
         }
 
         short[] stereo = convertToStereo(data, position);
-        byte[] bytes = Utils.shortsToBytes(stereo);
+        byte[] bytes = AudioUtils.shortsToBytes(stereo);
         float distanceVolume = position == null ? 1F : PositionalAudioUtils.getDistanceVolume(maxDistance, position);
-        gainControl.setValue(Math.min(Math.max(Utils.percentageToDB(volume * distanceVolume), gainControl.getMinimum()), gainControl.getMaximum()));
+        gainControl.setValue(Math.min(Math.max(percentageToDB(volume * distanceVolume), gainControl.getMinimum()), gainControl.getMaximum()));
         speaker.write(bytes, 0, bytes.length);
         speaker.start();
+    }
+
+    //TODO Check if this is correct
+    private static float percentageToDB(float percentage) {
+        return (float) (10D * Math.log(percentage));
     }
 
     protected abstract short[] convertToStereo(short[] data, @Nullable Vec3d position);

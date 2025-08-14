@@ -31,18 +31,18 @@ public class VoiceActivationOnboardingScreen extends OnboardingScreenBase {
         boolean agc = AutomaticGainControl.canUseAgc();
         MicAmplificationSlider micAmp = new MicAmplificationSlider(0, guiLeft + (agc ? 80 + 1 : 0), bottom - space * 2, contentWidth - (agc ? 80 : 0) - 1, BUTTON_HEIGHT);
         if (agc) {
-            addButton(new AgcButton(guiLeft, bottom - space * 2, 80, BUTTON_HEIGHT, active -> micAmp.active = !active));
+            addButton(new AgcButton(1, guiLeft, bottom - space * 2, 80, BUTTON_HEIGHT, active -> micAmp.enabled = !active));
         }
         addButton(micAmp);
-        addButton(new DenoiserButton(1, guiLeft, bottom - space, contentWidth, BUTTON_HEIGHT));
+        addButton(new DenoiserButton(2, guiLeft, bottom - space, contentWidth, BUTTON_HEIGHT));
 
-        slider = new VoiceActivationSlider(2, guiLeft + 20 + SMALL_PADDING, bottom, contentWidth - 20 - SMALL_PADDING, BUTTON_HEIGHT);
-        micTestButton = new MicTestButton(3, guiLeft, bottom, slider);
+        slider = new VoiceActivationSlider(3, guiLeft + 20 + SMALL_PADDING, bottom, contentWidth - 20 - SMALL_PADDING, BUTTON_HEIGHT);
+        micTestButton = new MicTestButton(4, guiLeft, bottom, slider);
         addButton(micTestButton);
         addButton(slider);
 
-        addBackOrCancelButton(4);
-        addNextButton(5);
+        addBackOrCancelButton(5);
+        addNextButton(6);
     }
 
     @Override
