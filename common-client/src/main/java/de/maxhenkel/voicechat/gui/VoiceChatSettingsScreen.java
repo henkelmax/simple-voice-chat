@@ -99,13 +99,13 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
             });
             y += 21;
         }
-        addButton(new ButtonBase(10, guiLeft + 10, y, xSize / 2 - 15, 20, SELECT_MICROPHONE) {
+        addButton(new ButtonBase(10, guiLeft + 10, y, (xSize - 20) / 2 - 1, 20, SELECT_MICROPHONE) {
             @Override
             public void onPress() {
                 mc.displayGuiScreen(new SelectMicrophoneScreen(VoiceChatSettingsScreen.this));
             }
         });
-        addButton(new ButtonBase(11, guiLeft + xSize / 2 + 1, y, (xSize - 20) / 2 - 1, 20, SELECT_SPEAKER) {
+        addButton(new ButtonBase(11, guiLeft + xSize / 2 + 2, y, (xSize - 20) / 2 - 1, 20, SELECT_SPEAKER) {
             @Override
             public void onPress() {
                 mc.displayGuiScreen(new SelectSpeakerScreen(VoiceChatSettingsScreen.this));
