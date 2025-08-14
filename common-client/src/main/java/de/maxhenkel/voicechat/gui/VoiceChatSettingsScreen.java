@@ -98,10 +98,10 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
             }));
             y += 21;
         }
-        addRenderableWidget(new Button(guiLeft + 10, y, xSize / 2 - 15, 20, SELECT_MICROPHONE, button -> {
+        addRenderableWidget(new Button(guiLeft + 10, y, (xSize - 20) / 2 - 1, 20, SELECT_MICROPHONE, button -> {
             minecraft.setScreen(new SelectMicrophoneScreen(this));
         }));
-        addRenderableWidget(new Button(guiLeft + xSize / 2 + 1, y, (xSize - 20) / 2 - 1, 20, SELECT_SPEAKER, button -> {
+        addRenderableWidget(new Button(guiLeft + xSize / 2 + 2, y, (xSize - 20) / 2 - 1, 20, SELECT_SPEAKER, button -> {
             minecraft.setScreen(new SelectSpeakerScreen(this));
         }));
         y += 21;
