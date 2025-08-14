@@ -8,3 +8,4 @@
 - Reworked microphone amplification
 - Renamed microphone amplification to microphone gain
 - Fixed French translation
+- Fixed speaker button alignment
