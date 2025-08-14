@@ -69,7 +69,7 @@ shadowJar {
     relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'
 }
 
-// This is to make the runClient task use Java 17, since Minecraft 1.18 does not run on newer versions
+// This is to make the run tasks use Java 17, since Minecraft 1.18 does not run on newer versions
 tasks.named("runClient", JavaExec).configure {
     javaLauncher = javaToolchains.launcherFor {
         languageVersion = JavaLanguageVersion.of(java_version)
