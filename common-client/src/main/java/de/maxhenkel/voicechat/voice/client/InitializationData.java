@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.net.SecretPacket;
+import de.maxhenkel.voicechat.voice.common.Secret;
 
 import java.net.URI;
 import java.util.UUID;
@@ -12,7 +13,7 @@ public class InitializationData {
     private final String serverIP;
     private final int serverPort;
     private final UUID playerUUID;
-    private final UUID secret;
+    private final Secret secret;
     private final ServerConfig.Codec codec;
     private final int mtuSize;
     private final double voiceChatDistance;
@@ -80,7 +81,7 @@ public class InitializationData {
         return playerUUID;
     }
 
-    public UUID getSecret() {
+    public Secret getSecret() {
         return secret;
     }
 
