@@ -54,7 +54,7 @@ public class UsernameCache {
     public synchronized void save() {
         long time = System.currentTimeMillis();
         file.getParentFile().mkdirs();
-        Set<UUID> volumeIds = VoicechatClient.VOLUME_CONFIG.getPlayerVolumes().keySet();
+        Set<UUID> volumeIds = VoicechatClient.PLAYER_VOLUME_CONFIG.getVolumes().keySet();
 
         Map<UUID, String> usernamesToSave = names.entrySet()
                 .stream()
@@ -92,7 +92,7 @@ public class UsernameCache {
         @Nullable String oldName = names.get(uuid);
         if (!name.equals(oldName)) {
             names.put(uuid, name);
-            if (VoicechatClient.VOLUME_CONFIG.contains(uuid)) {
+            if (VoicechatClient.PLAYER_VOLUME_CONFIG.contains(uuid)) {
                 saveAsync();
             }
         }
