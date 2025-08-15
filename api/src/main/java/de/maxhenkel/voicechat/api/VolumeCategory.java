@@ -21,10 +21,22 @@ public interface VolumeCategory {
     String getName();
 
     /**
+     * @return the translation key for the full name of the category
+     */
+    @Nullable
+    String getNameTranslationKey();
+
+    /**
      * @return the hover tooltip that is shown for this category
      */
     @Nullable
     String getDescription();
+
+    /**
+     * @return the translation key for the hover tooltip of the category
+     */
+    @Nullable
+    String getDescriptionTranslationKey();
 
     /**
      * @return the icon that is shown for this category
@@ -43,16 +55,28 @@ public interface VolumeCategory {
         Builder setId(String id);
 
         /**
-         * @param name the full name of the category, that is displayed for the end user
+         * @param name the full name of the category, that is displayed for the end user if no translation is present
          * @return the builder
          */
         Builder setName(String name);
 
         /**
-         * @param description the hover tooltip that is shown for this category
+         * @param translationKey the translation key for the full name of the category
+         * @return the builder
+         */
+        Builder setNameTranslationKey(@Nullable String translationKey);
+
+        /**
+         * @param description the hover tooltip that is shown for this category if no translation is present
          * @return the builder
          */
         Builder setDescription(@Nullable String description);
+
+        /**
+         * @param translationKey the translation key for the hover tooltip
+         * @return the builder
+         */
+        Builder setDescriptionTranslationKey(@Nullable String translationKey);
 
         /**
          * The array has to be 16x16.
