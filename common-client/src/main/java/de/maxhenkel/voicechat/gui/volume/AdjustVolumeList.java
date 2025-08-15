@@ -81,7 +81,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
                     return playerVolumeEntry.getState() == null || !playerVolumeEntry.getState().getName().toLowerCase(Locale.ROOT).contains(filter);
                 } else if (volumeEntry instanceof CategoryVolumeEntry) {
                     CategoryVolumeEntry categoryVolumeEntry = (CategoryVolumeEntry) volumeEntry;
-                    return !categoryVolumeEntry.getCategory().getName().toLowerCase(Locale.ROOT).contains(filter);
+                    return !categoryVolumeEntry.getCategory().getSearchName().toLowerCase(Locale.ROOT).contains(filter);
                 }
                 return true;
             });
@@ -95,7 +95,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
                 }
             }
 
-            return volumeEntryToString(e1).compareToIgnoreCase(volumeEntryToString(e2));
+            return volumeEntryToSearchString(e1).compareToIgnoreCase(volumeEntryToSearchString(e2));
         });
         if (filter.isEmpty()) {
             filteredEntries.add(0, new PlayerVolumeEntry(null, screen));
@@ -103,13 +103,13 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
         replaceEntries(filteredEntries);
     }
 
-    private String volumeEntryToString(VolumeEntry entry) {
+    private String volumeEntryToSearchString(VolumeEntry entry) {
         if (entry instanceof PlayerVolumeEntry) {
             PlayerVolumeEntry playerVolumeEntry = (PlayerVolumeEntry) entry;
             return playerVolumeEntry.getState() == null ? "" : playerVolumeEntry.getState().getName();
         } else if (entry instanceof CategoryVolumeEntry) {
             CategoryVolumeEntry categoryVolumeEntry = (CategoryVolumeEntry) entry;
-            return categoryVolumeEntry.getCategory().getName();
+            return categoryVolumeEntry.getCategory().getSearchName();
         }
         return "";
     }

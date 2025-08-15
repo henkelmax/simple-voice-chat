@@ -8,7 +8,6 @@ import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
 
 public class CategoryVolumeEntry extends VolumeEntry {
 
@@ -26,13 +25,13 @@ public class CategoryVolumeEntry extends VolumeEntry {
     }
 
     @Override
-    public void renderElement(MatrixStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
+    public void renderElement(MatrixStack matrixStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
         minecraft.getTextureManager().bind(texture);
-        AbstractGui.blit(poseStack, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
-        minecraft.font.draw(poseStack, new StringTextComponent(category.getName()), (float) textX, (float) textY, PLAYER_NAME_COLOR);
+        AbstractGui.blit(matrixStack, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
+        minecraft.font.draw(matrixStack, category.getDisplayName(), (float) textX, (float) textY, PLAYER_NAME_COLOR);
         if (hovered && category.getDescription() != null) {
             screen.postRender(() -> {
-                screen.renderTooltip(poseStack, new StringTextComponent(category.getDescription()), mouseX, mouseY);
+                screen.renderTooltip(matrixStack, category.getDisplayDescription(), mouseX, mouseY);
             });
         }
     }
