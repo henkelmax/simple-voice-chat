@@ -30,10 +30,10 @@ public class CategoryVolumeEntry extends VolumeEntry {
     public void renderElement(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
         RenderSystem.setShaderTexture(0, texture);
         GuiComponent.blit(poseStack, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
-        minecraft.font.draw(poseStack, new TextComponent(category.getName()), (float) textX, (float) textY, PLAYER_NAME_COLOR);
+        minecraft.font.draw(poseStack, category.getDisplayName(), (float) textX, (float) textY, PLAYER_NAME_COLOR);
         if (hovered && category.getDescription() != null) {
             screen.postRender(() -> {
-                screen.renderTooltip(poseStack, new TextComponent(category.getDescription()), mouseX, mouseY);
+                screen.renderTooltip(poseStack, category.getDisplayDescription(), mouseX, mouseY);
             });
         }
     }
