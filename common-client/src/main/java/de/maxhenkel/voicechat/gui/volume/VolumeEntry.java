@@ -24,7 +24,7 @@ public abstract class VolumeEntry extends ListScreenEntryBase {
     protected final AdjustVolumesScreen screen;
     protected final AdjustVolumeSlider volumeSlider;
 
-    public VolumeEntry(AdjustVolumesScreen screen, AdjustVolumeSlider.VolumeConfigEntry entry) {
+    public VolumeEntry(AdjustVolumesScreen screen, AdjustVolumeSlider.AdjustVolumeEntry entry) {
         this.minecraft = Minecraft.getMinecraft();
         this.screen = screen;
         this.volumeSlider = new AdjustVolumeSlider(0, 0, 0, 100, 20, entry);

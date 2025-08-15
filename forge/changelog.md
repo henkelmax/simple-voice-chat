@@ -9,3 +9,4 @@
 - Renamed microphone amplification to microphone gain
 - Fixed French translation
 - Fixed speaker button alignment
+- Added audio level meters to adjust volumes section

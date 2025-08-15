@@ -1,7 +1,9 @@
 package de.maxhenkel.voicechat.voice.client;
 
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.entity.Entity;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -11,13 +13,15 @@ public class TalkCache {
 
     private static final long TIMEOUT = 250L;
 
-    private static final Talk DEFAULT = new Talk(0L, false);
+    private static final PlayerCache DEFAULT = new PlayerCache(0L, false, AudioUtils.LOWEST_DB);
 
-    private final Map<UUID, Talk> cache;
+    private final Map<UUID, PlayerCache> playerCache;
+    private final Map<String, CategoryCache> categoryCache;
     private Supplier<Long> timestampSupplier;
 
     public TalkCache() {
-        this.cache = new HashMap<>();
+        this.playerCache = new HashMap<>();
+        this.categoryCache = new HashMap<>();
         this.timestampSupplier = System::currentTimeMillis;
     }
 
@@ -25,15 +29,31 @@ public class TalkCache {
         this.timestampSupplier = timestampSupplier;
     }
 
-    public void updateTalking(UUID entity, boolean whispering) {
-        Talk talk = cache.get(entity);
+    public void updateTalking(UUID entity, boolean whispering, double audioLevel) {
+        PlayerCache talk = playerCache.get(entity);
         if (talk == null) {
-            talk = new Talk(timestampSupplier.get(), whispering);
-            cache.put(entity, talk);
+            talk = new PlayerCache(timestampSupplier.get(), whispering, audioLevel);
+            playerCache.put(entity, talk);
         } else {
             talk.timestamp = timestampSupplier.get();
             talk.whispering = whispering;
+            talk.audioLevel = audioLevel;
         }
+    }
+
+    /**
+     * Updates the audio level of a player talking or a specific category
+     */
+    public void updateLevel(UUID id, @Nullable String category, boolean whispering, short[] audio) {
+        if (category != null) {
+            updateCategoryVolume(category, AudioUtils.getHighestAudioLevel(audio));
+        }
+        // Update the player talking even if it is a category
+        updateTalking(id, whispering, AudioUtils.getHighestAudioLevel(audio));
+    }
+
+    public void updateTalking(UUID entity, boolean whispering, short[] audio) {
+        updateTalking(entity, whispering, AudioUtils.getHighestAudioLevel(audio));
     }
 
     public boolean isTalking(Entity entity) {
@@ -54,7 +74,7 @@ public class TalkCache {
             }
         }
 
-        Talk lastTalk = cache.getOrDefault(entity, DEFAULT);
+        PlayerCache lastTalk = playerCache.getOrDefault(entity, DEFAULT);
         return timestampSupplier.get() - lastTalk.timestamp < TIMEOUT;
     }
 
@@ -68,17 +88,59 @@ public class TalkCache {
             }
         }
 
-        Talk lastTalk = cache.getOrDefault(entity, DEFAULT);
+        PlayerCache lastTalk = playerCache.getOrDefault(entity, DEFAULT);
         return lastTalk.whispering && timestampSupplier.get() - lastTalk.timestamp < TIMEOUT;
     }
 
-    private static class Talk {
+    public void updateCategoryVolume(String category, double audioLevel) {
+        CategoryCache cache = categoryCache.get(category);
+        if (cache == null) {
+            cache = new CategoryCache(timestampSupplier.get(), audioLevel);
+            categoryCache.put(category, cache);
+        } else {
+            cache.timestamp = timestampSupplier.get();
+            cache.audioLevel = audioLevel;
+        }
+    }
+
+    public double getPlayerAudioLevel(UUID entity) {
+        PlayerCache talk = playerCache.getOrDefault(entity, DEFAULT);
+        if (timestampSupplier.get() - talk.timestamp >= TIMEOUT) {
+            return AudioUtils.LOWEST_DB;
+        }
+        return talk.audioLevel;
+    }
+
+    public double getCategoryAudioLevel(String category) {
+        CategoryCache cache = categoryCache.get(category);
+        if (cache == null) {
+            return AudioUtils.LOWEST_DB;
+        }
+        if (timestampSupplier.get() - cache.timestamp >= TIMEOUT) {
+            return AudioUtils.LOWEST_DB;
+        }
+        return cache.audioLevel;
+    }
+
+    private static class PlayerCache {
         private long timestamp;
         private boolean whispering;
+        private double audioLevel;
 
-        public Talk(long timestamp, boolean whispering) {
+        public PlayerCache(long timestamp, boolean whispering, double audioLevel) {
             this.timestamp = timestamp;
             this.whispering = whispering;
+            this.audioLevel = audioLevel;
+        }
+    }
+
+    private static class CategoryCache {
+        private long timestamp;
+        private double audioLevel;
+
+        public CategoryCache(long timestamp, double audioLevel) {
+            this.timestamp = timestamp;
+            this.audioLevel = audioLevel;
         }
     }
 
