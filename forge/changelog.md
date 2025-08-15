@@ -12,3 +12,4 @@
 - Added audio level meters to adjust volumes section
 - Reworked player volume adjustment
 - Allow translating volume category names and descriptions
+- Allow voice host with just port
