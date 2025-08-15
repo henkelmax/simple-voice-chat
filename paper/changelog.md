@@ -1,3 +1,2 @@
-- Updated Lame4J
-- Updated Opus4J
-- Reduced plugin jar size 
+- Allow translating volume category names and descriptions
+- Allow voice host with just port
