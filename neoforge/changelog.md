@@ -12,3 +12,4 @@
 - Reworked player volume adjustment
 - Allow translating volume category names and descriptions
 - Allow voice host with just port
+- Switched to 256 bit `AES/GCM/NoPadding` encryption
