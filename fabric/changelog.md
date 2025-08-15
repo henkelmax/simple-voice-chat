@@ -11,3 +11,4 @@
 - Fixed speaker button alignment
 - Added audio level meters to adjust volumes section
 - Reworked player volume adjustment
+- Allow translating volume category names and descriptions
