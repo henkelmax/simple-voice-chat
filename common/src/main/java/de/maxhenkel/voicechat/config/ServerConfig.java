@@ -81,7 +81,7 @@ public class ServerConfig {
         voiceHost = builder
                 .stringEntry("voice_host", "",
                         "The hostname that clients should use to connect to the voice chat",
-                        "This may also include a port, e.g. 'example.com:24454'",
+                        "This may also include a port, e.g. 'example.com:24454' or just a port, e.g. '24454'",
                         "Do NOT change this value if you don't know what you're doing"
                 );
         allowRecording = builder
