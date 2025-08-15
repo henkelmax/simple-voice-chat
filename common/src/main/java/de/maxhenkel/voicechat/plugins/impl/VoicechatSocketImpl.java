@@ -52,7 +52,17 @@ public class VoicechatSocketImpl extends VoicechatSocketBase implements Voicecha
 
     private void checkCorrectHost() throws Exception {
         String host = Voicechat.SERVER_CONFIG.voiceHost.get();
-        if (!host.isEmpty()) {
+        if (host.isEmpty()) {
+            return;
+        }
+        try {
+            int port = Integer.parseInt(host);
+            if (port <= 0 || port > 65535) {
+                Voicechat.LOGGER.warn("Invalid voice host port: {}", port);
+            } else {
+                Voicechat.LOGGER.info("Voice host port is {}", port);
+            }
+        } catch (NumberFormatException ignored) {
             try {
                 new URI("voicechat://" + host);
                 Voicechat.LOGGER.info("Voice host is '{}'", host);
