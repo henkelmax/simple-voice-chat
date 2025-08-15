@@ -37,7 +37,17 @@ public class InitializationData {
     private static HostData parseAddress(String voiceHost, String serverIP, int serverPort) {
         String ip = serverIP;
         int port = serverPort;
-        if (!voiceHost.isEmpty()) {
+        if (voiceHost.isEmpty()) {
+            return new HostData(ip, port);
+        }
+        try {
+            int parsedPort = Integer.parseInt(voiceHost);
+            if (parsedPort <= 0 || parsedPort > 65535) {
+                Voicechat.LOGGER.warn("Invalid voice host port: {}", parsedPort);
+            } else {
+                port = parsedPort;
+            }
+        } catch (NumberFormatException ignored) {
             try {
                 URI uri = new URI("voicechat://" + voiceHost);
                 String host = uri.getHost();
