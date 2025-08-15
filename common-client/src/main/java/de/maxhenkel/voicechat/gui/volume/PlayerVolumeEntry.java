@@ -59,19 +59,19 @@ public class PlayerVolumeEntry extends VolumeEntry {
 
         @Override
         public void save(double value) {
-            VoicechatClient.VOLUME_CONFIG.setPlayerVolume(playerUUID, value);
-            VoicechatClient.VOLUME_CONFIG.save();
+            VoicechatClient.PLAYER_VOLUME_CONFIG.setVolume(playerUUID, value);
+            VoicechatClient.PLAYER_VOLUME_CONFIG.save();
         }
 
         @Override
         public double get() {
-            return VoicechatClient.VOLUME_CONFIG.getPlayerVolume(playerUUID);
+            return VoicechatClient.PLAYER_VOLUME_CONFIG.getVolume(playerUUID);
         }
 
         @Override
         public double getAudioLevel() {
             ClientVoicechat client = ClientManager.getClient();
-            if(client == null){
+            if (client == null) {
                 return AudioUtils.LOWEST_DB;
             }
             return client.getTalkCache().getPlayerAudioLevel(playerUUID);

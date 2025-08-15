@@ -50,7 +50,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
     }
 
     private void addOfflinePlayers(Collection<PlayerState> onlinePlayers) {
-        for (UUID uuid : VoicechatClient.VOLUME_CONFIG.getPlayerVolumes().keySet()) {
+        for (UUID uuid : VoicechatClient.PLAYER_VOLUME_CONFIG.getVolumes().keySet()) {
             if (uuid.equals(new UUID(0L, 0L))) {
                 continue;
             }
