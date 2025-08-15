@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.opus.OpusDecoder;
+import de.maxhenkel.voicechat.config.CategoryVolumeConfig;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 import de.maxhenkel.voicechat.integration.freecam.FreecamUtil;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
@@ -183,11 +184,11 @@ public class AudioChannel extends Thread {
         @Nullable String category = packet.getCategory();
 
         if (VoicechatClient.USERNAME_CACHE.has(uuid)) {
-            channelVolume = (float) VoicechatClient.VOLUME_CONFIG.getPlayerVolume(uuid);
+            channelVolume = (float) VoicechatClient.PLAYER_VOLUME_CONFIG.getVolume(uuid);
         } else if (category != null) {
-            channelVolume = (float) VoicechatClient.VOLUME_CONFIG.getCategoryVolume(category);
+            channelVolume = (float) VoicechatClient.CATEGORY_VOLUME_CONFIG.getVolume(category);
         } else {
-            channelVolume = (float) VoicechatClient.VOLUME_CONFIG.getPlayerVolume(Util.NIL_UUID);
+            channelVolume = (float) VoicechatClient.CATEGORY_VOLUME_CONFIG.getVolume(CategoryVolumeConfig.OTHER_CATEGORY);
         }
 
         float volume = VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue() * channelVolume;
