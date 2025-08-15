@@ -245,6 +245,7 @@ public interface VoicechatServerApi extends VoicechatApi {
      *
      * @param userId the user ID
      * @return the secret or <code>null</code> if no server is running
+     * @deprecated this will just return <code>null</code>
      */
     @Nullable
     @Deprecated
