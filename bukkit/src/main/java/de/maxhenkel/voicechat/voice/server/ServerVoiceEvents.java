@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.voice.common.Secret;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -88,7 +89,7 @@ public class ServerVoiceEvents implements Listener {
         server.getCategoryManager().onPlayerCompatibilityCheckSucceeded(player);
         server.getGroupManager().onPlayerCompatibilityCheckSucceeded(player);
 
-        UUID secret = server.generateNewSecret(player.getUniqueId());
+        Secret secret = server.generateNewSecret(player.getUniqueId());
         if (secret == null) {
             Voicechat.LOGGER.warn("Player already requested secret - ignoring");
             return;

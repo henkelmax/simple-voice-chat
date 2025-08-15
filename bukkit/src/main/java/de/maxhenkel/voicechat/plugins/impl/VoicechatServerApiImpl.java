@@ -230,11 +230,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
     @Nullable
     @Override
     public UUID getSecret(UUID userId) {
-        Server server = Voicechat.SERVER.getServer();
-        if (server == null) {
-            return null;
-        }
-        return server.getSecret(userId);
+        return null;
     }
 
     @Override
