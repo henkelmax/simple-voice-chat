@@ -29,10 +29,10 @@ public class CategoryVolumeEntry extends VolumeEntry {
         GlStateManager.color(1F, 1F, 1F, 1F);
         minecraft.getTextureManager().bindTexture(texture);
         Gui.drawScaledCustomSizeModalRect(skinX, skinY, 16, 16, 16, 16, SKIN_SIZE, SKIN_SIZE, 16, 16);
-        minecraft.fontRenderer.drawString(category.getName(), textX, textY, PLAYER_NAME_COLOR);
+        minecraft.fontRenderer.drawString(category.getDisplayName().getFormattedText(), textX, textY, PLAYER_NAME_COLOR);
         if (isSelected && category.getDescription() != null) {
             screen.postRender(() -> {
-                screen.drawHoveringText(category.getDescription(), mouseX, mouseY);
+                screen.drawHoveringText(category.getDisplayDescription().getFormattedText(), mouseX, mouseY);
             });
         }
     }

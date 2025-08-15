@@ -1,7 +1,11 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
 import de.maxhenkel.voicechat.api.VolumeCategory;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
 import java.util.regex.Pattern;
@@ -13,17 +17,23 @@ public class VolumeCategoryImpl implements VolumeCategory {
     private final String id;
     private final String name;
     @Nullable
+    private final String nameTranslationKey;
+    @Nullable
     private final String description;
+    @Nullable
+    private final String descriptionTranslationKey;
     @Nullable
     private final int[][] icon;
 
-    public VolumeCategoryImpl(String id, String name, @Nullable String description, @Nullable int[][] icon) {
+    public VolumeCategoryImpl(String id, String name, @Nullable String nameTranslationKey, @Nullable String description, @Nullable String descriptionTranslationKey, @Nullable int[][] icon) {
         if (!ID_REGEX.matcher(id).matches()) {
             throw new IllegalArgumentException("Volume category ID can only contain a-z and _ with a maximum amount of 16 characters");
         }
         this.id = id;
         this.name = name;
+        this.nameTranslationKey = nameTranslationKey;
         this.description = description;
+        this.descriptionTranslationKey = descriptionTranslationKey;
         this.icon = icon;
     }
 
@@ -37,10 +47,50 @@ public class VolumeCategoryImpl implements VolumeCategory {
         return name;
     }
 
+    @Override
+    @Nullable
+    public String getNameTranslationKey() {
+        return nameTranslationKey;
+    }
+
+    public ITextComponent getDisplayName() {
+        if (nameTranslationKey != null) {
+            if (I18n.hasKey(nameTranslationKey)) {
+                return new TextComponentTranslation(nameTranslationKey);
+            }
+        }
+        return new TextComponentString(name);
+    }
+
+    public String getSearchName() {
+        if (nameTranslationKey == null) {
+            return name;
+        }
+        if (I18n.hasKey(nameTranslationKey)) {
+            return I18n.format(nameTranslationKey);
+        }
+        return name;
+    }
+
     @Nullable
     @Override
     public String getDescription() {
         return description;
+    }
+
+    public ITextComponent getDisplayDescription() {
+        if (descriptionTranslationKey != null) {
+            if (I18n.hasKey(descriptionTranslationKey)) {
+                return new TextComponentTranslation(descriptionTranslationKey);
+            }
+        }
+        return description != null ? new TextComponentString(description) : new TextComponentString("");
+    }
+
+    @Override
+    @Nullable
+    public String getDescriptionTranslationKey() {
+        return descriptionTranslationKey;
     }
 
     @Nullable
@@ -52,10 +102,9 @@ public class VolumeCategoryImpl implements VolumeCategory {
     public static VolumeCategoryImpl fromBytes(PacketBuffer buf) {
         String id = buf.readString(16);
         String name = buf.readString(16);
-        String description = null;
-        if (buf.readBoolean()) {
-            description = buf.readString(32767);
-        }
+        String nameTranslationKey = readOptionalString(buf);
+        String description = readOptionalString(buf);
+        String descriptionTranslationKey = readOptionalString(buf);
         int[][] icon = null;
         if (buf.readBoolean()) {
             icon = new int[16][16];
@@ -65,16 +114,23 @@ public class VolumeCategoryImpl implements VolumeCategory {
                 }
             }
         }
-        return new VolumeCategoryImpl(id, name, description, icon);
+        return new VolumeCategoryImpl(id, name, nameTranslationKey, description, descriptionTranslationKey, icon);
+    }
+
+    @Nullable
+    private static String readOptionalString(PacketBuffer buf) {
+        if (buf.readBoolean()) {
+            return buf.readString(32767);
+        }
+        return null;
     }
 
     public void toBytes(PacketBuffer buf) {
         buf.writeString(id);
         buf.writeString(name);
-        buf.writeBoolean(description != null);
-        if (description != null) {
-            buf.writeString(description);
-        }
+        writeOptionalString(buf, nameTranslationKey);
+        writeOptionalString(buf, description);
+        writeOptionalString(buf, descriptionTranslationKey);
         buf.writeBoolean(icon != null);
         if (icon != null) {
             if (icon.length != 16) {
@@ -88,6 +144,13 @@ public class VolumeCategoryImpl implements VolumeCategory {
                     buf.writeInt(icon[x][y]);
                 }
             }
+        }
+    }
+
+    private static void writeOptionalString(PacketBuffer buf, @Nullable String string) {
+        buf.writeBoolean(string != null);
+        if (string != null) {
+            buf.writeString(string);
         }
     }
 
@@ -113,7 +176,11 @@ public class VolumeCategoryImpl implements VolumeCategory {
         private String id;
         private String name;
         @Nullable
+        private String nameTranslationKey;
+        @Nullable
         private String description;
+        @Nullable
+        private String descriptionTranslationKey;
         @Nullable
         private int[][] icon;
 
@@ -130,8 +197,20 @@ public class VolumeCategoryImpl implements VolumeCategory {
         }
 
         @Override
+        public Builder setNameTranslationKey(@Nullable String translationKey) {
+            this.nameTranslationKey = translationKey;
+            return this;
+        }
+
+        @Override
         public Builder setDescription(@Nullable String description) {
             this.description = description;
+            return this;
+        }
+
+        @Override
+        public Builder setDescriptionTranslationKey(@Nullable String translationKey) {
+            this.descriptionTranslationKey = translationKey;
             return this;
         }
 
@@ -149,7 +228,7 @@ public class VolumeCategoryImpl implements VolumeCategory {
             if (name == null) {
                 throw new IllegalStateException("name missing");
             }
-            return new VolumeCategoryImpl(id, name, description, icon);
+            return new VolumeCategoryImpl(id, name, nameTranslationKey, description, descriptionTranslationKey, icon);
         }
     }
 
