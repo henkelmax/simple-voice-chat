@@ -180,11 +180,12 @@ public class AudioChannel extends Thread {
 
     private void writeToSpeaker(SoundPacket<?> packet, short[] monoData) {
         float channelVolume;
+        @Nullable String category = packet.getCategory();
 
         if (VoicechatClient.USERNAME_CACHE.has(uuid)) {
             channelVolume = (float) VoicechatClient.VOLUME_CONFIG.getPlayerVolume(uuid);
-        } else if (packet.getCategory() != null) {
-            channelVolume = (float) VoicechatClient.VOLUME_CONFIG.getCategoryVolume(packet.getCategory());
+        } else if (category != null) {
+            channelVolume = (float) VoicechatClient.VOLUME_CONFIG.getCategoryVolume(category);
         } else {
             channelVolume = (float) VoicechatClient.VOLUME_CONFIG.getPlayerVolume(Util.NIL_UUID);
         }
@@ -194,7 +195,7 @@ public class AudioChannel extends Thread {
         if (packet instanceof GroupSoundPacket) {
             short[] processedMonoData = ClientPluginManager.instance().onReceiveStaticClientSound(uuid, monoData);
             speaker.play(processedMonoData, volume, packet.getCategory());
-            client.getTalkCache().updateTalking(uuid, false);
+            client.getTalkCache().updateLevel(uuid, category, false, processedMonoData);
             appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData));
         } else if (packet instanceof PlayerSoundPacket soundPacket) {
             @Nullable Entity entity = minecraft.level.getPlayerByUUID(soundPacket.getSender());
@@ -216,7 +217,7 @@ public class AudioChannel extends Thread {
             if (entity == minecraft.cameraEntity) {
                 short[] processedMonoData = ClientPluginManager.instance().onReceiveStaticClientSound(uuid, monoData);
                 speaker.play(processedMonoData, volume, soundPacket.getCategory());
-                client.getTalkCache().updateTalking(uuid, soundPacket.isWhispering());
+                client.getTalkCache().updateLevel(uuid, category, soundPacket.isWhispering(), processedMonoData);
                 appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData));
                 return;
             }
@@ -241,7 +242,7 @@ public class AudioChannel extends Thread {
                 volume *= distanceVolume;
                 speaker.play(processedMonoData, volume, soundPacket.getCategory());
                 if (distanceVolume > 0F) {
-                    client.getTalkCache().updateTalking(soundPacket.getSender(), soundPacket.isWhispering());
+                    client.getTalkCache().updateLevel(soundPacket.getSender(), category, soundPacket.isWhispering(), processedMonoData);
                 }
                 float recordingVolume = volume;
                 appendRecording(() -> PositionalAudioUtils.convertToStereo(processedMonoData, recordingVolume));
@@ -250,7 +251,7 @@ public class AudioChannel extends Thread {
 
             speaker.play(processedMonoData, volume, pos, soundPacket.getCategory(), soundPacket.getDistance());
             if (distanceVolume > 0F) {
-                client.getTalkCache().updateTalking(soundPacket.getSender(), soundPacket.isWhispering());
+                client.getTalkCache().updateLevel(soundPacket.getSender(), category, soundPacket.isWhispering(), processedMonoData);
             }
             float recordingVolume = deathVolume;
             appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(soundPacket.getDistance(), pos, processedMonoData, recordingVolume));
@@ -260,7 +261,7 @@ public class AudioChannel extends Thread {
                 return;
             }
             speaker.play(processedMonoData, volume, p.getLocation(), p.getCategory(), p.getDistance());
-            client.getTalkCache().updateTalking(uuid, false);
+            client.getTalkCache().updateLevel(uuid, category, false, processedMonoData);
             appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(p.getDistance(), p.getLocation(), processedMonoData));
         }
     }

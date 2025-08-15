@@ -148,6 +148,19 @@ public class AudioUtils {
     }
 
     /**
+     * Convert linear multiplier to gain in dB.
+     *
+     * @param multiplier the multiplier
+     * @return the gain in dB - bottoms out at {@link AudioUtils#LOWEST_DB}
+     */
+    public static double linearToDb(double multiplier) {
+        if (multiplier < 0.001D) {
+            return LOWEST_DB;
+        }
+        return 20D * Math.log10(multiplier);
+    }
+
+    /**
      * @param samples   the audio samples
      * @param threshold the activation threshold
      * @return if the audio level was above the threshold
@@ -178,4 +191,27 @@ public class AudioUtils {
         }
         return result;
     }
+
+    /**
+     * Converts a dB value to a percentage value ({@link AudioUtils#LOWEST_DB} - 0) - (0 - 1)
+     *
+     * @param db the decibel value
+     * @return the percentage
+     */
+    public static double dbToPerc(double db) {
+        db = Math.min(Math.max(db, AudioUtils.LOWEST_DB), 0D);
+        return (db + Math.abs(AudioUtils.LOWEST_DB)) / Math.abs(AudioUtils.LOWEST_DB);
+    }
+
+    /**
+     * Converts a percentage to a dB value (0 - 1) - ({@link AudioUtils#LOWEST_DB} - 0)
+     *
+     * @param perc the percentage
+     * @return the decibel value
+     */
+    public static double percToDb(double perc) {
+        perc = Math.min(Math.max(perc, 0D), 1D);
+        return (1D - perc) * AudioUtils.LOWEST_DB;
+    }
+
 }
