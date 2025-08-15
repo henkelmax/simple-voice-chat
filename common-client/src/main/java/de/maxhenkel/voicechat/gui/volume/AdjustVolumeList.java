@@ -17,8 +17,8 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
     protected final List<VolumeEntry> entries;
     protected String filter;
 
-    public AdjustVolumeList(int width, int height, int top, int itemSizee, AdjustVolumesScreen screen) {
-        super(width, height, top, itemSizee);
+    public AdjustVolumeList(int width, int height, int top, int itemSize, AdjustVolumesScreen screen) {
+        super(width, height, top, itemSize);
         this.screen = screen;
         this.entries = Lists.newArrayList();
         this.filter = "";
@@ -77,7 +77,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
                 if (volumeEntry instanceof PlayerVolumeEntry playerVolumeEntry) {
                     return playerVolumeEntry.getState() == null || !playerVolumeEntry.getState().getName().toLowerCase(Locale.ROOT).contains(filter);
                 } else if (volumeEntry instanceof CategoryVolumeEntry categoryVolumeEntry) {
-                    return !categoryVolumeEntry.getCategory().getName().toLowerCase(Locale.ROOT).contains(filter);
+                    return !categoryVolumeEntry.getCategory().getSearchName().toLowerCase(Locale.ROOT).contains(filter);
                 }
                 return true;
             });
@@ -91,7 +91,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
                 }
             }
 
-            return volumeEntryToString(e1).compareToIgnoreCase(volumeEntryToString(e2));
+            return volumeEntryToSearchString(e1).compareToIgnoreCase(volumeEntryToSearchString(e2));
         });
         if (filter.isEmpty()) {
             filteredEntries.add(0, new PlayerVolumeEntry(null, screen));
@@ -99,11 +99,11 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
         replaceEntries(filteredEntries);
     }
 
-    private String volumeEntryToString(VolumeEntry entry) {
+    private String volumeEntryToSearchString(VolumeEntry entry) {
         if (entry instanceof PlayerVolumeEntry playerVolumeEntry) {
             return playerVolumeEntry.getState() == null ? "" : playerVolumeEntry.getState().getName();
         } else if (entry instanceof CategoryVolumeEntry categoryVolumeEntry) {
-            return categoryVolumeEntry.getCategory().getName();
+            return categoryVolumeEntry.getCategory().getSearchName();
         }
         return "";
     }
