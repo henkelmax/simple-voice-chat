@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.voice.common.Secret;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,7 +14,7 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     public static final ResourceLocation SECRET = new ResourceLocation(Voicechat.MODID, "secret");
 
-    private UUID secret;
+    private Secret secret;
     private int serverPort;
     private UUID playerUUID;
     private ServerConfig.Codec codec;
@@ -28,7 +29,7 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     }
 
-    public SecretPacket(ServerPlayer player, UUID secret, int port, ServerConfig serverConfig) {
+    public SecretPacket(ServerPlayer player, Secret secret, int port, ServerConfig serverConfig) {
         this.secret = secret;
         this.serverPort = port;
         this.playerUUID = player.getUUID();
@@ -41,7 +42,7 @@ public class SecretPacket implements Packet<SecretPacket> {
         this.allowRecording = serverConfig.allowRecording.get();
     }
 
-    public UUID getSecret() {
+    public Secret getSecret() {
         return secret;
     }
 
@@ -88,7 +89,7 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     @Override
     public SecretPacket fromBytes(FriendlyByteBuf buf) {
-        secret = buf.readUUID();
+        secret = Secret.fromBytes(buf);
         serverPort = buf.readInt();
         playerUUID = buf.readUUID();
         codec = ServerConfig.Codec.values()[buf.readByte()];
@@ -103,7 +104,7 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeUUID(secret);
+        secret.toBytes(buf);
         buf.writeInt(serverPort);
         buf.writeUUID(playerUUID);
         buf.writeByte(codec.ordinal());
