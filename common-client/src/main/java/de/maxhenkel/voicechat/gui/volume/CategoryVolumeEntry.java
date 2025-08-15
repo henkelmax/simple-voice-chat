@@ -47,19 +47,19 @@ public class CategoryVolumeEntry extends VolumeEntry {
 
         @Override
         public void save(double value) {
-            VoicechatClient.VOLUME_CONFIG.setCategoryVolume(category, value);
-            VoicechatClient.VOLUME_CONFIG.save();
+            VoicechatClient.CATEGORY_VOLUME_CONFIG.setVolume(category, value);
+            VoicechatClient.CATEGORY_VOLUME_CONFIG.save();
         }
 
         @Override
         public double get() {
-            return VoicechatClient.VOLUME_CONFIG.getCategoryVolume(category);
+            return VoicechatClient.CATEGORY_VOLUME_CONFIG.getVolume(category);
         }
 
         @Override
         public double getAudioLevel() {
             ClientVoicechat client = ClientManager.getClient();
-            if(client == null){
+            if (client == null) {
                 return AudioUtils.LOWEST_DB;
             }
             return client.getTalkCache().getCategoryAudioLevel(category);
