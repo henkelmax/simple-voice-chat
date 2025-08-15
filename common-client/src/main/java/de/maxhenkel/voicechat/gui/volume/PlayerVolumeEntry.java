@@ -3,6 +3,9 @@ package de.maxhenkel.voicechat.gui.volume;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
+import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
@@ -17,7 +20,7 @@ public class PlayerVolumeEntry extends VolumeEntry {
     protected final PlayerState state;
 
     public PlayerVolumeEntry(@Nullable PlayerState state, AdjustVolumesScreen screen) {
-        super(screen, new PlayerVolumeConfigEntry(state != null ? state.getUuid() : Util.NIL_UUID));
+        super(screen, new AdjustPlayerVolumeEntry(state != null ? state.getUuid() : Util.NIL_UUID));
         this.state = state;
     }
 
@@ -46,11 +49,11 @@ public class PlayerVolumeEntry extends VolumeEntry {
         }
     }
 
-    public static class PlayerVolumeConfigEntry implements AdjustVolumeSlider.VolumeConfigEntry {
+    public static class AdjustPlayerVolumeEntry implements AdjustVolumeSlider.AdjustVolumeEntry {
 
         private final UUID playerUUID;
 
-        public PlayerVolumeConfigEntry(UUID playerUUID) {
+        public AdjustPlayerVolumeEntry(UUID playerUUID) {
             this.playerUUID = playerUUID;
         }
 
@@ -63,6 +66,15 @@ public class PlayerVolumeEntry extends VolumeEntry {
         @Override
         public double get() {
             return VoicechatClient.VOLUME_CONFIG.getPlayerVolume(playerUUID);
+        }
+
+        @Override
+        public double getAudioLevel() {
+            ClientVoicechat client = ClientManager.getClient();
+            if(client == null){
+                return AudioUtils.LOWEST_DB;
+            }
+            return client.getTalkCache().getPlayerAudioLevel(playerUUID);
         }
     }
 
