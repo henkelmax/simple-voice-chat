@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.voice.common.Secret;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
@@ -12,7 +13,7 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     public static final ResourceLocation SECRET = new ResourceLocation(NetManager.CHANNEL, "secret");
 
-    private UUID secret;
+    private Secret secret;
     private int serverPort;
     private UUID playerUUID;
     private ServerConfig.Codec codec;
@@ -27,7 +28,7 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     }
 
-    public SecretPacket(EntityPlayerMP player, UUID secret, int port, ServerConfig serverConfig) {
+    public SecretPacket(EntityPlayerMP player, Secret secret, int port, ServerConfig serverConfig) {
         this.secret = secret;
         this.serverPort = port;
         this.playerUUID = player.getUniqueID();
@@ -40,7 +41,7 @@ public class SecretPacket implements Packet<SecretPacket> {
         this.allowRecording = serverConfig.allowRecording.get();
     }
 
-    public UUID getSecret() {
+    public Secret getSecret() {
         return secret;
     }
 
@@ -87,7 +88,7 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     @Override
     public SecretPacket fromBytes(PacketBuffer buf) {
-        secret = buf.readUniqueId();
+        secret = Secret.fromBytes(buf);
         serverPort = buf.readInt();
         playerUUID = buf.readUniqueId();
         codec = ServerConfig.Codec.values()[buf.readByte()];
@@ -102,7 +103,7 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        buf.writeUniqueId(secret);
+        secret.toBytes(buf);
         buf.writeInt(serverPort);
         buf.writeUniqueId(playerUUID);
         buf.writeByte(codec.ordinal());

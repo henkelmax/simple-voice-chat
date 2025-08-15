@@ -21,7 +21,6 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.channels.AsynchronousCloseException;
-import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -34,7 +33,7 @@ public class Server extends Thread {
 
     private final Map<UUID, ClientConnection> connections;
     private final Map<UUID, ClientConnection> unCheckedConnections;
-    private final Map<UUID, UUID> secrets;
+    private final Map<UUID, Secret> secrets;
     private final boolean dedicated;
     private int port;
     private final MinecraftServer server;
@@ -185,12 +184,11 @@ public class Server extends Thread {
         secrets.clear();
     }
 
-    public UUID getSecret(UUID playerUUID) {
+    public Secret getSecret(UUID playerUUID) {
         if (hasSecret(playerUUID)) {
             return secrets.get(playerUUID);
         } else {
-            SecureRandom r = new SecureRandom();
-            UUID secret = new UUID(r.nextLong(), r.nextLong());
+            Secret secret = Secret.generateNewRandomSecret();
             secrets.put(playerUUID, secret);
             return secret;
         }
@@ -201,7 +199,7 @@ public class Server extends Thread {
      * @return the new secret or null if the player already has a secret
      */
     @Nullable
-    public UUID generateNewSecret(UUID playerUUID) {
+    public Secret generateNewSecret(UUID playerUUID) {
         if (hasSecret(playerUUID)) {
             return null;
         }
@@ -282,7 +280,7 @@ public class Server extends Thread {
 
                     if (message.getPacket() instanceof AuthenticatePacket) {
                         AuthenticatePacket packet = (AuthenticatePacket) message.getPacket();
-                        UUID secret = secrets.get(packet.getPlayerUUID());
+                        Secret secret = secrets.get(packet.getPlayerUUID());
                         if (secret != null && secret.equals(packet.getSecret())) {
                             ClientConnection connection = unCheckedConnections.get(packet.getPlayerUUID());
                             if (connection == null) {

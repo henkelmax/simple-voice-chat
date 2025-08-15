@@ -98,10 +98,10 @@ public class NetworkMessage {
     }
 
     @Nullable
-    public static NetworkMessage readFromBytes(SocketAddress socketAddress, UUID secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, NoSuchMethodException, InvocationTargetException {
+    public static NetworkMessage readFromBytes(SocketAddress socketAddress, Secret secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, NoSuchMethodException, InvocationTargetException {
         byte[] decrypt;
         try {
-            decrypt = AES.decrypt(secret, encryptedPayload);
+            decrypt = secret.decrypt(encryptedPayload);
         } catch (Exception e) {
             // Return null if the encryption fails due to a wrong secret
             Voicechat.LOGGER.debug("Failed to decrypt packet from {}", socketAddress);
@@ -143,7 +143,7 @@ public class NetworkMessage {
         return bytes;
     }
 
-    public byte[] write(UUID secret) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public byte[] write(Secret secret) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
 
         byte type = getPacketType(packet);
@@ -156,7 +156,7 @@ public class NetworkMessage {
 
         byte[] bytes = new byte[buffer.readableBytes()];
         buffer.readBytes(bytes);
-        return AES.encrypt(secret, bytes);
+        return secret.encrypt(bytes);
     }
 
 }
