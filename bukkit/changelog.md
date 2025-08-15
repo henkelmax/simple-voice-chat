@@ -1,1 +1,2 @@
 - Allow translating volume category names and descriptions
+- Allow voice host with just port
