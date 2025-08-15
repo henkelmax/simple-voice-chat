@@ -1,1 +1,2 @@
 - Add support for voice chat versions 2.6.x
+- Allow voice host with just port
