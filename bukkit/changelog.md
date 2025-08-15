@@ -1,1 +1,1 @@
-- Added FEC to opus encoder/decoder
+- Allow translating volume category names and descriptions
