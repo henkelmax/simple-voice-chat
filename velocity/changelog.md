@@ -1,1 +1,1 @@
-- Updated to 1.21.7
+- Add support for voice chat versions 2.6.x
