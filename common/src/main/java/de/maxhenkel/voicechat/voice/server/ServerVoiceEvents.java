@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.voice.common.Secret;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -97,7 +98,7 @@ public class ServerVoiceEvents {
         }
         CommonCompatibilityManager.INSTANCE.emitPlayerCompatibilityCheckSucceeded(player);
 
-        UUID secret = server.generateNewSecret(player.getUUID());
+        Secret secret = server.generateNewSecret(player.getUUID());
         if (secret == null) {
             Voicechat.LOGGER.warn("Player already requested secret - ignoring");
             return;
