@@ -2,8 +2,9 @@ package de.maxhenkel.voicechat;
 
 import com.sun.jna.Platform;
 import de.maxhenkel.configbuilder.ConfigBuilder;
+import de.maxhenkel.voicechat.config.CategoryVolumeConfig;
 import de.maxhenkel.voicechat.config.ClientConfig;
-import de.maxhenkel.voicechat.config.VolumeConfig;
+import de.maxhenkel.voicechat.config.PlayerVolumeConfig;
 import de.maxhenkel.voicechat.integration.clothconfig.ClothConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
@@ -16,15 +17,11 @@ import de.maxhenkel.voicechat.voice.client.KeyEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-
 public abstract class VoicechatClient {
 
     public static ClientConfig CLIENT_CONFIG;
-    public static VolumeConfig VOLUME_CONFIG;
+    public static PlayerVolumeConfig PLAYER_VOLUME_CONFIG;
+    public static CategoryVolumeConfig CATEGORY_VOLUME_CONFIG;
     public static UsernameCache USERNAME_CACHE;
 
     public static VoiceChatResourcePack CLASSIC_ICONS;
@@ -51,9 +48,9 @@ public abstract class VoicechatClient {
     }
 
     public void initializeConfigs() {
-        fixVolumeConfig();
         CLIENT_CONFIG = ConfigBuilder.builder(ClientConfig::new).path(Voicechat.getVoicechatConfigFolder().resolve("voicechat-client.properties")).build();
-        VOLUME_CONFIG = new VolumeConfig(Voicechat.getVoicechatConfigFolder().resolve("voicechat-volumes.properties"));
+        PLAYER_VOLUME_CONFIG = new PlayerVolumeConfig(Voicechat.getVoicechatConfigFolder().resolve("player-volumes.properties"));
+        CATEGORY_VOLUME_CONFIG = new CategoryVolumeConfig(Voicechat.getVoicechatConfigFolder().resolve("category-volumes.properties"));
         USERNAME_CACHE = new UsernameCache(Voicechat.getVoicechatConfigFolder().resolve("username-cache.json").toFile());
     }
 
@@ -73,18 +70,6 @@ public abstract class VoicechatClient {
             }
             if (!CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
                 CLIENT_CONFIG.javaMicrophoneImplementation.set(true).save();
-            }
-        }
-    }
-
-    private void fixVolumeConfig() {
-        Path oldLocation = Voicechat.getConfigFolder().resolve("voicechat-volumes.properties");
-        Path newLocation = Voicechat.getVoicechatConfigFolder().resolve("voicechat-volumes.properties");
-        if (!newLocation.toFile().exists() && oldLocation.toFile().exists()) {
-            try {
-                Files.move(oldLocation, newLocation, StandardCopyOption.ATOMIC_MOVE);
-            } catch (IOException e) {
-                Voicechat.LOGGER.error("Failed to move volumes config", e);
             }
         }
     }
