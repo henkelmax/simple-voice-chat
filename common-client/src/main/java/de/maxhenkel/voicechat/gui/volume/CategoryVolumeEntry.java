@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
+import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +17,7 @@ public class CategoryVolumeEntry extends VolumeEntry {
     protected final ResourceLocation texture;
 
     public CategoryVolumeEntry(VolumeCategoryImpl category, AdjustVolumesScreen screen) {
-        super(screen, new CategoryVolumeConfigEntry(category.getId()));
+        super(screen, new AdjustCategoryVolumeEntry(category.getId()));
         this.category = category;
         this.texture = ClientManager.getCategoryManager().getTexture(category.getId(), OTHER_VOLUME_ICON);
     }
@@ -36,11 +38,11 @@ public class CategoryVolumeEntry extends VolumeEntry {
         }
     }
 
-    private static class CategoryVolumeConfigEntry implements AdjustVolumeSlider.VolumeConfigEntry {
+    private static class AdjustCategoryVolumeEntry implements AdjustVolumeSlider.AdjustVolumeEntry {
 
         private final String category;
 
-        public CategoryVolumeConfigEntry(String category) {
+        public AdjustCategoryVolumeEntry(String category) {
             this.category = category;
         }
 
@@ -53,6 +55,15 @@ public class CategoryVolumeEntry extends VolumeEntry {
         @Override
         public double get() {
             return VoicechatClient.VOLUME_CONFIG.getCategoryVolume(category);
+        }
+
+        @Override
+        public double getAudioLevel() {
+            ClientVoicechat client = ClientManager.getClient();
+            if(client == null){
+                return AudioUtils.LOWEST_DB;
+            }
+            return client.getTalkCache().getCategoryAudioLevel(category);
         }
     }
 
