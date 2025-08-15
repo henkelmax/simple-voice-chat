@@ -7,9 +7,9 @@ import java.util.UUID;
 public class AuthenticatePacket implements Packet<AuthenticatePacket> {
 
     private UUID playerUUID;
-    private UUID secret;
+    private Secret secret;
 
-    public AuthenticatePacket(UUID playerUUID, UUID secret) {
+    public AuthenticatePacket(UUID playerUUID, Secret secret) {
         this.playerUUID = playerUUID;
         this.secret = secret;
     }
@@ -22,7 +22,7 @@ public class AuthenticatePacket implements Packet<AuthenticatePacket> {
         return playerUUID;
     }
 
-    public UUID getSecret() {
+    public Secret getSecret() {
         return secret;
     }
 
@@ -30,13 +30,13 @@ public class AuthenticatePacket implements Packet<AuthenticatePacket> {
     public AuthenticatePacket fromBytes(PacketBuffer buf) {
         AuthenticatePacket packet = new AuthenticatePacket();
         packet.playerUUID = buf.readUUID();
-        packet.secret = buf.readUUID();
+        packet.secret = Secret.fromBytes(buf);
         return packet;
     }
 
     @Override
     public void toBytes(PacketBuffer buf) {
         buf.writeUUID(playerUUID);
-        buf.writeUUID(secret);
+        secret.toBytes(buf);
     }
 }
