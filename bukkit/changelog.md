@@ -1,3 +1,4 @@
 - Allow translating volume category names and descriptions
 - Allow voice host with just port
 - Switched to 256 bit `AES/GCM/NoPadding` encryption
+- Allow multiple targets for static audio channels
