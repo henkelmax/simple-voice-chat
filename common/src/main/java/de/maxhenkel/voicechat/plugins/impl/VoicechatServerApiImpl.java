@@ -100,10 +100,19 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (server == null) {
             return null;
         }
-        if (connection instanceof VoicechatConnectionImpl conn) {
-            return new StaticAudioChannelImpl(channelId, server, conn);
+        StaticAudioChannelImpl staticAudioChannel = new StaticAudioChannelImpl(channelId, server);
+        staticAudioChannel.addTarget(connection);
+        return staticAudioChannel;
+    }
+
+    @Nullable
+    @Override
+    public StaticAudioChannel createStaticAudioChannel(UUID channelId) {
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return null;
         }
-        return null;
+        return new StaticAudioChannelImpl(channelId, server);
     }
 
     @Override
