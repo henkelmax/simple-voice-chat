@@ -81,6 +81,14 @@ public class ByteBufferWrapper {
         buffer.put(bytes);
     }
 
+    public void readBytes(byte[] bytes) {
+        buffer.get(bytes);
+    }
+
+    public void writeBytes(byte[] bytes) {
+        buffer.put(bytes);
+    }
+
     public String readUtf() {
         return readUtf(32767);
     }
