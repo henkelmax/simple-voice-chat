@@ -70,7 +70,7 @@ public interface VoicechatServerApi extends VoicechatApi {
      * @param level      the level
      * @param connection the connection that should hear the audio
      * @return the channel
-     * @deprecated use {@link #createStaticAudioChannel(UUID)}
+     * @deprecated use {@link #createStaticAudioChannel(UUID)} and add a target using {@link StaticAudioChannel#addTarget(VoicechatConnection)}
      */
     @Deprecated
     @Nullable
