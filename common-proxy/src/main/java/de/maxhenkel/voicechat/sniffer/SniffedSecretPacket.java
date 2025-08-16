@@ -10,7 +10,7 @@ public class SniffedSecretPacket {
 
     protected int compatibilityVersion;
 
-    protected UUID secret;
+    protected byte[] secret;
     protected int serverPort;
     protected UUID playerUUID;
     protected byte codec;
@@ -32,10 +32,15 @@ public class SniffedSecretPacket {
         if (compatibilityVersion > VoiceProxy.COMPATIBILITY_VERSION) {
             throw new IncompatibleVoiceChatException(String.format("Client has a newer voice chat compatibility version (%s)", compatibilityVersion));
         }
-
         ByteBufferWrapper buf = new ByteBufferWrapper(buffer);
         SniffedSecretPacket packet = new SniffedSecretPacket();
-        packet.secret = buf.readUUID();
+        if (compatibilityVersion <= 18) {
+            packet.secret = new byte[16];
+        } else {
+            packet.secret = new byte[32];
+        }
+
+        buf.readBytes(packet.secret);
         packet.serverPort = buf.readInt();
         packet.playerUUID = buf.readUUID();
         packet.codec = buf.readByte();
@@ -50,10 +55,10 @@ public class SniffedSecretPacket {
 
     public ByteBuffer toBytes() {
         int maxHostSize = voiceHost.length() * 4 + 5;
-        int size = 16 + 4 + 16 + 1 + 4 + 8 + 4 + 1 + maxHostSize + 1;
+        int size = secret.length + 4 + 16 + 1 + 4 + 8 + 4 + 1 + maxHostSize + 1;
         ByteBuffer buffer = ByteBuffer.allocate(size);
         ByteBufferWrapper buf = new ByteBufferWrapper(buffer);
-        buf.writeUUID(secret);
+        buf.writeBytes(secret);
         buf.writeInt(serverPort);
         buf.writeUUID(playerUUID);
         buf.writeByte(codec);
