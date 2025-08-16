@@ -353,7 +353,14 @@ public class Server extends Thread {
 
     private void processProximityPacket(PlayerState senderState, Player sender, MicPacket packet) {
         @Nullable UUID groupId = senderState.getGroup();
-        float distance = Utils.getDefaultDistance();
+        float distance;
+        if (packet.isWhispering()) {
+            distance = Voicechat.SERVER_CONFIG.whisperDistance.get().floatValue();
+        } else {
+            distance = Utils.getDefaultDistance();
+        }
+
+        distance = PluginManager.instance().getDistance(sender, senderState, packet, distance);
 
         SoundPacket<?> soundPacket = null;
         String source = null;
@@ -381,10 +388,6 @@ public class Server extends Thread {
         }
 
         if (soundPacket == null) {
-            float crouchMultiplayer = sender.isSneaking() ? Voicechat.SERVER_CONFIG.crouchDistanceMultiplier.get().floatValue() : 1F;
-            float whisperMultiplayer = packet.isWhispering() ? Voicechat.SERVER_CONFIG.whisperDistanceMultiplier.get().floatValue() : 1F;
-            float multiplier = crouchMultiplayer * whisperMultiplayer;
-            distance = distance * multiplier;
             soundPacket = new PlayerSoundPacket(sender.getUniqueId(), sender.getUniqueId(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering(), distance, null);
             source = SoundPacketEvent.SOURCE_PROXIMITY;
         }

@@ -238,11 +238,17 @@ public class PluginManager {
         return dispatchEvent(RemoveGroupEvent.class, new RemoveGroupEventImpl(new GroupImpl(group)));
     }
 
-    public boolean onMicPacket(Player player, PlayerState state, MicPacket packet) {
+    public boolean onMicPacket(Player sender, PlayerState senderState, MicPacket packet) {
         return dispatchEvent(MicrophonePacketEvent.class, new MicrophonePacketEventImpl(
-                new MicrophonePacketImpl(packet, player.getUniqueId()),
-                new VoicechatConnectionImpl(player, state)
+                new MicrophonePacketImpl(packet, sender.getUniqueId()),
+                new VoicechatConnectionImpl(sender, senderState)
         ));
+    }
+
+    public float getDistance(Player sender, PlayerState senderState, MicPacket packet, float originalDistance) {
+        VoiceDistanceEventImpl event = new VoiceDistanceEventImpl(new MicrophonePacketImpl(packet, sender.getUniqueId()), new VoicechatConnectionImpl(sender, senderState), originalDistance);
+        dispatchEvent(VoiceDistanceEvent.class, event);
+        return event.getDistance();
     }
 
     public boolean onSoundPacket(@Nullable Player sender, @Nullable PlayerState senderState, Player receiver, PlayerState receiverState, SoundPacket<?> p, String source) {
