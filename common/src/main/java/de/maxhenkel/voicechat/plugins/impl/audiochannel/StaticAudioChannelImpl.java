@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.plugins.impl.audiochannel;
 
+import de.maxhenkel.voicechat.api.VoicechatConnection;
 import de.maxhenkel.voicechat.api.audiochannel.StaticAudioChannel;
 import de.maxhenkel.voicechat.api.packets.MicrophonePacket;
 import de.maxhenkel.voicechat.plugins.impl.VoicechatConnectionImpl;
@@ -7,15 +8,17 @@ import de.maxhenkel.voicechat.plugins.impl.VoicechatServerApiImpl;
 import de.maxhenkel.voicechat.voice.common.GroupSoundPacket;
 import de.maxhenkel.voicechat.voice.server.Server;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class StaticAudioChannelImpl extends AudioChannelImpl implements StaticAudioChannel {
 
-    protected VoicechatConnectionImpl connection;
+    protected final List<VoicechatConnectionImpl> connections;
 
-    public StaticAudioChannelImpl(UUID channelId, Server server, VoicechatConnectionImpl connection) {
+    public StaticAudioChannelImpl(UUID channelId, Server server) {
         super(channelId, server);
-        this.connection = connection;
+        this.connections = new ArrayList<>();
     }
 
     @Override
@@ -35,7 +38,34 @@ public class StaticAudioChannelImpl extends AudioChannelImpl implements StaticAu
     }
 
     private void broadcast(GroupSoundPacket packet) {
-        VoicechatServerApiImpl.sendPacket(connection, packet);
+        synchronized (connections) {
+            for (VoicechatConnectionImpl connection : connections) {
+                VoicechatServerApiImpl.sendPacket(connection, packet);
+            }
+        }
     }
 
+    @Override
+    public void addTarget(VoicechatConnection target) {
+        synchronized (connections) {
+            connections.removeIf(connection -> connection.getPlayer().getUuid().equals(target.getPlayer().getUuid()));
+            if (target instanceof VoicechatConnectionImpl) {
+                connections.add((VoicechatConnectionImpl) target);
+            }
+        }
+    }
+
+    @Override
+    public void removeTarget(VoicechatConnection target) {
+        synchronized (connections) {
+            connections.removeIf(connection -> connection.getPlayer().getUuid().equals(target.getPlayer().getUuid()));
+        }
+    }
+
+    @Override
+    public void clearTargets() {
+        synchronized (connections) {
+            connections.clear();
+        }
+    }
 }

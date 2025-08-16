@@ -70,9 +70,20 @@ public interface VoicechatServerApi extends VoicechatApi {
      * @param level      the level
      * @param connection the connection that should hear the audio
      * @return the channel
+     * @deprecated use {@link #createStaticAudioChannel(UUID)}
      */
+    @Deprecated
     @Nullable
     StaticAudioChannel createStaticAudioChannel(UUID channelId, ServerLevel level, VoicechatConnection connection);
+
+    /**
+     * Creates a static audio channel.
+     *
+     * @param channelId the ID of the channel - Has to be unique
+     * @return the channel
+     */
+    @Nullable
+    StaticAudioChannel createStaticAudioChannel(UUID channelId);
 
     /**
      * Creates a new audio player.
