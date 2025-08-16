@@ -10,8 +10,7 @@ public class ServerConfig {
     public final ConfigEntry<Integer> voiceChatPort;
     public final ConfigEntry<String> voiceChatBindAddress;
     public final ConfigEntry<Double> voiceChatDistance;
-    public ConfigEntry<Double> crouchDistanceMultiplier;
-    public ConfigEntry<Double> whisperDistanceMultiplier;
+    public ConfigEntry<Double> whisperDistance;
     public final ConfigEntry<Codec> voiceChatCodec;
     public final ConfigEntry<Integer> voiceChatMtuSize;
     public final ConfigEntry<Integer> keepAlive;
@@ -47,13 +46,9 @@ public class ServerConfig {
                 .doubleEntry("max_voice_distance", 48D, 1D, 1_000_000D,
                         "The distance to which the voice can be heard"
                 );
-        crouchDistanceMultiplier = builder
-                .doubleEntry("crouch_distance_multiplier", 1D, 0.01D, 1D,
-                        "The multiplier of the voice distance when crouching"
-                );
-        whisperDistanceMultiplier = builder
-                .doubleEntry("whisper_distance_multiplier", 0.5D, 0.01D, 1D,
-                        "The multiplier of the voice distance when whispering"
+        whisperDistance = builder
+                .doubleEntry("whisper_distance", 24D, 1D, 1_000_000D,
+                        "The distance to which the voice can be heard when whispering"
                 );
         voiceChatCodec = builder
                 .enumEntry("codec", Codec.VOIP,
