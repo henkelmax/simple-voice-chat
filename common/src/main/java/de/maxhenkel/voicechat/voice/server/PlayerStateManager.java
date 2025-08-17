@@ -42,9 +42,9 @@ public class PlayerStateManager {
         });
     }
 
-    public void broadcastState(@Nullable ServerPlayer stateOwner, PlayerState state) {
+    public void broadcastState(@Nullable ServerPlayerEntity stateOwner, PlayerState state) {
         PlayerStatePacket packet = new PlayerStatePacket(state);
-        for (ServerPlayer receiver : voicechatServer.getServer().getPlayerList().getPlayers()) {
+        for (ServerPlayerEntity receiver : voicechatServer.getServer().getPlayerList().getPlayers()) {
             if (stateOwner != null && !CommonCompatibilityManager.INSTANCE.canSee(receiver, stateOwner)) {
                 continue;
             }
@@ -53,9 +53,9 @@ public class PlayerStateManager {
         PluginManager.instance().onPlayerStateChanged(state);
     }
 
-    public void broadcastRemoveState(ServerPlayer stateOwner) {
+    public void broadcastRemoveState(ServerPlayerEntity stateOwner) {
         RemovePlayerStatePacket packet = new RemovePlayerStatePacket(stateOwner.getUUID());
-        for (ServerPlayer receiver : voicechatServer.getServer().getPlayerList().getPlayers()) {
+        for (ServerPlayerEntity receiver : voicechatServer.getServer().getPlayerList().getPlayers()) {
             NetManager.sendToClient(receiver, packet);
         }
         // Send the default disconnected state to the API when disconnecting
@@ -65,7 +65,7 @@ public class PlayerStateManager {
     public void onPlayerCompatibilityCheckSucceeded(ServerPlayerEntity player) {
         List<PlayerState> stateList = new ArrayList<>(states.size());
         for (PlayerState state : states.values()) {
-            ServerPlayer otherPlayer = voicechatServer.getServer().getPlayerList().getPlayer(state.getUuid());
+            ServerPlayerEntity otherPlayer = voicechatServer.getServer().getPlayerList().getPlayer(state.getUuid());
             if (otherPlayer == null) {
                 continue;
             }
@@ -116,7 +116,7 @@ public class PlayerStateManager {
 
         state.setDisconnected(true);
 
-        @Nullable ServerPlayer player = voicechatServer.getServer().getPlayerList().getPlayer(uuid);
+        @Nullable ServerPlayerEntity player = voicechatServer.getServer().getPlayerList().getPlayer(uuid);
 
         broadcastState(player, state);
         Voicechat.LOGGER.debug("Set state of {} to disconnected: {}", uuid, state);

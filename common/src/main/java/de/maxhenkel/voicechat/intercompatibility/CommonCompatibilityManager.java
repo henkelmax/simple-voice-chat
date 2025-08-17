@@ -83,23 +83,23 @@ public abstract class CommonCompatibilityManager {
         return level;
     }
 
-    public abstract boolean canSee(ServerPlayer player, ServerPlayer other);
+    public abstract boolean canSee(ServerPlayerEntity player, ServerPlayerEntity other);
 
     public static class PlayerVisibilityEvent {
 
-        private final ServerPlayer visibilityChangedPlayer;
-        private final ServerPlayer observingPlayer;
+        private final ServerPlayerEntity visibilityChangedPlayer;
+        private final ServerPlayerEntity observingPlayer;
 
-        public PlayerVisibilityEvent(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
+        public PlayerVisibilityEvent(ServerPlayerEntity visibilityChangedPlayer, ServerPlayerEntity observingPlayer) {
             this.visibilityChangedPlayer = visibilityChangedPlayer;
             this.observingPlayer = observingPlayer;
         }
 
-        public ServerPlayer getVisibilityChangedPlayer() {
+        public ServerPlayerEntity getVisibilityChangedPlayer() {
             return visibilityChangedPlayer;
         }
 
-        public ServerPlayer getObservingPlayer() {
+        public ServerPlayerEntity getObservingPlayer() {
             return observingPlayer;
         }
     }
