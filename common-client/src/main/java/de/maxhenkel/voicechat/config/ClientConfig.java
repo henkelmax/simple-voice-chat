@@ -28,6 +28,8 @@ public class ClientConfig {
     public ConfigEntry<Boolean> muted;
     public ConfigEntry<Boolean> disabled;
     public ConfigEntry<Boolean> hideIcons;
+    public ConfigEntry<Boolean> showNametagIcons;
+    public ConfigEntry<Boolean> showHudIcons;
     public ConfigEntry<Boolean> showGroupHUD;
     public ConfigEntry<Boolean> showOwnGroupIcon;
     public ConfigEntry<Double> groupHudIconScale;
@@ -116,6 +118,14 @@ public class ClientConfig {
         hideIcons = builder
                 .booleanEntry("hide_icons", false,
                         "If the voice chat HUD, group chat HUD, and other in-game icons should be hidden"
+                );
+        showNametagIcons = builder
+                .booleanEntry("show_nametag_icons", true,
+                        "If the voice chat icons next to player names should be visible"
+                );
+        showHudIcons = builder
+                .booleanEntry("show_hud_icons", true,
+                        "If the voice chat icons on the HUD should be visible"
                 );
         showGroupHUD = builder
                 .booleanEntry("show_group_hud", true,
