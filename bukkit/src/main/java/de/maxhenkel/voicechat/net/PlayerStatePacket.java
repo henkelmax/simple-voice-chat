@@ -7,7 +7,7 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 
 public class PlayerStatePacket implements Packet<PlayerStatePacket> {
 
-    public static final Key PLAYER_STATE = Voicechat.compatibility.createNamespacedKey("player_state");
+    public static final Key PLAYER_STATE = Voicechat.compatibility.createNamespacedKey("state");
 
     private PlayerState playerState;
 

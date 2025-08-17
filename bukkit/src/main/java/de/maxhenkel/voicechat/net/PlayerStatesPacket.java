@@ -5,25 +5,23 @@ import de.maxhenkel.voicechat.util.FriendlyByteBuf;
 import de.maxhenkel.voicechat.util.Key;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
 
-    private Map<UUID, PlayerState> playerStates;
+    public static final Key PLAYER_STATES = Voicechat.compatibility.createNamespacedKey("states");
 
-    public static final Key PLAYER_STATES = Voicechat.compatibility.createNamespacedKey("player_states");
+    private Collection<PlayerState> playerStates;
 
     public PlayerStatesPacket() {
 
     }
 
-    public PlayerStatesPacket(Map<UUID, PlayerState> playerStates) {
+    public PlayerStatesPacket(Collection<PlayerState> playerStates) {
         this.playerStates = playerStates;
     }
 
-    public Map<UUID, PlayerState> getPlayerStates() {
+    public Collection<PlayerState> getPlayerStates() {
         return playerStates;
     }
 
@@ -34,11 +32,11 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
 
     @Override
     public PlayerStatesPacket fromBytes(FriendlyByteBuf buf) {
-        playerStates = new HashMap<>();
         int count = buf.readInt();
+        playerStates = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             PlayerState playerState = PlayerState.fromBytes(buf);
-            playerStates.put(playerState.getUuid(), playerState);
+            playerStates.add(playerState);
         }
 
         return this;
@@ -47,8 +45,8 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
     @Override
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(playerStates.size());
-        for (Map.Entry<UUID, PlayerState> entry : playerStates.entrySet()) {
-            entry.getValue().toBytes(buf);
+        for (PlayerState state : playerStates) {
+            state.toBytes(buf);
         }
     }
 
