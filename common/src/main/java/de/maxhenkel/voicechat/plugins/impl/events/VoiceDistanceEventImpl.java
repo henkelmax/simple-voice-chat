@@ -19,6 +19,11 @@ public class VoiceDistanceEventImpl extends ServerEventImpl implements VoiceDist
     }
 
     @Override
+    public boolean isCancellable() {
+        return false;
+    }
+
+    @Override
     public MicrophonePacket getPacket() {
         return packet;
     }
