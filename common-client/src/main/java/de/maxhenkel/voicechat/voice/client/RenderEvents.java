@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -140,6 +141,9 @@ public class RenderEvents {
     }
 
     private void renderPlayerIcon(EntityPlayer entity, String str, double x, double y, double z, int maxDistance, ResourceLocation texture) {
+        if (!ClientPluginManager.instance().shouldRenderPlayerIcons(entity.getUniqueID())) {
+            return;
+        }
         RenderManager renderManager = minecraft.getRenderManager();
         boolean isThirdPersonFrontal = renderManager.options.thirdPersonView == 2;
         int verticalShift = "deadmau5".equals(str) ? -10 : 0;
