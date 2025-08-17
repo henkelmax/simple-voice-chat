@@ -11,9 +11,7 @@ import de.maxhenkel.voicechat.plugins.impl.audiochannel.ClientEntityAudioChannel
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.ClientLocationalAudioChannelImpl;
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.ClientStaticAudioChannelImpl;
 import de.maxhenkel.voicechat.plugins.impl.config.ConfigAccessorImpl;
-import de.maxhenkel.voicechat.voice.client.ClientManager;
-import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
-import de.maxhenkel.voicechat.voice.client.ClientUtils;
+import de.maxhenkel.voicechat.voice.client.*;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 
 import javax.annotation.Nullable;
@@ -51,6 +49,40 @@ public class VoicechatClientApiImpl extends VoicechatApiImpl implements Voicecha
             return ClientManager.getPlayerStateManager().isDisconnected();
         }
         return ClientManager.getPlayerStateManager().isPlayerDisconnected(playerId);
+    }
+
+    @Override
+    public boolean isTalking(@Nullable UUID playerId) {
+        ClientVoicechat client = ClientManager.getClient();
+        if (client == null) {
+            return false;
+        }
+        if (playerId == null) {
+            MicThread micThread = client.getMicThread();
+            if (micThread == null) {
+                return false;
+            }
+            return micThread.isTalking();
+        }
+        client.getTalkCache().isTalking(playerId);
+        return false;
+    }
+
+    @Override
+    public boolean isWhispering(@Nullable UUID playerId) {
+        ClientVoicechat client = ClientManager.getClient();
+        if (client == null) {
+            return false;
+        }
+        if (playerId == null) {
+            MicThread micThread = client.getMicThread();
+            if (micThread == null) {
+                return false;
+            }
+            return micThread.isWhispering();
+        }
+        client.getTalkCache().isWhispering(playerId);
+        return false;
     }
 
     @Override

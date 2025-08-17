@@ -46,6 +46,36 @@ public interface VoicechatClientApi extends VoicechatApi {
     boolean isDisconnected(@Nullable UUID playerId);
 
     /**
+     * Does the same as {@link #isTalking(UUID)} with <code>null</code> as the player UUID.
+     *
+     * @return if the local player is talking
+     */
+    default boolean isTalking() {
+        return isTalking(null);
+    }
+
+    /**
+     * @param playerId the UUID of the player or <code>null</code> for the local player
+     * @return if the player with the provided UUID is currently talking
+     */
+    boolean isTalking(@Nullable UUID playerId);
+
+    /**
+     * Does the same as {@link #isWhispering(UUID)} with <code>null</code> as the player UUID.
+     *
+     * @return if the local player is whispering
+     */
+    default boolean isWhispering() {
+        return isWhispering(null);
+    }
+
+    /**
+     * @param playerId the UUID of the player or <code>null</code> for the local player
+     * @return if the player with the provided UUID is currently whispering
+     */
+    boolean isWhispering(@Nullable UUID playerId);
+
+    /**
      * This method returns if the push to talk key is pressed, even when using voice activation.
      *
      * @return if the push to talk key is pressed
