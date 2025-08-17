@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -127,20 +128,24 @@ public class RenderEvents {
             UUID groupId = manager.getGroup(entityId);
 
             if (client != null && client.getTalkCache().isWhispering(entityId)) {
-                renderPlayerIcon(discrete, component, WHISPER_SPEAKER_ICON, pose, vertexConsumers, light);
+                renderPlayerIcon(entityId, discrete, component, WHISPER_SPEAKER_ICON, pose, vertexConsumers, light);
             } else if (client != null && client.getTalkCache().isTalking(entityId)) {
-                renderPlayerIcon(discrete, component, SPEAKER_ICON, pose, vertexConsumers, light);
+                renderPlayerIcon(entityId, discrete, component, SPEAKER_ICON, pose, vertexConsumers, light);
             } else if (manager.isPlayerDisconnected(entityId)) {
-                renderPlayerIcon(discrete, component, DISCONNECT_ICON, pose, vertexConsumers, light);
+                renderPlayerIcon(entityId, discrete, component, DISCONNECT_ICON, pose, vertexConsumers, light);
             } else if (groupId != null && !groupId.equals(manager.getGroupID())) {
-                renderPlayerIcon(discrete, component, GROUP_ICON, pose, vertexConsumers, light);
+                renderPlayerIcon(entityId, discrete, component, GROUP_ICON, pose, vertexConsumers, light);
             } else if (manager.isPlayerDisabled(entityId)) {
-                renderPlayerIcon(discrete, component, SPEAKER_OFF_ICON, pose, vertexConsumers, light);
+                renderPlayerIcon(entityId, discrete, component, SPEAKER_OFF_ICON, pose, vertexConsumers, light);
             }
         }
     }
 
-    private void renderPlayerIcon(boolean discrete, Component component, ResourceLocation texture, PoseStack.Pose pose, MultiBufferSource buffer, int light) {
+    private void renderPlayerIcon(UUID entityId, boolean discrete, Component component, ResourceLocation texture, PoseStack.Pose pose, MultiBufferSource buffer, int light) {
+        if (!ClientPluginManager.instance().shouldRenderPlayerIcons(entityId)) {
+            return;
+        }
+
         float offset = (float) (minecraft.font.width(component) / 2 + 2);
 
         VertexConsumer builder = buffer.getBuffer(RenderType.text(texture));
