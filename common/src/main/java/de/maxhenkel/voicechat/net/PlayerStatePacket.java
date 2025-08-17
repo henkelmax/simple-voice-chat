@@ -7,7 +7,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class PlayerStatePacket implements Packet<PlayerStatePacket> {
 
-    public static final ResourceLocation PLAYER_STATE = new ResourceLocation(Voicechat.MODID, "player_state");
+    public static final ResourceLocation PLAYER_STATE = new ResourceLocation(Voicechat.MODID, "state");
 
     private PlayerState playerState;
 
