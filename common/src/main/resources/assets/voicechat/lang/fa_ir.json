@@ -171,7 +171,6 @@
   "cloth_config.voicechat.category.general": "عمومی",
   "cloth_config.voicechat.category.audio": "صوتی",
   "cloth_config.voicechat.category.hud_icons": "HUD ﭼت صوتی",
-  "cloth_config.voicechat.category.group_chat_icons": "HUD ﭼت گروهی",
   "cloth_config.voicechat.category.ingame_menu": "منوی درون بازی",
   "cloth_config.voicechat.config.recording_destination": "مقصد ضبط",
   "cloth_config.voicechat.config.recording_destination.description": "محلی که ضبط‌ها باید ذخیره شوند.\nخالی بگذارید تا از مکان پیش‌فرض استفاده شود.",
