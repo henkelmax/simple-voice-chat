@@ -26,7 +26,7 @@ public class HideGroupHudTooltipSupplier implements ImageButton.TooltipSupplier 
     public void onTooltip(ImageButton button, MatrixStack matrices, int mouseX, int mouseY) {
         List<IReorderingProcessor> tooltip = new ArrayList<>();
 
-        if (VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()) {
+        if (VoicechatClient.CLIENT_CONFIG.showGroupHud.get()) {
             tooltip.add(SHOW_GROUP_HUD_ENABLED.getVisualOrderText());
         } else {
             tooltip.add(SHOW_GROUP_HUD_DISABLED.getVisualOrderText());
