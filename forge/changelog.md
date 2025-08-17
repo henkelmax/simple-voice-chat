@@ -19,3 +19,4 @@
 - Added `whisper_distance` config option - This now also allows for higher distances than the default voice chat distance
 - Added `VoiceDistanceEvent` to the API, so addons can implement their own custom distance logic like crouch distance
 - Added `show_nametag_icons` and `show_hud_icons` config option
+- Added `isPushToTalkKeyPressed` and `isWhisperKeyPressed` to client API

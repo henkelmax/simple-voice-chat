@@ -48,6 +48,16 @@ public class VoicechatClientApiImpl extends VoicechatApiImpl implements Voicecha
     }
 
     @Override
+    public boolean isPushToTalkKeyPressed() {
+        return ClientManager.getPttKeyHandler().isPTTDown();
+    }
+
+    @Override
+    public boolean isWhisperKeyPressed() {
+        return ClientManager.getPttKeyHandler().isWhisperDown();
+    }
+
+    @Override
     @Nullable
     public Group getGroup() {
         ClientPlayerStateManager playerStateManager = ClientManager.getPlayerStateManager();
