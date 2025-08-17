@@ -23,7 +23,7 @@ public class HideGroupHudTooltipSupplier implements ImageButton.TooltipSupplier 
 
     @Override
     public void updateTooltip(ImageButton button) {
-        boolean show = VoicechatClient.CLIENT_CONFIG.showGroupHUD.get();
+        boolean show = VoicechatClient.CLIENT_CONFIG.showGroupHud.get();
         if (lastState == null || lastState != show) {
             lastState = show;
             button.setTooltip(Tooltip.create(show ? SHOW_GROUP_HUD_ENABLED : SHOW_GROUP_HUD_DISABLED));

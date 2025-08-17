@@ -29,7 +29,7 @@ public class ClientConfig {
     public ConfigEntry<Boolean> hideIcons;
     public ConfigEntry<Boolean> showNametagIcons;
     public ConfigEntry<Boolean> showHudIcons;
-    public ConfigEntry<Boolean> showGroupHUD;
+    public ConfigEntry<Boolean> showGroupHud;
     public ConfigEntry<Boolean> showOwnGroupIcon;
     public ConfigEntry<Double> groupHudIconScale;
     public ConfigEntry<GroupPlayerIconOrientation> groupPlayerIconOrientation;
@@ -127,7 +127,7 @@ public class ClientConfig {
                 .booleanEntry("show_hud_icons", true,
                         "If the voice chat icons on the HUD should be visible"
                 );
-        showGroupHUD = builder
+        showGroupHud = builder
                 .booleanEntry("show_group_hud", true,
                         "If the group chat HUD should be visible"
                 );
