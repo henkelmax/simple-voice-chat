@@ -172,7 +172,6 @@
   "cloth_config.voicechat.category.general": "Allgemein",
   "cloth_config.voicechat.category.audio": "Audio",
   "cloth_config.voicechat.category.hud_icons": "HUD Symbole",
-  "cloth_config.voicechat.category.group_chat_icons": "Gruppenoberfläche",
   "cloth_config.voicechat.category.ingame_menu": "Sonstiges",
   "cloth_config.voicechat.config.recording_destination": "Aufnahmepfad",
   "cloth_config.voicechat.config.run_local_server": "In Einzelspieler/LAN Welten ausführen",

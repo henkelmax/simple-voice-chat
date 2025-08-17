@@ -170,7 +170,6 @@
   "cloth_config.voicechat.category.general": "Общие",
   "cloth_config.voicechat.category.audio": "Аудио",
   "cloth_config.voicechat.category.hud_icons": "Значки HUD",
-  "cloth_config.voicechat.category.group_chat_icons": "Значки группового чата",
   "cloth_config.voicechat.category.ingame_menu": "Другие",
   "cloth_config.voicechat.config.recording_destination": "Место сохранения записи",
   "cloth_config.voicechat.config.recording_destination.description": "Место, где должны быть сохранены записи\nОставьте пустым для места по умолчанию",
