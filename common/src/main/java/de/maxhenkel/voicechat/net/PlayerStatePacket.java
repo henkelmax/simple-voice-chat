@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class PlayerStatePacket implements Packet<PlayerStatePacket> {
 
-    public static final ResourceLocation PLAYER_STATE = new ResourceLocation(NetManager.CHANNEL, "player_state");
+    public static final ResourceLocation PLAYER_STATE = new ResourceLocation(NetManager.CHANNEL, "state");
 
     private PlayerState playerState;
 

@@ -5,12 +5,15 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.net.PlayerStatesPacket;
+import de.maxhenkel.voicechat.net.RemovePlayerStatePacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -50,8 +53,28 @@ public class PlayerStateManager {
         PluginManager.instance().onPlayerStateChanged(state);
     }
 
+    public void broadcastRemoveState(EntityPlayerMP stateOwner) {
+        RemovePlayerStatePacket packet = new RemovePlayerStatePacket(stateOwner.getUniqueID());
+        for (EntityPlayerMP receiver : voicechatServer.getServer().getPlayerList().getPlayers()) {
+            NetManager.sendToClient(receiver, packet);
+        }
+        // Send the default disconnected state to the API when disconnecting
+        PluginManager.instance().onPlayerStateChanged(defaultDisconnectedState(stateOwner));
+    }
+
     public void onPlayerCompatibilityCheckSucceeded(EntityPlayerMP player) {
-        PlayerStatesPacket packet = new PlayerStatesPacket(states);
+        List<PlayerState> stateList = new ArrayList<>(states.size());
+        for (PlayerState state : states.values()) {
+            EntityPlayerMP otherPlayer = voicechatServer.getServer().getPlayerList().getPlayerByUUID(state.getUuid());
+            if (otherPlayer == null) {
+                continue;
+            }
+            if (!CommonCompatibilityManager.INSTANCE.canSee(player, otherPlayer)) {
+                continue;
+            }
+            stateList.add(state);
+        }
+        PlayerStatesPacket packet = new PlayerStatesPacket(stateList);
         NetManager.sendToClient(player, packet);
         Voicechat.LOGGER.debug("Sending initial states to {}", player.getName());
     }
@@ -65,14 +88,14 @@ public class PlayerStateManager {
 
     public void onPlayerLoggedOut(EntityPlayerMP player) {
         states.remove(player.getUniqueID());
-        broadcastState(player, new PlayerState(player.getUniqueID(), player.getGameProfile().getName(), false, true));
-        Voicechat.LOGGER.debug("Removing state of {}", player.getName());
+        broadcastRemoveState(player);
+        Voicechat.LOGGER.debug("Removing state of {}", player.getGameProfile().getName());
     }
 
     public void onPlayerHide(CommonCompatibilityManager.PlayerVisibilityEvent event) {
-        PlayerStatePacket packet = new PlayerStatePacket(defaultDisconnectedState(event.getVisibilityChangedPlayer()));
+        RemovePlayerStatePacket packet = new RemovePlayerStatePacket(event.getVisibilityChangedPlayer().getUniqueID());
         NetManager.sendToClient(event.getObservingPlayer(), packet);
-        Voicechat.LOGGER.debug("Sending hidden state of {} to {}", event.getVisibilityChangedPlayer().getGameProfile().getName(), event.getObservingPlayer().getGameProfile().getName());
+        Voicechat.LOGGER.debug("Removing state of {} for {}", event.getVisibilityChangedPlayer().getGameProfile().getName(), event.getObservingPlayer().getGameProfile().getName());
     }
 
     public void onPlayerShow(CommonCompatibilityManager.PlayerVisibilityEvent event) {
@@ -82,7 +105,7 @@ public class PlayerStateManager {
         }
         PlayerStatePacket packet = new PlayerStatePacket(state);
         NetManager.sendToClient(event.getObservingPlayer(), packet);
-        Voicechat.LOGGER.debug("Sending shown state of {} to {}", event.getVisibilityChangedPlayer().getGameProfile().getName(), event.getObservingPlayer().getGameProfile().getName());
+        Voicechat.LOGGER.debug("Sending state of {} to {}", event.getVisibilityChangedPlayer().getGameProfile().getName(), event.getObservingPlayer().getGameProfile().getName());
     }
 
     public void onPlayerVoicechatDisconnect(UUID uuid) {
