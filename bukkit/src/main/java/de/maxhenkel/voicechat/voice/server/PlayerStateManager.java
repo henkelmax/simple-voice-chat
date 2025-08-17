@@ -1,10 +1,7 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.net.NetManager;
-import de.maxhenkel.voicechat.net.PlayerStatePacket;
-import de.maxhenkel.voicechat.net.PlayerStatesPacket;
-import de.maxhenkel.voicechat.net.UpdateStatePacket;
+import de.maxhenkel.voicechat.net.*;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import org.bukkit.Bukkit;
@@ -16,7 +13,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerShowEntityEvent;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -45,7 +44,7 @@ public class PlayerStateManager implements Listener {
 
     public void onPlayerQuit(PlayerQuitEvent event) {
         states.remove(event.getPlayer().getUniqueId());
-        broadcastState(event.getPlayer(), new PlayerState(event.getPlayer().getUniqueId(), event.getPlayer().getName(), false, true));
+        broadcastRemoveState(event.getPlayer());
         Voicechat.LOGGER.debug("Removing state of {}", event.getPlayer().getName());
     }
 
@@ -61,9 +60,9 @@ public class PlayerStateManager implements Listener {
             return;
         }
         Player hiddenPlayer = (Player) event.getEntity();
-        PlayerStatePacket packet = new PlayerStatePacket(defaultDisconnectedState(hiddenPlayer));
+        RemovePlayerStatePacket packet = new RemovePlayerStatePacket(hiddenPlayer.getUniqueId());
         NetManager.sendToClient(event.getPlayer(), packet);
-        Voicechat.LOGGER.debug("Sending hidden state of {} to {}", hiddenPlayer.getName(), event.getPlayer().getName());
+        Voicechat.LOGGER.debug("Removing state of {} for {}", hiddenPlayer.getName(), event.getPlayer().getName());
     }
 
     public void onPlayerShow(PlayerShowEntityEvent event) {
@@ -77,7 +76,7 @@ public class PlayerStateManager implements Listener {
         }
         PlayerStatePacket packet = new PlayerStatePacket(state);
         NetManager.sendToClient(event.getPlayer(), packet);
-        Voicechat.LOGGER.debug("Sending shown state of {} to {}", shownPlayer.getName(), event.getPlayer().getName());
+        Voicechat.LOGGER.debug("Sending state of {} to {}", shownPlayer.getName(), event.getPlayer().getName());
     }
 
     public void broadcastState(@Nullable Player stateOwner, PlayerState state) {
@@ -91,8 +90,28 @@ public class PlayerStateManager implements Listener {
         PluginManager.instance().onPlayerStateChanged(state);
     }
 
+    public void broadcastRemoveState(Player stateOwner) {
+        RemovePlayerStatePacket packet = new RemovePlayerStatePacket(stateOwner.getUniqueId());
+        for (Player receiver : Voicechat.INSTANCE.getServer().getOnlinePlayers()) {
+            NetManager.sendToClient(receiver, packet);
+        }
+        // Send the default disconnected state to the API when disconnecting
+        PluginManager.instance().onPlayerStateChanged(defaultDisconnectedState(stateOwner));
+    }
+
     public void onPlayerCompatibilityCheckSucceeded(Player player) {
-        PlayerStatesPacket packet = new PlayerStatesPacket(states);
+        List<PlayerState> stateList = new ArrayList<>(states.size());
+        for (PlayerState state : states.values()) {
+            Player otherPlayer = Voicechat.INSTANCE.getServer().getPlayer(state.getUuid());
+            if (otherPlayer == null) {
+                continue;
+            }
+            if (!player.canSee(otherPlayer)) {
+                continue;
+            }
+            stateList.add(state);
+        }
+        PlayerStatesPacket packet = new PlayerStatesPacket(stateList);
         NetManager.sendToClient(player, packet);
         Voicechat.LOGGER.debug("Sending initial states to {}", player.getName());
     }
