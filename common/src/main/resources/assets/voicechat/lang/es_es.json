@@ -170,7 +170,6 @@
   "cloth_config.voicechat.category.general": "General",
   "cloth_config.voicechat.category.audio": "Audio",
   "cloth_config.voicechat.category.hud_icons": "Iconos del HUD",
-  "cloth_config.voicechat.category.group_chat_icons": "Iconos del chat de grupo",
   "cloth_config.voicechat.category.ingame_menu": "Otros",
   "cloth_config.voicechat.config.recording_destination": "Destino de la grabación",
   "cloth_config.voicechat.config.recording_destination.description": "La ubicación donde deben guardarse las grabaciones\nDejar vacío para usar la ubicación por defecto",

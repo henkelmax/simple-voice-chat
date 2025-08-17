@@ -170,7 +170,6 @@
   "cloth_config.voicechat.category.general": "Tổng quan",
   "cloth_config.voicechat.category.audio": "Âm thanh",
   "cloth_config.voicechat.category.hud_icons": "Biểu tượng ở HUD",
-  "cloth_config.voicechat.category.group_chat_icons": "Biểu tượng nhóm trò chuyện",
   "cloth_config.voicechat.category.ingame_menu": "Khác",
   "cloth_config.voicechat.config.recording_destination": "Nơi lưu bản ghi âm",
   "cloth_config.voicechat.config.recording_destination.description": "Nơi mà các bản ghi âm được lưu vào\nBỏ trống để sử dụng mặc định",
