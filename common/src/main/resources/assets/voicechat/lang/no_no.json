@@ -136,7 +136,6 @@
   "cloth_config.voicechat.category.general": "Generelt",
   "cloth_config.voicechat.category.audio": "Lyd",
   "cloth_config.voicechat.category.hud_icons": "HUD ikoner",
-  "cloth_config.voicechat.category.group_chat_icons": "Gruppeprat-ikoner",
   "cloth_config.voicechat.category.ingame_menu": "Andre",
   "cloth_config.voicechat.config.recording_destination": "Opptak destinasjon",
   "cloth_config.voicechat.config.recording_destination.description": "Stedet der opptakene skal lagres\nLa stå tomt for standardplassering",
