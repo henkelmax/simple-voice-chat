@@ -170,7 +170,6 @@ cloth_config.voicechat.settings=Röstchattsinställningar
 cloth_config.voicechat.category.general=Allmänt
 cloth_config.voicechat.category.audio=Ljud
 cloth_config.voicechat.category.hud_icons=Röstchatts-HUD
-cloth_config.voicechat.category.group_chat_icons=Gruppchatts-HUD
 cloth_config.voicechat.category.ingame_menu=Meny i spelet
 cloth_config.voicechat.config.recording_destination=Inspelningsdestination
 cloth_config.voicechat.config.recording_destination.description=Platsen där inspelningar ska sparas\nLämna tomt för att använda standardplatsen

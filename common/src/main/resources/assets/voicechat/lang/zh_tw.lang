@@ -170,7 +170,6 @@ cloth_config.voicechat.settings=語音聊天設定
 cloth_config.voicechat.category.general=一般
 cloth_config.voicechat.category.audio=音效
 cloth_config.voicechat.category.hud_icons=語音聊天 HUD
-cloth_config.voicechat.category.group_chat_icons=群組聊天 HUD
 cloth_config.voicechat.category.ingame_menu=遊戲內選單
 cloth_config.voicechat.config.recording_destination=錄音儲存路徑
 cloth_config.voicechat.config.recording_destination.description=錄音儲存的位置。\n留空為預設位置。

@@ -169,7 +169,6 @@ cloth_config.voicechat.settings=Налаштування голосового ч
 cloth_config.voicechat.category.general=Загальні
 cloth_config.voicechat.category.audio=Аудіо
 cloth_config.voicechat.category.hud_icons=Значки HUD
-cloth_config.voicechat.category.group_chat_icons=Значки групового чату
 cloth_config.voicechat.category.ingame_menu=Інші
 cloth_config.voicechat.config.recording_destination=Місце збереження запису
 cloth_config.voicechat.config.recording_destination.description=Місце, де слід зберігати записи\nЗалиште порожнім для місця за замовчуванням

@@ -135,7 +135,6 @@ cloth_config.voicechat.settings=Тавышлы чат көйләүләре
 cloth_config.voicechat.category.general=Гомуми
 cloth_config.voicechat.category.audio=Аудио
 cloth_config.voicechat.category.hud_icons=HUD тамгачыклары
-cloth_config.voicechat.category.group_chat_icons=Төркем чатының тамгачыклары
 cloth_config.voicechat.category.ingame_menu=Башка
 cloth_config.voicechat.config.recording_destination=Яздырулар урыны
 cloth_config.voicechat.config.run_local_server=Берлек уенда/Локаль дөньяларда кабызу

@@ -170,7 +170,6 @@ cloth_config.voicechat.settings=Ustawienia czatu głosowego
 cloth_config.voicechat.category.general=Ogólne
 cloth_config.voicechat.category.audio=Dźwięk
 cloth_config.voicechat.category.hud_icons=HUD czatu głosowego
-cloth_config.voicechat.category.group_chat_icons=HUD czatu grupowego
 cloth_config.voicechat.category.ingame_menu=Menu w grze
 cloth_config.voicechat.config.recording_destination=Miejsce docelowe nagrywania
 cloth_config.voicechat.config.recording_destination.description=Lokalizacja, w której mają być zapisywane nagrania.\nPozostaw puste, aby użyć domyślnej.

@@ -111,7 +111,6 @@ message.voicechat.invite_player=Invita %s a tu grupo
 cloth_config.voicechat.settings=Configuración del chat de voz
 cloth_config.voicechat.category.audio=Sonido
 cloth_config.voicechat.category.hud_icons=Íconos del menú
-cloth_config.voicechat.category.group_chat_icons=Íconos del chat grupal
 cloth_config.voicechat.category.ingame_menu=Otros
 cloth_config.voicechat.config.recording_destination=Destino de grabaciones
 cloth_config.voicechat.config.run_local_server=Ejecutar en mundos de Un jugador/LAN

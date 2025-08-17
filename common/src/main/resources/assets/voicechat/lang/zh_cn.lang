@@ -171,7 +171,6 @@ cloth_config.voicechat.settings=Voice Chat 设置
 cloth_config.voicechat.category.general=通用
 cloth_config.voicechat.category.audio=音频
 cloth_config.voicechat.category.hud_icons=HUD 图标
-cloth_config.voicechat.category.group_chat_icons=群组通话图标
 cloth_config.voicechat.category.ingame_menu=其他
 cloth_config.voicechat.config.recording_destination=录音保存位置
 cloth_config.voicechat.config.recording_destination.description=录音将保存在的位置\n留空为默认位置

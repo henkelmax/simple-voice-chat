@@ -169,7 +169,6 @@ cloth_config.voicechat.settings=음성 채팅 설정
 cloth_config.voicechat.category.general=일반
 cloth_config.voicechat.category.audio=오디오
 cloth_config.voicechat.category.hud_icons=HUD 아이콘
-cloth_config.voicechat.category.group_chat_icons=그룹 채팅 아이콘
 cloth_config.voicechat.category.ingame_menu=기타
 cloth_config.voicechat.config.recording_destination=녹음 경로
 cloth_config.voicechat.config.recording_destination.description=녹음 파일을 저장할 위치\n기본 위치로 두려면 비워 두세요

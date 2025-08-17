@@ -169,7 +169,6 @@ cloth_config.voicechat.settings=ボイスチャット設定
 cloth_config.voicechat.category.general=一般
 cloth_config.voicechat.category.audio=オーディオ
 cloth_config.voicechat.category.hud_icons=マイクアイコン
-cloth_config.voicechat.category.group_chat_icons=グループアイコン
 cloth_config.voicechat.category.ingame_menu=その他
 cloth_config.voicechat.config.recording_destination=録音の保存先
 cloth_config.voicechat.config.recording_destination.description=録音ファイルを保存するフォルダ。\n空白にするとデフォルトのフォルダに保存します。
