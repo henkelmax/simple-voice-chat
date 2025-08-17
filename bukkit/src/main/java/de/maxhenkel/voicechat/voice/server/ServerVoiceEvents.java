@@ -11,8 +11,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerHideEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerShowEntityEvent;
 
 import java.util.Map;
 import java.util.UUID;
@@ -133,6 +135,16 @@ public class ServerVoiceEvents implements Listener {
 
         server.disconnectClient(event.getPlayer().getUniqueId());
         Voicechat.LOGGER.info("Disconnecting client {}", event.getPlayer().getName());
+    }
+
+    @EventHandler
+    public void onPlayerHide(PlayerHideEntityEvent event) {
+        server.getPlayerStateManager().onPlayerHide(event);
+    }
+
+    @EventHandler
+    public void onPlayerShow(PlayerShowEntityEvent event) {
+        server.getPlayerStateManager().onPlayerShow(event);
     }
 
     public Server getServer() {
