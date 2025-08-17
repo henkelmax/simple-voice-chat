@@ -149,6 +149,16 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
+    public void onPlayerHide(Consumer<PlayerVisibilityEvent> onPlayerHide) {
+        // Do nothing for now
+    }
+
+    @Override
+    public void onPlayerShow(Consumer<PlayerVisibilityEvent> onPlayerShow) {
+        // Do nothing for now
+    }
+
+    @Override
     public void onPlayerCompatibilityCheckSucceeded(Consumer<ServerPlayerEntity> onPlayerCompatibilityCheckSucceeded) {
         voicechatCompatibilityCheckSucceededEvents.add(onPlayerCompatibilityCheckSucceeded);
     }
@@ -207,5 +217,10 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     @Override
     public PermissionManager createPermissionManager() {
         return new ForgePermissionManager();
+    }
+
+    @Override
+    public boolean canSee(ServerPlayer player, ServerPlayer other) {
+        return true;
     }
 }

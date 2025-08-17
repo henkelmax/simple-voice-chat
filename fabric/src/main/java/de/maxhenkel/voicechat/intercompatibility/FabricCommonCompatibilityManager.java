@@ -96,6 +96,16 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
     }
 
     @Override
+    public void onPlayerHide(Consumer<PlayerVisibilityEvent> onPlayerHide) {
+        // Do nothing for now
+    }
+
+    @Override
+    public void onPlayerShow(Consumer<PlayerVisibilityEvent> onPlayerShow) {
+        // Do nothing for now
+    }
+
+    @Override
     public void onPlayerCompatibilityCheckSucceeded(Consumer<ServerPlayerEntity> onPlayerCompatibilityCheckSucceeded) {
         ServerVoiceChatEvents.VOICECHAT_COMPATIBILITY_CHECK_SUCCEEDED.register(onPlayerCompatibilityCheckSucceeded);
     }
@@ -138,6 +148,11 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
     @Override
     public PermissionManager createPermissionManager() {
         return new FabricPermissionManager();
+    }
+
+    @Override
+    public boolean canSee(ServerPlayer player, ServerPlayer other) {
+        return true;
     }
 
 }

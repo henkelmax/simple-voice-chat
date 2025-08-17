@@ -47,6 +47,10 @@ public abstract class CommonCompatibilityManager {
 
     public abstract void onPlayerLoggedOut(Consumer<ServerPlayerEntity> onPlayerLoggedOut);
 
+    public abstract void onPlayerHide(Consumer<PlayerVisibilityEvent> onPlayerHide);
+
+    public abstract void onPlayerShow(Consumer<PlayerVisibilityEvent> onPlayerShow);
+
     public abstract void onPlayerCompatibilityCheckSucceeded(Consumer<ServerPlayerEntity> onPlayerCompatibilityCheckSucceeded);
 
     public abstract void onRegisterServerCommands(Consumer<CommandDispatcher<CommandSource>> onRegisterServerCommands);
@@ -77,6 +81,27 @@ public abstract class CommonCompatibilityManager {
 
     public Object createRawApiLevel(ServerWorld level) {
         return level;
+    }
+
+    public abstract boolean canSee(ServerPlayer player, ServerPlayer other);
+
+    public static class PlayerVisibilityEvent {
+
+        private final ServerPlayer visibilityChangedPlayer;
+        private final ServerPlayer observingPlayer;
+
+        public PlayerVisibilityEvent(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
+            this.visibilityChangedPlayer = visibilityChangedPlayer;
+            this.observingPlayer = observingPlayer;
+        }
+
+        public ServerPlayer getVisibilityChangedPlayer() {
+            return visibilityChangedPlayer;
+        }
+
+        public ServerPlayer getObservingPlayer() {
+            return observingPlayer;
+        }
     }
 
 }
