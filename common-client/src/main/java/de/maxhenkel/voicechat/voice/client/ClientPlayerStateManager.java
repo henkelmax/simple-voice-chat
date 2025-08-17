@@ -72,7 +72,7 @@ public class ClientPlayerStateManager {
             JoinGroupList.update();
             GroupList.update();
         });
-        ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().removePlayerStateChannel, (player, packet) -> {
+        ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().removePlayerStateChannel, (client, handler, packet) -> {
             states.remove(packet.getId());
             Voicechat.LOGGER.debug("Removed state {}", packet.getId());
             AdjustVolumeList.update();
