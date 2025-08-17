@@ -62,12 +62,19 @@ public class ClientPlayerStateManager {
             GroupList.update();
         });
         ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel, (player, packet) -> {
-            states = packet.getPlayerStates();
+            states = packet.getPlayerStates().stream().collect(Collectors.toMap(PlayerState::getUuid, p -> p));
             Voicechat.LOGGER.debug("Received {} state(s)", states.size());
             for (PlayerState state : states.values()) {
                 VoicechatClient.USERNAME_CACHE.updateUsername(state.getUuid(), state.getName());
             }
             VoicechatClient.USERNAME_CACHE.save();
+            AdjustVolumeList.update();
+            JoinGroupList.update();
+            GroupList.update();
+        });
+        ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().removePlayerStateChannel, (player, packet) -> {
+            states.remove(packet.getId());
+            Voicechat.LOGGER.debug("Removed state {}", packet.getId());
             AdjustVolumeList.update();
             JoinGroupList.update();
             GroupList.update();
