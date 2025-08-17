@@ -21,6 +21,17 @@ public class ClientPluginManager {
         this.pluginManager = pluginManager;
     }
 
+    /**
+     * We are caching the event to avoid creating a new one every frame
+     */
+    private final NameTagIconRenderEventImpl cachedRenderEvent = new NameTagIconRenderEventImpl();
+
+    public boolean shouldRenderPlayerIcons(UUID entityId) {
+        cachedRenderEvent.setEntityId(entityId);
+        cachedRenderEvent.setCancelled(false);
+        return !pluginManager.dispatchEvent(NameTagIconRenderEvent.class, cachedRenderEvent);
+    }
+
     public ClientVoicechatSocket getClientSocketImplementation() {
         ClientVoicechatInitializationEventImpl event = new ClientVoicechatInitializationEventImpl();
         pluginManager.dispatchEvent(ClientVoicechatInitializationEvent.class, event);

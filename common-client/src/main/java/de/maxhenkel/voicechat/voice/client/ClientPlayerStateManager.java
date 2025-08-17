@@ -124,7 +124,11 @@ public class ClientPlayerStateManager {
     }
 
     public boolean isPlayerDisabled(PlayerEntity player) {
-        PlayerState playerState = states.get(player.getUUID());
+        return isPlayerDisabled(player.getUUID());
+    }
+
+    public boolean isPlayerDisabled(UUID entityId) {
+        PlayerState playerState = states.get(entityId);
         if (playerState == null) {
             return false;
         }
@@ -133,7 +137,11 @@ public class ClientPlayerStateManager {
     }
 
     public boolean isPlayerDisconnected(PlayerEntity player) {
-        PlayerState playerState = states.get(player.getUUID());
+        return isPlayerDisconnected(player.getUUID());
+    }
+
+    public boolean isPlayerDisconnected(UUID entityId) {
+        PlayerState playerState = states.get(entityId);
         if (playerState == null) {
             return VoicechatClient.CLIENT_CONFIG.showFakePlayersDisconnected.get();
         }
