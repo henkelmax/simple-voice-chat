@@ -20,3 +20,4 @@
 - Added `VoiceDistanceEvent` to the API, so addons can implement their own custom distance logic like crouch distance
 - Added `show_nametag_icons` and `show_hud_icons` config option
 - Added `isPushToTalkKeyPressed` and `isWhisperKeyPressed` to client API
+- Added `isDisabled` and `isDisconnected` for other players to client API

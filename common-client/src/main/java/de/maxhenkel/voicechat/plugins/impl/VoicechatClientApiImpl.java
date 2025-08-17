@@ -38,13 +38,19 @@ public class VoicechatClientApiImpl extends VoicechatApiImpl implements Voicecha
     }
 
     @Override
-    public boolean isDisabled() {
-        return ClientManager.getPlayerStateManager().isDisabled();
+    public boolean isDisabled(@Nullable UUID playerId) {
+        if (playerId == null) {
+            return ClientManager.getPlayerStateManager().isDisabled();
+        }
+        return ClientManager.getPlayerStateManager().isPlayerDisabled(playerId);
     }
 
     @Override
-    public boolean isDisconnected() {
-        return ClientManager.getPlayerStateManager().isDisconnected();
+    public boolean isDisconnected(@Nullable UUID playerId) {
+        if (playerId == null) {
+            return ClientManager.getPlayerStateManager().isDisconnected();
+        }
+        return ClientManager.getPlayerStateManager().isPlayerDisconnected(playerId);
     }
 
     @Override
