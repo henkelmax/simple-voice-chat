@@ -171,7 +171,6 @@
   "cloth_config.voicechat.category.general": "Genel",
   "cloth_config.voicechat.category.audio": "Ses",
   "cloth_config.voicechat.category.hud_icons": "HUD Simgeleri",
-  "cloth_config.voicechat.category.group_chat_icons": "Grup Sohbeti Simgeleri",
   "cloth_config.voicechat.category.ingame_menu": "Diğer",
   "cloth_config.voicechat.config.recording_destination": "Kayıt konumu",
   "cloth_config.voicechat.config.recording_destination.description": "Kayıtların kayıt edileceği konum\nVarsayılan konum için boş bırakın",
