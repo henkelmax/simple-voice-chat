@@ -241,8 +241,8 @@ public class PluginManager {
         ));
     }
 
-    public float getDistance(ServerPlayer sender, PlayerState senderState, MicPacket packet, float originalDistance) {
-        VoiceDistanceEventImpl event = new VoiceDistanceEventImpl(new MicrophonePacketImpl(packet, sender.getUUID()), new VoicechatConnectionImpl(sender, senderState), originalDistance);
+    public float getDistance(EntityPlayerMP sender, PlayerState senderState, MicPacket packet, float originalDistance) {
+        VoiceDistanceEventImpl event = new VoiceDistanceEventImpl(new MicrophonePacketImpl(packet, sender.getUniqueID()), new VoicechatConnectionImpl(sender, senderState), originalDistance);
         dispatchEvent(VoiceDistanceEvent.class, event);
         return event.getDistance();
     }
