@@ -44,6 +44,9 @@ public class RenderEvents {
         if (VoicechatClient.CLIENT_CONFIG.hideIcons.get()) {
             return;
         }
+        if (!VoicechatClient.CLIENT_CONFIG.showHudIcons.get()) {
+            return;
+        }
 
         ClientPlayerStateManager manager = ClientManager.getPlayerStateManager();
         ClientVoicechat client = ClientManager.getClient();
@@ -103,6 +106,9 @@ public class RenderEvents {
             return;
         }
         if (VoicechatClient.CLIENT_CONFIG.hideIcons.get()) {
+            return;
+        }
+        if (!VoicechatClient.CLIENT_CONFIG.showNametagIcons.get()) {
             return;
         }
         if (!(entity instanceof PlayerEntity)) {
