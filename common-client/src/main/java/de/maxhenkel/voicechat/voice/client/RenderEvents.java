@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -142,6 +143,9 @@ public class RenderEvents {
     }
 
     private void renderPlayerIcon(Player player, Component component, ResourceLocation texture, PoseStack matrixStackIn, MultiBufferSource buffer, int light) {
+        if (!ClientPluginManager.instance().shouldRenderPlayerIcons(player.getUUID())) {
+            return;
+        }
         matrixStackIn.pushPose();
         matrixStackIn.translate(0D, player.getBbHeight() + 0.5D, 0D);
         matrixStackIn.mulPose(minecraft.getEntityRenderDispatcher().cameraOrientation());
