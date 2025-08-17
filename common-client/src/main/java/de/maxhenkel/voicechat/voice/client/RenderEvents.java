@@ -69,7 +69,7 @@ public class RenderEvents {
             }
         }
 
-        if (manager.getGroupID() != null && VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()) {
+        if (manager.getGroupID() != null && VoicechatClient.CLIENT_CONFIG.showGroupHud.get()) {
             GroupChatManager.renderIcons();
         }
     }

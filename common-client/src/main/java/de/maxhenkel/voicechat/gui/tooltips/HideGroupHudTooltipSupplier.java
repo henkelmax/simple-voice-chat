@@ -24,7 +24,7 @@ public class HideGroupHudTooltipSupplier implements ImageButton.TooltipSupplier 
     public void onTooltip(ImageButton button, int mouseX, int mouseY) {
         List<String> tooltip = new ArrayList<>();
 
-        if (VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()) {
+        if (VoicechatClient.CLIENT_CONFIG.showGroupHud.get()) {
             tooltip.add(SHOW_GROUP_HUD_ENABLED.getUnformattedComponentText());
         } else {
             tooltip.add(SHOW_GROUP_HUD_DISABLED.getUnformattedComponentText());

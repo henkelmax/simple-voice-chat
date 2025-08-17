@@ -78,8 +78,8 @@ public class GroupScreen extends IngameListScreenBase {
         }, new DisableTooltipSupplier(this, stateManager));
         addButton(disable);
 
-        showHUD = new ToggleImageButton(2, guiLeft + 7 + (buttonSize + 3) * 2, buttonY, GROUP_HUD, VoicechatClient.CLIENT_CONFIG.showGroupHUD::get, button -> {
-            VoicechatClient.CLIENT_CONFIG.showGroupHUD.set(!VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()).save();
+        showHUD = new ToggleImageButton(2, guiLeft + 7 + (buttonSize + 3) * 2, buttonY, GROUP_HUD, VoicechatClient.CLIENT_CONFIG.showGroupHud::get, button -> {
+            VoicechatClient.CLIENT_CONFIG.showGroupHud.set(!VoicechatClient.CLIENT_CONFIG.showGroupHud.get()).save();
         }, new HideGroupHudTooltipSupplier(this));
         addButton(showHUD);
 
