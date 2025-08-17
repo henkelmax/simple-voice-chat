@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -132,21 +133,24 @@ public class RenderEvents {
             UUID groupId = manager.getGroup(entityId);
 
             if (client != null && client.getTalkCache().isWhispering(entityId)) {
-                renderPlayerIcon(renderState, component, WHISPER_SPEAKER_ICON, stack, vertexConsumers, light);
+                renderPlayerIcon(entityId, renderState, component, WHISPER_SPEAKER_ICON, stack, vertexConsumers, light);
             } else if (client != null && client.getTalkCache().isTalking(entityId)) {
-                renderPlayerIcon(renderState, component, SPEAKER_ICON, stack, vertexConsumers, light);
+                renderPlayerIcon(entityId, renderState, component, SPEAKER_ICON, stack, vertexConsumers, light);
             } else if (manager.isPlayerDisconnected(entityId)) {
-                renderPlayerIcon(renderState, component, DISCONNECT_ICON, stack, vertexConsumers, light);
+                renderPlayerIcon(entityId, renderState, component, DISCONNECT_ICON, stack, vertexConsumers, light);
             } else if (groupId != null && !groupId.equals(manager.getGroupID())) {
-                renderPlayerIcon(renderState, component, GROUP_ICON, stack, vertexConsumers, light);
+                renderPlayerIcon(entityId, renderState, component, GROUP_ICON, stack, vertexConsumers, light);
             } else if (manager.isPlayerDisabled(entityId)) {
-                renderPlayerIcon(renderState, component, SPEAKER_OFF_ICON, stack, vertexConsumers, light);
+                renderPlayerIcon(entityId, renderState, component, SPEAKER_OFF_ICON, stack, vertexConsumers, light);
             }
         }
     }
 
-    private void renderPlayerIcon(EntityRenderState renderState, Component component, ResourceLocation texture, PoseStack poseStack, MultiBufferSource buffer, int light) {
+    private void renderPlayerIcon(UUID entityId, EntityRenderState renderState, Component component, ResourceLocation texture, PoseStack poseStack, MultiBufferSource buffer, int light) {
         if (renderState.nameTagAttachment == null) {
+            return;
+        }
+        if (!ClientPluginManager.instance().shouldRenderPlayerIcons(entityId)) {
             return;
         }
         poseStack.pushPose();
