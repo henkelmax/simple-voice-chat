@@ -20,3 +20,4 @@
 - Added `show_nametag_icons` and `show_hud_icons` config option
 - Added `isPushToTalkKeyPressed` and `isWhisperKeyPressed` to client API
 - Added `isDisabled` and `isDisconnected` for other players to client API
+- Added `isTalking` and `isWhispering` to client API
