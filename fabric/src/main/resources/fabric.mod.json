@@ -66,8 +66,9 @@
         },
         "serverbound_112_names": {
           "voicechat:secret": "vc:secret",
-          "voicechat:player_states": "vc:player_states",
-          "voicechat:player_state": "vc:player_state",
+          "voicechat:state": "vc:state",
+          "voicechat:states": "vc:states",
+          "voicechat:remove_state": "vc:remove_state",
           "voicechat:add_group": "vc:add_group",
           "voicechat:remove_group": "vc:remove_group",
           "voicechat:joined_group": "vc:joined_group",
