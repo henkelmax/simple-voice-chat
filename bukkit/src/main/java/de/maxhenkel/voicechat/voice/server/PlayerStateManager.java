@@ -74,7 +74,7 @@ public class PlayerStateManager implements Listener {
     public void broadcastState(@Nullable Player stateOwner, PlayerState state) {
         PlayerStatePacket packet = new PlayerStatePacket(state);
         for (Player receiver : Voicechat.INSTANCE.getServer().getOnlinePlayers()) {
-            if (stateOwner != null && !receiver.canSee(stateOwner)) {
+            if (stateOwner != null && !Voicechat.compatibility.canSee(receiver, stateOwner)) {
                 continue;
             }
             NetManager.sendToClient(receiver, packet);
@@ -98,7 +98,7 @@ public class PlayerStateManager implements Listener {
             if (otherPlayer == null) {
                 continue;
             }
-            if (!player.canSee(otherPlayer)) {
+            if (!Voicechat.compatibility.canSee(player, otherPlayer)) {
                 continue;
             }
             stateList.add(state);

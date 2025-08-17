@@ -33,6 +33,8 @@ public interface Compatibility {
 
     void runTaskLater(Runnable runnable, long delay);
 
+    boolean canSee(Player player, Player other);
+
     void registerPlayerHideEvent(Consumer<PlayerHideEvent> event);
 
     void registerPlayerShowEvent(Consumer<PlayerShowEvent> event);
