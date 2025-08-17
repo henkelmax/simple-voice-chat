@@ -4,7 +4,7 @@ import de.maxhenkel.voicechat.api.events.Event;
 
 public class EventImpl implements Event {
 
-    private boolean cancelled;
+    protected boolean cancelled;
 
     @Override
     public boolean isCancellable() {
