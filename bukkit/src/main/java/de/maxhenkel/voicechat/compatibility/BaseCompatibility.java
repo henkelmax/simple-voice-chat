@@ -135,6 +135,16 @@ public abstract class BaseCompatibility implements Compatibility {
     }
 
     @Override
+    public boolean canSee(Player player, Player other) {
+        if (playerHideEntityEvent == null || playerShowEntityEvent == null) {
+            // Don't use canSee if hide and show events are missing
+            // This avoids state desyncs on older versions that have canSee but not the events
+            return true;
+        }
+        return player.canSee(other);
+    }
+
+    @Override
     public void registerPlayerHideEvent(Consumer<PlayerHideEvent> event) {
         if (playerHideEntityEvent == null) {
             return;
