@@ -217,7 +217,7 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
-    public boolean canSee(ServerPlayer player, ServerPlayer other) {
+    public boolean canSee(EntityPlayerMP player, EntityPlayerMP other) {
         return true;
     }
 }
