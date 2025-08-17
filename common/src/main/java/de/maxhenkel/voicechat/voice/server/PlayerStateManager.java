@@ -101,7 +101,7 @@ public class PlayerStateManager {
     public void onPlayerShow(CommonCompatibilityManager.PlayerVisibilityEvent event) {
         PlayerState state = states.get(event.getVisibilityChangedPlayer().getUniqueID());
         if (state == null) {
-            state = defaultDisconnectedState(event.getObservingPlayer());
+            state = defaultDisconnectedState(event.getVisibilityChangedPlayer());
         }
         PlayerStatePacket packet = new PlayerStatePacket(state);
         NetManager.sendToClient(event.getObservingPlayer(), packet);
