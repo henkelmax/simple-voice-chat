@@ -144,8 +144,9 @@ public class MicThread extends Thread {
             return null;
         }
         short[] buff = mic.read();
+        buff = denoiseIfEnabled(buff);
         adjustVolume(buff);
-        return denoiseIfEnabled(buff);
+        return buff;
     }
 
     @Nullable
