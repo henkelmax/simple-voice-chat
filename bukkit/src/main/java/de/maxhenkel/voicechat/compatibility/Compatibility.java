@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.util.Key;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
 
 public interface Compatibility {
 
@@ -31,6 +32,10 @@ public interface Compatibility {
     void scheduleSyncRepeatingTask(Runnable runnable, long delay, long period);
 
     void runTaskLater(Runnable runnable, long delay);
+
+    void registerPlayerHideEvent(Consumer<PlayerHideEvent> event);
+
+    void registerPlayerShowEvent(Consumer<PlayerShowEvent> event);
 
     @Nullable
     ArgumentType<?> playerArgument();

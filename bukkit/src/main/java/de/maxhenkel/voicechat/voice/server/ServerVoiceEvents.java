@@ -2,6 +2,8 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.BuildConstants;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.compatibility.PlayerHideEvent;
+import de.maxhenkel.voicechat.compatibility.PlayerShowEvent;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
@@ -11,10 +13,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerHideEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerShowEntityEvent;
 
 import java.util.Map;
 import java.util.UUID;
@@ -36,6 +36,9 @@ public class ServerVoiceEvents implements Listener {
         if (!Bukkit.getOnlineMode()) {
             Voicechat.LOGGER.warn("Running in offline mode - Voice chat encryption is not secure!");
         }
+
+        Voicechat.compatibility.registerPlayerHideEvent(this::onPlayerHide);
+        Voicechat.compatibility.registerPlayerShowEvent(this::onPlayerShow);
 
         server = new Server();
         server.start();
@@ -137,13 +140,11 @@ public class ServerVoiceEvents implements Listener {
         Voicechat.LOGGER.info("Disconnecting client {}", event.getPlayer().getName());
     }
 
-    @EventHandler
-    public void onPlayerHide(PlayerHideEntityEvent event) {
+    public void onPlayerHide(PlayerHideEvent event) {
         server.getPlayerStateManager().onPlayerHide(event);
     }
 
-    @EventHandler
-    public void onPlayerShow(PlayerShowEntityEvent event) {
+    public void onPlayerShow(PlayerShowEvent event) {
         server.getPlayerStateManager().onPlayerShow(event);
     }
 

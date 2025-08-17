@@ -4,8 +4,12 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.plugin.Plugin;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.util.function.Consumer;
 
@@ -18,8 +22,15 @@ public abstract class BaseCompatibility implements Compatibility {
 
     private Method addChannel;
     private Method removeChannel;
+    @Nullable
+    private Class<? extends PlayerEvent> playerHideEntityEvent;
+    @Nullable
+    private Method playerHideEntityEventGetEntity;
+    @Nullable
+    private Class<? extends PlayerEvent> playerShowEntityEvent;
+    @Nullable
+    private Method playerShowEntityEventGetEntity;
     private Consumer<Runnable> runTask;
-    private Consumer<Runnable> runDelayed;
     private TaskScheduler taskScheduler;
 
     @Override
@@ -32,6 +43,27 @@ public abstract class BaseCompatibility implements Compatibility {
         Class<?> craftPlayer = getBukkitClass("entity.CraftPlayer");
         addChannel = getMethod(craftPlayer, new String[]{"addChannel"}, new Class[]{String.class});
         removeChannel = getMethod(craftPlayer, new String[]{"removeChannel"}, new Class[]{String.class});
+
+        try {
+            Class<?> hide = ReflectionUtils.getClazz("org.bukkit.event.player.PlayerHideEntityEvent");
+            if (!PlayerEvent.class.isAssignableFrom(hide)) {
+                throw new CompatibilityReflectionException("PlayerHideEntityEvent is not a subclass of PlayerEvent");
+            }
+
+            Class<?> show = ReflectionUtils.getClazz("org.bukkit.event.player.PlayerShowEntityEvent");
+            if (!PlayerEvent.class.isAssignableFrom(show)) {
+                throw new CompatibilityReflectionException("PlayerShowEntityEvent is not a subclass of PlayerEvent");
+            }
+            playerShowEntityEventGetEntity = getMethod(show, "getEntity");
+            playerHideEntityEventGetEntity = getMethod(hide, "getEntity");
+            playerShowEntityEvent = (Class<? extends PlayerEvent>) show;
+            playerHideEntityEvent = (Class<? extends PlayerEvent>) hide;
+        } catch (CompatibilityReflectionException e) {
+            Voicechat.LOGGER.warn("Vanish plugin support is disabled");
+            Voicechat.LOGGER.warn("Failed to load vanish compatibility", e);
+            playerHideEntityEvent = null;
+            playerShowEntityEvent = null;
+        }
 
         runTask = runnable -> Bukkit.getScheduler().runTask(Voicechat.INSTANCE, runnable);
         taskScheduler = new TaskScheduler() {
@@ -100,6 +132,56 @@ public abstract class BaseCompatibility implements Compatibility {
     @Override
     public void runTaskLater(Runnable runnable, long delay) {
         taskScheduler.runTaskLater(runnable, delay);
+    }
+
+    @Override
+    public void registerPlayerHideEvent(Consumer<PlayerHideEvent> event) {
+        if (playerHideEntityEvent == null) {
+            return;
+        }
+        Bukkit.getPluginManager().registerEvent(
+                playerHideEntityEvent,
+                new Listener() {
+                },
+                EventPriority.NORMAL,
+                (listener, evt) -> {
+                    if (!evt.getClass().isAssignableFrom(playerHideEntityEvent)) {
+                        return;
+                    }
+                    PlayerEvent playerEvent = (PlayerEvent) evt;
+                    Object entityObj = call(playerHideEntityEventGetEntity, playerEvent);
+                    if (!(entityObj instanceof Player)) {
+                        return;
+                    }
+                    event.accept(new PlayerHideEvent((Player) entityObj, playerEvent.getPlayer()));
+                },
+                Voicechat.INSTANCE
+        );
+    }
+
+    @Override
+    public void registerPlayerShowEvent(Consumer<PlayerShowEvent> event) {
+        if (playerShowEntityEvent == null) {
+            return;
+        }
+        Bukkit.getPluginManager().registerEvent(
+                playerShowEntityEvent,
+                new Listener() {
+                },
+                EventPriority.NORMAL,
+                (listener, evt) -> {
+                    if (!evt.getClass().isAssignableFrom(playerShowEntityEvent)) {
+                        return;
+                    }
+                    PlayerEvent playerEvent = (PlayerEvent) evt;
+                    Object entityObj = call(playerShowEntityEventGetEntity, playerEvent);
+                    if (!(entityObj instanceof Player)) {
+                        return;
+                    }
+                    event.accept(new PlayerShowEvent((Player) entityObj, playerEvent.getPlayer()));
+                },
+                Voicechat.INSTANCE
+        );
     }
 
     @Override
