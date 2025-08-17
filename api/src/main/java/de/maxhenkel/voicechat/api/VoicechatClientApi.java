@@ -25,6 +25,18 @@ public interface VoicechatClientApi extends VoicechatApi {
      */
     boolean isDisconnected();
 
+    /**
+     * This method returns if the push to talk key is pressed, even when using voice activation.
+     *
+     * @return if the push to talk key is pressed
+     */
+    boolean isPushToTalkKeyPressed();
+
+    /**
+     * @return if the whisper key is pressed
+     */
+    boolean isWhisperKeyPressed();
+
     @Nullable
     Group getGroup();
 
@@ -41,7 +53,7 @@ public interface VoicechatClientApi extends VoicechatApi {
     /**
      * Creates a client side entity audio channel.
      *
-     * @param uuid the UUID of the entity
+     * @param uuid   the UUID of the entity
      * @param entity the entity
      * @return the audio channel
      */
