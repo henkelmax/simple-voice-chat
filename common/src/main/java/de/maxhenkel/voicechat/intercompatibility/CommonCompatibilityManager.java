@@ -45,6 +45,10 @@ public abstract class CommonCompatibilityManager {
 
     public abstract void onPlayerLoggedOut(Consumer<EntityPlayerMP> onPlayerLoggedOut);
 
+    public abstract void onPlayerHide(Consumer<PlayerVisibilityEvent> onPlayerHide);
+
+    public abstract void onPlayerShow(Consumer<PlayerVisibilityEvent> onPlayerShow);
+
     public abstract void onPlayerCompatibilityCheckSucceeded(Consumer<EntityPlayerMP> onPlayerCompatibilityCheckSucceeded);
 
     public abstract NetManager getNetManager();
@@ -71,6 +75,27 @@ public abstract class CommonCompatibilityManager {
 
     public Object createRawApiLevel(WorldServer level) {
         return level;
+    }
+
+    public abstract boolean canSee(ServerPlayer player, ServerPlayer other);
+
+    public static class PlayerVisibilityEvent {
+
+        private final ServerPlayer visibilityChangedPlayer;
+        private final ServerPlayer observingPlayer;
+
+        public PlayerVisibilityEvent(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
+            this.visibilityChangedPlayer = visibilityChangedPlayer;
+            this.observingPlayer = observingPlayer;
+        }
+
+        public ServerPlayer getVisibilityChangedPlayer() {
+            return visibilityChangedPlayer;
+        }
+
+        public ServerPlayer getObservingPlayer() {
+            return observingPlayer;
+        }
     }
 
 }

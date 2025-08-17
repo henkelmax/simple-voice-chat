@@ -34,14 +34,19 @@ public class PlayerStateManager {
 
             states.put(player.getUniqueID(), state);
 
-            broadcastState(state);
+            broadcastState(player, state);
             Voicechat.LOGGER.debug("Got state of {}: {}", player.getName(), state);
         });
     }
 
-    public void broadcastState(PlayerState state) {
+    public void broadcastState(@Nullable ServerPlayer stateOwner, PlayerState state) {
         PlayerStatePacket packet = new PlayerStatePacket(state);
-        voicechatServer.getServer().getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
+        for (ServerPlayer receiver : voicechatServer.getServer().getPlayerList().getPlayers()) {
+            if (stateOwner != null && !CommonCompatibilityManager.INSTANCE.canSee(receiver, stateOwner)) {
+                continue;
+            }
+            NetManager.sendToClient(receiver, packet);
+        }
         PluginManager.instance().onPlayerStateChanged(state);
     }
 
@@ -54,14 +59,30 @@ public class PlayerStateManager {
     public void onPlayerLoggedIn(EntityPlayerMP player) {
         PlayerState state = defaultDisconnectedState(player);
         states.put(player.getUniqueID(), state);
-        broadcastState(state);
+        broadcastState(player, state);
         Voicechat.LOGGER.debug("Setting default state of {}: {}", player.getName(), state);
     }
 
     public void onPlayerLoggedOut(EntityPlayerMP player) {
         states.remove(player.getUniqueID());
-        broadcastState(new PlayerState(player.getUniqueID(), player.getGameProfile().getName(), false, true));
+        broadcastState(player, new PlayerState(player.getUniqueID(), player.getGameProfile().getName(), false, true));
         Voicechat.LOGGER.debug("Removing state of {}", player.getName());
+    }
+
+    public void onPlayerHide(CommonCompatibilityManager.PlayerVisibilityEvent event) {
+        PlayerStatePacket packet = new PlayerStatePacket(defaultDisconnectedState(event.getVisibilityChangedPlayer()));
+        NetManager.sendToClient(event.getObservingPlayer(), packet);
+        Voicechat.LOGGER.debug("Sending hidden state of {} to {}", event.getVisibilityChangedPlayer().getName().getString(), event.getObservingPlayer().getName().getString());
+    }
+
+    public void onPlayerShow(CommonCompatibilityManager.PlayerVisibilityEvent event) {
+        PlayerState state = states.get(event.getVisibilityChangedPlayer().getUUID());
+        if (state == null) {
+            state = defaultDisconnectedState(event.getObservingPlayer());
+        }
+        PlayerStatePacket packet = new PlayerStatePacket(state);
+        NetManager.sendToClient(event.getObservingPlayer(), packet);
+        Voicechat.LOGGER.debug("Sending shown state of {} to {}", event.getVisibilityChangedPlayer().getName().getString(), event.getObservingPlayer().getName().getString());
     }
 
     public void onPlayerVoicechatDisconnect(UUID uuid) {
@@ -72,7 +93,9 @@ public class PlayerStateManager {
 
         state.setDisconnected(true);
 
-        broadcastState(state);
+        @Nullable ServerPlayer player = voicechatServer.getServer().getPlayerList().getPlayer(uuid);
+
+        broadcastState(player, state);
         Voicechat.LOGGER.debug("Set state of {} to disconnected: {}", uuid, state);
     }
 
@@ -87,7 +110,7 @@ public class PlayerStateManager {
 
         states.put(player.getUniqueID(), state);
 
-        broadcastState(state);
+        broadcastState(player, state);
         Voicechat.LOGGER.debug("Set state of {} to connected: {}", player.getName(), state);
     }
 
@@ -108,7 +131,7 @@ public class PlayerStateManager {
         }
         state.setGroup(group);
         states.put(player.getUniqueID(), state);
-        broadcastState(state);
+        broadcastState(player, state);
         Voicechat.LOGGER.debug("Setting group of {}: {}", player.getName(), state);
     }
 

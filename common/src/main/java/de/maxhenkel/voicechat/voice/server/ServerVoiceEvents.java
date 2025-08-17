@@ -28,6 +28,8 @@ public class ServerVoiceEvents {
         CommonCompatibilityManager.INSTANCE.onServerStarting(this::serverStarting);
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedIn(this::playerLoggedIn);
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::playerLoggedOut);
+        CommonCompatibilityManager.INSTANCE.onPlayerHide(this::onPlayerHide);
+        CommonCompatibilityManager.INSTANCE.onPlayerShow(this::onPlayerShow);
         CommonCompatibilityManager.INSTANCE.onServerStopping(this::serverStopping);
 
         CommonCompatibilityManager.INSTANCE.onServerVoiceChatConnected(this::serverVoiceChatConnected);
@@ -148,6 +150,22 @@ public class ServerVoiceEvents {
 
         server.onPlayerLoggedOut(player);
         Voicechat.LOGGER.info("Disconnecting client {}", player.getName());
+    }
+
+    public void onPlayerHide(CommonCompatibilityManager.PlayerVisibilityEvent event) {
+        if (server == null) {
+            return;
+        }
+
+        server.onPlayerHide(event);
+    }
+
+    public void onPlayerShow(CommonCompatibilityManager.PlayerVisibilityEvent event) {
+        if (server == null) {
+            return;
+        }
+
+        server.onPlayerShow(event);
     }
 
     public void serverVoiceChatConnected(EntityPlayerMP serverPlayer) {
