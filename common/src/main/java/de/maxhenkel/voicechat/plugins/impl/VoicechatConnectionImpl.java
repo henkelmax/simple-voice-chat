@@ -95,7 +95,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
             return;
         }
         actualState.setDisconnected(!connected);
-        manager.broadcastState(actualState);
+        manager.broadcastState(null, actualState);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
             return;
         }
         actualState.setDisabled(disabled);
-        manager.broadcastState(actualState);
+        manager.broadcastState(null, actualState);
     }
 
     @Override

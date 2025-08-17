@@ -84,6 +84,16 @@ public class NeoForgeCommonCompatibilityManager extends CommonCompatibilityManag
     }
 
     @Override
+    public void onPlayerHide(Consumer<PlayerVisibilityEvent> onPlayerHide) {
+        // Do nothing for now
+    }
+
+    @Override
+    public void onPlayerShow(Consumer<PlayerVisibilityEvent> onPlayerShow) {
+        // Do nothing for now
+    }
+
+    @Override
     public String getModVersion() {
         return ModList.get().getModFileById(Voicechat.MODID).versionString();
     }
@@ -205,5 +215,10 @@ public class NeoForgeCommonCompatibilityManager extends CommonCompatibilityManag
     @Override
     public PermissionManager createPermissionManager() {
         return new NeoForgePermissionManager();
+    }
+
+    @Override
+    public boolean canSee(ServerPlayer player, ServerPlayer other) {
+        return true;
     }
 }
