@@ -84,8 +84,8 @@ public class GroupScreen extends ListScreenBase {
         }, new DisableTooltipSupplier(this, stateManager));
         addRenderableWidget(disable);
 
-        showHUD = new ToggleImageButton(guiLeft + 7 + (buttonSize + 3) * 2, buttonY, GROUP_HUD, VoicechatClient.CLIENT_CONFIG.showGroupHUD::get, button -> {
-            VoicechatClient.CLIENT_CONFIG.showGroupHUD.set(!VoicechatClient.CLIENT_CONFIG.showGroupHUD.get()).save();
+        showHUD = new ToggleImageButton(guiLeft + 7 + (buttonSize + 3) * 2, buttonY, GROUP_HUD, VoicechatClient.CLIENT_CONFIG.showGroupHud::get, button -> {
+            VoicechatClient.CLIENT_CONFIG.showGroupHud.set(!VoicechatClient.CLIENT_CONFIG.showGroupHud.get()).save();
         }, new HideGroupHudTooltipSupplier(this));
         addRenderableWidget(showHUD);
 
