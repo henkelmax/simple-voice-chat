@@ -13,6 +13,7 @@ apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mo
 processResources {
     filesMatching('**/*.toml') {
         expand 'mod_version': mod_version,
+                'api_version': project(':api').version,
                 'forge_dependency': forge_dependency,
                 'minecraft_version': minecraft_version,
                 'cloth_config_version': cloth_config_version
