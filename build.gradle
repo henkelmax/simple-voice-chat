@@ -31,6 +31,6 @@ tasks.register('03-publishNeoForge') {
 tasks.register('04-publishFabric') {
     group = 'voicechat'
     doLast {
-        runGradleTasks(['common:clean', 'common-client:clean', 'fabric:clean'], ['fabric:curseforge', 'fabric:modrinth', 'fabric:modUpdate'])
+        runGradleTasks(['common:clean', 'common-client:clean', 'fabric:clean', 'fabric:api-stub:clean'], ['fabric:curseforge', 'fabric:modrinth', 'fabric:modUpdate'])
     }
 }
