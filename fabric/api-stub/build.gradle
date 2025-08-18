@@ -1,0 +1,8 @@
+archivesBaseName = 'voicechat-api'
+version = project(':api').version
+
+processResources {
+    filesMatching('fabric.mod.json') {
+        expand 'api_version': version
+    }
+}
