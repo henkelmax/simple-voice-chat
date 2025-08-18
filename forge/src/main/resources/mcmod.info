@@ -12,5 +12,18 @@
     "logoFile": "icon.png",
     "screenshots": [],
     "dependencies": []
+  },
+  {
+    "modid": "voicechat_api",
+    "name": "Simple Voice Chat API",
+    "description": "The Simple Voice Chat API",
+    "version": "${api_version}",
+    "mcversion": "${minecraft_version}",
+    "url": "https://voicechat.modrepo.de/",
+    "authorList": ["Max Henkel"],
+    "credits": "",
+    "logoFile": "icon.png",
+    "screenshots": [],
+    "dependencies": []
   }
 ]
