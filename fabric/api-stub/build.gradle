@@ -1,6 +1,9 @@
 archivesBaseName = 'voicechat-api'
 version = project(':api').version
 
+sourceCompatibility = JavaLanguageVersion.of(8)
+targetCompatibility = JavaLanguageVersion.of(8)
+
 processResources {
     filesMatching('fabric.mod.json') {
         expand 'api_version': version
