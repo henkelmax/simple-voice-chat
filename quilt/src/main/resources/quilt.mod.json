@@ -4,6 +4,12 @@
     "group": "de.maxhenkel.voicechat",
     "id": "voicechat",
     "version": "${mod_version}",
+    "provides": [
+      {
+        "id": "voicechat_api",
+        "version": "${api_version}"
+      }
+    ],
     "intermediate_mappings": "net.fabricmc:intermediary",
     "metadata": {
       "name": "Simple Voice Chat",
