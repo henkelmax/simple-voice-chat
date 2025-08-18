@@ -12,6 +12,15 @@ logoFile = "icon.png"
 authors = "Max Henkel"
 description = '''A working voice chat in Minecraft!'''
 displayTest = "NONE"
+[[mods]]
+modId = "voicechat_api"
+version = "${api_version}"
+displayName = "Simple Voice Chat API"
+displayURL = "https://voicechat.modrepo.de/"
+logoFile = "icon.png"
+authors = "Max Henkel"
+description = '''The Simple Voice Chat API'''
+displayTest = "NONE"
 [[dependencies.voicechat]]
 modId = "neoforge"
 type = "required"
