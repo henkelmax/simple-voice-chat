@@ -68,6 +68,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         addRenderableWidget(new MicActivationButton(guiLeft + 10, y, xSize - 20, 20, type -> {
             voiceActivationSlider.visible = MicrophoneActivationType.VOICE.equals(type);
             keybindButton.visible = MicrophoneActivationType.PTT.equals(type);
+            keybindButton.resetListening();
         }));
 
         addRenderableWidget(micTestButton);
