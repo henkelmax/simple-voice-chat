@@ -38,9 +38,15 @@ public class VanishIntegration {
             me.drex.vanish.api.VanishEvents.VANISH_EVENT.register((vanishPlayer, vanish) -> {
                 for (ServerPlayer player : vanishPlayer.getServer().getPlayerList().getPlayers()) {
                     if (vanish) {
-                        VanishEvents.ON_VANISH.invoker().accept(new CommonCompatibilityManager.PlayerVisibilityEvent(vanishPlayer, player));
+                        if (CommonCompatibilityManager.INSTANCE.canSee(player, vanishPlayer)) {
+                            continue;
+                        }
+                        VanishEvents.ON_VANISH.invoker().accept(vanishPlayer, player);
                     } else {
-                        VanishEvents.ON_UNVANISH.invoker().accept(new CommonCompatibilityManager.PlayerVisibilityEvent(vanishPlayer, player));
+                        if (!CommonCompatibilityManager.INSTANCE.canSee(player, vanishPlayer)) {
+                            continue;
+                        }
+                        VanishEvents.ON_UNVANISH.invoker().accept(vanishPlayer, player);
                     }
                 }
             });
