@@ -5,6 +5,8 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.events.PlayerEvents;
 import de.maxhenkel.voicechat.events.ServerVoiceChatEvents;
+import de.maxhenkel.voicechat.events.VanishEvents;
+import de.maxhenkel.voicechat.integration.vanish.VanishIntegration;
 import de.maxhenkel.voicechat.net.FabricNetManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.FabricPermissionManager;
@@ -97,12 +99,12 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
 
     @Override
     public void onPlayerHide(Consumer<PlayerVisibilityEvent> onPlayerHide) {
-        // Do nothing for now
+        VanishEvents.ON_VANISH.register(onPlayerHide);
     }
 
     @Override
     public void onPlayerShow(Consumer<PlayerVisibilityEvent> onPlayerShow) {
-        // Do nothing for now
+        VanishEvents.ON_UNVANISH.register(onPlayerShow);
     }
 
     @Override
@@ -152,7 +154,7 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
 
     @Override
     public boolean canSee(ServerPlayer player, ServerPlayer other) {
-        return true;
+        return VanishIntegration.canSee(player, other);
     }
 
 }
