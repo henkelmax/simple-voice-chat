@@ -22,7 +22,7 @@ public class MicActivator {
         boolean aboveThreshold = AudioUtils.isAboveThreshold(audio, VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get());
         if (activating) {
             if (!aboveThreshold) {
-                if (deactivationDelay >= VoicechatClient.CLIENT_CONFIG.deactivationDelay.get()) {
+                if (deactivationDelay >= VoicechatClient.CLIENT_CONFIG.voiceDeactivationDelay.get()) {
                     stopActivating();
                 } else {
                     audioConsumer.accept(audio);
