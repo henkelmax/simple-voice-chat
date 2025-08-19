@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class QuiltCommonCompatibilityManager extends CommonCompatibilityManager {
@@ -97,12 +98,12 @@ public class QuiltCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
-    public void onPlayerHide(Consumer<PlayerVisibilityEvent> onPlayerHide) {
+    public void onPlayerHide(BiConsumer<ServerPlayer, ServerPlayer> onPlayerHide) {
         // Do nothing for now
     }
 
     @Override
-    public void onPlayerShow(Consumer<PlayerVisibilityEvent> onPlayerShow) {
+    public void onPlayerShow(BiConsumer<ServerPlayer, ServerPlayer> onPlayerShow) {
         // Do nothing for now
     }
 

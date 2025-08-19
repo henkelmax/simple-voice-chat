@@ -1,22 +1,22 @@
 package de.maxhenkel.voicechat.events;
 
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.server.level.ServerPlayer;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class VanishEvents {
 
-    public static final Event<Consumer<CommonCompatibilityManager.PlayerVisibilityEvent>> ON_VANISH = EventFactory.createArrayBacked(Consumer.class, (listeners) -> (evt) -> {
-        for (Consumer<CommonCompatibilityManager.PlayerVisibilityEvent> listener : listeners) {
-            listener.accept(evt);
+    public static final Event<BiConsumer<ServerPlayer, ServerPlayer>> ON_VANISH = EventFactory.createArrayBacked(BiConsumer.class, (listeners) -> (visibilityChangedPlayer, observingPlayer) -> {
+        for (BiConsumer<ServerPlayer, ServerPlayer> listener : listeners) {
+            listener.accept(visibilityChangedPlayer, observingPlayer);
         }
     });
 
-    public static final Event<Consumer<CommonCompatibilityManager.PlayerVisibilityEvent>> ON_UNVANISH = EventFactory.createArrayBacked(Consumer.class, (listeners) -> (evt) -> {
-        for (Consumer<CommonCompatibilityManager.PlayerVisibilityEvent> listener : listeners) {
-            listener.accept(evt);
+    public static final Event<BiConsumer<ServerPlayer, ServerPlayer>> ON_UNVANISH = EventFactory.createArrayBacked(BiConsumer.class, (listeners) -> (visibilityChangedPlayer, observingPlayer) -> {
+        for (BiConsumer<ServerPlayer, ServerPlayer> listener : listeners) {
+            listener.accept(visibilityChangedPlayer, observingPlayer);
         }
     });
 
