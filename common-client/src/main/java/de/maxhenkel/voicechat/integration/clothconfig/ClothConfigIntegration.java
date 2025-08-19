@@ -42,7 +42,8 @@ public class ClothConfigIntegration {
 
         ConfigCategory audio = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.voicechat.category.audio"));
         audio.addEntry(fromConfigEntry(entryBuilder, VoicechatClient.CLIENT_CONFIG.audioPacketThreshold));
-        audio.addEntry(fromConfigEntry(entryBuilder, VoicechatClient.CLIENT_CONFIG.deactivationDelay));
+        audio.addEntry(fromConfigEntry(entryBuilder, VoicechatClient.CLIENT_CONFIG.voiceDeactivationDelay));
+        audio.addEntry(fromConfigEntry(entryBuilder, VoicechatClient.CLIENT_CONFIG.pttDeactivationDelay));
         audio.addEntry(fromConfigEntry(entryBuilder, VoicechatClient.CLIENT_CONFIG.outputBufferSize));
 
         ConfigCategory hudIcons = builder.getOrCreateCategory(new TranslatableComponent("cloth_config.voicechat.category.hud_icons"));
