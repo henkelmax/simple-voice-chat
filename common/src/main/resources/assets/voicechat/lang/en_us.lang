@@ -192,6 +192,8 @@ cloth_config.voicechat.config.audio_packet_threshold=Audio packet threshold
 cloth_config.voicechat.config.audio_packet_threshold.description=The maximum number of audio packets that should be held back if a packet arrives out of order or is dropped.\nThis prevents audio packets that are only slightly out of order from being discarded.\nSet this to 0 to disable.
 cloth_config.voicechat.config.voice_deactivation_delay=Microphone deactivation delay
 cloth_config.voicechat.config.voice_deactivation_delay.description=The time it takes for the microphone to deactivate when using voice activation.\nA value of 1 means 20 milliseconds, 2=40 ms, 3=60 ms, and so on.
+cloth_config.voicechat.config.ptt_deactivation_delay=Push to talk deactivation delay
+cloth_config.voicechat.config.ptt_deactivation_delay.description=The time it takes for the microphone to deactivate when using push to talk.\nA value of 1 means 20 milliseconds, 2=40 ms, 3=60 ms, and so on.
 cloth_config.voicechat.config.output_buffer_size=Output buffer size
 cloth_config.voicechat.config.output_buffer_size.description=The size of the audio output buffer (in packets).\nHigher values mean a higher latency but less crackling.\nIncrease this value if you have an unstable internet connection.
 cloth_config.voicechat.config.show_nametag_icons=Show voice chat name tag icons

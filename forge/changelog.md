@@ -22,3 +22,4 @@
 - Added `isDisabled` and `isDisconnected` for other players to client API
 - Added `isTalking` and `isWhispering` to client API
 - Added `NameTagIconRenderEvent` to the client API allowing addons to modify or remove the nametag icons
+- Added `ptt_deactivation_delay` config option
