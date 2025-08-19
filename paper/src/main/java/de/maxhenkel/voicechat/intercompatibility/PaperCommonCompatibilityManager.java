@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class PaperCommonCompatibilityManager extends CommonCompatibilityManager implements Listener {
@@ -40,8 +41,8 @@ public class PaperCommonCompatibilityManager extends CommonCompatibilityManager 
     private final List<Consumer<CommandDispatcher<CommandSourceStack>>> registerServerCommandsEvents;
     private final List<Consumer<ServerPlayer>> playerLoggedInEvents;
     private final List<Consumer<ServerPlayer>> playerLoggedOutEvents;
-    private final List<Consumer<PlayerVisibilityEvent>> playerHideEvents;
-    private final List<Consumer<PlayerVisibilityEvent>> playerShowEvents;
+    private final List<BiConsumer<ServerPlayer, ServerPlayer>> playerHideEvents;
+    private final List<BiConsumer<ServerPlayer, ServerPlayer>> playerShowEvents;
     private final List<Consumer<ServerPlayer>> voicechatConnectEvents;
     private final List<Consumer<ServerPlayer>> voicechatCompatibilityCheckSucceededEvents;
     private final List<Consumer<UUID>> voicechatDisconnectEvents;
@@ -99,7 +100,7 @@ public class PaperCommonCompatibilityManager extends CommonCompatibilityManager 
         ServerPlayer hiddenPlayer = BukkitUtils.getPlayer((org.bukkit.entity.Player) event.getEntity());
         ServerPlayer player = BukkitUtils.getPlayer(event.getPlayer());
 
-        playerHideEvents.forEach(consumer -> consumer.accept(new PlayerVisibilityEvent(hiddenPlayer, player)));
+        playerHideEvents.forEach(consumer -> consumer.accept(hiddenPlayer, player));
     }
 
     @EventHandler
@@ -110,7 +111,7 @@ public class PaperCommonCompatibilityManager extends CommonCompatibilityManager 
         ServerPlayer shownPlayer = BukkitUtils.getPlayer((org.bukkit.entity.Player) event.getEntity());
         ServerPlayer player = BukkitUtils.getPlayer(event.getPlayer());
 
-        playerShowEvents.forEach(consumer -> consumer.accept(new PlayerVisibilityEvent(shownPlayer, player)));
+        playerShowEvents.forEach(consumer -> consumer.accept(shownPlayer, player));
     }
 
     @Override
@@ -174,12 +175,12 @@ public class PaperCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
-    public void onPlayerHide(Consumer<PlayerVisibilityEvent> onPlayerHide) {
+    public void onPlayerHide(BiConsumer<ServerPlayer, ServerPlayer> onPlayerHide) {
         playerHideEvents.add(onPlayerHide);
     }
 
     @Override
-    public void onPlayerShow(Consumer<PlayerVisibilityEvent> onPlayerShow) {
+    public void onPlayerShow(BiConsumer<ServerPlayer, ServerPlayer> onPlayerShow) {
         playerShowEvents.add(onPlayerShow);
     }
 
