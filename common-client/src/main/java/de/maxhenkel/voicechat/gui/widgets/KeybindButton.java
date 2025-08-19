@@ -103,4 +103,9 @@ public class KeybindButton extends AbstractButton {
     public boolean isListening() {
         return listening;
     }
+
+    public void resetListening() {
+        listening = false;
+        updateText();
+    }
 }
