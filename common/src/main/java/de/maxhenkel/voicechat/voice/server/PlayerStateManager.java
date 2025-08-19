@@ -92,20 +92,20 @@ public class PlayerStateManager {
         Voicechat.LOGGER.debug("Removing state of {}", player.getName().getString());
     }
 
-    public void onPlayerHide(CommonCompatibilityManager.PlayerVisibilityEvent event) {
-        RemovePlayerStatePacket packet = new RemovePlayerStatePacket(event.getVisibilityChangedPlayer().getUUID());
-        NetManager.sendToClient(event.getObservingPlayer(), packet);
-        Voicechat.LOGGER.debug("Removing state of {} for {}", event.getVisibilityChangedPlayer().getName().getString(), event.getObservingPlayer().getName().getString());
+    public void onPlayerHide(ServerPlayerEntity visibilityChangedPlayer, ServerPlayerEntity observingPlayer) {
+        RemovePlayerStatePacket packet = new RemovePlayerStatePacket(visibilityChangedPlayer.getUUID());
+        NetManager.sendToClient(observingPlayer, packet);
+        Voicechat.LOGGER.debug("Removing state of {} for {}", visibilityChangedPlayer.getName().getString(), observingPlayer.getName().getString());
     }
 
-    public void onPlayerShow(CommonCompatibilityManager.PlayerVisibilityEvent event) {
-        PlayerState state = states.get(event.getVisibilityChangedPlayer().getUUID());
+    public void onPlayerShow(ServerPlayerEntity visibilityChangedPlayer, ServerPlayerEntity observingPlayer) {
+        PlayerState state = states.get(visibilityChangedPlayer.getUUID());
         if (state == null) {
-            state = defaultDisconnectedState(event.getVisibilityChangedPlayer());
+            state = defaultDisconnectedState(visibilityChangedPlayer);
         }
         PlayerStatePacket packet = new PlayerStatePacket(state);
-        NetManager.sendToClient(event.getObservingPlayer(), packet);
-        Voicechat.LOGGER.debug("Sending state of {} to {}", event.getVisibilityChangedPlayer().getName().getString(), event.getObservingPlayer().getName().getString());
+        NetManager.sendToClient(observingPlayer, packet);
+        Voicechat.LOGGER.debug("Sending state of {} to {}", visibilityChangedPlayer.getName().getString(), observingPlayer.getName().getString());
     }
 
     public void onPlayerVoicechatDisconnect(UUID uuid) {

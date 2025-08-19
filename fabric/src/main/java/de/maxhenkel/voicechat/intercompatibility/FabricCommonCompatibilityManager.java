@@ -23,6 +23,7 @@ import net.minecraft.server.MinecraftServer;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -97,12 +98,12 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
     }
 
     @Override
-    public void onPlayerHide(Consumer<PlayerVisibilityEvent> onPlayerHide) {
+    public void onPlayerHide(BiConsumer<ServerPlayerEntity, ServerPlayerEntity> onPlayerHide) {
         VanishEvents.ON_VANISH.register(onPlayerHide);
     }
 
     @Override
-    public void onPlayerShow(Consumer<PlayerVisibilityEvent> onPlayerShow) {
+    public void onPlayerShow(BiConsumer<ServerPlayerEntity, ServerPlayerEntity> onPlayerShow) {
         VanishEvents.ON_UNVANISH.register(onPlayerShow);
     }
 

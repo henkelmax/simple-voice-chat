@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager {
@@ -149,12 +150,12 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
-    public void onPlayerHide(Consumer<PlayerVisibilityEvent> onPlayerHide) {
+    public void onPlayerHide(BiConsumer<ServerPlayerEntity, ServerPlayerEntity> onPlayerHide) {
         // Do nothing for now
     }
 
     @Override
-    public void onPlayerShow(Consumer<PlayerVisibilityEvent> onPlayerShow) {
+    public void onPlayerShow(BiConsumer<ServerPlayerEntity, ServerPlayerEntity> onPlayerShow) {
         // Do nothing for now
     }
 
