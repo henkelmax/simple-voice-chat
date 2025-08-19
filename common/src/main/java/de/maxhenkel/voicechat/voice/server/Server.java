@@ -85,12 +85,12 @@ public class Server extends Thread {
         groupManager.onPlayerLoggedOut(player);
     }
 
-    public void onPlayerHide(CommonCompatibilityManager.PlayerVisibilityEvent event) {
-        playerStateManager.onPlayerHide(event);
+    public void onPlayerHide(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
+        playerStateManager.onPlayerHide(visibilityChangedPlayer, observingPlayer);
     }
 
-    public void onPlayerShow(CommonCompatibilityManager.PlayerVisibilityEvent event) {
-        playerStateManager.onPlayerShow(event);
+    public void onPlayerShow(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
+        playerStateManager.onPlayerShow(visibilityChangedPlayer, observingPlayer);
     }
 
     public void onPlayerVoicechatConnect(ServerPlayer player) {
