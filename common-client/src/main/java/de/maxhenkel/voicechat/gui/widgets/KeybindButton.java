@@ -91,4 +91,9 @@ public class KeybindButton extends ButtonBase {
     public boolean isListening() {
         return listening;
     }
+
+    public void resetListening() {
+        listening = false;
+        updateText();
+    }
 }
