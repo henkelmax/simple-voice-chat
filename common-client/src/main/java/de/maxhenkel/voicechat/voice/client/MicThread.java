@@ -73,7 +73,7 @@ public class MicThread extends Thread {
             }
             if (microphoneLocked || ClientManager.getPlayerStateManager().isDisabled()) {
                 micActivator.stopActivating();
-                wasPTT = false;
+                resetPtt();
                 wasWhispering = false;
                 flushIfNeeded();
 
@@ -133,7 +133,7 @@ public class MicThread extends Thread {
     private final MicActivator micActivator = new MicActivator();
 
     private boolean voice(short[] audio) {
-        wasPTT = false;
+        resetPtt();
 
         if (ClientManager.getPlayerStateManager().isMuted()) {
             micActivator.stopActivating();
@@ -146,21 +146,41 @@ public class MicThread extends Thread {
         return micActivator.push(audio, a -> sendAudio(a, wasWhispering));
     }
 
-    private volatile boolean wasPTT;
+    private boolean wasPTT;
+    private boolean wasPTTActivating;
+    private int pttDeactivation;
 
     private boolean ptt(short[] audio) {
         micActivator.stopActivating();
+
         if (!ClientManager.getPttKeyHandler().isAnyDown()) {
             if (wasPTT) {
-                wasPTT = false;
-                wasWhispering = false;
+                pttDeactivation = VoicechatClient.CLIENT_CONFIG.pttDeactivationDelay.get();
             }
-            return false;
+            if (pttDeactivation <= 0) {
+                if (wasPTTActivating) {
+                    wasPTTActivating = false;
+                    wasWhispering = false;
+                }
+                return false;
+            } else {
+                pttDeactivation--;
+            }
+            wasPTT = false;
+        } else {
+            wasPTT = true;
         }
-        wasPTT = true;
+        wasPTTActivating = true;
+
         wasWhispering = ClientManager.getPttKeyHandler().isWhisperDown();
         sendAudio(audio, wasWhispering);
         return true;
+    }
+
+    private void resetPtt() {
+        wasPTT = false;
+        wasPTTActivating = false;
+        pttDeactivation = 0;
     }
 
     public void adjustVolume(short[] audio) {
@@ -228,7 +248,7 @@ public class MicThread extends Thread {
     }
 
     public boolean isTalking() {
-        return !microphoneLocked && (micActivator.isActivating() || wasPTT);
+        return !microphoneLocked && (micActivator.isActivating() || wasPTTActivating);
     }
 
     public boolean isWhispering() {
@@ -238,7 +258,7 @@ public class MicThread extends Thread {
     public void setMicrophoneLocked(boolean microphoneLocked) {
         this.microphoneLocked = microphoneLocked;
         micActivator.stopActivating();
-        wasPTT = false;
+        resetPtt();
     }
 
     public void close() {

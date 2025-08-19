@@ -21,7 +21,8 @@ public class ClientConfig {
     public ConfigEntry<MicrophoneActivationType> microphoneActivationType;
     public ConfigEntry<Integer> outputBufferSize;
     public ConfigEntry<Integer> audioPacketThreshold;
-    public ConfigEntry<Integer> deactivationDelay;
+    public ConfigEntry<Integer> voiceDeactivationDelay;
+    public ConfigEntry<Integer> pttDeactivationDelay;
     public ConfigEntry<String> microphone;
     public ConfigEntry<String> speaker;
     public ConfigEntry<Boolean> muted;
@@ -91,9 +92,14 @@ public class ClientConfig {
                         "This prevents audio packets that are only slightly out of order from being discarded",
                         "Set this to 0 to disable"
                 );
-        deactivationDelay = builder
+        voiceDeactivationDelay = builder
                 .integerEntry("voice_deactivation_delay", 25, 0, 100,
                         "The time it takes for the microphone to deactivate when using voice activation",
+                        "A value of 1 means 20 milliseconds, 2=40 ms, 3=60 ms, and so on"
+                );
+        pttDeactivationDelay = builder
+                .integerEntry("ptt_deactivation_delay", 5, 0, 100,
+                        "The time it takes for the microphone to deactivate when using push to talk",
                         "A value of 1 means 20 milliseconds, 2=40 ms, 3=60 ms, and so on"
                 );
         microphone = builder
