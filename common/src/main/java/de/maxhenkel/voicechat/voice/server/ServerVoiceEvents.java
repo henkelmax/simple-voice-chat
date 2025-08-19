@@ -154,20 +154,20 @@ public class ServerVoiceEvents {
         Voicechat.LOGGER.info("Disconnecting client {}", player.getName().getString());
     }
 
-    public void onPlayerHide(CommonCompatibilityManager.PlayerVisibilityEvent event) {
+    public void onPlayerHide(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
         if (server == null) {
             return;
         }
 
-        server.onPlayerHide(event);
+        server.onPlayerHide(visibilityChangedPlayer, observingPlayer);
     }
 
-    public void onPlayerShow(CommonCompatibilityManager.PlayerVisibilityEvent event) {
+    public void onPlayerShow(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
         if (server == null) {
             return;
         }
 
-        server.onPlayerShow(event);
+        server.onPlayerShow(visibilityChangedPlayer, observingPlayer);
     }
 
     public void serverVoiceChatConnected(ServerPlayer serverPlayer) {
