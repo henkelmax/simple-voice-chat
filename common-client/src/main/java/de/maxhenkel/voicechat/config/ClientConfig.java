@@ -2,7 +2,9 @@ package de.maxhenkel.voicechat.config;
 
 import com.sun.jna.Platform;
 import de.maxhenkel.configbuilder.ConfigBuilder;
+import de.maxhenkel.configbuilder.MigratableConfig;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.integration.freecam.FreecamMode;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.VersionCheck;
@@ -14,6 +16,9 @@ import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
 public class ClientConfig {
 
+    private static final int CONFIG_VERSION = 1;
+
+    public ConfigEntry<Integer> configVersion;
     public ConfigEntry<Boolean> onboardingFinished;
     public ConfigEntry<Double> voiceChatVolume;
     public ConfigEntry<Double> voiceActivationThreshold;
@@ -56,6 +61,11 @@ public class ClientConfig {
 
         builder.header(String.format("%s client config v%s", CommonCompatibilityManager.INSTANCE.getModName(), CommonCompatibilityManager.INSTANCE.getModVersion()));
 
+        configVersion = builder
+                .integerEntry("config_version", CONFIG_VERSION,
+                        "The config version - Used for migration",
+                        "WARNING: DO NOT CHANGE THIS VALUE"
+                );
         onboardingFinished = builder
                 .booleanEntry("onboarding_finished", false,
                         "If the voice chat onboarding process has been finished"
@@ -185,7 +195,7 @@ public class ClientConfig {
                         "0 = highest quality, 9 = lowest quality"
                 );
         denoiser = builder
-                .booleanEntry("denoiser", false,
+                .booleanEntry("denoiser", true,
                         "If noise suppression should be enabled"
                 );
         runLocalServer = builder
@@ -236,4 +246,28 @@ public class ClientConfig {
         }
     }
 
+    public static void migrate(MigratableConfig migratableConfig) {
+        String configVersionString = migratableConfig.get("config_version");
+        int configVersion = 0;
+        if (configVersionString != null) {
+            try {
+                configVersion = Integer.parseInt(configVersionString);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        if (configVersion == 0) {
+            migrateFrom0To1(migratableConfig);
+            configVersion = 1;
+        }
+    }
+
+    private static void migrateFrom0To1(MigratableConfig migratableConfig) {
+        Voicechat.LOGGER.info("Migrating config from version 0 to 1");
+
+        migratableConfig.set("config_version", "1");
+        migratableConfig.set("denoiser", "true");
+        migratableConfig.set("voice_activation_threshold", "-50");
+        migratableConfig.set("onboarding_finished", "false");
+    }
 }
