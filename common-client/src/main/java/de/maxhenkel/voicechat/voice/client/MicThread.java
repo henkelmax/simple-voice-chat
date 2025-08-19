@@ -125,8 +125,7 @@ public class MicThread extends Thread {
             return null;
         }
         short[] buff = mic.read();
-        buff = denoiseIfEnabled(buff);
-        adjustVolume(buff);
+        processAudio(buff);
         return buff;
     }
 
@@ -183,19 +182,41 @@ public class MicThread extends Thread {
         pttDeactivation = 0;
     }
 
-    public void adjustVolume(short[] audio) {
-        if (VoicechatClient.CLIENT_CONFIG.agc.get() && agc != null) {
+    public void processAudio(short[] audio) {
+        if (agc != null && VoicechatClient.CLIENT_CONFIG.agc.get()) {
+            float speechProbability = 1F;
+
+            if (denoiser != null) {
+                if (VoicechatClient.CLIENT_CONFIG.denoiser.get()) {
+                    speechProbability = denoiser.denoiseInPlace(audio);
+                } else {
+                    speechProbability = denoiser.getSpeechProbability(audio);
+                }
+            }
+
             agc.agc(audio);
+
+            if (speechProbability >= 0.95F && shouldAdjustGain()) {
+                agc.setIncrement(12);
+            } else {
+                agc.setIncrement(0);
+            }
         } else {
+            if (denoiser != null && VoicechatClient.CLIENT_CONFIG.denoiser.get()) {
+                denoiser.denoiseInPlace(audio);
+            }
             volumeManager.adjustVolume(audio, VoicechatClient.CLIENT_CONFIG.microphoneGain.get());
         }
     }
 
-    public short[] denoiseIfEnabled(short[] audio) {
-        if (denoiser != null && VoicechatClient.CLIENT_CONFIG.denoiser.get()) {
-            return denoiser.denoise(audio);
+    public boolean shouldAdjustGain() {
+        MicrophoneActivationType type = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get();
+        if (type.equals(MicrophoneActivationType.PTT)) {
+            return wasPTTActivating;
+        } else if (type.equals(MicrophoneActivationType.VOICE)) {
+            return !ClientManager.getPlayerStateManager().isMuted();
         }
-        return audio;
+        return true;
     }
 
     private void flush() {
