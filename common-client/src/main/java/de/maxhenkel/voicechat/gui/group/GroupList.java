@@ -57,7 +57,7 @@ public class GroupList extends ListScreenListBase<GroupEntry> {
         }
 
         if (changed) {
-            children().sort(Comparator.comparing(o -> o.getState().getName()));
+            sort(Comparator.comparing(o -> o.getState().getName()));
         }
     }
 
