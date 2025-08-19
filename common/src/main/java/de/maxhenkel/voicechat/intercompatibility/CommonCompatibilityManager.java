@@ -15,6 +15,7 @@ import net.minecraft.world.WorldServer;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public abstract class CommonCompatibilityManager {
@@ -45,9 +46,15 @@ public abstract class CommonCompatibilityManager {
 
     public abstract void onPlayerLoggedOut(Consumer<EntityPlayerMP> onPlayerLoggedOut);
 
-    public abstract void onPlayerHide(Consumer<PlayerVisibilityEvent> onPlayerHide);
+    /**
+     * @param onPlayerHide (visibilityChangedPlayer, observingPlayer)
+     */
+    public abstract void onPlayerHide(BiConsumer<EntityPlayerMP, EntityPlayerMP> onPlayerHide);
 
-    public abstract void onPlayerShow(Consumer<PlayerVisibilityEvent> onPlayerShow);
+    /**
+     * @param onPlayerShow (visibilityChangedPlayer, observingPlayer)
+     */
+    public abstract void onPlayerShow(BiConsumer<EntityPlayerMP, EntityPlayerMP> onPlayerShow);
 
     public abstract void onPlayerCompatibilityCheckSucceeded(Consumer<EntityPlayerMP> onPlayerCompatibilityCheckSucceeded);
 
@@ -78,24 +85,5 @@ public abstract class CommonCompatibilityManager {
     }
 
     public abstract boolean canSee(EntityPlayerMP player, EntityPlayerMP other);
-
-    public static class PlayerVisibilityEvent {
-
-        private final EntityPlayerMP visibilityChangedPlayer;
-        private final EntityPlayerMP observingPlayer;
-
-        public PlayerVisibilityEvent(EntityPlayerMP visibilityChangedPlayer, EntityPlayerMP observingPlayer) {
-            this.visibilityChangedPlayer = visibilityChangedPlayer;
-            this.observingPlayer = observingPlayer;
-        }
-
-        public EntityPlayerMP getVisibilityChangedPlayer() {
-            return visibilityChangedPlayer;
-        }
-
-        public EntityPlayerMP getObservingPlayer() {
-            return observingPlayer;
-        }
-    }
 
 }

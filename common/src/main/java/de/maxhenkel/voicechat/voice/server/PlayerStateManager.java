@@ -92,20 +92,20 @@ public class PlayerStateManager {
         Voicechat.LOGGER.debug("Removing state of {}", player.getGameProfile().getName());
     }
 
-    public void onPlayerHide(CommonCompatibilityManager.PlayerVisibilityEvent event) {
-        RemovePlayerStatePacket packet = new RemovePlayerStatePacket(event.getVisibilityChangedPlayer().getUniqueID());
-        NetManager.sendToClient(event.getObservingPlayer(), packet);
-        Voicechat.LOGGER.debug("Removing state of {} for {}", event.getVisibilityChangedPlayer().getGameProfile().getName(), event.getObservingPlayer().getGameProfile().getName());
+    public void onPlayerHide(EntityPlayerMP visibilityChangedPlayer, EntityPlayerMP observingPlayer) {
+        RemovePlayerStatePacket packet = new RemovePlayerStatePacket(visibilityChangedPlayer.getUniqueID());
+        NetManager.sendToClient(observingPlayer, packet);
+        Voicechat.LOGGER.debug("Removing state of {} for {}", visibilityChangedPlayer.getGameProfile().getName(), observingPlayer.getGameProfile().getName());
     }
 
-    public void onPlayerShow(CommonCompatibilityManager.PlayerVisibilityEvent event) {
-        PlayerState state = states.get(event.getVisibilityChangedPlayer().getUniqueID());
+    public void onPlayerShow(EntityPlayerMP visibilityChangedPlayer, EntityPlayerMP observingPlayer) {
+        PlayerState state = states.get(visibilityChangedPlayer.getUniqueID());
         if (state == null) {
-            state = defaultDisconnectedState(event.getVisibilityChangedPlayer());
+            state = defaultDisconnectedState(visibilityChangedPlayer);
         }
         PlayerStatePacket packet = new PlayerStatePacket(state);
-        NetManager.sendToClient(event.getObservingPlayer(), packet);
-        Voicechat.LOGGER.debug("Sending state of {} to {}", event.getVisibilityChangedPlayer().getGameProfile().getName(), event.getObservingPlayer().getGameProfile().getName());
+        NetManager.sendToClient(observingPlayer, packet);
+        Voicechat.LOGGER.debug("Sending state of {} to {}", visibilityChangedPlayer.getGameProfile().getName(), observingPlayer.getGameProfile().getName());
     }
 
     public void onPlayerVoicechatDisconnect(UUID uuid) {
