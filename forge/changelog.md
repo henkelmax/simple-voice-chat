@@ -22,3 +22,4 @@
 - Added `isTalking` and `isWhispering` to client API
 - Added `NameTagIconRenderEvent` to the client API allowing addons to modify or remove the nametag icons
 - Added `ptt_deactivation_delay` config option
+- Fixed assigning a keybind and then switching input modes causing the button to stay in assignment mode
