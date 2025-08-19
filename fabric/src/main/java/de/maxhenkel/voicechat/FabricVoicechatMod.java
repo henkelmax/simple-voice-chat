@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat;
 
 import de.maxhenkel.voicechat.integration.ViaVersionCompatibility;
+import de.maxhenkel.voicechat.integration.vanish.VanishIntegration;
 import net.fabricmc.api.ModInitializer;
 
 public class FabricVoicechatMod extends Voicechat implements ModInitializer {
@@ -9,6 +10,7 @@ public class FabricVoicechatMod extends Voicechat implements ModInitializer {
     public void onInitialize() {
         initialize();
         ViaVersionCompatibility.register();
+        VanishIntegration.init();
     }
 
 }
