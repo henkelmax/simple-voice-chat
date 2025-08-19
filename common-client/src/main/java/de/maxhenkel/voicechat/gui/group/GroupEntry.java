@@ -40,7 +40,11 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+    public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
+        int left = getContentX();
+        int top = getContentY();
+        int width = getContentWidth();
+        int height = getContentHeight();
         guiGraphics.fill(left, top, left + width, top + height, BG_FILL);
 
         guiGraphics.pose().pushMatrix();

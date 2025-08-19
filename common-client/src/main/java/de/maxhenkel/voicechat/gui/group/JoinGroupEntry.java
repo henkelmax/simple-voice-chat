@@ -45,7 +45,11 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+    public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
+        int left = getContentX();
+        int top = getContentY();
+        int width = getContentWidth();
+        int height = getContentHeight();
         if (hovered) {
             guiGraphics.fill(left, top, left + width, top + height, BG_FILL_SELECTED);
         } else {

@@ -31,7 +31,11 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+    public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
+        int left = getContentX();
+        int top = getContentY();
+        int width = getContentWidth();
+        int height = getContentHeight();
         int skinX = left + PADDING;
         int skinY = top + (height - SKIN_SIZE) / 2;
         int textX = skinX + SKIN_SIZE + PADDING;
@@ -39,12 +43,12 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
 
         guiGraphics.fill(left, top, left + width, top + height, BG_FILL);
 
-        renderElement(guiGraphics, index, top, left, width, height, mouseX, mouseY, hovered, delta, skinX, skinY, textX, textY);
+        renderElement(guiGraphics, top, left, width, height, mouseX, mouseY, hovered, delta, skinX, skinY, textX, textY);
 
         volumeSlider.setPosition(left + (width - volumeSlider.getWidth() - PADDING), top + (height - volumeSlider.getHeight()) / 2);
         volumeSlider.render(guiGraphics, mouseX, mouseY, delta);
     }
 
-    public abstract void renderElement(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY);
+    public abstract void renderElement(GuiGraphics guiGraphics, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY);
 
 }

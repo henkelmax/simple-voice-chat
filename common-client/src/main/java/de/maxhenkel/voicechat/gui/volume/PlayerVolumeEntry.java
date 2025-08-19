@@ -30,7 +30,7 @@ public class PlayerVolumeEntry extends VolumeEntry {
     }
 
     @Override
-    public void renderElement(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
+    public void renderElement(GuiGraphics guiGraphics, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
         if (state != null) {
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), skinX, skinY, 8, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
