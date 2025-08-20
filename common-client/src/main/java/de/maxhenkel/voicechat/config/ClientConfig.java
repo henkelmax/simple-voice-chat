@@ -21,6 +21,7 @@ public class ClientConfig {
     public ConfigEntry<Boolean> onboardingFinished;
     public ConfigEntry<Double> voiceChatVolume;
     public ConfigEntry<Double> voiceActivationThreshold;
+    public ConfigEntry<Boolean> vad;
     public ConfigEntry<Double> microphoneGain;
     public ConfigEntry<Boolean> agc;
     public ConfigEntry<MicrophoneActivationType> microphoneActivationType;
@@ -77,6 +78,10 @@ public class ClientConfig {
         voiceActivationThreshold = builder
                 .doubleEntry("voice_activation_threshold", -50D, AudioUtils.LOWEST_DB, 0D,
                         "The threshold for the voice activation method (in dB)"
+                );
+        vad = builder
+                .booleanEntry("voice_activity_detection", true,
+                        "Enable automatic voice detection"
                 );
         microphoneGain = builder
                 .doubleEntry("microphone_gain", 0D, VolumeManager.MIN_GAIN, VolumeManager.MAX_GAIN,

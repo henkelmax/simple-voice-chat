@@ -25,19 +25,20 @@ public class VoiceActivationOnboardingScreen extends OnboardingScreenBase {
     protected void init() {
         super.init();
 
-        int bottom = guiTop + contentHeight - PADDING * 3 - BUTTON_HEIGHT * 2;
+        int bottom = guiTop + contentHeight - PADDING * 2 - BUTTON_HEIGHT - 15;
         int space = BUTTON_HEIGHT + SMALL_PADDING;
 
         boolean agc = AutomaticGainControl.canUseAgc();
-        MicAmplificationSlider micAmp = new MicAmplificationSlider(guiLeft + (agc ? 80 + 1 : 0), bottom - space * 2, contentWidth - (agc ? 80 : 0) - 1, BUTTON_HEIGHT);
+        MicAmplificationSlider micAmp = new MicAmplificationSlider(guiLeft + (agc ? 80 + 1 : 0), bottom - space * 3, contentWidth - (agc ? 80 : 0) - 1, BUTTON_HEIGHT);
         if (agc) {
-            addRenderableWidget(new AgcButton(guiLeft, bottom - space * 2, 80, BUTTON_HEIGHT, active -> micAmp.active = !active));
+            addRenderableWidget(new AgcButton(guiLeft, bottom - space * 3, 80, BUTTON_HEIGHT, active -> micAmp.active = !active));
         }
         addRenderableWidget(micAmp);
-        addRenderableWidget(new DenoiserButton(guiLeft, bottom - space, contentWidth, BUTTON_HEIGHT));
+        addRenderableWidget(new DenoiserButton(guiLeft, bottom - space * 2, contentWidth, BUTTON_HEIGHT));
 
-        slider = new VoiceActivationSlider(guiLeft + 20 + SMALL_PADDING, bottom, contentWidth - 20 - SMALL_PADDING, BUTTON_HEIGHT);
-        micTestButton = new MicTestButton(guiLeft, bottom, slider);
+        addRenderableWidget(new VadButton(guiLeft + 20 + SMALL_PADDING, bottom - space, contentWidth - 20 - SMALL_PADDING, BUTTON_HEIGHT));
+        slider = new VoiceActivationSlider(guiLeft, bottom, contentWidth, BUTTON_HEIGHT);
+        micTestButton = new MicTestButton(guiLeft, bottom - space, slider);
         addRenderableWidget(micTestButton);
         addRenderableWidget(slider);
 
