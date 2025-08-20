@@ -81,7 +81,7 @@ public class ClientConfig {
                 );
         vad = builder
                 .booleanEntry("voice_activity_detection", true,
-                        "Enable automatic voice detection"
+                        "If automatic voice detection should be used"
                 );
         microphoneGain = builder
                 .doubleEntry("microphone_gain", 0D, VolumeManager.MIN_GAIN, VolumeManager.MAX_GAIN,
