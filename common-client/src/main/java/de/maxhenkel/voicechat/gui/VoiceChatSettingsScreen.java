@@ -5,7 +5,6 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.audiodevice.SelectMicrophoneScreen;
 import de.maxhenkel.voicechat.gui.audiodevice.SelectSpeakerScreen;
-import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
 import de.maxhenkel.voicechat.gui.widgets.*;
 import de.maxhenkel.voicechat.voice.client.*;
 import net.minecraft.client.gui.screen.Screen;
@@ -24,7 +23,6 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
     private static final ITextComponent ASSIGN_TOOLTIP = new TranslationTextComponent("message.voicechat.press_to_reassign_key");
     private static final ITextComponent PUSH_TO_TALK = new TranslationTextComponent("message.voicechat.activation_type.ptt");
-    private static final ITextComponent ADJUST_VOLUMES = new TranslationTextComponent("message.voicechat.adjust_volumes");
     private static final ITextComponent SELECT_MICROPHONE = new TranslationTextComponent("message.voicechat.select_microphone");
     private static final ITextComponent SELECT_SPEAKER = new TranslationTextComponent("message.voicechat.select_speaker");
     private static final ITextComponent BACK = new TranslationTextComponent("message.voicechat.back");
@@ -62,19 +60,21 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         addButton(new DenoiserButton(guiLeft + 10, y, xSize - 20, 20));
         y += 21;
 
-        voiceActivationSlider = new VoiceActivationSlider(guiLeft + 10, y + 21, xSize - 20, 20);
+        voiceActivationSlider = new VoiceActivationSlider(guiLeft + 10, y + 21 * 2, xSize - 20, 20);
+        VadButton vadButton = new VadButton(guiLeft + 10, y + 21, xSize - 20, 20);
         micTestButton = new MicTestButton(guiLeft + 10, y, voiceActivationSlider);
         keybindButton = new KeybindButton(KeyEvents.KEY_PTT, guiLeft + 10, y + 21, xSize - 20, 20, PUSH_TO_TALK);
         addButton(new MicActivationButton(guiLeft + 10 + 20 + 1, y, xSize - 20 - 20 - 1, 20, type -> {
-            voiceActivationSlider.visible = MicrophoneActivationType.VOICE.equals(type);
+            vadButton.visible = MicrophoneActivationType.VOICE.equals(type);
             keybindButton.visible = MicrophoneActivationType.PTT.equals(type);
             keybindButton.resetListening();
         }));
 
         addButton(micTestButton);
+        addButton(vadButton);
         addButton(voiceActivationSlider);
         addButton(keybindButton);
-        y += 21 * 2;
+        y += 21 * 3;
 
         addButton(new EnumButton<AudioType>(guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.audioType) {
 
@@ -93,12 +93,6 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
             }
         });
         y += 21;
-        if (isIngame()) {
-            addButton(new Button(guiLeft + 10, y, xSize - 20, 20, ADJUST_VOLUMES, button -> {
-                minecraft.setScreen(new AdjustVolumesScreen());
-            }));
-            y += 21;
-        }
         addButton(new Button(guiLeft + 10, y, (xSize - 20) / 2 - 1, 20, SELECT_MICROPHONE, button -> {
             minecraft.setScreen(new SelectMicrophoneScreen(this));
         }));

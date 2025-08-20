@@ -4,6 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.voice.client.Denoiser;
+import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -27,17 +29,33 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         micValue = new SlidingAverage();
     }
 
+    public boolean shouldShowSlider() {
+        return Denoiser.canUseDenoiser() && !VoicechatClient.CLIENT_CONFIG.vad.get() && MicrophoneActivationType.VOICE.equals(VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get());
+    }
+
     @Override
     protected void renderBg(MatrixStack poseStack, Minecraft minecraft, int i, int j) {
         minecraft.getTextureManager().bind(SLIDER);
         RenderSystem.color4f(1F, 1F, 1F, 1F);
         int width = (int) ((getWidth() - 2) * micValue.average());
         blit(poseStack, x + 1, y + 1, 0, 0, width, 18);
+        boolean shouldShow = shouldShowSlider();
+        if (shouldShow != active) {
+            active = shouldShow;
+            updateMessage();
+        }
+        if (!active) {
+            return;
+        }
         super.renderBg(poseStack, minecraft, i, j);
     }
 
     @Override
     protected void updateMessage() {
+        if (!active) {
+            setMessage(new StringTextComponent(""));
+            return;
+        }
         long db = Math.round(AudioUtils.percToDb(value));
         TranslationTextComponent component = new TranslationTextComponent("message.voicechat.voice_activation", db);
 
@@ -50,6 +68,9 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
 
     @Nullable
     public ITextComponent getHoverText() {
+        if (!active) {
+            return null;
+        }
         if (value >= 1D) {
             return NO_ACTIVATION;
         }
