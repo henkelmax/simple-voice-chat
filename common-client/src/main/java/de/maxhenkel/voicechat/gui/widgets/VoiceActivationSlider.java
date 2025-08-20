@@ -34,7 +34,13 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     }
 
     public boolean shouldShowSlider() {
-        return Denoiser.canUseDenoiser() && !VoicechatClient.CLIENT_CONFIG.vad.get() && MicrophoneActivationType.VOICE.equals(VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get());
+        if (!MicrophoneActivationType.VOICE.equals(VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get())) {
+            return false;
+        }
+        if (!Denoiser.canUseDenoiser()) {
+            return true;
+        }
+        return !VoicechatClient.CLIENT_CONFIG.vad.get();
     }
 
     @Override
