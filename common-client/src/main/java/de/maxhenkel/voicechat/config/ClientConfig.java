@@ -221,7 +221,7 @@ public class ClientConfig {
         useNatives = builder
                 .booleanEntry("use_natives", true,
                         "If the mod should load native libraries on the client",
-                        "When disabled, the Java Opus implementation will be used instead, the denoiser won't be available, and you won't be able to record the voice chat audio"
+                        "When disabled, the Java Opus implementation will be used instead, automatic gain control won't be available, noise suppression won't be available, and you won't be able to record the voice chat audio"
                 );
         freecamMode = builder
                 .enumEntry("freecam_mode", FreecamMode.CAMERA,
