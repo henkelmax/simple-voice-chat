@@ -25,7 +25,6 @@ public class MicThread extends Thread {
     private final ClientVoicechat client;
     @Nullable
     private final ClientVoicechatConnection connection;
-    @Nullable
     private final Microphone mic;
     private boolean running;
     private boolean microphoneLocked;
