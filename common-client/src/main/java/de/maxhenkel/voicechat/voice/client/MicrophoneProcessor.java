@@ -8,6 +8,8 @@ import java.util.function.Supplier;
 
 public abstract class MicrophoneProcessor {
 
+    public static final float AGC_PROBABILITY = 0.95F;
+
     private final MicActivator micActivator;
     private final MicActivator whisperMicActivator;
     private final VolumeManager volumeManager;
@@ -50,7 +52,7 @@ public abstract class MicrophoneProcessor {
         if (useAgc() && agc != null) {
             agc.agc(audio);
 
-            if (speechProbability >= 0.95F && shouldAdjustGain()) {
+            if (speechProbability >= AGC_PROBABILITY && shouldAdjustGain()) {
                 agc.setIncrement(12);
             } else {
                 agc.setIncrement(0);

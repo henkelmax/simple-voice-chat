@@ -25,3 +25,4 @@
 - Added `ptt_deactivation_delay` config option
 - Fixed assigning a keybind and then switching input modes causing the button to stay in assignment mode
 - Added support for Melius Vanish
+- Added automatic voice activity detection
