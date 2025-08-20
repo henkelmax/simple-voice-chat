@@ -111,7 +111,6 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
 
     private class VoiceThread extends Thread {
 
-        private final MicActivator micActivator;
         private final Speaker speaker;
         private boolean running;
         private long lastRender;
@@ -125,8 +124,6 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
             setDaemon(true);
             setName("VoiceTestingThread");
             setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
-
-            micActivator = new MicActivator();
 
             micThread = client != null ? client.getMicThread() : null;
             if (micThread == null) {
@@ -158,23 +155,16 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
                 if (System.currentTimeMillis() - lastRender > 500L) {
                     break;
                 }
-                short[] buff = micThread.pollMic();
+                short[] buff = micThread.pollProcessedAudio(true);
                 if (buff == null) {
                     continue;
                 }
 
                 micListener.onMicValue(AudioUtils.getHighestAudioLevel(buff));
 
-                if (VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE)) {
-                    if (micActivator.push(buff, a -> {
-                    })) {
-                        play(buff);
-                    }
-                } else {
-                    micActivator.stopActivating();
+                if (micThread.shouldTransmitAudio()) {
                     play(buff);
                 }
-
             }
             speaker.close();
             setMicLocked(false);
