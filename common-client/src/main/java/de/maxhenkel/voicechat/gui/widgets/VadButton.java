@@ -16,6 +16,7 @@ public class VadButton extends BooleanConfigButton {
         });
         if (!Denoiser.canUseDenoiser()) {
             enabled = false;
+            displayString = component.apply(false).getFormattedText();
         }
     }
 
