@@ -88,10 +88,10 @@ public class MicThread extends Thread {
                 }
             }
             if (microphoneLocked || ClientManager.getPlayerStateManager().isDisabled()) {
-                microphoneProcessor.reset();
                 flushIfNeeded();
 
                 if (!microphoneLocked && ClientManager.getPlayerStateManager().isDisabled()) {
+                    microphoneProcessor.reset();
                     if (mic.isStarted()) {
                         mic.stop();
                     }
