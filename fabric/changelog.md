@@ -26,3 +26,5 @@
 - Fixed assigning a keybind and then switching input modes causing the button to stay in assignment mode
 - Added support for Melius Vanish
 - Added automatic voice activity detection
+- Reworked onboarding
+- Reworked settings screen
