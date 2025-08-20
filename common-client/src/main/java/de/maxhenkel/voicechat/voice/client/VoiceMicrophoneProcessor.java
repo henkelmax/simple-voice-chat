@@ -5,6 +5,8 @@ import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
 public class VoiceMicrophoneProcessor extends MicrophoneProcessor {
 
+    public static final float ACTIVATION_PROBABILITY = 0.5F;
+
     private boolean testing;
 
     public VoiceMicrophoneProcessor() {
@@ -22,6 +24,10 @@ public class VoiceMicrophoneProcessor extends MicrophoneProcessor {
         if (isMuted() && !testing) {
             reset();
             return false;
+        }
+
+        if (denoiserAvailable() && VoicechatClient.CLIENT_CONFIG.vad.get()) {
+            return speechProbability >= ACTIVATION_PROBABILITY;
         }
 
         return AudioUtils.isAboveThreshold(audio, VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get());

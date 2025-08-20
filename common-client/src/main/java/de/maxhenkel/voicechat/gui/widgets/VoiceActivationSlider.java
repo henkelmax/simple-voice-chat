@@ -3,6 +3,8 @@ package de.maxhenkel.voicechat.gui.widgets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.voice.client.Denoiser;
+import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -31,6 +33,10 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         micValue = new SlidingAverage();
     }
 
+    public boolean shouldShowSlider() {
+        return Denoiser.canUseDenoiser() && !VoicechatClient.CLIENT_CONFIG.vad.get() && MicrophoneActivationType.VOICE.equals(VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get());
+    }
+
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -42,6 +48,11 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
 
         int micWidth = (int) ((width - 2) * micValue.average());
         guiGraphics.blit(RenderType::guiTextured, VOICE_ACTIVATION_SLIDER, getX() + 1, getY() + 1, 0, 0, micWidth, 18, 256, 256);
+
+        active = shouldShowSlider();
+        if (!active) {
+            return;
+        }
 
         guiGraphics.blitSprite(RenderType::guiTextured, getHandle(), getX() + (int) (value * (double) (width - 8)), getY(), 8, 20);
         renderScrollingString(guiGraphics, minecraft.font, 2, 16777215);
@@ -69,6 +80,9 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
 
     @Nullable
     public Component getHoverText() {
+        if (!active) {
+            return null;
+        }
         if (value >= 1D) {
             return NO_ACTIVATION;
         }
