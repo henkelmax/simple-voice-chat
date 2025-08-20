@@ -61,10 +61,10 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         addButton(new DenoiserButton(3, guiLeft + 10, y, xSize - 20, 20));
         y += 21;
 
-        voiceActivationSlider = new VoiceActivationSlider(4, guiLeft + 10 + 20 + 1, y + 21, xSize - 20 - 20 - 1, 20);
-        micTestButton = new MicTestButton(5, guiLeft + 10, y + 21, voiceActivationSlider);
-        keybindButton = new KeybindButton(6, KeyEvents.KEY_PTT, guiLeft + 10 + 20 + 1, y + 21, xSize - 20 - 20 - 1, 20, PUSH_TO_TALK);
-        addButton(new MicActivationButton(7, guiLeft + 10, y, xSize - 20, 20, type -> {
+        voiceActivationSlider = new VoiceActivationSlider(4, guiLeft + 10, y + 21, xSize - 20, 20);
+        micTestButton = new MicTestButton(5, guiLeft + 10, y, voiceActivationSlider);
+        keybindButton = new KeybindButton(6, KeyEvents.KEY_PTT, guiLeft + 10, y + 21, xSize - 20, 20, PUSH_TO_TALK);
+        addButton(new MicActivationButton(7, guiLeft + 10 + 20 + 1, y, xSize - 20 - 20 - 1, 20, type -> {
             voiceActivationSlider.visible = MicrophoneActivationType.VOICE.equals(type);
             keybindButton.visible = MicrophoneActivationType.PTT.equals(type);
             keybindButton.resetListening();
