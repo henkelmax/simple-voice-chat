@@ -25,24 +25,25 @@ public class VoiceActivationOnboardingScreen extends OnboardingScreenBase {
     public void initGui() {
         super.initGui();
 
-        int bottom = guiTop + contentHeight - PADDING * 3 - BUTTON_HEIGHT * 2;
+        int bottom = guiTop + contentHeight - PADDING * 2 - BUTTON_HEIGHT - 15;
         int space = BUTTON_HEIGHT + SMALL_PADDING;
 
         boolean agc = AutomaticGainControl.canUseAgc();
-        MicAmplificationSlider micAmp = new MicAmplificationSlider(0, guiLeft + (agc ? 80 + 1 : 0), bottom - space * 2, contentWidth - (agc ? 80 : 0) - 1, BUTTON_HEIGHT);
+        MicAmplificationSlider micAmp = new MicAmplificationSlider(0, guiLeft + (agc ? 80 + 1 : 0), bottom - space * 3, contentWidth - (agc ? 80 : 0) - 1, BUTTON_HEIGHT);
         if (agc) {
-            addButton(new AgcButton(1, guiLeft, bottom - space * 2, 80, BUTTON_HEIGHT, active -> micAmp.enabled = !active));
+            addButton(new AgcButton(1, guiLeft, bottom - space * 3, 80, BUTTON_HEIGHT, active -> micAmp.enabled = !active));
         }
         addButton(micAmp);
-        addButton(new DenoiserButton(2, guiLeft, bottom - space, contentWidth, BUTTON_HEIGHT));
+        addButton(new DenoiserButton(2, guiLeft, bottom - space * 2, contentWidth, BUTTON_HEIGHT));
 
-        slider = new VoiceActivationSlider(3, guiLeft + 20 + SMALL_PADDING, bottom, contentWidth - 20 - SMALL_PADDING, BUTTON_HEIGHT);
-        micTestButton = new MicTestButton(4, guiLeft, bottom, slider);
+        addButton(new VadButton(3, guiLeft + 20 + SMALL_PADDING, bottom - space, contentWidth - 20 - SMALL_PADDING, BUTTON_HEIGHT));
+        slider = new VoiceActivationSlider(4, guiLeft, bottom, contentWidth, BUTTON_HEIGHT);
+        micTestButton = new MicTestButton(5, guiLeft, bottom - space, slider);
         addButton(micTestButton);
         addButton(slider);
 
-        addBackOrCancelButton(5);
-        addNextButton(6);
+        addBackOrCancelButton(6);
+        addNextButton(7);
     }
 
     @Override

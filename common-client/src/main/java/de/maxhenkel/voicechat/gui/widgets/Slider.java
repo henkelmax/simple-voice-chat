@@ -29,6 +29,10 @@ public abstract class Slider extends GuiButton {
             updateSliderValue(mouseX, mouseY);
         }
 
+        renderSlider(mc);
+    }
+
+    protected void renderSlider(Minecraft mc) {
         mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
         GlStateManager.color(1F, 1F, 1F, 1F);
         drawTexturedModalRect(x + (int) (value * (float) (width - 8)), y, 0, 66, 4, 20);

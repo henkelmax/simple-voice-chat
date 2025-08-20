@@ -2,14 +2,13 @@ package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.voice.client.Denoiser;
+import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 
 import javax.annotation.Nullable;
 
@@ -26,6 +25,10 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         micValue = new SlidingAverage();
     }
 
+    public boolean shouldShowSlider() {
+        return Denoiser.canUseDenoiser() && !VoicechatClient.CLIENT_CONFIG.vad.get() && MicrophoneActivationType.VOICE.equals(VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get());
+    }
+
     @Override
     public void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
         super.mouseDragged(mc, mouseX, mouseY);
@@ -36,7 +39,24 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     }
 
     @Override
+    protected void renderSlider(Minecraft mc) {
+        boolean shouldShow = shouldShowSlider();
+        if (shouldShow != enabled) {
+            enabled = shouldShow;
+            updateMessage();
+        }
+        if (!enabled) {
+            return;
+        }
+        super.renderSlider(mc);
+    }
+
+    @Override
     protected void updateMessage() {
+        if (!enabled) {
+            displayString = "";
+            return;
+        }
         long db = Math.round(AudioUtils.percToDb(value));
         TextComponentTranslation component = new TextComponentTranslation("message.voicechat.voice_activation", db);
 
@@ -49,6 +69,9 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
 
     @Nullable
     public ITextComponent getHoverText() {
+        if (!enabled) {
+            return null;
+        }
         if (value >= 1D) {
             return NO_ACTIVATION;
         }
