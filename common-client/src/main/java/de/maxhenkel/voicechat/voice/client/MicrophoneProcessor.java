@@ -1,0 +1,189 @@
+package de.maxhenkel.voicechat.voice.client;
+
+import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.VoicechatClient;
+
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
+
+public abstract class MicrophoneProcessor {
+
+    private final MicActivator micActivator;
+    private final MicActivator whisperMicActivator;
+    private final VolumeManager volumeManager;
+    private boolean whispering;
+    private boolean activating;
+    protected float speechProbability;
+    @Nullable
+    private Denoiser denoiser;
+    @Nullable
+    private AutomaticGainControl agc;
+
+    public MicrophoneProcessor() {
+        micActivator = new MicActivator(this::getDeactivationDelay);
+        whisperMicActivator = new MicActivator(VoicechatClient.CLIENT_CONFIG.pttDeactivationDelay::get);
+        volumeManager = new VolumeManager();
+        denoiser = Denoiser.createDenoiser();
+        if (denoiser == null) {
+            Voicechat.LOGGER.warn("Denoiser not available");
+        }
+        agc = AutomaticGainControl.createAgc();
+        if (agc == null) {
+            Voicechat.LOGGER.warn("AGC not available");
+        }
+    }
+
+    public abstract int getDeactivationDelay();
+
+    protected void preprocess(short[] audio) {
+        Denoiser denoiser = getDenoiser();
+        if (denoiser != null) {
+            if (useDenoiser()) {
+                speechProbability = denoiser.denoiseInPlace(audio);
+            } else {
+                speechProbability = denoiser.getSpeechProbability(audio);
+            }
+        } else {
+            speechProbability = 1F;
+        }
+        AutomaticGainControl agc = getAgc();
+        if (useAgc() && agc != null) {
+            agc.agc(audio);
+
+            if (speechProbability >= 0.95F && shouldAdjustGain()) {
+                agc.setIncrement(12);
+            } else {
+                agc.setIncrement(0);
+            }
+        } else {
+            volumeManager.adjustVolume(audio, VoicechatClient.CLIENT_CONFIG.microphoneGain.get());
+        }
+    }
+
+    public void process(short[] audio, boolean testing) {
+        boolean w = isWhisperButtonDown();
+        preprocess(audio);
+        boolean a = processInternal(audio, testing);
+        activating = micActivator.shouldStillSend(a);
+        if (a) {
+            whispering = w;
+            whisperMicActivator.reset();
+        } else {
+            whispering = whisperMicActivator.shouldStillSend(w);
+        }
+    }
+
+    protected abstract boolean processInternal(short[] audio, boolean testing);
+
+    protected abstract boolean shouldAdjustGain();
+
+    public abstract MicrophoneActivationType getActivationType();
+
+    public float getSpeechProbability() {
+        return speechProbability;
+    }
+
+    public boolean isWhispering() {
+        return whispering;
+    }
+
+    public boolean shouldTransmitAudio() {
+        return activating || whispering;
+    }
+
+    public void reset() {
+        micActivator.reset();
+        whisperMicActivator.reset();
+        whispering = false;
+        activating = false;
+        if (denoiser != null) {
+            denoiser.close();
+        }
+    }
+
+    public void close() {
+        if (denoiser != null) {
+            denoiser.close();
+        }
+        if (agc != null) {
+            agc.close();
+        }
+    }
+
+    public boolean isMuted() {
+        return ClientManager.getPlayerStateManager().isMuted();
+    }
+
+    public boolean isAnyTalkButtonDown() {
+        return ClientManager.getPttKeyHandler().isAnyDown();
+    }
+
+    public boolean isPttButtonDown() {
+        return ClientManager.getPttKeyHandler().isPTTDown();
+    }
+
+    public boolean isWhisperButtonDown() {
+        return ClientManager.getPttKeyHandler().isWhisperDown();
+    }
+
+    public boolean useAgc() {
+        return VoicechatClient.CLIENT_CONFIG.agc.get();
+    }
+
+    public boolean useDenoiser() {
+        return VoicechatClient.CLIENT_CONFIG.denoiser.get();
+    }
+
+    public boolean agcAvailable() {
+        return agc != null;
+    }
+
+    public boolean denoiserAvailable() {
+        return denoiser != null;
+    }
+
+    @Nullable
+    protected Denoiser getDenoiser() {
+        if (denoiser != null && denoiser.isClosed()) {
+            denoiser = Denoiser.createDenoiser();
+        }
+        return denoiser;
+    }
+
+    @Nullable
+    protected AutomaticGainControl getAgc() {
+        if (agc != null && agc.isClosed()) {
+            agc = AutomaticGainControl.createAgc();
+        }
+        return agc;
+    }
+
+    protected static class MicActivator {
+
+        private final Supplier<Integer> delay;
+        private int deactivationDelay;
+
+        public MicActivator(Supplier<Integer> delay) {
+            this.delay = delay;
+        }
+
+        public boolean shouldStillSend(boolean activating) {
+            if (activating) {
+                deactivationDelay = delay.get();
+                return true;
+            } else {
+                if (deactivationDelay > 0) {
+                    deactivationDelay--;
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        public void reset() {
+            deactivationDelay = 0;
+        }
+    }
+
+}
