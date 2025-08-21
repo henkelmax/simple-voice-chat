@@ -26,3 +26,6 @@
 - Added automatic voice activity detection
 - Reworked onboarding
 - Reworked settings screen
+- Fixed PTT keybind button not unassignable
+- Fixed PTT keybind button not accepting all keys
+- Fixed PTT keybind button not accepting mouse keys if not hovered
