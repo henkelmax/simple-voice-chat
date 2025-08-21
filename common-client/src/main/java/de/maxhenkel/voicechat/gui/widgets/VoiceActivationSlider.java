@@ -17,12 +17,12 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     private static final ResourceLocation SLIDER = new ResourceLocation(Voicechat.MODID, "textures/gui/voice_activation_slider.png");
     private static final ITextComponent NO_ACTIVATION = new TextComponentTranslation("message.voicechat.voice_activation.disabled").setStyle(new Style().setColor(TextFormatting.RED));
 
-    private final SlidingAverage micValue;
+    private final SlidingMaxSmooth micValue;
 
     public VoiceActivationSlider(int id, int x, int y, int width, int height) {
         super(id, x, y, width, height, AudioUtils.dbToPerc(VoicechatClient.CLIENT_CONFIG.voiceActivationThreshold.get().floatValue()));
         updateMessage();
-        micValue = new SlidingAverage();
+        micValue = new SlidingMaxSmooth();
     }
 
     public boolean shouldShowSlider() {
@@ -40,7 +40,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         super.mouseDragged(mc, mouseX, mouseY);
         mc.getTextureManager().bindTexture(SLIDER);
         GlStateManager.color(1F, 1F, 1F, 1F);
-        int width = (int) ((getButtonWidth() - 2) * micValue.average());
+        int width = (int) ((getButtonWidth() - 2) * micValue.smoothMax());
         drawTexturedModalRect(x + 1, y + 1, 0, 0, width, 18);
     }
 
@@ -103,30 +103,67 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         micValue.reset();
     }
 
-    private static class SlidingAverage {
-        private final double[] values = new double[5];
+    private static class SlidingMaxSmooth {
+        private final double[] values = new double[15];
         private int n, p;
-        private double s;
+
+        private static final double SMOOTHING_PER_SEC = 25D;
+
+        private double smoothed;
+        private long lastNs = -1L;
 
         public void add(double x) {
             if (n < values.length) {
                 n++;
-            } else {
-                s -= values[p];
             }
-            s += x;
             values[p] = x;
             p = (p + 1) % values.length;
         }
 
-        public double average() {
-            return n == 0 ? 0D : s / n;
+        public double max() {
+            if (n == 0) {
+                return 0D;
+            }
+            int len = Math.min(n, values.length);
+            double max = values[0];
+            for (int i = 1; i < len; i++) {
+                if (values[i] > max) {
+                    max = values[i];
+                }
+            }
+            return max;
+        }
+
+        public double smoothMax() {
+            long nowNanos = System.nanoTime();
+            double target = max();
+
+            if (lastNs < 0) {
+                lastNs = nowNanos;
+                smoothed = target;
+                return smoothed;
+            }
+
+            double dt = (nowNanos - lastNs) / 1_000_000_000D;
+            lastNs = nowNanos;
+
+            double alpha = dt * SMOOTHING_PER_SEC;
+            if (alpha > 1D) {
+                alpha = 1D;
+            }
+            if (alpha < 0D) {
+                alpha = 0D;
+            }
+
+            smoothed += (target - smoothed) * alpha;
+            return smoothed;
         }
 
         public void reset() {
             n = 0;
             p = 0;
-            s = 0D;
+            smoothed = 0D;
+            lastNs = -1L;
         }
     }
 
