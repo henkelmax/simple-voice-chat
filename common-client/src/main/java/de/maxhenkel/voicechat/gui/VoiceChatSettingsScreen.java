@@ -110,6 +110,30 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
     }
 
     @Override
+    public boolean mouseClicked(double x, double y, int button) {
+        if (keybindButton.mouseClicked(x, y, button)) {
+            return true;
+        }
+        return super.mouseClicked(x, y, button);
+    }
+
+    @Override
+    public boolean keyPressed(int key, int scanCode, int modifiers) {
+        if (keybindButton.keyPressed(key, scanCode, modifiers)) {
+            return true;
+        }
+        return super.keyPressed(key, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean keyReleased(int key, int scanCode, int modifiers) {
+        if (keybindButton.keyReleased(key, scanCode, modifiers)) {
+            return true;
+        }
+        return super.keyReleased(key, scanCode, modifiers);
+    }
+
+    @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         if (!isIngame()) {
             renderPanorama(guiGraphics, delta);
