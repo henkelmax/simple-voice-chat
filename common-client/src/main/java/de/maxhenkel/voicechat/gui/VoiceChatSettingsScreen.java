@@ -4,7 +4,6 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.audiodevice.SelectMicrophoneScreen;
 import de.maxhenkel.voicechat.gui.audiodevice.SelectSpeakerScreen;
-import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
 import de.maxhenkel.voicechat.gui.widgets.*;
 import de.maxhenkel.voicechat.voice.client.*;
 import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
@@ -105,6 +104,30 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
                 minecraft.setScreen(parent);
             }).bounds(guiLeft + 10, y, xSize - 20, 20).build());
         }
+    }
+
+    @Override
+    public boolean mouseClicked(double x, double y, int button, boolean b) {
+        if (keybindButton.mouseClicked(x, y, button, b)) {
+            return true;
+        }
+        return super.mouseClicked(x, y, button, b);
+    }
+
+    @Override
+    public boolean keyPressed(int key, int scanCode, int modifiers) {
+        if (keybindButton.keyPressed(key, scanCode, modifiers)) {
+            return true;
+        }
+        return super.keyPressed(key, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean keyReleased(int key, int scanCode, int modifiers) {
+        if (keybindButton.keyReleased(key, scanCode, modifiers)) {
+            return true;
+        }
+        return super.keyReleased(key, scanCode, modifiers);
     }
 
     @Override

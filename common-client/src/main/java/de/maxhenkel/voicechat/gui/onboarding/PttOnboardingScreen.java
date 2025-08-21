@@ -36,6 +36,30 @@ public class PttOnboardingScreen extends OnboardingScreenBase {
     }
 
     @Override
+    public boolean mouseClicked(double x, double y, int button, boolean b) {
+        if (keybindButton.mouseClicked(x, y, button, b)) {
+            return true;
+        }
+        return super.mouseClicked(x, y, button, b);
+    }
+
+    @Override
+    public boolean keyPressed(int key, int scanCode, int modifiers) {
+        if (keybindButton.keyPressed(key, scanCode, modifiers)) {
+            return true;
+        }
+        return super.keyPressed(key, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean keyReleased(int key, int scanCode, int modifiers) {
+        if (keybindButton.keyReleased(key, scanCode, modifiers)) {
+            return true;
+        }
+        return super.keyReleased(key, scanCode, modifiers);
+    }
+
+    @Override
     public Screen getNextScreen() {
         return new FinalOnboardingScreen(this);
     }

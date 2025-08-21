@@ -66,7 +66,6 @@ public class KeybindButton extends AbstractButton {
             return true;
         }
         return super.mouseClicked(x, y, button, b);
-
     }
 
     @Override
