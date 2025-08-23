@@ -59,9 +59,9 @@ public abstract class VolumeConfigBase<T> extends CommentedPropertyConfig {
         return getVolume(key, getDefaultValue());
     }
 
-    public double setVolume(T key, double value) {
+    public double setVolume(T key, double value, String... comments) {
         volumes.put(key, value);
-        properties.set(serializeKey(key), String.format(Locale.ROOT, "%.3f", value));
+        properties.set(serializeKey(key), String.format(Locale.ROOT, "%.3f", value), comments);
         return value;
     }
 

@@ -24,7 +24,7 @@ public class PlayerVolumeEntry extends VolumeEntry {
     protected final PlayerState state;
 
     public PlayerVolumeEntry(@Nullable PlayerState state, AdjustVolumesScreen screen) {
-        super(screen, new AdjustPlayerVolumeEntry(state != null ? state.getUuid() : Util.NIL_UUID));
+        super(screen, new AdjustPlayerVolumeEntry(state != null ? state.getUuid() : Util.NIL_UUID, state != null ? state.getName() : null));
         this.state = state;
     }
 
@@ -57,14 +57,17 @@ public class PlayerVolumeEntry extends VolumeEntry {
     public static class AdjustPlayerVolumeEntry implements AdjustVolumeSlider.AdjustVolumeEntry {
 
         private final UUID playerUUID;
+        @Nullable
+        private final String playerName;
 
-        public AdjustPlayerVolumeEntry(UUID playerUUID) {
+        public AdjustPlayerVolumeEntry(UUID playerUUID, @Nullable String playerName) {
             this.playerUUID = playerUUID;
+            this.playerName = playerName;
         }
 
         @Override
         public void save(double value) {
-            VoicechatClient.PLAYER_VOLUME_CONFIG.setVolume(playerUUID, value);
+            VoicechatClient.PLAYER_VOLUME_CONFIG.setVolume(playerUUID, value, playerName == null ? "All other volumes" : String.format("Volume of %s", playerName));
             VoicechatClient.PLAYER_VOLUME_CONFIG.save();
         }
 
