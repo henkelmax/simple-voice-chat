@@ -39,6 +39,9 @@ public class AdjustVolumeSlider extends DebouncedSlider {
     public void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
         super.mouseDragged(mc, mouseX, mouseY);
         double audioLevel = volumeConfigEntry.getAudioLevel();
+        if (audioLevel <= AudioUtils.LOWEST_DB) {
+            return;
+        }
         double adjustedLevel = AudioUtils.linearToDb(getMultiplier());
         int barWidth = (int) ((double) width * AudioUtils.dbToPerc(audioLevel + adjustedLevel));
         double yellowPerc = AudioUtils.dbToPerc(YELLOW_DB);
