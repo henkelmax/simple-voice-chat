@@ -45,11 +45,12 @@ public class TalkCache {
      * Updates the audio level of a player talking or a specific category
      */
     public void updateLevel(UUID id, @Nullable String category, boolean whispering, short[] audio) {
+        double highestAudioLevel = AudioUtils.getHighestAudioLevel(audio);
         if (category != null) {
-            updateCategoryVolume(category, AudioUtils.getHighestAudioLevel(audio));
+            updateCategoryVolume(category, highestAudioLevel);
         }
         // Update the player talking even if it is a category
-        updateTalking(id, whispering, AudioUtils.getHighestAudioLevel(audio));
+        updateTalking(id, whispering, highestAudioLevel);
     }
 
     public void updateTalking(UUID entity, boolean whispering, short[] audio) {
