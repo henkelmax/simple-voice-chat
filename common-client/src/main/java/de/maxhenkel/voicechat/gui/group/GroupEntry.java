@@ -36,7 +36,7 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
         this.parent = parent;
         this.minecraft = Minecraft.getInstance();
         this.state = state;
-        this.volumeSlider = new AdjustVolumeSlider(0, 0, 100, 20, new PlayerVolumeEntry.AdjustPlayerVolumeEntry(state.getUuid()));
+        this.volumeSlider = new AdjustVolumeSlider(0, 0, 100, 20, new PlayerVolumeEntry.AdjustPlayerVolumeEntry(state.getUuid(), state.getName()));
         this.children.add(volumeSlider);
     }
 
