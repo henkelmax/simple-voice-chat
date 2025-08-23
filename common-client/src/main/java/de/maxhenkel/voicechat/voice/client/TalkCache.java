@@ -29,7 +29,7 @@ public class TalkCache {
         this.timestampSupplier = timestampSupplier;
     }
 
-    public void updateTalking(UUID entity, boolean whispering, double audioLevel) {
+    private void updateTalking(UUID entity, boolean whispering, double audioLevel) {
         PlayerCache talk = playerCache.get(entity);
         if (talk == null) {
             talk = new PlayerCache(timestampSupplier.get(), whispering, audioLevel);
@@ -43,6 +43,11 @@ public class TalkCache {
 
     /**
      * Updates the audio level of a player talking or a specific category
+     *
+     * @param id         the entity UUID
+     * @param category   the category name or null if it is a player
+     * @param whispering if the entity is whispering
+     * @param audio      the audio data to calculate the audio level from
      */
     public void updateLevel(UUID id, @Nullable String category, boolean whispering, short[] audio) {
         double highestAudioLevel = AudioUtils.getHighestAudioLevel(audio);
@@ -51,10 +56,6 @@ public class TalkCache {
         }
         // Update the player talking even if it is a category
         updateTalking(id, whispering, highestAudioLevel);
-    }
-
-    public void updateTalking(UUID entity, boolean whispering, short[] audio) {
-        updateTalking(entity, whispering, AudioUtils.getHighestAudioLevel(audio));
     }
 
     public boolean isTalking(Entity entity) {
