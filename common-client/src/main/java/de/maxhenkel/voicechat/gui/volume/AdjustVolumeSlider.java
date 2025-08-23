@@ -37,6 +37,9 @@ public class AdjustVolumeSlider extends DebouncedSlider {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float f) {
         super.render(poseStack, mouseX, mouseY, f);
         double audioLevel = volumeConfigEntry.getAudioLevel();
+        if (audioLevel <= AudioUtils.LOWEST_DB) {
+            return;
+        }
         double adjustedLevel = AudioUtils.linearToDb(getMultiplier());
         int barWidth = (int) ((double) getWidth() * AudioUtils.dbToPerc(audioLevel + adjustedLevel));
         double yellowPerc = AudioUtils.dbToPerc(YELLOW_DB);
