@@ -31,3 +31,4 @@
 - Fixed PTT keybind button not accepting all keys
 - Fixed PTT keybind button not accepting mouse keys if not hovered
 - Increased maximum voice chat volume to 300%
+- Added test speaker button in speaker selection list

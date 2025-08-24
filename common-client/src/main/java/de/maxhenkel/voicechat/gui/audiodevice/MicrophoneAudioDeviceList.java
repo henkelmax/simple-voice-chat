@@ -5,6 +5,9 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.microphone.MicrophoneManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Supplier;
 
 public class MicrophoneAudioDeviceList extends AudioDeviceList {
 
@@ -17,6 +20,11 @@ public class MicrophoneAudioDeviceList extends AudioDeviceList {
         icon = MICROPHONE_ICON;
         configEntry = VoicechatClient.CLIENT_CONFIG.microphone;
         setAudioDevices(MicrophoneManager.deviceNames());
+    }
+
+    @Override
+    public AudioDeviceEntry createAudioDeviceEntry(String device, Component name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
+        return new AudioDeviceEntry(device, name, icon, isSelected);
     }
 
 }
