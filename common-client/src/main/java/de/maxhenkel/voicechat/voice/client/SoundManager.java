@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import org.lwjgl.openal.*;
@@ -41,6 +42,10 @@ public class SoundManager {
         }
 
         ClientPluginManager.instance().onCreateALContext(context, device);
+    }
+
+    public SoundManager() throws SpeakerException {
+        this(VoicechatClient.CLIENT_CONFIG.speaker.get());
     }
 
     public void close() {
