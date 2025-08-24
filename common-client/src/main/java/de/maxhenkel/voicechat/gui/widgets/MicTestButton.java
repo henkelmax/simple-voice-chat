@@ -157,7 +157,7 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
 
             SoundManager soundManager;
             if (client == null) {
-                soundManager = new SoundManager(VoicechatClient.CLIENT_CONFIG.speaker.get());
+                soundManager = new SoundManager();
                 ownSoundManager = soundManager;
             } else {
                 soundManager = client.getSoundManager();
