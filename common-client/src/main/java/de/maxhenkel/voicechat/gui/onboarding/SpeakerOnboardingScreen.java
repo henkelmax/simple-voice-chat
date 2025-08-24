@@ -24,7 +24,7 @@ public class SpeakerOnboardingScreen extends DeviceOnboardingScreen {
 
     @Override
     public Screen getNextScreen() {
-        return new ActivationOnboardingScreen(this);
+        return new MicOnboardingScreen(this);
     }
 
 }
