@@ -11,8 +11,11 @@ import java.io.IOException;
 
 public class AutomaticGainControl extends de.maxhenkel.speex4j.AutomaticGainControl {
 
+    public static final int TARGET = AudioUtils.dbSample(-5D);
+
     public AutomaticGainControl(int frameSize, int sampleRate) throws IOException, UnknownPlatformException {
         super(frameSize, sampleRate);
+        setTarget(TARGET);
     }
 
     @Nullable
