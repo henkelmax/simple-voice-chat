@@ -4,6 +4,7 @@ import com.sun.jna.Platform;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.MigratableConfig;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
+import de.maxhenkel.configbuilder.entry.DoubleConfigEntry;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.integration.freecam.FreecamMode;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
@@ -19,7 +20,7 @@ public class ClientConfig {
 
     public ConfigEntry<Integer> configVersion;
     public ConfigEntry<Boolean> onboardingFinished;
-    public ConfigEntry<Double> voiceChatVolume;
+    public DoubleConfigEntry voiceChatVolume;
     public ConfigEntry<Double> voiceActivationThreshold;
     public ConfigEntry<Boolean> vad;
     public ConfigEntry<Double> microphoneGain;
@@ -72,7 +73,7 @@ public class ClientConfig {
                         "If the voice chat onboarding process has been finished"
                 );
         voiceChatVolume = builder
-                .doubleEntry("voice_chat_volume", 1D, 0D, 2D,
+                .doubleEntry("voice_chat_volume", 1D, 0D, 3D,
                         "The voice chat volume"
                 );
         voiceActivationThreshold = builder

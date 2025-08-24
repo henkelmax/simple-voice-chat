@@ -26,3 +26,4 @@
 - Added automatic voice activity detection
 - Reworked onboarding
 - Reworked settings screen
+- Increased maximum voice chat volume to 300%
