@@ -2,12 +2,8 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
-import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
-import org.lwjgl.openal.AL11;
-import org.lwjgl.openal.ALC11;
-import org.lwjgl.openal.ALUtil;
-import org.lwjgl.openal.EXTThreadLocalContext;
+import org.lwjgl.openal.*;
 
 import javax.annotation.Nullable;
 import java.nio.IntBuffer;
@@ -23,12 +19,26 @@ public class SoundManager {
     private final String deviceName;
     private long device;
     private long context;
+    private final ALCCapabilities alcCaps;
+    private final ALCapabilities alCaps;
+    private final float maxGain;
 
     public SoundManager(@Nullable String deviceName) throws SpeakerException {
         this.deviceName = deviceName;
 
         device = openSpeaker(deviceName);
         context = ALC11.alcCreateContext(device, (IntBuffer) null);
+
+        alcCaps = ALC.createCapabilities(device);
+        alCaps = AL.createCapabilities(alcCaps);
+
+        if (alCaps.AL_SOFT_gain_clamp_ex) {
+            maxGain = AL11.alGetFloat(SOFTGainClampEx.AL_GAIN_LIMIT_SOFT);
+            checkAlcError(device);
+        } else {
+            maxGain = 1F;
+            Voicechat.LOGGER.warn("OpenAL extension 'AL_SOFT_gain_clamp_ex' not supported - Voice chat volume can't exceed 100%");
+        }
 
         ClientPluginManager.instance().onCreateALContext(context, device);
     }
@@ -45,6 +55,10 @@ public class SoundManager {
         }
         context = 0;
         device = 0;
+    }
+
+    public float getMaxGain() {
+        return maxGain;
     }
 
     public boolean isClosed() {
