@@ -7,7 +7,6 @@ import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import de.maxhenkel.voicechat.voice.client.ClientUtils;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
-import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.math.MathHelper;
@@ -117,7 +116,7 @@ public abstract class ALSpeakerBase implements Speaker {
         setPositionSync(position, maxDistance);
         ClientPluginManager.instance().onALSound(source, audioChannelId, position, category, OpenALSoundEvent.class);
 
-        AL10.alSourcef(source, AL10.AL_MAX_GAIN, 6F);
+        AL10.alSourcef(source, AL10.AL_MAX_GAIN, soundManager.getMaxGain());
         SoundManager.checkAlError();
         AL10.alSourcef(source, AL10.AL_GAIN, getVolume(volume, position, maxDistance));
         SoundManager.checkAlError();

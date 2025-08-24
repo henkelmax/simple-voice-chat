@@ -21,6 +21,9 @@ public class SoundManager {
     private final String deviceName;
     private ALCdevice device;
     private ALCcontext context;
+    /*private final ALCCapabilities alcCaps;
+    private final ALCapabilities alCaps;*/
+    private final float maxGain;
 
     @Deprecated
     public SoundManager(@Nullable String deviceName) throws SpeakerException {
@@ -28,6 +31,17 @@ public class SoundManager {
 
         device = openSpeaker(deviceName);
         context = ALC10.alcCreateContext(device, (IntBuffer) null);
+
+        /*alcCaps = ALC.createCapabilities(device);
+        alCaps = AL.createCapabilities(alcCaps);
+
+        if (alCaps.AL_SOFT_gain_clamp_ex) {
+            maxGain = AL11.alGetFloat(SOFTGainClampEx.AL_GAIN_LIMIT_SOFT);
+            checkAlcError(device);
+        } else {*/
+        maxGain = 1F;
+        Voicechat.LOGGER.warn("OpenAL extension 'AL_SOFT_gain_clamp_ex' not supported - Voice chat volume can't exceed 100%");
+        /*}*/
 
         ClientPluginManager.instance().onCreateALContext(getContextAddress(context), getDeviceAddress(device));
     }
@@ -44,6 +58,10 @@ public class SoundManager {
         }
         context = null;
         device = null;
+    }
+
+    public float getMaxGain() {
+        return maxGain;
     }
 
     public boolean isClosed() {
