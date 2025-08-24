@@ -12,9 +12,10 @@ import net.minecraft.sounds.SoundEvents;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
+public abstract class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
 
     public static final int CELL_HEIGHT = 36;
 
@@ -49,7 +50,7 @@ public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
             onSelect(entry);
             return true;
         }
-        return false;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     protected void onSelect(AudioDeviceEntry entry) {
@@ -70,10 +71,12 @@ public class AudioDeviceList extends ListScreenListBase<AudioDeviceEntry> {
     public void setAudioDevices(Collection<String> entries) {
         replaceEntries(
                 Stream.concat(Stream.of(""), entries.stream())
-                        .map(s -> new AudioDeviceEntry(s, getVisibleName(s), icon, () -> isSelected(s)))
+                        .map(s -> createAudioDeviceEntry(s, getVisibleName(s), icon, () -> isSelected(s)))
                         .toList()
         );
     }
+
+    public abstract AudioDeviceEntry createAudioDeviceEntry(String device, Component name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected);
 
     public boolean isSelected(String name) {
         if (configEntry == null) {
