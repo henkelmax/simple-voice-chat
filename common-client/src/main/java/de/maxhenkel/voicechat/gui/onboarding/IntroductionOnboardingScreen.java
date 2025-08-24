@@ -37,7 +37,7 @@ public class IntroductionOnboardingScreen extends OnboardingScreenBase {
 
     @Override
     public GuiScreen getNextScreen() {
-        return new MicOnboardingScreen(this);
+        return new SpeakerOnboardingScreen(this);
     }
 
     @Override
