@@ -116,6 +116,27 @@ public class AudioUtils {
         return sampleDb(highest);
     }
 
+    /**
+     * Converts a peak dBFS level to the SpeexDSP AGC target/level value.
+     * <p>
+     * Mapping: target = 32768 * 10^(dBFS/20)
+     * (0 dBFS corresponds to full-scale 16-bit peak 32768)
+     *
+     * @param dbfs target level in dBFS (e.g., -12.0, -8.0, -5.0)
+     * @return integer AGC target in the valid Speex range [1, 32768]
+     */
+    public static int dbSample(double dbfs) {
+        double value = 32768D * Math.pow(10D, dbfs / 20D);
+        long rounded = Math.round(value);
+        if (rounded < 0) {
+            return 0;
+        }
+        if (rounded > 32768) {
+            return 32768;
+        }
+        return (int) rounded;
+    }
+
     public static double sampleDb(short sample) {
         if (sample == 0) {
             return LOWEST_DB;
