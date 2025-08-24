@@ -29,3 +29,4 @@
 - Fixed PTT keybind button not unassignable
 - Fixed PTT keybind button not accepting all keys
 - Fixed PTT keybind button not accepting mouse keys if not hovered
+- Increased maximum voice chat volume to 300%
