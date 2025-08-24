@@ -46,6 +46,7 @@
   "message.voicechat.default_microphone": "System Default",
   "message.voicechat.no_speaker": "No speakers available",
   "message.voicechat.default_speaker": "System Default",
+  "message.voicechat.test_speaker": "Press to play a test sound.",
   "message.voicechat.select_microphone": "Select Microphone",
   "message.voicechat.select_speaker": "Select Speaker",
   "message.voicechat.back": "Back",
