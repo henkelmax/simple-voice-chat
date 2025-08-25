@@ -38,7 +38,7 @@ public class VoiceActivationOnboardingScreen extends OnboardingScreenBase {
 
         addButton(new VadButton(3, guiLeft + 20 + SMALL_PADDING, bottom - space, contentWidth - 20 - SMALL_PADDING, BUTTON_HEIGHT));
         slider = new VoiceActivationSlider(4, guiLeft, bottom, contentWidth, BUTTON_HEIGHT);
-        micTestButton = new MicTestButton(5, guiLeft, bottom - space, slider);
+        micTestButton = new MicTestButton(5, guiLeft, bottom - space, false, slider);
         addButton(micTestButton);
         addButton(slider);
 

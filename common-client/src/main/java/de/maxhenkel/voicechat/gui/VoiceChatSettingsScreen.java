@@ -61,7 +61,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
         voiceActivationSlider = new VoiceActivationSlider(5, guiLeft + 10, y + 21 * 2, xSize - 20, 20);
         VadButton vadButton = new VadButton(6, guiLeft + 10, y + 21, xSize - 20, 20);
-        micTestButton = new MicTestButton(4, guiLeft + 10, y, voiceActivationSlider);
+        micTestButton = new MicTestButton(4, guiLeft + 10, y, false, voiceActivationSlider);
         keybindButton = new KeybindButton(7, KeyEvents.KEY_PTT, guiLeft + 10, y + 21, xSize - 20, 20, PUSH_TO_TALK);
         addButton(new MicActivationButton(8, guiLeft + 10 + 20 + 1, y, xSize - 20 - 20 - 1, 20, type -> {
             vadButton.visible = MicrophoneActivationType.VOICE.equals(type);

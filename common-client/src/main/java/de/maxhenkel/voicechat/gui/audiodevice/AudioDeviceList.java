@@ -72,7 +72,7 @@ public abstract class AudioDeviceList extends ListScreenListBase<AudioDeviceEntr
                         ));
     }
 
-    public abstract AudioDeviceEntry createAudioDeviceEntry(String device, Component name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected);
+    public abstract AudioDeviceEntry createAudioDeviceEntry(String device, ITextComponent name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected);
 
     public boolean isSelected(String name) {
         if (configEntry == null) {

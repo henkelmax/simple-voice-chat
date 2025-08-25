@@ -44,6 +44,11 @@ public abstract class ScreenBase extends GuiScreen {
     }
 
     @Override
+    public <T extends GuiButton> T addButton(T buttonIn) {
+        return super.addButton(buttonIn);
+    }
+
+    @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         super.actionPerformed(button);
 

@@ -58,7 +58,7 @@ public class TestSoundPlayer {
                 Voicechat.LOGGER.error("Failed to play test sound");
                 return;
             }
-            SoundManager soundManager;
+            /*SoundManager soundManager;
             boolean ownSoundManager = false;
             ClientVoicechat client = ClientManager.getClient();
             if (client != null) {
@@ -70,9 +70,9 @@ public class TestSoundPlayer {
             } else {
                 soundManager = new SoundManager();
                 ownSoundManager = true;
-            }
+            }*/
 
-            Speaker speaker = SpeakerManager.createSpeaker(soundManager, UUID.randomUUID());
+            Speaker speaker = SpeakerManager.createSpeaker(null/*soundManager*/, UUID.randomUUID());
             speaker.open();
             for (short[] shorts : testSound) {
                 speaker.play(shorts, 1F, null);
@@ -80,9 +80,9 @@ public class TestSoundPlayer {
             }
             Utils.sleep(VoicechatClient.CLIENT_CONFIG.outputBufferSize.get() * 20 + 250);
             speaker.close();
-            if (ownSoundManager) {
+            /*if (ownSoundManager) {
                 soundManager.close();
-            }
+            }*/
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to play test sound", e);
         }

@@ -6,8 +6,8 @@ import de.maxhenkel.voicechat.voice.client.SoundManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public class SpeakerAudioDeviceList extends AudioDeviceList {
@@ -24,7 +24,7 @@ public class SpeakerAudioDeviceList extends AudioDeviceList {
     }
 
     @Override
-    public AudioDeviceEntry createAudioDeviceEntry(String device, Component name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
+    public AudioDeviceEntry createAudioDeviceEntry(String device, ITextComponent name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
         return new SpeakerAudioDeviceEntry(device, name, icon, isSelected);
     }
 

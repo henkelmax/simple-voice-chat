@@ -1,9 +1,6 @@
 package de.maxhenkel.voicechat.gui.audiodevice;
 
-import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.gui.tooltips.TestSpeakerSupplier;
-import de.maxhenkel.voicechat.gui.widgets.ImageButton;
-import de.maxhenkel.voicechat.voice.client.TestSoundPlayer;
+import de.maxhenkel.voicechat.gui.widgets.MicTestButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -11,34 +8,23 @@ import net.minecraft.util.text.ITextComponent;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class SpeakerAudioDeviceEntry extends AudioDeviceEntry {
+public class MicrophoneAudioDeviceEntry extends AudioDeviceEntry {
 
-    public static final ResourceLocation SPEAKER_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/test_speaker.png");
+    private final MicTestButton testButton;
 
-    private ImageButton testButton;
-
-    public SpeakerAudioDeviceEntry(String device, ITextComponent name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
+    public MicrophoneAudioDeviceEntry(String device, ITextComponent name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected, MicTestButton testButton) {
         super(device, name, icon, isSelected);
-
-        testButton = new ImageButton(10000, 0, 0, SPEAKER_ICON, button -> {
-            testButton.enabled = false;
-            TestSoundPlayer.playTestSound(() -> {
-                testButton.enabled = true;
-            });
-        }, new TestSpeakerSupplier());
+        this.testButton = testButton;
     }
 
     @Override
     public void drawEntry(int slotIndex, int left, int top, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         super.drawEntry(slotIndex, left, top, width, height, mouseX, mouseY, hovered, partialTicks);
         boolean selected = isSelected.get();
-        if (selected && hovered) {
-            testButton.visible = true;
+        if (selected && (hovered || testButton.isMicActive())) {
             testButton.x = left + (width - testButton.width - PADDING);
             testButton.y = top + (height - testButton.height) / 2;
             testButton.drawButton(Minecraft.getMinecraft(), mouseX, mouseY, partialTicks);
-        } else {
-            testButton.visible = false;
         }
     }
 
@@ -50,4 +36,5 @@ public class SpeakerAudioDeviceEntry extends AudioDeviceEntry {
         }
         return super.mousePressed(slotIndex, mouseX, mouseY, mouseEvent, relativeX, relativeY);
     }
+
 }
