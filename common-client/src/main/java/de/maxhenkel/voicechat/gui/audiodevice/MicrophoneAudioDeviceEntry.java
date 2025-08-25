@@ -3,8 +3,8 @@ package de.maxhenkel.voicechat.gui.audiodevice;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.gui.widgets.MicTestButton;
 import net.minecraft.util.text.ITextComponent;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public class MicrophoneAudioDeviceEntry extends AudioDeviceEntry {
