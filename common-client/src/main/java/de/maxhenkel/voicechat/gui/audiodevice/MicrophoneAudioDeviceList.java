@@ -26,15 +26,16 @@ public class MicrophoneAudioDeviceList extends AudioDeviceList {
         defaultDeviceText = DEFAULT_MICROPHONE;
         icon = MICROPHONE_ICON;
         configEntry = VoicechatClient.CLIENT_CONFIG.microphone;
-        setAudioDevices(MicrophoneManager.deviceNames());
 
         micTestButton = new MicTestButton(0, 0, true);
         ((List<GuiEventListener>) screen.children()).add(micTestButton);
+
+        setAudioDevices(MicrophoneManager.deviceNames());
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-        super.renderWidget(guiGraphics, i, j, f);
+    public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+        super.render(guiGraphics, x, y, partialTicks);
         micTestButton.updateLastRender();
     }
 

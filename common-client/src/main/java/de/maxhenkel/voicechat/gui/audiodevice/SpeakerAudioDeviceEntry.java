@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class SpeakerAudioDeviceEntry extends AudioDeviceEntry {
 
-    public static final ResourceLocation SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/test_speaker.png");
+    public static final ResourceLocation SPEAKER_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/test_speaker.png");
 
     private ImageButton testButton;
 
