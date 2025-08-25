@@ -28,12 +28,15 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
     private boolean micActive;
     @Nullable
     private VoiceThread voiceThread;
+    @Nullable
     private final MicListener micListener;
+    private final boolean raw;
     @Nullable
     private final ClientVoicechat client;
 
-    public MicTestButton(int xIn, int yIn, MicListener micListener) {
+    public MicTestButton(int xIn, int yIn, boolean raw, @Nullable MicListener micListener) {
         super(xIn, yIn, MICROPHONE, null, null, null);
+        this.raw = raw;
         this.micListener = micListener;
         this.client = ClientManager.getClient();
         active = client == null || client.getSoundManager() != null;
@@ -42,9 +45,17 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
         tooltipSupplier = this;
     }
 
+    public MicTestButton(int xIn, int yIn, boolean raw) {
+        this(xIn, yIn, raw, null);
+    }
+
     @Override
     public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
         super.render(guiGraphics, x, y, partialTicks);
+        updateLastRender();
+    }
+
+    public void updateLastRender() {
         if (visible && voiceThread != null) {
             voiceThread.updateLastRender();
         }
@@ -52,6 +63,10 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
 
     public void setMicActive(boolean micActive) {
         this.micActive = micActive;
+    }
+
+    public boolean isMicActive() {
+        return micActive;
     }
 
     @Override
@@ -179,20 +194,27 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
                 if (System.currentTimeMillis() - lastRender > 500L) {
                     break;
                 }
-                short[] buff = micThread.pollProcessedAudio(true);
+                if (micThread.isClosed()) {
+                    break;
+                }
+                short[] buff = raw ? micThread.pollMic() : micThread.pollProcessedAudio(true);
                 if (buff == null) {
                     continue;
                 }
 
-                micListener.onMicValue(AudioUtils.getHighestAudioLevel(buff));
+                if (micListener != null) {
+                    micListener.onMicValue(AudioUtils.getHighestAudioLevel(buff));
+                }
 
-                if (micThread.shouldTransmitAudio()) {
+                if (raw || micThread.shouldTransmitAudio()) {
                     play(buff);
                 }
             }
             speaker.close();
             setMicLocked(false);
-            micListener.onStop();
+            if (micListener != null) {
+                micListener.onStop();
+            }
             if (usesOwnMicThread) {
                 micThread.close();
             }
