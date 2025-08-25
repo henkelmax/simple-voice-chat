@@ -114,7 +114,7 @@ public class MicThread extends Thread {
     }
 
     @Nullable
-    private short[] pollMic() {
+    public short[] pollMic() {
         Microphone mic = getMic();
         if (mic == null) {
             throw new IllegalStateException("No microphone available");
@@ -244,6 +244,10 @@ public class MicThread extends Thread {
         encoder.close();
         microphoneProcessor.close();
         flush();
+    }
+
+    public boolean isClosed() {
+        return !running;
     }
 
     private final AtomicLong sequenceNumber = new AtomicLong();
