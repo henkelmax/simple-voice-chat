@@ -3,7 +3,8 @@ package de.maxhenkel.voicechat.plugins.impl.events;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
 import de.maxhenkel.voicechat.api.events.VoiceDistanceEvent;
 import de.maxhenkel.voicechat.api.packets.MicrophonePacket;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 public class VoiceDistanceEventImpl extends ServerEventImpl implements VoiceDistanceEvent {
 

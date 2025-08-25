@@ -5,7 +5,8 @@ import de.maxhenkel.voicechat.BukkitVersion;
 import de.maxhenkel.voicechat.FallbackTranslations;
 import de.maxhenkel.voicechat.util.Key;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 public class FallbackCompatibility extends BaseCompatibility {
 
