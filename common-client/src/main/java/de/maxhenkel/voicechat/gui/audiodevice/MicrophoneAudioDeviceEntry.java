@@ -4,8 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.gui.widgets.MicTestButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public class MicrophoneAudioDeviceEntry extends AudioDeviceEntry {
