@@ -29,4 +29,5 @@
 - Reworked onboarding
 - Reworked settings screen
 - Increased maximum voice chat volume to 300%
-- Added test speaker button in speaker selection list
+- Added speaker test button in speaker selection list
+- Added microphone test button in microphone selection list
