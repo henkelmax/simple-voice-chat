@@ -97,7 +97,7 @@ public class MicThread extends Thread {
     }
 
     @Nullable
-    private short[] pollMic() {
+    public short[] pollMic() {
         if (!mic.isStarted()) {
             mic.start();
         }
@@ -204,6 +204,10 @@ public class MicThread extends Thread {
         encoder.close();
         microphoneProcessor.close();
         flush();
+    }
+
+    public boolean isClosed() {
+        return !running;
     }
 
     private final AtomicLong sequenceNumber = new AtomicLong();

@@ -24,7 +24,7 @@ public class SpeakerAudioDeviceList extends AudioDeviceList {
     }
 
     @Override
-    public AudioDeviceEntry createAudioDeviceEntry(String device, Component name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
+    public AudioDeviceEntry createAudioDeviceEntry(String device, ITextComponent name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
         return new SpeakerAudioDeviceEntry(device, name, icon, isSelected);
     }
 

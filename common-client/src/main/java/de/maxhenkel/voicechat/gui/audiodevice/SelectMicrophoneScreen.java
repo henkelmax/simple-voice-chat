@@ -30,7 +30,7 @@ public class SelectMicrophoneScreen extends SelectDeviceScreen {
 
     @Override
     public AudioDeviceList createAudioDeviceList(int width, int height, int top) {
-        return new MicrophoneAudioDeviceList(width, height, top);
+        return new MicrophoneAudioDeviceList(this, width, height, top);
     }
 
 }
