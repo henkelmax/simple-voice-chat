@@ -45,7 +45,7 @@ public abstract class AudioDeviceList extends ListScreenListBase<AudioDeviceEntr
             onSelect(entry);
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(mouseX, mouseY, button, bl);
     }
 
     protected void onSelect(AudioDeviceEntry entry) {
