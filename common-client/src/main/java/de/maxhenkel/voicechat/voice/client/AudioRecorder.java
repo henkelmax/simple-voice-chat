@@ -111,8 +111,8 @@ public class AudioRecorder {
     }
 
     private String lookupName(UUID uuid) {
-        if (uuid.equals(ownProfile.getId())) {
-            return ownProfile.getName();
+        if (uuid.equals(ownProfile.id())) {
+            return ownProfile.name();
         }
         String username = VoicechatClient.USERNAME_CACHE.getUsername(uuid);
         if (username == null) {

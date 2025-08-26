@@ -143,7 +143,7 @@ public class PlayerStateManager {
     }
 
     public static PlayerState defaultDisconnectedState(ServerPlayer player) {
-        return new PlayerState(player.getUUID(), player.getGameProfile().getName(), false, true);
+        return new PlayerState(player.getUUID(), player.getGameProfile().name(), false, true);
     }
 
     public void setGroup(ServerPlayer player, @Nullable UUID group) {

@@ -119,7 +119,7 @@ public class ServerVoiceEvents {
             return;
         }
 
-        Timer timer = new Timer("%s-login-timer".formatted(serverPlayer.getGameProfile().getName()), true);
+        Timer timer = new Timer("%s-login-timer".formatted(serverPlayer.getGameProfile().name()), true);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
