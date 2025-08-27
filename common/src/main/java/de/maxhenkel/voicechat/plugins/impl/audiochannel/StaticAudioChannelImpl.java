@@ -3,22 +3,25 @@ package de.maxhenkel.voicechat.plugins.impl.audiochannel;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
 import de.maxhenkel.voicechat.api.audiochannel.StaticAudioChannel;
 import de.maxhenkel.voicechat.api.packets.MicrophonePacket;
-import de.maxhenkel.voicechat.plugins.impl.VoicechatConnectionImpl;
 import de.maxhenkel.voicechat.plugins.impl.VoicechatServerApiImpl;
 import de.maxhenkel.voicechat.voice.common.GroupSoundPacket;
+import de.maxhenkel.voicechat.voice.server.ClientConnection;
+import de.maxhenkel.voicechat.voice.server.Group;
 import de.maxhenkel.voicechat.voice.server.Server;
+import de.maxhenkel.voicechat.voice.server.ServerGroupManager;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.management.PlayerList;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class StaticAudioChannelImpl extends AudioChannelImpl implements StaticAudioChannel {
 
-    protected final List<VoicechatConnectionImpl> connections;
+    protected boolean bypassGroupIsolation;
+    protected final Set<UUID> targets;
 
     public StaticAudioChannelImpl(UUID channelId, Server server) {
         super(channelId, server);
-        this.connections = new ArrayList<>();
+        this.targets = new HashSet<>();
     }
 
     @Override
@@ -38,34 +41,57 @@ public class StaticAudioChannelImpl extends AudioChannelImpl implements StaticAu
     }
 
     private void broadcast(GroupSoundPacket packet) {
-        synchronized (connections) {
-            for (VoicechatConnectionImpl connection : connections) {
-                VoicechatServerApiImpl.sendPacket(connection, packet);
+        synchronized (targets) {
+            PlayerList playerList = server.getServer().getPlayerList();
+            ServerGroupManager groupManager = server.getGroupManager();
+            for (UUID target : targets) {
+                ClientConnection connection = server.getConnection(target);
+                if (connection == null) {
+                    continue;
+                }
+                ServerPlayerEntity player = playerList.getPlayer(target);
+                if (player == null) {
+                    continue;
+                }
+                if (!bypassGroupIsolation) {
+                    Group playerGroup = groupManager.getPlayerGroup(player);
+                    if (playerGroup != null && playerGroup.isIsolated()) {
+                        continue;
+                    }
+                }
+                VoicechatServerApiImpl.sendPacket(player, packet);
             }
         }
     }
 
     @Override
+    public void setBypassGroupIsolation(boolean bypassGroupIsolation) {
+        this.bypassGroupIsolation = bypassGroupIsolation;
+    }
+
+    @Override
+    public boolean bypassesGroupIsolation() {
+        return bypassGroupIsolation;
+    }
+
+    @Override
     public void addTarget(VoicechatConnection target) {
-        synchronized (connections) {
-            connections.removeIf(connection -> connection.getPlayer().getUuid().equals(target.getPlayer().getUuid()));
-            if (target instanceof VoicechatConnectionImpl) {
-                connections.add((VoicechatConnectionImpl) target);
-            }
+        synchronized (targets) {
+            targets.add(target.getPlayer().getUuid());
         }
     }
 
     @Override
     public void removeTarget(VoicechatConnection target) {
-        synchronized (connections) {
-            connections.removeIf(connection -> connection.getPlayer().getUuid().equals(target.getPlayer().getUuid()));
+        synchronized (targets) {
+            targets.remove(target.getPlayer().getUuid());
         }
     }
 
     @Override
     public void clearTargets() {
-        synchronized (connections) {
-            connections.clear();
+        synchronized (targets) {
+            targets.clear();
         }
     }
 }
