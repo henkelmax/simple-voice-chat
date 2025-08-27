@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.audiodevice.SelectMicrophoneScreen;
 import de.maxhenkel.voicechat.gui.audiodevice.SelectSpeakerScreen;
 import de.maxhenkel.voicechat.gui.widgets.*;
+import de.maxhenkel.voicechat.natives.SpeexManager;
 import de.maxhenkel.voicechat.voice.client.*;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -50,7 +51,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
         addButton(new VoiceSoundSlider(guiLeft + 10, y, xSize - 20, 20));
         y += 21;
-        boolean agc = AutomaticGainControl.canUseAgc();
+        boolean agc = SpeexManager.canUseAgc();
         MicAmplificationSlider micAmp = new MicAmplificationSlider(guiLeft + 10 + (agc ? 80 + 1 : 0), y, xSize - 20 - (agc ? 80 : 0) - 1, 20);
         if (agc) {
             addButton(new AgcButton(guiLeft + 10, y, 80, 20, active -> micAmp.active = !active));

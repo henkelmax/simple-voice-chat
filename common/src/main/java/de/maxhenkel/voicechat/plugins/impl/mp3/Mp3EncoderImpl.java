@@ -4,7 +4,7 @@ import de.maxhenkel.lame4j.UnknownPlatformException;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.mp3.Mp3Encoder;
 import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
-import de.maxhenkel.voicechat.voice.common.NativeUtils;
+import de.maxhenkel.voicechat.natives.NativeUtils;
 
 import javax.annotation.Nullable;
 import javax.sound.sampled.AudioFormat;

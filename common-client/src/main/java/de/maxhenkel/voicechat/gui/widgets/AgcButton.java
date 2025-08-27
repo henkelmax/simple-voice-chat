@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.voice.client.AutomaticGainControl;
+import de.maxhenkel.voicechat.natives.SpeexManager;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -19,7 +19,7 @@ public class AgcButton extends BooleanConfigButton {
             return new TranslationTextComponent("message.voicechat.gain", enabled ? AUTO : MANUAL);
         });
         this.onChange = onChange;
-        if (!AutomaticGainControl.canUseAgc()) {
+        if (!SpeexManager.canUseAgc()) {
             active = false;
             onChange.accept(false);
         } else {
