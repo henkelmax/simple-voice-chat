@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.voice.client.Denoiser;
+import de.maxhenkel.voicechat.natives.RNNoiseManager;
 import net.minecraft.network.chat.Component;
 
 public class VadButton extends BooleanConfigButton {
@@ -13,7 +13,7 @@ public class VadButton extends BooleanConfigButton {
         super(x, y, width, height, VoicechatClient.CLIENT_CONFIG.vad, enabled -> {
             return Component.translatable("message.voicechat.voice_activation_detection", enabled ? AUTO : MANUAL);
         });
-        if (!Denoiser.canUseDenoiser()) {
+        if (!RNNoiseManager.canUseDenoiser()) {
             active = false;
             setMessage(component.apply(false));
         }
