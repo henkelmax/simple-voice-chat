@@ -30,3 +30,4 @@
 - Added speaker test button in speaker selection list
 - Added microphone test button in microphone selection list
 - Improved native library loading and validation
+- Added `bypassGroupIsolation` to static audio channels
