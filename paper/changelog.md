@@ -7,3 +7,4 @@
 - Added `VoiceDistanceEvent` to the API, so addons can implement their own custom distance logic like crouch distance
 - Added support for vanish plugins
 - Improved native library loading and validation
+- Added `bypassGroupIsolation` to static audio channels
