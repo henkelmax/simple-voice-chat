@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.voice.client.Denoiser;
+import de.maxhenkel.voicechat.natives.RNNoiseManager;
 import net.minecraft.network.chat.Component;
 
 public class DenoiserButton extends BooleanConfigButton {
@@ -13,7 +13,7 @@ public class DenoiserButton extends BooleanConfigButton {
         super(x, y, width, height, VoicechatClient.CLIENT_CONFIG.denoiser, enabled -> {
             return Component.translatable("message.voicechat.denoiser", enabled ? ENABLED : DISABLED);
         });
-        if (!Denoiser.canUseDenoiser()) {
+        if (!RNNoiseManager.canUseDenoiser()) {
             active = false;
             setMessage(component.apply(false));
         }
