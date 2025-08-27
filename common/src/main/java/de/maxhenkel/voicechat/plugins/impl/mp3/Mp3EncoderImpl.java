@@ -1,10 +1,7 @@
 package de.maxhenkel.voicechat.plugins.impl.mp3;
 
-import de.maxhenkel.lame4j.UnknownPlatformException;
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.mp3.Mp3Encoder;
-import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
-import de.maxhenkel.voicechat.natives.NativeUtils;
+import de.maxhenkel.voicechat.natives.LameManager;
 
 import javax.annotation.Nullable;
 import javax.sound.sampled.AudioFormat;
@@ -15,8 +12,8 @@ public class Mp3EncoderImpl implements Mp3Encoder, AutoCloseable {
 
     private final de.maxhenkel.lame4j.Mp3Encoder encoder;
 
-    public Mp3EncoderImpl(AudioFormat audioFormat, int bitrate, int quality, OutputStream outputStream) throws IOException, UnknownPlatformException {
-        encoder = new de.maxhenkel.lame4j.Mp3Encoder(audioFormat.getChannels(), (int) audioFormat.getSampleRate(), bitrate, quality, outputStream);
+    private Mp3EncoderImpl(de.maxhenkel.lame4j.Mp3Encoder encoder) {
+        this.encoder = encoder;
     }
 
     @Override
@@ -31,12 +28,11 @@ public class Mp3EncoderImpl implements Mp3Encoder, AutoCloseable {
 
     @Nullable
     public static Mp3Encoder createEncoder(AudioFormat audioFormat, int bitrate, int quality, OutputStream outputStream) {
-        if (!CrossSideManager.get().useNatives()) {
+        de.maxhenkel.lame4j.Mp3Encoder enc = LameManager.createEncoder(audioFormat, bitrate, quality, outputStream);
+        if (enc == null) {
             return null;
         }
-        return NativeUtils.createSafe(() -> new Mp3EncoderImpl(audioFormat, bitrate, quality, outputStream), e -> {
-            Voicechat.LOGGER.error("Failed to load mp3 encoder", e);
-        });
+        return new Mp3EncoderImpl(enc);
     }
 
 }
