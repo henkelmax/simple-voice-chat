@@ -6,3 +6,4 @@
 - Added `whisper_distance` config option - This now also allows for higher distances than the default voice chat distance
 - Added `VoiceDistanceEvent` to the API, so addons can implement their own custom distance logic like crouch distance
 - Added support for vanish plugins
+- Improved native library loading and validation
