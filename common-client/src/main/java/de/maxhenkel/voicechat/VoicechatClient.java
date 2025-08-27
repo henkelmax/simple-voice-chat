@@ -9,7 +9,9 @@ import de.maxhenkel.voicechat.integration.clothconfig.ClothConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.VersionCheck;
-import de.maxhenkel.voicechat.plugins.impl.opus.OpusManager;
+import de.maxhenkel.voicechat.natives.OpusManager;
+import de.maxhenkel.voicechat.natives.RNNoiseManager;
+import de.maxhenkel.voicechat.natives.SpeexManager;
 import de.maxhenkel.voicechat.profile.UsernameCache;
 import de.maxhenkel.voicechat.resourcepacks.VoiceChatResourcePack;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
@@ -65,7 +67,9 @@ public abstract class VoicechatClient {
 
         ClothConfig.init();
 
-        OpusManager.opusNativeCheck();
+        OpusManager.init();
+        RNNoiseManager.init();
+        SpeexManager.init();
 
         if (Platform.isMac()) {
             if (!VersionCheck.isMacOSNativeCompatible()) {

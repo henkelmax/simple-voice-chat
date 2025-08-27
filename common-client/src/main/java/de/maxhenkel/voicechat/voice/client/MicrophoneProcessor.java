@@ -1,7 +1,11 @@
 package de.maxhenkel.voicechat.voice.client;
 
+import de.maxhenkel.rnnoise4j.Denoiser;
+import de.maxhenkel.speex4j.AutomaticGainControl;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.natives.RNNoiseManager;
+import de.maxhenkel.voicechat.natives.SpeexManager;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -25,11 +29,11 @@ public abstract class MicrophoneProcessor {
         micActivator = new MicActivator(this::getDeactivationDelay);
         whisperMicActivator = new MicActivator(VoicechatClient.CLIENT_CONFIG.pttDeactivationDelay::get);
         volumeManager = new VolumeManager();
-        denoiser = Denoiser.createDenoiser();
+        denoiser = RNNoiseManager.createDenoiser();
         if (denoiser == null) {
             Voicechat.LOGGER.warn("Denoiser not available");
         }
-        agc = AutomaticGainControl.createAgc();
+        agc = SpeexManager.createAgc();
         if (agc == null) {
             Voicechat.LOGGER.warn("AGC not available");
         }
@@ -147,7 +151,7 @@ public abstract class MicrophoneProcessor {
     @Nullable
     protected Denoiser getDenoiser() {
         if (denoiser != null && denoiser.isClosed()) {
-            denoiser = Denoiser.createDenoiser();
+            denoiser = RNNoiseManager.createDenoiser();
         }
         return denoiser;
     }
@@ -155,7 +159,7 @@ public abstract class MicrophoneProcessor {
     @Nullable
     protected AutomaticGainControl getAgc() {
         if (agc != null && agc.isClosed()) {
-            agc = AutomaticGainControl.createAgc();
+            agc = SpeexManager.createAgc();
         }
         return agc;
     }
