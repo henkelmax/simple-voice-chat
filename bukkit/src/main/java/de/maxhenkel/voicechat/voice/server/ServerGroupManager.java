@@ -163,6 +163,19 @@ public class ServerGroupManager {
         Voicechat.INSTANCE.getServer().getOnlinePlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
+    @Nullable
+    public Group getPlayerGroup(Player player) {
+        PlayerState state = getStates().getState(player.getUniqueId());
+        if (state == null) {
+            return null;
+        }
+        UUID groupId = state.getGroup();
+        if (groupId == null) {
+            return null;
+        }
+        return getGroup(groupId);
+    }
+
     public Map<UUID, Group> getGroups() {
         return groups;
     }
