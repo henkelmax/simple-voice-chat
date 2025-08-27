@@ -101,6 +101,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
             return null;
         }
         StaticAudioChannelImpl staticAudioChannel = new StaticAudioChannelImpl(channelId, server);
+        staticAudioChannel.setBypassGroupIsolation(true);
         staticAudioChannel.addTarget(connection);
         return staticAudioChannel;
     }
@@ -167,22 +168,23 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
     }
 
     public static void sendPacket(VoicechatConnection receiver, SoundPacket<?> soundPacket) {
+        if (!(receiver.getPlayer() instanceof ServerPlayerImpl serverPlayerImpl)) {
+            throw new IllegalArgumentException("ServerPlayer is not an instance of ServerPlayerImpl");
+        }
+        sendPacket(serverPlayerImpl.getRealServerPlayer(), soundPacket);
+    }
+
+    public static void sendPacket(net.minecraft.server.level.ServerPlayer receiver, SoundPacket<?> soundPacket) {
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
             return;
         }
-
-        PlayerState state = server.getPlayerStateManager().getState(receiver.getPlayer().getUuid());
+        PlayerState state = server.getPlayerStateManager().getState(receiver.getUUID());
         if (state == null) {
             return;
         }
-
-        if (!(receiver.getPlayer() instanceof ServerPlayerImpl serverPlayerImpl)) {
-            throw new IllegalArgumentException("ServerPlayer is not an instance of ServerPlayerImpl");
-        }
-
-        @Nullable ClientConnection c = server.getConnections().get(receiver.getPlayer().getUuid());
-        server.sendSoundPacket(null, null, serverPlayerImpl.getRealServerPlayer(), state, c, soundPacket, SoundPacketEvent.SOURCE_PLUGIN);
+        @Nullable ClientConnection c = server.getConnections().get(receiver.getUUID());
+        server.sendSoundPacket(null, null, receiver, state, c, soundPacket, SoundPacketEvent.SOURCE_PLUGIN);
     }
 
     @Nullable
