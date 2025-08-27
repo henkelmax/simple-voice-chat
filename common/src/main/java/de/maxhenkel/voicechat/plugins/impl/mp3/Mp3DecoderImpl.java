@@ -1,11 +1,8 @@
 package de.maxhenkel.voicechat.plugins.impl.mp3;
 
 import de.maxhenkel.lame4j.ShortArrayBuffer;
-import de.maxhenkel.lame4j.UnknownPlatformException;
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.mp3.Mp3Decoder;
-import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
-import de.maxhenkel.voicechat.natives.NativeUtils;
+import de.maxhenkel.voicechat.natives.LameManager;
 
 import javax.annotation.Nullable;
 import javax.sound.sampled.AudioFormat;
@@ -21,8 +18,8 @@ public class Mp3DecoderImpl implements Mp3Decoder {
     @Nullable
     private AudioFormat audioFormat;
 
-    public Mp3DecoderImpl(InputStream inputStream) throws IOException, UnknownPlatformException {
-        decoder = new de.maxhenkel.lame4j.Mp3Decoder(inputStream);
+    private Mp3DecoderImpl(de.maxhenkel.lame4j.Mp3Decoder decoder) {
+        this.decoder = decoder;
     }
 
     private void decodeIfNecessary() throws IOException {
@@ -68,12 +65,11 @@ public class Mp3DecoderImpl implements Mp3Decoder {
 
     @Nullable
     public static Mp3Decoder createDecoder(InputStream inputStream) {
-        if (!CrossSideManager.get().useNatives()) {
+        de.maxhenkel.lame4j.Mp3Decoder dec = LameManager.createDecoder(inputStream);
+        if (dec == null) {
             return null;
         }
-        return NativeUtils.createSafe(() -> new Mp3DecoderImpl(inputStream), e -> {
-            Voicechat.LOGGER.error("Failed to load mp3 decoder", e);
-        });
+        return new Mp3DecoderImpl(dec);
     }
 
 }

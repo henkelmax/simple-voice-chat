@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.config.PlayerVolumeConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.VersionCheck;
+import de.maxhenkel.voicechat.natives.LameManager;
 import de.maxhenkel.voicechat.natives.OpusManager;
 import de.maxhenkel.voicechat.natives.RNNoiseManager;
 import de.maxhenkel.voicechat.natives.SpeexManager;
@@ -58,6 +59,7 @@ public abstract class VoicechatClient {
         OpusManager.init();
         RNNoiseManager.init();
         SpeexManager.init();
+        LameManager.init();
 
         if (Platform.isMac()) {
             if (!VersionCheck.isMacOSNativeCompatible()) {
