@@ -27,7 +27,6 @@ import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import de.maxhenkel.voicechat.voice.server.ServerWorldUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -107,6 +106,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
             return null;
         }
         StaticAudioChannelImpl staticAudioChannel = new StaticAudioChannelImpl(channelId, server);
+        staticAudioChannel.setBypassGroupIsolation(true);
         staticAudioChannel.addTarget(connection);
         return staticAudioChannel;
     }
@@ -173,23 +173,24 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
     }
 
     public static void sendPacket(VoicechatConnection receiver, SoundPacket<?> soundPacket) {
-        Server server = Voicechat.SERVER.getServer();
-        if (server == null) {
-            return;
-        }
-
-        PlayerState state = server.getPlayerStateManager().getState(receiver.getPlayer().getUuid());
-        if (state == null) {
-            return;
-        }
-
         if (!(receiver.getPlayer() instanceof ServerPlayerImpl)) {
             throw new IllegalArgumentException("ServerPlayer is not an instance of ServerPlayerImpl");
         }
         ServerPlayerImpl serverPlayerImpl = (ServerPlayerImpl) receiver.getPlayer();
+        sendPacket(serverPlayerImpl.getRealServerPlayer(), soundPacket);
+    }
 
-        @Nullable ClientConnection c = server.getConnections().get(receiver.getPlayer().getUuid());
-        server.sendSoundPacket(null, null, serverPlayerImpl.getRealServerPlayer(), state, c, soundPacket, SoundPacketEvent.SOURCE_PLUGIN);
+    public static void sendPacket(EntityPlayerMP receiver, SoundPacket<?> soundPacket) {
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return;
+        }
+        PlayerState state = server.getPlayerStateManager().getState(receiver.getUniqueID());
+        if (state == null) {
+            return;
+        }
+        @Nullable ClientConnection c = server.getConnections().get(receiver.getUniqueID());
+        server.sendSoundPacket(null, null, receiver, state, c, soundPacket, SoundPacketEvent.SOURCE_PLUGIN);
     }
 
     @Nullable
