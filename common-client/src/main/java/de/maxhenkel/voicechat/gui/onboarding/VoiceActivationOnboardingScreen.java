@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.gui.onboarding;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.gui.widgets.*;
-import de.maxhenkel.voicechat.voice.client.AutomaticGainControl;
+import de.maxhenkel.voicechat.natives.SpeexManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -29,7 +29,7 @@ public class VoiceActivationOnboardingScreen extends OnboardingScreenBase {
         int bottom = guiTop + contentHeight - PADDING * 2 - BUTTON_HEIGHT - 15;
         int space = BUTTON_HEIGHT + SMALL_PADDING;
 
-        boolean agc = AutomaticGainControl.canUseAgc();
+        boolean agc = SpeexManager.canUseAgc();
         MicAmplificationSlider micAmp = new MicAmplificationSlider(guiLeft + (agc ? 80 + 1 : 0), bottom - space * 3, contentWidth - (agc ? 80 : 0) - 1, BUTTON_HEIGHT);
         if (agc) {
             addRenderableWidget(new AgcButton(guiLeft, bottom - space * 3, 80, BUTTON_HEIGHT, active -> micAmp.active = !active));

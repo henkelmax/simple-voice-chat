@@ -1,4 +1,4 @@
-package de.maxhenkel.voicechat.voice.common;
+package de.maxhenkel.voicechat.natives;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicReference;

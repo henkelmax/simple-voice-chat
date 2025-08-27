@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.voice.client.Denoiser;
+import de.maxhenkel.voicechat.natives.RNNoiseManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.ChatFormatting;
@@ -34,7 +34,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         if (!MicrophoneActivationType.VOICE.equals(VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get())) {
             return false;
         }
-        if (!Denoiser.canUseDenoiser()) {
+        if (!RNNoiseManager.canUseDenoiser()) {
             return true;
         }
         return !VoicechatClient.CLIENT_CONFIG.vad.get();

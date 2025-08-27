@@ -10,7 +10,7 @@ import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
 import de.maxhenkel.voicechat.plugins.impl.audio.AudioConverterImpl;
 import de.maxhenkel.voicechat.plugins.impl.mp3.Mp3DecoderImpl;
 import de.maxhenkel.voicechat.plugins.impl.mp3.Mp3EncoderImpl;
-import de.maxhenkel.voicechat.plugins.impl.opus.OpusManager;
+import de.maxhenkel.voicechat.natives.OpusManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
 import javax.annotation.Nullable;
