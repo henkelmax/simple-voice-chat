@@ -168,19 +168,23 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
     }
 
     public static void sendPacket(VoicechatConnection receiver, SoundPacket<?> soundPacket) {
+        if (!(receiver.getPlayer() instanceof ServerPlayerImpl)) {
+            throw new IllegalArgumentException("ServerPlayer is not an instance of ServerPlayerImpl");
+        }
+        sendPacket(((ServerPlayerImpl) receiver.getPlayer()).getRealServerPlayer(), soundPacket);
+    }
+
+    public static void sendPacket(org.bukkit.entity.Player receiver, SoundPacket<?> soundPacket) {
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
             return;
         }
-
-        PlayerState state = server.getPlayerStateManager().getState(receiver.getPlayer().getUuid());
+        PlayerState state = server.getPlayerStateManager().getState(receiver.getUniqueId());
         if (state == null) {
             return;
         }
-        org.bukkit.entity.Player player = (org.bukkit.entity.Player) receiver.getPlayer().getPlayer();
-
-        @Nullable ClientConnection c = server.getConnections().get(receiver.getPlayer().getUuid());
-        server.sendSoundPacket(null, null, player, state, c, soundPacket, SoundPacketEvent.SOURCE_PLUGIN);
+        @Nullable ClientConnection c = server.getConnections().get(receiver.getUniqueId());
+        server.sendSoundPacket(null, null, receiver, state, c, soundPacket, SoundPacketEvent.SOURCE_PLUGIN);
     }
 
     @Nullable
