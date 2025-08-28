@@ -59,6 +59,12 @@ public class KeybindButton extends AbstractButton {
     @Override
     public boolean mouseClicked(double x, double y, int button) {
         if (listening) {
+            if (button == 0) {
+                // Don't allow left click when accidentally clicking the button twice
+                listening = false;
+                updateText();
+                return false;
+            }
             mc.options.setKey(keyMapping, InputConstants.Type.MOUSE.getOrCreate(button));
             listening = false;
             updateText();
