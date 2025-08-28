@@ -134,13 +134,12 @@ public class ServerVoiceEvents {
                     return;
                 }
                 if (!isCompatible(serverPlayer)) {
-                    serverPlayer.server.execute(() -> {
+                    CommonCompatibilityManager.INSTANCE.execute(serverPlayer.server, () -> {
                         serverPlayer.connection.disconnect(
                                 new TextComponent(Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get().formatted(
                                         CommonCompatibilityManager.INSTANCE.getModName(),
                                         CommonCompatibilityManager.INSTANCE.getModVersion()
-                                ))
-                        );
+                                )));
                     });
                 }
             }
