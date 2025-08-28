@@ -92,4 +92,8 @@ public abstract class CommonCompatibilityManager {
 
     public abstract boolean canSee(ServerPlayer player, ServerPlayer other);
 
+    public void execute(MinecraftServer server, Runnable runnable) {
+        server.execute(runnable);
+    }
+
 }
