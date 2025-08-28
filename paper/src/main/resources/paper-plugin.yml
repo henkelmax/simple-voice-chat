@@ -7,6 +7,7 @@ authors:
   - Max Henkel
 website: https://modrepo.de/minecraft/voicechat/overview
 api-version: ${minecraft_version}
+folia-supported: true
 prefix: voicechat
 load: STARTUP
 permissions:
