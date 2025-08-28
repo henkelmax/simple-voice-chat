@@ -33,3 +33,4 @@
 - Added microphone test button in microphone selection list
 - Improved native library loading and validation
 - Added `bypassGroupIsolation` to static audio channels
+- Prevent accidentally assigning left mouse button as push to talk in the voice chat settings
