@@ -253,4 +253,10 @@ public class PaperCommonCompatibilityManager extends CommonCompatibilityManager 
     public boolean canSee(ServerPlayer player, ServerPlayer other) {
         return player.getBukkitEntity().canSee(other.getBukkitEntity());
     }
+
+    @Override
+    public void execute(MinecraftServer server, Runnable runnable) {
+        Bukkit.getServer().getGlobalRegionScheduler().execute(VoicechatPaperPlugin.INSTANCE, runnable);
+    }
+
 }

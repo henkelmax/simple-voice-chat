@@ -132,13 +132,12 @@ public class ServerVoiceEvents {
                     return;
                 }
                 if (!isCompatible(serverPlayer)) {
-                    serverPlayer.getServer().execute(() -> {
+                    CommonCompatibilityManager.INSTANCE.execute(serverPlayer.getServer(), () -> {
                         serverPlayer.connection.disconnect(
                                 Component.literal(Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get().formatted(
                                         CommonCompatibilityManager.INSTANCE.getModName(),
                                         CommonCompatibilityManager.INSTANCE.getModVersion()
-                                ))
-                        );
+                                )));
                     });
                 }
             }
