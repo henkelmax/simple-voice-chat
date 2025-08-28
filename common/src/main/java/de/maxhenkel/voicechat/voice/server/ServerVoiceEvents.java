@@ -133,14 +133,13 @@ public class ServerVoiceEvents {
                     return;
                 }
                 if (!isCompatible(serverPlayer)) {
-                    serverPlayer.server.execute(() -> {
+                    CommonCompatibilityManager.INSTANCE.execute(serverPlayer.server, () -> {
                         serverPlayer.connection.disconnect(
                                 new StringTextComponent(String.format(
                                         Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get(),
                                         CommonCompatibilityManager.INSTANCE.getModName(),
                                         CommonCompatibilityManager.INSTANCE.getModVersion()
-                                ))
-                        );
+                                )));
                     });
                 }
             }

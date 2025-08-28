@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.ServerPlayNetHandler;
@@ -20,7 +21,7 @@ public class Channel<T extends Packet<T>> {
     }
 
     public void onServerPacket(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetHandler handler, T packet) {
-        server.execute(() -> {
+        CommonCompatibilityManager.INSTANCE.execute(server, () -> {
             if (serverListener != null) {
                 serverListener.onPacket(server, player, handler, packet);
             }
