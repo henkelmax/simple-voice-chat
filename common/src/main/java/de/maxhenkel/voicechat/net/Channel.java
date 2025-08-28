@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.net;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.minecraft.server.MinecraftServer;
 
 import javax.annotation.Nullable;
@@ -20,7 +21,7 @@ public class Channel<T extends Packet<T>> {
     }
 
     public void onServerPacket(MinecraftServer server, EntityPlayerMP player, NetHandlerPlayServer handler, T packet) {
-        server.addScheduledTask(() -> {
+        CommonCompatibilityManager.INSTANCE.execute(server, () -> {
             if (serverListener != null) {
                 serverListener.onPacket(server, player, handler, packet);
             }

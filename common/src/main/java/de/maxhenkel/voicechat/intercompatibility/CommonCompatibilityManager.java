@@ -86,4 +86,8 @@ public abstract class CommonCompatibilityManager {
 
     public abstract boolean canSee(EntityPlayerMP player, EntityPlayerMP other);
 
+    public void execute(MinecraftServer server, Runnable runnable) {
+        server.addScheduledTask(runnable);
+    }
+
 }

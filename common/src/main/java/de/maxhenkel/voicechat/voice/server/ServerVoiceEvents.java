@@ -128,14 +128,13 @@ public class ServerVoiceEvents {
                     return;
                 }
                 if (!isCompatible(serverPlayer)) {
-                    serverPlayer.mcServer.addScheduledTask(() -> {
+                    CommonCompatibilityManager.INSTANCE.execute(serverPlayer.mcServer, () -> {
                         serverPlayer.connection.disconnect(
                                 new TextComponentString(String.format(
                                         Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get(),
                                         CommonCompatibilityManager.INSTANCE.getModName(),
                                         CommonCompatibilityManager.INSTANCE.getModVersion()
-                                ))
-                        );
+                                )));
                     });
                 }
             }
