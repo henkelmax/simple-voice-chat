@@ -61,6 +61,12 @@ public class KeybindButton extends ButtonBase {
 
     public boolean mousePressed(int button) {
         if (listening) {
+            if (button == 0) {
+                // Don't allow left click when accidentally clicking the button twice
+                listening = false;
+                updateText();
+                return isMouseOver();
+            }
             setKeyBind(button - 100);
             listening = false;
             updateText();
