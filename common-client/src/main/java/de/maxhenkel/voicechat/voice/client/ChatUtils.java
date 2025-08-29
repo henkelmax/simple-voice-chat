@@ -10,10 +10,10 @@ import javax.annotation.Nullable;
 
 public class ChatUtils {
 
-    public static void sendPlayerError(String translationKey, @Nullable Exception e) {
+    public static void sendModErrorMessage(String translationKey, @Nullable String errorMessage) {
         Style style = new Style().setColor(TextFormatting.RED);
-        if (e != null) {
-            style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(e.getMessage()).setStyle(new Style().setColor(TextFormatting.RED))));
+        if (errorMessage != null) {
+            style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(errorMessage).setStyle(new Style().setColor(TextFormatting.RED))));
         }
         ITextComponent message = wrapInSquareBrackets(new TextComponentString(CommonCompatibilityManager.INSTANCE.getModName()))
                 .setStyle(new Style().setColor(TextFormatting.GREEN))
@@ -24,6 +24,14 @@ public class ChatUtils {
 
     private static ITextComponent wrapInSquareBrackets(ITextComponent component) {
         return new TextComponentString("[").appendSibling(component).appendText("]");
+    }
+
+    public static void sendModErrorMessage(String translationKey, @Nullable Exception e) {
+        sendModErrorMessage(translationKey, e == null ? null : e.getMessage());
+    }
+
+    public static void sendModErrorMessage(String translationKey) {
+        sendModErrorMessage(translationKey, (String) null);
     }
 
     public static void sendModMessage(ITextComponent message) {
