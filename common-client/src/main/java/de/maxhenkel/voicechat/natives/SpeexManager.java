@@ -47,6 +47,14 @@ public class SpeexManager extends NativeValidator {
         instance().initialize();
     }
 
+    public static boolean isFailed() {
+        return !instance().canUse();
+    }
+
+    public static String getFailedMessage() {
+        return instance().getMessage();
+    }
+
     private static SpeexManager instance;
 
     private static synchronized SpeexManager instance() {
