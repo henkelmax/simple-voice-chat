@@ -54,13 +54,12 @@ public abstract class MicrophoneProcessor {
         }
         AutomaticGainControl agc = getAgc();
         if (useAgc() && agc != null) {
-            agc.agc(audio);
-
             if (speechProbability >= AGC_PROBABILITY && shouldAdjustGain()) {
                 agc.setIncrement(12);
             } else {
                 agc.setIncrement(0);
             }
+            agc.agc(audio);
         } else {
             volumeManager.adjustVolume(audio, VoicechatClient.CLIENT_CONFIG.microphoneGain.get());
         }
