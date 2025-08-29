@@ -1,7 +1,9 @@
 package de.maxhenkel.voicechat.natives;
 
+import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
+import de.maxhenkel.voicechat.macos.VersionCheck;
 
 public abstract class NativeValidator {
 
@@ -24,6 +26,14 @@ public abstract class NativeValidator {
             Voicechat.LOGGER.info("Skipping initialization of {} - Natives are disabled", getNativeName());
             state = NativeState.failed("Natives are disabled");
             return;
+        }
+
+        if (Platform.isMac()) {
+            if (!VersionCheck.isMacOSNativeCompatible()) {
+                Voicechat.LOGGER.info("Skipping initialization of {} - Unsupported macOS version", getNativeName());
+                state = NativeState.failed("Unsupported macOS version");
+                return;
+            }
         }
 
         Voicechat.LOGGER.info("Initializing {}", getNativeName());
