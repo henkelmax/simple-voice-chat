@@ -140,6 +140,7 @@
   "message.voicechat.audio_type.off": "OFF",
   "message.voicechat.invite_player": "Press to invite %s to your group.",
   "message.voicechat.press_to_reassign_key": "Press to assign a key.",
+  "message.voicechat.native_error": "Some modules failed to load - Your Operating System might not be supported.",
   "message.voicechat.set_up": "Press %s to set up",
   "message.voicechat.onboarding.reset": "Onboarding status has been reset",
   "message.voicechat.onboarding.next": "Next",
