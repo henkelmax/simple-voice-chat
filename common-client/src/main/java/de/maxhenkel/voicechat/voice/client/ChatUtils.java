@@ -11,14 +11,22 @@ import javax.annotation.Nullable;
 
 public class ChatUtils {
 
-    public static void sendPlayerError(String translationKey, @Nullable Exception e) {
+    public static void sendModErrorMessage(String translationKey, @Nullable String errorMessage) {
         IFormattableTextComponent error = createModMessage(new TranslationTextComponent(translationKey).withStyle(TextFormatting.RED)).withStyle(style -> {
-            if (e != null) {
-                return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(e.getMessage()).withStyle(TextFormatting.RED)));
+            if (errorMessage != null) {
+                return style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(errorMessage).withStyle(TextFormatting.RED)));
             }
             return style;
         });
         sendPlayerMessage(error);
+    }
+
+    public static void sendModErrorMessage(String translationKey, @Nullable Exception e) {
+        sendModErrorMessage(translationKey, e == null ? null : e.getMessage());
+    }
+
+    public static void sendModErrorMessage(String translationKey) {
+        sendModErrorMessage(translationKey, (String) null);
     }
 
     public static void sendModMessage(ITextComponent message) {

@@ -56,6 +56,10 @@ public abstract class NativeValidator {
         return state.isSuccess();
     }
 
+    public String getMessage() {
+        return state.getMessage();
+    }
+
     protected static enum NativeLoadState {
         NOT_INITIALIZED,
         SUCCESS,

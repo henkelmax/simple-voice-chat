@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
+import de.maxhenkel.voicechat.natives.ClientNativeManager;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import net.minecraft.client.Minecraft;
@@ -39,7 +40,7 @@ public class ClientVoicechat {
             reloadSoundManager();
         } catch (SpeakerException e) {
             Voicechat.LOGGER.error("Failed to start sound manager", e);
-            ChatUtils.sendPlayerError("message.voicechat.speaker_unavailable", e);
+            ChatUtils.sendModErrorMessage("message.voicechat.speaker_unavailable", e);
         }
         this.audioChannels = new HashMap<>();
     }
@@ -62,6 +63,7 @@ public class ClientVoicechat {
         connection = new ClientVoicechatConnection(this, initializationData);
         connection.start();
         OnboardingManager.onConnecting();
+        ClientNativeManager.onConnecting();
     }
 
     public void processSoundPacket(SoundPacket packet) {
@@ -80,7 +82,7 @@ public class ClientVoicechat {
                     } catch (Exception e) {
                         CooldownTimer.run("playback_unavailable", () -> {
                             Voicechat.LOGGER.error("Failed to create audio channel", e);
-                            ChatUtils.sendPlayerError("message.voicechat.playback_unavailable", e);
+                            ChatUtils.sendModErrorMessage("message.voicechat.playback_unavailable", e);
                         });
                     }
                 } else {
@@ -132,7 +134,7 @@ public class ClientVoicechat {
             micThread.start();
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to start microphone thread", e);
-            ChatUtils.sendPlayerError("message.voicechat.microphone_unavailable", e);
+            ChatUtils.sendModErrorMessage("message.voicechat.microphone_unavailable", e);
         }
     }
 

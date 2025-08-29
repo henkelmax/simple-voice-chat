@@ -65,6 +65,14 @@ public class LameManager extends NativeValidator {
         instance().initialize();
     }
 
+    public static boolean isFailed() {
+        return !instance().canUse();
+    }
+
+    public static String getFailedMessage() {
+        return instance().getMessage();
+    }
+
     private static LameManager instance;
 
     private static synchronized LameManager instance() {
