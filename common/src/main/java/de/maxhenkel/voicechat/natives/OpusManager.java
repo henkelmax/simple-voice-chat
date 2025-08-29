@@ -83,6 +83,14 @@ public class OpusManager extends NativeValidator {
         instance().initialize();
     }
 
+    public static boolean isFailed() {
+        return !instance().canUse();
+    }
+
+    public static String getFailedMessage() {
+        return instance().getMessage();
+    }
+
     private static OpusManager instance;
 
     private static synchronized OpusManager instance() {
