@@ -40,6 +40,14 @@ public class RNNoiseManager extends NativeValidator {
         instance().initialize();
     }
 
+    public static boolean isFailed() {
+        return !instance().canUse();
+    }
+
+    public static String getFailedMessage() {
+        return instance().getMessage();
+    }
+
     private static RNNoiseManager instance;
 
     private static synchronized RNNoiseManager instance() {
