@@ -1,9 +1,7 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
-import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.macos.VersionCheck;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
@@ -30,11 +28,6 @@ public class ClientCrossSideManager extends CrossSideManager {
 
     @Override
     public boolean useNatives() {
-        if (Platform.isMac()) {
-            if (!VersionCheck.isMacOSNativeCompatible()) {
-                return false;
-            }
-        }
         if (VoicechatClient.CLIENT_CONFIG == null) {
             return Voicechat.SERVER_CONFIG.useNatives.get();
         }
