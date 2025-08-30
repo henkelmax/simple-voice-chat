@@ -29,17 +29,16 @@ public class SniffedSecretPacket {
         if (compatibilityVersion < 10) {
             throw new IncompatibleVoiceChatException(String.format("Client has an outdated voice chat compatibility version (%s)", compatibilityVersion));
         }
+        if (compatibilityVersion == 19) {
+            throw new IncompatibleVoiceChatException(String.format("Client has an unsupported voice chat compatibility version (%s)", compatibilityVersion));
+        }
         if (compatibilityVersion > VoiceProxy.COMPATIBILITY_VERSION) {
             throw new IncompatibleVoiceChatException(String.format("Client has a newer voice chat compatibility version (%s)", compatibilityVersion));
         }
         ByteBufferWrapper buf = new ByteBufferWrapper(buffer);
         SniffedSecretPacket packet = new SniffedSecretPacket();
-        if (compatibilityVersion <= 18) {
-            packet.secret = new byte[16];
-        } else {
-            packet.secret = new byte[32];
-        }
 
+        packet.secret = new byte[16];
         buf.readBytes(packet.secret);
         packet.serverPort = buf.readInt();
         packet.playerUUID = buf.readUUID();
