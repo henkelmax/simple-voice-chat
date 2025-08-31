@@ -1,2 +1,3 @@
-- Add support for voice chat versions 2.6.x
+- Added support for voice chat versions 2.6.x
 - Allow voice host with just port
+- Added support for ViaVersion and ViaBackwards
