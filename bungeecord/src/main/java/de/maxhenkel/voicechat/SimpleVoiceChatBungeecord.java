@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat;
 
 import de.maxhenkel.voicechat.logging.JavaLoggingLogger;
 import de.maxhenkel.voicechat.sniffer.IncompatibleVoiceChatException;
+import de.maxhenkel.voicechat.integration.viaversion.ViaVersionCompatibility;
 import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
@@ -75,6 +76,8 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
         plugin.getProxy().registerChannel(REQUEST_SECRET_CHANNEL_1_12);
         plugin.getProxy().registerChannel(SECRET_CHANNEL);
         plugin.getProxy().registerChannel(SECRET_CHANNEL_1_12);
+
+        initViaVersionIntegration();
         reloadVoiceProxyServer();
     }
 
@@ -144,4 +147,16 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
             getLogger().info("Player {} has an incompatible voice chat version: {}", p.getName(), e.getMessage());
         }
     }
+
+    private void initViaVersionIntegration() {
+        try {
+            if (plugin.getProxy().getPluginManager().getPlugin("ViaVersion") != null) {
+                ViaVersionCompatibility.register();
+                getLogger().info("Successfully added ViaVersion mappings");
+            }
+        } catch (Throwable t) {
+            getLogger().error("Failed to add ViaVersion mappings", t);
+        }
+    }
+
 }
