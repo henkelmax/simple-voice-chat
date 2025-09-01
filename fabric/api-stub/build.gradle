@@ -1,5 +1,10 @@
-archivesBaseName = 'voicechat-api'
+plugins {
+    id 'maven-publish'
+}
+
+archivesBaseName = archives_base_name
 version = project(':api').version
+group = maven_group
 
 sourceCompatibility = JavaLanguageVersion.of(8)
 targetCompatibility = JavaLanguageVersion.of(8)
@@ -7,5 +12,27 @@ targetCompatibility = JavaLanguageVersion.of(8)
 processResources {
     filesMatching('fabric.mod.json') {
         expand 'api_version': version
+    }
+}
+
+publishing {
+    publications {
+        voiceChatApi(MavenPublication) {
+            artifactId archives_base_name
+            artifact(jar.archivePath) {
+                builtBy build
+                classifier 'fabric-stub'
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = 'henkelmax.public'
+            url = 'https://maven.maxhenkel.de/repository/public'
+            credentials {
+                username System.getenv('MAVEN_USERNAME')
+                password System.getenv('MAVEN_PASSWORD')
+            }
+        }
     }
 }

@@ -76,13 +76,13 @@ tasks.register('publishFabricSnapshot') {
 tasks.register('publishApi') {
     group = 'voicechat'
     doLast {
-        runGradleTasks(['api:clean', 'api:publish'], [])
+        runGradleTasks(['api:clean', 'fabric:api-stub:clean'], ['api:publish', 'fabric:api-stub:publish'])
     }
 }
 
 tasks.register('publishApiLocal') {
     group = 'voicechat'
     doLast {
-        runGradleTasks(['api:clean', 'api:publishToMavenLocal'], [])
+        runGradleTasks(['api:clean', 'fabric:api-stub:clean'], ['api:publishToMavenLocal', 'fabric:api-stub:publishToMavenLocal'])
     }
 }
