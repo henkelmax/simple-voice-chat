@@ -1,9 +1,1 @@
-- Allow translating volume category names and descriptions
-- Allow voice host with just port
-- Switched to 128 bit `AES/GCM/NoPadding` encryption
-- Allow multiple targets for static audio channels
-- Removed `whisper_distance_multiplier` and `crouch_distance_multiplier` config option
-- Added `whisper_distance` config option - This now also allows for higher distances than the default voice chat distance
-- Added `VoiceDistanceEvent` to the API, so addons can implement their own custom distance logic like crouch distance
-- Added support for vanish plugins (1.18.2+)
-- Added `bypassGroupIsolation` to static audio channels
+- Fixed API audio conversion
