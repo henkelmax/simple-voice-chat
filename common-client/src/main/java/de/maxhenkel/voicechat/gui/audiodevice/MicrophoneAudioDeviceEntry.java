@@ -22,7 +22,7 @@ public class MicrophoneAudioDeviceEntry extends AudioDeviceEntry {
         super.renderContent(guiGraphics, mouseX, mouseY, hovered, delta);
         boolean selected = isSelected.get();
         if (selected && (hovered || testButton.isMicActive())) {
-            testButton.setPosition(getContentX() + (getWidth() - testButton.getWidth() - PADDING), getContentY() + (getHeight() - testButton.getHeight()) / 2);
+            testButton.setPosition(getContentX() + (getContentWidth() - testButton.getWidth() - PADDING), getContentY() + (getContentHeight() - testButton.getHeight()) / 2);
             testButton.render(guiGraphics, mouseX, mouseY, delta);
         }
     }

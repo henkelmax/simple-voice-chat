@@ -1,1 +1,2 @@
 - Updated to 25w36b
+- Fixed microphone and speaker test buttons being misaligned

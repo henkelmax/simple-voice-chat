@@ -35,7 +35,7 @@ public class SpeakerAudioDeviceEntry extends AudioDeviceEntry {
         boolean selected = isSelected.get();
         if (selected && hovered) {
             testButton.visible = true;
-            testButton.setPosition(getContentX() + (getWidth() - testButton.getWidth() - PADDING), getContentY() + (getHeight() - testButton.getHeight()) / 2);
+            testButton.setPosition(getContentX() + (getContentWidth() - testButton.getWidth() - PADDING), getContentY() + (getContentHeight() - testButton.getHeight()) / 2);
             testButton.render(guiGraphics, mouseX, mouseY, delta);
         } else {
             testButton.visible = false;
