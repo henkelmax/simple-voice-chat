@@ -6,6 +6,9 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -51,51 +54,51 @@ public class KeybindButton extends AbstractButton {
     }
 
     @Override
-    public void onPress() {
+    public void onPress(InputWithModifiers inputWithModifiers) {
         listening = true;
         updateText();
     }
 
     @Override
-    public boolean mouseClicked(double x, double y, int button, boolean b) {
+    public boolean mouseClicked(MouseButtonEvent evt, boolean bl) {
         if (listening) {
-            if (button == 0) {
+            if (evt.button() == 0) {
                 // Don't allow left click when accidentally clicking the button twice
                 listening = false;
                 updateText();
-                return isMouseOver(x, y);
+                return isMouseOver(evt.x(), evt.y());
             }
-            keyMapping.setKey(InputConstants.Type.MOUSE.getOrCreate(button));
+            keyMapping.setKey(InputConstants.Type.MOUSE.getOrCreate(evt.button()));
             mc.options.save();
             listening = false;
             updateText();
             return true;
         }
-        return super.mouseClicked(x, y, button, b);
+        return super.mouseClicked(evt, bl);
     }
 
     @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent keyEvent) {
         if (listening) {
-            if (key == InputConstants.KEY_ESCAPE) {
+            if (keyEvent.isEscape()) {
                 keyMapping.setKey(InputConstants.UNKNOWN);
             } else {
-                keyMapping.setKey(InputConstants.getKey(key, scanCode));
+                keyMapping.setKey(InputConstants.getKey(keyEvent));
             }
             mc.options.save();
             listening = false;
             updateText();
             return true;
         }
-        return super.keyPressed(key, scanCode, modifiers);
+        return super.keyPressed(keyEvent);
     }
 
     @Override
-    public boolean keyReleased(int key, int scanCode, int modifiers) {
-        if (listening && key == InputConstants.KEY_ESCAPE) {
+    public boolean keyReleased(KeyEvent keyEvent) {
+        if (listening && keyEvent.isEscape()) {
             return true;
         }
-        return super.keyReleased(key, scanCode, modifiers);
+        return super.keyReleased(keyEvent);
     }
 
     @Override

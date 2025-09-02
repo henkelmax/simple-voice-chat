@@ -125,14 +125,14 @@ public class ServerVoiceEvents {
             public void run() {
                 timer.cancel();
                 timer.purge();
-                if (!serverPlayer.getServer().isRunning()) {
+                if (!serverPlayer.level().getServer().isRunning()) {
                     return;
                 }
                 if (!serverPlayer.connection.isAcceptingMessages()) {
                     return;
                 }
                 if (!isCompatible(serverPlayer)) {
-                    CommonCompatibilityManager.INSTANCE.execute(serverPlayer.getServer(), () -> {
+                    CommonCompatibilityManager.INSTANCE.execute(serverPlayer.level().getServer(), () -> {
                         serverPlayer.connection.disconnect(
                                 Component.literal(Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get().formatted(
                                         CommonCompatibilityManager.INSTANCE.getModName(),

@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -32,8 +33,8 @@ public abstract class AudioDeviceList extends ListScreenListBase<AudioDeviceEntr
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button, boolean bl) {
-        AudioDeviceEntry entry = getEntryAtPosition(mouseX, mouseY);
+    public boolean mouseClicked(MouseButtonEvent evt, boolean bl) {
+        AudioDeviceEntry entry = getEntryAtPosition(evt.x(), evt.y());
         if (entry == null) {
             return false;
         }
@@ -45,7 +46,7 @@ public abstract class AudioDeviceList extends ListScreenListBase<AudioDeviceEntr
             onSelect(entry);
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button, bl);
+        return super.mouseClicked(evt, bl);
     }
 
     protected void onSelect(AudioDeviceEntry entry) {

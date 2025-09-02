@@ -1,1 +1,1 @@
-- Fixed mp3 decoder hanging infinitely
+- Updated to 25w36b

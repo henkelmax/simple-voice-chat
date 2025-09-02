@@ -12,7 +12,7 @@ public enum PermissionType {
         return switch (this) {
             case EVERYONE -> true;
             case NOONE -> false;
-            case OPS -> player != null && player.hasPermissions(player.getServer().operatorUserPermissionLevel());
+            case OPS -> player != null && player.hasPermissions(player.level().getServer().operatorUserPermissionLevel());
         };
     }
 

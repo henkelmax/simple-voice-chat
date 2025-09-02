@@ -8,10 +8,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import org.lwjgl.glfw.GLFW;
 
 public class EnterPasswordScreen extends VoiceChatScreenBase {
 
@@ -71,15 +71,15 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (keyEvent.isEscape()) {
             minecraft.setScreen(null);
             return true;
         }
-        if (super.keyPressed(keyCode, scanCode, modifiers)) {
+        if (super.keyPressed(keyEvent)) {
             return true;
         }
-        if (keyCode == GLFW.GLFW_KEY_ENTER) {
+        if (keyEvent.isConfirmation()) {
             joinGroup();
             return true;
         }

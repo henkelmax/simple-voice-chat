@@ -11,6 +11,8 @@ import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -108,27 +110,27 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public boolean mouseClicked(double x, double y, int button, boolean b) {
-        if (keybindButton.mouseClicked(x, y, button, b)) {
+    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean bl) {
+        if (keybindButton.mouseClicked(mouseButtonEvent, bl)) {
             return true;
         }
-        return super.mouseClicked(x, y, button, b);
+        return super.mouseClicked(mouseButtonEvent, bl);
     }
 
     @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers) {
-        if (keybindButton.keyPressed(key, scanCode, modifiers)) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (keybindButton.keyPressed(keyEvent)) {
             return true;
         }
-        return super.keyPressed(key, scanCode, modifiers);
+        return super.keyPressed(keyEvent);
     }
 
     @Override
-    public boolean keyReleased(int key, int scanCode, int modifiers) {
-        if (keybindButton.keyReleased(key, scanCode, modifiers)) {
+    public boolean keyReleased(KeyEvent keyEvent) {
+        if (keybindButton.keyReleased(keyEvent)) {
             return true;
         }
-        return super.keyReleased(key, scanCode, modifiers);
+        return super.keyReleased(keyEvent);
     }
 
     @Override

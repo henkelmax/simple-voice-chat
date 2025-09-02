@@ -6,15 +6,15 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 public class InputEvents {
 
-    public static final Event<ClientCompatibilityManager.KeyboardEvent> KEYBOARD_KEY = EventFactory.createArrayBacked(ClientCompatibilityManager.KeyboardEvent.class, (listeners) -> (window, key, scancode) -> {
+    public static final Event<ClientCompatibilityManager.KeyboardEvent> KEYBOARD_KEY = EventFactory.createArrayBacked(ClientCompatibilityManager.KeyboardEvent.class, (listeners) -> (keyEvent) -> {
         for (ClientCompatibilityManager.KeyboardEvent event : listeners) {
-            event.onKeyboardEvent(window, key, scancode);
+            event.onKeyboardEvent(keyEvent);
         }
     });
 
-    public static final Event<ClientCompatibilityManager.MouseEvent> MOUSE_KEY = EventFactory.createArrayBacked(ClientCompatibilityManager.MouseEvent.class, (listeners) -> (window, button, action, mods) -> {
+    public static final Event<ClientCompatibilityManager.MouseEvent> MOUSE_KEY = EventFactory.createArrayBacked(ClientCompatibilityManager.MouseEvent.class, (listeners) -> (mouseButtonInfo, action) -> {
         for (ClientCompatibilityManager.MouseEvent event : listeners) {
-            event.onMouseEvent(window, button, action, mods);
+            event.onMouseEvent(mouseButtonInfo, action);
         }
     });
 

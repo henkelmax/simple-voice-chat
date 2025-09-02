@@ -8,6 +8,8 @@ import de.maxhenkel.voicechat.service.Service;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.Connection;
@@ -69,11 +71,11 @@ public abstract class ClientCompatibilityManager {
     }
 
     public interface KeyboardEvent {
-        void onKeyboardEvent(long window, int key, int scancode);
+        void onKeyboardEvent(KeyEvent keyEvent);
     }
 
     public interface MouseEvent {
-        void onMouseEvent(long window, int button, int action, int mods);
+        void onMouseEvent(MouseButtonInfo mouseButtonInfo, int action);
     }
 
 }

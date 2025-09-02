@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.gui.widgets;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 
 public abstract class EnumButton<T extends Enum<T>> extends AbstractButton {
@@ -26,7 +27,7 @@ public abstract class EnumButton<T extends Enum<T>> extends AbstractButton {
     }
 
     @Override
-    public void onPress() {
+    public void onPress(InputWithModifiers inputWithModifiers) {
         T e = entry.get();
         Enum<T>[] values = e.getClass().getEnumConstants();
         T type = (T) values[(e.ordinal() + 1) % values.length];

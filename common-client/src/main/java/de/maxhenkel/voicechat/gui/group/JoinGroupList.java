@@ -9,6 +9,7 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 
@@ -26,8 +27,8 @@ public class JoinGroupList extends ListScreenListBase<JoinGroupEntry> {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button, boolean b) {
-        JoinGroupEntry entry = getEntryAtPosition(mouseX, mouseY);
+    public boolean mouseClicked(MouseButtonEvent evt, boolean bl) {
+        JoinGroupEntry entry = getEntryAtPosition(evt.x(), evt.y());
         if (entry == null) {
             return false;
         }

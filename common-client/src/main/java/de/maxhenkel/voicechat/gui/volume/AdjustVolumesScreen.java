@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -93,11 +94,11 @@ public class AdjustVolumesScreen extends ListScreenBase {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button, boolean b) {
+    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean bl) {
         if (searchBox.isFocused()) {
-            searchBox.mouseClicked(mouseX, mouseY, button, b);
+            searchBox.mouseClicked(mouseButtonEvent, bl);
         }
-        return super.mouseClicked(mouseX, mouseY, button, b) || volumeList.mouseClicked(mouseX, mouseY, button, b);
+        return super.mouseClicked(mouseButtonEvent, bl);
     }
 
     private void checkSearchStringUpdate(String string) {

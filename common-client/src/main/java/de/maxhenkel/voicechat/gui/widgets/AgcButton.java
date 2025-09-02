@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.natives.SpeexManager;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
@@ -27,9 +28,8 @@ public class AgcButton extends BooleanConfigButton {
     }
 
     @Override
-    public void onPress() {
-        super.onPress();
+    public void onPress(InputWithModifiers inputWithModifiers) {
+        super.onPress(inputWithModifiers);
         onChange.accept(entry.get());
     }
-
 }

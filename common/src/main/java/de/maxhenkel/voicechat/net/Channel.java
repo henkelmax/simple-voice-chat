@@ -19,7 +19,7 @@ public class Channel<T extends Packet<T>> {
     }
 
     public void onServerPacket(ServerPlayer player, T packet) {
-        CommonCompatibilityManager.INSTANCE.execute(player.getServer(), () -> {
+        CommonCompatibilityManager.INSTANCE.execute(player.level().getServer(), () -> {
             if (serverListener != null) {
                 serverListener.onPacket(player, packet);
             }
