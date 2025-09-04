@@ -193,6 +193,11 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
     }
 
     @Override
+    public void emitDisconnectedEvent() {
+        disconnectEvents.forEach(Runnable::run);
+    }
+
+    @Override
     public void onDisconnect(Runnable onDisconnect) {
         disconnectEvents.add(onDisconnect);
     }

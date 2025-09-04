@@ -99,6 +99,11 @@ public class FabricClientCompatibilityManager extends ClientCompatibilityManager
     }
 
     @Override
+    public void emitDisconnectedEvent() {
+        ClientWorldEvents.DISCONNECT.invoker().run();
+    }
+
+    @Override
     public void onDisconnect(Runnable onDisconnect) {
         ClientWorldEvents.DISCONNECT.register(onDisconnect);
     }
