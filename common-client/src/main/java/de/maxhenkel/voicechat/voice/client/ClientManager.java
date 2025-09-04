@@ -102,7 +102,7 @@ public class ClientManager {
         }
         if (client != null) {
             Voicechat.LOGGER.info("Disconnecting from previous connection due to server change");
-            onDisconnect();
+            ClientCompatibilityManager.INSTANCE.emitDisconnectedEvent();
         }
         Voicechat.LOGGER.info("Sending secret request to the server");
         ClientServerNetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
