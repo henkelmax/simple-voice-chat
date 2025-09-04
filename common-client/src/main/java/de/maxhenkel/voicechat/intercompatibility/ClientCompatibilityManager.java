@@ -48,6 +48,8 @@ public abstract class ClientCompatibilityManager {
 
     public abstract void onVoiceChatDisconnected(Runnable onVoiceChatDisconnected);
 
+    public abstract void emitDisconnectedEvent();
+
     public abstract void onDisconnect(Runnable onDisconnect);
 
     public abstract void onJoinWorld(Runnable onJoinWorld);
