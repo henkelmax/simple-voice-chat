@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientGroupManager {
 
-    private Map<UUID, ClientGroup> groups;
+    private final Map<UUID, ClientGroup> groups;
 
     public ClientGroupManager() {
         groups = new ConcurrentHashMap<>();
@@ -29,7 +29,7 @@ public class ClientGroupManager {
             Voicechat.LOGGER.debug("Removed group {}", packet.getGroupId());
             JoinGroupList.update();
         });
-        ClientCompatibilityManager.INSTANCE.onDisconnect(() -> groups.clear());
+        ClientCompatibilityManager.INSTANCE.onDisconnect(this::clear);
     }
 
     @Nullable
@@ -40,4 +40,9 @@ public class ClientGroupManager {
     public Collection<ClientGroup> getGroups() {
         return groups.values();
     }
+
+    public void clear() {
+        groups.clear();
+    }
+
 }
