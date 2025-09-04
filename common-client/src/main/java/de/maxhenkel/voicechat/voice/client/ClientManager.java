@@ -105,7 +105,7 @@ public class ClientManager {
         }
         if (client != null) {
             Voicechat.LOGGER.info("Disconnecting from previous connection due to server change");
-            onDisconnect();
+            ClientCompatibilityManager.INSTANCE.emitDisconnectedEvent();
         }
         hasShownPermissionsMessage = false;
         Voicechat.LOGGER.info("Sending secret request to the server");
