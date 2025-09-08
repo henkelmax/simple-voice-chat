@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.natives;
 
-import de.maxhenkel.speex4j.AutomaticGainControl;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
@@ -12,7 +11,7 @@ public class SpeexManager extends NativeValidator {
 
     @Override
     protected void runValidation() throws Throwable {
-        try (AutomaticGainControl agc = new AutomaticGainControl(AudioUtils.FRAME_SIZE, AudioUtils.SAMPLE_RATE)) {
+        try (Agc agc = new Agc(AudioUtils.FRAME_SIZE, AudioUtils.SAMPLE_RATE)) {
             agc.setTarget(TARGET);
             agc.agc(new short[AudioUtils.FRAME_SIZE]);
         }
@@ -24,13 +23,13 @@ public class SpeexManager extends NativeValidator {
     }
 
     @Nullable
-    public static AutomaticGainControl createAgc() {
+    public static Agc createAgc() {
         SpeexManager instance = instance();
         if (!instance.canUse()) {
             return null;
         }
         return NativeUtils.createSafe(() -> {
-            AutomaticGainControl agc = new AutomaticGainControl(AudioUtils.FRAME_SIZE, AudioUtils.SAMPLE_RATE);
+            Agc agc = new Agc(AudioUtils.FRAME_SIZE, AudioUtils.SAMPLE_RATE);
             agc.setTarget(TARGET);
             return agc;
         }, e -> {
