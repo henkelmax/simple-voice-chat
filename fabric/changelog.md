@@ -1,1 +1,2 @@
 - Fixed multiple icons being rendered above players
+- Prevent native objects from not getting closed
