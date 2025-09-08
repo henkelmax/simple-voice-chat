@@ -17,9 +17,11 @@ public class Mp3DecoderImpl implements Mp3Decoder {
     private short[] samples;
     @Nullable
     private AudioFormat audioFormat;
+    private int bitrate;
 
     private Mp3DecoderImpl(de.maxhenkel.lame4j.Mp3Decoder decoder) {
         this.decoder = decoder;
+        this.bitrate = -1;
     }
 
     private void decodeIfNecessary() throws IOException {
@@ -38,10 +40,13 @@ public class Mp3DecoderImpl implements Mp3Decoder {
                 }
                 samples = sampleBuffer.toShortArray();
                 audioFormat = decoder.createAudioFormat();
+                bitrate = decoder.getBitRate();
             }
         } catch (IOException e) {
             decodeError = e;
             throw e;
+        } finally {
+            decoder.close();
         }
     }
 
@@ -60,7 +65,7 @@ public class Mp3DecoderImpl implements Mp3Decoder {
     @Override
     public int getBitrate() throws IOException {
         decodeIfNecessary();
-        return decoder.getBitRate();
+        return bitrate;
     }
 
     @Nullable
