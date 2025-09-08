@@ -1,2 +1,2 @@
-- Updated Russian translation
-- Fixed groups, player states and audio categories not being cleared when switching servers on a proxy
+- Prevent native objects from not getting closed
+- Fixed mp3 decoding issues
