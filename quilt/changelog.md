@@ -1,2 +1,1 @@
-- Updated Russian translation
-- Fixed groups, player states and audio categories not being cleared when switching servers on a proxy
+- Fixed multiple icons being rendered above players
