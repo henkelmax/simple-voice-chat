@@ -8,7 +8,7 @@
   ],
   "client": [
     "ConnectionAccessor",
-    "EntityRendererMixin",
+    "PlayerRendererMixin",
     "MinecraftMixin",
     "KeyboardMixin",
     "MouseMixin",
