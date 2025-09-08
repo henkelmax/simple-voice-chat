@@ -1,9 +1,9 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import de.maxhenkel.rnnoise4j.Denoiser;
-import de.maxhenkel.speex4j.AutomaticGainControl;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.natives.Agc;
+import de.maxhenkel.voicechat.natives.Denoiser;
 import de.maxhenkel.voicechat.natives.RNNoiseManager;
 import de.maxhenkel.voicechat.natives.SpeexManager;
 
@@ -23,7 +23,7 @@ public abstract class MicrophoneProcessor {
     @Nullable
     private Denoiser denoiser;
     @Nullable
-    private AutomaticGainControl agc;
+    private Agc agc;
 
     public MicrophoneProcessor() {
         micActivator = new MicActivator(this::getDeactivationDelay);
@@ -52,7 +52,7 @@ public abstract class MicrophoneProcessor {
         } else {
             speechProbability = 1F;
         }
-        AutomaticGainControl agc = getAgc();
+        Agc agc = getAgc();
         if (useAgc() && agc != null) {
             if (speechProbability >= AGC_PROBABILITY && shouldAdjustGain()) {
                 agc.setIncrement(12);
@@ -156,7 +156,7 @@ public abstract class MicrophoneProcessor {
     }
 
     @Nullable
-    protected AutomaticGainControl getAgc() {
+    protected Agc getAgc() {
         if (agc != null && agc.isClosed()) {
             agc = SpeexManager.createAgc();
         }
