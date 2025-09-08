@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.natives;
 
-import de.maxhenkel.rnnoise4j.Denoiser;
 import de.maxhenkel.voicechat.Voicechat;
 
 import javax.annotation.Nullable;
