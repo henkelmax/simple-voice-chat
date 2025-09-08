@@ -1,0 +1,1 @@
+- Prevent native objects from not getting closed
