@@ -27,7 +27,7 @@ public interface OpusEncoder {
 
     /**
      * Closes the encoder.
-     * Not doing this would result in a memory leak.
+     * <b>NOTE</b>: Not closing encoders will cause a memory leak in voice chat versions <code>&lt;2.6.3</code>!
      */
     void close();
 
