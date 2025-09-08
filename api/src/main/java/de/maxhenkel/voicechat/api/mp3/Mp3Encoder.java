@@ -21,7 +21,7 @@ public interface Mp3Encoder {
      * Closes the encoder and flushes the output stream.
      * Also writes leftover mp3 data to the output stream.
      *
-     * <b>NOTE</b>: Not closing encoders will cause a memory leak!
+     * <b>NOTE</b>: Not closing encoders will cause a memory leak in voice chat versions <code>&lt;2.6.3</code>!
      *
      * @throws IOException if an I/O error occurs
      */
