@@ -101,9 +101,6 @@ public abstract class MicrophoneProcessor {
         whisperMicActivator.reset();
         whispering = false;
         activating = false;
-        if (denoiser != null) {
-            denoiser.close();
-        }
     }
 
     public void close() {
