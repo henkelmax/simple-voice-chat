@@ -7,11 +7,11 @@ import de.maxhenkel.voicechat.api.mp3.Mp3Encoder;
 import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
+import de.maxhenkel.voicechat.natives.LameManager;
 import de.maxhenkel.voicechat.plugins.impl.audio.AudioConverterImpl;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.server.ServerWorld;
 import de.maxhenkel.voicechat.plugins.impl.mp3.Mp3DecoderImpl;
-import de.maxhenkel.voicechat.plugins.impl.mp3.Mp3EncoderImpl;
 import de.maxhenkel.voicechat.natives.OpusManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
@@ -37,7 +37,7 @@ public abstract class VoicechatApiImpl implements VoicechatApi {
     @Nullable
     @Override
     public Mp3Encoder createMp3Encoder(AudioFormat audioFormat, int bitrate, int quality, OutputStream outputStream) {
-        return Mp3EncoderImpl.createEncoder(audioFormat, bitrate, quality, outputStream);
+        return LameManager.createEncoder(audioFormat, bitrate, quality, outputStream);
     }
 
     @Nullable

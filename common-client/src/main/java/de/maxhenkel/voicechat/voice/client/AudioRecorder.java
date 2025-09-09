@@ -6,7 +6,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.mp3.Mp3Encoder;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.plugins.impl.mp3.Mp3EncoderImpl;
+import de.maxhenkel.voicechat.natives.LameManager;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
 import de.maxhenkel.voicechat.voice.common.Utils;
@@ -132,7 +132,7 @@ public class AudioRecorder {
         }
 
         if (!encoders.containsKey(uuid)) {
-            Mp3Encoder encoder = Mp3EncoderImpl.createEncoder(stereoFormat, MP3_BITRATE, VoicechatClient.CLIENT_CONFIG.recordingQuality.get(), Files.newOutputStream(location.resolve(lookupName(uuid) + ".mp3"), StandardOpenOption.CREATE_NEW));
+            Mp3Encoder encoder = LameManager.createEncoder(stereoFormat, MP3_BITRATE, VoicechatClient.CLIENT_CONFIG.recordingQuality.get(), Files.newOutputStream(location.resolve(lookupName(uuid) + ".mp3"), StandardOpenOption.CREATE_NEW));
             encoders.put(uuid, new EncoderData(encoder, timestamp));
             if (encoder == null) {
                 throw new IOException("Failed to load mp3 encoder");
