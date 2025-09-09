@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.natives;
 import de.maxhenkel.lame4j.Mp3Decoder;
 import de.maxhenkel.lame4j.Mp3Encoder;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.plugins.impl.mp3.Mp3EncoderImpl;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
 import javax.annotation.Nullable;
@@ -34,12 +35,12 @@ public class LameManager extends NativeValidator {
     }
 
     @Nullable
-    public static Mp3Encoder createEncoder(AudioFormat audioFormat, int bitrate, int quality, OutputStream outputStream) {
+    public static Mp3EncoderImpl createEncoder(AudioFormat audioFormat, int bitrate, int quality, OutputStream outputStream) {
         LameManager instance = instance();
         if (!instance.canUse()) {
             return null;
         }
-        return NativeUtils.createSafe(() -> new Mp3Encoder(audioFormat.getChannels(), (int) audioFormat.getSampleRate(), bitrate, quality, outputStream), e -> {
+        return NativeUtils.createSafe(() -> new Mp3EncoderImpl(audioFormat, bitrate, quality, outputStream), e -> {
             instance.setFailed(e.getMessage());
             Voicechat.LOGGER.warn("Failed to load LAME encoder", e);
         });
