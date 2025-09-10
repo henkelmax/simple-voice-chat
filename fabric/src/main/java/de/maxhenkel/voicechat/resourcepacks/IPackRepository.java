@@ -4,6 +4,6 @@ import net.minecraft.server.packs.repository.RepositorySource;
 
 public interface IPackRepository {
 
-    void addSource(RepositorySource source);
+    void voicechat$addSource(RepositorySource source);
 
 }
