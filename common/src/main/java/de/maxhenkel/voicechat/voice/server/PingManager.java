@@ -3,11 +3,11 @@ package de.maxhenkel.voicechat.voice.server;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.PingPacket;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PingManager {
 
@@ -16,7 +16,7 @@ public class PingManager {
 
     public PingManager(Server server) {
         this.server = server;
-        listeners = new HashMap<>();
+        listeners = new ConcurrentHashMap<>();
     }
 
     public void onPongPacket(PingPacket packet) {
