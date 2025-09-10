@@ -3,6 +3,10 @@ package de.maxhenkel.voicechat;
 import de.maxhenkel.voicechat.logging.JavaLoggingLogger;
 import de.maxhenkel.voicechat.sniffer.IncompatibleVoiceChatException;
 import de.maxhenkel.voicechat.integration.viaversion.ViaVersionCompatibility;
+import de.maxhenkel.voicechat.util.BackendServer;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
@@ -10,6 +14,7 @@ import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.event.ProxyReloadEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
+import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
@@ -19,6 +24,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.UUID;
 
 public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
@@ -71,11 +77,33 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
         return plugin.getDataFolder().toPath();
     }
 
+    @Override
+    public List<BackendServer> getBackendServers() {
+        return ProxyServer.getInstance().getServers().entrySet().stream().map(e -> new BackendServer(e.getKey(), e.getValue().getSocketAddress())).toList();
+    }
+
     public void onProxyInitialization() {
         plugin.getProxy().registerChannel(REQUEST_SECRET_CHANNEL);
         plugin.getProxy().registerChannel(REQUEST_SECRET_CHANNEL_1_12);
         plugin.getProxy().registerChannel(SECRET_CHANNEL);
         plugin.getProxy().registerChannel(SECRET_CHANNEL_1_12);
+
+        plugin.getProxy().getPluginManager().registerCommand(plugin, new Command(VOICECHAT_COMMAND) {
+            @Override
+            public void execute(CommandSender sender, String[] args) {
+                onVoicechatCommand(new de.maxhenkel.voicechat.command.CommandSender() {
+                    @Override
+                    public void sendMessage(String message) {
+                        sender.sendMessage(new TextComponent(message));
+                    }
+
+                    @Override
+                    public boolean hasPermission(String permission) {
+                        return sender.hasPermission(permission);
+                    }
+                }, args);
+            }
+        });
 
         initViaVersionIntegration();
         reloadVoiceProxyServer();
