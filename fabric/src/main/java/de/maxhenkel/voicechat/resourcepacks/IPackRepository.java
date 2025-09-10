@@ -4,6 +4,6 @@ import net.minecraft.resources.IPackFinder;
 
 public interface IPackRepository {
 
-    void addSource(IPackFinder source);
+    void voicechat$addSource(IPackFinder source);
 
 }

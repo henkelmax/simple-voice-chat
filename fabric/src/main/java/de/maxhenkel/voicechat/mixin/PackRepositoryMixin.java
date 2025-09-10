@@ -20,7 +20,7 @@ public class PackRepositoryMixin implements IPackRepository {
     private Set<IPackFinder> sources;
 
     @Override
-    public void addSource(IPackFinder source) {
+    public void voicechat$addSource(IPackFinder source) {
         Set<IPackFinder> set = new HashSet<>(sources);
         set.add(source);
         sources = set;
