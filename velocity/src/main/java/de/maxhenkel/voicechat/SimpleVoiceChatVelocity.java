@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat;
 
 import com.google.inject.Inject;
+import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
@@ -14,13 +15,17 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
+import de.maxhenkel.voicechat.command.CommandSender;
 import de.maxhenkel.voicechat.logging.JavaLoggingLogger;
 import de.maxhenkel.voicechat.sniffer.IncompatibleVoiceChatException;
 import de.maxhenkel.voicechat.integration.viaversion.ViaVersionCompatibility;
+import de.maxhenkel.voicechat.util.BackendServer;
+import net.kyori.adventure.text.Component;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -48,7 +53,7 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
 
     @Override
     public InetSocketAddress getDefaultBackendSocket(UUID playerUUID) {
-        Optional<Player> player = this.proxyServer.getPlayer(playerUUID);
+        Optional<Player> player = proxyServer.getPlayer(playerUUID);
         if (player.isEmpty()) {
             return null;
         }
@@ -67,35 +72,55 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
 
     @Override
     public InetSocketAddress getDefaultBindSocket() {
-        return this.proxyServer.getBoundAddress();
+        return proxyServer.getBoundAddress();
     }
 
     @Override
     public Path getDataDirectory() {
-        return this.dataDirectory;
+        return dataDirectory;
+    }
+
+    @Override
+    public List<BackendServer> getBackendServers() {
+        return proxyServer.getAllServers().stream().map(server -> new BackendServer(server.getServerInfo().getName(), server.getServerInfo().getAddress())).toList();
     }
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        this.proxyServer.getChannelRegistrar().register(
+        proxyServer.getChannelRegistrar().register(
                 MinecraftChannelIdentifier.from(REQUEST_SECRET_CHANNEL),
                 MinecraftChannelIdentifier.from(REQUEST_SECRET_CHANNEL_1_12),
                 MinecraftChannelIdentifier.from(SECRET_CHANNEL),
                 MinecraftChannelIdentifier.from(SECRET_CHANNEL_1_12)
         );
+        proxyServer.getCommandManager().register(proxyServer.getCommandManager().metaBuilder(VOICECHAT_COMMAND).plugin(this).build(), (SimpleCommand) invocation -> {
+            onVoicechatCommand(new CommandSender() {
+                @Override
+                public void sendMessage(String message) {
+                    invocation.source().sendMessage(Component.text(message));
+                }
+
+                @Override
+                public boolean hasPermission(String permission) {
+                    return invocation.source().hasPermission(permission);
+                }
+            }, invocation.arguments());
+        });
         initViaVersionIntegration();
-        this.reloadVoiceProxyServer();
+        reloadVoiceProxyServer();
     }
 
     @Subscribe
     public void onProxyReload(ProxyReloadEvent event) {
         initViaVersionIntegration();
-        this.reloadVoiceProxyServer();
+        reloadVoiceProxyServer();
     }
 
     @Subscribe
     public void onProxyShutdown(ProxyShutdownEvent event) {
-        if (this.voiceProxyServer != null) this.voiceProxyServer.interrupt();
+        if (voiceProxyServer != null) {
+            voiceProxyServer.interrupt();
+        }
     }
 
     /**
@@ -107,7 +132,7 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
         if (event.getPreviousServer().isEmpty()) {
             return;
         }
-        this.onPlayerServerDisconnected(event.getPlayer().getUniqueId());
+        onPlayerServerDisconnected(event.getPlayer().getUniqueId());
     }
 
     /**
@@ -116,7 +141,7 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
      */
     @Subscribe
     public void onPlayerDisconnected(DisconnectEvent event) {
-        this.onPlayerServerDisconnected(event.getPlayer().getUniqueId());
+        onPlayerServerDisconnected(event.getPlayer().getUniqueId());
     }
 
     /**
