@@ -1,4 +1,1 @@
-- Fixed multiple icons being rendered above players
-- Prevent native objects from not getting closed
-- Fixed mp3 decoding issues
-- Fixed denoiser being closed and reopened every audio frame when muted
+- Fixed potential mixin conflicts

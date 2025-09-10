@@ -126,6 +126,6 @@ public class FabricClientCompatibilityManager extends ClientCompatibilityManager
     @Override
     public void addResourcePackSource(RepositorySource repositorySource) {
         IPackRepository repository = (IPackRepository) mc.getResourcePackRepository();
-        repository.addSource(repositorySource);
+        repository.voicechat$addSource(repositorySource);
     }
 }
