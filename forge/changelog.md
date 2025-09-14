@@ -1,0 +1,1 @@
+- Added more detailed microphone error messages when using the java microphone implementation
