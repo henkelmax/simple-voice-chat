@@ -8,4 +8,8 @@ public class MicrophoneException extends IOException {
         super(message);
     }
 
+    public MicrophoneException(Exception cause) {
+        super(cause);
+    }
+
 }
