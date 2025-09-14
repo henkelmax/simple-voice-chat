@@ -47,7 +47,7 @@ public class JavaxMicrophone implements Microphone {
         try {
             mic.open(af);
         } catch (LineUnavailableException e) {
-            throw new MicrophoneException(e.getMessage());
+            throw new MicrophoneException(e);
         }
 
         // This fixes the accumulating audio issue on some Linux systems
@@ -121,18 +121,16 @@ public class JavaxMicrophone implements Microphone {
         return AudioUtils.bytesToShorts(buff);
     }
 
-    @Nullable
-    private static TargetDataLine getDefaultMicrophone(AudioFormat format) {
+    private static TargetDataLine getDefaultMicrophone(AudioFormat format) throws MicrophoneException {
         return getDefaultDevice(TargetDataLine.class, format);
     }
 
-    @Nullable
-    private static <T> T getDefaultDevice(Class<T> lineClass, AudioFormat format) {
+    private static <T> T getDefaultDevice(Class<T> lineClass, AudioFormat format) throws MicrophoneException {
         DataLine.Info info = new DataLine.Info(lineClass, format);
         try {
             return lineClass.cast(AudioSystem.getLine(info));
         } catch (Exception e) {
-            return null;
+            throw new MicrophoneException(e);
         }
     }
 
