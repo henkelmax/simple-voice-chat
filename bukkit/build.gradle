@@ -65,6 +65,7 @@ tasks.register('generateBuildConstants', Copy) {
     from 'src/template/java'
     into "${layout.buildDirectory.asFile.get()}/generated/java"
     expand 'compatibility_version': voicechat_compatibility_version,
+            'mod_compatible_version': mod_compatible_version,
             'target_bukkit_version': bukkit_version,
             'plugin_name': mod_display_name
 }

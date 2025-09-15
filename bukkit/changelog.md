@@ -1,1 +1,1 @@
-- Fixed API audio conversion
+- Improved incompatible version message

@@ -50,6 +50,7 @@ tasks.register('generateJava', Copy) {
     from project(':common').file('src/template/java')
     into "${layout.buildDirectory.asFile.get()}/generated/java"
     expand 'compatibility_version': voicechat_compatibility_version,
+            'mod_compatible_version': mod_compatible_version,
             'minecraft_version': minecraft_version
 }
 sourceSets.main.java {
