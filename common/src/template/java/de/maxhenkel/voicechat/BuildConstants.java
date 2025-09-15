@@ -4,6 +4,7 @@ public class BuildConstants {
 
     public static final int COMPATIBILITY_VERSION;
     public static final String MINECRAFT_VERSION = "${minecraft_version}";
+    public static final String MOD_COMPATIBLE_VERSION = "${mod_compatible_version}";
 
     static {
         String compatibilityVersionString = "${compatibility_version}";
