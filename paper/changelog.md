@@ -1,2 +1,1 @@
-- Prevent native objects from not getting closed
-- Fixed mp3 decoding issues
+- Improved incompatible version message
