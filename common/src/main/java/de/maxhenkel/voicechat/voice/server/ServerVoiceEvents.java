@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.voice.server;
 
+import de.maxhenkel.voicechat.BuildConstants;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
@@ -50,10 +51,10 @@ public class ServerVoiceEvents {
 
     public ITextComponent getIncompatibleMessage(int clientCompatibilityVersion) {
         if (clientCompatibilityVersion <= 6) {
-            return new TextComponentString(String.format(Voicechat.TRANSLATIONS.voicechatNotCompatibleMessage.get(), CommonCompatibilityManager.INSTANCE.getModVersion(), CommonCompatibilityManager.INSTANCE.getModName()));
+            return new TextComponentString(String.format(Voicechat.TRANSLATIONS.voicechatNotCompatibleMessage.get(), BuildConstants.MOD_COMPATIBLE_VERSION, CommonCompatibilityManager.INSTANCE.getModName()));
         } else {
             return new TextComponentTranslation("message.voicechat.incompatible_version",
-                    new TextComponentString(CommonCompatibilityManager.INSTANCE.getModVersion()).setStyle((new Style()).setColor(TextFormatting.BOLD)),
+                    new TextComponentString(BuildConstants.MOD_COMPATIBLE_VERSION).setStyle((new Style()).setColor(TextFormatting.BOLD)),
                     new TextComponentString(CommonCompatibilityManager.INSTANCE.getModName()).setStyle((new Style()).setColor(TextFormatting.BOLD)));
         }
     }
