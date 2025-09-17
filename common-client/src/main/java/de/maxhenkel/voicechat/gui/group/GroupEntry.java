@@ -12,10 +12,10 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
+import net.minecraft.world.entity.player.PlayerSkin;
 
 public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
 
@@ -62,8 +62,8 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
         }
 
         PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), 1, 1, 8, 8, 8, 8, 64, 64);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), 1, 1, 40, 8, 8, 8, 64, 64);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), 1, 1, 8, 8, 8, 8, 64, 64);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), 1, 1, 40, 8, 8, 8, 64, 64);
 
         if (state.isDisabled()) {
             guiGraphics.pose().pushMatrix();

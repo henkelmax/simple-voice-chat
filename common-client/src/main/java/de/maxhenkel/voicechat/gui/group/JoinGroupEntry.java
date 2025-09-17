@@ -12,12 +12,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.player.PlayerSkin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,8 +92,8 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             float scale = (float) SKIN_SIZE / 8F;
             guiGraphics.pose().scale(scale, scale);
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), 0, 0, 8, 8, 8, 8, 64, 64);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), 0, 0, 40, 8, 8, 8, 64, 64);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), 0, 0, 8, 8, 8, 8, 64, 64);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), 0, 0, 40, 8, 8, 8, 64, 64);
             guiGraphics.pose().popMatrix();
         }
 

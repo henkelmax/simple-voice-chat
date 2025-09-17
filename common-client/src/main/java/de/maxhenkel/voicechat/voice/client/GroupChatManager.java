@@ -7,8 +7,8 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.PlayerSkin;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -67,8 +67,8 @@ public class GroupChatManager {
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TALK_OUTLINE, posX < 0 ? -10 : 0, posY < 0 ? -10 : 0, 0, 0, 10, 10, 16, 16);
             }
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 40, 8, 8, 8, 64, 64);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 40, 8, 8, 8, 64, 64);
 
             if (state.isDisabled()) {
                 guiGraphics.pose().pushMatrix();
