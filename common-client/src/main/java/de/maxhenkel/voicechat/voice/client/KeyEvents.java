@@ -13,7 +13,6 @@ import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -39,7 +38,6 @@ public class KeyEvents {
 
     public KeyEvents() {
         minecraft = Minecraft.getInstance();
-        ClientCompatibilityManager.INSTANCE.onKeyboardEvent(this::onKeyboardEvent);
         ClientCompatibilityManager.INSTANCE.onHandleKeyBinds(this::handleKeybinds);
     }
 
@@ -66,14 +64,6 @@ public class KeyEvents {
         };
     }
 
-    private boolean ctrlDown;
-    private boolean altDown;
-
-    private void onKeyboardEvent(KeyEvent keyEvent) {
-        ctrlDown = keyEvent.hasControlDown();
-        altDown = keyEvent.hasAltDown();
-    }
-
     private void handleKeybinds() {
         LocalPlayer player = minecraft.player;
         if (player == null) {
@@ -92,8 +82,8 @@ public class KeyEvents {
         ClientVoicechat client = ClientManager.getClient();
         ClientPlayerStateManager playerStateManager = ClientManager.getPlayerStateManager();
         if (KEY_VOICE_CHAT.consumeClick()) {
-            if (altDown) {
-                if (ctrlDown) {
+            if (minecraft.hasAltDown()) {
+                if (minecraft.hasControlDown()) {
                     VoicechatClient.CLIENT_CONFIG.onboardingFinished.set(false).save();
                     player.displayClientMessage(Component.translatable("message.voicechat.onboarding.reset"), true);
                 } else {
