@@ -50,6 +50,7 @@ public class ImageButton extends AbstractButton {
         }
     }
 
+    @Override
     public void renderToolTip(MatrixStack matrices, int mouseX, int mouseY) {
         this.tooltipSupplier.onTooltip(this, matrices, mouseX, mouseY);
     }
