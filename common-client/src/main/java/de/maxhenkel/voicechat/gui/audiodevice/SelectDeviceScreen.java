@@ -10,7 +10,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public abstract class SelectDeviceScreen extends IngameListScreenBase {
 
@@ -32,8 +31,6 @@ public abstract class SelectDeviceScreen extends IngameListScreenBase {
         super(title, 236, 0);
         this.parent = parent;
     }
-
-    public abstract List<String> getDevices();
 
     public abstract ITextComponent getEmptyListComponent();
 
@@ -58,8 +55,6 @@ public abstract class SelectDeviceScreen extends IngameListScreenBase {
             }
         };
         addButton(back);
-
-        deviceList.setAudioDevices(getDevices());
     }
 
     @Override

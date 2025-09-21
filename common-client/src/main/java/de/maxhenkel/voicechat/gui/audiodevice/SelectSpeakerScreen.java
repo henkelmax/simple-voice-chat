@@ -1,7 +1,5 @@
 package de.maxhenkel.voicechat.gui.audiodevice;
 
-import de.maxhenkel.voicechat.voice.client.AudioChannelConfig;
-import de.maxhenkel.voicechat.voice.client.DataLines;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -9,7 +7,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class SelectSpeakerScreen extends SelectDeviceScreen {
 
@@ -18,12 +15,6 @@ public class SelectSpeakerScreen extends SelectDeviceScreen {
 
     public SelectSpeakerScreen(@Nullable GuiScreen parent) {
         super(TITLE, parent);
-    }
-
-    @Override
-    public List<String> getDevices() {
-        return DataLines.getSpeakerNames(AudioChannelConfig.STEREO_FORMAT);
-        // return SoundManager.getAllSpeakers();
     }
 
     @Override
