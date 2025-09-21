@@ -1,3 +1,4 @@
 - Fixed NeoForge name render event not being used for icons
 - Fixed potential issues with speaker device fallbacks
 - Added manual gain control warning
+- Added microphone amplification warning
