@@ -19,7 +19,7 @@ public class BooleanConfigButton extends ButtonBase {
     }
 
     private void updateText() {
-        displayString = component.apply(entry.get()).getUnformattedComponentText();
+        displayString = component.apply(entry.get()).getFormattedText();
     }
 
     @Override
