@@ -78,7 +78,7 @@ public class SoundManager {
             return tryOpenSpeaker(name);
         } catch (SpeakerException e) {
             if (name != null) {
-                Voicechat.LOGGER.warn("Failed to open audio channel '{}', falling back to default", name);
+                Voicechat.LOGGER.warn("Failed to open audio device '{}', falling back to default", name);
             }
             try {
                 return tryOpenSpeaker(getDefaultSpeaker());
@@ -93,7 +93,10 @@ public class SoundManager {
         if (l == null) {
             throw new SpeakerException("Failed to open audio device: Audio device not found");
         }
-        checkAlcError(device);
+        int error = ALC11.alcGetError(device);
+        if (error != ALC11.ALC_NO_ERROR) {
+            throw new SpeakerException("Failed to open audio device: " + getAlcError(error));
+        }
         return l;
     }
 
