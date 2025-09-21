@@ -1,2 +1,3 @@
 - Fixed potential issues with speaker device fallbacks
 - Added manual gain control warning
+- Added microphone amplification warning
