@@ -27,6 +27,7 @@
   "message.voicechat.gain.manual": "Manual",
   "message.voicechat.gain.manual.warning": "Please keep automatic microphone gain adjustment enabled to ensure consistent volume levels for everyone hearing you.",
   "message.voicechat.microphone_gain": "Microphone Gain: %s dB",
+  "message.voicechat.microphone_gain.warning": "Exceeding %s dB amplification may produce audio distortion and other issues!",
   "message.voicechat.mic_test_unavailable": "Microphone testing unavailable!",
   "message.voicechat.mic_test.disabled": "Press to enable microphone testing.",
   "message.voicechat.mic_test.enabled": "Press to disable microphone testing.",
