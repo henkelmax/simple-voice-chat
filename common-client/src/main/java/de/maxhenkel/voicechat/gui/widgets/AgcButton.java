@@ -45,11 +45,6 @@ public class AgcButton extends BooleanConfigButton {
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-        super.drawButton(mc, mouseX, mouseY, partialTicks);
-    }
-
-    @Override
     public void renderTooltips(int mouseX, int mouseY, float delta) {
         super.renderTooltips(mouseX, mouseY, delta);
         if (!isMouseOver()) {

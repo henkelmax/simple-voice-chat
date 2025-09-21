@@ -29,9 +29,9 @@ public class VoiceActivationOnboardingScreen extends OnboardingScreenBase {
         int space = BUTTON_HEIGHT + SMALL_PADDING;
 
         boolean agc = SpeexManager.canUseAgc();
-        MicAmplificationSlider micAmp = new MicAmplificationSlider(0, guiLeft + (agc ? 80 + 1 : 0), bottom - space * 3, contentWidth - (agc ? 80 : 0) - 1, BUTTON_HEIGHT);
+        MicAmplificationSlider micAmp = new MicAmplificationSlider(0, this, guiLeft + (agc ? 80 + 1 : 0), bottom - space * 3, contentWidth - (agc ? 80 : 0) - 1, BUTTON_HEIGHT);
         if (agc) {
-            addButton(new AgcButton(1, this, guiLeft, bottom - space * 3, 80, BUTTON_HEIGHT, active -> micAmp.enabled = !active));
+            addButton(new AgcButton(1, this, guiLeft, bottom - space * 3, 80, BUTTON_HEIGHT, active -> micAmp.setActive(!active)));
         }
         addButton(micAmp);
         addButton(new DenoiserButton(2, guiLeft, bottom - space * 2, contentWidth, BUTTON_HEIGHT));

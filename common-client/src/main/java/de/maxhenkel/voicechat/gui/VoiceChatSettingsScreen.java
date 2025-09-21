@@ -51,9 +51,9 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
         addButton(new VoiceSoundSlider(0, guiLeft + 10, y, xSize - 20, 20));
         y += 21;
         boolean agc = SpeexManager.canUseAgc();
-        MicAmplificationSlider micAmp = new MicAmplificationSlider(1, guiLeft + 10 + (agc ? 80 + 1 : 0), y, xSize - 20 - (agc ? 80 : 0) - 1, 20);
+        MicAmplificationSlider micAmp = new MicAmplificationSlider(1, this, guiLeft + 10 + (agc ? 80 + 1 : 0), y, xSize - 20 - (agc ? 80 : 0) - 1, 20);
         if (agc) {
-            addButton(new AgcButton(2, this, guiLeft + 10, y, 80, 20, active -> micAmp.enabled = !active));
+            addButton(new AgcButton(2, this, guiLeft + 10, y, 80, 20, active -> micAmp.setActive(!active)));
         }
         addButton(micAmp);
         y += 21;

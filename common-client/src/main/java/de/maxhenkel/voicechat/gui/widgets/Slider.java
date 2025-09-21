@@ -1,11 +1,10 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 
-public abstract class Slider extends GuiButton {
+public abstract class Slider extends ButtonBase {
 
     protected double value;
     private boolean dragging;
@@ -13,6 +12,11 @@ public abstract class Slider extends GuiButton {
     public Slider(int buttonId, int x, int y, int width, int height, double value) {
         super(buttonId, x, y, width, height, "");
         this.value = value;
+    }
+
+    @Override
+    public void onPress() {
+
     }
 
     @Override
