@@ -1,1 +1,2 @@
 - Fixed NeoForge name render event not being used for icons
+- Fixed potential issues with speaker device fallbacks

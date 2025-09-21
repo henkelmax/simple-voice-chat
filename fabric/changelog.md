@@ -1,1 +1,1 @@
-- Updated to 1.21.9
+- Fixed potential issues with speaker device fallbacks
