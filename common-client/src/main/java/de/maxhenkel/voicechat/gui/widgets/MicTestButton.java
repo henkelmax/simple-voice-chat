@@ -62,11 +62,6 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
         }
     }
 
-    @Override
-    protected boolean shouldRenderTooltip() {
-        return false;
-    }
-
     public void setMicActive(boolean micActive) {
         this.micActive = micActive;
     }
