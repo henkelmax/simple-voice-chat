@@ -42,7 +42,7 @@ public class JoinGroupScreen extends ListScreenBase {
         ySize = HEADER_SIZE + units * UNIT_SIZE + FOOTER_SIZE;
 
         if (groupList != null) {
-            groupList.setRectangle(width, units * UNIT_SIZE, 0, guiTop + HEADER_SIZE);
+            groupList.updateSize(width, units * UNIT_SIZE, 0, guiTop + HEADER_SIZE);
         } else {
             groupList = new JoinGroupList(this, width, units * UNIT_SIZE, guiTop + HEADER_SIZE, CELL_HEIGHT);
         }

@@ -10,6 +10,11 @@ public abstract class ListScreenListBase<T extends ListScreenEntryBase<T>> exten
         super(Minecraft.getInstance(), width, height, top, itemSize);
     }
 
+    public void updateSize(int width, int height, int x, int y){
+        setRectangle(width, height, x, y);
+        refreshScrollAmount();
+    }
+
     @Override
     protected void renderListBackground(GuiGraphics guiGraphics) {
     }
