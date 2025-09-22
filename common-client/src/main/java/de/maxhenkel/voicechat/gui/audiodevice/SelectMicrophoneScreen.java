@@ -1,12 +1,10 @@
 package de.maxhenkel.voicechat.gui.audiodevice;
 
-import de.maxhenkel.voicechat.voice.client.microphone.MicrophoneManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class SelectMicrophoneScreen extends SelectDeviceScreen {
 
@@ -15,11 +13,6 @@ public class SelectMicrophoneScreen extends SelectDeviceScreen {
 
     public SelectMicrophoneScreen(@Nullable Screen parent) {
         super(TITLE, parent);
-    }
-
-    @Override
-    public List<String> getDevices() {
-        return MicrophoneManager.deviceNames();
     }
 
     @Override

@@ -35,8 +35,6 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
         this.parent = parent;
     }
 
-    public abstract List<String> getDevices();
-
     public abstract Component getEmptyListComponent();
 
     public abstract AudioDeviceList createAudioDeviceList(int width, int height, int top);
@@ -51,7 +49,7 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
         ySize = HEADER_SIZE + units * UNIT_SIZE + FOOTER_SIZE;
 
         if (deviceList != null) {
-            deviceList.setRectangle(width, units * UNIT_SIZE, 0, guiTop + HEADER_SIZE);
+            deviceList.updateSize(width, units * UNIT_SIZE, 0, guiTop + HEADER_SIZE);
         } else {
             deviceList = createAudioDeviceList(width, units * UNIT_SIZE, guiTop + HEADER_SIZE);
         }
@@ -61,8 +59,6 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
             minecraft.setScreen(parent);
         }).bounds(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 14, 20).build();
         addRenderableWidget(back);
-
-        deviceList.setAudioDevices(getDevices());
     }
 
     @Override

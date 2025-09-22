@@ -65,7 +65,7 @@ public class GroupScreen extends ListScreenBase {
         ClientPlayerStateManager stateManager = ClientManager.getPlayerStateManager();
 
         if (groupList != null) {
-            groupList.setRectangle(width, units * UNIT_SIZE, 0, guiTop + HEADER_SIZE);
+            groupList.updateSize(width, units * UNIT_SIZE, 0, guiTop + HEADER_SIZE);
         } else {
             groupList = new GroupList(this, width, units * UNIT_SIZE, guiTop + HEADER_SIZE, CELL_HEIGHT);
         }
