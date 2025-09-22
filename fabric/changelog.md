@@ -1,3 +1,1 @@
-- Fixed potential mixin conflicts
-- Added more detailed microphone error messages when using the java microphone implementation
-- Improved incompatible version message
+- Updated to 1.21.9-pre3
