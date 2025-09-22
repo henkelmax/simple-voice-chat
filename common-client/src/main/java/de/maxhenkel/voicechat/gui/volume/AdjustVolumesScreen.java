@@ -50,7 +50,7 @@ public class AdjustVolumesScreen extends ListScreenBase {
         ySize = HEADER_SIZE + units * UNIT_SIZE + FOOTER_SIZE;
 
         if (volumeList != null) {
-            volumeList.setRectangle(width, units * UNIT_SIZE - SEARCH_HEIGHT, 0, guiTop + HEADER_SIZE + SEARCH_HEIGHT);
+            volumeList.updateSize(width, units * UNIT_SIZE - SEARCH_HEIGHT, 0, guiTop + HEADER_SIZE + SEARCH_HEIGHT);
         } else {
             volumeList = new AdjustVolumeList(width, units * UNIT_SIZE - SEARCH_HEIGHT, guiTop + HEADER_SIZE + SEARCH_HEIGHT, CELL_HEIGHT, this);
         }

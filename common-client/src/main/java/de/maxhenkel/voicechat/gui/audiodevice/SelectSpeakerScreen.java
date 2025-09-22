@@ -1,12 +1,10 @@
 package de.maxhenkel.voicechat.gui.audiodevice;
 
-import de.maxhenkel.voicechat.voice.client.SoundManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class SelectSpeakerScreen extends SelectDeviceScreen {
 
@@ -15,11 +13,6 @@ public class SelectSpeakerScreen extends SelectDeviceScreen {
 
     public SelectSpeakerScreen(@Nullable Screen parent) {
         super(TITLE, parent);
-    }
-
-    @Override
-    public List<String> getDevices() {
-        return SoundManager.getAllSpeakers();
     }
 
     @Override
