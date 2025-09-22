@@ -35,8 +35,6 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
         this.parent = parent;
     }
 
-    public abstract List<String> getDevices();
-
     public abstract Component getEmptyListComponent();
 
     public abstract AudioDeviceList createAudioDeviceList(int width, int height, int top);
@@ -61,8 +59,6 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
             minecraft.setScreen(parent);
         });
         addRenderableWidget(back);
-
-        deviceList.setAudioDevices(getDevices());
     }
 
     @Override
