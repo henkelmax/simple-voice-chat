@@ -10,14 +10,13 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonInfo;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.repository.RepositorySource;
 
 import java.net.SocketAddress;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public abstract class ClientCompatibilityManager {
@@ -65,7 +64,7 @@ public abstract class ClientCompatibilityManager {
     }
 
     public interface RenderNameplateEvent {
-        void render(UUID uuid, boolean discrete, Component component, PoseStack.Pose pose, MultiBufferSource bufferSource, int light);
+        void render(AvatarRenderState renderState, CameraRenderState cameraRenderState, PoseStack stack, SubmitNodeCollector collector);
     }
 
     public interface RenderHUDEvent {

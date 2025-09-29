@@ -8,11 +8,11 @@
   ],
   "client": [
     "ConnectionAccessor",
+    "AvatarRendererMixin",
     "IntegratedServerMixin",
     "KeyboardMixin",
     "MinecraftMixin",
     "MouseMixin",
-    "NameTagFeatureRendererMixin",
     "PackRepositoryMixin",
     "PlayerEntryMixin"
   ],

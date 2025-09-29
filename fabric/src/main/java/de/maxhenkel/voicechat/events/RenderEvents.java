@@ -9,9 +9,9 @@ import java.util.function.Consumer;
 
 public class RenderEvents {
 
-    public static final Event<ClientCompatibilityManager.RenderNameplateEvent> RENDER_NAMEPLATE = EventFactory.createArrayBacked(ClientCompatibilityManager.RenderNameplateEvent.class, (listeners) -> (uuid, discrete, component, pose, vertexConsumers, light) -> {
+    public static final Event<ClientCompatibilityManager.RenderNameplateEvent> RENDER_NAMEPLATE = EventFactory.createArrayBacked(ClientCompatibilityManager.RenderNameplateEvent.class, (listeners) -> (state, cameraRenderState, stack, collector) -> {
         for (ClientCompatibilityManager.RenderNameplateEvent listener : listeners) {
-            listener.render(uuid, discrete, component, pose, vertexConsumers, light);
+            listener.render(state, cameraRenderState, stack, collector);
         }
     });
 

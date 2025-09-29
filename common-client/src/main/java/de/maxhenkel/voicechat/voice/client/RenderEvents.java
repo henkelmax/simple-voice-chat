@@ -9,9 +9,11 @@ import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -98,8 +100,12 @@ public class RenderEvents {
         guiGraphics.pose().popMatrix();
     }
 
-    private void onRenderName(UUID playerId, boolean discrete, Component component, PoseStack.Pose pose, MultiBufferSource vertexConsumers, int light) {
-        if (component == null) {
+    private void onRenderName(AvatarRenderState state, CameraRenderState cameraRenderState, PoseStack stack, SubmitNodeCollector collector) {
+        Component nameTag = state.nameTag;
+        if (nameTag == null) {
+            return;
+        }
+        if (state.nameTagAttachment == null) {
             return;
         }
         if (!shouldShowIcons()) {
@@ -114,61 +120,66 @@ public class RenderEvents {
         if (minecraft.player == null || minecraft.level == null) {
             return;
         }
-        Entity entity = minecraft.level.getEntity(playerId);
-        if (entity == null) {
+        Entity entity = minecraft.level.getEntity(state.id);
+        if (entity == null || entity.equals(minecraft.player)) {
             return;
         }
-        if (minecraft.player.equals(entity)) {
+        if (minecraft.options.hideGui) {
             return;
         }
-        if (!minecraft.options.hideGui) {
-            ClientPlayerStateManager manager = ClientManager.getPlayerStateManager();
-            ClientVoicechat client = ClientManager.getClient();
-            UUID entityId = entity.getUUID();
-            UUID groupId = manager.getGroup(entityId);
+        ClientPlayerStateManager manager = ClientManager.getPlayerStateManager();
+        ClientVoicechat client = ClientManager.getClient();
+        UUID entityId = entity.getUUID();
+        UUID groupId = manager.getGroup(entityId);
 
-            if (client != null && client.getTalkCache().isWhispering(entityId)) {
-                renderPlayerIcon(entityId, discrete, component, WHISPER_SPEAKER_ICON, pose, vertexConsumers, light);
-            } else if (client != null && client.getTalkCache().isTalking(entityId)) {
-                renderPlayerIcon(entityId, discrete, component, SPEAKER_ICON, pose, vertexConsumers, light);
-            } else if (manager.isPlayerDisconnected(entityId)) {
-                renderPlayerIcon(entityId, discrete, component, DISCONNECT_ICON, pose, vertexConsumers, light);
-            } else if (groupId != null && !groupId.equals(manager.getGroupID())) {
-                renderPlayerIcon(entityId, discrete, component, GROUP_ICON, pose, vertexConsumers, light);
-            } else if (manager.isPlayerDisabled(entityId)) {
-                renderPlayerIcon(entityId, discrete, component, SPEAKER_OFF_ICON, pose, vertexConsumers, light);
-            }
+        stack.pushPose();
+        stack.translate(state.nameTagAttachment);
+        stack.translate(0D, 0.5D, 0D);
+        stack.mulPose(cameraRenderState.orientation);
+        stack.scale(0.025F, -0.025F, 0.025F);
+
+        if (client != null && client.getTalkCache().isWhispering(entityId)) {
+            renderPlayerIcon(entityId, state.isDiscrete, nameTag, WHISPER_SPEAKER_ICON, stack, collector, state.lightCoords);
+        } else if (client != null && client.getTalkCache().isTalking(entityId)) {
+            renderPlayerIcon(entityId, state.isDiscrete, nameTag, SPEAKER_ICON, stack, collector, state.lightCoords);
+        } else if (manager.isPlayerDisconnected(entityId)) {
+            renderPlayerIcon(entityId, state.isDiscrete, nameTag, DISCONNECT_ICON, stack, collector, state.lightCoords);
+        } else if (groupId != null && !groupId.equals(manager.getGroupID())) {
+            renderPlayerIcon(entityId, state.isDiscrete, nameTag, GROUP_ICON, stack, collector, state.lightCoords);
+        } else if (manager.isPlayerDisabled(entityId)) {
+            renderPlayerIcon(entityId, state.isDiscrete, nameTag, SPEAKER_OFF_ICON, stack, collector, state.lightCoords);
         }
+
+        stack.popPose();
     }
 
-    private void renderPlayerIcon(UUID entityId, boolean discrete, Component component, ResourceLocation texture, PoseStack.Pose pose, MultiBufferSource buffer, int light) {
+    private void renderPlayerIcon(UUID entityId, boolean discrete, Component component, ResourceLocation texture, PoseStack stack, SubmitNodeCollector collector, int light) {
         if (!ClientPluginManager.instance().shouldRenderPlayerIcons(entityId)) {
             return;
         }
-
-        float offset = (float) (minecraft.font.width(component) / 2 + 2);
-
-        VertexConsumer builder = buffer.getBuffer(RenderType.text(texture));
+        float offsetX = (float) (minecraft.font.width(component) / 2 + 2);
         int alpha = 32;
-
         float offsetY = -1F;
-
-        if (discrete) {
-            vertex(builder, pose, offset, 10F + offsetY, 0F, 0F, 1F, alpha, light);
-            vertex(builder, pose, offset + 10F, 10F + offsetY, 0F, 1F, 1F, alpha, light);
-            vertex(builder, pose, offset + 10F, offsetY, 0F, 1F, 0F, alpha, light);
-            vertex(builder, pose, offset, offsetY, 0F, 0F, 0F, alpha, light);
-        } else {
-            vertex(builder, pose, offset, 10F + offsetY, 0F, 0F, 1F, light);
-            vertex(builder, pose, offset + 10F, 10F + offsetY, 0F, 1F, 1F, light);
-            vertex(builder, pose, offset + 10F, offsetY, 0F, 1F, 0F, light);
-            vertex(builder, pose, offset, offsetY, 0F, 0F, 0F, light);
-
-            VertexConsumer builderSeeThrough = buffer.getBuffer(RenderType.textSeeThrough(texture));
-            vertex(builderSeeThrough, pose, offset, 10F + offsetY, 0F, 0F, 1F, alpha, light);
-            vertex(builderSeeThrough, pose, offset + 10F, 10F + offsetY, 0F, 1F, 1F, alpha, light);
-            vertex(builderSeeThrough, pose, offset + 10F, offsetY, 0F, 1F, 0F, alpha, light);
-            vertex(builderSeeThrough, pose, offset, offsetY, 0F, 0F, 0F, alpha, light);
+        collector.submitCustomGeometry(stack, RenderType.text(texture), (pose, c) -> {
+            if (discrete) {
+                vertex(c, pose, offsetX, 10F + offsetY, 0F, 0F, 1F, alpha, light);
+                vertex(c, pose, offsetX + 10F, 10F + offsetY, 0F, 1F, 1F, alpha, light);
+                vertex(c, pose, offsetX + 10F, offsetY, 0F, 1F, 0F, alpha, light);
+                vertex(c, pose, offsetX, offsetY, 0F, 0F, 0F, alpha, light);
+            } else {
+                vertex(c, pose, offsetX, 10F + offsetY, 0F, 0F, 1F, light);
+                vertex(c, pose, offsetX + 10F, 10F + offsetY, 0F, 1F, 1F, light);
+                vertex(c, pose, offsetX + 10F, offsetY, 0F, 1F, 0F, light);
+                vertex(c, pose, offsetX, offsetY, 0F, 0F, 0F, light);
+            }
+        });
+        if (!discrete) {
+            collector.submitCustomGeometry(stack, RenderType.textSeeThrough(texture), (pose, c) -> {
+                vertex(c, pose, offsetX, 10F + offsetY, 0F, 0F, 1F, alpha, light);
+                vertex(c, pose, offsetX + 10F, 10F + offsetY, 0F, 1F, 1F, alpha, light);
+                vertex(c, pose, offsetX + 10F, offsetY, 0F, 1F, 0F, alpha, light);
+                vertex(c, pose, offsetX, offsetY, 0F, 0F, 0F, alpha, light);
+            });
         }
     }
 
