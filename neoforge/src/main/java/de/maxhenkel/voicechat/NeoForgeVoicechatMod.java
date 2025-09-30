@@ -17,7 +17,7 @@ public class NeoForgeVoicechatMod extends Voicechat {
     public NeoForgeVoicechatMod(IEventBus eventBus) {
         modEventBus = eventBus;
         modEventBus.addListener(this::commonSetup);
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLEnvironment.getDist().isClient()) {
             new NeoForgeVoicechatClientMod(eventBus);
         }
     }

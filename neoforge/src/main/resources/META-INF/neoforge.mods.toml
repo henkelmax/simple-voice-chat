@@ -12,6 +12,8 @@ logoFile = "icon.png"
 authors = "Max Henkel"
 description = '''A working voice chat in Minecraft!'''
 displayTest = "NONE"
+[[mixins]]
+config = "voicechat.mixins.json"
 [[mods]]
 modId = "voicechat_api"
 version = "${api_version}"
@@ -30,7 +32,7 @@ side = "BOTH"
 [[dependencies.voicechat]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.7, 1.21.8]"
+versionRange = "[${minecraft_version}]"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.voicechat]]

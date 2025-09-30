@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
@@ -100,12 +101,15 @@ public class RenderEvents {
         guiGraphics.pose().popMatrix();
     }
 
-    private void onRenderName(AvatarRenderState state, CameraRenderState cameraRenderState, PoseStack stack, SubmitNodeCollector collector) {
-        Component nameTag = state.nameTag;
+    private void onRenderName(EntityRenderState s, CameraRenderState cameraRenderState, PoseStack stack, SubmitNodeCollector collector) {
+        if(!(s instanceof AvatarRenderState state)){
+            return;
+        }
+        Component nameTag = s.nameTag;
         if (nameTag == null) {
             return;
         }
-        if (state.nameTagAttachment == null) {
+        if (s.nameTagAttachment == null) {
             return;
         }
         if (!shouldShowIcons()) {

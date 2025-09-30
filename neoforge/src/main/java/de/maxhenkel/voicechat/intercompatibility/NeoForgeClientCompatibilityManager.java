@@ -1,11 +1,15 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.maxhenkel.voicechat.events.ClientVoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.events.ClientVoiceChatDisconnectedEvent;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.Connection;
 import net.minecraft.server.packs.repository.RepositorySource;
@@ -54,9 +58,14 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
         keyMappings = new CopyOnWriteArrayList<>();
     }
 
-    @SubscribeEvent
+    //TODO Implement once NeoForge fixes this
+    /*@SubscribeEvent
     public void onRenderName(net.neoforged.neoforge.client.event.RenderNameTagEvent.DoRender event) {
-        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getEntityRenderState(), event.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
+        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getEntityRenderState(), null, event.getPoseStack(), event.getSubmitNodeCollector()));
+    }*/
+
+    public void onRenderNameplate(EntityRenderState renderState, CameraRenderState cameraRenderState, PoseStack stack, SubmitNodeCollector collector) {
+        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(renderState, cameraRenderState, stack, collector));
     }
 
     @SubscribeEvent
@@ -69,12 +78,12 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
 
     @SubscribeEvent
     public void onKey(InputEvent.Key event) {
-        keyboardEvents.forEach(keyboardEvent -> keyboardEvent.onKeyboardEvent(Minecraft.getInstance().getWindow().getWindow(), event.getKey(), event.getScanCode()));
+        keyboardEvents.forEach(keyboardEvent -> keyboardEvent.onKeyboardEvent(event.getKeyEvent()));
     }
 
     @SubscribeEvent
     public void onMouse(InputEvent.MouseButton.Pre event) {
-        mouseEvents.forEach(mouseEvent -> mouseEvent.onMouseEvent(Minecraft.getInstance().getWindow().getWindow(), event.getButton(), event.getAction(), event.getModifiers()));
+        mouseEvents.forEach(mouseEvent -> mouseEvent.onMouseEvent(event.getMouseButtonInfo(), event.getAction()));
     }
 
     @SubscribeEvent

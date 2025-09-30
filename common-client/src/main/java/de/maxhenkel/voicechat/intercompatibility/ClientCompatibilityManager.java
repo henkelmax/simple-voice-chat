@@ -12,6 +12,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.network.Connection;
 import net.minecraft.server.packs.repository.RepositorySource;
@@ -64,7 +65,7 @@ public abstract class ClientCompatibilityManager {
     }
 
     public interface RenderNameplateEvent {
-        void render(AvatarRenderState renderState, CameraRenderState cameraRenderState, PoseStack stack, SubmitNodeCollector collector);
+        void render(EntityRenderState renderState, CameraRenderState cameraRenderState, PoseStack stack, SubmitNodeCollector collector);
     }
 
     public interface RenderHUDEvent {

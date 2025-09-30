@@ -179,12 +179,12 @@ public class NeoForgeCommonCompatibilityManager extends CommonCompatibilityManag
 
     @Override
     public boolean isDevEnvironment() {
-        return !FMLLoader.isProduction();
+        return !FMLLoader.getCurrent().isProduction();
     }
 
     @Override
     public boolean isDedicatedServer() {
-        return FMLLoader.getDist().isDedicatedServer();
+        return FMLLoader.getCurrent().getDist().isDedicatedServer();
     }
 
     @Override
