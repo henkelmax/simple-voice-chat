@@ -12,8 +12,6 @@ logoFile = "icon.png"
 authors = "Max Henkel"
 description = '''A working voice chat in Minecraft!'''
 displayTest = "NONE"
-[[mixins]]
-config = "voicechat.mixins.json"
 [[mods]]
 modId = "voicechat_api"
 version = "${api_version}"
