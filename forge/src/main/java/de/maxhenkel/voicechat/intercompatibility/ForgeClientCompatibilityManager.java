@@ -5,6 +5,8 @@ import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.Connection;
 import net.minecraft.server.packs.repository.RepositorySource;
@@ -53,7 +55,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     public void onRenderName(net.minecraftforge.client.event.RenderNameTagEvent event) {
-        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getState(), event.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
+        renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getState(), event.getCameraState(), event.getPoseStack(), event.getNodeCollector()));
     }
 
     //TODO Use a Forge event once it's available
@@ -62,11 +64,11 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     public void onKey(InputEvent.Key event) {
-        keyboardEvents.forEach(keyboardEvent -> keyboardEvent.onKeyboardEvent(minecraft.getWindow().getWindow(), event.getKey(), event.getScanCode()));
+        keyboardEvents.forEach(keyboardEvent -> keyboardEvent.onKeyboardEvent(new KeyEvent(event.getKey(), event.getScanCode(), event.getModifiers())));
     }
 
     public void onMouse(InputEvent.MouseButton.Pre event) {
-        mouseEvents.forEach(mouseEvent -> mouseEvent.onMouseEvent(minecraft.getWindow().getWindow(), event.getButton(), event.getAction(), event.getModifiers()));
+        mouseEvents.forEach(mouseEvent -> mouseEvent.onMouseEvent(new MouseButtonInfo(event.getButton(), event.getModifiers()), event.getAction()));
     }
 
     public void onClientTick(TickEvent.ClientTickEvent.Pre event) {
