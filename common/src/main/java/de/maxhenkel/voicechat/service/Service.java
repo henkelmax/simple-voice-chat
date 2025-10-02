@@ -14,7 +14,7 @@ public class Service {
     private static final Logger LOGGER = LogManager.getLogger(Voicechat.MODID);
 
     public static <T> T get(Class<T> serviceClass) {
-        return ServiceLoader.load(serviceClass).findFirst().orElseGet(() -> {
+        return ServiceLoader.load(serviceClass, serviceClass.getClassLoader()).findFirst().orElseGet(() -> {
             LOGGER.warn("Failed to load service {} with ServiceLoader", serviceClass.getSimpleName());
             try {
                 return loadFallback(serviceClass);
