@@ -1,1 +1,1 @@
-- Fixed NeoForge name render event not being used for icons
+- Updated to 1.21.10
