@@ -22,7 +22,7 @@ public class ForgeVoicechatClientMod extends VoicechatClient {
     public ForgeVoicechatClientMod(FMLJavaModLoadingContext context) {
         this.context = context;
         FMLClientSetupEvent.getBus(context.getModBusGroup()).addListener(this::clientSetup);
-        RegisterKeyMappingsEvent.getBus(context.getModBusGroup()).addListener(((ForgeClientCompatibilityManager) ClientCompatibilityManager.INSTANCE)::onRegisterKeyBinds);
+        RegisterKeyMappingsEvent.BUS.addListener(((ForgeClientCompatibilityManager) ClientCompatibilityManager.INSTANCE)::onRegisterKeyBinds);
     }
 
     public void clientSetup(FMLClientSetupEvent event) {
