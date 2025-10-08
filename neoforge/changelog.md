@@ -1,5 +1,1 @@
-- Fixed NeoForge name render event not being used for icons
-- Fixed potential issues with speaker device fallbacks
-- Added manual gain control warning
-- Added microphone amplification warning
-- Improved incompatible client message
+- Fixed filters not working for static audio channels
