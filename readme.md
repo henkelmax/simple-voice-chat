@@ -42,7 +42,9 @@ Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki/setup) for mo
 - Push to talk
 - Voice activation
 - Proximity voice chat
-- Password protected group chats
+- Password protected groups
+- Automatic voice activity detection
+- Automatic microphone gain adjustment
 - [Opus codec](https://opus-codec.org/)
 - [RNNoise](https://jmvalin.ca/demo/rnnoise/) recurrent neural network noise suppression
 - OpenAL audio
@@ -50,7 +52,7 @@ Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki/setup) for mo
 - Support for Velocity, BungeeCord and Waterfall
 - Compatibility with [ModMenu](https://modrinth.com/mod/modmenu) (Use [ClothConfig](https://modrinth.com/mod/cloth-config) for a better configuration UI)
 - Configurable push to talk key
-- Microphone test playback
+- Microphone and speaker test playback
 - Configurable voice distance
 - Whispering
 - Individual player volume adjustment
@@ -63,53 +65,52 @@ Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki/setup) for mo
 
 ## Icons
 
-|                 Icon                 | Description                                           |
-|:------------------------------------:|-------------------------------------------------------|
-| ![](https://i.imgur.com/FZD3ohs.png) | You are talking                                       |
-| ![](https://i.imgur.com/BJt2YAL.png) | You are whispering                                    |
-| ![](https://i.imgur.com/lmN6ydy.png) | Player is talking                                     |
-| ![](https://i.imgur.com/Felj73b.png) | Player is whispering                                  |
-| ![](https://i.imgur.com/dI3pfmA.png) | Microphone muted                                      |
-| ![](https://i.imgur.com/MZRBqra.png) | Voice chat disabled                                   |
-| ![](https://i.imgur.com/Lv3K6tC.png) | Voice chat not connected<br/>Voice chat not installed |
+|                  Icon                   | Description                                           |
+|:---------------------------------------:|-------------------------------------------------------|
+|      ![](assets/icon_talking.png)       | You are talking                                       |
+|     ![](assets/icon_whispering.png)     | You are whispering                                    |
+|   ![](assets/icon_other_talking.png)    | Player is talking                                     |
+|  ![](assets/icon_other_whispering.png)  | Player is whispering                                  |
+|  ![](assets/icon_microphone_muted.png)  | Microphone muted                                      |
+|      ![](assets/icon_disabled.png)      | Voice chat disabled                                   |
+|    ![](assets/icon_disconnected.png)    | Voice chat not connected<br/>Voice chat not installed |
 
 ## The GUI
 
 You can open the voice chat GUI by pressing the `V` key.
 This allows you to open the settings, group chats, mute yourself, disable the voice chat, start/stop a recording and hide all icons.
 
-![](https://i.imgur.com/TCCHTl8.png)
+![](assets/screenshot_voice_chat_menu.png)
 
 ### Group Chats
 
 Group chats allow you to talk to players that are not in your vicinity.
-To open the group chat interface, either press the group button in the voice chat GUI or just press the `G` key.
+To open the group chat interface, either press the group button in the voice chat GUI or just press the group key.
 
-To create a new group, just type a name in the text field and press the button next to it.
+To create a new group, just type a name in the text field and press the button at the bottom.
 
-![](https://i.imgur.com/FihRdNd.png)
+![](assets/screenshot_create_group.png)
 
 Creating or joining a group will bring you into the group chat interface.
 You will also see the heads of the group members in the top left corner of your screen.
 Talking players will be outlined.
 You can disable these icons by pressing the third button from the left.
 
-![](https://i.imgur.com/ZVSfBms.png)
+![](assets/screenshot_group.png)
 
-Players that are not in a group will see a group icon next to your head, indicating that they can't talk to you.
+Players that are not in a group will see a group icon next to your head, indicating that you are in a group.
 
-You can invite players to your group chat by entering the command `/voicechat invite <playername>`.
+You can invite players to your group chat by entering the command `/voicechat invite <playername>` or from the social interactions screen.
 
 ### Settings
 
-You can access the voice chat GUI by pressing the `V` key and pressing the settings button.
+You can access the voice chat settings by pressing the `V` key and pressing the settings button.
 
-This menu offers the ability to change the general voice chat volume and your microphone amplification.
-In addition, there is the possibility to specify the recording and playback device.
+This menu offers the ability to set up your voice chat audio settings.
 
-By clicking the 'Enable microphone testing' button, you can hear your own voice and adjust the activation level of the voice activation.
+By clicking the microphone button, you can test your microphone activation.
 
-![](https://i.imgur.com/TMyfSYU.png)
+![](assets/screenshot_settings.png)
 
 ## Important Notes
 
