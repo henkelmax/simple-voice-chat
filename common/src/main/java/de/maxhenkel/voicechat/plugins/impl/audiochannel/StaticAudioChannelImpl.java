@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.plugins.impl.audiochannel;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
 import de.maxhenkel.voicechat.api.audiochannel.StaticAudioChannel;
 import de.maxhenkel.voicechat.api.packets.MicrophonePacket;
+import de.maxhenkel.voicechat.plugins.impl.ServerPlayerImpl;
 import de.maxhenkel.voicechat.plugins.impl.VoicechatServerApiImpl;
 import de.maxhenkel.voicechat.voice.common.GroupSoundPacket;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
@@ -56,6 +57,11 @@ public class StaticAudioChannelImpl extends AudioChannelImpl implements StaticAu
                 if (!bypassGroupIsolation) {
                     Group playerGroup = groupManager.getPlayerGroup(player);
                     if (playerGroup != null && playerGroup.isIsolated()) {
+                        continue;
+                    }
+                }
+                if (filter != null) {
+                    if (!filter.test(new ServerPlayerImpl(player))) {
                         continue;
                     }
                 }

@@ -1,1 +1,1 @@
-- Updated to 25w42a
+- Fixed filters not working for static audio channels

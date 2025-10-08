@@ -1,2 +1,1 @@
-- Added support for 1.21.9 and 1.21.10
-- Improved incompatible client message
+- Fixed filters not working for static audio channels
