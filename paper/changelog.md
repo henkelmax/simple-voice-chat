@@ -1,1 +1,1 @@
-- Improved incompatible version message
+- Improved incompatible client message
