@@ -1,1 +1,2 @@
 - Updated to 1.21.10
+- Improved incompatible client message
