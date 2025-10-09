@@ -21,7 +21,7 @@ Please read the [wiki](https://modrepo.de/minecraft/voicechat/wiki/setup) for mo
 
 <p align="center">
     <a href="https://discord.gg/4dH2zwTmyX">
-        <img src="https://i.imgur.com/JgDt1Fl.png" width="300">
+        <img src="assets/discord.svg" width="300">
     </a>
     <br/>
     <i>Please join the Discord if you have questions!</i>
