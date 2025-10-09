@@ -1,4 +1,1 @@
-- Fixed potential issues with speaker device fallbacks
-- Added manual gain control warning
-- Added microphone amplification warning
-- Improved incompatible client message
+- Updated to 25w41a

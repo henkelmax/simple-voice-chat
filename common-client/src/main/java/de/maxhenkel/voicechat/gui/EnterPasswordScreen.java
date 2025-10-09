@@ -4,7 +4,6 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.net.JoinGroupPacket;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -87,9 +86,9 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void resize(Minecraft client, int width, int height) {
+    public void resize(int width, int height) {
         String passwordText = password.getValue();
-        init(client, width, height);
+        init(width, height);
         password.setValue(passwordText);
     }
 

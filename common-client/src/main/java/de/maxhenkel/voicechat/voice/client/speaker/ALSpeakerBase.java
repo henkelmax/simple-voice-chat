@@ -10,7 +10,7 @@ import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.lwjgl.openal.AL11;
 
 import javax.annotation.Nullable;
@@ -160,9 +160,9 @@ public abstract class ALSpeakerBase implements Speaker {
 
     protected void setPositionSync(@Nullable Vec3 soundPos, float maxDistance) {
         Camera camera = mc.gameRenderer.getMainCamera();
-        Vec3 position = camera.getPosition();
-        Vector3f look = camera.getLookVector();
-        Vector3f up = camera.getUpVector();
+        Vec3 position = camera.position();
+        Vector3fc look = camera.forwardVector();
+        Vector3fc up = camera.upVector();
         AL11.alListener3f(AL11.AL_POSITION, (float) position.x, (float) position.y, (float) position.z);
         SoundManager.checkAlError();
         AL11.alListenerfv(AL11.AL_ORIENTATION, new float[]{look.x(), look.y(), look.z(), up.x(), up.y(), up.z()});

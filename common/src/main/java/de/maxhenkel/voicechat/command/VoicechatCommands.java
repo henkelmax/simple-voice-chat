@@ -25,6 +25,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.PermissionLevel;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -292,7 +293,7 @@ public class VoicechatCommands {
         try {
             return permission.hasPermission(stack.getPlayerOrException());
         } catch (CommandSyntaxException e) {
-            return stack.hasPermission(stack.getServer().operatorUserPermissionLevel());
+            return stack.permissions().hasPermission(new net.minecraft.server.permissions.Permission.HasCommandLevel(PermissionLevel.ADMINS));
         }
     }
 

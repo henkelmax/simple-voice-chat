@@ -28,7 +28,7 @@ public class FreecamUtil {
         if (mc.player == null) {
             return Vec3.ZERO;
         }
-        return isFreecamEnabled() ? mc.player.getEyePosition() : mc.gameRenderer.getMainCamera().getPosition();
+        return isFreecamEnabled() ? mc.player.getEyePosition() : mc.gameRenderer.getMainCamera().position();
     }
 
     /**

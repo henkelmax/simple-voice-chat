@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.gui;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.net.CreateGroupPacket;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
@@ -50,7 +49,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(password);
 
-        addRenderableWidget(CycleButton.builder(GroupType::getTranslation).withValues(GroupType.values()).withInitialValue(GroupType.NORMAL).withTooltip(object -> {
+        addRenderableWidget(CycleButton.builder(GroupType::getTranslation, GroupType.NORMAL).withValues(GroupType.values()).withTooltip(object -> {
             return Tooltip.create(object.getDescription());
         }).create(guiLeft + 6, guiTop + 74, xSize - 12, 20, GROUP_TYPE, (button, type) -> {
             groupType = type;
@@ -103,12 +102,11 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void resize(Minecraft client, int width, int height) {
+    public void resize(int width, int height) {
         String groupNameText = groupName.getValue();
         String passwordText = password.getValue();
-        init(client, width, height);
+        init(width, height);
         groupName.setValue(groupNameText);
         password.setValue(passwordText);
     }
-
 }
