@@ -6,7 +6,6 @@ import de.maxhenkel.voicechat.natives.RNNoiseManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -44,7 +43,6 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-        Minecraft minecraft = Minecraft.getInstance();
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getSlider(), getX(), getY(), getWidth(), getHeight());
 
         int micWidth = (int) ((width - 2) * micValue.smoothMax());
@@ -56,7 +54,8 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         }
 
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getHandle(), getX() + (int) (value * (double) (width - 8)), getY(), 8, 20);
-        renderScrollingString(guiGraphics, minecraft.font, 2, -1);
+
+        renderScrollingStringOverContents(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE), getMessage(), 2);
     }
 
     private ResourceLocation getSlider() {

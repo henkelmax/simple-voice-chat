@@ -51,8 +51,8 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-        super.renderWidget(guiGraphics, x, y, partialTicks);
+    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
+        super.renderContents(guiGraphics, mouseX, mouseY, f);
         updateLastRender();
     }
 

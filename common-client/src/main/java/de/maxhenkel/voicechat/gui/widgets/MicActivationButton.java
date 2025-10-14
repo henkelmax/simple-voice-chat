@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.gui.widgets;
 
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
@@ -27,4 +28,9 @@ public class MicActivationButton extends EnumButton<MicrophoneActivationType> {
         onChange.accept(type);
     }
 
+    @Override
+    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
+        renderDefaultSprite(guiGraphics);
+        renderDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
+    }
 }

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
@@ -57,6 +58,12 @@ public class KeybindButton extends AbstractButton {
     public void onPress(InputWithModifiers inputWithModifiers) {
         listening = true;
         updateText();
+    }
+
+    @Override
+    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
+        renderDefaultSprite(guiGraphics);
+        renderDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
     }
 
     @Override

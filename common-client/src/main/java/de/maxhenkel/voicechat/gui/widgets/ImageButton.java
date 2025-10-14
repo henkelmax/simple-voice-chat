@@ -44,8 +44,8 @@ public class ImageButton extends AbstractButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
-        super.renderWidget(guiGraphics, mouseX, mouseY, f);
+    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
+        renderDefaultSprite(guiGraphics);
         renderImage(guiGraphics, mouseX, mouseY);
 
         if (tooltipSupplier != null) {

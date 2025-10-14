@@ -81,6 +81,12 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
         addRenderableWidget(new EnumButton<>(guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.audioType) {
             @Override
+            protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
+                renderDefaultSprite(guiGraphics);
+                renderDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
+            }
+
+            @Override
             protected Component getText(AudioType type) {
                 return Component.translatable("message.voicechat.audio_type", type.getText());
             }
