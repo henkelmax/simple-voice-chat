@@ -307,7 +307,8 @@ public abstract class VoiceProxy {
             String host = backend.getHostString();
             int port = backend.getPort();
             for (BackendServer s : getBackendServers()) {
-                if (s.getAddress() instanceof InetSocketAddress isa) {
+                if (s.getAddress() instanceof InetSocketAddress) {
+                    InetSocketAddress isa = (InetSocketAddress) s.getAddress();
                     if (isa.getHostString().equalsIgnoreCase(host) && isa.getPort() == port) {
                         return s.getName();
                     }
