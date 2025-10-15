@@ -15,7 +15,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 public abstract class VoiceProxy {
@@ -253,6 +256,110 @@ public abstract class VoiceProxy {
 
     public VoiceProxySniffer getSniffer() {
         return voiceProxySniffer;
+    }
+
+    /**
+     * Returns a configured voice host override for the backend server the given player is connected to.
+     * Empty string means no override.
+     */
+    public String getPerServerVoiceHost(UUID playerUUID) {
+        Map<String, HostPort> map = parseServerVoiceHosts();
+        if (map.isEmpty()) {
+            return "";
+        }
+        String serverName = resolvePlayersBackendServerName(playerUUID);
+        if (serverName == null) {
+            return "";
+        }
+        HostPort hp = map.get(serverName.toLowerCase(Locale.ROOT));
+        if (hp == null) {
+            return "";
+        }
+        return hp.host;
+    }
+
+    /**
+     * Returns an optional port override for the backend server the given player is connected to.
+     * Null means no override; use the sniffed backend voice port.
+     */
+    public Integer getPerServerVoicePortOverride(UUID playerUUID) {
+        Map<String, HostPort> map = parseServerVoiceHosts();
+        if (map.isEmpty()) {
+            return null;
+        }
+        String serverName = resolvePlayersBackendServerName(playerUUID);
+        if (serverName == null) {
+            return null;
+        }
+        HostPort hp = map.get(serverName.toLowerCase(Locale.ROOT));
+        if (hp == null) {
+            return null;
+        }
+        return hp.portOverride;
+    }
+
+    private String resolvePlayersBackendServerName(UUID playerUUID) {
+        try {
+            InetSocketAddress backend = getDefaultBackendSocket(playerUUID);
+            if (backend == null) {
+                return null;
+            }
+            String host = backend.getHostString();
+            int port = backend.getPort();
+            for (BackendServer s : getBackendServers()) {
+                if (s.getAddress() instanceof InetSocketAddress isa) {
+                    if (isa.getHostString().equalsIgnoreCase(host) && isa.getPort() == port) {
+                        return s.getName();
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
+    }
+
+    private Map<String, HostPort> parseServerVoiceHosts() {
+        String raw = voiceProxyConfig.serverVoiceHosts.get();
+        Map<String, HostPort> out = new HashMap<>();
+        if (raw == null || raw.trim().isEmpty()) {
+            return out;
+        }
+        String[] entries = raw.split(",");
+        for (String e : entries) {
+            String entry = e.trim();
+            if (entry.isEmpty()) continue;
+            int eq = entry.indexOf('=');
+            if (eq <= 0 || eq >= entry.length() - 1) continue;
+            String name = entry.substring(0, eq).trim();
+            String hostPort = entry.substring(eq + 1).trim();
+            if (name.isEmpty() || hostPort.isEmpty()) continue;
+            String host = hostPort;
+            Integer port = null;
+            int lastColon = hostPort.lastIndexOf(':');
+            if (lastColon > 0 && lastColon < hostPort.length() - 1 && hostPort.indexOf(']') == -1) {
+                // Simple host:port parsing; IPv6 with brackets not supported in this shorthand
+                String pstr = hostPort.substring(lastColon + 1);
+                try {
+                    int p = Integer.parseInt(pstr);
+                    if (p > 0 && p <= 65535) {
+                        port = p;
+                        host = hostPort.substring(0, lastColon);
+                    }
+                } catch (NumberFormatException ignored) {
+                }
+            }
+            out.put(name.toLowerCase(Locale.ROOT), new HostPort(host, port));
+        }
+        return out;
+    }
+
+    private static class HostPort {
+        final String host;
+        final Integer portOverride;
+        HostPort(String host, Integer portOverride) {
+            this.host = host;
+            this.portOverride = portOverride;
+        }
     }
 
 }

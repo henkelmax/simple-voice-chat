@@ -84,13 +84,25 @@ public class SniffedSecretPacket {
     }
 
     /**
-     * Modifies the packet to use the proxy port and clears the voice host.
-     * If a voice host is present on the proxy, this value will be used.
+     * Modifies the packet based on proxy configuration.
+     * If a per-server override exists for the players backend server, use that host
+     * and optionally a custom port, otherwise force clients to connect to the proxy port/host.
      *
      * @param voiceProxy the proxy
+     * @param proxyPlayerUUID the UUID of the player on the proxy
      * @return the modified packet
      */
-    public ByteBuffer patch(VoiceProxy voiceProxy) {
+    public ByteBuffer patch(VoiceProxy voiceProxy, UUID proxyPlayerUUID) {
+        String overrideHost = voiceProxy.getPerServerVoiceHost(proxyPlayerUUID);
+        if (overrideHost != null && !overrideHost.isEmpty()) {
+            voiceHost = overrideHost;
+            Integer overridePort = voiceProxy.getPerServerVoicePortOverride(proxyPlayerUUID);
+            if (overridePort != null) {
+                serverPort = overridePort;
+            }
+            return toBytes();
+        }
+
         serverPort = voiceProxy.getPort();
         voiceHost = voiceProxy.getConfig().voiceHost.get();
         return toBytes();

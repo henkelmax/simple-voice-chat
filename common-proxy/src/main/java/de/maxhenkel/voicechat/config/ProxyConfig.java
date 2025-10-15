@@ -10,6 +10,7 @@ public class ProxyConfig {
     public ConfigEntry<String> bindAddress;
     public ConfigEntry<String> voiceHost;
     public ConfigEntry<Boolean> allowPings;
+    public ConfigEntry<String> serverVoiceHosts;
 
     public ProxyConfig(ConfigBuilder builder) {
         builder.header(String.format("Simple Voice Chat proxy config v%s", BuildConstants.MOD_VERSION));
@@ -39,6 +40,13 @@ public class ProxyConfig {
         allowPings = builder
                 .booleanEntry("allow_pings", true,
                         "If the voice chat proxy server should reply to external pings"
+                );
+
+        serverVoiceHosts = builder
+                .stringEntry("server_voice_hosts", "",
+                        "Optional per-server voice host overrides (comma-separated)",
+                        "Format: serverName=host[:port],serverName2=host2[:port2]",
+                        "If port is omitted, the backend voice port sniffed from the server will be used"
                 );
     }
 

@@ -108,7 +108,7 @@ public class VoiceProxySniffer {
         SniffedSecretPacket packet = SniffedSecretPacket.fromBytes(message, compatibilityVersion);
         playerUUIDMap.put(packet.getPlayerUUID(), playerUUID);
         serverUDPPortMap.put(playerUUID, packet.getServerPort());
-        return packet.patch(voiceProxy);
+        return packet.patch(voiceProxy, playerUUID);
     }
 
     /**
