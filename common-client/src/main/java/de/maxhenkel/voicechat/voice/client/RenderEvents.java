@@ -10,10 +10,10 @@ import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
@@ -164,7 +164,7 @@ public class RenderEvents {
         float offsetX = (float) (minecraft.font.width(component) / 2 + 2);
         int alpha = 32;
         float offsetY = -1F;
-        collector.submitCustomGeometry(stack, RenderType.text(texture), (pose, c) -> {
+        collector.submitCustomGeometry(stack, RenderTypes.text(texture), (pose, c) -> {
             if (discrete) {
                 vertex(c, pose, offsetX, 10F + offsetY, 0F, 0F, 1F, alpha, light);
                 vertex(c, pose, offsetX + 10F, 10F + offsetY, 0F, 1F, 1F, alpha, light);
@@ -178,7 +178,7 @@ public class RenderEvents {
             }
         });
         if (!discrete) {
-            collector.submitCustomGeometry(stack, RenderType.textSeeThrough(texture), (pose, c) -> {
+            collector.submitCustomGeometry(stack, RenderTypes.textSeeThrough(texture), (pose, c) -> {
                 vertex(c, pose, offsetX, 10F + offsetY, 0F, 0F, 1F, alpha, light);
                 vertex(c, pose, offsetX + 10F, 10F + offsetY, 0F, 1F, 1F, alpha, light);
                 vertex(c, pose, offsetX + 10F, offsetY, 0F, 1F, 0F, alpha, light);
