@@ -10,11 +10,11 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class EnterPasswordScreen extends VoiceChatScreenBase {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_enter_password.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_enter_password.png");
     private static final Component TITLE = Component.translatable("gui.voicechat.enter_password.title");
     private static final Component JOIN_GROUP = Component.translatable("message.voicechat.join_group");
     private static final Component ENTER_GROUP_PASSWORD = Component.translatable("message.voicechat.enter_group_password");

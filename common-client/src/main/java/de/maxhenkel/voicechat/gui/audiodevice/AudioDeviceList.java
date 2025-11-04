@@ -8,7 +8,7 @@ import de.maxhenkel.voicechat.voice.client.SoundManager;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 
 import javax.annotation.Nullable;
@@ -21,7 +21,7 @@ public abstract class AudioDeviceList extends ListScreenListBase<AudioDeviceEntr
     public static final int CELL_HEIGHT = 36;
 
     @Nullable
-    protected ResourceLocation icon;
+    protected Identifier icon;
     @Nullable
     protected Component defaultDeviceText;
 
@@ -72,7 +72,7 @@ public abstract class AudioDeviceList extends ListScreenListBase<AudioDeviceEntr
         );
     }
 
-    public abstract AudioDeviceEntry createAudioDeviceEntry(String device, Component name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected);
+    public abstract AudioDeviceEntry createAudioDeviceEntry(String device, Component name, @Nullable Identifier icon, Supplier<Boolean> isSelected);
 
     public boolean isSelected(String name) {
         if (configEntry == null) {

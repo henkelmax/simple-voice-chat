@@ -6,8 +6,8 @@ import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.Util;
 
 import java.util.*;
 

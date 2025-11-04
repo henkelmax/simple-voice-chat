@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.gui.widgets;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -12,7 +12,7 @@ public class ToggleImageButton extends ImageButton {
     @Nullable
     protected Supplier<Boolean> stateSupplier;
 
-    public ToggleImageButton(int x, int y, ResourceLocation texture, @Nullable Supplier<Boolean> stateSupplier, PressAction onPress, TooltipSupplier tooltipSupplier) {
+    public ToggleImageButton(int x, int y, Identifier texture, @Nullable Supplier<Boolean> stateSupplier, PressAction onPress, TooltipSupplier tooltipSupplier) {
         super(x, y, texture, onPress, tooltipSupplier);
         this.stateSupplier = stateSupplier;
     }

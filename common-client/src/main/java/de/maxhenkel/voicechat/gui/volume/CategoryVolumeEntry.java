@@ -7,12 +7,12 @@ import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class CategoryVolumeEntry extends VolumeEntry {
 
     protected final VolumeCategoryImpl category;
-    protected final ResourceLocation texture;
+    protected final Identifier texture;
 
     public CategoryVolumeEntry(VolumeCategoryImpl category, AdjustVolumesScreen screen) {
         super(screen, new AdjustCategoryVolumeEntry(category.getId()));

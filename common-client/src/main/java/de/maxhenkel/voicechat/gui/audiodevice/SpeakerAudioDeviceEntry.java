@@ -6,18 +6,18 @@ import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.voice.client.TestSoundPlayer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public class SpeakerAudioDeviceEntry extends AudioDeviceEntry {
 
-    public static final ResourceLocation SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/test_speaker.png");
+    public static final Identifier SPEAKER_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/test_speaker.png");
 
     private ImageButton testButton;
 
-    public SpeakerAudioDeviceEntry(String device, Component name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
+    public SpeakerAudioDeviceEntry(String device, Component name, @Nullable Identifier icon, Supplier<Boolean> isSelected) {
         super(device, name, icon, isSelected);
 
         testButton = new ImageButton(0, 0, SPEAKER_ICON, button -> {

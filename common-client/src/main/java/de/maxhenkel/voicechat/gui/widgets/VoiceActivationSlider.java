@@ -10,17 +10,17 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 
 public class VoiceActivationSlider extends DebouncedSlider implements MicTestButton.MicListener {
 
-    private static final ResourceLocation SLIDER_SPRITE = ResourceLocation.withDefaultNamespace("widget/slider");
-    private static final ResourceLocation HIGHLIGHTED_SPRITE = ResourceLocation.withDefaultNamespace("widget/slider_highlighted");
-    private static final ResourceLocation SLIDER_HANDLE_SPRITE = ResourceLocation.withDefaultNamespace("widget/slider_handle");
-    private static final ResourceLocation SLIDER_HANDLE_HIGHLIGHTED_SPRITE = ResourceLocation.withDefaultNamespace("widget/slider_handle_highlighted");
-    private static final ResourceLocation VOICE_ACTIVATION_SLIDER = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/voice_activation_slider.png");
+    private static final Identifier SLIDER_SPRITE = Identifier.withDefaultNamespace("widget/slider");
+    private static final Identifier HIGHLIGHTED_SPRITE = Identifier.withDefaultNamespace("widget/slider_highlighted");
+    private static final Identifier SLIDER_HANDLE_SPRITE = Identifier.withDefaultNamespace("widget/slider_handle");
+    private static final Identifier SLIDER_HANDLE_HIGHLIGHTED_SPRITE = Identifier.withDefaultNamespace("widget/slider_handle_highlighted");
+    private static final Identifier VOICE_ACTIVATION_SLIDER = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/voice_activation_slider.png");
     private static final Component NO_ACTIVATION = Component.translatable("message.voicechat.voice_activation.disabled").withStyle(ChatFormatting.RED);
 
     private final SlidingMaxSmooth micValue;
@@ -58,11 +58,11 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         renderScrollingStringOverContents(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE), getMessage(), 2);
     }
 
-    private ResourceLocation getSlider() {
+    private Identifier getSlider() {
         return isFocused() && !(isHovered || isFocused()) ? HIGHLIGHTED_SPRITE : SLIDER_SPRITE;
     }
 
-    private ResourceLocation getHandle() {
+    private Identifier getHandle() {
         return !isHovered && !isFocused() ? SLIDER_HANDLE_SPRITE : SLIDER_HANDLE_HIGHLIGHTED_SPRITE;
     }
 

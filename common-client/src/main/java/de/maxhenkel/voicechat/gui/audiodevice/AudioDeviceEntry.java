@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
 import javax.annotation.Nullable;
@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
 
-    protected static final ResourceLocation SELECTED = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/device_selected.png");
+    protected static final Identifier SELECTED = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/device_selected.png");
 
     protected static final int PADDING = 4;
     protected static final int BG_FILL = ARGB.color(255, 74, 74, 74);
@@ -26,10 +26,10 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
     protected final String device;
     protected final Component name;
     @Nullable
-    protected final ResourceLocation icon;
+    protected final Identifier icon;
     protected final Supplier<Boolean> isSelected;
 
-    public AudioDeviceEntry(String device, Component name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
+    public AudioDeviceEntry(String device, Component name, @Nullable Identifier icon, Supplier<Boolean> isSelected) {
         this.device = device;
         this.icon = icon;
         this.isSelected = isSelected;

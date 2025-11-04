@@ -3,11 +3,11 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class LeaveGroupPacket implements Packet<LeaveGroupPacket> {
 
-    public static final CustomPacketPayload.Type<LeaveGroupPacket> LEAVE_GROUP = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "leave_group"));
+    public static final CustomPacketPayload.Type<LeaveGroupPacket> LEAVE_GROUP = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Voicechat.MODID, "leave_group"));
 
     public LeaveGroupPacket() {
 

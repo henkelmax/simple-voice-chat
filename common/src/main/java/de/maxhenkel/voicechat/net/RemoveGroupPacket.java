@@ -3,13 +3,13 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.UUID;
 
 public class RemoveGroupPacket implements Packet<RemoveGroupPacket> {
 
-    public static final CustomPacketPayload.Type<RemoveGroupPacket> REMOVE_GROUP = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "remove_group"));
+    public static final CustomPacketPayload.Type<RemoveGroupPacket> REMOVE_GROUP = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Voicechat.MODID, "remove_group"));
 
     private UUID groupId;
 

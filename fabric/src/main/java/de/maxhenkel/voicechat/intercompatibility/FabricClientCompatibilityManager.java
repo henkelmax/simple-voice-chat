@@ -16,7 +16,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.Connection;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.repository.RepositorySource;
 
 import java.net.SocketAddress;
@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 
 public class FabricClientCompatibilityManager extends ClientCompatibilityManager {
 
-    private static final ResourceLocation VOICE_CHAT_ICON_LAYER = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "hud");
+    private static final Identifier VOICE_CHAT_ICON_LAYER = Identifier.fromNamespaceAndPath(Voicechat.MODID, "hud");
 
     private static final Minecraft mc = Minecraft.getInstance();
 

@@ -3,11 +3,11 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class UpdateStatePacket implements Packet<UpdateStatePacket> {
 
-    public static final CustomPacketPayload.Type<UpdateStatePacket> PLAYER_STATE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "update_state"));
+    public static final CustomPacketPayload.Type<UpdateStatePacket> PLAYER_STATE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Voicechat.MODID, "update_state"));
 
     private boolean disabled;
 

@@ -5,13 +5,13 @@ import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.plugins.impl.GroupImpl;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 
 public class CreateGroupPacket implements Packet<CreateGroupPacket> {
 
-    public static final CustomPacketPayload.Type<CreateGroupPacket> CREATE_GROUP = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "create_group"));
+    public static final CustomPacketPayload.Type<CreateGroupPacket> CREATE_GROUP = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Voicechat.MODID, "create_group"));
 
     private String name;
     @Nullable

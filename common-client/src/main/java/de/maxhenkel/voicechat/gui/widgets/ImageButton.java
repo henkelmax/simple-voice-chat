@@ -7,20 +7,20 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 
 public class ImageButton extends AbstractButton {
 
     protected Minecraft mc;
-    protected ResourceLocation texture;
+    protected Identifier texture;
     @Nullable
     protected PressAction onPress;
     @Nullable
     protected TooltipSupplier tooltipSupplier;
 
-    public ImageButton(int x, int y, ResourceLocation texture, @Nullable PressAction onPress, @Nullable TooltipSupplier tooltipSupplier) {
+    public ImageButton(int x, int y, Identifier texture, @Nullable PressAction onPress, @Nullable TooltipSupplier tooltipSupplier) {
         super(x, y, 20, 20, Component.empty());
         mc = Minecraft.getInstance();
         this.texture = texture;
@@ -28,7 +28,7 @@ public class ImageButton extends AbstractButton {
         this.tooltipSupplier = tooltipSupplier;
     }
 
-    public ImageButton(int x, int y, ResourceLocation texture, PressAction onPress) {
+    public ImageButton(int x, int y, Identifier texture, PressAction onPress) {
         this(x, y, texture, onPress, null);
     }
 

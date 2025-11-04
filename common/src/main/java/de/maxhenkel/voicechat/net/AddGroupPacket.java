@@ -4,11 +4,11 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class AddGroupPacket implements Packet<AddGroupPacket> {
 
-    public static final CustomPacketPayload.Type<AddGroupPacket> ADD_ADD_GROUP = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "add_group"));
+    public static final CustomPacketPayload.Type<AddGroupPacket> ADD_ADD_GROUP = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Voicechat.MODID, "add_group"));
 
     private ClientGroup group;
 

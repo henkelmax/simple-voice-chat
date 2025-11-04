@@ -15,7 +15,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 public class KeyEvents {
@@ -46,7 +46,7 @@ public class KeyEvents {
             throw new IllegalStateException("Registered key binds twice");
         }
 
-        CATEGORY_VOICECHAT = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "voicechat"));
+        CATEGORY_VOICECHAT = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(Voicechat.MODID, "voicechat"));
 
         KEY_PTT = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyMapping("key.push_to_talk", InputConstants.UNKNOWN.getValue(), CATEGORY_VOICECHAT));
         KEY_WHISPER = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyMapping("key.whisper", InputConstants.UNKNOWN.getValue(), CATEGORY_VOICECHAT));

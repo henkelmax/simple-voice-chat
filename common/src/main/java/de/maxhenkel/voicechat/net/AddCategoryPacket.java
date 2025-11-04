@@ -4,11 +4,11 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class AddCategoryPacket implements Packet<AddCategoryPacket> {
 
-    public static final CustomPacketPayload.Type<AddCategoryPacket> ADD_CATEGORY = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "add_category"));
+    public static final CustomPacketPayload.Type<AddCategoryPacket> ADD_CATEGORY = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Voicechat.MODID, "add_category"));
 
     private VolumeCategoryImpl category;
 

@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.HashSet;
@@ -18,13 +18,13 @@ import java.util.Set;
 
 public class FabricNetManager extends NetManager {
 
-    private final Set<ResourceLocation> packets;
+    private final Set<Identifier> packets;
 
     public FabricNetManager() {
         packets = new HashSet<>();
     }
 
-    public Set<ResourceLocation> getPackets() {
+    public Set<Identifier> getPackets() {
         return packets;
     }
 

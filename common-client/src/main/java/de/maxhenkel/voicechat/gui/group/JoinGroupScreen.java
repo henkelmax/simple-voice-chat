@@ -8,12 +8,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 public class JoinGroupScreen extends ListScreenBase {
 
-    protected static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_join_group.png");
+    protected static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_join_group.png");
     protected static final Component TITLE = Component.translatable("gui.voicechat.join_create_group.title");
     protected static final Component CREATE_GROUP = Component.translatable("message.voicechat.create_group_button");
     protected static final Component JOIN_CREATE_GROUP = Component.translatable("message.voicechat.join_create_group");

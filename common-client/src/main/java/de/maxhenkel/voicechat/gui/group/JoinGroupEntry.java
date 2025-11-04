@@ -14,7 +14,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.PlayerSkin;
@@ -24,7 +24,7 @@ import java.util.List;
 
 public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
 
-    protected static final ResourceLocation LOCK = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/lock.png");
+    protected static final Identifier LOCK = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/lock.png");
     protected static final Component GROUP_MEMBERS = Component.translatable("message.voicechat.group_members").withStyle(ChatFormatting.GRAY);
     protected static final Component NO_GROUP_MEMBERS = Component.translatable("message.voicechat.no_group_members").withStyle(ChatFormatting.GRAY);
 

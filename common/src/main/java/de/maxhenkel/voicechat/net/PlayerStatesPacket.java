@@ -4,13 +4,13 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.*;
 
 public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
 
-    public static final CustomPacketPayload.Type<PlayerStatesPacket> PLAYER_STATES = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "states"));
+    public static final CustomPacketPayload.Type<PlayerStatesPacket> PLAYER_STATES = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Voicechat.MODID, "states"));
 
     private Collection<PlayerState> playerStates;
 

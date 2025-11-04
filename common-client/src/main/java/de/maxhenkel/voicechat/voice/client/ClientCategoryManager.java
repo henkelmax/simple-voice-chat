@@ -10,7 +10,7 @@ import de.maxhenkel.voicechat.plugins.CategoryManager;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientCategoryManager extends CategoryManager {
 
-    protected final Map<String, ResourceLocation> images;
+    protected final Map<String, Identifier> images;
 
     public ClientCategoryManager() {
         images = new ConcurrentHashMap<>();
@@ -58,15 +58,15 @@ public class ClientCategoryManager extends CategoryManager {
     }
 
     private void registerImage(String id, NativeImage image) {
-        ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, id);
-        Minecraft.getInstance().getEntityRenderDispatcher().textureManager.register(resourceLocation, new DynamicTexture(resourceLocation::toString, image));
-        images.put(id, resourceLocation);
+        Identifier identifier = Identifier.fromNamespaceAndPath(Voicechat.MODID, id);
+        Minecraft.getInstance().getEntityRenderDispatcher().textureManager.register(identifier, new DynamicTexture(identifier::toString, image));
+        images.put(id, identifier);
     }
 
     private void unRegisterImage(String id) {
-        ResourceLocation resourceLocation = images.get(id);
-        if (resourceLocation != null) {
-            Minecraft.getInstance().getEntityRenderDispatcher().textureManager.release(resourceLocation);
+        Identifier identifier = images.get(id);
+        if (identifier != null) {
+            Minecraft.getInstance().getEntityRenderDispatcher().textureManager.release(identifier);
             images.remove(id);
         }
     }
@@ -88,7 +88,7 @@ public class ClientCategoryManager extends CategoryManager {
         return nativeImage;
     }
 
-    public ResourceLocation getTexture(String id, ResourceLocation defaultImage) {
+    public Identifier getTexture(String id, Identifier defaultImage) {
         return images.getOrDefault(id, defaultImage);
     }
 

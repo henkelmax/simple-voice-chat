@@ -17,21 +17,21 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 
 import java.util.UUID;
 
 public class RenderEvents {
 
-    private static final ResourceLocation MICROPHONE_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone.png");
-    private static final ResourceLocation WHISPER_MICROPHONE_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone_whisper.png");
-    private static final ResourceLocation MICROPHONE_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone_off.png");
-    private static final ResourceLocation SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker.png");
-    private static final ResourceLocation WHISPER_SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_whisper.png");
-    private static final ResourceLocation SPEAKER_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_off.png");
-    private static final ResourceLocation DISCONNECT_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/disconnected.png");
-    private static final ResourceLocation GROUP_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/group.png");
+    private static final Identifier MICROPHONE_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone.png");
+    private static final Identifier WHISPER_MICROPHONE_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone_whisper.png");
+    private static final Identifier MICROPHONE_OFF_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone_off.png");
+    private static final Identifier SPEAKER_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker.png");
+    private static final Identifier WHISPER_SPEAKER_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_whisper.png");
+    private static final Identifier SPEAKER_OFF_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_off.png");
+    private static final Identifier DISCONNECT_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/disconnected.png");
+    private static final Identifier GROUP_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/group.png");
 
     private final Minecraft minecraft;
 
@@ -83,7 +83,7 @@ public class RenderEvents {
         return client != null && (System.currentTimeMillis() - client.getStartTime()) < 5000;
     }
 
-    private void renderIcon(GuiGraphics guiGraphics, ResourceLocation texture) {
+    private void renderIcon(GuiGraphics guiGraphics, Identifier texture) {
         guiGraphics.pose().pushMatrix();
         int posX = VoicechatClient.CLIENT_CONFIG.hudIconPosX.get();
         int posY = VoicechatClient.CLIENT_CONFIG.hudIconPosY.get();
@@ -157,7 +157,7 @@ public class RenderEvents {
         stack.popPose();
     }
 
-    private void renderPlayerIcon(UUID entityId, boolean discrete, Component component, ResourceLocation texture, PoseStack stack, SubmitNodeCollector collector, int light) {
+    private void renderPlayerIcon(UUID entityId, boolean discrete, Component component, Identifier texture, PoseStack stack, SubmitNodeCollector collector, int light) {
         if (!ClientPluginManager.instance().shouldRenderPlayerIcons(entityId)) {
             return;
         }

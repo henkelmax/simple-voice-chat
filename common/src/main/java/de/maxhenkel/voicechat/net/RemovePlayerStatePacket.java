@@ -2,13 +2,13 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.UUID;
 
 public class RemovePlayerStatePacket implements Packet<RemovePlayerStatePacket> {
 
-    public static final Type<RemovePlayerStatePacket> REMOVE_PLAYER_STATE = new Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "remove_state"));
+    public static final Type<RemovePlayerStatePacket> REMOVE_PLAYER_STATE = new Type<>(Identifier.fromNamespaceAndPath(Voicechat.MODID, "remove_state"));
 
     private UUID id;
 

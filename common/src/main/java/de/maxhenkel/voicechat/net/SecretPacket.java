@@ -6,14 +6,14 @@ import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.Secret;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
 
 public class SecretPacket implements Packet<SecretPacket> {
 
-    public static final CustomPacketPayload.Type<SecretPacket> SECRET = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "secret"));
+    public static final CustomPacketPayload.Type<SecretPacket> SECRET = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Voicechat.MODID, "secret"));
 
     private Secret secret;
     private int serverPort;

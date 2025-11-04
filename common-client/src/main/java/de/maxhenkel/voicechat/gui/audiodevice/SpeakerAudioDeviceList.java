@@ -4,14 +4,14 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public class SpeakerAudioDeviceList extends AudioDeviceList {
 
-    public static final ResourceLocation SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker.png");
+    public static final Identifier SPEAKER_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker.png");
     public static final Component DEFAULT_SPEAKER = Component.translatable("message.voicechat.default_speaker");
 
     public SpeakerAudioDeviceList(int width, int height, int top) {
@@ -23,7 +23,7 @@ public class SpeakerAudioDeviceList extends AudioDeviceList {
     }
 
     @Override
-    public AudioDeviceEntry createAudioDeviceEntry(String device, Component name, @Nullable ResourceLocation icon, Supplier<Boolean> isSelected) {
+    public AudioDeviceEntry createAudioDeviceEntry(String device, Component name, @Nullable Identifier icon, Supplier<Boolean> isSelected) {
         return new SpeakerAudioDeviceEntry(device, name, icon, isSelected);
     }
 

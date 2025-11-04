@@ -13,14 +13,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.PlayerSkin;
 
 public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
 
-    protected static final ResourceLocation TALK_OUTLINE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/talk_outline.png");
-    protected static final ResourceLocation SPEAKER_OFF = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_small_off.png");
+    protected static final Identifier TALK_OUTLINE = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/talk_outline.png");
+    protected static final Identifier SPEAKER_OFF = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_small_off.png");
 
     protected static final int PADDING = 4;
     protected static final int BG_FILL = ARGB.color(255, 74, 74, 74);

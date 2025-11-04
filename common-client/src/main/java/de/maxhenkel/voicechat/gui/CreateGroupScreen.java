@@ -11,11 +11,11 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class CreateGroupScreen extends VoiceChatScreenBase {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_create_group.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_create_group.png");
     private static final Component TITLE = Component.translatable("gui.voicechat.create_group.title");
     private static final Component CREATE = Component.translatable("message.voicechat.create");
     private static final Component CREATE_GROUP = Component.translatable("message.voicechat.create_group");

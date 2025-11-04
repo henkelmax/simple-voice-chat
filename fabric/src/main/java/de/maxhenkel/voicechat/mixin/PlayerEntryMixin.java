@@ -13,7 +13,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.social.PlayerEntry;
 import net.minecraft.client.gui.screens.social.SocialInteractionsScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 @Mixin(PlayerEntry.class)
 public abstract class PlayerEntryMixin extends ContainerObjectSelectionList.Entry<PlayerEntry> {
 
-    private static final ResourceLocation GROUP_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/invite_button.png");
+    private static final Identifier GROUP_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/invite_button.png");
     private static final Duration TOOLTIP_DELAY = Duration.ofMillis(500L);
 
     @Shadow
@@ -55,7 +55,7 @@ public abstract class PlayerEntryMixin extends ContainerObjectSelectionList.Entr
     private boolean invited;
 
     @Inject(method = "<init>", at = @At(value = "TAIL"))
-    private void onCreate(Minecraft minecraft, SocialInteractionsScreen socialInteractionsScreen, UUID uUID, String string, Supplier<ResourceLocation> supplier, boolean bl, CallbackInfo ci) {
+    private void onCreate(Minecraft minecraft, SocialInteractionsScreen socialInteractionsScreen, UUID uUID, String string, Supplier<Identifier> supplier, boolean bl, CallbackInfo ci) {
         if (this.children instanceof ArrayList) {
             inviteButton = new ImageButton(0, 0, GROUP_ICON, button -> {
                 minecraft.player.connection.sendCommand("voicechat invite %s".formatted(playerName));

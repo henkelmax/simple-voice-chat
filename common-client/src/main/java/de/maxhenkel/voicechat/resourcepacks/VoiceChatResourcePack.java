@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.*;
 import net.minecraft.server.packs.metadata.pack.PackFormat;
 import net.minecraft.server.packs.repository.Pack;
@@ -53,8 +53,8 @@ public class VoiceChatResourcePack extends AbstractPackResources implements Pack
 
     @Nullable
     @Override
-    public IoSupplier<InputStream> getResource(PackType packType, ResourceLocation resourceLocation) {
-        return getRootResource(packType.getDirectory(), resourceLocation.getNamespace(), resourceLocation.getPath());
+    public IoSupplier<InputStream> getResource(PackType packType, Identifier identifier) {
+        return getRootResource(packType.getDirectory(), identifier.getNamespace(), identifier.getPath());
     }
 
     @Nullable
@@ -82,8 +82,8 @@ public class VoiceChatResourcePack extends AbstractPackResources implements Pack
 
             try (Stream<Path> files = Files.walk(resPath)) {
                 files.filter(path -> !Files.isDirectory(path)).forEach(path -> {
-                    ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(namespace, convertPath(path).substring(convertPath(namespacePath).length() + 1));
-                    resourceOutput.accept(resourceLocation, getResource(type, resourceLocation));
+                    Identifier identifier = Identifier.fromNamespaceAndPath(namespace, convertPath(path).substring(convertPath(namespacePath).length() + 1));
+                    resourceOutput.accept(identifier, getResource(type, identifier));
                 });
             }
         } catch (Exception e) {

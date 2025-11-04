@@ -14,14 +14,14 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class MicTestButton extends ToggleImageButton implements ImageButton.TooltipSupplier {
 
-    private static final ResourceLocation MICROPHONE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone_button.png");
+    private static final Identifier MICROPHONE = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone_button.png");
     private static final Component TEST_DISABLED = Component.translatable("message.voicechat.mic_test.disabled");
     private static final Component TEST_ENABLED = Component.translatable("message.voicechat.mic_test.enabled");
     private static final Component TEST_UNAVAILABLE = Component.translatable("message.voicechat.mic_test_unavailable").withStyle(ChatFormatting.RED);
