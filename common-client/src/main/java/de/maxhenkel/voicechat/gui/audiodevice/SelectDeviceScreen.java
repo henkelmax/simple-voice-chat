@@ -12,7 +12,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public abstract class SelectDeviceScreen extends ListScreenBase {
 

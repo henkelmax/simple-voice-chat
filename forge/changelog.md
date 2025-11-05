@@ -1,1 +1,1 @@
-- Updated to 1.21.11
+- Make long text in adjust volumes screen scrollable
