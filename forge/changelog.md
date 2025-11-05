@@ -1,1 +1,0 @@
-- Fixed filters not working for static audio channels
