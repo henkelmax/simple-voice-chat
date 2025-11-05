@@ -9,6 +9,7 @@ import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.client.resources.PlayerSkin;
 
 import javax.annotation.Nullable;
@@ -37,10 +38,10 @@ public class PlayerVolumeEntry extends VolumeEntry {
             RenderSystem.enableBlend();
             guiGraphics.blit(skin.texture(), skinX, skinY, SKIN_SIZE, SKIN_SIZE, 40, 8, 8, 8, 64, 64);
             RenderSystem.disableBlend();
-            guiGraphics.drawString(minecraft.font, state.getName(), textX, textY, PLAYER_NAME_COLOR, false);
+            renderScrollingString(guiGraphics, Component.literal(state.getName()), top, left, width, height, PLAYER_NAME_COLOR);
         } else {
             guiGraphics.blit(OTHER_VOLUME_ICON, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
-            guiGraphics.drawString(minecraft.font, OTHER_VOLUME, textX, textY, PLAYER_NAME_COLOR, false);
+            renderScrollingString(guiGraphics, OTHER_VOLUME, top, left, width, height, PLAYER_NAME_COLOR);
             if (hovered) {
                 screen.postRender(() -> {
                     guiGraphics.renderTooltip(minecraft.font, OTHER_VOLUME_DESCRIPTION, mouseX, mouseY);

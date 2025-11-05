@@ -1,1 +1,1 @@
-- Fixed filters not working for static audio channels
+- Make long text in adjust volumes screen scrollable
