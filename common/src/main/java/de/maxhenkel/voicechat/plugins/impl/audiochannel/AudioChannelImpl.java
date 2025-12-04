@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.plugins.impl.audiochannel;
 
 import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.audiochannel.AudioChannel;
+import de.maxhenkel.voicechat.dialstuff.MinimalPlayer;
 import de.maxhenkel.voicechat.voice.server.Server;
 
 import javax.annotation.Nullable;

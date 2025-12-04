@@ -1,14 +1,16 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.MinecraftServer;
+import de.maxhenkel.voicechat.api.ServerPlayer;
+import de.maxhenkel.voicechat.dialstuff.MinimalPlayer;
+import de.maxhenkel.voicechat.dialstuff.MinimalServer;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.AddCategoryPacket;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RemoveCategoryPacket;
 import de.maxhenkel.voicechat.plugins.CategoryManager;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
 
@@ -21,7 +23,7 @@ public class ServerCategoryManager extends CategoryManager {
     }
 
     public void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
-        Voicechat.LOGGER.debug("Synchronizing {} volume categories with {}", categories.size(), player.getName().getString());
+        Voicechat.LOGGER.debug("Synchronizing {} volume categories with {}", categories.size(), player.getName());
         for (VolumeCategoryImpl category : getCategories()) {
             broadcastAddCategory(server.getServer(), category);
         }
@@ -45,12 +47,12 @@ public class ServerCategoryManager extends CategoryManager {
 
     private void broadcastAddCategory(MinecraftServer server, VolumeCategoryImpl category) {
         AddCategoryPacket packet = new AddCategoryPacket(category);
-        server.getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
+        server.getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
     private void broadcastRemoveCategory(MinecraftServer server, String categoryId) {
         RemoveCategoryPacket packet = new RemoveCategoryPacket(categoryId);
-        server.getPlayerList().getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
+        server.getPlayers().forEach(p -> NetManager.sendToClient(p, packet));
     }
 
 }

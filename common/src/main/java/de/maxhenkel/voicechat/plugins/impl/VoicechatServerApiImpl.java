@@ -12,6 +12,7 @@ import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
 import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
 import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
+import de.maxhenkel.voicechat.dialstuff.MinimalPlayer;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.*;
@@ -171,19 +172,19 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (!(receiver.getPlayer() instanceof ServerPlayerImpl serverPlayerImpl)) {
             throw new IllegalArgumentException("ServerPlayer is not an instance of ServerPlayerImpl");
         }
-        sendPacket(serverPlayerImpl.getRealServerPlayer(), soundPacket);
+        sendPacket(serverPlayerImpl, soundPacket);
     }
 
-    public static void sendPacket(net.minecraft.server.level.ServerPlayer receiver, SoundPacket<?> soundPacket) {
+    public static void sendPacket(ServerPlayer receiver, SoundPacket<?> soundPacket) {
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
             return;
         }
-        PlayerState state = server.getPlayerStateManager().getState(receiver.getUUID());
+        PlayerState state = server.getPlayerStateManager().getState(receiver.getUuid());
         if (state == null) {
             return;
         }
-        @Nullable ClientConnection c = server.getConnections().get(receiver.getUUID());
+        @Nullable ClientConnection c = server.getConnections().get(receiver.getUuid());
         server.sendSoundPacket(null, null, receiver, state, c, soundPacket, SoundPacketEvent.SOURCE_PLUGIN);
     }
 
@@ -194,7 +195,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (server == null) {
             return null;
         }
-        net.minecraft.server.level.ServerPlayer player = server.getServer().getPlayerList().getPlayer(playerUuid);
+        ServerPlayer player = server.getServer().getPlayer(playerUuid);
         if (player == null) {
             return null;
         }
@@ -258,7 +259,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (!(level instanceof ServerLevelImpl serverLevel)) {
             throw new IllegalArgumentException("ServerLevel is not an instance of ServerLevelImpl");
         }
-        return ServerWorldUtils.getPlayersInRange(serverLevel.getRawServerLevel(), p.getPosition(), range, filter == null ? null : player -> filter.test(new ServerPlayerImpl(player))).stream().map(ServerPlayerImpl::new).collect(Collectors.toList());
+        return ServerWorldUtils.getPlayersInRange(serverLevel, p, range, filter == null ? null : player -> filter.test(player)).stream().map(ServerPlayerImpl::new).collect(Collectors.toList());
     }
 
     @Override

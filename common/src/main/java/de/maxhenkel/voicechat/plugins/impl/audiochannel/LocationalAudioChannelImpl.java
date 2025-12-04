@@ -71,7 +71,7 @@ public class LocationalAudioChannelImpl extends AudioChannelImpl implements Loca
         if (!(level instanceof ServerLevelImpl serverLevel)) {
             throw new IllegalArgumentException("level is not an instance of ServerLevelImpl");
         }
-        server.broadcast(ServerWorldUtils.getPlayersInRange(serverLevel.getRawServerLevel(), position.getPosition(), server.getBroadcastRange(distance), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
+        server.broadcast(ServerWorldUtils.getPlayersInRange(serverLevel, position, server.getBroadcastRange(distance), filter == null ? player -> true : player -> filter.test(player)), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
     }
 
 }

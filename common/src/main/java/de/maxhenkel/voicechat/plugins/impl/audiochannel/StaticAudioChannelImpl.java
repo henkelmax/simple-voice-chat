@@ -1,5 +1,7 @@
 package de.maxhenkel.voicechat.plugins.impl.audiochannel;
 
+import de.maxhenkel.voicechat.api.MinecraftServer;
+import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
 import de.maxhenkel.voicechat.api.audiochannel.StaticAudioChannel;
 import de.maxhenkel.voicechat.api.packets.MicrophonePacket;
@@ -10,7 +12,6 @@ import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Group;
 import de.maxhenkel.voicechat.voice.server.Server;
 import de.maxhenkel.voicechat.voice.server.ServerGroupManager;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 
 import java.util.*;
@@ -43,14 +44,14 @@ public class StaticAudioChannelImpl extends AudioChannelImpl implements StaticAu
 
     private void broadcast(GroupSoundPacket packet) {
         synchronized (targets) {
-            PlayerList playerList = server.getServer().getPlayerList();
+            MinecraftServer minecraftServer = server.getServer();
             ServerGroupManager groupManager = server.getGroupManager();
             for (UUID target : targets) {
                 ClientConnection connection = server.getConnection(target);
                 if (connection == null) {
                     continue;
                 }
-                ServerPlayer player = playerList.getPlayer(target);
+                ServerPlayer player = minecraftServer.getPlayer(target);
                 if (player == null) {
                     continue;
                 }
@@ -61,7 +62,7 @@ public class StaticAudioChannelImpl extends AudioChannelImpl implements StaticAu
                     }
                 }
                 if (filter != null) {
-                    if (!filter.test(new ServerPlayerImpl(player))) {
+                    if (!filter.test(player)) {
                         continue;
                     }
                 }

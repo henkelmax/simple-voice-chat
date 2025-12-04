@@ -1,19 +1,22 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.MinecraftServer;
 import de.maxhenkel.voicechat.api.RawUdpPacket;
+import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.VoicechatSocket;
 import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
+import de.maxhenkel.voicechat.dialstuff.MinimalLevel;
+import de.maxhenkel.voicechat.dialstuff.MinimalPlayer;
+import de.maxhenkel.voicechat.dialstuff.MinimalServer;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nullable;
@@ -34,7 +37,6 @@ public class Server extends Thread {
     private final Map<UUID, ClientConnection> connections;
     private final Map<UUID, ClientConnection> unCheckedConnections;
     private final Map<UUID, Secret> secrets;
-    private final boolean dedicated;
     private int port;
     private final MinecraftServer server;
     private VoicechatSocket socket;
@@ -46,20 +48,15 @@ public class Server extends Thread {
     private final ServerCategoryManager categoryManager;
 
     public Server(MinecraftServer server) {
-        dedicated = server instanceof DedicatedServer;
-        if (dedicated) {
-            int configPort = Voicechat.SERVER_CONFIG.voiceChatPort.get();
-            if (configPort < 0) {
-                Voicechat.LOGGER.info("Using the Minecraft servers port as voice chat port");
-                port = server.getPort();
-            } else {
-                port = configPort;
-            }
+        int configPort = Voicechat.SERVER_CONFIG.voiceChatPort.get();
+        if (configPort < 0) {
+            Voicechat.LOGGER.info("Using the Minecraft servers port as voice chat port");
+            port = server.getPort();
         } else {
-            port = 0;
+            port = configPort;
         }
         this.server = server;
-        socket = PluginManager.instance().getSocketImplementation(server);
+        socket = PluginManager.instance().getSocketImplementation();
         connections = new ConcurrentHashMap<>();
         unCheckedConnections = new ConcurrentHashMap<>();
         secrets = new ConcurrentHashMap<>();
@@ -80,7 +77,7 @@ public class Server extends Thread {
     }
 
     public void onPlayerLoggedOut(ServerPlayer player) {
-        this.disconnectClient(player.getUUID());
+        this.disconnectClient(player.getUuid());
         playerStateManager.onPlayerLoggedOut(player);
         groupManager.onPlayerLoggedOut(player);
     }
@@ -144,29 +141,23 @@ public class Server extends Thread {
     }
 
     private String getBindAddress() {
-        if (!dedicated) {
-            return "";
-        }
-
         String bindAddress = Voicechat.SERVER_CONFIG.voiceChatBindAddress.get();
 
         if (bindAddress.trim().equals("*")) {
             bindAddress = "";
         } else if (bindAddress.trim().equals("")) {
-            if (server instanceof DedicatedServer) {
-                bindAddress = ((DedicatedServer) server).getProperties().serverIp;
-                if (!bindAddress.trim().isEmpty()) {
-                    try {
-                        InetAddress address = InetAddress.getByName(bindAddress);
-                        if (address.isLoopbackAddress()) {
-                            bindAddress = "";
-                        } else {
-                            Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
-                        }
-                    } catch (Exception e) {
-                        Voicechat.LOGGER.warn("Invalid server-ip", e);
+            bindAddress = server.getIp();
+            if (!bindAddress.trim().isEmpty()) {
+                try {
+                    InetAddress address = InetAddress.getByName(bindAddress);
+                    if (address.isLoopbackAddress()) {
                         bindAddress = "";
+                    } else {
+                        Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
                     }
+                } catch (Exception e) {
+                    Voicechat.LOGGER.warn("Invalid server-ip", e);
+                    bindAddress = "";
                 }
             }
         }
@@ -181,7 +172,7 @@ public class Server extends Thread {
      * @throws Exception if an error opening the socket on the new port occurs
      */
     public void changePort(int port) throws Exception {
-        VoicechatSocket newSocket = PluginManager.instance().getSocketImplementation(server);
+        VoicechatSocket newSocket = PluginManager.instance().getSocketImplementation();
         newSocket.open(port, getBindAddress());
         VoicechatSocket old = socket;
         socket = newSocket;
@@ -316,11 +307,11 @@ public class Server extends Thread {
                         connections.put(connection.getPlayerUUID(), connection);
                         unCheckedConnections.remove(connection.getPlayerUUID());
                         Voicechat.LOGGER.info("Successfully validated connection of player {}", connection.getPlayerUUID());
-                        ServerPlayer player = server.getPlayerList().getPlayer(connection.getPlayerUUID());
+                        ServerPlayer player = server.getPlayer(connection.getPlayerUUID());
                         if (player != null) {
                             CommonCompatibilityManager.INSTANCE.emitServerVoiceChatConnectedEvent(player);
                             PluginManager.instance().onPlayerConnected(player);
-                            Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getName().getString(), connection.getPlayerUUID());
+                            Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getName(), connection.getPlayerUUID());
                         }
                         sendPacket(new ConnectionCheckAckPacket(), connection);
                         continue;
@@ -350,17 +341,17 @@ public class Server extends Thread {
     }
 
     public void onMicPacket(UUID playerUuid, MicPacket packet) {
-        ServerPlayer player = server.getPlayerList().getPlayer(playerUuid);
+        ServerPlayer player = server.getPlayer(playerUuid);
         if (player == null) {
             return;
         }
         if (!PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player)) {
             CooldownTimer.run("no-speak-" + playerUuid, 30_000L, () -> {
-                player.displayClientMessage(Component.translatable("message.voicechat.no_speak_permission"), true);
+                //TODO player.displayClientMessage(Component.translatable("message.voicechat.no_speak_permission"), true);
             });
             return;
         }
-        PlayerState state = playerStateManager.getState(player.getUUID());
+        PlayerState state = playerStateManager.getState(player.getUuid());
         if (state == null) {
             return;
         }
@@ -394,7 +385,7 @@ public class Server extends Thread {
             if (senderState.getUuid().equals(state.getUuid())) {
                 continue;
             }
-            ServerPlayer p = server.getPlayerList().getPlayer(state.getUuid());
+            ServerPlayer p = server.getPlayer(state.getUuid());
             if (p == null) {
                 continue;
             }
@@ -416,38 +407,38 @@ public class Server extends Thread {
 
         SoundPacket<?> soundPacket = null;
         String source = null;
-        if (sender.isSpectator()) {
-            if (Voicechat.SERVER_CONFIG.spectatorPlayerPossession.get()) {
-                Entity camera = sender.getCamera();
-                if (camera instanceof ServerPlayer spectatingPlayer) {
-                    if (spectatingPlayer != sender) {
-                        PlayerState receiverState = playerStateManager.getState(spectatingPlayer.getUUID());
-                        if (receiverState == null) {
-                            return;
-                        }
-                        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
-                        @Nullable ClientConnection connection = getConnection(receiverState.getUuid());
-                        sendSoundPacket(sender, senderState, spectatingPlayer, receiverState, connection, groupSoundPacket, SoundPacketEvent.SOURCE_SPECTATOR);
-                        return;
-                    }
-                }
-            }
-            if (Voicechat.SERVER_CONFIG.spectatorInteraction.get()) {
-                soundPacket = new LocationSoundPacket(sender.getUUID(), sender.getUUID(), sender.getEyePosition(), packet.getData(), packet.getSequenceNumber(), distance, null);
-                source = SoundPacketEvent.SOURCE_SPECTATOR;
-            }
-        }
+//        if (sender.isSpectator()) { TODO
+//            if (Voicechat.SERVER_CONFIG.spectatorPlayerPossession.get()) {
+//                ServerPlayer camera = sender.getCamera();
+//                if (camera != null) {
+//                    if (camera != sender) {
+//                        PlayerState receiverState = playerStateManager.getState(camera.getUuid());
+//                        if (receiverState == null) {
+//                            return;
+//                        }
+//                        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
+//                        @Nullable ClientConnection connection = getConnection(receiverState.getUuid());
+//                        sendSoundPacket(sender, senderState, camera, receiverState, connection, groupSoundPacket, SoundPacketEvent.SOURCE_SPECTATOR);
+//                        return;
+//                    }
+//                }
+//            }
+//            if (Voicechat.SERVER_CONFIG.spectatorInteraction.get()) {
+//                soundPacket = new LocationSoundPacket(sender.getUuid(), sender.getUuid(), sender.getEyePosition(), packet.getData(), packet.getSequenceNumber(), distance, null);
+//                source = SoundPacketEvent.SOURCE_SPECTATOR;
+//            }
+//        }
 
         if (soundPacket == null) {
-            soundPacket = new PlayerSoundPacket(sender.getUUID(), sender.getUUID(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering(), distance, null);
+            soundPacket = new PlayerSoundPacket(sender.getUuid(), sender.getUuid(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering(), distance, null);
             source = SoundPacketEvent.SOURCE_PROXIMITY;
         }
 
-        broadcast(ServerWorldUtils.getPlayersInRange(sender.serverLevel(), sender.position(), getBroadcastRange(distance), p -> !p.getUUID().equals(sender.getUUID())), soundPacket, sender, senderState, groupId, source);
+        broadcast(ServerWorldUtils.getPlayersInRange(sender.getServerLevel(), sender.getPosition(), getBroadcastRange(distance), p -> !p.getUuid().equals(sender.getUuid())), soundPacket, sender, senderState, groupId, source);
     }
 
     public void sendSoundPacket(@Nullable ServerPlayer sender, @Nullable PlayerState senderState, ServerPlayer receiver, PlayerState receiverState, @Nullable ClientConnection connection, SoundPacket<?> soundPacket, String source) {
-        PluginManager.instance().onListenerAudio(receiver.getUUID(), soundPacket);
+        PluginManager.instance().onListenerAudio(receiver.getUuid(), soundPacket);
 
         if (connection == null) {
             return;
@@ -462,8 +453,8 @@ public class Server extends Thread {
         }
 
         if (!PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(receiver)) {
-            CooldownTimer.run(String.format("no-listen-%s", receiver.getUUID()), 30_000L, () -> {
-                receiver.displayClientMessage(Component.translatable("message.voicechat.no_listen_permission"), true);
+            CooldownTimer.run(String.format("no-listen-%s", receiver.getUuid()), 30_000L, () -> {
+                //TODO receiver.displayClientMessage(Component.translatable("message.voicechat.no_listen_permission"), true);
             });
             return;
         }
@@ -480,7 +471,7 @@ public class Server extends Thread {
 
     public void broadcast(Collection<ServerPlayer> players, SoundPacket<?> packet, @Nullable ServerPlayer sender, @Nullable PlayerState senderState, @Nullable UUID groupId, String source) {
         for (ServerPlayer player : players) {
-            PlayerState state = playerStateManager.getState(player.getUUID());
+            PlayerState state = playerStateManager.getState(player.getUuid());
             if (state == null) {
                 continue;
             }
@@ -507,9 +498,9 @@ public class Server extends Thread {
                 // Don't call disconnectClient here!
                 secrets.remove(connection.getPlayerUUID());
                 Voicechat.LOGGER.info("Player {} timed out", connection.getPlayerUUID());
-                ServerPlayer player = server.getPlayerList().getPlayer(connection.getPlayerUUID());
+                ServerPlayer player = server.getPlayer(connection.getPlayerUUID());
                 if (player != null) {
-                    Voicechat.LOGGER.info("Reconnecting player {}", player.getName().getString());
+                    Voicechat.LOGGER.info("Reconnecting player {}", player.getName());
                     Voicechat.SERVER.initializePlayerConnection(player);
                 } else {
                     Voicechat.LOGGER.warn("Reconnecting player {} failed (Could not find player)", connection.getPlayerUUID());

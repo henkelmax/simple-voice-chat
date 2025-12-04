@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.permission;
 
-import net.minecraft.server.level.ServerPlayer;
+import de.maxhenkel.voicechat.api.ServerPlayer;
+import de.maxhenkel.voicechat.dialstuff.MinimalPlayer;
 
 public interface Permission {
 

@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
+import de.maxhenkel.voicechat.dialstuff.MinimalPlayer;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.PlayerStateManager;
 import de.maxhenkel.voicechat.voice.server.Server;
@@ -12,21 +13,19 @@ import javax.annotation.Nullable;
 
 public class VoicechatConnectionImpl implements VoicechatConnection {
 
-    private final ServerPlayer player;
-    private final net.minecraft.server.level.ServerPlayer serverPlayer;
+    private final ServerPlayer serverPlayer;
     private final PlayerState state;
     @Nullable
     private final Group group;
 
-    public VoicechatConnectionImpl(net.minecraft.server.level.ServerPlayer player, PlayerState state) {
+    public VoicechatConnectionImpl(ServerPlayer player, PlayerState state) {
         this.serverPlayer = player;
-        this.player = new ServerPlayerImpl(player);
         this.state = state;
         this.group = GroupImpl.create(state);
     }
 
     @Nullable
-    public static VoicechatConnectionImpl fromPlayer(@Nullable net.minecraft.server.level.ServerPlayer player) {
+    public static VoicechatConnectionImpl fromPlayer(@Nullable ServerPlayer player) {
         if (player == null) {
             return null;
         }
@@ -34,7 +33,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
         if (server == null) {
             return null;
         }
-        PlayerState state = server.getPlayerStateManager().getState(player.getUUID());
+        PlayerState state = server.getPlayerStateManager().getState(player.getUuid());
         if (state == null) {
             return null;
         }
@@ -127,11 +126,6 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
     @Override
     public boolean isInstalled() {
         return Voicechat.SERVER.isCompatible(serverPlayer);
-    }
-
-    @Override
-    public ServerPlayer getPlayer() {
-        return player;
     }
 
 }

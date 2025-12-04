@@ -7,4 +7,9 @@ public interface Player extends Entity {
      */
     Object getPlayer();
 
+    /**
+     * @return the player name
+     */
+    String getName();
+
 }

@@ -2,11 +2,13 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.BuildConstants;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.dialstuff.MinimalPlayer;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.plugins.impl.ServerPlayerImpl;
 import de.maxhenkel.voicechat.voice.common.Secret;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -46,7 +48,7 @@ public class ServerVoiceEvents {
                 Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName().getString(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
                 player.sendSystemMessage(getIncompatibleMessage(packet.getCompatibilityVersion()));
             } else {
-                initializePlayerConnection(player);
+                initializePlayerConnection(new ServerPlayerImpl(player));
             }
         });
     }
@@ -62,8 +64,8 @@ public class ServerVoiceEvents {
         }
     }
 
-    public boolean isCompatible(ServerPlayer player) {
-        return isCompatible(player.getUUID());
+    public boolean isCompatible(de.maxhenkel.voicechat.api.ServerPlayer player) {
+        return isCompatible(player.getUuid());
     }
 
     public boolean isCompatible(UUID playerUuid) {
@@ -96,24 +98,24 @@ public class ServerVoiceEvents {
         }
     }
 
-    public void initializePlayerConnection(ServerPlayer player) {
+    public void initializePlayerConnection(de.maxhenkel.voicechat.api.ServerPlayer player) {
         if (server == null) {
             return;
         }
         CommonCompatibilityManager.INSTANCE.emitPlayerCompatibilityCheckSucceeded(player);
 
-        Secret secret = server.generateNewSecret(player.getUUID());
+        Secret secret = server.generateNewSecret(player.getUuid());
         if (secret == null) {
             Voicechat.LOGGER.warn("Player already requested secret - ignoring");
             return;
         }
         NetManager.sendToClient(player, new SecretPacket(player, secret, server.getPort(), Voicechat.SERVER_CONFIG));
-        Voicechat.LOGGER.info("Sent secret to {}", player.getName().getString());
+        Voicechat.LOGGER.info("Sent secret to {}", player.getName());
     }
 
     public void playerLoggedIn(ServerPlayer serverPlayer) {
         if (server != null) {
-            server.onPlayerLoggedIn(serverPlayer);
+            server.onPlayerLoggedIn(new ServerPlayerImpl(serverPlayer));
         }
 
         if (!Voicechat.SERVER_CONFIG.forceVoiceChat.get()) {
@@ -132,7 +134,7 @@ public class ServerVoiceEvents {
                 if (!serverPlayer.connection.isAcceptingMessages()) {
                     return;
                 }
-                if (!isCompatible(serverPlayer)) {
+                if (!isCompatible(new ServerPlayerImpl(serverPlayer))) {
                     CommonCompatibilityManager.INSTANCE.execute(serverPlayer.server, () -> {
                         serverPlayer.connection.disconnect(
                                 Component.literal(Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get().formatted(
@@ -145,17 +147,17 @@ public class ServerVoiceEvents {
         }, Voicechat.SERVER_CONFIG.loginTimeout.get());
     }
 
-    public void playerLoggedOut(ServerPlayer player) {
-        clientCompatibilities.remove(player.getUUID());
+    public void playerLoggedOut(de.maxhenkel.voicechat.api.ServerPlayer player) {
+        clientCompatibilities.remove(player.getUuid());
         if (server == null) {
             return;
         }
 
         server.onPlayerLoggedOut(player);
-        Voicechat.LOGGER.info("Disconnecting client {}", player.getName().getString());
+        Voicechat.LOGGER.info("Disconnecting client {}", player.getName());
     }
 
-    public void onPlayerHide(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
+    public void onPlayerHide(de.maxhenkel.voicechat.api.ServerPlayer visibilityChangedPlayer, de.maxhenkel.voicechat.api.ServerPlayer observingPlayer) {
         if (server == null) {
             return;
         }
@@ -163,7 +165,7 @@ public class ServerVoiceEvents {
         server.onPlayerHide(visibilityChangedPlayer, observingPlayer);
     }
 
-    public void onPlayerShow(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
+    public void onPlayerShow(de.maxhenkel.voicechat.api.ServerPlayer visibilityChangedPlayer, de.maxhenkel.voicechat.api.ServerPlayer observingPlayer) {
         if (server == null) {
             return;
         }
@@ -171,7 +173,7 @@ public class ServerVoiceEvents {
         server.onPlayerShow(visibilityChangedPlayer, observingPlayer);
     }
 
-    public void serverVoiceChatConnected(ServerPlayer serverPlayer) {
+    public void serverVoiceChatConnected(de.maxhenkel.voicechat.api.ServerPlayer serverPlayer) {
         if (server == null) {
             return;
         }
@@ -187,7 +189,7 @@ public class ServerVoiceEvents {
         server.onPlayerVoicechatDisconnect(uuid);
     }
 
-    public void playerCompatibilityCheckSucceeded(ServerPlayer player) {
+    public void playerCompatibilityCheckSucceeded(de.maxhenkel.voicechat.api.ServerPlayer player) {
         if (server == null) {
             return;
         }

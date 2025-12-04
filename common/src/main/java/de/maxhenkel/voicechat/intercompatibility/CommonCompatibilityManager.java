@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.intercompatibility;
 import com.mojang.brigadier.CommandDispatcher;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.api.VoicechatServerApi;
+import de.maxhenkel.voicechat.dialstuff.MinimalPlayer;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.impl.VoicechatServerApiImpl;
@@ -30,11 +31,11 @@ public abstract class CommonCompatibilityManager {
 
     public abstract Path getGameDirectory();
 
-    public abstract void emitServerVoiceChatConnectedEvent(ServerPlayer player);
+    public abstract void emitServerVoiceChatConnectedEvent(de.maxhenkel.voicechat.api.ServerPlayer player);
 
     public abstract void emitServerVoiceChatDisconnectedEvent(UUID clientID);
 
-    public abstract void emitPlayerCompatibilityCheckSucceeded(ServerPlayer player);
+    public abstract void emitPlayerCompatibilityCheckSucceeded(de.maxhenkel.voicechat.api.ServerPlayer player);
 
     public abstract void onServerVoiceChatConnected(Consumer<ServerPlayer> onVoiceChatConnected);
 
@@ -90,7 +91,7 @@ public abstract class CommonCompatibilityManager {
         return level;
     }
 
-    public abstract boolean canSee(ServerPlayer player, ServerPlayer other);
+    public abstract boolean canSee(de.maxhenkel.voicechat.api.ServerPlayer player, de.maxhenkel.voicechat.api.ServerPlayer other);
 
     public void execute(MinecraftServer server, Runnable runnable) {
         server.execute(runnable);

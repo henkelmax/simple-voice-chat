@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.dialstuff.MinimalPlayer;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
@@ -44,13 +45,13 @@ public abstract class NetManager {
 
     public abstract <T extends Packet<T>> Channel<T> registerReceiver(Class<T> packetType, boolean toClient, boolean toServer);
 
-    public static void sendToClient(ServerPlayer player, Packet<?> packet) {
+    public static void sendToClient(de.maxhenkel.voicechat.api.ServerPlayer player, Packet<?> packet) {
         if (!Voicechat.SERVER.isCompatible(player)) {
             return;
         }
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         packet.toBytes(buffer);
-        player.connection.send(new ClientboundCustomPayloadPacket(packet.getIdentifier(), buffer));
+        //TODO player.connection.send(new ClientboundCustomPayloadPacket(packet.getIdentifier(), buffer));
     }
 
     public interface ServerReceiver<T extends Packet<T>> {

@@ -14,6 +14,11 @@ public class PlayerImpl extends EntityImpl implements Player {
         return CommonCompatibilityManager.INSTANCE.createRawApiPlayer(getRealPlayer());
     }
 
+    @Override
+    public String getName() {
+        return entity.getName().getString();
+    }
+
     public net.minecraft.world.entity.player.Player getRealPlayer() {
         return (net.minecraft.world.entity.player.Player) entity;
     }

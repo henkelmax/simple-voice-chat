@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.api.*;
 import de.maxhenkel.voicechat.api.audiolistener.AudioListener;
 import de.maxhenkel.voicechat.api.audiolistener.PlayerAudioListener;
 import de.maxhenkel.voicechat.api.events.*;
+import de.maxhenkel.voicechat.dialstuff.MinimalPlayer;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.impl.*;
 import de.maxhenkel.voicechat.plugins.impl.audiolistener.PlayerAudioListenerImpl;
@@ -14,7 +15,6 @@ import de.maxhenkel.voicechat.voice.common.*;
 import de.maxhenkel.voicechat.voice.server.Group;
 import de.maxhenkel.voicechat.voice.server.Server;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -146,7 +146,7 @@ public class PluginManager {
         return event.isCancelled();
     }
 
-    public VoicechatSocket getSocketImplementation(MinecraftServer server) {
+    public VoicechatSocket getSocketImplementation() {
         VoicechatServerStartingEventImpl event = new VoicechatServerStartingEventImpl();
         dispatchEvent(VoicechatServerStartingEvent.class, event);
         VoicechatSocket socket = event.getSocketImplementation();
@@ -216,7 +216,7 @@ public class PluginManager {
             return false;
         }
         @Nullable GroupImpl group = null;
-        PlayerState state = server.getPlayerStateManager().getState(player.getUUID());
+        PlayerState state = server.getPlayerStateManager().getState(player.getUuid());
         if (state != null) {
             UUID groupUUID = state.getGroup();
             if (groupUUID != null) {
@@ -236,13 +236,13 @@ public class PluginManager {
 
     public boolean onMicPacket(ServerPlayer sender, PlayerState senderState, MicPacket packet) {
         return dispatchEvent(MicrophonePacketEvent.class, new MicrophonePacketEventImpl(
-                new MicrophonePacketImpl(packet, sender.getUUID()),
+                new MicrophonePacketImpl(packet, sender.getUuid()),
                 new VoicechatConnectionImpl(sender, senderState)
         ));
     }
 
     public float getDistance(ServerPlayer sender, PlayerState senderState, MicPacket packet, float originalDistance) {
-        VoiceDistanceEventImpl event = new VoiceDistanceEventImpl(new MicrophonePacketImpl(packet, sender.getUUID()), new VoicechatConnectionImpl(sender, senderState), originalDistance);
+        VoiceDistanceEventImpl event = new VoiceDistanceEventImpl(new MicrophonePacketImpl(packet, sender.getUuid()), new VoicechatConnectionImpl(sender, senderState), originalDistance);
         dispatchEvent(VoiceDistanceEvent.class, event);
         return event.getDistance();
     }

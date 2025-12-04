@@ -1,12 +1,13 @@
 package de.maxhenkel.voicechat.plugins.impl.events;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
 import de.maxhenkel.voicechat.api.events.PlayerStateChangedEvent;
+import de.maxhenkel.voicechat.dialstuff.MinimalPlayer;
 import de.maxhenkel.voicechat.plugins.impl.VoicechatConnectionImpl;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.Server;
-import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -44,7 +45,7 @@ public class PlayerStateChangedEventImpl extends ServerEventImpl implements Play
             if (server == null) {
                 return null;
             }
-            ServerPlayer player = server.getServer().getPlayerList().getPlayer(state.getUuid());
+            ServerPlayer player = server.getServer().getPlayer(state.getUuid());
             if (player == null) {
                 return null;
             }
