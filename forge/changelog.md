@@ -1,0 +1,1 @@
+- Fixed audio device errors not being handled properly
