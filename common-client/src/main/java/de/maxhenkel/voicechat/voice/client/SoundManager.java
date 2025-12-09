@@ -90,7 +90,7 @@ public class SoundManager {
         if (l == 0L) {
             throw new SpeakerException("Failed to open audio device: Audio device not found");
         }
-        int error = ALC11.alcGetError(device);
+        int error = ALC11.alcGetError(l);
         if (error != ALC11.ALC_NO_ERROR) {
             if (!ALC11.alcCloseDevice(l)) {
                 Voicechat.LOGGER.warn("Failed to close audio device");
