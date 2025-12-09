@@ -34,14 +34,31 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     private static final ResourceLocation VOLUMES = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/adjust_volumes.png");
     private static final ResourceLocation SPEAKER = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_button.png");
     private static final ResourceLocation RECORD = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/record_button.png");
+    private static final ResourceLocation RECONNECT_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/reconnect_button.png");
+    private static final ResourceLocation[] RECONNECT_SPINNER = new ResourceLocation[]{
+            ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/reconnect_spinner_0.png"),
+            ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/reconnect_spinner_1.png"),
+            ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/reconnect_spinner_2.png"),
+            ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/reconnect_spinner_3.png")
+    };
     private static final Component TITLE = Component.translatable("gui.voicechat.voice_chat.title");
     private static final Component SETTINGS = Component.translatable("message.voicechat.settings");
     private static final Component GROUP = Component.translatable("message.voicechat.group");
+    private static final Component RECONNECT = Component.translatable("message.voicechat.reconnect");
+    private static final Component DEBUG_DISCONNECT = Component.translatable("message.voicechat.debug_disconnect");
     public static final Component ADJUST_PLAYER_VOLUMES = Component.translatable("message.voicechat.adjust_volumes");
 
     private ToggleImageButton mute;
     private ToggleImageButton disable;
+    private ImageButton reconnectButton;
+    @Nullable
+    private Button debugDisconnect;
     private HoverArea recordingHoverArea;
+    private boolean reconnecting;
+    private int reconnectAnimationTick;
+    private int reconnectAnimationFrame;
+    private static final int RECONNECT_ANIMATION_INTERVAL = 5;
+    private static final int RECONNECT_ANIMATION_TIMEOUT = 200;
 
     private ClientPlayerStateManager stateManager;
 
@@ -55,30 +72,45 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         super.init();
         @Nullable ClientVoicechat client = ClientManager.getClient();
 
-        mute = new ToggleImageButton(guiLeft + 6, guiTop + ySize - 6 - 20, MICROPHONE, stateManager::isMuted, button -> {
+        int buttonSize = 20;
+        int buttonSpacing = 2;
+        int bottomButtonY = guiTop + ySize - 6 - buttonSize;
+        int nextButtonX = guiLeft + 6;
+
+        mute = new ToggleImageButton(nextButtonX, bottomButtonY, MICROPHONE, stateManager::isMuted, button -> {
             stateManager.setMuted(!stateManager.isMuted());
         }, new MuteTooltipSupplier(this, stateManager));
         addRenderableWidget(mute);
+        nextButtonX += buttonSize + buttonSpacing;
 
-        disable = new ToggleImageButton(guiLeft + 6 + 20 + 2, guiTop + ySize - 6 - 20, SPEAKER, stateManager::isDisabled, button -> {
+        disable = new ToggleImageButton(nextButtonX, bottomButtonY, SPEAKER, stateManager::isDisabled, button -> {
             stateManager.setDisabled(!stateManager.isDisabled());
         }, new DisableTooltipSupplier(this, stateManager));
         addRenderableWidget(disable);
+        nextButtonX += buttonSize + buttonSpacing;
 
-        ImageButton volumes = new ImageButton(guiLeft + 6 + 20 + 2 + 20 + 2, guiTop + ySize - 6 - 20, VOLUMES, button -> {
+        ImageButton volumes = new ImageButton(nextButtonX, bottomButtonY, VOLUMES, button -> {
             minecraft.setScreen(new AdjustVolumesScreen());
         });
         volumes.setTooltip(Tooltip.create(ADJUST_PLAYER_VOLUMES));
         addRenderableWidget(volumes);
+        nextButtonX += buttonSize + buttonSpacing;
 
+        reconnectButton = new ImageButton(nextButtonX, bottomButtonY, RECONNECT_ICON, button -> startReconnect());
+        reconnectButton.setTooltip(Tooltip.create(RECONNECT));
+        addRenderableWidget(reconnectButton);
+        nextButtonX += buttonSize + buttonSpacing;
+
+        boolean hasRecordButton = false;
         if (client != null && VoicechatClient.CLIENT_CONFIG.useNatives.get()) {
             if (client.getRecorder() != null || (client.getConnection() != null && client.getConnection().getData().allowRecording())) {
-                ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - 20 - 2 - 20, guiTop + ySize - 6 - 20, RECORD, () -> ClientManager.getClient() != null && ClientManager.getClient().getRecorder() != null, button -> toggleRecording(), new RecordingTooltipSupplier(this));
+                hasRecordButton = true;
+                ToggleImageButton record = new ToggleImageButton(guiLeft + xSize - 6 - buttonSize - buttonSpacing - buttonSize, bottomButtonY, RECORD, () -> ClientManager.getClient() != null && ClientManager.getClient().getRecorder() != null, button -> toggleRecording(), new RecordingTooltipSupplier(this));
                 addRenderableWidget(record);
             }
         }
 
-        ToggleImageButton hide = new ToggleImageButton(guiLeft + xSize - 6 - 20, guiTop + ySize - 6 - 20, HIDE, VoicechatClient.CLIENT_CONFIG.hideIcons::get, button -> {
+        ToggleImageButton hide = new ToggleImageButton(guiLeft + xSize - 6 - buttonSize, bottomButtonY, HIDE, VoicechatClient.CLIENT_CONFIG.hideIcons::get, button -> {
             VoicechatClient.CLIENT_CONFIG.hideIcons.set(!VoicechatClient.CLIENT_CONFIG.hideIcons.get()).save();
         }, new HideTooltipSupplier(this));
         addRenderableWidget(hide);
@@ -98,8 +130,23 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         }).bounds(guiLeft + xSize - 6 - 75 + 1, guiTop + 6 + 15, 75, 20).build();
         addRenderableWidget(group);
 
+        if (Voicechat.debugMode()) {
+            int debugY = guiTop + 6 + 15 + 22;
+            debugDisconnect = Button.builder(DEBUG_DISCONNECT, button -> ClientManager.simulateVoiceChatDisconnect()).bounds(guiLeft + 6, debugY, xSize - 12, 20).build();
+            addRenderableWidget(debugDisconnect);
+        } else {
+            debugDisconnect = null;
+        }
+
         group.active = client != null && client.getConnection() != null && client.getConnection().getData().groupsEnabled();
-        recordingHoverArea = new HoverArea(6 + 20 + 2 + 20 + 2 + 20 + 2, ySize - 6 - 20, xSize - ((6 + 20 + 2 + 20 + 2) * 2 + 20 + 2), 20);
+
+        int leftButtons = 4;
+        int leftOccupied = 6 + leftButtons * buttonSize + (leftButtons - 1) * buttonSpacing;
+        int recordingAreaStart = leftOccupied + buttonSpacing;
+        int rightButtons = 1 + (hasRecordButton ? 1 : 0);
+        int rightOccupied = 6 + rightButtons * buttonSize + rightButtons * buttonSpacing;
+        int recordingAreaWidth = Math.max(0, xSize - recordingAreaStart - rightOccupied);
+        recordingHoverArea = new HoverArea(recordingAreaStart, ySize - 6 - buttonSize, recordingAreaWidth, buttonSize);
 
         checkButtons();
     }
@@ -108,11 +155,58 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     public void tick() {
         super.tick();
         checkButtons();
+        updateReconnectAnimation();
     }
 
     private void checkButtons() {
         mute.active = MuteTooltipSupplier.canMuteMic();
         disable.active = stateManager.canEnable();
+        if (reconnectButton != null) {
+            reconnectButton.active = !reconnecting && minecraft.player != null;
+        }
+        if (debugDisconnect != null) {
+            debugDisconnect.active = minecraft.getConnection() != null && !stateManager.isDisconnected();
+        }
+    }
+
+    private void startReconnect() {
+        if (reconnecting) {
+            return;
+        }
+        if (!ClientManager.reconnect()) {
+            return;
+        }
+        reconnecting = true;
+        reconnectAnimationTick = 0;
+        reconnectAnimationFrame = 0;
+        if (reconnectButton != null) {
+            reconnectButton.setTexture(RECONNECT_SPINNER[reconnectAnimationFrame]);
+            reconnectButton.active = false;
+        }
+    }
+
+    private void updateReconnectAnimation() {
+        if (!reconnecting || reconnectButton == null) {
+            return;
+        }
+        reconnectAnimationTick++;
+        if (reconnectAnimationTick % RECONNECT_ANIMATION_INTERVAL == 0) {
+            reconnectAnimationFrame = (reconnectAnimationFrame + 1) % RECONNECT_SPINNER.length;
+            reconnectButton.setTexture(RECONNECT_SPINNER[reconnectAnimationFrame]);
+        }
+        if (!stateManager.isDisconnected() || reconnectAnimationTick >= RECONNECT_ANIMATION_TIMEOUT) {
+            stopReconnectAnimation();
+        }
+    }
+
+    private void stopReconnectAnimation() {
+        reconnecting = false;
+        reconnectAnimationTick = 0;
+        reconnectAnimationFrame = 0;
+        if (reconnectButton != null) {
+            reconnectButton.setTexture(RECONNECT_ICON);
+            reconnectButton.active = minecraft.player != null;
+        }
     }
 
     private void toggleRecording() {

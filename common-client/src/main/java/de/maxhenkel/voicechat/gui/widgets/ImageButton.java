@@ -58,6 +58,10 @@ public class ImageButton extends AbstractButton {
         defaultButtonNarrationText(narrationElementOutput);
     }
 
+    public void setTexture(ResourceLocation texture) {
+        this.texture = texture;
+    }
+
     public interface TooltipSupplier {
         void updateTooltip(ImageButton button);
     }

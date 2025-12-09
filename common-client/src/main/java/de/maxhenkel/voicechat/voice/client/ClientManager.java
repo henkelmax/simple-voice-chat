@@ -210,4 +210,61 @@ public class ClientManager {
         return instance;
     }
 
+    public static boolean reconnect() {
+        return instance().tryReconnect();
+    }
+
+    private boolean tryReconnect() {
+        ClientPacketListener connection = minecraft.getConnection();
+        if (connection == null) {
+            Voicechat.LOGGER.warn("Ignoring manual voice chat reconnect without an active server connection");
+            ChatUtils.sendModErrorMessage("message.voicechat.client_not_connected");
+            return false;
+        }
+        Voicechat.LOGGER.info("Manual voice chat reconnect requested");
+        InitializationData previousInitializationData = null;
+        if (client != null) {
+            previousInitializationData = client.getInitializationData();
+            client.close();
+            ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
+        }
+        client = new ClientVoicechat();
+        if (previousInitializationData != null) {
+            try {
+                client.connect(previousInitializationData);
+                return true;
+            } catch (Exception e) {
+                Voicechat.LOGGER.error("Failed to reconnect using cached voice chat secret", e);
+            }
+        }
+        ClientServerNetManager.sendToServer(new RequestSecretPacket(Voicechat.COMPATIBILITY_VERSION));
+        return true;
+    }
+
+    public static boolean simulateVoiceChatDisconnect() {
+        return instance().forceVoiceChatDisconnect();
+    }
+
+    private boolean forceVoiceChatDisconnect() {
+        if (!Voicechat.debugMode()) {
+            Voicechat.LOGGER.warn("Ignoring simulated voice chat disconnect outside debug mode");
+            return false;
+        }
+        ClientVoicechat c = client;
+        if (c == null) {
+            Voicechat.LOGGER.warn("Ignoring simulated voice chat disconnect without a client");
+            ChatUtils.sendModErrorMessage("message.voicechat.voice_chat_not_connected");
+            return false;
+        }
+        ClientVoicechatConnection connection = c.getConnection();
+        if (connection == null) {
+            Voicechat.LOGGER.warn("Ignoring simulated voice chat disconnect without an active connection");
+            ChatUtils.sendModErrorMessage("message.voicechat.client_not_connected");
+            return false;
+        }
+        Voicechat.LOGGER.info("Simulating voice chat disconnect");
+        connection.disconnect();
+        return true;
+    }
+
 }

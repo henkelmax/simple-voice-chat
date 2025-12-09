@@ -102,6 +102,9 @@ public class ServerVoiceEvents {
         }
         CommonCompatibilityManager.INSTANCE.emitPlayerCompatibilityCheckSucceeded(player);
 
+        // Ensure old secrets/connections are cleared so a fresh secret can be generated
+        server.disconnectClient(player.getUUID());
+
         Secret secret = server.generateNewSecret(player.getUUID());
         if (secret == null) {
             Voicechat.LOGGER.warn("Player already requested secret - ignoring");

@@ -21,6 +21,8 @@
   "gui.voicechat.enter_password.title": "Enter Group Password",
   "message.voicechat.settings": "Settings",
   "message.voicechat.group": "Group",
+  "message.voicechat.reconnect": "Reconnect",
+  "message.voicechat.debug_disconnect": "Simulate Disconnect",
   "message.voicechat.voice_chat_volume": "Voice Chat Volume: %s",
   "message.voicechat.gain": "Gain: %s",
   "message.voicechat.gain.auto": "Auto",

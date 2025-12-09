@@ -21,6 +21,8 @@
   "gui.voicechat.enter_password.title": "Gruppenpasswort eingeben",
   "message.voicechat.settings": "Einstellungen",
   "message.voicechat.group": "Gruppe",
+  "message.voicechat.reconnect": "Neu verbinden",
+  "message.voicechat.debug_disconnect": "Disconnect testen",
   "message.voicechat.voice_chat_volume": "Sprachchat Lautstärke: %s",
   "message.voicechat.microphone_gain": "Mikrofonverstärkung: %s dB",
   "message.voicechat.mic_test_unavailable": "Mikrofontest nicht verfügbar",
