@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.gui.GroupType;
 import de.maxhenkel.voicechat.gui.tooltips.DisableTooltipSupplier;
+import de.maxhenkel.voicechat.gui.tooltips.GroupChatModeTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.HideGroupHudTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.MuteTooltipSupplier;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
@@ -31,6 +32,7 @@ public class GroupScreen extends ListScreenBase {
     protected static final ResourceLocation MICROPHONE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone_button.png");
     protected static final ResourceLocation SPEAKER = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_button.png");
     protected static final ResourceLocation GROUP_HUD = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/group_hud_button.png");
+    protected static final ResourceLocation CHAT_MODE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/invite_button.png");
     protected static final Component TITLE = Component.translatable("gui.voicechat.group.title");
     protected static final Component LEAVE_GROUP = Component.translatable("message.voicechat.leave_group");
 
@@ -46,6 +48,7 @@ public class GroupScreen extends ListScreenBase {
     protected ToggleImageButton mute;
     protected ToggleImageButton disable;
     protected ToggleImageButton showHUD;
+    protected ToggleImageButton chatMode;
     protected ImageButton leave;
 
     public GroupScreen(ClientGroup group) {
@@ -88,6 +91,11 @@ public class GroupScreen extends ListScreenBase {
             VoicechatClient.CLIENT_CONFIG.showGroupHud.set(!VoicechatClient.CLIENT_CONFIG.showGroupHud.get()).save();
         }, new HideGroupHudTooltipSupplier(this));
         addRenderableWidget(showHUD);
+
+        chatMode = new ToggleImageButton(guiLeft + 7 + (buttonSize + 3) * 3, buttonY, CHAT_MODE, VoicechatClient.CLIENT_CONFIG.groupChatOnly::get, button -> {
+            VoicechatClient.CLIENT_CONFIG.groupChatOnly.set(!VoicechatClient.CLIENT_CONFIG.groupChatOnly.get()).save();
+        }, new GroupChatModeTooltipSupplier(this));
+        addRenderableWidget(chatMode);
 
         leave = new ImageButton(guiLeft + xSize - buttonSize - 7, buttonY, LEAVE, button -> {
             ClientServerNetManager.sendToServer(new LeaveGroupPacket());

@@ -33,6 +33,7 @@ public class KeyEvents {
     public static KeyMapping KEY_GROUP;
     public static KeyMapping KEY_TOGGLE_RECORDING;
     public static KeyMapping KEY_ADJUST_VOLUMES;
+    public static KeyMapping KEY_TOGGLE_GROUP_CHAT_MODE;
 
     public static KeyMapping[] ALL_KEYS;
 
@@ -58,9 +59,10 @@ public class KeyEvents {
         KEY_GROUP = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyMapping("key.voice_chat_group", InputConstants.UNKNOWN.getValue(), CATEGORY_VOICECHAT));
         KEY_TOGGLE_RECORDING = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyMapping("key.voice_chat_toggle_recording", InputConstants.UNKNOWN.getValue(), CATEGORY_VOICECHAT));
         KEY_ADJUST_VOLUMES = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyMapping("key.voice_chat_adjust_volumes", InputConstants.UNKNOWN.getValue(), CATEGORY_VOICECHAT));
+        KEY_TOGGLE_GROUP_CHAT_MODE = ClientCompatibilityManager.INSTANCE.registerKeyBinding(new KeyMapping("key.voice_chat_toggle_group_chat_mode", GLFW.GLFW_KEY_G, CATEGORY_VOICECHAT));
 
         ALL_KEYS = new KeyMapping[]{
-                KEY_PTT, KEY_WHISPER, KEY_MUTE, KEY_DISABLE, KEY_HIDE_ICONS, KEY_VOICE_CHAT, KEY_VOICE_CHAT_SETTINGS, KEY_GROUP, KEY_TOGGLE_RECORDING, KEY_ADJUST_VOLUMES
+                KEY_PTT, KEY_WHISPER, KEY_MUTE, KEY_DISABLE, KEY_HIDE_ICONS, KEY_VOICE_CHAT, KEY_VOICE_CHAT_SETTINGS, KEY_GROUP, KEY_TOGGLE_RECORDING, KEY_ADJUST_VOLUMES, KEY_TOGGLE_GROUP_CHAT_MODE
         };
     }
 
@@ -143,6 +145,22 @@ public class KeyEvents {
                 player.displayClientMessage(Component.translatable("message.voicechat.icons_hidden"), true);
             } else {
                 player.displayClientMessage(Component.translatable("message.voicechat.icons_visible"), true);
+            }
+        }
+
+        if (KEY_TOGGLE_GROUP_CHAT_MODE.consumeClick()) {
+            ClientGroup group = playerStateManager.getGroup();
+            if (group != null) {
+                boolean groupChatOnly = !VoicechatClient.CLIENT_CONFIG.groupChatOnly.get();
+                VoicechatClient.CLIENT_CONFIG.groupChatOnly.set(groupChatOnly).save();
+
+                if (groupChatOnly) {
+                    player.displayClientMessage(Component.translatable("message.voicechat.group_chat_mode"), true);
+                } else {
+                    player.displayClientMessage(Component.translatable("message.voicechat.proximity_chat_mode"), true);
+                }
+            } else {
+                player.displayClientMessage(Component.translatable("message.voicechat.not_in_group"), true);
             }
         }
     }

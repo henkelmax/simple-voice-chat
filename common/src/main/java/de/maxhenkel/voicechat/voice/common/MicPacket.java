@@ -7,11 +7,17 @@ public class MicPacket implements Packet<MicPacket> {
     private byte[] data;
     private boolean whispering;
     private long sequenceNumber;
+    private boolean groupChatOnly;
 
-    public MicPacket(byte[] data, boolean whispering, long sequenceNumber) {
+    public MicPacket(byte[] data, boolean whispering, long sequenceNumber, boolean groupChatOnly) {
         this.data = data;
         this.whispering = whispering;
         this.sequenceNumber = sequenceNumber;
+        this.groupChatOnly = groupChatOnly;
+    }
+
+    public MicPacket(byte[] data, boolean whispering, long sequenceNumber) {
+        this(data, whispering, sequenceNumber, false);
     }
 
     public MicPacket() {
@@ -39,12 +45,17 @@ public class MicPacket implements Packet<MicPacket> {
         return whispering;
     }
 
+    public boolean isGroupChatOnly() {
+        return groupChatOnly;
+    }
+
     @Override
     public MicPacket fromBytes(FriendlyByteBuf buf) {
         MicPacket soundPacket = new MicPacket();
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
         soundPacket.whispering = buf.readBoolean();
+        soundPacket.groupChatOnly = buf.readBoolean();
         return soundPacket;
     }
 
@@ -53,5 +64,6 @@ public class MicPacket implements Packet<MicPacket> {
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);
         buf.writeBoolean(whispering);
+        buf.writeBoolean(groupChatOnly);
     }
 }

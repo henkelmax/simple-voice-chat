@@ -373,7 +373,8 @@ public class Server extends Thread {
         if (state.hasGroup()) {
             @Nullable Group group = groupManager.getGroup(state.getGroup());
             processGroupPacket(state, player, packet);
-            if (group == null || group.isOpen()) {
+            // Only send to proximity if not in group-chat-only mode and group is open
+            if (!packet.isGroupChatOnly() && (group == null || group.isOpen())) {
                 processProximityPacket(state, player, packet);
             }
             return;

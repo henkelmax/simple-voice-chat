@@ -58,6 +58,7 @@ public class ClientConfig {
     public ConfigEntry<Boolean> useNatives;
     public ConfigEntry<FreecamMode> freecamMode;
     public ConfigEntry<Boolean> muteOnJoin;
+    public ConfigEntry<Boolean> groupChatOnly;
 
     public ClientConfig(ConfigBuilder builder) {
 
@@ -244,6 +245,11 @@ public class ClientConfig {
         muteOnJoin = builder
                 .booleanEntry("mute_on_join", false,
                         "If enabled, you will be automatically muted when joining a world"
+                );
+        groupChatOnly = builder
+                .booleanEntry("group_chat_only", false,
+                        "If enabled, your voice will only be sent to your group and not to nearby players",
+                        "This only applies when you are in a group"
                 );
     }
 

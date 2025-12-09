@@ -256,7 +256,8 @@ public class MicThread extends Thread {
     private void sendAudioPacket(short[] audio, boolean whispering) {
         if (connection != null && connection.isInitialized()) {
             byte[] encoded = encoder.encode(audio);
-            connection.sendToServer(new NetworkMessage(new MicPacket(encoded, whispering, sequenceNumber.getAndIncrement())));
+            boolean groupChatOnly = VoicechatClient.CLIENT_CONFIG.groupChatOnly.get();
+            connection.sendToServer(new NetworkMessage(new MicPacket(encoded, whispering, sequenceNumber.getAndIncrement(), groupChatOnly)));
             stopPacketSent = false;
         }
         try {
