@@ -27,7 +27,7 @@ public class CategoryVolumeEntry extends VolumeEntry {
     @Override
     public void renderElement(GuiGraphics guiGraphics, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, skinX, skinY, 16, 16, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16);
-        renderScrollingString(guiGraphics, category.getDisplayName(), PLAYER_NAME_COLOR);
+        renderScrollingString(guiGraphics, category.getDisplayName());
         if (hovered && category.getDescription() != null) {
             screen.postRender(() -> {
                 guiGraphics.setTooltipForNextFrame(minecraft.font, category.getDisplayDescription(), mouseX, mouseY);

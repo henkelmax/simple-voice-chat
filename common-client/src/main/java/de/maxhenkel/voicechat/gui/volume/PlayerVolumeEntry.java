@@ -36,10 +36,10 @@ public class PlayerVolumeEntry extends VolumeEntry {
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), skinX, skinY, 8, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), skinX, skinY, 40, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
-            renderScrollingString(guiGraphics, Component.literal(state.getName()), PLAYER_NAME_COLOR);
+            renderScrollingString(guiGraphics, Component.literal(state.getName()));
         } else {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, OTHER_VOLUME_ICON, skinX, skinY, 16, 16, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16);
-            renderScrollingString(guiGraphics, OTHER_VOLUME, PLAYER_NAME_COLOR);
+            renderScrollingString(guiGraphics, OTHER_VOLUME);
             if (hovered) {
                 screen.postRender(() -> {
                     guiGraphics.setTooltipForNextFrame(minecraft.font, OTHER_VOLUME_DESCRIPTION, mouseX, mouseY);

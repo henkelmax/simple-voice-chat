@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.gui.volume;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.gui.AbstractWidgetHelper;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,7 +18,6 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
     protected static final int PADDING = 4;
     protected static final int SLIDER_WIDTH = 100;
     protected static final int BG_FILL = ARGB.color(255, 74, 74, 74);
-    protected static final int PLAYER_NAME_COLOR = ARGB.color(255, 255, 255, 255);
 
     protected final Minecraft minecraft;
     protected final AdjustVolumesScreen screen;
@@ -53,15 +51,15 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
 
     public abstract void renderElement(GuiGraphics guiGraphics, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY);
 
-    protected void renderScrollingString(GuiGraphics guiGraphics, Component text, int color) {
+    protected void renderScrollingString(GuiGraphics guiGraphics, Component text) {
         int textX = getContentX() + PADDING + SKIN_SIZE + PADDING;
         int textY = getContentY() + (getContentHeight() - minecraft.font.lineHeight) / 2;
         int textSpace = getContentWidth() - PADDING - SKIN_SIZE - PADDING - PADDING - SLIDER_WIDTH - PADDING;
         int textWidth = minecraft.font.width(text);
         if (textWidth > textSpace) {
-            AbstractWidgetHelper.renderScrollingText(guiGraphics, minecraft.font, text, textX, textY, textX + textSpace, textY + minecraft.font.lineHeight, color);
+            guiGraphics.textRenderer().acceptScrollingWithDefaultCenter(text, textX, textX + textSpace, textY, textY + minecraft.font.lineHeight);
         } else {
-            guiGraphics.drawString(minecraft.font, text, textX, textY, color, false);
+            guiGraphics.drawString(minecraft.font, text, textX, textY, 0xFFFFFFFF, false);
         }
     }
 
