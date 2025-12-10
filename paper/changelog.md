@@ -1,1 +1,1 @@
-- Fixed filters not working for static audio channels
+- Updated to 1.21.11

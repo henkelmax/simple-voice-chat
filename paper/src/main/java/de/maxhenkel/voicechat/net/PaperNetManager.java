@@ -8,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.common.custom.DiscardedPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 
@@ -17,13 +17,13 @@ import java.util.Set;
 
 public class PaperNetManager extends NetManager {
 
-    private final Set<ResourceLocation> packets;
+    private final Set<Identifier> packets;
 
     public PaperNetManager() {
         packets = new HashSet<>();
     }
 
-    public Set<ResourceLocation> getPackets() {
+    public Set<Identifier> getPackets() {
         return packets;
     }
 

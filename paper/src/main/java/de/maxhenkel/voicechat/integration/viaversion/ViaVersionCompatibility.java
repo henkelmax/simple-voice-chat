@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.integration.viaversion;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.PaperNetManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -35,7 +35,7 @@ public class ViaVersionCompatibility {
         Object mappingMap = getChannelMappings.invoke(mappings);
         Method put = mappingMap.getClass().getDeclaredMethod("put", Object.class, Object.class);
         PaperNetManager netManager = (PaperNetManager) CommonCompatibilityManager.INSTANCE.getNetManager();
-        for (ResourceLocation id : netManager.getPackets()) {
+        for (Identifier id : netManager.getPackets()) {
             put.invoke(mappingMap, String.format("%s:%s", CHANNEL, id.getPath()), String.format("%s:%s", Voicechat.MODID, id.getPath()));
         }
     }
