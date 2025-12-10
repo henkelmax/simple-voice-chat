@@ -51,7 +51,7 @@ public class Compatibility1_20_3 extends JsonMessageBaseCompatibility {
         );
         Class<?> craftChatMessageClass = getBukkitClass("util.CraftChatMessage");
         fromJson = getMethod(craftChatMessageClass, new String[]{"fromJSON"}, new Class[]{String.class});
-        Class<?> player = getClazz("net.minecraft.server.level.EntityPlayer");
+        Class<?> player = getClazz("net.minecraft.server.level.EntityPlayer", "net.minecraft.server.level.ServerPlayer");
         sendSystemMessage = getMethod(player, new String[]{"a", "sendSystemMessage"}, new Class[]{componentClass, boolean.class});
     }
 
