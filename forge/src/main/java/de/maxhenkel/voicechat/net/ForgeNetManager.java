@@ -4,7 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class ForgeNetManager extends NetManager {
 
-    private final Map<ResourceLocation, net.minecraftforge.network.Channel<FriendlyByteBuf>> channels;
+    private final Map<Identifier, net.minecraftforge.network.Channel<FriendlyByteBuf>> channels;
 
     public ForgeNetManager() {
         channels = new HashMap<>();
