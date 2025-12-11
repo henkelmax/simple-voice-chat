@@ -4,7 +4,7 @@ plugins {
 }
 
 apply plugin: 'com.gradleup.shadow'
-apply plugin: 'com.matthewprenger.cursegradle'
+apply plugin: 'de.maxhenkel.cursegradle'
 apply plugin: 'com.modrinth.minotaur'
 apply plugin: 'mod-update'
 
