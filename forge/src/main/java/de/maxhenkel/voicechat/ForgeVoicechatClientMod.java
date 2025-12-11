@@ -15,6 +15,7 @@ public class ForgeVoicechatClientMod extends VoicechatClient {
 
     public ForgeVoicechatClientMod() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(((ForgeClientCompatibilityManager) ClientCompatibilityManager.INSTANCE)::onAddGuiOverlayLayers);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(((ForgeClientCompatibilityManager) ClientCompatibilityManager.INSTANCE)::onRegisterKeyBinds);
     }
 
