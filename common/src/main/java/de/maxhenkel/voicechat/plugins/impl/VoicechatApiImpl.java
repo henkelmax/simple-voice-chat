@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.*;
 import de.maxhenkel.voicechat.api.audio.AudioConverter;
 import de.maxhenkel.voicechat.api.mp3.Mp3Decoder;
@@ -8,10 +9,12 @@ import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
 import de.maxhenkel.voicechat.natives.LameManager;
+import de.maxhenkel.voicechat.natives.OpusManager;
 import de.maxhenkel.voicechat.plugins.impl.audio.AudioConverterImpl;
 import de.maxhenkel.voicechat.plugins.impl.mp3.Mp3DecoderImpl;
-import de.maxhenkel.voicechat.natives.OpusManager;
 import de.maxhenkel.voicechat.voice.common.Utils;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import javax.sound.sampled.AudioFormat;
@@ -81,8 +84,27 @@ public abstract class VoicechatApiImpl implements VoicechatApi {
     }
 
     @Override
+    public de.maxhenkel.voicechat.api.MinecraftServer fromServer(Object minecraftServer) {
+        if (minecraftServer instanceof MinecraftServer s) {
+            return new MinecraftServerImpl(s);
+        } else {
+            throw new IllegalArgumentException("minecraftServer is not an instance of MinecraftServer");
+        }
+    }
+
+
+    @Override
+    public Position fromVec3(Object vec3) {
+        if (vec3 instanceof Vec3 v) {
+            return new PositionImpl(v);
+        } else {
+            throw new IllegalArgumentException("vec3 is not an instance of Vec3");
+        }
+    }
+
+    @Override
     public Position createPosition(double x, double y, double z) {
-        return new PositionImpl(x, y, z);
+        return Voicechat.outSourcing.getServerApi().fromVec3(new Vec3(x,y,z));
     }
 
     @Override

@@ -1,5 +1,7 @@
 package de.maxhenkel.voicechat.api;
 
+import java.util.List;
+
 public interface ServerLevel {
 
     /**
@@ -7,4 +9,8 @@ public interface ServerLevel {
      */
     Object getServerLevel();
 
+    /**
+     * @return players in the level
+     */
+    List<ServerPlayer> players();
 }

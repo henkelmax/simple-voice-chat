@@ -1,6 +1,8 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
+import de.maxhenkel.voicechat.api.VCByteBuf;
 import de.maxhenkel.voicechat.api.VolumeCategory;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.locale.Language;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -36,6 +38,11 @@ public class VolumeCategoryImpl implements VolumeCategory {
     }
 
     @Override
+    public VolumeCategory fromBytes(VCByteBuf buf) {
+        return fromBytes(new FriendlyByteBuf((ByteBuf) buf.getBuffer()));
+    }
+
+    @Override
     public String getId() {
         return id;
     }
@@ -51,19 +58,19 @@ public class VolumeCategoryImpl implements VolumeCategory {
         return nameTranslationKey;
     }
 
-    public Component getDisplayName() {
-        if (nameTranslationKey != null) {
-            return Component.translatableWithFallback(nameTranslationKey, name);
+    public static Component getDisplayName(VolumeCategory category) {
+        if (category.getNameTranslationKey() != null) {
+            return Component.translatableWithFallback(category.getNameTranslationKey(), category.getName());
         }
-        return Component.literal(name);
+        return Component.literal(category.getName());
     }
 
-    public String getSearchName() {
-        if (nameTranslationKey == null) {
-            return name;
+    public static String getSearchName(VolumeCategory category) {
+        if (category.getNameTranslationKey() == null) {
+            return category.getName();
         }
         Language lang = Language.getInstance();
-        return lang.getOrDefault(nameTranslationKey, name);
+        return lang.getOrDefault(category.getNameTranslationKey(), category.getName());
     }
 
     @Nullable
@@ -72,11 +79,11 @@ public class VolumeCategoryImpl implements VolumeCategory {
         return description;
     }
 
-    public Component getDisplayDescription() {
-        if (descriptionTranslationKey != null) {
-            return Component.translatableWithFallback(descriptionTranslationKey, description);
+    public static Component getDisplayDescription(VolumeCategory category) {
+        if (category.getDescriptionTranslationKey() != null) {
+            return Component.translatableWithFallback(category.getDescriptionTranslationKey(), category.getDescription());
         }
-        return description != null ? Component.literal(description) : Component.empty();
+        return category.getDescription() != null ? Component.literal(category.getDescription()) : Component.empty();
     }
 
     @Override
@@ -89,6 +96,11 @@ public class VolumeCategoryImpl implements VolumeCategory {
     @Override
     public int[][] getIcon() {
         return icon;
+    }
+
+    @Override
+    public void toBytes(VCByteBuf buf) {
+        toBytes(new FriendlyByteBuf((ByteBuf) buf.getBuffer()));
     }
 
     public static VolumeCategoryImpl fromBytes(FriendlyByteBuf buf) {

@@ -1,0 +1,592 @@
+package de.maxhenkel.voicechat.voice.server;
+
+import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.MinecraftServer;
+import de.maxhenkel.voicechat.api.RawUdpPacket;
+import de.maxhenkel.voicechat.api.ServerPlayer;
+import de.maxhenkel.voicechat.api.VoicechatSocket;
+import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
+import de.maxhenkel.voicechat.debug.CooldownTimer;
+import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.voice.common.*;
+
+import javax.annotation.Nullable;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.nio.channels.AsynchronousCloseException;
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
+public class Server extends Thread {
+
+    private final Map<UUID, ClientConnection> connections;
+    private final Map<UUID, ClientConnection> unCheckedConnections;
+    private final Map<UUID, Secret> secrets;
+    private int port;
+    private final MinecraftServer server;
+    private VoicechatSocket socket;
+    private final ProcessThread processThread;
+    private final BlockingQueue<RawUdpPacket> packetQueue;
+    private final PingManager pingManager;
+    private final PlayerStateManager playerStateManager;
+    private final ServerGroupManager groupManager;
+    private final ServerCategoryManager categoryManager;
+
+    public Server(MinecraftServer server) {
+        int configPort = Voicechat.SERVER_CONFIG.voiceChatPort.get();
+        if (configPort < 0) {
+            Voicechat.LOGGER.info("Using the Minecraft servers port as voice chat port");
+            port = server.getPort();
+        } else {
+            port = configPort;
+        }
+        this.server = server;
+        socket = PluginManager.instance().getSocketImplementation();
+        connections = new ConcurrentHashMap<>();
+        unCheckedConnections = new ConcurrentHashMap<>();
+        secrets = new ConcurrentHashMap<>();
+        packetQueue = new LinkedBlockingQueue<>();
+        pingManager = new PingManager(this);
+        playerStateManager = new PlayerStateManager(this);
+        groupManager = new ServerGroupManager(this);
+        categoryManager = new ServerCategoryManager(this);
+        setDaemon(true);
+        setName("VoiceChatServerThread");
+        setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
+        processThread = new ProcessThread();
+        processThread.start();
+    }
+
+    public void onPlayerLoggedIn(ServerPlayer player) {
+        playerStateManager.onPlayerLoggedIn(player);
+    }
+
+    public void onPlayerLoggedOut(ServerPlayer player) {
+        this.disconnectClient(player.getUuid());
+        playerStateManager.onPlayerLoggedOut(player);
+        groupManager.onPlayerLoggedOut(player);
+    }
+
+    public void onPlayerHide(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
+        playerStateManager.onPlayerHide(visibilityChangedPlayer, observingPlayer);
+    }
+
+    public void onPlayerShow(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
+        playerStateManager.onPlayerShow(visibilityChangedPlayer, observingPlayer);
+    }
+
+    public void onPlayerVoicechatConnect(ServerPlayer player) {
+        playerStateManager.onPlayerVoicechatConnect(player);
+    }
+
+    public void onPlayerVoicechatDisconnect(UUID uuid) {
+        playerStateManager.onPlayerVoicechatDisconnect(uuid);
+    }
+
+    public void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
+        playerStateManager.onPlayerCompatibilityCheckSucceeded(player);
+        groupManager.onPlayerCompatibilityCheckSucceeded(player);
+        categoryManager.onPlayerCompatibilityCheckSucceeded(player);
+    }
+
+    @Override
+    public void run() {
+        try {
+            String bindAddress = getBindAddress();
+            try {
+                InetAddress.getByName(bindAddress);
+            } catch (UnknownHostException e) {
+                Voicechat.LOGGER.error("Failed to parse bind IP address '{}'", bindAddress, e);
+                Voicechat.LOGGER.info("Binding to wildcard IP address");
+                bindAddress = "";
+            }
+            socket.open(port, bindAddress);
+
+            if (bindAddress.isEmpty()) {
+                Voicechat.LOGGER.info("Voice chat server started at port {}", socket.getLocalPort());
+            } else {
+                Voicechat.LOGGER.info("Voice chat server started at {}:{}", bindAddress, socket.getLocalPort());
+            }
+
+            while (!socket.isClosed()) {
+                try {
+                    packetQueue.add(socket.read());
+                } catch (Exception e) {
+                    // Only log an error if the error isn't caused by the socket being closed
+                    if (!(e instanceof SocketException && e.getCause() instanceof AsynchronousCloseException)) {
+                        if (Voicechat.debugMode()) {
+                            Voicechat.LOGGER.error("Failed to read from socket", e);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Voicechat.LOGGER.error("Voice chat server error", e);
+        }
+    }
+
+    private String getBindAddress() {
+        String bindAddress = Voicechat.SERVER_CONFIG.voiceChatBindAddress.get();
+
+        if (bindAddress.trim().equals("*")) {
+            bindAddress = "";
+        } else if (bindAddress.trim().equals("")) {
+            bindAddress = server.getIp();
+            if (!bindAddress.trim().isEmpty()) {
+                try {
+                    InetAddress address = InetAddress.getByName(bindAddress);
+                    if (address.isLoopbackAddress()) {
+                        bindAddress = "";
+                    } else {
+                        Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
+                    }
+                } catch (Exception e) {
+                    Voicechat.LOGGER.warn("Invalid server-ip", e);
+                    bindAddress = "";
+                }
+            }
+        }
+        return bindAddress;
+    }
+
+    /**
+     * Changes the port of the voice chat server.
+     * <b>NOTE:</b> This removes every existing connection and all secrets!
+     *
+     * @param port the new voice chat port
+     * @throws Exception if an error opening the socket on the new port occurs
+     */
+    public void changePort(int port) throws Exception {
+        VoicechatSocket newSocket = PluginManager.instance().getSocketImplementation();
+        newSocket.open(port, getBindAddress());
+        VoicechatSocket old = socket;
+        socket = newSocket;
+        this.port = port;
+        old.close();
+        connections.clear();
+        unCheckedConnections.clear();
+        secrets.clear();
+    }
+
+    public Secret getSecret(UUID playerUUID) {
+        if (hasSecret(playerUUID)) {
+            return secrets.get(playerUUID);
+        } else {
+            Secret secret = Secret.generateNewRandomSecret();
+            secrets.put(playerUUID, secret);
+            return secret;
+        }
+    }
+
+    /**
+     * @param playerUUID the player uuid
+     * @return the new secret or null if the player already has a secret
+     */
+    @Nullable
+    public Secret generateNewSecret(UUID playerUUID) {
+        if (hasSecret(playerUUID)) {
+            return null;
+        }
+        return getSecret(playerUUID);
+    }
+
+    public boolean hasSecret(UUID playerUUID) {
+        return secrets.containsKey(playerUUID);
+    }
+
+    public void disconnectClient(UUID playerUUID) {
+        connections.remove(playerUUID);
+        unCheckedConnections.remove(playerUUID);
+        secrets.remove(playerUUID);
+        PluginManager.instance().onPlayerDisconnected(playerUUID);
+    }
+
+    public void close() {
+        socket.close();
+        processThread.close();
+
+        PluginManager.instance().onServerStopped();
+    }
+
+    public boolean isClosed() {
+        return !processThread.running;
+    }
+
+    private class ProcessThread extends Thread {
+        private boolean running;
+        private long lastKeepAlive;
+
+        public ProcessThread() {
+            running = true;
+            lastKeepAlive = 0L;
+            setDaemon(true);
+            setName("VoiceChatPacketProcessingThread");
+            setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
+        }
+
+        @Override
+        public void run() {
+            while (running) {
+                try {
+                    pingManager.checkTimeouts();
+                    long keepAliveTime = System.currentTimeMillis();
+                    if (keepAliveTime - lastKeepAlive > Voicechat.SERVER_CONFIG.keepAlive.get()) {
+                        sendKeepAlives();
+                        lastKeepAlive = keepAliveTime;
+                    }
+
+                    RawUdpPacket rawPacket = packetQueue.poll(10, TimeUnit.MILLISECONDS);
+                    if (rawPacket == null) {
+                        continue;
+                    }
+
+                    NetworkMessage message;
+                    try {
+                        message = NetworkMessage.readPacketServer(rawPacket, Server.this);
+                    } catch (Exception e) {
+                        CooldownTimer.run("failed_reading_packet", () -> {
+                            Voicechat.LOGGER.warn("Failed to read packet from {}", rawPacket.getSocketAddress());
+                        });
+                        continue;
+                    }
+
+                    if (message == null) {
+                        continue;
+                    }
+
+                    if (System.currentTimeMillis() - message.getTimestamp() > message.getTTL()) {
+                        CooldownTimer.run("ttl", () -> {
+                            Voicechat.LOGGER.warn("Dropping voice chat packets! Your Server might be overloaded!");
+                            Voicechat.LOGGER.warn("Packet queue has {} packets", packetQueue.size());
+                        });
+                        continue;
+                    }
+
+                    if (message.getPacket() instanceof AuthenticatePacket packet) {
+                        Secret secret = secrets.get(packet.getPlayerUUID());
+                        if (secret != null && secret.equals(packet.getSecret())) {
+                            ClientConnection connection = unCheckedConnections.get(packet.getPlayerUUID());
+                            if (connection == null) {
+                                connection = connections.get(packet.getPlayerUUID());
+                            }
+                            if (connection == null) {
+                                connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress());
+                                unCheckedConnections.put(packet.getPlayerUUID(), connection);
+                                Voicechat.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
+                            }
+                            sendPacket(new AuthenticateAckPacket(), connection);
+                        }
+                    }
+
+                    if (message.getPacket() instanceof ConnectionCheckPacket) {
+                        ClientConnection connection = getUnconnectedSender(message);
+                        if (connection == null) {
+                            connection = getSender(message);
+                            if (connection != null) {
+                                sendPacket(new ConnectionCheckAckPacket(), connection);
+                            }
+                            continue;
+                        }
+                        // Refresh keepalive, so players who took longer than the timeout can still connect
+                        connection.setLastKeepAliveResponse(System.currentTimeMillis());
+                        connections.put(connection.getPlayerUUID(), connection);
+                        unCheckedConnections.remove(connection.getPlayerUUID());
+                        Voicechat.LOGGER.info("Successfully validated connection of player {}", connection.getPlayerUUID());
+                        ServerPlayer player = server.getPlayer(connection.getPlayerUUID());
+                        if (player != null) {
+                            UncommonCompatibilityManager.INSTANCE.emitServerVoiceChatConnectedEvent(player);
+                            PluginManager.instance().onPlayerConnected(player);
+                            Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getName(), connection.getPlayerUUID());
+                        }
+                        sendPacket(new ConnectionCheckAckPacket(), connection);
+                        continue;
+                    }
+
+                    ClientConnection conn = getSender(message);
+                    if (conn == null) {
+                        continue;
+                    }
+
+                    if (message.getPacket() instanceof MicPacket packet) {
+                        onMicPacket(conn.getPlayerUUID(), packet);
+                    } else if (message.getPacket() instanceof PingPacket packet) {
+                        pingManager.onPongPacket(packet);
+                    } else if (message.getPacket() instanceof KeepAlivePacket) {
+                        conn.setLastKeepAliveResponse(System.currentTimeMillis());
+                    }
+                } catch (Exception e) {
+                    Voicechat.LOGGER.error("Voice chat server error", e);
+                }
+            }
+        }
+
+        public void close() {
+            running = false;
+        }
+    }
+
+    public void onMicPacket(UUID playerUuid, MicPacket packet) {
+        ServerPlayer player = server.getPlayer(playerUuid);
+        if (player == null) {
+            return;
+        }
+        if (!Voicechat.outSourcing.hasSpeakPermissions(player)) {
+            return;
+        }
+        PlayerState state = playerStateManager.getState(player.getUuid());
+        if (state == null) {
+            return;
+        }
+        if (!PluginManager.instance().onMicPacket(player, packet)) {
+            processMicPacket(player, state, packet);
+        }
+    }
+
+    private void processMicPacket(ServerPlayer player, PlayerState state, MicPacket packet) {
+        if (state.hasGroup()) {
+            @Nullable Group group = groupManager.getGroup(state.getGroup());
+            processGroupPacket(state, player, packet);
+            if (group == null || group.isOpen()) {
+                processProximityPacket(state, player, packet);
+            }
+            return;
+        }
+        processProximityPacket(state, player, packet);
+    }
+
+    private void processGroupPacket(PlayerState senderState, ServerPlayer sender, MicPacket packet) {
+        UUID groupId = senderState.getGroup();
+        if (groupId == null) {
+            return;
+        }
+        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
+        for (PlayerState state : playerStateManager.getStates()) {
+            if (!groupId.equals(state.getGroup())) {
+                continue;
+            }
+            if (senderState.getUuid().equals(state.getUuid())) {
+                continue;
+            }
+            ServerPlayer p = server.getPlayer(state.getUuid());
+            if (p == null) {
+                continue;
+            }
+            @Nullable ClientConnection connection = getConnection(state.getUuid());
+            sendSoundPacket(sender, senderState, p, state, connection, groupSoundPacket, SoundPacketEvent.SOURCE_GROUP);
+        }
+    }
+
+    private void processProximityPacket(PlayerState senderState, ServerPlayer sender, MicPacket packet) {
+        @Nullable UUID groupId = senderState.getGroup();
+        float distance;
+        if (packet.isWhispering()) {
+            distance = Voicechat.SERVER_CONFIG.whisperDistance.get().floatValue();
+        } else {
+            distance = Utils.getDefaultDistanceServer();
+        }
+
+        distance = PluginManager.instance().getDistance(sender, packet, distance);
+
+        SoundPacket<?> soundPacket = null;
+        String source = null;
+        if (sender.isSpectator()) {
+            if (Voicechat.SERVER_CONFIG.spectatorPlayerPossession.get()) {
+                ServerPlayer camera = sender.getCameraPlayer();
+                if (camera != null) {
+                    if (camera != sender) {
+                        PlayerState receiverState = playerStateManager.getState(camera.getUuid());
+                        if (receiverState == null) {
+                            return;
+                        }
+                        GroupSoundPacket groupSoundPacket = new GroupSoundPacket(senderState.getUuid(), senderState.getUuid(), packet.getData(), packet.getSequenceNumber(), null);
+                        @Nullable ClientConnection connection = getConnection(receiverState.getUuid());
+                        sendSoundPacket(sender, senderState, camera, receiverState, connection, groupSoundPacket, SoundPacketEvent.SOURCE_SPECTATOR);
+                        return;
+                    }
+                }
+            }
+            if (Voicechat.SERVER_CONFIG.spectatorInteraction.get()) {
+                soundPacket = new LocationSoundPacket(sender.getUuid(), sender.getUuid(), sender.getEyePosition(), packet.getData(), packet.getSequenceNumber(), distance, null);
+                source = SoundPacketEvent.SOURCE_SPECTATOR;
+            }
+        }
+
+        if (soundPacket == null) {
+            soundPacket = new PlayerSoundPacket(sender.getUuid(), sender.getUuid(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering(), distance, null);
+            source = SoundPacketEvent.SOURCE_PROXIMITY;
+        }
+
+        broadcast(ServerWorldUtils.getPlayersInRange(sender.getServerLevel(), sender.getPosition(), getBroadcastRange(distance), p -> !p.getUuid().equals(sender.getUuid())), soundPacket, sender, senderState, groupId, source);
+    }
+
+    public void sendSoundPacket(@Nullable ServerPlayer sender, @Nullable PlayerState senderState, ServerPlayer receiver, PlayerState receiverState, @Nullable ClientConnection connection, SoundPacket<?> soundPacket, String source) {
+        PluginManager.instance().onListenerAudio(receiver.getUuid(), soundPacket);
+
+        if (connection == null) {
+            return;
+        }
+
+        if (receiverState.isDisabled() || receiverState.isDisconnected()) {
+            return;
+        }
+
+        if (PluginManager.instance().onSoundPacket(sender, senderState, receiver, soundPacket, source)) {
+            return;
+        }
+
+        if (!Voicechat.outSourcing.hasListenPermissions(receiver)) {
+            return;
+        }
+        sendPacket(soundPacket, connection);
+    }
+
+    public double getBroadcastRange(float minRange) {
+        double broadcastRange = Voicechat.SERVER_CONFIG.broadcastRange.get();
+        if (broadcastRange < 0D) {
+            broadcastRange = Voicechat.SERVER_CONFIG.voiceChatDistance.get() + 1D;
+        }
+        return Math.max(broadcastRange, minRange);
+    }
+
+    public void broadcast(Collection<ServerPlayer> players, SoundPacket<?> packet, @Nullable ServerPlayer sender, @Nullable PlayerState senderState, @Nullable UUID groupId, String source) {
+        for (ServerPlayer player : players) {
+            PlayerState state = playerStateManager.getState(player.getUuid());
+            if (state == null) {
+                continue;
+            }
+            if (state.hasGroup() && state.getGroup().equals(groupId)) {
+                continue;
+            }
+            @Nullable Group receiverGroup = null;
+            if (state.hasGroup()) {
+                receiverGroup = groupManager.getGroup(state.getGroup());
+            }
+            if (receiverGroup != null && receiverGroup.isIsolated()) {
+                continue;
+            }
+            @Nullable ClientConnection connection = getConnection(state.getUuid());
+            sendSoundPacket(sender, senderState, player, state, connection, packet, source);
+        }
+    }
+
+    private void sendKeepAlives() {
+        long timestamp = System.currentTimeMillis();
+
+        connections.values().removeIf(connection -> {
+            if (timestamp - connection.getLastKeepAliveResponse() >= Voicechat.SERVER_CONFIG.keepAlive.get() * 10L) {
+                // Don't call disconnectClient here!
+                secrets.remove(connection.getPlayerUUID());
+                Voicechat.LOGGER.info("Player {} timed out", connection.getPlayerUUID());
+                ServerPlayer player = server.getPlayer(connection.getPlayerUUID());
+                if (player != null) {
+                    Voicechat.LOGGER.info("Reconnecting player {}", player.getName());
+                    Voicechat.SERVER.initializePlayerConnection(player);
+                } else {
+                    Voicechat.LOGGER.warn("Reconnecting player {} failed (Could not find player)", connection.getPlayerUUID());
+                }
+                UncommonCompatibilityManager.INSTANCE.emitServerVoiceChatDisconnectedEvent(connection.getPlayerUUID());
+                PluginManager.instance().onPlayerDisconnected(connection.getPlayerUUID());
+                return true;
+            }
+            return false;
+        });
+
+        for (ClientConnection connection : connections.values()) {
+            sendPacket(new KeepAlivePacket(), connection);
+        }
+
+    }
+
+    @Nullable
+    public ClientConnection getSender(NetworkMessage message) {
+        return connections
+                .values()
+                .stream()
+                .filter(connection -> connection.getAddress().equals(message.getAddress()))
+                .findAny()
+                .orElse(null);
+    }
+
+    @Nullable
+    public ClientConnection getUnconnectedSender(NetworkMessage message) {
+        return unCheckedConnections
+                .values()
+                .stream()
+                .filter(connection -> connection.getAddress().equals(message.getAddress()))
+                .findAny()
+                .orElse(null);
+    }
+
+    public Map<UUID, ClientConnection> getConnections() {
+        return connections;
+    }
+
+    @Nullable
+    public ClientConnection getConnection(UUID playerID) {
+        return connections.get(playerID);
+    }
+
+    public VoicechatSocket getSocket() {
+        return socket;
+    }
+
+    public int getPort() {
+        return socket.getLocalPort();
+    }
+
+    /**
+     * Sends the packet and handles potential errors.
+     *
+     * @param packet     the packet to send
+     * @param connection the connection to send the packet to
+     * @return if the packet was sent successfully
+     */
+    public boolean sendPacket(Packet<?> packet, ClientConnection connection) {
+        try {
+            sendPacketRaw(packet, connection);
+            return true;
+        } catch (Exception e) {
+            Voicechat.LOGGER.error("Failed to send voice chat packet to {}", connection.getPlayerUUID());
+            return false;
+        }
+    }
+
+    /**
+     * Sends the packet. You must handle potential errors
+     *
+     * @param packet     the packet to send
+     * @param connection the connection to send the packet to
+     * @throws Exception if an I/O error occurs
+     */
+    public void sendPacketRaw(Packet<?> packet, ClientConnection connection) throws Exception {
+        connection.send(this, new NetworkMessage(packet));
+    }
+
+    public PingManager getPingManager() {
+        return pingManager;
+    }
+
+    public PlayerStateManager getPlayerStateManager() {
+        return playerStateManager;
+    }
+
+    public ServerGroupManager getGroupManager() {
+        return groupManager;
+    }
+
+    public ServerCategoryManager getCategoryManager() {
+        return categoryManager;
+    }
+
+    public MinecraftServer getServer() {
+        return server;
+    }
+}

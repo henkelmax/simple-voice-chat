@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.gui.volume;
 
 import com.google.common.collect.Lists;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.api.VolumeCategory;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
@@ -37,7 +38,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
         Collection<PlayerState> onlinePlayers = ClientManager.getPlayerStateManager().getPlayerStates(false);
         entries.clear();
 
-        for (VolumeCategoryImpl category : ClientManager.getCategoryManager().getCategories()) {
+        for (VolumeCategory category : ClientManager.getCategoryManager().getCategories()) {
             entries.add(new CategoryVolumeEntry(category, screen));
         }
 
@@ -79,7 +80,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
                 if (volumeEntry instanceof PlayerVolumeEntry playerVolumeEntry) {
                     return playerVolumeEntry.getState() == null || !playerVolumeEntry.getState().getName().toLowerCase(Locale.ROOT).contains(filter);
                 } else if (volumeEntry instanceof CategoryVolumeEntry categoryVolumeEntry) {
-                    return !categoryVolumeEntry.getCategory().getSearchName().toLowerCase(Locale.ROOT).contains(filter);
+                    return !VolumeCategoryImpl.getSearchName(categoryVolumeEntry.getCategory()).toLowerCase(Locale.ROOT).contains(filter);
                 }
                 return true;
             });
@@ -105,7 +106,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
         if (entry instanceof PlayerVolumeEntry playerVolumeEntry) {
             return playerVolumeEntry.getState() == null ? "" : playerVolumeEntry.getState().getName();
         } else if (entry instanceof CategoryVolumeEntry categoryVolumeEntry) {
-            return categoryVolumeEntry.getCategory().getSearchName();
+            return VolumeCategoryImpl.getSearchName(categoryVolumeEntry.getCategory());
         }
         return "";
     }

@@ -19,4 +19,19 @@ public interface Entity {
      */
     Position getPosition();
 
+    /**
+     * @return the level of the entity
+     */
+    ServerLevel getServerLevel();
+
+    /**
+     * @return the current eye position of the entity
+     */
+    Position getEyePosition();
+
+    boolean isSpectator();
+
+    MinecraftServer getServer();
+
+    boolean hasPermissions(int operatorUserPermissionLevel);
 }

@@ -1,36 +1,36 @@
 package de.maxhenkel.voicechat.gui.volume;
 
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.api.VolumeCategory;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class CategoryVolumeEntry extends VolumeEntry {
 
-    protected final VolumeCategoryImpl category;
+    protected final VolumeCategory category;
     protected final ResourceLocation texture;
 
-    public CategoryVolumeEntry(VolumeCategoryImpl category, AdjustVolumesScreen screen) {
+    public CategoryVolumeEntry(VolumeCategory category, AdjustVolumesScreen screen) {
         super(screen, new AdjustCategoryVolumeEntry(category.getId()));
         this.category = category;
         this.texture = ClientManager.getCategoryManager().getTexture(category.getId(), OTHER_VOLUME_ICON);
     }
 
-    public VolumeCategoryImpl getCategory() {
+    public VolumeCategory getCategory() {
         return category;
     }
 
     @Override
     public void renderElement(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
         guiGraphics.blit(texture, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
-        renderScrollingString(guiGraphics, category.getDisplayName(), top, left, width, height, PLAYER_NAME_COLOR);
+        renderScrollingString(guiGraphics, VolumeCategoryImpl.getDisplayName(category), top, left, width, height, PLAYER_NAME_COLOR);
         if (hovered && category.getDescription() != null) {
             screen.postRender(() -> {
-                guiGraphics.renderTooltip(minecraft.font, category.getDisplayDescription(), mouseX, mouseY);
+                guiGraphics.renderTooltip(minecraft.font, VolumeCategoryImpl.getDisplayDescription(category), mouseX, mouseY);
             });
         }
     }

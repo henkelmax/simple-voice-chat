@@ -1,7 +1,9 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.ServerLevel;
 import de.maxhenkel.voicechat.api.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 
 public class ServerPlayerImpl extends PlayerImpl implements ServerPlayer {
 
@@ -15,6 +17,15 @@ public class ServerPlayerImpl extends PlayerImpl implements ServerPlayer {
 
     @Override
     public ServerLevel getServerLevel() {
-        return new ServerLevelImpl((net.minecraft.server.level.ServerLevel) entity.level());
+        return Voicechat.outSourcing.getServerApi().fromServerLevel(entity.level());
+    }
+
+    @Override
+    public ServerPlayer getCameraPlayer() {
+        Entity camera = ((net.minecraft.server.level.ServerPlayer)entity).getCamera();
+        if (camera instanceof net.minecraft.server.level.ServerPlayer serverPlayer)
+            return Voicechat.outSourcing.getServerApi().fromServerPlayer(serverPlayer);
+        else
+            return null;
     }
 }

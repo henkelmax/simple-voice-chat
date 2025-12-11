@@ -15,8 +15,8 @@ public class ForgePermission implements Permission {
     }
 
     @Override
-    public boolean hasPermission(ServerPlayer player) {
-        return PermissionAPI.getPermission(player, node);
+    public boolean hasPermission(de.maxhenkel.voicechat.api.ServerPlayer player) {
+        return PermissionAPI.getPermission(((ServerPlayer)player.getPlayer()), node);
     }
 
     @Override

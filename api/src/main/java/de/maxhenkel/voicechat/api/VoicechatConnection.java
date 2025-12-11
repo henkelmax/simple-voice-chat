@@ -72,4 +72,9 @@ public interface VoicechatConnection {
      */
     boolean isInstalled();
 
+    /**
+     * @return the player
+     */
+    ServerPlayer getPlayer();
+
 }

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 public interface MinecraftServer {
 
+    public Object getMinecraftServer();
     /**
      * @return the port of the server
      */
@@ -25,4 +26,10 @@ public interface MinecraftServer {
      * @return a list of all players in the server
      */
     List<ServerPlayer> getPlayers();
+
+    boolean isDedicated();
+
+    boolean usesAuthentication();
+
+    int getOperatorUserPermissionLevel();
 }

@@ -10,6 +10,8 @@ import javax.annotation.Nullable;
  */
 public interface VolumeCategory {
 
+    VolumeCategory fromBytes(VCByteBuf buf);
+
     /**
      * @return the unique ID of the category
      */
@@ -43,6 +45,8 @@ public interface VolumeCategory {
      */
     @Nullable
     int[][] getIcon();
+
+    void toBytes(VCByteBuf buf);
 
     public interface Builder {
 

@@ -1,0 +1,53 @@
+package de.maxhenkel.voicechat.net;
+
+import de.maxhenkel.voicechat.api.Packet;
+import de.maxhenkel.voicechat.api.VCByteBuf;
+import de.maxhenkel.voicechat.voice.common.PlayerState;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
+
+    public static final String PLAYER_STATES = "states";
+
+    private Collection<PlayerState> playerStates;
+
+    public PlayerStatesPacket() {
+
+    }
+
+    public PlayerStatesPacket(Collection<PlayerState> playerStates) {
+        this.playerStates = playerStates;
+    }
+
+    public Collection<PlayerState> getPlayerStates() {
+        return playerStates;
+    }
+
+    @Override
+    public String getID() {
+        return PLAYER_STATES;
+    }
+
+    @Override
+    public PlayerStatesPacket fromBytes(VCByteBuf buf) {
+        int count = buf.readInt();
+        playerStates = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) {
+            PlayerState playerState = PlayerState.fromBytes(buf);
+            playerStates.add(playerState);
+        }
+
+        return this;
+    }
+
+    @Override
+    public void toBytes(VCByteBuf buf) {
+        buf.writeInt(playerStates.size());
+        for (PlayerState state : playerStates) {
+            state.toBytes(buf);
+        }
+    }
+
+}

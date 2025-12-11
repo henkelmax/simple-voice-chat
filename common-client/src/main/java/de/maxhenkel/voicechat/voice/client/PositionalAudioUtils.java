@@ -23,7 +23,7 @@ public class PositionalAudioUtils {
     private static float[] getStereoVolume(Vec3 cameraPos, float yRot, Vec3 soundPos) {
         Vec3 d = soundPos.subtract(cameraPos).normalize();
         Vec2 diff = new Vec2((float) d.x, (float) d.z);
-        float diffAngle = Utils.angle(diff, new Vec2(-1F, 0F));
+        float diffAngle = Utils.angle(diff.x, -1F, diff.y, 0F);
         float angle = Utils.normalizeAngle(diffAngle - (yRot % 360F));
         float dif = (float) (Math.abs(cameraPos.y - soundPos.y) / 32);
 

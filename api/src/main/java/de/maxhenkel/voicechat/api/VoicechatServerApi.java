@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.api.config.ConfigAccessor;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
 import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
+import de.maxhenkel.voicechat.api.packets.Packet;
 import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
 
 import javax.annotation.Nullable;
@@ -331,4 +332,5 @@ public interface VoicechatServerApi extends VoicechatApi {
      */
     ConfigAccessor getServerConfig();
 
+    void sendPacket(ServerPlayer player, Packet packet);
 }

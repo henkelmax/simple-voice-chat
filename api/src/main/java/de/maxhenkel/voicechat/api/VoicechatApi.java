@@ -87,6 +87,10 @@ public interface VoicechatApi {
      */
     ServerPlayer fromServerPlayer(Object serverPlayer);
 
+    MinecraftServer fromServer(Object minecraftServer);
+
+    Position fromVec3(Object vec3);
+
     /**
      * Creates a new position object.
      *

@@ -4,7 +4,9 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.client.MicrophoneException;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
-import org.lwjgl.openal.*;
+import org.lwjgl.openal.ALC11;
+import org.lwjgl.openal.ALUtil;
+import org.lwjgl.openal.EXTFloat32;
 
 import javax.annotation.Nullable;
 import java.util.Collections;

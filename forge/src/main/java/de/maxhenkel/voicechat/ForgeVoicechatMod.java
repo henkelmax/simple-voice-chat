@@ -24,17 +24,15 @@ public class ForgeVoicechatMod extends Voicechat {
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
-        server = new Server();
-        server.start();
-//        initialize();
-//        MinecraftForge.EVENT_BUS.register(new ConfigMigrator());
-//        MinecraftForge.EVENT_BUS.register(CommonCompatibilityManager.INSTANCE);
-//        MinecraftForge.EVENT_BUS.register(PermissionManager.INSTANCE);
-//        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> {
-//            return new IExtensionPoint.DisplayTest(() -> String.valueOf(Voicechat.COMPATIBILITY_VERSION), (incoming, isNetwork) -> {
-//                return Objects.equals(incoming, String.valueOf(Voicechat.COMPATIBILITY_VERSION));
-//            });
-//        });
+        initialize(new OutSourcingImpl());
+        MinecraftForge.EVENT_BUS.register(new ConfigMigrator());
+        MinecraftForge.EVENT_BUS.register(CommonCompatibilityManager.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(PermissionManager.INSTANCE);
+        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> {
+            return new IExtensionPoint.DisplayTest(() -> String.valueOf(Voicechat.COMPATIBILITY_VERSION), (incoming, isNetwork) -> {
+                return Objects.equals(incoming, String.valueOf(Voicechat.COMPATIBILITY_VERSION));
+            });
+        });
     }
 
 }

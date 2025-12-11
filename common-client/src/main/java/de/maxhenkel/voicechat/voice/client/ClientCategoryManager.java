@@ -2,12 +2,12 @@ package de.maxhenkel.voicechat.voice.client;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.VolumeCategory;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeList;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.plugins.CategoryManager;
-import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -34,7 +34,7 @@ public class ClientCategoryManager extends CategoryManager {
     }
 
     @Override
-    public void addCategory(VolumeCategoryImpl category) {
+    public void addCategory(VolumeCategory category) {
         super.addCategory(category);
 
         if (category.getIcon() != null) {
@@ -45,8 +45,8 @@ public class ClientCategoryManager extends CategoryManager {
 
     @Override
     @Nullable
-    public VolumeCategoryImpl removeCategory(String categoryId) {
-        VolumeCategoryImpl volumeCategory = super.removeCategory(categoryId);
+    public VolumeCategory removeCategory(String categoryId) {
+        VolumeCategory volumeCategory = super.removeCategory(categoryId);
         unRegisterImage(categoryId);
         AdjustVolumeList.update();
         return volumeCategory;

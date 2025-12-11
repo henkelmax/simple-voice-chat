@@ -1,0 +1,41 @@
+apply plugin: 'java'
+apply plugin: 'com.gradleup.shadow'
+
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+repositories {
+    mavenCentral()
+
+    maven { url = 'https://maven.shedaniel.me/' }
+    maven { url = 'https://maven.maxhenkel.de/repository/public' }
+    maven { url = 'https://maven.fabricmc.net/' }
+}
+
+dependencies {
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'io.netty:netty-buffer:4.2.5.Final'
+    implementation 'org.apache.logging.log4j:log4j-api:2.19.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
+    implementation "net.java.dev.jna:jna:5.14.0"
+
+    implementation "de.maxhenkel.configbuilder:configbuilder:${configbuilder_version}"
+    implementation "de.maxhenkel.opus4j:opus4j:${opus4j_version}"
+    implementation "org.concentus:Concentus:${concentus_version}"
+    implementation "de.maxhenkel.lame4j:lame4j:${lame4j_version}"
+}
+
+sourceSets {
+    template {
+        java {
+            srcDir 'src/template/java'
+        }
+    }
+    main {
+        compileClasspath += sourceSets.template.output
+        runtimeClasspath += sourceSets.template.output
+    }
+}

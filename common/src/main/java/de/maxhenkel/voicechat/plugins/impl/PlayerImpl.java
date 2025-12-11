@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
 import de.maxhenkel.voicechat.api.Player;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 
 public class PlayerImpl extends EntityImpl implements Player {
 
@@ -11,7 +10,7 @@ public class PlayerImpl extends EntityImpl implements Player {
 
     @Override
     public Object getPlayer() {
-        return CommonCompatibilityManager.INSTANCE.createRawApiPlayer(getRealPlayer());
+        return entity;
     }
 
     @Override
