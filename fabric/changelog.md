@@ -1,2 +1,0 @@
-- Fixed audio device errors not being handled properly
-- Improved API error handling
