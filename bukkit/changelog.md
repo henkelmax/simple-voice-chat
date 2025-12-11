@@ -1,1 +1,2 @@
-- Fixed filters not working for static audio channels
+- Added support for 1.21.11
+- Improved API error handling

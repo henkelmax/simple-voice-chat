@@ -1,1 +1,1 @@
-- Updated to 1.21.11
+- Improved API error handling
