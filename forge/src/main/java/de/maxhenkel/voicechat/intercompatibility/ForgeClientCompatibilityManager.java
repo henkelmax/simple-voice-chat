@@ -3,18 +3,21 @@ package de.maxhenkel.voicechat.intercompatibility;
 import com.mojang.blaze3d.platform.InputConstants;
 import de.maxhenkel.voicechat.events.ClientVoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.events.ClientVoiceChatDisconnectedEvent;
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.Connection;
 import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.repository.RepositorySource;
+import net.minecraftforge.client.event.AddGuiOverlayLayersEvent;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.client.gui.overlay.ForgeLayeredDraw;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -62,9 +65,13 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getState(), event.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
     }
 
-    //TODO Use a Forge event once it's available
-    public void onRenderOverlay(GuiGraphics guiGraphics, float partialTick) {
-        renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(guiGraphics, partialTick));
+    private static final ResourceLocation VOICECHAT_ICONS_LAYER = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons");
+
+    public void onAddGuiOverlayLayers(AddGuiOverlayLayersEvent event) {
+        event.getLayeredDraw().add(VOICECHAT_ICONS_LAYER, (gg, dt) -> {
+            renderHUDEvents.forEach(renderHUDEvent -> renderHUDEvent.render(gg, dt.getRealtimeDeltaTicks()));
+        });
+        event.getLayeredDraw().putBelow(ForgeLayeredDraw.VANILLA_ROOT, VOICECHAT_ICONS_LAYER, ForgeLayeredDraw.POTION_EFFECTS);
     }
 
     @SubscribeEvent
