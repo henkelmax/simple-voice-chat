@@ -1,1 +1,1 @@
-- Fixed filters not working for static audio channels
+- Improved API error handling
