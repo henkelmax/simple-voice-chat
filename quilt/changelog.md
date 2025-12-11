@@ -1,2 +1,0 @@
-- Make long text in adjust volumes screen scrollable
-- Improved API error handling
