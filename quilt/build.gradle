@@ -14,7 +14,7 @@ buildscript {
 plugins {
     id 'org.quiltmc.loom' version "${quilt_loom_version}"
     id 'com.gradleup.shadow' version "${shadow_version}"
-    id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
+    id 'de.maxhenkel.cursegradle' version "${cursegradle_version}"
     id 'com.modrinth.minotaur' version "${minotaur_version}"
     id 'mod-update' version "${mod_update_version}"
 }
