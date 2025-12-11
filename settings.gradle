@@ -7,7 +7,6 @@ pluginManagement {
         maven { url = 'https://maven.maxhenkel.de/repository/public' }
         maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://repo.papermc.io/repository/maven-public/' }
-        maven { url = 'https://repo.u-team.info' }
     }
 }
 
