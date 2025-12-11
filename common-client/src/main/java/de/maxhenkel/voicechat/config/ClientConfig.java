@@ -7,7 +7,7 @@ import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.configbuilder.entry.DoubleConfigEntry;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.integration.freecam.FreecamMode;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.client.VolumeManager;
@@ -61,7 +61,7 @@ public class ClientConfig {
 
     public ClientConfig(ConfigBuilder builder) {
 
-        builder.header(String.format("%s client config v%s", UncommonCompatibilityManager.INSTANCE.getModName(), UncommonCompatibilityManager.INSTANCE.getModVersion()));
+        builder.header(String.format("%s client config v%s", CommonCompatibilityManager.INSTANCE.getModName(), CommonCompatibilityManager.INSTANCE.getModVersion()));
 
         configVersion = builder
                 .integerEntry("config_version", CONFIG_VERSION,

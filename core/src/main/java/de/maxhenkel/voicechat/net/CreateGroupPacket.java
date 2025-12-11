@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.api.Group;
-import de.maxhenkel.voicechat.api.Packet;
 import de.maxhenkel.voicechat.api.VCByteBuf;
 import de.maxhenkel.voicechat.plugins.impl.GroupImpl;
 

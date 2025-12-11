@@ -8,7 +8,7 @@ public abstract class CrossSideManager {
 
     public static CrossSideManager get() {
         if (instance == null) {
-            if (UncommonCompatibilityManager.INSTANCE.isDedicatedServer()) {
+            if (CommonCompatibilityManager.INSTANCE.isDedicatedServer()) {
                 instance = new DedicatedServerCrossSideManager();
             } else {
                 try {

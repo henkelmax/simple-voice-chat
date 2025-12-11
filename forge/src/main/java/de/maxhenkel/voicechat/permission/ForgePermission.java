@@ -1,8 +1,7 @@
 package de.maxhenkel.voicechat.permission;
 
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
-import net.minecraft.server.level.ServerPlayer;
+import de.maxhenkel.voicechat.api.ServerPlayer;
+import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
 import net.minecraftforge.server.permission.PermissionAPI;
 import net.minecraftforge.server.permission.nodes.PermissionNode;
 
@@ -17,8 +16,8 @@ public class ForgePermission implements Permission {
     }
 
     @Override
-    public boolean hasPermission(de.maxhenkel.voicechat.api.ServerPlayer player) {
-        return PermissionAPI.getPermission(((CommonCompatibilityManager) UncommonCompatibilityManager.INSTANCE).getServerPlayer(player), node);
+    public boolean hasPermission(ServerPlayer player) {
+        return PermissionAPI.getPermission(MinecraftCompatibilityManager.getServerPlayer(player), node);
     }
 
     @Override

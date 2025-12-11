@@ -3,14 +3,14 @@ package de.maxhenkel.voicechat.permission;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PermissionManager {
 
-    public static PermissionManager INSTANCE = UncommonCompatibilityManager.INSTANCE.createPermissionManager();
+    public static PermissionManager INSTANCE = CommonCompatibilityManager.INSTANCE.createPermissionManager();
 
     public final Permission LISTEN_PERMISSION;
     public final Permission SPEAK_PERMISSION;
@@ -40,7 +40,7 @@ public abstract class PermissionManager {
 
     public boolean hasGroupPermissions(ServerPlayer player) {
         if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
-            UncommonCompatibilityManager.INSTANCE.getServerApi().displayCLientMessage(player, "message.voicechat.no_group_permission", true);
+            CommonCompatibilityManager.INSTANCE.displayClientMessage(player, "message.voicechat.no_group_permission", true);
             return false;
         }
         return true;
@@ -49,7 +49,7 @@ public abstract class PermissionManager {
     public boolean hasSpeakPermissions(ServerPlayer player) {
         if (!PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player)) {
             CooldownTimer.run("no-speak-" + player.getUuid(), 30_000L, () ->
-                    UncommonCompatibilityManager.INSTANCE.getServerApi().displayCLientMessage(player, "message.voicechat.no_speak_permission", true));
+                    CommonCompatibilityManager.INSTANCE.displayClientMessage(player, "message.voicechat.no_speak_permission", true));
             return false;
         }
         return true;
@@ -58,7 +58,7 @@ public abstract class PermissionManager {
     public boolean hasListenPermissions(ServerPlayer player) {
         if (!PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(player)) {
             CooldownTimer.run(String.format("no-listen-%s", player.getUuid()), 30_000L, () ->
-                    UncommonCompatibilityManager.INSTANCE.getServerApi().displayCLientMessage(player, "message.voicechat.no_listen_permission", true));
+                    CommonCompatibilityManager.INSTANCE.displayClientMessage(player, "message.voicechat.no_listen_permission", true));
             return false;
         }
         return true;

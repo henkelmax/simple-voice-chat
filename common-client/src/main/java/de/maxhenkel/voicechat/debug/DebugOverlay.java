@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.debug;
 
 import de.maxhenkel.voicechat.gui.GroupType;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.*;
 import de.maxhenkel.voicechat.voice.client.speaker.ALSpeaker;
 import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
@@ -48,7 +48,7 @@ public class DebugOverlay {
         }
         rightText.clear();
 
-        rightText.add(String.format("%s %s debug overlay", UncommonCompatibilityManager.INSTANCE.getModName(), UncommonCompatibilityManager.INSTANCE.getModVersion()));
+        rightText.add(String.format("%s %s debug overlay", CommonCompatibilityManager.INSTANCE.getModName(), CommonCompatibilityManager.INSTANCE.getModVersion()));
         rightText.add(String.format("Press ALT + %s to toggle", ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_VOICE_CHAT).getDisplayName().getString()));
         rightText.add(null);
 

@@ -1,9 +1,8 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.api.MinecraftServer;
-import de.maxhenkel.voicechat.api.Packet;
 import de.maxhenkel.voicechat.api.ServerPlayer;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 
 import javax.annotation.Nullable;
 
@@ -21,7 +20,7 @@ public class Channel<T extends Packet<T>> {
     }
 
     public void onServerPacket(MinecraftServer server, ServerPlayer player, Object handler, T packet) {
-        UncommonCompatibilityManager.INSTANCE.execute(server, () -> {
+        CommonCompatibilityManager.INSTANCE.executeOnMinecraftServer(server, () -> {
             if (serverListener != null) {
                 serverListener.onPacket(server, player, handler, packet);
             }

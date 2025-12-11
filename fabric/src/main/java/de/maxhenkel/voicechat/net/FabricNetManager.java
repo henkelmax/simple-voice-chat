@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.api.Packet;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -38,8 +38,8 @@ public class FabricNetManager extends NetManager {
                             return;
                         }
                         T packet = packetType.getDeclaredConstructor().newInstance();
-                        packet.fromBytes(UncommonCompatibilityManager.INSTANCE.getServerApi().fromByteBuff(buf));
-                        c.onServerPacket(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServer(server), UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(player), handler, packet);
+                        packet.fromBytes(CommonCompatibilityManager.INSTANCE.createVCByteBuff(buf));
+                        c.onServerPacket(MinecraftCompatibilityManager.fromServer(server), MinecraftCompatibilityManager.fromServerPlayer(player), handler, packet);
                     } catch (Exception e) {
                         Voicechat.LOGGER.error("Failed to process packet", e);
                     }
@@ -49,7 +49,7 @@ public class FabricNetManager extends NetManager {
                 ClientPlayNetworking.registerGlobalReceiver(identifier, (client, handler, buf, responseSender) -> {
                     try {
                         T packet = packetType.getDeclaredConstructor().newInstance();
-                        packet.fromBytes(UncommonCompatibilityManager.INSTANCE.getServerApi().fromByteBuff(buf));
+                        packet.fromBytes(CommonCompatibilityManager.INSTANCE.createVCByteBuff(buf));
                         client.execute(() -> c.onClientPacket(client, handler, packet));
                     } catch (Exception e) {
                         Voicechat.LOGGER.error("Failed to register packet receiver", e);

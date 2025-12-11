@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.permission;
 
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.events.PermissionGatherEvent;
 import net.minecraftforge.server.permission.nodes.PermissionNode;
@@ -12,7 +12,7 @@ public class ForgePermissionManager extends PermissionManager {
 
     @Override
     public Permission createPermissionInternal(String modId, String node, PermissionType type) {
-        return new ForgePermission(new PermissionNode<>(modId, node, PermissionTypes.BOOLEAN, (player, playerUUID, context) -> type.hasPermission(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(player))), type);
+        return new ForgePermission(new PermissionNode<>(modId, node, PermissionTypes.BOOLEAN, (player, playerUUID, context) -> type.hasPermission(MinecraftCompatibilityManager.fromServerPlayer(player))), type);
     }
 
     @SubscribeEvent

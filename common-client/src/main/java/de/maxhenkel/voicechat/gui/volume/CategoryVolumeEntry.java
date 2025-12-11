@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.gui.volume;
 
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.VolumeCategory;
-import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
+import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
@@ -27,10 +27,10 @@ public class CategoryVolumeEntry extends VolumeEntry {
     @Override
     public void renderElement(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
         guiGraphics.blit(texture, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
-        renderScrollingString(guiGraphics, VolumeCategoryImpl.getDisplayName(category), top, left, width, height, PLAYER_NAME_COLOR);
+        renderScrollingString(guiGraphics, MinecraftCompatibilityManager.getCategoryDisplayName(category), top, left, width, height, PLAYER_NAME_COLOR);
         if (hovered && category.getDescription() != null) {
             screen.postRender(() -> {
-                guiGraphics.renderTooltip(minecraft.font, VolumeCategoryImpl.getDisplayDescription(category), mouseX, mouseY);
+                guiGraphics.renderTooltip(minecraft.font, MinecraftCompatibilityManager.getCategoryDisplayDescription(category), mouseX, mouseY);
             });
         }
     }

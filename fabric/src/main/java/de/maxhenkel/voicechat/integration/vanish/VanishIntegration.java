@@ -2,7 +2,8 @@ package de.maxhenkel.voicechat.integration.vanish;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.events.VanishEvents;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
 import me.drex.vanish.api.VanishAPI;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -18,7 +19,7 @@ public class VanishIntegration {
     }
 
     private static boolean checkLoaded() {
-        if (UncommonCompatibilityManager.INSTANCE.isModLoaded("melius-vanish") || UncommonCompatibilityManager.INSTANCE.isModLoaded("vanish")) {
+        if (CommonCompatibilityManager.INSTANCE.isModLoaded("melius-vanish") || CommonCompatibilityManager.INSTANCE.isModLoaded("vanish")) {
             try {
                 Class.forName("me.drex.vanish.api.VanishAPI");
                 Voicechat.LOGGER.info("Enabling vanish compatibility");
@@ -38,12 +39,12 @@ public class VanishIntegration {
             me.drex.vanish.api.VanishEvents.VANISH_EVENT.register((vanishPlayer, vanish) -> {
                 for (ServerPlayer player : vanishPlayer.getServer().getPlayerList().getPlayers()) {
                     if (vanish) {
-                        if (UncommonCompatibilityManager.INSTANCE.canSee(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(player), UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(vanishPlayer))) {
+                        if (CommonCompatibilityManager.INSTANCE.canSee(MinecraftCompatibilityManager.fromServerPlayer(player), MinecraftCompatibilityManager.fromServerPlayer(vanishPlayer))) {
                             continue;
                         }
                         VanishEvents.ON_VANISH.invoker().accept(vanishPlayer, player);
                     } else {
-                        if (!UncommonCompatibilityManager.INSTANCE.canSee(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(player), UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(vanishPlayer))) {
+                        if (!CommonCompatibilityManager.INSTANCE.canSee(MinecraftCompatibilityManager.fromServerPlayer(player), MinecraftCompatibilityManager.fromServerPlayer(vanishPlayer))) {
                             continue;
                         }
                         VanishEvents.ON_UNVANISH.invoker().accept(vanishPlayer, player);

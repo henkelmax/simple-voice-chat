@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.config.Translations;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.logging.Log4JVoicechatLogger;
 import de.maxhenkel.voicechat.logging.VoicechatLogger;
 import de.maxhenkel.voicechat.plugins.PluginManager;
@@ -33,10 +33,10 @@ public abstract class Voicechat {
 
         initializeConfigs();
 
-        UncommonCompatibilityManager.INSTANCE.getNetManager().init();
+        CommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
         initPlugins();
-        UncommonCompatibilityManager.INSTANCE.registercommands();
+        CommonCompatibilityManager.INSTANCE.registerCommands();
     }
 
     protected void initPlugins() {
@@ -49,7 +49,7 @@ public abstract class Voicechat {
     }
 
     public static boolean debugMode() {
-        return UncommonCompatibilityManager.INSTANCE.isDevEnvironment() || System.getProperty("voicechat.debug") != null;
+        return CommonCompatibilityManager.INSTANCE.isDevEnvironment() || System.getProperty("voicechat.debug") != null;
     }
 
     protected Path getVoicechatConfigFolderInternal() {

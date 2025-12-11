@@ -2,10 +2,11 @@ package de.maxhenkel.voicechat.plugins.impl;
 
 import de.maxhenkel.voicechat.api.MinecraftServer;
 import de.maxhenkel.voicechat.api.ServerPlayer;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -33,12 +34,12 @@ public class MinecraftServerImpl implements MinecraftServer {
 
     @Override
     public ServerPlayer getPlayer(UUID playerUUID) {
-        return UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(server.getPlayerList().getPlayer(playerUUID));
+        return MinecraftCompatibilityManager.fromServerPlayer(server.getPlayerList().getPlayer(playerUUID));
     }
 
     @Override
     public List<ServerPlayer> getPlayers() {
-        return server.getPlayerList().getPlayers().stream().map(player -> UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(player)).collect(Collectors.toCollection(ArrayList::new));
+        return server.getPlayerList().getPlayers().stream().map(MinecraftCompatibilityManager::fromServerPlayer).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
@@ -54,5 +55,21 @@ public class MinecraftServerImpl implements MinecraftServer {
     @Override
     public int getOperatorUserPermissionLevel() {
         return server.getOperatorUserPermissionLevel();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof MinecraftServer server1)) {
+            return false;
+        }
+        return Objects.equals(server, server1.getMinecraftServer());
+    }
+
+    @Override
+    public int hashCode() {
+        return server != null ? server.hashCode() : 0;
     }
 }

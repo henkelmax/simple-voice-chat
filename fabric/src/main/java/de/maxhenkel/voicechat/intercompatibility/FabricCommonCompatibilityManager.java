@@ -28,7 +28,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class FabricCommonCompatibilityManager extends CommonCompatibilityManager {
+public class FabricCommonCompatibilityManager extends MinecraftCompatibilityManager {
 
     @Override
     public String getModVersion() {
@@ -55,7 +55,7 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
 
     @Override
     public void emitServerVoiceChatConnectedEvent(de.maxhenkel.voicechat.api.ServerPlayer player) {
-        ServerVoiceChatEvents.VOICECHAT_CONNECTED.invoker().accept(((CommonCompatibilityManager)UncommonCompatibilityManager.INSTANCE).getServerPlayer(player));
+        ServerVoiceChatEvents.VOICECHAT_CONNECTED.invoker().accept(getServerPlayer(player));
     }
 
     @Override
@@ -65,12 +65,12 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
 
     @Override
     public void emitPlayerCompatibilityCheckSucceeded(de.maxhenkel.voicechat.api.ServerPlayer player) {
-        ServerVoiceChatEvents.VOICECHAT_COMPATIBILITY_CHECK_SUCCEEDED.invoker().accept(((CommonCompatibilityManager)UncommonCompatibilityManager.INSTANCE).getServerPlayer(player));
+        ServerVoiceChatEvents.VOICECHAT_COMPATIBILITY_CHECK_SUCCEEDED.invoker().accept(getServerPlayer(player));
     }
 
     @Override
     public void onServerVoiceChatConnected(Consumer<de.maxhenkel.voicechat.api.ServerPlayer> onVoiceChatConnected) {
-        ServerVoiceChatEvents.VOICECHAT_CONNECTED.register(serverPlayer -> onVoiceChatConnected.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(serverPlayer)));
+        ServerVoiceChatEvents.VOICECHAT_CONNECTED.register(serverPlayer -> onVoiceChatConnected.accept(fromServerPlayer(serverPlayer)));
     }
 
     @Override
@@ -80,37 +80,37 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
 
     @Override
     public void onServerStarting(Consumer<de.maxhenkel.voicechat.api.MinecraftServer> onServerStarting) {
-        ServerLifecycleEvents.SERVER_STARTED.register(t -> onServerStarting.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServer(t)));
+        ServerLifecycleEvents.SERVER_STARTED.register(t -> onServerStarting.accept(fromServer(t)));
     }
 
     @Override
     public void onServerStopping(Consumer<MinecraftServer> onServerStopping) {
-        ServerLifecycleEvents.SERVER_STOPPING.register(t -> onServerStopping.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServer(t)));
+        ServerLifecycleEvents.SERVER_STOPPING.register(t -> onServerStopping.accept(fromServer(t)));
     }
 
     @Override
     public void onPlayerLoggedIn(Consumer<de.maxhenkel.voicechat.api.ServerPlayer> onPlayerLoggedIn) {
-        PlayerEvents.PLAYER_LOGGED_IN.register(serverPlayer -> onPlayerLoggedIn.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(serverPlayer)));
+        PlayerEvents.PLAYER_LOGGED_IN.register(serverPlayer -> onPlayerLoggedIn.accept(fromServerPlayer(serverPlayer)));
     }
 
     @Override
     public void onPlayerLoggedOut(Consumer<de.maxhenkel.voicechat.api.ServerPlayer> onPlayerLoggedOut) {
-        PlayerEvents.PLAYER_LOGGED_OUT.register(serverPlayer -> onPlayerLoggedOut.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(serverPlayer)));
+        PlayerEvents.PLAYER_LOGGED_OUT.register(serverPlayer -> onPlayerLoggedOut.accept(fromServerPlayer(serverPlayer)));
     }
 
     @Override
     public void onPlayerHide(BiConsumer<de.maxhenkel.voicechat.api.ServerPlayer, de.maxhenkel.voicechat.api.ServerPlayer> onPlayerHide) {
-        VanishEvents.ON_VANISH.register((serverPlayer, other) -> onPlayerHide.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(serverPlayer), UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(other)));
+        VanishEvents.ON_VANISH.register((serverPlayer, other) -> onPlayerHide.accept(fromServerPlayer(serverPlayer), fromServerPlayer(other)));
     }
 
     @Override
     public void onPlayerShow(BiConsumer<de.maxhenkel.voicechat.api.ServerPlayer, de.maxhenkel.voicechat.api.ServerPlayer> onPlayerShow) {
-        VanishEvents.ON_UNVANISH.register((serverPlayer, other) -> onPlayerShow.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(serverPlayer), UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(other)));
+        VanishEvents.ON_UNVANISH.register((serverPlayer, other) -> onPlayerShow.accept(fromServerPlayer(serverPlayer), fromServerPlayer(other)));
     }
 
     @Override
     public void onPlayerCompatibilityCheckSucceeded(Consumer<de.maxhenkel.voicechat.api.ServerPlayer> onPlayerCompatibilityCheckSucceeded) {
-        ServerVoiceChatEvents.VOICECHAT_COMPATIBILITY_CHECK_SUCCEEDED.register(serverPlayer -> onPlayerCompatibilityCheckSucceeded.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(serverPlayer)));
+        ServerVoiceChatEvents.VOICECHAT_COMPATIBILITY_CHECK_SUCCEEDED.register(serverPlayer -> onPlayerCompatibilityCheckSucceeded.accept(fromServerPlayer(serverPlayer)));
     }
 
     @Override
@@ -155,7 +155,7 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
 
     @Override
     public boolean canSee(de.maxhenkel.voicechat.api.ServerPlayer player, ServerPlayer other) {
-        return VanishIntegration.canSee(((CommonCompatibilityManager)UncommonCompatibilityManager.INSTANCE).getServerPlayer(player), ((CommonCompatibilityManager)UncommonCompatibilityManager.INSTANCE).getServerPlayer(other));
+        return VanishIntegration.canSee(getServerPlayer(player), getServerPlayer(other));
     }
 
 }

@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.VolumeCategory;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
-import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
+import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.Util;
@@ -80,7 +80,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
                 if (volumeEntry instanceof PlayerVolumeEntry playerVolumeEntry) {
                     return playerVolumeEntry.getState() == null || !playerVolumeEntry.getState().getName().toLowerCase(Locale.ROOT).contains(filter);
                 } else if (volumeEntry instanceof CategoryVolumeEntry categoryVolumeEntry) {
-                    return !VolumeCategoryImpl.getSearchName(categoryVolumeEntry.getCategory()).toLowerCase(Locale.ROOT).contains(filter);
+                    return !MinecraftCompatibilityManager.getCategorySearchName(categoryVolumeEntry.getCategory()).toLowerCase(Locale.ROOT).contains(filter);
                 }
                 return true;
             });
@@ -106,7 +106,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
         if (entry instanceof PlayerVolumeEntry playerVolumeEntry) {
             return playerVolumeEntry.getState() == null ? "" : playerVolumeEntry.getState().getName();
         } else if (entry instanceof CategoryVolumeEntry categoryVolumeEntry) {
-            return VolumeCategoryImpl.getSearchName(categoryVolumeEntry.getCategory());
+            return MinecraftCompatibilityManager.getCategorySearchName(categoryVolumeEntry.getCategory());
         }
         return "";
     }

@@ -7,7 +7,7 @@ import de.maxhenkel.voicechat.config.ClientConfig;
 import de.maxhenkel.voicechat.config.PlayerVolumeConfig;
 import de.maxhenkel.voicechat.integration.clothconfig.ClothConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.VersionCheck;
 import de.maxhenkel.voicechat.natives.LameManager;
 import de.maxhenkel.voicechat.natives.OpusManager;
@@ -72,7 +72,7 @@ public abstract class VoicechatClient {
 
         if (Platform.isMac()) {
             if (!VersionCheck.isMacOSNativeCompatible()) {
-                Voicechat.LOGGER.warn("Your MacOS version is incompatible with {}", UncommonCompatibilityManager.INSTANCE.getModName());
+                Voicechat.LOGGER.warn("Your MacOS version is incompatible with {}", CommonCompatibilityManager.INSTANCE.getModName());
             }
             if (!CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
                 CLIENT_CONFIG.javaMicrophoneImplementation.set(true).save();

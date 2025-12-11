@@ -2,10 +2,6 @@ package de.maxhenkel.voicechat.plugins.impl;
 
 import de.maxhenkel.voicechat.api.VCByteBuf;
 import de.maxhenkel.voicechat.api.VolumeCategory;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.locale.Language;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nullable;
 import java.util.regex.Pattern;
@@ -38,11 +34,6 @@ public class VolumeCategoryImpl implements VolumeCategory {
     }
 
     @Override
-    public VolumeCategory fromBytes(VCByteBuf buf) {
-        return fromBytes(new FriendlyByteBuf((ByteBuf) buf.getBuffer()));
-    }
-
-    @Override
     public String getId() {
         return id;
     }
@@ -58,32 +49,10 @@ public class VolumeCategoryImpl implements VolumeCategory {
         return nameTranslationKey;
     }
 
-    public static Component getDisplayName(VolumeCategory category) {
-        if (category.getNameTranslationKey() != null) {
-            return Component.translatableWithFallback(category.getNameTranslationKey(), category.getName());
-        }
-        return Component.literal(category.getName());
-    }
-
-    public static String getSearchName(VolumeCategory category) {
-        if (category.getNameTranslationKey() == null) {
-            return category.getName();
-        }
-        Language lang = Language.getInstance();
-        return lang.getOrDefault(category.getNameTranslationKey(), category.getName());
-    }
-
     @Nullable
     @Override
     public String getDescription() {
         return description;
-    }
-
-    public static Component getDisplayDescription(VolumeCategory category) {
-        if (category.getDescriptionTranslationKey() != null) {
-            return Component.translatableWithFallback(category.getDescriptionTranslationKey(), category.getDescription());
-        }
-        return category.getDescription() != null ? Component.literal(category.getDescription()) : Component.empty();
     }
 
     @Override
@@ -99,11 +68,7 @@ public class VolumeCategoryImpl implements VolumeCategory {
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
-        toBytes(new FriendlyByteBuf((ByteBuf) buf.getBuffer()));
-    }
-
-    public static VolumeCategoryImpl fromBytes(FriendlyByteBuf buf) {
+    public VolumeCategory fromBytes(VCByteBuf buf) {
         String id = buf.readUtf(16);
         String name = buf.readUtf(16);
         String nameTranslationKey = readOptionalString(buf);
@@ -122,14 +87,15 @@ public class VolumeCategoryImpl implements VolumeCategory {
     }
 
     @Nullable
-    private static String readOptionalString(FriendlyByteBuf buf) {
+    private static String readOptionalString(VCByteBuf buf) {
         if (buf.readBoolean()) {
             return buf.readUtf(32767);
         }
         return null;
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
+    @Override
+    public void toBytes(VCByteBuf buf) {
         buf.writeUtf(id, 16);
         buf.writeUtf(name, 16);
         writeOptionalString(buf, nameTranslationKey);
@@ -151,7 +117,7 @@ public class VolumeCategoryImpl implements VolumeCategory {
         }
     }
 
-    private static void writeOptionalString(FriendlyByteBuf buf, @Nullable String string) {
+    private static void writeOptionalString(VCByteBuf buf, @Nullable String string) {
         buf.writeBoolean(string != null);
         if (string != null) {
             buf.writeUtf(string, 32767);
@@ -163,11 +129,10 @@ public class VolumeCategoryImpl implements VolumeCategory {
         if (this == object) {
             return true;
         }
-        if (object == null || getClass() != object.getClass()) {
+        if (!(object instanceof VolumeCategory that)) {
             return false;
         }
-        VolumeCategoryImpl that = (VolumeCategoryImpl) object;
-        return id.equals(that.id);
+        return id.equals(that.getId());
     }
 
     @Override

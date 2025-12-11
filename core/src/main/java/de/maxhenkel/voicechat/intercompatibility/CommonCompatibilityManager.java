@@ -4,7 +4,6 @@ import de.maxhenkel.voicechat.api.*;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.service.Service;
-import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -12,9 +11,9 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public abstract class UncommonCompatibilityManager {
+public abstract class CommonCompatibilityManager {
 
-    public static UncommonCompatibilityManager INSTANCE = Service.get(UncommonCompatibilityManager.class);
+    public static CommonCompatibilityManager INSTANCE = Service.get(CommonCompatibilityManager.class);
 
     public abstract String getModVersion();
 
@@ -66,23 +65,21 @@ public abstract class UncommonCompatibilityManager {
 
     public abstract VoicechatServerApi getServerApi();
 
-    public Object createRawApiEntity(de.maxhenkel.voicechat.api.Entity entity) {
-        return entity;
-    }
-
-    public Object createRawApiPlayer(Player player) {
-        return player;
-    }
-
-    public Object createRawApiLevel(ServerLevel level) {
-        return level;
-    }
-
     public abstract boolean canSee(ServerPlayer player, ServerPlayer other);
 
-    public abstract void execute(MinecraftServer server, Runnable runnable);
+    public abstract void registerCommands();
+
+    public abstract void sendMinecraftPacket(ServerPlayer player, String id, VCByteBuf buffer);
+
+    public abstract void displayClientMessage(ServerPlayer player, String message, boolean overlay);
+
+    public abstract void createTimeoutTimer(ServerPlayer player);
+
+    public abstract void executeOnMinecraftServer(MinecraftServer server, Runnable runnable);
 
     public abstract void sendIncompatibleMessage(ServerPlayer serverPlayer, int compatibilityVersion);
 
-    public abstract void registercommands();
+    public abstract Position createPosition(double v, double v1, double v2);
+
+    public abstract VCByteBuf createVCByteBuff(Object byteBuf);
 }

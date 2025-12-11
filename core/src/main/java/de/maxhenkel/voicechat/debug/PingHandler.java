@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.debug;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.VCByteBuf;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
 
@@ -22,12 +22,12 @@ public class PingHandler {
         }
         try {
             byte[] payload = buf.readByteArray();
-            VCByteBuf buffer = UncommonCompatibilityManager.INSTANCE.getServerApi().fromByteBuff(Unpooled.wrappedBuffer(payload));
+            VCByteBuf buffer = CommonCompatibilityManager.INSTANCE.createVCByteBuff(Unpooled.wrappedBuffer(payload));
             UUID id = buffer.readUUID();
             long timestamp = buffer.readLong();
             Voicechat.LOGGER.debug("Received ping {} from {}", id, socketAddress);
 
-            VCByteBuf responseBuffer = UncommonCompatibilityManager.INSTANCE.getServerApi().fromByteBuff(Unpooled.buffer(24));
+            VCByteBuf responseBuffer = CommonCompatibilityManager.INSTANCE.createVCByteBuff(Unpooled.buffer(24));
 
             responseBuffer.writeUUID(id);
             responseBuffer.writeLong(timestamp);

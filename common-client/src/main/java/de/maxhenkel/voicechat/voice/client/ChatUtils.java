@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -37,7 +37,7 @@ public class ChatUtils {
 
     public static MutableComponent createModMessage(Component message) {
         return Component.empty()
-                .append(ComponentUtils.wrapInSquareBrackets(Component.literal(UncommonCompatibilityManager.INSTANCE.getModName())).withStyle(ChatFormatting.GREEN))
+                .append(ComponentUtils.wrapInSquareBrackets(Component.literal(CommonCompatibilityManager.INSTANCE.getModName())).withStyle(ChatFormatting.GREEN))
                 .append(" ")
                 .append(message);
     }

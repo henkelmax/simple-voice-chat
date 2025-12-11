@@ -8,7 +8,7 @@ import de.maxhenkel.voicechat.api.VoicechatSocket;
 import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.*;
@@ -42,12 +42,16 @@ public class Server extends Thread {
     private final ServerCategoryManager categoryManager;
 
     public Server(MinecraftServer server) {
-        int configPort = Voicechat.SERVER_CONFIG.voiceChatPort.get();
-        if (configPort < 0) {
-            Voicechat.LOGGER.info("Using the Minecraft servers port as voice chat port");
-            port = server.getPort();
+        if (server.isDedicated()) {
+            int configPort = Voicechat.SERVER_CONFIG.voiceChatPort.get();
+            if (configPort < 0) {
+                Voicechat.LOGGER.info("Using the Minecraft servers port as voice chat port");
+                port = server.getPort();
+            } else {
+                port = configPort;
+            }
         } else {
-            port = configPort;
+            port = 0;
         }
         this.server = server;
         socket = PluginManager.instance().getSocketImplementation();
@@ -135,23 +139,29 @@ public class Server extends Thread {
     }
 
     private String getBindAddress() {
+        if (!server.isDedicated()) {
+            return "";
+        }
+
         String bindAddress = Voicechat.SERVER_CONFIG.voiceChatBindAddress.get();
 
         if (bindAddress.trim().equals("*")) {
             bindAddress = "";
         } else if (bindAddress.trim().equals("")) {
-            bindAddress = server.getIp();
-            if (!bindAddress.trim().isEmpty()) {
-                try {
-                    InetAddress address = InetAddress.getByName(bindAddress);
-                    if (address.isLoopbackAddress()) {
+                if (server.isDedicated()) {
+                bindAddress = server.getIp();
+                if (!bindAddress.trim().isEmpty()) {
+                    try {
+                        InetAddress address = InetAddress.getByName(bindAddress);
+                        if (address.isLoopbackAddress()) {
+                            bindAddress = "";
+                        } else {
+                            Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
+                        }
+                    } catch (Exception e) {
+                        Voicechat.LOGGER.warn("Invalid server-ip", e);
                         bindAddress = "";
-                    } else {
-                        Voicechat.LOGGER.info("Using server-ip as bind address: {}", bindAddress);
                     }
-                } catch (Exception e) {
-                    Voicechat.LOGGER.warn("Invalid server-ip", e);
-                    bindAddress = "";
                 }
             }
         }
@@ -303,7 +313,7 @@ public class Server extends Thread {
                         Voicechat.LOGGER.info("Successfully validated connection of player {}", connection.getPlayerUUID());
                         ServerPlayer player = server.getPlayer(connection.getPlayerUUID());
                         if (player != null) {
-                            UncommonCompatibilityManager.INSTANCE.emitServerVoiceChatConnectedEvent(player);
+                            CommonCompatibilityManager.INSTANCE.emitServerVoiceChatConnectedEvent(player);
                             PluginManager.instance().onPlayerConnected(player);
                             Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getName(), connection.getPlayerUUID());
                         }
@@ -493,7 +503,7 @@ public class Server extends Thread {
                 } else {
                     Voicechat.LOGGER.warn("Reconnecting player {} failed (Could not find player)", connection.getPlayerUUID());
                 }
-                UncommonCompatibilityManager.INSTANCE.emitServerVoiceChatDisconnectedEvent(connection.getPlayerUUID());
+                CommonCompatibilityManager.INSTANCE.emitServerVoiceChatDisconnectedEvent(connection.getPlayerUUID());
                 PluginManager.instance().onPlayerDisconnected(connection.getPlayerUUID());
                 return true;
             }

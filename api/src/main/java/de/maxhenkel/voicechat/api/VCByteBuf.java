@@ -5,51 +5,51 @@ import java.util.UUID;
 public interface VCByteBuf {
     Object getBuffer();
 
-    String readUtf(int i);
-
-    void writeUtf(String categoryId, int i);
-
-    byte[] readByteArray();
-
-    UUID readUUID();
-
-    long readLong();
-
-    void writeUUID(UUID id);
-
-    void writeLong(long timestamp);
-
     int readableBytes();
-
-    void readBytes(byte[] response);
 
     boolean readBoolean();
 
-    short readShort();
-
     void writeBoolean(boolean b);
-
-    void writeShort(short anInt);
-
-    int readInt();
-
-    void writeInt(int size);
 
     byte readByte();
 
-    double readDouble();
+    void writeByte(int b);
 
-    void writeByte(int ordinal);
+    short readShort();
 
-    void writeDouble(double voiceChatDistance);
+    void writeShort(short s);
 
-    void writeUtf(String voiceHost);
+    int readInt();
 
-    void writeByteArray(byte[] data);
+    void writeInt(int i);
+
+    long readLong();
+
+    void writeLong(long l);
 
     float readFloat();
 
-    void writeFloat(float distance);
+    void writeFloat(float f);
 
-    void writeBytes(byte[] secret);
+    double readDouble();
+
+    void writeDouble(double d);
+
+    UUID readUUID();
+
+    void writeUUID(UUID id);
+
+    String readUtf(int i);
+
+    void writeUtf(String string, int i);
+
+    void writeUtf(String string);
+
+    byte[] readByteArray();
+
+    void readBytes(byte[] bytes);
+
+    void writeByteArray(byte[] bytes);
+
+    void writeBytes(byte[] bytes);
 }

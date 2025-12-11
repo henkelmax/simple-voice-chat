@@ -3,6 +3,8 @@ package de.maxhenkel.voicechat.intercompatibility;
 import com.mojang.brigadier.CommandDispatcher;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.ForgeVoicechatPlugin;
+import de.maxhenkel.voicechat.api.MinecraftServer;
+import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.events.ServerVoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.events.ServerVoiceChatDisconnectedEvent;
@@ -12,7 +14,6 @@ import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.ForgePermissionManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -32,15 +33,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager {
+public class ForgeCommonCompatibilityManager extends MinecraftCompatibilityManager {
 
-    private final List<Consumer<de.maxhenkel.voicechat.api.MinecraftServer>> serverStartingEvents;
-    private final List<Consumer<de.maxhenkel.voicechat.api.MinecraftServer>> serverStoppingEvents;
+    private final List<Consumer<MinecraftServer>> serverStartingEvents;
+    private final List<Consumer<MinecraftServer>> serverStoppingEvents;
     private final List<Consumer<CommandDispatcher<CommandSourceStack>>> registerServerCommandsEvents;
-    private final List<Consumer<de.maxhenkel.voicechat.api.ServerPlayer>> playerLoggedInEvents;
-    private final List<Consumer<de.maxhenkel.voicechat.api.ServerPlayer>> playerLoggedOutEvents;
-    private final List<Consumer<de.maxhenkel.voicechat.api.ServerPlayer>> voicechatConnectEvents;
-    private final List<Consumer<de.maxhenkel.voicechat.api.ServerPlayer>> voicechatCompatibilityCheckSucceededEvents;
+    private final List<Consumer<ServerPlayer>> playerLoggedInEvents;
+    private final List<Consumer<ServerPlayer>> playerLoggedOutEvents;
+    private final List<Consumer<ServerPlayer>> voicechatConnectEvents;
+    private final List<Consumer<ServerPlayer>> voicechatCompatibilityCheckSucceededEvents;
     private final List<Consumer<UUID>> voicechatDisconnectEvents;
 
     public ForgeCommonCompatibilityManager() {
@@ -56,12 +57,12 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
 
     @SubscribeEvent
     public void serverStarting(ServerStartedEvent event) {
-        serverStartingEvents.forEach(consumer -> consumer.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServer(event.getServer())));
+        serverStartingEvents.forEach(consumer -> consumer.accept(fromServer(event.getServer())));
     }
 
     @SubscribeEvent
     public void serverStopping(ServerStoppingEvent event) {
-        serverStoppingEvents.forEach(consumer -> consumer.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServer(event.getServer())));
+        serverStoppingEvents.forEach(consumer -> consumer.accept(fromServer(event.getServer())));
     }
 
     @SubscribeEvent
@@ -71,15 +72,15 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
 
     @SubscribeEvent
     public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player) {
-            playerLoggedInEvents.forEach(consumer -> consumer.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(player)));
+        if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player) {
+            playerLoggedInEvents.forEach(consumer -> consumer.accept(fromServerPlayer(player)));
         }
     }
 
     @SubscribeEvent
     public void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player) {
-            playerLoggedOutEvents.forEach(consumer -> consumer.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(player)));
+        if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player) {
+            playerLoggedOutEvents.forEach(consumer -> consumer.accept(fromServerPlayer(player)));
         }
     }
 
@@ -99,9 +100,9 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
-    public void emitServerVoiceChatConnectedEvent(de.maxhenkel.voicechat.api.ServerPlayer player) {
+    public void emitServerVoiceChatConnectedEvent(ServerPlayer player) {
         voicechatConnectEvents.forEach(consumer -> consumer.accept(player));
-        MinecraftForge.EVENT_BUS.post(new ServerVoiceChatConnectedEvent(((CommonCompatibilityManager)UncommonCompatibilityManager.INSTANCE).getServerPlayer(player)));
+        MinecraftForge.EVENT_BUS.post(new ServerVoiceChatConnectedEvent(getServerPlayer(player)));
     }
 
     @Override
@@ -111,13 +112,13 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
-    public void emitPlayerCompatibilityCheckSucceeded(de.maxhenkel.voicechat.api.ServerPlayer player) {
+    public void emitPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
         voicechatCompatibilityCheckSucceededEvents.forEach(consumer -> consumer.accept(player));
-        MinecraftForge.EVENT_BUS.post(new VoiceChatCompatibilityCheckSucceededEvent(((CommonCompatibilityManager)UncommonCompatibilityManager.INSTANCE).getServerPlayer(player)));
+        MinecraftForge.EVENT_BUS.post(new VoiceChatCompatibilityCheckSucceededEvent(getServerPlayer(player)));
     }
 
     @Override
-    public void onServerVoiceChatConnected(Consumer<de.maxhenkel.voicechat.api.ServerPlayer> onVoiceChatConnected) {
+    public void onServerVoiceChatConnected(Consumer<ServerPlayer> onVoiceChatConnected) {
         voicechatConnectEvents.add(onVoiceChatConnected);
     }
 
@@ -127,37 +128,37 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
-    public void onServerStarting(Consumer<de.maxhenkel.voicechat.api.MinecraftServer> onServerStarting) {
+    public void onServerStarting(Consumer<MinecraftServer> onServerStarting) {
         serverStartingEvents.add(onServerStarting);
     }
 
     @Override
-    public void onServerStopping(Consumer<de.maxhenkel.voicechat.api.MinecraftServer> onServerStopping) {
+    public void onServerStopping(Consumer<MinecraftServer> onServerStopping) {
         serverStoppingEvents.add(onServerStopping);
     }
 
     @Override
-    public void onPlayerLoggedIn(Consumer<de.maxhenkel.voicechat.api.ServerPlayer> onPlayerLoggedIn) {
+    public void onPlayerLoggedIn(Consumer<ServerPlayer> onPlayerLoggedIn) {
         playerLoggedInEvents.add(onPlayerLoggedIn);
     }
 
     @Override
-    public void onPlayerLoggedOut(Consumer<de.maxhenkel.voicechat.api.ServerPlayer> onPlayerLoggedOut) {
+    public void onPlayerLoggedOut(Consumer<ServerPlayer> onPlayerLoggedOut) {
         playerLoggedOutEvents.add(onPlayerLoggedOut);
     }
 
     @Override
-    public void onPlayerHide(BiConsumer<de.maxhenkel.voicechat.api.ServerPlayer, de.maxhenkel.voicechat.api.ServerPlayer> onPlayerHide) {
+    public void onPlayerHide(BiConsumer<ServerPlayer, ServerPlayer> onPlayerHide) {
         // Do nothing for now
     }
 
     @Override
-    public void onPlayerShow(BiConsumer<de.maxhenkel.voicechat.api.ServerPlayer, de.maxhenkel.voicechat.api.ServerPlayer> onPlayerShow) {
+    public void onPlayerShow(BiConsumer<ServerPlayer, ServerPlayer> onPlayerShow) {
         // Do nothing for now
     }
 
     @Override
-    public void onPlayerCompatibilityCheckSucceeded(Consumer<de.maxhenkel.voicechat.api.ServerPlayer> onPlayerCompatibilityCheckSucceeded) {
+    public void onPlayerCompatibilityCheckSucceeded(Consumer<ServerPlayer> onPlayerCompatibilityCheckSucceeded) {
         voicechatCompatibilityCheckSucceededEvents.add(onPlayerCompatibilityCheckSucceeded);
     }
 
@@ -218,7 +219,7 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     }
 
     @Override
-    public boolean canSee(de.maxhenkel.voicechat.api.ServerPlayer player, de.maxhenkel.voicechat.api.ServerPlayer other) {
+    public boolean canSee(ServerPlayer player, ServerPlayer other) {
         return true;
     }
 }

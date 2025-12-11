@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.group.JoinGroupList;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 
@@ -19,12 +19,12 @@ public class ClientGroupManager {
 
     public ClientGroupManager() {
         groups = new ConcurrentHashMap<>();
-        ClientServerNetManager.setClientListener(UncommonCompatibilityManager.INSTANCE.getNetManager().addGroupChannel, (client, handler, packet) -> {
+        ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().addGroupChannel, (client, handler, packet) -> {
             groups.put(packet.getGroup().getId(), packet.getGroup());
             Voicechat.LOGGER.debug("Added group '{}' ({})", packet.getGroup().getName(), packet.getGroup().getId());
             JoinGroupList.update();
         });
-        ClientServerNetManager.setClientListener(UncommonCompatibilityManager.INSTANCE.getNetManager().removeGroupChannel, (client, handler, packet) -> {
+        ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().removeGroupChannel, (client, handler, packet) -> {
             groups.remove(packet.getGroupId());
             Voicechat.LOGGER.debug("Removed group {}", packet.getGroupId());
             JoinGroupList.update();

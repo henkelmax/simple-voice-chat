@@ -13,8 +13,4 @@ public class PlayerImpl extends EntityImpl implements Player {
         return entity.getName().getString();
     }
 
-    public net.minecraft.world.entity.player.Player getRealPlayer() {
-        return (net.minecraft.world.entity.player.Player) entity;
-    }
-
 }

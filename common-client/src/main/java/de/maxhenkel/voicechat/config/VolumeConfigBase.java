@@ -4,7 +4,7 @@ import de.maxhenkel.configbuilder.CommentedProperties;
 import de.maxhenkel.configbuilder.CommentedPropertyConfig;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 
 import java.nio.file.Path;
 import java.util.Collections;
@@ -20,7 +20,7 @@ public abstract class VolumeConfigBase<T> extends CommentedPropertyConfig {
         super(new CommentedProperties(false));
         this.path = path;
         reload();
-        properties.setHeaderComments(Collections.singletonList(String.format("%s %s volume config", UncommonCompatibilityManager.INSTANCE.getModName(), getConfigName())));
+        properties.setHeaderComments(Collections.singletonList(String.format("%s %s volume config", CommonCompatibilityManager.INSTANCE.getModName(), getConfigName())));
         Map<String, String> entries = getEntries();
         volumes = new HashMap<>();
         for (Map.Entry<String, String> entry : entries.entrySet()) {

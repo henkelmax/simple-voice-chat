@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
 import de.maxhenkel.voicechat.api.VCByteBuf;
-import io.netty.buffer.Unpooled;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -79,7 +78,6 @@ public class PlayerState {
     }
 
     public static PlayerState fromBytes(VCByteBuf buf) {
-        Unpooled.buffer();
         boolean disabled = buf.readBoolean();
         boolean disconnected = buf.readBoolean();
         UUID uuid = buf.readUUID();

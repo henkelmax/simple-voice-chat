@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.api.VCByteBuf;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class VCByteBufImpl implements VCByteBuf {
@@ -20,48 +21,8 @@ public class VCByteBufImpl implements VCByteBuf {
     }
 
     @Override
-    public String readUtf(int i) {
-        return buf.readUtf();
-    }
-
-    @Override
-    public void writeUtf(String categoryId, int i) {
-        buf.writeUtf(categoryId, i);
-    }
-
-    @Override
-    public byte[] readByteArray() {
-        return buf.readByteArray();
-    }
-
-    @Override
-    public UUID readUUID() {
-        return buf.readUUID();
-    }
-
-    @Override
-    public long readLong() {
-        return buf.readLong();
-    }
-
-    @Override
-    public void writeUUID(UUID id) {
-        buf.writeUUID(id);
-    }
-
-    @Override
-    public void writeLong(long timestamp) {
-        buf.writeLong(timestamp);
-    }
-
-    @Override
     public int readableBytes() {
         return buf.readableBytes();
-    }
-
-    @Override
-    public void readBytes(byte[] response) {
-        buf.readBytes(response);
     }
 
     @Override
@@ -70,28 +31,8 @@ public class VCByteBufImpl implements VCByteBuf {
     }
 
     @Override
-    public short readShort() {
-        return buf.readShort();
-    }
-
-    @Override
     public void writeBoolean(boolean b) {
         buf.writeBoolean(b);
-    }
-
-    @Override
-    public void writeShort(short anInt) {
-        buf.writeShort(anInt);
-    }
-
-    @Override
-    public int readInt() {
-        return buf.readInt();
-    }
-
-    @Override
-    public void writeInt(int size) {
-        buf.writeInt(size);
     }
 
     @Override
@@ -100,28 +41,38 @@ public class VCByteBufImpl implements VCByteBuf {
     }
 
     @Override
-    public double readDouble() {
-        return buf.readDouble();
+    public void writeByte(int i) {
+        buf.writeByte(i);
     }
 
     @Override
-    public void writeByte(int ordinal) {
-        buf.writeByte(ordinal);
+    public short readShort() {
+        return buf.readShort();
     }
 
     @Override
-    public void writeDouble(double voiceChatDistance) {
-        buf.writeDouble(voiceChatDistance);
+    public void writeShort(short s) {
+        buf.writeShort(s);
     }
 
     @Override
-    public void writeUtf(String voiceHost) {
-        buf.writeUtf(voiceHost);
+    public int readInt() {
+        return buf.readInt();
     }
 
     @Override
-    public void writeByteArray(byte[] data) {
-        buf.writeByteArray(data);
+    public void writeInt(int i) {
+        buf.writeInt(i);
+    }
+
+    @Override
+    public long readLong() {
+        return buf.readLong();
+    }
+
+    @Override
+    public void writeLong(long l) {
+        buf.writeLong(l);
     }
 
     @Override
@@ -130,12 +81,78 @@ public class VCByteBufImpl implements VCByteBuf {
     }
 
     @Override
-    public void writeFloat(float distance) {
-        buf.writeFloat(distance);
+    public void writeFloat(float f) {
+        buf.writeFloat(f);
     }
 
     @Override
-    public void writeBytes(byte[] secret) {
-        buf.writeBytes(secret);
+    public double readDouble() {
+        return buf.readDouble();
+    }
+
+    @Override
+    public void writeDouble(double d) {
+        buf.writeDouble(d);
+    }
+
+    @Override
+    public UUID readUUID() {
+        return buf.readUUID();
+    }
+
+    @Override
+    public void writeUUID(UUID id) {
+        buf.writeUUID(id);
+    }
+
+    @Override
+    public String readUtf(int i) {
+        return buf.readUtf(i);
+    }
+
+    @Override
+    public void writeUtf(String string, int i) {
+        buf.writeUtf(string, i);
+    }
+
+    @Override
+    public void writeUtf(String string) {
+        buf.writeUtf(string);
+    }
+    @Override
+    public byte[] readByteArray() {
+        return buf.readByteArray();
+    }
+
+    @Override
+    public void readBytes(byte[] bytes) {
+        buf.readBytes(bytes);
+    }
+
+    @Override
+    public void writeByteArray(byte[] bytes) {
+        buf.writeByteArray(bytes);
+    }
+
+    @Override
+    public void writeBytes(byte[] bytes) {
+        buf.writeBytes(bytes);
+    }
+
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof VCByteBuf buf1)) {
+            return false;
+        }
+        return Objects.equals(buf, buf1.getBuffer());
+    }
+
+    @Override
+    public int hashCode() {
+        return buf != null ? buf.hashCode() : 0;
     }
 }

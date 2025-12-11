@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.ServerPlayer;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.net.PlayerStatesPacket;
@@ -26,7 +26,7 @@ public class PlayerStateManager {
         this.voicechatServer = voicechatServer;
         this.states = new ConcurrentHashMap<>();
 
-        UncommonCompatibilityManager.INSTANCE.getNetManager().updateStateChannel.setServerListener((server, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().updateStateChannel.setServerListener((server, player, handler, packet) -> {
             PlayerState state = states.get(player.getUuid());
 
             if (state == null) {
@@ -45,7 +45,7 @@ public class PlayerStateManager {
     public void broadcastState(@Nullable ServerPlayer stateOwner, PlayerState state) {
         PlayerStatePacket packet = new PlayerStatePacket(state);
         for (ServerPlayer receiver : voicechatServer.getServer().getPlayers()) {
-            if (stateOwner != null && !UncommonCompatibilityManager.INSTANCE.canSee(receiver, stateOwner)) {
+            if (stateOwner != null && !CommonCompatibilityManager.INSTANCE.canSee(receiver, stateOwner)) {
                 continue;
             }
             NetManager.sendToClient(receiver, packet);
@@ -69,7 +69,7 @@ public class PlayerStateManager {
             if (otherPlayer == null) {
                 continue;
             }
-            if (!UncommonCompatibilityManager.INSTANCE.canSee(player, otherPlayer)) {
+            if (!CommonCompatibilityManager.INSTANCE.canSee(player, otherPlayer)) {
                 continue;
             }
             stateList.add(state);

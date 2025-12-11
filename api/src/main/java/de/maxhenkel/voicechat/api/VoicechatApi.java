@@ -64,46 +64,6 @@ public interface VoicechatApi {
     AudioConverter getAudioConverter();
 
     /**
-     * Creates an entity object from an actual entity.
-     *
-     * @param entity the entity implementation of your mod/plugin loader
-     * @return the entity object
-     */
-    Entity fromEntity(Object entity);
-
-    /**
-     * Creates a level object from an actual level.
-     *
-     * @param serverLevel the level implementation of your mod/plugin loader
-     * @return the level
-     */
-    ServerLevel fromServerLevel(Object serverLevel);
-
-    /**
-     * Creates a player object from an actual player.
-     *
-     * @param serverPlayer the player implementation of your mod/plugin loader
-     * @return the player
-     */
-    ServerPlayer fromServerPlayer(Object serverPlayer);
-
-    MinecraftServer fromServer(Object minecraftServer);
-
-    Position fromVec3(Object vec3);
-
-    VCByteBuf fromByteBuff(Object byteBuf);
-
-    /**
-     * Creates a new position object.
-     *
-     * @param x the X position
-     * @param y the Y position
-     * @param z the Z position
-     * @return the position with the provided coordinates
-     */
-    Position createPosition(double x, double y, double z);
-
-    /**
      * Don't forget to register your category with {@link VoicechatServerApi#registerVolumeCategory(VolumeCategory)} or {@link VoicechatClientApi#registerClientVolumeCategory(VolumeCategory)}
      *
      * @return a builder to build a category

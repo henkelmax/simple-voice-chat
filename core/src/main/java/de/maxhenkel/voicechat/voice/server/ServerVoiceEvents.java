@@ -3,8 +3,8 @@ package de.maxhenkel.voicechat.voice.server;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.MinecraftServer;
 import de.maxhenkel.voicechat.api.ServerPlayer;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
@@ -12,8 +12,6 @@ import de.maxhenkel.voicechat.voice.common.Secret;
 
 import javax.annotation.Nullable;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,23 +22,23 @@ public class ServerVoiceEvents {
 
     public ServerVoiceEvents() {
         clientCompatibilities = new ConcurrentHashMap<>();
-        UncommonCompatibilityManager.INSTANCE.onServerStarting(this::serverStarting);
-        UncommonCompatibilityManager.INSTANCE.onPlayerLoggedIn(this::playerLoggedIn);
-        UncommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::playerLoggedOut);
-        UncommonCompatibilityManager.INSTANCE.onPlayerHide(this::onPlayerHide);
-        UncommonCompatibilityManager.INSTANCE.onPlayerShow(this::onPlayerShow);
-        UncommonCompatibilityManager.INSTANCE.onServerStopping(this::serverStopping);
+        CommonCompatibilityManager.INSTANCE.onServerStarting(this::serverStarting);
+        CommonCompatibilityManager.INSTANCE.onPlayerLoggedIn(this::playerLoggedIn);
+        CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::playerLoggedOut);
+        CommonCompatibilityManager.INSTANCE.onPlayerHide(this::onPlayerHide);
+        CommonCompatibilityManager.INSTANCE.onPlayerShow(this::onPlayerShow);
+        CommonCompatibilityManager.INSTANCE.onServerStopping(this::serverStopping);
 
-        UncommonCompatibilityManager.INSTANCE.onServerVoiceChatConnected(this::serverVoiceChatConnected);
-        UncommonCompatibilityManager.INSTANCE.onServerVoiceChatDisconnected(this::serverVoiceChatDisconnected);
-        UncommonCompatibilityManager.INSTANCE.onPlayerCompatibilityCheckSucceeded(this::playerCompatibilityCheckSucceeded);
+        CommonCompatibilityManager.INSTANCE.onServerVoiceChatConnected(this::serverVoiceChatConnected);
+        CommonCompatibilityManager.INSTANCE.onServerVoiceChatDisconnected(this::serverVoiceChatDisconnected);
+        CommonCompatibilityManager.INSTANCE.onPlayerCompatibilityCheckSucceeded(this::playerCompatibilityCheckSucceeded);
 
-        UncommonCompatibilityManager.INSTANCE.getNetManager().requestSecretChannel.setServerListener((server, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().requestSecretChannel.setServerListener((server, player, handler, packet) -> {
             Voicechat.LOGGER.info("Received secret request of {} ({})", player.getName(), packet.getCompatibilityVersion());
             clientCompatibilities.put(player.getUuid(), packet.getCompatibilityVersion());
             if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
                 Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
-                UncommonCompatibilityManager.INSTANCE.sendIncompatibleMessage(player, packet.getCompatibilityVersion());
+                CommonCompatibilityManager.INSTANCE.sendIncompatibleMessage(player, packet.getCompatibilityVersion());
             } else {
                 initializePlayerConnection(player);
             }
@@ -85,7 +83,7 @@ public class ServerVoiceEvents {
         if (server == null) {
             return;
         }
-        UncommonCompatibilityManager.INSTANCE.emitPlayerCompatibilityCheckSucceeded(player);
+        CommonCompatibilityManager.INSTANCE.emitPlayerCompatibilityCheckSucceeded(player);
 
         Secret secret = server.generateNewSecret(player.getUuid());
         if (secret == null) {
@@ -105,7 +103,7 @@ public class ServerVoiceEvents {
             return;
         }
 
-        UncommonCompatibilityManager.INSTANCE.getServerApi().createTimeoutTimer(serverPlayer);
+        CommonCompatibilityManager.INSTANCE.createTimeoutTimer(serverPlayer);
     }
 
     public void playerLoggedOut(de.maxhenkel.voicechat.api.ServerPlayer player) {

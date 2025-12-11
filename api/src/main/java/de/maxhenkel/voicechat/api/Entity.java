@@ -29,9 +29,18 @@ public interface Entity {
      */
     Position getEyePosition();
 
+    /**
+     * @return whether the entity is in spectator
+     */
     boolean isSpectator();
 
+    /**
+     * @return the minecraft server of the entity
+     */
     MinecraftServer getServer();
 
+    /**
+     * @return whether the entity has given permission level
+     */
     boolean hasPermissions(int operatorUserPermissionLevel);
 }

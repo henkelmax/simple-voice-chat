@@ -5,14 +5,18 @@ import java.util.UUID;
 
 public interface MinecraftServer {
 
-    public Object getMinecraftServer();
+    /**
+     * @return the actual server object
+     */
+    Object getMinecraftServer();
+
     /**
      * @return the port of the server
      */
     int getPort();
 
     /**
-     * @return the ip of the server
+     * @return the ip of the server, without port
      */
     String getIp();
 
@@ -27,9 +31,18 @@ public interface MinecraftServer {
      */
     List<ServerPlayer> getPlayers();
 
+    /**
+     * @return whether the server is a dedicated server
+     */
     boolean isDedicated();
 
+    /**
+     * @return whether the server has 'online-mode' set to true
+     */
     boolean usesAuthentication();
 
+    /**
+     * @return the permission level at which a user is considered an operator
+     */
     int getOperatorUserPermissionLevel();
 }

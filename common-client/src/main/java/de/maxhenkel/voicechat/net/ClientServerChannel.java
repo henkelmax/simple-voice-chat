@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.api.Packet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 

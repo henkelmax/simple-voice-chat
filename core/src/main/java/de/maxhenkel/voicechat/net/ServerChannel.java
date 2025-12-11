@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.api.MinecraftServer;
-import de.maxhenkel.voicechat.api.Packet;
 import de.maxhenkel.voicechat.api.ServerPlayer;
 
 import java.util.ArrayList;

@@ -4,7 +4,7 @@ import de.maxhenkel.voicechat.api.Entity;
 import de.maxhenkel.voicechat.api.MinecraftServer;
 import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.api.ServerLevel;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
 import net.minecraft.world.level.Level;
 
 import java.util.Objects;
@@ -30,20 +30,20 @@ public class EntityImpl implements Entity {
 
     @Override
     public Position getPosition() {
-        return UncommonCompatibilityManager.INSTANCE.getServerApi().fromVec3(entity.position());
+        return MinecraftCompatibilityManager.fromVec3(entity.position());
     }
 
     @Override
     public ServerLevel getServerLevel() {
         Level level = entity.level();
         if (level instanceof net.minecraft.server.level.ServerLevel serverLevel)
-            return UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerLevel(serverLevel);
+            return MinecraftCompatibilityManager.fromServerLevel(serverLevel);
         else throw new IllegalStateException("Tried to access getServerLevel() on client!");
     }
 
     @Override
     public Position getEyePosition() {
-        return UncommonCompatibilityManager.INSTANCE.getServerApi().fromVec3(entity.getEyePosition());
+        return MinecraftCompatibilityManager.fromVec3(entity.getEyePosition());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class EntityImpl implements Entity {
 
     @Override
     public MinecraftServer getServer() {
-        return UncommonCompatibilityManager.INSTANCE.getServerApi().fromServer(entity.getServer());
+        return MinecraftCompatibilityManager.fromServer(entity.getServer());
     }
 
     @Override
@@ -61,20 +61,15 @@ public class EntityImpl implements Entity {
         return entity.hasPermissions(operatorUserPermissionLevel);
     }
 
-    public net.minecraft.world.entity.Entity getRealEntity() {
-        return entity;
-    }
-
     @Override
     public boolean equals(Object object) {
         if (this == object) {
             return true;
         }
-        if (object == null || getClass() != object.getClass()) {
+        if (!(object instanceof Entity entity1)) {
             return false;
         }
-        EntityImpl entity1 = (EntityImpl) object;
-        return Objects.equals(entity, entity1.entity);
+        return Objects.equals(entity, entity1.getEntity());
     }
 
     @Override

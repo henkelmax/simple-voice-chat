@@ -6,9 +6,9 @@ import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.config.CategoryVolumeConfig;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 import de.maxhenkel.voicechat.integration.freecam.FreecamUtil;
+import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
 import de.maxhenkel.voicechat.natives.OpusManager;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
-import de.maxhenkel.voicechat.plugins.impl.PositionImpl;
 import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerManager;
 import de.maxhenkel.voicechat.voice.common.*;
@@ -117,7 +117,7 @@ public class AudioChannel extends Thread {
                     if (packet instanceof PlayerSoundPacket playerSoundPacket) {
                         ClientPluginManager.instance().onReceiveEntityClientSound(uuid, playerSoundPacket.getSender(), new short[0], playerSoundPacket.isWhispering(), playerSoundPacket.getDistance());
                     } else if (packet instanceof LocationSoundPacket locationSoundPacket) {
-                        ClientPluginManager.instance().onReceiveLocationalClientSound(uuid, new short[0], ((PositionImpl)locationSoundPacket.getLocation()).getPosition(), locationSoundPacket.getDistance());
+                        ClientPluginManager.instance().onReceiveLocationalClientSound(uuid, new short[0], MinecraftCompatibilityManager.getVec3(locationSoundPacket.getLocation()), locationSoundPacket.getDistance());
                     } else if (packet instanceof GroupSoundPacket) {
                         ClientPluginManager.instance().onReceiveStaticClientSound(uuid, new short[0]);
                     }
@@ -258,13 +258,13 @@ public class AudioChannel extends Thread {
             float recordingVolume = deathVolume;
             appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(soundPacket.getDistance(), pos, processedMonoData, recordingVolume));
         } else if (packet instanceof LocationSoundPacket p) {
-            short[] processedMonoData = ClientPluginManager.instance().onReceiveLocationalClientSound(uuid, monoData, ((PositionImpl)p.getLocation()).getPosition(), p.getDistance());
-            if (FreecamUtil.getDistanceTo(((PositionImpl)p.getLocation()).getPosition()) > p.getDistance() + 1D) {
+            short[] processedMonoData = ClientPluginManager.instance().onReceiveLocationalClientSound(uuid, monoData, MinecraftCompatibilityManager.getVec3(p.getLocation()), p.getDistance());
+            if (FreecamUtil.getDistanceTo(MinecraftCompatibilityManager.getVec3(p.getLocation())) > p.getDistance() + 1D) {
                 return;
             }
-            speaker.play(processedMonoData, volume, ((PositionImpl)p.getLocation()).getPosition(), p.getCategory(), p.getDistance());
+            speaker.play(processedMonoData, volume, MinecraftCompatibilityManager.getVec3(p.getLocation()), p.getCategory(), p.getDistance());
             client.getTalkCache().updateLevel(uuid, category, false, processedMonoData);
-            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(p.getDistance(), ((PositionImpl)p.getLocation()).getPosition(), processedMonoData));
+            appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(p.getDistance(), MinecraftCompatibilityManager.getVec3(p.getLocation()), processedMonoData));
         }
     }
 

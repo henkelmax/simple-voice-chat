@@ -2,10 +2,9 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.MinecraftServer;
-import de.maxhenkel.voicechat.api.Packet;
 import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.VCByteBuf;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import io.netty.buffer.Unpooled;
 
 public abstract class NetManager {
@@ -48,9 +47,9 @@ public abstract class NetManager {
         if (!Voicechat.SERVER.isCompatible(player)) {
             return;
         }
-        VCByteBuf buffer = UncommonCompatibilityManager.INSTANCE.getServerApi().fromByteBuff(Unpooled.buffer());
+        VCByteBuf buffer = CommonCompatibilityManager.INSTANCE.createVCByteBuff(Unpooled.buffer());
         packet.toBytes(buffer);
-        UncommonCompatibilityManager.INSTANCE.getServerApi().sendMinecraftPacket(player, packet.getID(), buffer);
+        CommonCompatibilityManager.INSTANCE.sendMinecraftPacket(player, packet.getID(), buffer);
     }
 
     public interface ServerReceiver<T extends Packet<T>> {

@@ -4,7 +4,7 @@ import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.opus4j.OpusEncoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
 public class ServerConfig {
@@ -29,7 +29,7 @@ public class ServerConfig {
 
     public ServerConfig(ConfigBuilder builder) {
 
-        builder.header(String.format("%s server config v%s", UncommonCompatibilityManager.INSTANCE.getModName(), UncommonCompatibilityManager.INSTANCE.getModVersion()));
+        builder.header(String.format("%s server config v%s", CommonCompatibilityManager.INSTANCE.getModName(), CommonCompatibilityManager.INSTANCE.getModVersion()));
 
         voiceChatPort = builder
                 .integerEntry("port", 24454, -1, 65535,

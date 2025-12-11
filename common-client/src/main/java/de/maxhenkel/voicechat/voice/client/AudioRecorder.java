@@ -5,7 +5,7 @@ import de.maxhenkel.lame4j.ShortArrayBuffer;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.mp3.Mp3Encoder;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.natives.LameManager;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
@@ -68,7 +68,7 @@ public class AudioRecorder {
         String recordingDestination = VoicechatClient.CLIENT_CONFIG.recordingDestination.get();
         Path location;
         if (recordingDestination.trim().isEmpty()) {
-            location = UncommonCompatibilityManager.INSTANCE.getGameDirectory().resolve("voicechat_recordings").resolve(FORMAT.format(cal.getTime()));
+            location = CommonCompatibilityManager.INSTANCE.getGameDirectory().resolve("voicechat_recordings").resolve(FORMAT.format(cal.getTime()));
         } else {
             location = Paths.get(recordingDestination).resolve(FORMAT.format(cal.getTime()));
         }

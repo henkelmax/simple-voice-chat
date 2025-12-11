@@ -4,7 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.PlayerStateManager;
 import de.maxhenkel.voicechat.voice.server.Server;
@@ -29,7 +29,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
         if (player == null) {
             return null;
         }
-        return UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(player);
+        return CommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(player);
     }
 
     @Nullable

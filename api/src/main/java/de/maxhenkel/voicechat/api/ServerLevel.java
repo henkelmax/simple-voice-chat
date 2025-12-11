@@ -10,7 +10,7 @@ public interface ServerLevel {
     Object getServerLevel();
 
     /**
-     * @return players in the level
+     * @return the list of players in the level
      */
     List<ServerPlayer> players();
 }

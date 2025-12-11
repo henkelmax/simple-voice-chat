@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.plugins.impl;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.RawUdpPacket;
 import de.maxhenkel.voicechat.api.VoicechatSocket;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 
 import javax.annotation.Nullable;
 import java.net.*;
@@ -42,7 +42,7 @@ public class VoicechatSocketImpl extends VoicechatSocketBase implements Voicecha
         } catch (BindException e) {
             Voicechat.LOGGER.error("Failed to run voice chat at UDP port {}, make sure no other application is running at that port", port);
             Voicechat.LOGGER.error("Voice chat server error", e);
-            if (UncommonCompatibilityManager.INSTANCE.isDedicatedServer()) {
+            if (CommonCompatibilityManager.INSTANCE.isDedicatedServer()) {
                 Voicechat.LOGGER.error("Shutting down server");
                 System.exit(1);
             }

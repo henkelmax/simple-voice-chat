@@ -1,4 +1,6 @@
-package de.maxhenkel.voicechat.api;
+package de.maxhenkel.voicechat.net;
+
+import de.maxhenkel.voicechat.api.VCByteBuf;
 
 public interface Packet<T extends Packet<T>> {
 

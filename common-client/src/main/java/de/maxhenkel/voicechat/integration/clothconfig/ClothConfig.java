@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.integration.clothconfig;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import me.shedaniel.clothconfig2.gui.ClothConfigScreen;
 import net.minecraft.client.Minecraft;
 
@@ -20,7 +20,7 @@ public class ClothConfig {
     }
 
     private static boolean checkLoaded() {
-        if (UncommonCompatibilityManager.INSTANCE.isModLoaded("cloth-config") || UncommonCompatibilityManager.INSTANCE.isModLoaded("cloth-config2") || UncommonCompatibilityManager.INSTANCE.isModLoaded("cloth_config")) {
+        if (CommonCompatibilityManager.INSTANCE.isModLoaded("cloth-config") || CommonCompatibilityManager.INSTANCE.isModLoaded("cloth-config2") || CommonCompatibilityManager.INSTANCE.isModLoaded("cloth_config")) {
             try {
                 Class.forName("me.shedaniel.clothconfig2.api.ConfigBuilder");
                 Voicechat.LOGGER.info("Using Cloth Config GUI");

@@ -5,7 +5,7 @@ import de.maxhenkel.voicechat.api.*;
 import de.maxhenkel.voicechat.api.audiolistener.AudioListener;
 import de.maxhenkel.voicechat.api.audiolistener.PlayerAudioListener;
 import de.maxhenkel.voicechat.api.events.*;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.impl.GroupImpl;
 import de.maxhenkel.voicechat.plugins.impl.VoicechatSocketImpl;
 import de.maxhenkel.voicechat.plugins.impl.audiolistener.PlayerAudioListenerImpl;
@@ -30,12 +30,12 @@ public class PluginManager {
             return;
         }
         Voicechat.LOGGER.info("Loading plugins");
-        plugins = UncommonCompatibilityManager.INSTANCE.loadPlugins();
+        plugins = CommonCompatibilityManager.INSTANCE.loadPlugins();
         Voicechat.LOGGER.info("Loaded {} plugin(s)", plugins.size());
         Voicechat.LOGGER.info("Initializing plugins");
         for (VoicechatPlugin plugin : plugins) {
             try {
-                plugin.initialize(UncommonCompatibilityManager.INSTANCE.getServerApi());
+                plugin.initialize(CommonCompatibilityManager.INSTANCE.getServerApi());
             } catch (Throwable e) {
                 Voicechat.LOGGER.warn("Failed to initialize plugin '{}'", plugin.getPluginId(), e);
             }
@@ -181,7 +181,7 @@ public class PluginManager {
     }
 
     public void onPlayerConnected(ServerPlayer player) {
-        dispatchEvent(PlayerConnectedEvent.class, new PlayerConnectedEventImpl(UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(player)));
+        dispatchEvent(PlayerConnectedEvent.class, new PlayerConnectedEventImpl(CommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(player)));
     }
 
     public void onPlayerDisconnected(UUID player) {
@@ -196,7 +196,7 @@ public class PluginManager {
         if (group == null) {
             return onLeaveGroup(player);
         }
-        return dispatchEvent(JoinGroupEvent.class, new JoinGroupEventImpl(new GroupImpl(group), UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(player)));
+        return dispatchEvent(JoinGroupEvent.class, new JoinGroupEventImpl(new GroupImpl(group), CommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(player)));
     }
 
     public boolean onCreateGroup(@Nullable ServerPlayer player, @Nullable Group group) {
@@ -206,7 +206,7 @@ public class PluginManager {
             }
             return onLeaveGroup(player);
         }
-        return dispatchEvent(CreateGroupEvent.class, new CreateGroupEventImpl(new GroupImpl(group), UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(player)));
+        return dispatchEvent(CreateGroupEvent.class, new CreateGroupEventImpl(new GroupImpl(group), CommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(player)));
     }
 
     public boolean onLeaveGroup(ServerPlayer player) {
@@ -226,7 +226,7 @@ public class PluginManager {
             }
         }
 
-        return dispatchEvent(LeaveGroupEvent.class, new LeaveGroupEventImpl(group, UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(player)));
+        return dispatchEvent(LeaveGroupEvent.class, new LeaveGroupEventImpl(group, CommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(player)));
     }
 
     public boolean onRemoveGroup(Group group) {
@@ -236,12 +236,12 @@ public class PluginManager {
     public boolean onMicPacket(ServerPlayer sender, MicPacket packet) {
         return dispatchEvent(MicrophonePacketEvent.class, new MicrophonePacketEventImpl(
                 new MicrophonePacketImpl(packet, sender.getUuid()),
-                UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(sender)
+                CommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(sender)
         ));
     }
 
     public float getDistance(ServerPlayer sender, MicPacket packet, float originalDistance) {
-        VoiceDistanceEventImpl event = new VoiceDistanceEventImpl(new MicrophonePacketImpl(packet, sender.getUuid()), UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(sender), originalDistance);
+        VoiceDistanceEventImpl event = new VoiceDistanceEventImpl(new MicrophonePacketImpl(packet, sender.getUuid()), CommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(sender), originalDistance);
         dispatchEvent(VoiceDistanceEvent.class, event);
         return event.getDistance();
     }
@@ -249,10 +249,10 @@ public class PluginManager {
     public boolean onSoundPacket(@Nullable ServerPlayer sender, @Nullable PlayerState senderState, ServerPlayer receiver, SoundPacket<?> p, String source) {
         VoicechatConnection senderConnection = null;
         if (sender != null && senderState != null) {
-            senderConnection = UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(sender);
+            senderConnection = CommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(sender);
         }
 
-        VoicechatConnection receiverConnection = UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(receiver);
+        VoicechatConnection receiverConnection = CommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(receiver);
         if (p instanceof LocationSoundPacket packet) {
             return dispatchEvent(LocationalSoundPacketEvent.class, new LocationalSoundPacketEventImpl(
                     new LocationalSoundPacketImpl(packet),

@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.ServerPlayer;
-import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.AddGroupPacket;
 import de.maxhenkel.voicechat.net.JoinedGroupPacket;
 import de.maxhenkel.voicechat.net.NetManager;
@@ -26,7 +26,7 @@ public class ServerGroupManager {
         this.server = server;
         groups = new ConcurrentHashMap<>();
 
-        UncommonCompatibilityManager.INSTANCE.getNetManager().joinGroupChannel.setServerListener((srv, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().joinGroupChannel.setServerListener((srv, player, handler, packet) -> {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
             }
@@ -34,7 +34,7 @@ public class ServerGroupManager {
                 return;
             joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
         });
-        UncommonCompatibilityManager.INSTANCE.getNetManager().createGroupChannel.setServerListener((srv, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().createGroupChannel.setServerListener((srv, player, handler, packet) -> {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
             }
@@ -46,19 +46,19 @@ public class ServerGroupManager {
             }
             addGroup(new Group(UUID.randomUUID(), packet.getName(), packet.getPassword(), false, false, packet.getType()), player);
         });
-        UncommonCompatibilityManager.INSTANCE.getNetManager().leaveGroupChannel.setServerListener((srv, player, handler, packet) -> {
+        CommonCompatibilityManager.INSTANCE.getNetManager().leaveGroupChannel.setServerListener((srv, player, handler, packet) -> {
             leaveGroup(player);
         });
     }
 
-    public void onPlayerCompatibilityCheckSucceeded(de.maxhenkel.voicechat.api.ServerPlayer player) {
+    public void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
         Voicechat.LOGGER.debug("Synchronizing {} groups with {}", groups.size(), player.getName());
         for (Group category : groups.values()) {
             broadcastAddGroup(category);
         }
     }
 
-    public void onPlayerLoggedOut(de.maxhenkel.voicechat.api.ServerPlayer player) {
+    public void onPlayerLoggedOut(ServerPlayer player) {
         cleanupGroups();
     }
 
@@ -66,7 +66,7 @@ public class ServerGroupManager {
         return server.getPlayerStateManager();
     }
 
-    public void addGroup(Group group, @Nullable de.maxhenkel.voicechat.api.ServerPlayer player) {
+    public void addGroup(Group group, @Nullable ServerPlayer player) {
         if (PluginManager.instance().onCreateGroup(player, group)) {
             return;
         }
@@ -83,7 +83,7 @@ public class ServerGroupManager {
         NetManager.sendToClient(player, new JoinedGroupPacket(group.getId(), false));
     }
 
-    public void joinGroup(@Nullable Group group, de.maxhenkel.voicechat.api.ServerPlayer player, @Nullable String password) {
+    public void joinGroup(@Nullable Group group, ServerPlayer player, @Nullable String password) {
         if (PluginManager.instance().onJoinGroup(player, group)) {
             return;
         }
@@ -104,7 +104,7 @@ public class ServerGroupManager {
         NetManager.sendToClient(player, new JoinedGroupPacket(group.getId(), false));
     }
 
-    public void leaveGroup(de.maxhenkel.voicechat.api.ServerPlayer player) {
+    public void leaveGroup(ServerPlayer player) {
         if (PluginManager.instance().onLeaveGroup(player)) {
             return;
         }
