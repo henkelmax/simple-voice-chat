@@ -1,3 +1,0 @@
-- Make long text in adjust volumes screen scrollable
-- Fixed audio device errors not being handled properly
-- Improved API error handling
