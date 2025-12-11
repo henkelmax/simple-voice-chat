@@ -4,7 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.debug.DebugOverlay;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.PermissionCheck;
 import de.maxhenkel.voicechat.macos.VersionCheck;
 import de.maxhenkel.voicechat.macos.avfoundation.AVAuthorizationStatus;
@@ -63,7 +63,7 @@ public class ClientManager {
             }
         });
 
-        ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().secretChannel, (client, handler, packet) -> authenticate(packet));
+        ClientServerNetManager.setClientListener(UncommonCompatibilityManager.INSTANCE.getNetManager().secretChannel, (client, handler, packet) -> authenticate(packet));
     }
 
     private void authenticate(SecretPacket secretPacket) {

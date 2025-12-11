@@ -1,10 +1,10 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.Entity;
 import de.maxhenkel.voicechat.api.MinecraftServer;
 import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.api.ServerLevel;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 import net.minecraft.world.level.Level;
 
 import java.util.Objects;
@@ -30,20 +30,20 @@ public class EntityImpl implements Entity {
 
     @Override
     public Position getPosition() {
-        return Voicechat.outSourcing.getServerApi().fromVec3(entity.position());
+        return UncommonCompatibilityManager.INSTANCE.getServerApi().fromVec3(entity.position());
     }
 
     @Override
     public ServerLevel getServerLevel() {
         Level level = entity.level();
         if (level instanceof net.minecraft.server.level.ServerLevel serverLevel)
-            return Voicechat.outSourcing.getServerApi().fromServerLevel(serverLevel);
+            return UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerLevel(serverLevel);
         else throw new IllegalStateException("Tried to access getServerLevel() on client!");
     }
 
     @Override
     public Position getEyePosition() {
-        return Voicechat.outSourcing.getServerApi().fromVec3(entity.getEyePosition());
+        return UncommonCompatibilityManager.INSTANCE.getServerApi().fromVec3(entity.getEyePosition());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class EntityImpl implements Entity {
 
     @Override
     public MinecraftServer getServer() {
-        return Voicechat.outSourcing.getServerApi().fromServer(entity.getServer());
+        return UncommonCompatibilityManager.INSTANCE.getServerApi().fromServer(entity.getServer());
     }
 
     @Override

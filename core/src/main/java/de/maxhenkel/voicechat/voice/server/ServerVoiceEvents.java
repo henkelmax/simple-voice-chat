@@ -13,6 +13,7 @@ import de.maxhenkel.voicechat.voice.common.Secret;
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,7 +35,16 @@ public class ServerVoiceEvents {
         UncommonCompatibilityManager.INSTANCE.onServerVoiceChatDisconnected(this::serverVoiceChatDisconnected);
         UncommonCompatibilityManager.INSTANCE.onPlayerCompatibilityCheckSucceeded(this::playerCompatibilityCheckSucceeded);
 
-        Voicechat.outSourcing.setServerListener(this);
+        UncommonCompatibilityManager.INSTANCE.getNetManager().requestSecretChannel.setServerListener((server, player, handler, packet) -> {
+            Voicechat.LOGGER.info("Received secret request of {} ({})", player.getName(), packet.getCompatibilityVersion());
+            clientCompatibilities.put(player.getUuid(), packet.getCompatibilityVersion());
+            if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
+                Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
+                UncommonCompatibilityManager.INSTANCE.sendIncompatibleMessage(player, packet.getCompatibilityVersion());
+            } else {
+                initializePlayerConnection(player);
+            }
+        });
     }
 
     public boolean isCompatible(de.maxhenkel.voicechat.api.ServerPlayer player) {
@@ -95,8 +105,7 @@ public class ServerVoiceEvents {
             return;
         }
 
-        Timer timer = new Timer("%s-login-timer".formatted(serverPlayer.getName()), true);
-        timer.schedule(Voicechat.outSourcing.getTimerSchedule(this, timer, server, serverPlayer), Voicechat.SERVER_CONFIG.loginTimeout.get());
+        UncommonCompatibilityManager.INSTANCE.getServerApi().createTimeoutTimer(serverPlayer);
     }
 
     public void playerLoggedOut(de.maxhenkel.voicechat.api.ServerPlayer player) {

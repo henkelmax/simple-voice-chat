@@ -5,7 +5,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.VolumeCategory;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeList;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.plugins.CategoryManager;
 import net.minecraft.client.Minecraft;
@@ -22,11 +22,11 @@ public class ClientCategoryManager extends CategoryManager {
 
     public ClientCategoryManager() {
         images = new ConcurrentHashMap<>();
-        ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().addCategoryChannel, (client, handler, packet) -> {
+        ClientServerNetManager.setClientListener(UncommonCompatibilityManager.INSTANCE.getNetManager().addCategoryChannel, (client, handler, packet) -> {
             addCategory(packet.getCategory());
             Voicechat.LOGGER.debug("Added category {}", packet.getCategory().getId());
         });
-        ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().removeCategoryChannel, (client, handler, packet) -> {
+        ClientServerNetManager.setClientListener(UncommonCompatibilityManager.INSTANCE.getNetManager().removeCategoryChannel, (client, handler, packet) -> {
             removeCategory(packet.getCategoryId());
             Voicechat.LOGGER.debug("Removed category {}", packet.getCategoryId());
         });

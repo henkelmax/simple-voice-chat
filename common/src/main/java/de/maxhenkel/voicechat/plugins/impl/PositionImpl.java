@@ -13,10 +13,6 @@ public class PositionImpl implements Position {
         this.position = position;
     }
 
-    public PositionImpl(double x, double y, double z) {
-        this.position = new Vec3(x, y, z);
-    }
-
     @Override
     public double getX() {
         return position.x;

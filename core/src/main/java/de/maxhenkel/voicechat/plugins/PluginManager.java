@@ -35,7 +35,7 @@ public class PluginManager {
         Voicechat.LOGGER.info("Initializing plugins");
         for (VoicechatPlugin plugin : plugins) {
             try {
-                plugin.initialize(Voicechat.outSourcing.getServerApi());
+                plugin.initialize(UncommonCompatibilityManager.INSTANCE.getServerApi());
             } catch (Throwable e) {
                 Voicechat.LOGGER.warn("Failed to initialize plugin '{}'", plugin.getPluginId(), e);
             }
@@ -181,7 +181,7 @@ public class PluginManager {
     }
 
     public void onPlayerConnected(ServerPlayer player) {
-        dispatchEvent(PlayerConnectedEvent.class, new PlayerConnectedEventImpl(Voicechat.outSourcing.getServerApi().getConnectionOf(player)));
+        dispatchEvent(PlayerConnectedEvent.class, new PlayerConnectedEventImpl(UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(player)));
     }
 
     public void onPlayerDisconnected(UUID player) {
@@ -196,7 +196,7 @@ public class PluginManager {
         if (group == null) {
             return onLeaveGroup(player);
         }
-        return dispatchEvent(JoinGroupEvent.class, new JoinGroupEventImpl(new GroupImpl(group), Voicechat.outSourcing.getServerApi().getConnectionOf(player)));
+        return dispatchEvent(JoinGroupEvent.class, new JoinGroupEventImpl(new GroupImpl(group), UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(player)));
     }
 
     public boolean onCreateGroup(@Nullable ServerPlayer player, @Nullable Group group) {
@@ -206,7 +206,7 @@ public class PluginManager {
             }
             return onLeaveGroup(player);
         }
-        return dispatchEvent(CreateGroupEvent.class, new CreateGroupEventImpl(new GroupImpl(group), Voicechat.outSourcing.getServerApi().getConnectionOf(player)));
+        return dispatchEvent(CreateGroupEvent.class, new CreateGroupEventImpl(new GroupImpl(group), UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(player)));
     }
 
     public boolean onLeaveGroup(ServerPlayer player) {
@@ -226,7 +226,7 @@ public class PluginManager {
             }
         }
 
-        return dispatchEvent(LeaveGroupEvent.class, new LeaveGroupEventImpl(group, Voicechat.outSourcing.getServerApi().getConnectionOf(player)));
+        return dispatchEvent(LeaveGroupEvent.class, new LeaveGroupEventImpl(group, UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(player)));
     }
 
     public boolean onRemoveGroup(Group group) {
@@ -236,12 +236,12 @@ public class PluginManager {
     public boolean onMicPacket(ServerPlayer sender, MicPacket packet) {
         return dispatchEvent(MicrophonePacketEvent.class, new MicrophonePacketEventImpl(
                 new MicrophonePacketImpl(packet, sender.getUuid()),
-                Voicechat.outSourcing.getServerApi().getConnectionOf(sender)
+                UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(sender)
         ));
     }
 
     public float getDistance(ServerPlayer sender, MicPacket packet, float originalDistance) {
-        VoiceDistanceEventImpl event = new VoiceDistanceEventImpl(new MicrophonePacketImpl(packet, sender.getUuid()), Voicechat.outSourcing.getServerApi().getConnectionOf(sender), originalDistance);
+        VoiceDistanceEventImpl event = new VoiceDistanceEventImpl(new MicrophonePacketImpl(packet, sender.getUuid()), UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(sender), originalDistance);
         dispatchEvent(VoiceDistanceEvent.class, event);
         return event.getDistance();
     }
@@ -249,10 +249,10 @@ public class PluginManager {
     public boolean onSoundPacket(@Nullable ServerPlayer sender, @Nullable PlayerState senderState, ServerPlayer receiver, SoundPacket<?> p, String source) {
         VoicechatConnection senderConnection = null;
         if (sender != null && senderState != null) {
-            senderConnection = Voicechat.outSourcing.getServerApi().getConnectionOf(sender);
+            senderConnection = UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(sender);
         }
 
-        VoicechatConnection receiverConnection = Voicechat.outSourcing.getServerApi().getConnectionOf(receiver);
+        VoicechatConnection receiverConnection = UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(receiver);
         if (p instanceof LocationSoundPacket packet) {
             return dispatchEvent(LocationalSoundPacketEvent.class, new LocationalSoundPacketEventImpl(
                     new LocationalSoundPacketImpl(packet),

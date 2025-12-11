@@ -7,7 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 import de.maxhenkel.voicechat.permission.Permission;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
@@ -53,8 +53,8 @@ public class VoicechatCommands {
                 return 1;
             }
 
-            if (!Voicechat.SERVER.isCompatible(Voicechat.outSourcing.getServerApi().fromServerPlayer(player))) {
-                commandSource.getSource().sendSuccess(() -> Component.translatable("message.voicechat.player_no_voicechat", player.getDisplayName(), CommonCompatibilityManager.INSTANCE.getModName()), false);
+            if (!Voicechat.SERVER.isCompatible(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(player))) {
+                commandSource.getSource().sendSuccess(() -> Component.translatable("message.voicechat.player_no_voicechat", player.getDisplayName(), UncommonCompatibilityManager.INSTANCE.getModName()), false);
                 return 1;
             }
 
@@ -122,8 +122,8 @@ public class VoicechatCommands {
                 return 1;
             }
 
-            if (!Voicechat.SERVER.isCompatible(Voicechat.outSourcing.getServerApi().fromServerPlayer(player))) {
-                commandSource.getSource().sendSuccess(() -> Component.translatable("message.voicechat.player_no_voicechat", player.getDisplayName(), CommonCompatibilityManager.INSTANCE.getModName()), false);
+            if (!Voicechat.SERVER.isCompatible(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(player))) {
+                commandSource.getSource().sendSuccess(() -> Component.translatable("message.voicechat.player_no_voicechat", player.getDisplayName(), UncommonCompatibilityManager.INSTANCE.getModName()), false);
                 return 1;
             }
 
@@ -191,7 +191,7 @@ public class VoicechatCommands {
                 return 1;
             }
 
-            server.getGroupManager().leaveGroup(Voicechat.outSourcing.getServerApi().fromServerPlayer(source));
+            server.getGroupManager().leaveGroup(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(source));
             commandSource.getSource().sendSuccess(() -> Component.translatable("message.voicechat.leave_successful"), false);
             return 1;
         }));
@@ -212,7 +212,7 @@ public class VoicechatCommands {
         }
         ServerPlayer player = source.getPlayerOrException();
 
-        if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(Voicechat.outSourcing.getServerApi().fromServerPlayer(player))) {
+        if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(player))) {
             source.sendSuccess(() -> Component.translatable("message.voicechat.no_group_permission"), false);
             return null;
         }
@@ -257,7 +257,7 @@ public class VoicechatCommands {
             return 1;
         }
 
-        server.getGroupManager().joinGroup(group, Voicechat.outSourcing.getServerApi().fromServerPlayer(source.getPlayerOrException()), password);
+        server.getGroupManager().joinGroup(group, UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(source.getPlayerOrException()), password);
         source.sendSuccess(() -> Component.translatable("message.voicechat.join_successful", Component.literal(group.getName()).withStyle(ChatFormatting.GRAY)), false);
         return 1;
     }
@@ -277,10 +277,10 @@ public class VoicechatCommands {
     private static boolean checkNoVoicechat(CommandContext<CommandSourceStack> commandSource) {
         try {
             ServerPlayer player = commandSource.getSource().getPlayerOrException();
-            if (Voicechat.SERVER.isCompatible(Voicechat.outSourcing.getServerApi().fromServerPlayer(player))) {
+            if (Voicechat.SERVER.isCompatible(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(player))) {
                 return false;
             }
-            commandSource.getSource().sendFailure(Component.literal(Voicechat.TRANSLATIONS.voicechatNeededForCommandMessage.get().formatted(CommonCompatibilityManager.INSTANCE.getModName())));
+            commandSource.getSource().sendFailure(Component.literal(Voicechat.TRANSLATIONS.voicechatNeededForCommandMessage.get().formatted(UncommonCompatibilityManager.INSTANCE.getModName())));
             return true;
         } catch (Exception e) {
             commandSource.getSource().sendFailure(Component.literal(Voicechat.TRANSLATIONS.playerCommandMessage.get()));
@@ -290,7 +290,7 @@ public class VoicechatCommands {
 
     private static boolean checkPermission(CommandSourceStack stack, Permission permission) {
         try {
-            return permission.hasPermission(Voicechat.outSourcing.getServerApi().fromServerPlayer(stack.getPlayerOrException()));
+            return permission.hasPermission(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(stack.getPlayerOrException()));
         } catch (CommandSyntaxException e) {
             return stack.hasPermission(stack.getServer().getOperatorUserPermissionLevel());
         }

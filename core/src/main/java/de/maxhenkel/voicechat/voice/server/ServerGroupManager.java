@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.net.AddGroupPacket;
 import de.maxhenkel.voicechat.net.JoinedGroupPacket;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.RemoveGroupPacket;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 
@@ -29,7 +30,7 @@ public class ServerGroupManager {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
             }
-            if (!Voicechat.outSourcing.hasGroupPermissions(player))
+            if (!PermissionManager.INSTANCE.hasGroupPermissions(player))
                 return;
             joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
         });
@@ -37,7 +38,7 @@ public class ServerGroupManager {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
             }
-            if (!Voicechat.outSourcing.hasGroupPermissions(player))
+            if (!PermissionManager.INSTANCE.hasGroupPermissions(player))
                 return;
             if (!Voicechat.GROUP_REGEX.matcher(packet.getName()).matches()) {
                 Voicechat.LOGGER.warn("Player {} tried to create a group with an invalid name: {}", player.getName(), packet.getName());

@@ -56,12 +56,12 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
 
     @SubscribeEvent
     public void serverStarting(ServerStartedEvent event) {
-        serverStartingEvents.forEach(consumer -> consumer.accept(Voicechat.outSourcing.getServerApi().fromServer(event.getServer())));
+        serverStartingEvents.forEach(consumer -> consumer.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServer(event.getServer())));
     }
 
     @SubscribeEvent
     public void serverStopping(ServerStoppingEvent event) {
-        serverStoppingEvents.forEach(consumer -> consumer.accept(Voicechat.outSourcing.getServerApi().fromServer(event.getServer())));
+        serverStoppingEvents.forEach(consumer -> consumer.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServer(event.getServer())));
     }
 
     @SubscribeEvent
@@ -72,14 +72,14 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     @SubscribeEvent
     public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            playerLoggedInEvents.forEach(consumer -> consumer.accept(Voicechat.outSourcing.getServerApi().fromServerPlayer(player)));
+            playerLoggedInEvents.forEach(consumer -> consumer.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(player)));
         }
     }
 
     @SubscribeEvent
     public void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            playerLoggedOutEvents.forEach(consumer -> consumer.accept(Voicechat.outSourcing.getServerApi().fromServerPlayer(player)));
+            playerLoggedOutEvents.forEach(consumer -> consumer.accept(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(player)));
         }
     }
 
@@ -101,7 +101,7 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     @Override
     public void emitServerVoiceChatConnectedEvent(de.maxhenkel.voicechat.api.ServerPlayer player) {
         voicechatConnectEvents.forEach(consumer -> consumer.accept(player));
-        MinecraftForge.EVENT_BUS.post(new ServerVoiceChatConnectedEvent((ServerPlayer)player.getPlayer()));
+        MinecraftForge.EVENT_BUS.post(new ServerVoiceChatConnectedEvent(((CommonCompatibilityManager)UncommonCompatibilityManager.INSTANCE).getServerPlayer(player)));
     }
 
     @Override
@@ -113,7 +113,7 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
     @Override
     public void emitPlayerCompatibilityCheckSucceeded(de.maxhenkel.voicechat.api.ServerPlayer player) {
         voicechatCompatibilityCheckSucceededEvents.forEach(consumer -> consumer.accept(player));
-        MinecraftForge.EVENT_BUS.post(new VoiceChatCompatibilityCheckSucceededEvent((ServerPlayer)player.getPlayer()));
+        MinecraftForge.EVENT_BUS.post(new VoiceChatCompatibilityCheckSucceededEvent(((CommonCompatibilityManager)UncommonCompatibilityManager.INSTANCE).getServerPlayer(player)));
     }
 
     @Override

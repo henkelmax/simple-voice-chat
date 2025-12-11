@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.plugins.impl.events;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
 import de.maxhenkel.voicechat.api.events.PlayerStateChangedEvent;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 
 import javax.annotation.Nullable;
@@ -37,7 +37,7 @@ public class PlayerStateChangedEventImpl extends ServerEventImpl implements Play
     @Nullable
     public VoicechatConnection getConnection() {
         if (connection == null) {
-            connection = Voicechat.outSourcing.getServerApi().getConnectionOf(state.getUuid());
+            connection = UncommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(state.getUuid());
         }
         return connection;
     }

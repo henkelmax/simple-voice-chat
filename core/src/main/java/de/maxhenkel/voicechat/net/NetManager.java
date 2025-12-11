@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.api.MinecraftServer;
 import de.maxhenkel.voicechat.api.Packet;
 import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.VCByteBuf;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 import io.netty.buffer.Unpooled;
 
 public abstract class NetManager {
@@ -47,9 +48,9 @@ public abstract class NetManager {
         if (!Voicechat.SERVER.isCompatible(player)) {
             return;
         }
-        VCByteBuf buffer = Voicechat.outSourcing.byteBufOf(Unpooled.buffer());
+        VCByteBuf buffer = UncommonCompatibilityManager.INSTANCE.getServerApi().fromByteBuff(Unpooled.buffer());
         packet.toBytes(buffer);
-        Voicechat.outSourcing.sendCustomPacket(player, packet.getID(), buffer);
+        UncommonCompatibilityManager.INSTANCE.getServerApi().sendMinecraftPacket(player, packet.getID(), buffer);
     }
 
     public interface ServerReceiver<T extends Packet<T>> {

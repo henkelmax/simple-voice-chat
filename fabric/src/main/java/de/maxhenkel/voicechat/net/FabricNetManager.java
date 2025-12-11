@@ -1,6 +1,8 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.Packet;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -27,17 +29,17 @@ public class FabricNetManager extends NetManager {
         ClientServerChannel<T> c = new ClientServerChannel<>();
         try {
             T dummyPacket = packetType.getDeclaredConstructor().newInstance();
-            ResourceLocation identifier = dummyPacket.getIdentifier();
+            ResourceLocation identifier = new ResourceLocation(Voicechat.MODID, dummyPacket.getID());
             packets.add(identifier);
             if (toServer) {
                 ServerPlayNetworking.registerGlobalReceiver(identifier, (server, player, handler, buf, responseSender) -> {
                     try {
-                        if (!Voicechat.SERVER.isCompatible(player) && !packetType.equals(RequestSecretPacket.class)) {
+                        if (!Voicechat.SERVER.isCompatible(player.getUUID()) && !packetType.equals(RequestSecretPacket.class)) {
                             return;
                         }
                         T packet = packetType.getDeclaredConstructor().newInstance();
-                        packet.fromBytes(buf);
-                        c.onServerPacket(server, player, handler, packet);
+                        packet.fromBytes(UncommonCompatibilityManager.INSTANCE.getServerApi().fromByteBuff(buf));
+                        c.onServerPacket(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServer(server), UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(player), handler, packet);
                     } catch (Exception e) {
                         Voicechat.LOGGER.error("Failed to process packet", e);
                     }
@@ -47,7 +49,7 @@ public class FabricNetManager extends NetManager {
                 ClientPlayNetworking.registerGlobalReceiver(identifier, (client, handler, buf, responseSender) -> {
                     try {
                         T packet = packetType.getDeclaredConstructor().newInstance();
-                        packet.fromBytes(buf);
+                        packet.fromBytes(UncommonCompatibilityManager.INSTANCE.getServerApi().fromByteBuff(buf));
                         client.execute(() -> c.onClientPacket(client, handler, packet));
                     } catch (Exception e) {
                         Voicechat.LOGGER.error("Failed to register packet receiver", e);

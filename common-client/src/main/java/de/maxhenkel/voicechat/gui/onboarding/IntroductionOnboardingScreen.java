@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 
 public class IntroductionOnboardingScreen extends OnboardingScreenBase {
 
-    private static final Component TITLE = Component.translatable("message.voicechat.onboarding.introduction.title", CommonCompatibilityManager.INSTANCE.getModName()).withStyle(ChatFormatting.BOLD);
+    private static final Component TITLE = Component.translatable("message.voicechat.onboarding.introduction.title", UncommonCompatibilityManager.INSTANCE.getModName()).withStyle(ChatFormatting.BOLD);
     private static final Component DESCRIPTION = Component.translatable("message.voicechat.onboarding.introduction.description");
     private static final Component SKIP = Component.translatable("message.voicechat.onboarding.introduction.skip");
 

@@ -1,12 +1,12 @@
 package de.maxhenkel.voicechat.plugins.impl.audiochannel;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.MinecraftServer;
 import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
 import de.maxhenkel.voicechat.api.audiochannel.StaticAudioChannel;
 import de.maxhenkel.voicechat.api.packets.MicrophonePacket;
 import de.maxhenkel.voicechat.api.packets.Packet;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.GroupSoundPacket;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Group;
@@ -67,7 +67,7 @@ public class StaticAudioChannelImpl extends AudioChannelImpl implements StaticAu
                         continue;
                     }
                 }
-                Voicechat.outSourcing.getServerApi().sendPacket(player, (Packet) packet);
+                UncommonCompatibilityManager.INSTANCE.getServerApi().sendPacket(player, (Packet) packet);
             }
         }
     }

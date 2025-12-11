@@ -1,10 +1,10 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.*;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.service.Service;
+import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -64,9 +64,7 @@ public abstract class UncommonCompatibilityManager {
 
     public abstract PermissionManager createPermissionManager();
 
-    public VoicechatServerApi getServerApi() {
-        return Voicechat.outSourcing.getServerApi();
-    }
+    public abstract VoicechatServerApi getServerApi();
 
     public Object createRawApiEntity(de.maxhenkel.voicechat.api.Entity entity) {
         return entity;
@@ -82,8 +80,9 @@ public abstract class UncommonCompatibilityManager {
 
     public abstract boolean canSee(ServerPlayer player, ServerPlayer other);
 
-    public void execute(MinecraftServer server, Runnable runnable) {
-        Voicechat.outSourcing.serverExecute(server, runnable);
-    }
+    public abstract void execute(MinecraftServer server, Runnable runnable);
 
+    public abstract void sendIncompatibleMessage(ServerPlayer serverPlayer, int compatibilityVersion);
+
+    public abstract void registercommands();
 }

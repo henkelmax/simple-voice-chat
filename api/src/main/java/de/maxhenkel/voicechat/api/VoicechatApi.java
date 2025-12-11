@@ -91,6 +91,8 @@ public interface VoicechatApi {
 
     Position fromVec3(Object vec3);
 
+    VCByteBuf fromByteBuff(Object byteBuf);
+
     /**
      * Creates a new position object.
      *

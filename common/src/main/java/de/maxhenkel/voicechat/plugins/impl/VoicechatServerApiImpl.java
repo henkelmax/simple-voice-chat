@@ -14,6 +14,7 @@ import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
 import de.maxhenkel.voicechat.api.packets.Packet;
 import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.*;
 import de.maxhenkel.voicechat.plugins.impl.audiolistener.PlayerAudioListenerImpl;
@@ -27,12 +28,14 @@ import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import de.maxhenkel.voicechat.voice.server.ServerWorldUtils;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -43,10 +46,6 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
 
     protected VoicechatServerApiImpl() {
 
-    }
-
-    public static VoicechatServerApi instance() {
-        return CommonCompatibilityManager.INSTANCE.getServerApi();
     }
 
     @Override
@@ -297,6 +296,44 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
     @Override
     public void sendPacket(ServerPlayer player, Packet packet) {
         sendPacketRaw(player, (SoundPacket<?>) packet);
+    }
+
+    @Override
+    public void sendMinecraftPacket(ServerPlayer player, String id, VCByteBuf buffer) {
+        ((CommonCompatibilityManager)UncommonCompatibilityManager.INSTANCE).getServerPlayer(player).connection.send(new ClientboundCustomPayloadPacket(new ResourceLocation(Voicechat.MODID, id), new FriendlyByteBuf((ByteBuf) buffer.getBuffer())));
+    }
+
+    @Override
+    public void displayCLientMessage(ServerPlayer player, String message, boolean overlay) {
+        ((CommonCompatibilityManager)UncommonCompatibilityManager.INSTANCE).getServerPlayer(player).displayClientMessage(Component.translatable(message), overlay);
+    }
+
+    @Override
+    public void createTimeoutTimer(ServerPlayer player) {
+        net.minecraft.server.level.ServerPlayer serverPlayer = ((CommonCompatibilityManager)UncommonCompatibilityManager.INSTANCE).getServerPlayer(player);
+        Timer timer = new Timer("%s-login-timer".formatted(serverPlayer.getName()), true);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                timer.cancel();
+                timer.purge();
+                if (!serverPlayer.server.isRunning()) {
+                    return;
+                }
+                if (!serverPlayer.connection.isAcceptingMessages()) {
+                    return;
+                }
+                if (!Voicechat.SERVER.isCompatible(player)) {
+                    UncommonCompatibilityManager.INSTANCE.execute(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServer(serverPlayer.server), () -> {
+                        serverPlayer.connection.disconnect(
+                                Component.literal(Voicechat.TRANSLATIONS.forceVoicechatKickMessage.get().formatted(
+                                        UncommonCompatibilityManager.INSTANCE.getModName(),
+                                        UncommonCompatibilityManager.INSTANCE.getModVersion()
+                                )));
+                    });
+                }
+            }
+        }, Voicechat.SERVER_CONFIG.loginTimeout.get());
     }
 
 }

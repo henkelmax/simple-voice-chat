@@ -9,6 +9,7 @@ import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.*;
 
@@ -338,7 +339,7 @@ public class Server extends Thread {
         if (player == null) {
             return;
         }
-        if (!Voicechat.outSourcing.hasSpeakPermissions(player)) {
+        if (!PermissionManager.INSTANCE.hasSpeakPermissions(player)) {
             return;
         }
         PlayerState state = playerStateManager.getState(player.getUuid());
@@ -442,7 +443,7 @@ public class Server extends Thread {
             return;
         }
 
-        if (!Voicechat.outSourcing.hasListenPermissions(receiver)) {
+        if (!PermissionManager.INSTANCE.hasListenPermissions(receiver)) {
             return;
         }
         sendPacket(soundPacket, connection);

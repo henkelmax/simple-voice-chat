@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.api.VCByteBuf;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -41,7 +41,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
         LocationSoundPacket soundPacket = new LocationSoundPacket();
         soundPacket.channelId = buf.readUUID();
         soundPacket.sender = buf.readUUID();
-        soundPacket.location = Voicechat.outSourcing.getServerApi().createPosition(buf.readDouble(), buf.readDouble(), buf.readDouble());
+        soundPacket.location = UncommonCompatibilityManager.INSTANCE.getServerApi().createPosition(buf.readDouble(), buf.readDouble(), buf.readDouble());
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
         soundPacket.distance = buf.readFloat();

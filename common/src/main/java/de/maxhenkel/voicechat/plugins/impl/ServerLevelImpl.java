@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.ServerLevel;
 import de.maxhenkel.voicechat.api.ServerPlayer;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class ServerLevelImpl implements ServerLevel {
 
     @Override
     public List<ServerPlayer> players() {
-        return serverLevel.players().stream().map(player -> Voicechat.outSourcing.getServerApi().fromServerPlayer(player)).collect(Collectors.toCollection(ArrayList::new));
+        return serverLevel.players().stream().map(player -> UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(player)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public net.minecraft.server.level.ServerLevel getRawServerLevel() {

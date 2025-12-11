@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.*;
 import de.maxhenkel.voicechat.api.audio.AudioConverter;
 import de.maxhenkel.voicechat.api.mp3.Mp3Decoder;
@@ -8,12 +7,13 @@ import de.maxhenkel.voicechat.api.mp3.Mp3Encoder;
 import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 import de.maxhenkel.voicechat.natives.LameManager;
 import de.maxhenkel.voicechat.natives.OpusManager;
 import de.maxhenkel.voicechat.plugins.impl.audio.AudioConverterImpl;
 import de.maxhenkel.voicechat.plugins.impl.mp3.Mp3DecoderImpl;
 import de.maxhenkel.voicechat.voice.common.Utils;
-import net.minecraft.server.MinecraftServer;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -84,8 +84,8 @@ public abstract class VoicechatApiImpl implements VoicechatApi {
     }
 
     @Override
-    public de.maxhenkel.voicechat.api.MinecraftServer fromServer(Object minecraftServer) {
-        if (minecraftServer instanceof MinecraftServer s) {
+    public MinecraftServer fromServer(Object minecraftServer) {
+        if (minecraftServer instanceof net.minecraft.server.MinecraftServer s) {
             return new MinecraftServerImpl(s);
         } else {
             throw new IllegalArgumentException("minecraftServer is not an instance of MinecraftServer");
@@ -103,8 +103,17 @@ public abstract class VoicechatApiImpl implements VoicechatApi {
     }
 
     @Override
+    public VCByteBuf fromByteBuff(Object byteBuf) {
+        if (byteBuf instanceof ByteBuf b) {
+            return new VCByteBufImpl(b);
+        } else {
+            throw new IllegalArgumentException("byteBuf is not an instance of ByteBuf");
+        }
+    }
+
+    @Override
     public Position createPosition(double x, double y, double z) {
-        return Voicechat.outSourcing.getServerApi().fromVec3(new Vec3(x,y,z));
+        return UncommonCompatibilityManager.INSTANCE.getServerApi().fromVec3(new Vec3(x,y,z));
     }
 
     @Override

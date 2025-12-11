@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.integration;
 
 import com.viaversion.viaversion.protocols.v1_12_2to1_13.Protocol1_12_2To1_13;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.FabricNetManager;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +25,7 @@ public class ViaVersionCompatibility {
     }
 
     private static void registerMappings() {
-        Set<ResourceLocation> packets = ((FabricNetManager) CommonCompatibilityManager.INSTANCE.getNetManager()).getPackets();
+        Set<ResourceLocation> packets = ((FabricNetManager) UncommonCompatibilityManager.INSTANCE.getNetManager()).getPackets();
         for (ResourceLocation id : packets) {
             Protocol1_12_2To1_13.MAPPINGS.getChannelMappings().put(String.format("%s:%s", OLD_VOICECHAT_PREFIX, id.getPath()), id.toString());
         }

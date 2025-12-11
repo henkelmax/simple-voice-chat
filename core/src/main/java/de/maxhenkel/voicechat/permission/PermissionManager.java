@@ -1,6 +1,8 @@
 package de.maxhenkel.voicechat.permission;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.ServerPlayer;
+import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 
 import java.util.ArrayList;
@@ -34,5 +36,31 @@ public abstract class PermissionManager {
 
     public List<Permission> getPermissions() {
         return permissions;
+    }
+
+    public boolean hasGroupPermissions(ServerPlayer player) {
+        if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
+            UncommonCompatibilityManager.INSTANCE.getServerApi().displayCLientMessage(player, "message.voicechat.no_group_permission", true);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean hasSpeakPermissions(ServerPlayer player) {
+        if (!PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player)) {
+            CooldownTimer.run("no-speak-" + player.getUuid(), 30_000L, () ->
+                    UncommonCompatibilityManager.INSTANCE.getServerApi().displayCLientMessage(player, "message.voicechat.no_speak_permission", true));
+            return false;
+        }
+        return true;
+    }
+
+    public boolean hasListenPermissions(ServerPlayer player) {
+        if (!PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(player)) {
+            CooldownTimer.run(String.format("no-listen-%s", player.getUuid()), 30_000L, () ->
+                    UncommonCompatibilityManager.INSTANCE.getServerApi().displayCLientMessage(player, "message.voicechat.no_listen_permission", true));
+            return false;
+        }
+        return true;
     }
 }

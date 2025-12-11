@@ -333,4 +333,10 @@ public interface VoicechatServerApi extends VoicechatApi {
     ConfigAccessor getServerConfig();
 
     void sendPacket(ServerPlayer player, Packet packet);
+
+    void sendMinecraftPacket(ServerPlayer player, String id, VCByteBuf buffer);
+
+    void displayCLientMessage(ServerPlayer player, String message, boolean overlay);
+
+    void createTimeoutTimer(ServerPlayer player);
 }

@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.Packet;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,12 +32,12 @@ public class ForgeNetManager extends NetManager {
                 NetworkEvent.Context context = event.getSource().get();
                 if (toServer && context.getDirection().equals(NetworkDirection.PLAY_TO_SERVER)) {
                     try {
-                        if (!Voicechat.SERVER.isCompatible(Voicechat.outSourcing.getServerApi().fromServerPlayer(context.getSender())) && !packetType.equals(RequestSecretPacket.class)) {
+                        if (!Voicechat.SERVER.isCompatible(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(context.getSender())) && !packetType.equals(RequestSecretPacket.class)) {
                             return;
                         }
                         T packet = packetType.getDeclaredConstructor().newInstance();
-                        packet.fromBytes(Voicechat.outSourcing.byteBufOf(event.getPayload()));
-                        c.onServerPacket(Voicechat.outSourcing.getServerApi().fromServer(context.getSender().server), Voicechat.outSourcing.getServerApi().fromServerPlayer(context.getSender()), context.getSender().connection, packet);
+                        packet.fromBytes(UncommonCompatibilityManager.INSTANCE.getServerApi().fromByteBuff(event.getPayload()));
+                        c.onServerPacket(UncommonCompatibilityManager.INSTANCE.getServerApi().fromServer(context.getSender().server), UncommonCompatibilityManager.INSTANCE.getServerApi().fromServerPlayer(context.getSender()), context.getSender().connection, packet);
                         context.setPacketHandled(true);
                     } catch (Exception e) {
                         Voicechat.LOGGER.error("Failed to process packet", e);
@@ -47,7 +48,7 @@ public class ForgeNetManager extends NetManager {
                     }
                     try {
                         T packet = packetType.getDeclaredConstructor().newInstance();
-                        packet.fromBytes(Voicechat.outSourcing.byteBufOf(event.getPayload()));
+                        packet.fromBytes(UncommonCompatibilityManager.INSTANCE.getServerApi().fromByteBuff(event.getPayload()));
                         onClientPacket(c, packet);
                         context.setPacketHandled(true);
                     } catch (Exception e) {

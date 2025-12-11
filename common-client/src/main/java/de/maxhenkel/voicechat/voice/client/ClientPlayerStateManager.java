@@ -14,7 +14,7 @@ import de.maxhenkel.voicechat.gui.group.JoinGroupScreen;
 import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeList;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.intercompatibility.UncommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.net.UpdateStatePacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
@@ -47,7 +47,7 @@ public class ClientPlayerStateManager {
 
         states = new HashMap<>();
 
-        ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel, (client, handler, packet) -> {
+        ClientServerNetManager.setClientListener(UncommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel, (client, handler, packet) -> {
             states.put(packet.getPlayerState().getUuid(), packet.getPlayerState());
             Voicechat.LOGGER.debug("Got state for {}: {}", packet.getPlayerState().getName(), packet.getPlayerState());
             VoicechatClient.USERNAME_CACHE.updateUsernameAndSave(packet.getPlayerState().getUuid(), packet.getPlayerState().getName());
@@ -61,7 +61,7 @@ public class ClientPlayerStateManager {
             JoinGroupList.update();
             GroupList.update();
         });
-        ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel, (client, handler, packet) -> {
+        ClientServerNetManager.setClientListener(UncommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel, (client, handler, packet) -> {
             states = packet.getPlayerStates().stream().collect(Collectors.toMap(PlayerState::getUuid, p -> p));
             Voicechat.LOGGER.debug("Received {} state(s)", states.size());
             for (PlayerState state : states.values()) {
@@ -72,14 +72,14 @@ public class ClientPlayerStateManager {
             JoinGroupList.update();
             GroupList.update();
         });
-        ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().removePlayerStateChannel, (client, handler, packet) -> {
+        ClientServerNetManager.setClientListener(UncommonCompatibilityManager.INSTANCE.getNetManager().removePlayerStateChannel, (client, handler, packet) -> {
             states.remove(packet.getId());
             Voicechat.LOGGER.debug("Removed state {}", packet.getId());
             AdjustVolumeList.update();
             JoinGroupList.update();
             GroupList.update();
         });
-        ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().joinedGroupChannel, (client, handler, packet) -> {
+        ClientServerNetManager.setClientListener(UncommonCompatibilityManager.INSTANCE.getNetManager().joinedGroupChannel, (client, handler, packet) -> {
             Screen screen = Minecraft.getInstance().screen;
             this.group = packet.getGroup();
             if (packet.isWrongPassword()) {

@@ -16,7 +16,6 @@ public abstract class Voicechat {
 
     public static final String MODID = "voicechat";
     public static final VoicechatLogger LOGGER = new Log4JVoicechatLogger(MODID);
-    public static OutSourcing outSourcing;
     public static ServerVoiceEvents SERVER;
     public static ServerConfig SERVER_CONFIG;
     public static Translations TRANSLATIONS;
@@ -25,11 +24,10 @@ public abstract class Voicechat {
 
     public static final Pattern GROUP_REGEX = Pattern.compile("^[^\\n\\r\\t\\s][^\\n\\r\\t]{0,23}$");
 
-    public void initialize(OutSourcing outSourcing) {
+    public void initialize() {
         if (debugMode()) {
             LOGGER.warn("Running in debug mode - Don't leave this enabled in production!");
         }
-        Voicechat.outSourcing = outSourcing;
 
         LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
 
@@ -38,15 +36,11 @@ public abstract class Voicechat {
         UncommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
         initPlugins();
-        registerCommands();
+        UncommonCompatibilityManager.INSTANCE.registercommands();
     }
 
     protected void initPlugins() {
         PluginManager.instance().init();
-    }
-
-    protected void registerCommands() {
-        outSourcing.registercommands();
     }
 
     public void initializeConfigs() {
