@@ -53,8 +53,8 @@ public class PluginManager {
             Voicechat.LOGGER.info("Registering events for '{}'", plugin.getPluginId());
             try {
                 plugin.registerEvents(registration);
-            } catch (Throwable e) {
-                Voicechat.LOGGER.warn("Failed to register events for plugin '{}'", plugin.getPluginId(), e);
+            } catch (Throwable t) {
+                Voicechat.LOGGER.error("Failed to register events for '{}'", plugin.getPluginId(), t);
             }
         }
         events = eventBuilder.build();
@@ -122,7 +122,11 @@ public class PluginManager {
 
         for (PlayerAudioListener l : listeners) {
             if (l instanceof PlayerAudioListenerImpl) {
-                ((PlayerAudioListenerImpl) l).getListener().accept(soundPacket);
+                try {
+                    ((PlayerAudioListenerImpl) l).getListener().accept(soundPacket);
+                } catch (Throwable t) {
+                    Voicechat.LOGGER.error("Failed to process audio listener", t);
+                }
             }
         }
     }
@@ -139,8 +143,8 @@ public class PluginManager {
                 if (event.isCancelled()) {
                     break;
                 }
-            } catch (Exception e) {
-                Voicechat.LOGGER.error("Failed to dispatch event '{}'", event.getClass().getSimpleName(), e);
+            } catch (Throwable t) {
+                Voicechat.LOGGER.error("Failed to dispatch event '{}'", eventClass.getSimpleName(), t);
             }
         }
         return event.isCancelled();
