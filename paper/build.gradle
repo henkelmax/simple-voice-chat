@@ -1,9 +1,3 @@
-buildscript {
-    dependencies {
-        classpath "info.u-team.curse_gradle_uploader:curse_gradle_uploader:${curse_gradle_uploader_version}"
-    }
-}
-
 plugins {
     id 'java'
 }
@@ -11,7 +5,7 @@ plugins {
 apply plugin: 'io.papermc.paperweight.userdev'
 apply plugin: 'com.gradleup.shadow'
 apply plugin: 'com.modrinth.minotaur'
-apply plugin: 'info.u_team.curse_gradle_uploader'
+apply plugin: 'de.maxhenkel.cursegradle'
 apply plugin: 'io.papermc.hangar-publish-plugin'
 apply plugin: 'xyz.jpenilla.run-paper'
 
