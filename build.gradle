@@ -3,7 +3,7 @@ plugins {
     id 'de.maxhenkel.cursegradle' version "${cursegradle_version}" apply false
     id 'com.modrinth.minotaur' version "${minotaur_version}" apply false
     id 'mod-update' version "${mod_update_version}" apply false
-    id 'fabric-loom' version "${fabric_loom_version}" apply false
+    id 'net.fabricmc.fabric-loom' version "${fabric_loom_version}" apply false
     id 'io.papermc.hangar-publish-plugin' version "${hangar_publish_version}" apply false
     id 'io.papermc.paperweight.userdev' version "${paperweight_version}" apply false
     id 'xyz.jpenilla.run-paper' version "${run_task_version}" apply false

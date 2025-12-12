@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.integration.vanish;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.events.VanishEvents;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import me.drex.vanish.api.VanishAPI;
+//import me.drex.vanish.api.VanishAPI;
 import net.minecraft.server.level.ServerPlayer;
 
 public class VanishIntegration {
@@ -35,7 +35,7 @@ public class VanishIntegration {
             return;
         }
         try {
-            me.drex.vanish.api.VanishEvents.VANISH_EVENT.register((vanishPlayer, vanish) -> {
+            /*me.drex.vanish.api.VanishEvents.VANISH_EVENT.register((vanishPlayer, vanish) -> {
                 for (ServerPlayer player : vanishPlayer.level().getServer().getPlayerList().getPlayers()) {
                     if (vanish) {
                         if (CommonCompatibilityManager.INSTANCE.canSee(player, vanishPlayer)) {
@@ -49,7 +49,7 @@ public class VanishIntegration {
                         VanishEvents.ON_UNVANISH.invoker().accept(vanishPlayer, player);
                     }
                 }
-            });
+            });*/
         } catch (Throwable t) {
             Voicechat.LOGGER.warn("Failed to use vanish compatibility", t);
             loaded = false;
@@ -59,7 +59,7 @@ public class VanishIntegration {
     public static boolean canSee(ServerPlayer player, ServerPlayer other) {
         if (isLoaded()) {
             try {
-                return VanishAPI.canSeePlayer(other, player);
+                //return VanishAPI.canSeePlayer(other, player);
             } catch (Throwable t) {
                 Voicechat.LOGGER.warn("Failed to use vanish compatibility", t);
                 loaded = false;

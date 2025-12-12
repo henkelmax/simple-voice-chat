@@ -1,4 +1,5 @@
 package de.maxhenkel.voicechat.integration.clothconfig;
+/*
 
 import de.maxhenkel.configbuilder.entry.*;
 import de.maxhenkel.voicechat.VoicechatClient;
@@ -114,3 +115,4 @@ public class ClothConfigIntegration {
     }
 
 }
+*/
