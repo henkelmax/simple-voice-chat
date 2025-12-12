@@ -2,12 +2,11 @@ plugins {
     id 'maven-publish'
 }
 
-archivesBaseName = archives_base_name
+base {
+    archivesName = archives_base_name
+}
 version = project(':api').version
 group = maven_group
-
-sourceCompatibility = JavaLanguageVersion.of(8)
-targetCompatibility = JavaLanguageVersion.of(8)
 
 processResources {
     filesMatching('fabric.mod.json') {
@@ -19,7 +18,7 @@ publishing {
     publications {
         voiceChatApi(MavenPublication) {
             artifactId archives_base_name
-            artifact(jar.archivePath) {
+            artifact(jar) {
                 builtBy build
                 classifier 'fabric-stub'
             }
