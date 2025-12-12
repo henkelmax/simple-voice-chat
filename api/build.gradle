@@ -3,10 +3,14 @@ plugins {
     id 'maven-publish'
 }
 
-sourceCompatibility = JavaLanguageVersion.of(8)
-targetCompatibility = JavaLanguageVersion.of(8)
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
-archivesBaseName = archives_base_name
+base {
+    archivesName = archives_base_name
+}
 version = version
 group = maven_group
 
@@ -44,7 +48,7 @@ publishing {
     publications {
         voiceChatApi(MavenPublication) {
             artifactId archives_base_name
-            artifact(jar.archivePath) {
+            artifact(jar) {
                 builtBy build
                 classifier null
             }
