@@ -1,6 +1,5 @@
 plugins {
     id 'net.minecraftforge.gradle' version "${forgegradle_version}"
-    id 'org.spongepowered.mixin' version "${mixingradle_version}"
 }
 
 apply plugin: 'com.gradleup.shadow'
