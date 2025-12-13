@@ -47,7 +47,7 @@ public class SoundManager {
                 int error = ALC11.alcGetError(device);
                 ALC11.alcCloseDevice(device);
                 checkAlcError(device);
-                throw new SpeakerException("Failed to create OpenAL context: %s".formatted(getAlcError(error)));
+                throw new SpeakerException(String.format("Failed to create OpenAL context: %s", getAlcError(error)));
             }
             if (!ALC11.alcMakeContextCurrent(context)) {
                 int error = ALC11.alcGetError(device);
@@ -55,7 +55,7 @@ public class SoundManager {
                 checkAlcError(device);
                 ALC11.alcCloseDevice(device);
                 checkAlcError(device);
-                throw new SpeakerException("Failed to make OpenAL context current: %s".formatted(getAlcError(error)));
+                throw new SpeakerException(String.format("Failed to make OpenAL context current: %s", getAlcError(error)));
             }
 
             ALCCapabilities alcCaps = ALC.createCapabilities(device);
@@ -108,8 +108,9 @@ public class SoundManager {
             checkAlcError(device);
         }
         if (device != 0L) {
-            ALC11.alcCloseDevice(device);
-            checkAlcError(device);
+            if (!ALC11.alcCloseDevice(device)) {
+                checkAlcError(device);
+            }
         }
         context = 0;
         device = 0;
@@ -127,49 +128,55 @@ public class SoundManager {
         try {
             return tryOpenSpeaker(name);
         } catch (SpeakerException e) {
-            if (name != null) {
-                Voicechat.LOGGER.warn("Failed to open audio device '{}', falling back to default", name);
+            if (name == null) {
+                throw e;
             }
-            try {
-                return tryOpenSpeaker(getDefaultSpeaker());
-            } catch (SpeakerException ex) {
-                return tryOpenSpeaker(null);
-            }
+            Voicechat.LOGGER.warn("Failed to open audio device '{}', falling back to default", name);
+            return tryOpenSpeaker(null);
         }
     }
 
     private static long tryOpenSpeaker(@Nullable String string) throws SpeakerException {
-        long l = ALC11.alcOpenDevice(string);
-        if (l == 0L) {
-            throw new SpeakerException("Failed to open audio device: Audio device not found");
+        long device = ALC11.alcOpenDevice(string);
+        if (device == 0L) {
+            throw new SpeakerException(String.format("Failed to open audio device: Audio device '%s' not found", string));
         }
-        int error = ALC11.alcGetError(l);
+        int error = ALC11.alcGetError(device);
         if (error != ALC11.ALC_NO_ERROR) {
-            if (!ALC11.alcCloseDevice(l)) {
+            if (!ALC11.alcCloseDevice(device)) {
                 Voicechat.LOGGER.warn("Failed to close audio device");
             }
             throw new SpeakerException(String.format("Failed to open audio device: %s", getAlcError(error)));
         }
-        return l;
-    }
-
-    @Nullable
-    public static String getDefaultSpeaker() {
-        if (!canEnumerate()) {
-            return null;
-        }
-        String defaultSpeaker = ALC11.alcGetString(0L, ALC11.ALC_ALL_DEVICES_SPECIFIER);
-        checkAlcError(0L);
-        return defaultSpeaker;
+        return device;
     }
 
     public static List<String> getAllSpeakers() {
-        if (!canEnumerate()) {
-            return Collections.emptyList();
+        List<String> devices = null;
+        if (canEnumerateAll()) {
+            devices = ALUtil.getStringList(0L, ALC11.ALC_ALL_DEVICES_SPECIFIER);
+        } else {
+            Voicechat.LOGGER.warn("Extension ALC_ENUMERATE_ALL_EXT is not present");
         }
-        List<String> devices = ALUtil.getStringList(0L, ALC11.ALC_ALL_DEVICES_SPECIFIER);
-        checkAlcError(0L);
-        return devices == null ? Collections.emptyList() : devices;
+        boolean canEnumerate = canEnumerate();
+        if (devices == null && !canEnumerate) {
+            Voicechat.LOGGER.warn("Extension ALC_ENUMERATION_EXT is not present");
+        }
+        if (devices == null && canEnumerate) {
+            devices = ALUtil.getStringList(0L, ALC11.ALC_DEVICE_SPECIFIER);
+        }
+        if (devices == null) {
+            devices = Collections.emptyList();
+        }
+        return devices;
+    }
+
+    public static boolean canEnumerateAll() {
+        return ALC11.alcIsExtensionPresent(0L, "ALC_ENUMERATE_ALL_EXT");
+    }
+
+    public static boolean canEnumerate() {
+        return ALC11.alcIsExtensionPresent(0L, "ALC_ENUMERATION_EXT");
     }
 
     public void runInContext(Executor executor, Runnable runnable) {
@@ -220,7 +227,7 @@ public class SoundManager {
         return true;
     }
 
-    private static String getAlError(int errorCode) {
+    public static String getAlError(int errorCode) {
         switch (errorCode) {
             case AL11.AL_INVALID_NAME:
                 return "Invalid name";
@@ -233,7 +240,7 @@ public class SoundManager {
             case AL11.AL_OUT_OF_MEMORY:
                 return "Out of memory";
             default:
-                return "Error %#X".formatted(errorCode);
+                return String.format("Error %#X", errorCode);
         }
     }
 
@@ -262,12 +269,6 @@ public class SoundManager {
             return name;
         }
         return matcher.group(1);
-    }
-
-    public static boolean canEnumerate() {
-        boolean present = ALC11.alcIsExtensionPresent(0L, "ALC_ENUMERATE_ALL_EXT");
-        checkAlcError(0L);
-        return present;
     }
 
 }
