@@ -99,7 +99,7 @@ public class ClientVoicechat {
         if (soundManager != null) {
             soundManager.close();
         }
-        soundManager = new SoundManager();
+        soundManager = SoundManager.create();
     }
 
     public void reloadAudio() {
