@@ -182,6 +182,7 @@ cloth_config.voicechat.settings=Voice Chat Settings
 cloth_config.voicechat.category.general=General
 cloth_config.voicechat.category.audio=Audio
 cloth_config.voicechat.category.hud_icons=HUD Icons
+cloth_config.voicechat.category.group_chat_icons=Group Chat Icons
 cloth_config.voicechat.category.ingame_menu=In-Game Menu
 cloth_config.voicechat.config.recording_destination=Recording destination
 cloth_config.voicechat.config.recording_destination.description=The location where recordings should be saved.\nLeave blank to use the default location.
