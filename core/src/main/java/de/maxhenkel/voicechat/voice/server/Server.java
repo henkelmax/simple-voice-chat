@@ -148,7 +148,7 @@ public class Server extends Thread {
         if (bindAddress.trim().equals("*")) {
             bindAddress = "";
         } else if (bindAddress.trim().equals("")) {
-                if (server.isDedicated()) {
+            if (server.isDedicated()) {
                 bindAddress = server.getIp();
                 if (!bindAddress.trim().isEmpty()) {
                     try {
