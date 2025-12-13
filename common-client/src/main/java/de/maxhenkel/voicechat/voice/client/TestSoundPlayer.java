@@ -68,7 +68,7 @@ public class TestSoundPlayer {
                     return;
                 }
             } else {
-                soundManager = new SoundManager();
+                soundManager = SoundManager.create();
                 ownSoundManager = true;
             }*/
 
