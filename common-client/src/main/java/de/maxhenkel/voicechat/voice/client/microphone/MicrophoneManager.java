@@ -1,10 +1,10 @@
 package de.maxhenkel.voicechat.voice.client.microphone;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.MicrophoneException;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 public class MicrophoneManager {
@@ -12,8 +12,8 @@ public class MicrophoneManager {
     private static boolean fallback;
 
     public static Microphone createMicrophone() throws MicrophoneException {
-        Microphone mic;
-        if (fallback || VoicechatClient.CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
+        Microphone mic = createJavaMicrophone();
+        /*if (fallback || VoicechatClient.CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
             mic = createJavaMicrophone();
         } else {
             try {
@@ -24,7 +24,7 @@ public class MicrophoneManager {
                 mic = createJavaMicrophone();
                 fallback = true;
             }
-        }
+        }*/
         return mic;
     }
 
@@ -34,17 +34,18 @@ public class MicrophoneManager {
         return mic;
     }
 
-    private static Microphone createALMicrophone() throws MicrophoneException {
+    /*private static Microphone createALMicrophone() throws MicrophoneException {
         Microphone mic = new ALMicrophone(AudioUtils.SAMPLE_RATE, AudioUtils.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get());
         mic.open();
         return mic;
-    }
+    }*/
 
     public static List<String> deviceNames() {
         if (fallback || VoicechatClient.CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
             return JavaxMicrophone.getAllMicrophones();
         } else {
-            return ALMicrophone.getAllMicrophones();
+            return Collections.emptyList();
+            //return ALMicrophone.getAllMicrophones();
         }
     }
 

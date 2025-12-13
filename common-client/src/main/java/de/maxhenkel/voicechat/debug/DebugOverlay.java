@@ -4,8 +4,6 @@ import de.maxhenkel.voicechat.gui.GroupType;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.*;
-import de.maxhenkel.voicechat.voice.client.speaker.ALSpeaker;
-import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -190,12 +188,12 @@ public class DebugOverlay {
             packetReorderingBuffer = audioChannel.getPacketBuffer().getSize();
             lostPackets = audioChannel.getLostPackets();
 
-            Speaker speaker = audioChannel.getSpeaker();
+            /*Speaker speaker = audioChannel.getSpeaker();
             if (speaker instanceof ALSpeaker) {
                 ((ALSpeaker) speaker).fetchQueuedBuffersAsync(bufferCount -> {
                     audioBufferCount = bufferCount;
                 });
-            }
+            }*/
 
             return this;
         }
