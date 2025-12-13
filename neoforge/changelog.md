@@ -2,3 +2,4 @@
 - Fixed potential crashes and startup failures related to the audio system
 - Prevented potential audio related resource leaks
 - Made the audio system safer when used alongside other audio related mods
+- Fixed missing cloth config tab translation
