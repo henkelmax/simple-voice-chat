@@ -172,7 +172,7 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
 
             SoundManager soundManager;
             if (client == null) {
-                soundManager = new SoundManager();
+                soundManager = SoundManager.create();
                 ownSoundManager = soundManager;
             } else {
                 soundManager = client.getSoundManager();
