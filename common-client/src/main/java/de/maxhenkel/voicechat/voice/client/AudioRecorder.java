@@ -292,7 +292,7 @@ public class AudioRecorder {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (player != null && mc.level != null) {
-            player.sendMessage(msg, Util.NIL_UUID);
+            mc.execute(() -> player.sendMessage(msg, Util.NIL_UUID));
         } else {
             Voicechat.LOGGER.info("{}", msg.getString());
         }
