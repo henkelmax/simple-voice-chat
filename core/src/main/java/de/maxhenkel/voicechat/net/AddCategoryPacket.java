@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
 import de.maxhenkel.voicechat.api.VolumeCategory;
+import io.netty.buffer.ByteBuf;
 
 public class AddCategoryPacket implements Packet<AddCategoryPacket> {
 
@@ -27,13 +27,13 @@ public class AddCategoryPacket implements Packet<AddCategoryPacket> {
     }
 
     @Override
-    public AddCategoryPacket fromBytes(VCByteBuf buf) {
+    public AddCategoryPacket fromBytes(ByteBuf buf) {
         category = category.fromBytes(buf);
         return this;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
+    public void toBytes(ByteBuf buf) {
         category.toBytes(buf);
     }
 

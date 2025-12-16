@@ -29,6 +29,11 @@ public class EntityImpl implements Entity {
     }
 
     @Override
+    public String getName() {
+        return entity.getName().getString();
+    }
+
+    @Override
     public Position getPosition() {
         return MinecraftCompatibilityManager.fromVec3(entity.position());
     }

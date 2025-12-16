@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
+import io.netty.buffer.ByteBuf;
 
 public class AddGroupPacket implements Packet<AddGroupPacket> {
 
@@ -27,13 +27,13 @@ public class AddGroupPacket implements Packet<AddGroupPacket> {
     }
 
     @Override
-    public AddGroupPacket fromBytes(VCByteBuf buf) {
+    public AddGroupPacket fromBytes(ByteBuf buf) {
         group = ClientGroup.fromBytes(buf);
         return this;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
+    public void toBytes(ByteBuf buf) {
         group.toBytes(buf);
     }
 

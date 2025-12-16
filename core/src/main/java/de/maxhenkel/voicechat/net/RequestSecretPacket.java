@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import io.netty.buffer.ByteBuf;
 
 public class RequestSecretPacket implements Packet<RequestSecretPacket> {
 
@@ -26,13 +26,13 @@ public class RequestSecretPacket implements Packet<RequestSecretPacket> {
     }
 
     @Override
-    public RequestSecretPacket fromBytes(VCByteBuf buf) {
+    public RequestSecretPacket fromBytes(ByteBuf buf) {
         compatibilityVersion = buf.readInt();
         return this;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
+    public void toBytes(ByteBuf buf) {
         buf.writeInt(compatibilityVersion);
     }
 

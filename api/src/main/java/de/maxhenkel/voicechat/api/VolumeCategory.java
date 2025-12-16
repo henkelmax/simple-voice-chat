@@ -16,7 +16,7 @@ public interface VolumeCategory {
      * @param buf the data coming in
      * @return an instance of your mod/plugin loaders implementation of VolumeCategory
      */
-    VolumeCategory fromBytes(VCByteBuf buf);
+    VolumeCategory fromBytes(Object buf);
 
     /**
      * @return the unique ID of the category
@@ -57,7 +57,7 @@ public interface VolumeCategory {
      *
      * @param buf the packet to fill
      */
-    void toBytes(VCByteBuf buf);
+    void toBytes(Object buf);
 
     public interface Builder {
 

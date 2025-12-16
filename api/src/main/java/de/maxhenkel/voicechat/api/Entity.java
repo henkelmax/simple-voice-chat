@@ -15,6 +15,11 @@ public interface Entity {
     Object getEntity();
 
     /**
+     * @return the entity name
+     */
+    String getName();
+
+    /**
      * @return the current position of the entity
      */
     Position getPosition();

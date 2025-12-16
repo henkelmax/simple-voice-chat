@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import de.maxhenkel.voicechat.voice.common.BufferUtils;
+import io.netty.buffer.ByteBuf;
 
 import java.util.UUID;
 
@@ -28,14 +29,14 @@ public class RemovePlayerStatePacket implements Packet<RemovePlayerStatePacket> 
     }
 
     @Override
-    public RemovePlayerStatePacket fromBytes(VCByteBuf buf) {
-        id = buf.readUUID();
+    public RemovePlayerStatePacket fromBytes(ByteBuf buf) {
+        id = BufferUtils.readUUID(buf);
         return this;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
-        buf.writeUUID(id);
+    public void toBytes(ByteBuf buf) {
+        BufferUtils.writeUUID(buf, id);
     }
 
 }

@@ -36,7 +36,7 @@ public class ForgeNetManager extends NetManager {
                             return;
                         }
                         T packet = packetType.getDeclaredConstructor().newInstance();
-                        packet.fromBytes(CommonCompatibilityManager.INSTANCE.createVCByteBuff(event.getPayload()));
+                        packet.fromBytes(event.getPayload());
                         c.onServerPacket(MinecraftCompatibilityManager.fromServer(context.getSender().server), MinecraftCompatibilityManager.fromServerPlayer(context.getSender()), context.getSender().connection, packet);
                         context.setPacketHandled(true);
                     } catch (Exception e) {
@@ -48,7 +48,7 @@ public class ForgeNetManager extends NetManager {
                     }
                     try {
                         T packet = packetType.getDeclaredConstructor().newInstance();
-                        packet.fromBytes(CommonCompatibilityManager.INSTANCE.createVCByteBuff(event.getPayload()));
+                        packet.fromBytes(event.getPayload());
                         onClientPacket(c, packet);
                         context.setPacketHandled(true);
                     } catch (Exception e) {

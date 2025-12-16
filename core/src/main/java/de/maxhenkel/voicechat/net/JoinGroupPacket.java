@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import de.maxhenkel.voicechat.voice.common.BufferUtils;
+import io.netty.buffer.ByteBuf;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -37,20 +38,20 @@ public class JoinGroupPacket implements Packet<JoinGroupPacket> {
     }
 
     @Override
-    public JoinGroupPacket fromBytes(VCByteBuf buf) {
-        group = buf.readUUID();
+    public JoinGroupPacket fromBytes(ByteBuf buf) {
+        group = BufferUtils.readUUID(buf);
         if (buf.readBoolean()) {
-            password = buf.readUtf(512);
+            password = BufferUtils.readUtf(buf, 512);
         }
         return this;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
-        buf.writeUUID(group);
+    public void toBytes(ByteBuf buf) {
+        BufferUtils.writeUUID(buf, group);
         buf.writeBoolean(password != null);
         if (password != null) {
-            buf.writeUtf(password, 512);
+            BufferUtils.writeUtf(buf, password, 512);
         }
     }
 

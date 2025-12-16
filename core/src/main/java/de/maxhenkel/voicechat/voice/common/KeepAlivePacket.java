@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import io.netty.buffer.ByteBuf;
 
 public class KeepAlivePacket implements Packet<KeepAlivePacket> {
 
@@ -9,12 +9,12 @@ public class KeepAlivePacket implements Packet<KeepAlivePacket> {
     }
 
     @Override
-    public KeepAlivePacket fromBytes(VCByteBuf buf) {
+    public KeepAlivePacket fromBytes(ByteBuf buf) {
         return new KeepAlivePacket();
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
+    public void toBytes(ByteBuf buf) {
 
     }
 }

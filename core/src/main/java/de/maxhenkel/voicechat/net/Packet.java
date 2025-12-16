@@ -1,13 +1,13 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import io.netty.buffer.ByteBuf;
 
 public interface Packet<T extends Packet<T>> {
 
     String getID();
 
-    T fromBytes(VCByteBuf buf);
+    T fromBytes(ByteBuf buf);
 
-    void toBytes(VCByteBuf buf);
+    void toBytes(ByteBuf buf);
 
 }

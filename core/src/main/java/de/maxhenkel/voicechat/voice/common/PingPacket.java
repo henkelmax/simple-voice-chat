@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import io.netty.buffer.ByteBuf;
 
 import java.util.UUID;
 
@@ -27,16 +27,16 @@ public class PingPacket implements Packet<PingPacket> {
     }
 
     @Override
-    public PingPacket fromBytes(VCByteBuf buf) {
+    public PingPacket fromBytes(ByteBuf buf) {
         PingPacket soundPacket = new PingPacket();
-        soundPacket.id = buf.readUUID();
+        soundPacket.id = BufferUtils.readUUID(buf);
         soundPacket.timestamp = buf.readLong();
         return soundPacket;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
-        buf.writeUUID(id);
+    public void toBytes(ByteBuf buf) {
+        BufferUtils.writeUUID(buf, id);
         buf.writeLong(timestamp);
     }
 }

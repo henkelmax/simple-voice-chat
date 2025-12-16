@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import io.netty.buffer.ByteBuf;
 
 public class UpdateStatePacket implements Packet<UpdateStatePacket> {
 
@@ -26,13 +26,13 @@ public class UpdateStatePacket implements Packet<UpdateStatePacket> {
     }
 
     @Override
-    public UpdateStatePacket fromBytes(VCByteBuf buf) {
+    public UpdateStatePacket fromBytes(ByteBuf buf) {
         disabled = buf.readBoolean();
         return this;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
+    public void toBytes(ByteBuf buf) {
         buf.writeBoolean(disabled);
     }
 

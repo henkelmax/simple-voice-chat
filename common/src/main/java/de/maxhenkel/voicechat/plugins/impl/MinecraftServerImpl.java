@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
 import de.maxhenkel.voicechat.api.MinecraftServer;
+import de.maxhenkel.voicechat.api.ServerLevel;
 import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class MinecraftServerImpl implements MinecraftServer {
 
@@ -55,6 +57,11 @@ public class MinecraftServerImpl implements MinecraftServer {
     @Override
     public int getOperatorUserPermissionLevel() {
         return server.getOperatorUserPermissionLevel();
+    }
+
+    @Override
+    public List<ServerLevel> getServerLevels() {
+        return StreamSupport.stream(server.getAllLevels().spliterator(), false).map(MinecraftCompatibilityManager::fromServerLevel).toList();
     }
 
     @Override

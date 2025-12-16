@@ -28,6 +28,11 @@ public class ServerLevelImpl implements ServerLevel {
     }
 
     @Override
+    public String getResourceLocation() {
+        return serverLevel.getLevel().dimension().location().toString();
+    }
+
+    @Override
     public boolean equals(Object object) {
         if (this == object) {
             return true;

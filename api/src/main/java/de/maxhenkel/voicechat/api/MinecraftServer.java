@@ -45,4 +45,9 @@ public interface MinecraftServer {
      * @return the permission level at which a user is considered an operator
      */
     int getOperatorUserPermissionLevel();
+
+    /**
+     * @return the available {@link  ServerLevel}s on the server.
+     */
+    List<ServerLevel> getServerLevels();
 }

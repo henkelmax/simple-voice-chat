@@ -45,7 +45,7 @@ public class ServerVoiceEvents {
         });
     }
 
-    public boolean isCompatible(de.maxhenkel.voicechat.api.ServerPlayer player) {
+    public boolean isCompatible(ServerPlayer player) {
         return isCompatible(player.getUuid());
     }
 
@@ -79,7 +79,7 @@ public class ServerVoiceEvents {
         }
     }
 
-    public void initializePlayerConnection(de.maxhenkel.voicechat.api.ServerPlayer player) {
+    public void initializePlayerConnection(ServerPlayer player) {
         if (server == null) {
             return;
         }
@@ -106,7 +106,7 @@ public class ServerVoiceEvents {
         CommonCompatibilityManager.INSTANCE.createTimeoutTimer(serverPlayer);
     }
 
-    public void playerLoggedOut(de.maxhenkel.voicechat.api.ServerPlayer player) {
+    public void playerLoggedOut(ServerPlayer player) {
         clientCompatibilities.remove(player.getUuid());
         if (server == null) {
             return;
@@ -116,7 +116,7 @@ public class ServerVoiceEvents {
         Voicechat.LOGGER.info("Disconnecting client {}", player.getName());
     }
 
-    public void onPlayerHide(de.maxhenkel.voicechat.api.ServerPlayer visibilityChangedPlayer, de.maxhenkel.voicechat.api.ServerPlayer observingPlayer) {
+    public void onPlayerHide(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
         if (server == null) {
             return;
         }
@@ -124,7 +124,7 @@ public class ServerVoiceEvents {
         server.onPlayerHide(visibilityChangedPlayer, observingPlayer);
     }
 
-    public void onPlayerShow(de.maxhenkel.voicechat.api.ServerPlayer visibilityChangedPlayer, de.maxhenkel.voicechat.api.ServerPlayer observingPlayer) {
+    public void onPlayerShow(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
         if (server == null) {
             return;
         }
@@ -132,7 +132,7 @@ public class ServerVoiceEvents {
         server.onPlayerShow(visibilityChangedPlayer, observingPlayer);
     }
 
-    public void serverVoiceChatConnected(de.maxhenkel.voicechat.api.ServerPlayer serverPlayer) {
+    public void serverVoiceChatConnected(ServerPlayer serverPlayer) {
         if (server == null) {
             return;
         }
@@ -148,7 +148,7 @@ public class ServerVoiceEvents {
         server.onPlayerVoicechatDisconnect(uuid);
     }
 
-    public void playerCompatibilityCheckSucceeded(de.maxhenkel.voicechat.api.ServerPlayer player) {
+    public void playerCompatibilityCheckSucceeded(ServerPlayer player) {
         if (server == null) {
             return;
         }

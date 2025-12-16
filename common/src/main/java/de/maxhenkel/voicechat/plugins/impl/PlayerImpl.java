@@ -8,9 +8,4 @@ public class PlayerImpl extends EntityImpl implements Player {
         super(entity);
     }
 
-    @Override
-    public String getName() {
-        return entity.getName().getString();
-    }
-
 }

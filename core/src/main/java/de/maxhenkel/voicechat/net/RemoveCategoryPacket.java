@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import de.maxhenkel.voicechat.voice.common.BufferUtils;
+import io.netty.buffer.ByteBuf;
 
 public class RemoveCategoryPacket implements Packet<RemoveCategoryPacket> {
 
@@ -26,14 +27,14 @@ public class RemoveCategoryPacket implements Packet<RemoveCategoryPacket> {
     }
 
     @Override
-    public RemoveCategoryPacket fromBytes(VCByteBuf buf) {
-        categoryId = buf.readUtf(16);
+    public RemoveCategoryPacket fromBytes(ByteBuf buf) {
+        categoryId = BufferUtils.readUtf(buf, 16);
         return this;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
-        buf.writeUtf(categoryId, 16);
+    public void toBytes(ByteBuf buf) {
+        BufferUtils.writeUtf(buf, categoryId, 16);
     }
 
 }

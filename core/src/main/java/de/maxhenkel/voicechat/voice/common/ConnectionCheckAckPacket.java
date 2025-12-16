@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import io.netty.buffer.ByteBuf;
 
 public class ConnectionCheckAckPacket implements Packet<ConnectionCheckAckPacket> {
 
@@ -9,12 +9,12 @@ public class ConnectionCheckAckPacket implements Packet<ConnectionCheckAckPacket
     }
 
     @Override
-    public ConnectionCheckAckPacket fromBytes(VCByteBuf buf) {
+    public ConnectionCheckAckPacket fromBytes(ByteBuf buf) {
         return new ConnectionCheckAckPacket();
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
+    public void toBytes(ByteBuf buf) {
 
     }
 }

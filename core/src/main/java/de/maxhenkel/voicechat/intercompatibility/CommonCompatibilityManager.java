@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.api.*;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.service.Service;
+import io.netty.buffer.ByteBuf;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -69,7 +70,7 @@ public abstract class CommonCompatibilityManager {
 
     public abstract void registerCommands();
 
-    public abstract void sendMinecraftPacket(ServerPlayer player, String id, VCByteBuf buffer);
+    public abstract void sendMinecraftPacket(ServerPlayer player, String id, ByteBuf buffer);
 
     public abstract void displayClientMessage(ServerPlayer player, String message, boolean overlay);
 
@@ -79,7 +80,5 @@ public abstract class CommonCompatibilityManager {
 
     public abstract void sendIncompatibleMessage(ServerPlayer serverPlayer, int compatibilityVersion);
 
-    public abstract Position createPosition(double v, double v1, double v2);
-
-    public abstract VCByteBuf createVCByteBuff(Object byteBuf);
+    public abstract Position createPosition(double x, double y, double z);
 }

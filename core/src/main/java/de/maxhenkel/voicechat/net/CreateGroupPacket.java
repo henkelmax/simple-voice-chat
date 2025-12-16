@@ -1,8 +1,9 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.api.Group;
-import de.maxhenkel.voicechat.api.VCByteBuf;
 import de.maxhenkel.voicechat.plugins.impl.GroupImpl;
+import de.maxhenkel.voicechat.voice.common.BufferUtils;
+import io.netty.buffer.ByteBuf;
 
 import javax.annotation.Nullable;
 
@@ -44,22 +45,22 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
     }
 
     @Override
-    public CreateGroupPacket fromBytes(VCByteBuf buf) {
-        name = buf.readUtf(512);
+    public CreateGroupPacket fromBytes(ByteBuf buf) {
+        name = BufferUtils.readUtf(buf, 512);
         password = null;
         if (buf.readBoolean()) {
-            password = buf.readUtf(512);
+            password = BufferUtils.readUtf(buf, 512);
         }
         type = GroupImpl.TypeImpl.fromInt(buf.readShort());
         return this;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
-        buf.writeUtf(name, 512);
+    public void toBytes(ByteBuf buf) {
+        BufferUtils.writeUtf(buf, name, 512);
         buf.writeBoolean(password != null);
         if (password != null) {
-            buf.writeUtf(password, 512);
+            BufferUtils.writeUtf(buf, password, 512);
         }
         buf.writeShort(GroupImpl.TypeImpl.toInt(type));
     }

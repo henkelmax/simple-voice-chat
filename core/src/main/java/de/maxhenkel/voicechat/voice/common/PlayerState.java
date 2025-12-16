@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import io.netty.buffer.ByteBuf;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -77,29 +77,29 @@ public class PlayerState {
                 '}';
     }
 
-    public static PlayerState fromBytes(VCByteBuf buf) {
+    public static PlayerState fromBytes(ByteBuf buf) {
         boolean disabled = buf.readBoolean();
         boolean disconnected = buf.readBoolean();
-        UUID uuid = buf.readUUID();
-        String name = buf.readUtf(32767);
+        UUID uuid = BufferUtils.readUUID(buf);
+        String name = BufferUtils.readUtf(buf);
 
         PlayerState state = new PlayerState(uuid, name, disabled, disconnected);
 
         if (buf.readBoolean()) {
-            state.setGroup(buf.readUUID());
+            state.setGroup(BufferUtils.readUUID(buf));
         }
 
         return state;
     }
 
-    public void toBytes(VCByteBuf buf) {
+    public void toBytes(ByteBuf buf) {
         buf.writeBoolean(disabled);
         buf.writeBoolean(disconnected);
-        buf.writeUUID(uuid);
-        buf.writeUtf(name);
+        BufferUtils.writeUUID(buf, uuid);
+        BufferUtils.writeUtf(buf, name);
         buf.writeBoolean(hasGroup());
         if (hasGroup()) {
-            buf.writeUUID(group);
+            BufferUtils.writeUUID(buf, group);
         }
     }
 

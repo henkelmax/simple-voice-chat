@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
+import io.netty.buffer.ByteBuf;
 
 public class PlayerStatePacket implements Packet<PlayerStatePacket> {
 
@@ -27,13 +27,13 @@ public class PlayerStatePacket implements Packet<PlayerStatePacket> {
     }
 
     @Override
-    public PlayerStatePacket fromBytes(VCByteBuf buf) {
+    public PlayerStatePacket fromBytes(ByteBuf buf) {
         playerState = PlayerState.fromBytes(buf);
         return this;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
+    public void toBytes(ByteBuf buf) {
         playerState.toBytes(buf);
     }
 

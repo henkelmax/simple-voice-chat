@@ -1,9 +1,9 @@
 package de.maxhenkel.voicechat.debug;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.api.VCByteBuf;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.voice.common.BufferUtils;
 import de.maxhenkel.voicechat.voice.server.Server;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import java.net.SocketAddress;
@@ -13,7 +13,7 @@ public class PingHandler {
 
     public static final UUID PING_V1 = UUID.fromString("58bc9ae9-c7a8-45e4-a11c-efbb67199425");
 
-    public static boolean onPacket(Server server, SocketAddress socketAddress, UUID playerID, VCByteBuf buf) {
+    public static boolean onPacket(Server server, SocketAddress socketAddress, UUID playerID, ByteBuf buf) {
         if (!Voicechat.SERVER_CONFIG.allowPings.get()) {
             return false;
         }
@@ -21,15 +21,15 @@ public class PingHandler {
             return false;
         }
         try {
-            byte[] payload = buf.readByteArray();
-            VCByteBuf buffer = CommonCompatibilityManager.INSTANCE.createVCByteBuff(Unpooled.wrappedBuffer(payload));
-            UUID id = buffer.readUUID();
+            byte[] payload = BufferUtils.readByteArray(buf);
+            ByteBuf buffer = Unpooled.wrappedBuffer(payload);
+            UUID id = BufferUtils.readUUID(buffer);
             long timestamp = buffer.readLong();
             Voicechat.LOGGER.debug("Received ping {} from {}", id, socketAddress);
 
-            VCByteBuf responseBuffer = CommonCompatibilityManager.INSTANCE.createVCByteBuff(Unpooled.buffer(24));
+            ByteBuf responseBuffer = Unpooled.buffer(24);
 
-            responseBuffer.writeUUID(id);
+            BufferUtils.writeUUID(responseBuffer, id);
             responseBuffer.writeLong(timestamp);
 
             byte[] response = new byte[responseBuffer.readableBytes()];

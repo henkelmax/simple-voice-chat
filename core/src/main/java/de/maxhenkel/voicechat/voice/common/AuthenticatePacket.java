@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import io.netty.buffer.ByteBuf;
 
 import java.util.UUID;
 
@@ -27,16 +27,16 @@ public class AuthenticatePacket implements Packet<AuthenticatePacket> {
     }
 
     @Override
-    public AuthenticatePacket fromBytes(VCByteBuf buf) {
+    public AuthenticatePacket fromBytes(ByteBuf buf) {
         AuthenticatePacket packet = new AuthenticatePacket();
-        packet.playerUUID = buf.readUUID();
+        packet.playerUUID = BufferUtils.readUUID(buf);
         packet.secret = Secret.fromBytes(buf);
         return packet;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
-        buf.writeUUID(playerUUID);
+    public void toBytes(ByteBuf buf) {
+        BufferUtils.writeUUID(buf, playerUUID);
         secret.toBytes(buf);
     }
 }

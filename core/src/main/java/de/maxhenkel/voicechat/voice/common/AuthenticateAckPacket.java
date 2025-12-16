@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import io.netty.buffer.ByteBuf;
 
 public class AuthenticateAckPacket implements Packet<AuthenticateAckPacket> {
 
@@ -9,12 +9,12 @@ public class AuthenticateAckPacket implements Packet<AuthenticateAckPacket> {
     }
 
     @Override
-    public AuthenticateAckPacket fromBytes(VCByteBuf buf) {
+    public AuthenticateAckPacket fromBytes(ByteBuf buf) {
         return new AuthenticateAckPacket();
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
+    public void toBytes(ByteBuf buf) {
 
     }
 }

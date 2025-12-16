@@ -3,8 +3,8 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.MinecraftServer;
 import de.maxhenkel.voicechat.api.ServerPlayer;
-import de.maxhenkel.voicechat.api.VCByteBuf;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 public abstract class NetManager {
@@ -43,11 +43,11 @@ public abstract class NetManager {
 
     public abstract <T extends Packet<T>> Channel<T> registerReceiver(Class<T> packetType, boolean toClient, boolean toServer);
 
-    public static void sendToClient(de.maxhenkel.voicechat.api.ServerPlayer player, Packet<?> packet) {
+    public static void sendToClient(ServerPlayer player, Packet<?> packet) {
         if (!Voicechat.SERVER.isCompatible(player)) {
             return;
         }
-        VCByteBuf buffer = CommonCompatibilityManager.INSTANCE.createVCByteBuff(Unpooled.buffer());
+        ByteBuf buffer = Unpooled.buffer();
         packet.toBytes(buffer);
         CommonCompatibilityManager.INSTANCE.sendMinecraftPacket(player, packet.getID(), buffer);
     }

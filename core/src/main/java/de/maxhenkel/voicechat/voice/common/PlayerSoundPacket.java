@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import io.netty.buffer.ByteBuf;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -39,27 +39,27 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
     }
 
     @Override
-    public PlayerSoundPacket fromBytes(VCByteBuf buf) {
+    public PlayerSoundPacket fromBytes(ByteBuf buf) {
         PlayerSoundPacket soundPacket = new PlayerSoundPacket();
-        soundPacket.channelId = buf.readUUID();
-        soundPacket.sender = buf.readUUID();
-        soundPacket.data = buf.readByteArray();
+        soundPacket.channelId = BufferUtils.readUUID(buf);
+        soundPacket.sender = BufferUtils.readUUID(buf);
+        soundPacket.data = BufferUtils.readByteArray(buf);
         soundPacket.sequenceNumber = buf.readLong();
         soundPacket.distance = buf.readFloat();
 
         byte data = buf.readByte();
         soundPacket.whispering = hasFlag(data, WHISPER_MASK);
         if (hasFlag(data, HAS_CATEGORY_MASK)) {
-            soundPacket.category = buf.readUtf(16);
+            soundPacket.category = BufferUtils.readUtf(buf, 16);
         }
         return soundPacket;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
-        buf.writeUUID(channelId);
-        buf.writeUUID(sender);
-        buf.writeByteArray(data);
+    public void toBytes(ByteBuf buf) {
+        BufferUtils.writeUUID(buf, channelId);
+        BufferUtils.writeUUID(buf, sender);
+        BufferUtils.writeByteArray(buf, data);
         buf.writeLong(sequenceNumber);
         buf.writeFloat(distance);
 
@@ -72,7 +72,7 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
         }
         buf.writeByte(data);
         if (category != null) {
-            buf.writeUtf(category, 16);
+            BufferUtils.writeUtf(buf, category, 16);
         }
     }
 

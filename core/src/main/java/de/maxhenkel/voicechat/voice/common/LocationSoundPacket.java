@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.voice.common;
 
 import de.maxhenkel.voicechat.api.Position;
-import de.maxhenkel.voicechat.api.VCByteBuf;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import io.netty.buffer.ByteBuf;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -37,31 +37,31 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
     }
 
     @Override
-    public LocationSoundPacket fromBytes(VCByteBuf buf) {
+    public LocationSoundPacket fromBytes(ByteBuf buf) {
         LocationSoundPacket soundPacket = new LocationSoundPacket();
-        soundPacket.channelId = buf.readUUID();
-        soundPacket.sender = buf.readUUID();
+        soundPacket.channelId = BufferUtils.readUUID(buf);
+        soundPacket.sender = BufferUtils.readUUID(buf);
         soundPacket.location = CommonCompatibilityManager.INSTANCE.createPosition(buf.readDouble(), buf.readDouble(), buf.readDouble());
-        soundPacket.data = buf.readByteArray();
+        soundPacket.data = BufferUtils.readByteArray(buf);
         soundPacket.sequenceNumber = buf.readLong();
         soundPacket.distance = buf.readFloat();
 
         byte data = buf.readByte();
         if (hasFlag(data, HAS_CATEGORY_MASK)) {
-            soundPacket.category = buf.readUtf(16);
+            soundPacket.category = BufferUtils.readUtf(buf, 16);
         }
 
         return soundPacket;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
-        buf.writeUUID(channelId);
-        buf.writeUUID(sender);
+    public void toBytes(ByteBuf buf) {
+        BufferUtils.writeUUID(buf, channelId);
+        BufferUtils.writeUUID(buf, sender);
         buf.writeDouble(location.getX());
         buf.writeDouble(location.getY());
         buf.writeDouble(location.getZ());
-        buf.writeByteArray(data);
+        BufferUtils.writeByteArray(buf, data);
         buf.writeLong(sequenceNumber);
         buf.writeFloat(distance);
 
@@ -71,7 +71,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
         }
         buf.writeByte(data);
         if (category != null) {
-            buf.writeUtf(category, 16);
+            BufferUtils.writeUtf(buf, category, 16);
         }
     }
 }

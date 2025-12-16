@@ -54,7 +54,7 @@ public class FabricCommonCompatibilityManager extends MinecraftCompatibilityMana
     }
 
     @Override
-    public void emitServerVoiceChatConnectedEvent(de.maxhenkel.voicechat.api.ServerPlayer player) {
+    public void emitServerVoiceChatConnectedEvent(ServerPlayer player) {
         ServerVoiceChatEvents.VOICECHAT_CONNECTED.invoker().accept(getServerPlayer(player));
     }
 
@@ -64,12 +64,12 @@ public class FabricCommonCompatibilityManager extends MinecraftCompatibilityMana
     }
 
     @Override
-    public void emitPlayerCompatibilityCheckSucceeded(de.maxhenkel.voicechat.api.ServerPlayer player) {
+    public void emitPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
         ServerVoiceChatEvents.VOICECHAT_COMPATIBILITY_CHECK_SUCCEEDED.invoker().accept(getServerPlayer(player));
     }
 
     @Override
-    public void onServerVoiceChatConnected(Consumer<de.maxhenkel.voicechat.api.ServerPlayer> onVoiceChatConnected) {
+    public void onServerVoiceChatConnected(Consumer<ServerPlayer> onVoiceChatConnected) {
         ServerVoiceChatEvents.VOICECHAT_CONNECTED.register(serverPlayer -> onVoiceChatConnected.accept(fromServerPlayer(serverPlayer)));
     }
 
@@ -79,7 +79,7 @@ public class FabricCommonCompatibilityManager extends MinecraftCompatibilityMana
     }
 
     @Override
-    public void onServerStarting(Consumer<de.maxhenkel.voicechat.api.MinecraftServer> onServerStarting) {
+    public void onServerStarting(Consumer<MinecraftServer> onServerStarting) {
         ServerLifecycleEvents.SERVER_STARTED.register(t -> onServerStarting.accept(fromServer(t)));
     }
 
@@ -89,27 +89,27 @@ public class FabricCommonCompatibilityManager extends MinecraftCompatibilityMana
     }
 
     @Override
-    public void onPlayerLoggedIn(Consumer<de.maxhenkel.voicechat.api.ServerPlayer> onPlayerLoggedIn) {
+    public void onPlayerLoggedIn(Consumer<ServerPlayer> onPlayerLoggedIn) {
         PlayerEvents.PLAYER_LOGGED_IN.register(serverPlayer -> onPlayerLoggedIn.accept(fromServerPlayer(serverPlayer)));
     }
 
     @Override
-    public void onPlayerLoggedOut(Consumer<de.maxhenkel.voicechat.api.ServerPlayer> onPlayerLoggedOut) {
+    public void onPlayerLoggedOut(Consumer<ServerPlayer> onPlayerLoggedOut) {
         PlayerEvents.PLAYER_LOGGED_OUT.register(serverPlayer -> onPlayerLoggedOut.accept(fromServerPlayer(serverPlayer)));
     }
 
     @Override
-    public void onPlayerHide(BiConsumer<de.maxhenkel.voicechat.api.ServerPlayer, de.maxhenkel.voicechat.api.ServerPlayer> onPlayerHide) {
+    public void onPlayerHide(BiConsumer<ServerPlayer, ServerPlayer> onPlayerHide) {
         VanishEvents.ON_VANISH.register((serverPlayer, other) -> onPlayerHide.accept(fromServerPlayer(serverPlayer), fromServerPlayer(other)));
     }
 
     @Override
-    public void onPlayerShow(BiConsumer<de.maxhenkel.voicechat.api.ServerPlayer, de.maxhenkel.voicechat.api.ServerPlayer> onPlayerShow) {
+    public void onPlayerShow(BiConsumer<ServerPlayer, ServerPlayer> onPlayerShow) {
         VanishEvents.ON_UNVANISH.register((serverPlayer, other) -> onPlayerShow.accept(fromServerPlayer(serverPlayer), fromServerPlayer(other)));
     }
 
     @Override
-    public void onPlayerCompatibilityCheckSucceeded(Consumer<de.maxhenkel.voicechat.api.ServerPlayer> onPlayerCompatibilityCheckSucceeded) {
+    public void onPlayerCompatibilityCheckSucceeded(Consumer<ServerPlayer> onPlayerCompatibilityCheckSucceeded) {
         ServerVoiceChatEvents.VOICECHAT_COMPATIBILITY_CHECK_SUCCEEDED.register(serverPlayer -> onPlayerCompatibilityCheckSucceeded.accept(fromServerPlayer(serverPlayer)));
     }
 
@@ -154,7 +154,7 @@ public class FabricCommonCompatibilityManager extends MinecraftCompatibilityMana
     }
 
     @Override
-    public boolean canSee(de.maxhenkel.voicechat.api.ServerPlayer player, ServerPlayer other) {
+    public boolean canSee(ServerPlayer player, ServerPlayer other) {
         return VanishIntegration.canSee(getServerPlayer(player), getServerPlayer(other));
     }
 

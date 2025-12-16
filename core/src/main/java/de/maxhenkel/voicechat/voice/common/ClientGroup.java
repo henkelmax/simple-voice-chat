@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.voice.common;
 
 import de.maxhenkel.voicechat.api.Group;
-import de.maxhenkel.voicechat.api.VCByteBuf;
 import de.maxhenkel.voicechat.plugins.impl.GroupImpl;
+import io.netty.buffer.ByteBuf;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -49,13 +49,13 @@ public class ClientGroup {
         return type;
     }
 
-    public static ClientGroup fromBytes(VCByteBuf buf) {
-        return new ClientGroup(buf.readUUID(), buf.readUtf(512), buf.readBoolean(), buf.readBoolean(), buf.readBoolean(), GroupImpl.TypeImpl.fromInt(buf.readShort()));
+    public static ClientGroup fromBytes(ByteBuf buf) {
+        return new ClientGroup(BufferUtils.readUUID(buf), BufferUtils.readUtf(buf, 512), buf.readBoolean(), buf.readBoolean(), buf.readBoolean(), GroupImpl.TypeImpl.fromInt(buf.readShort()));
     }
 
-    public void toBytes(VCByteBuf buf) {
-        buf.writeUUID(id);
-        buf.writeUtf(name, 512);
+    public void toBytes(ByteBuf buf) {
+        BufferUtils.writeUUID(buf, id);
+        BufferUtils.writeUtf(buf, name, 512);
         buf.writeBoolean(hasPassword);
         buf.writeBoolean(persistent);
         buf.writeBoolean(hidden);

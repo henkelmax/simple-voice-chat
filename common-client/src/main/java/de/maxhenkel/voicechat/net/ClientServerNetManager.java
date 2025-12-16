@@ -13,7 +13,7 @@ public abstract class ClientServerNetManager extends NetManager {
 
     public static void sendToServer(Packet<?> packet) {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-        packet.toBytes(CommonCompatibilityManager.INSTANCE.createVCByteBuff(buffer));
+        packet.toBytes(buffer);
         ClientPacketListener connection = Minecraft.getInstance().getConnection();
         if (connection != null && connection.getLevel() != null) {
             connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation(Voicechat.MODID, packet.getID()), buffer));

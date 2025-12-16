@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import de.maxhenkel.voicechat.voice.common.BufferUtils;
+import io.netty.buffer.ByteBuf;
 
 import java.util.UUID;
 
@@ -28,14 +29,14 @@ public class RemoveGroupPacket implements Packet<RemoveGroupPacket> {
     }
 
     @Override
-    public RemoveGroupPacket fromBytes(VCByteBuf buf) {
-        groupId = buf.readUUID();
+    public RemoveGroupPacket fromBytes(ByteBuf buf) {
+        groupId = BufferUtils.readUUID(buf);
         return this;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
-        buf.writeUUID(groupId);
+    public void toBytes(ByteBuf buf) {
+        BufferUtils.writeUUID(buf, groupId);
     }
 
 }

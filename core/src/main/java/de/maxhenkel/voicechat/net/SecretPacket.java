@@ -1,10 +1,11 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.api.ServerPlayer;
-import de.maxhenkel.voicechat.api.VCByteBuf;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.voice.common.BufferUtils;
 import de.maxhenkel.voicechat.voice.common.Secret;
+import io.netty.buffer.ByteBuf;
 
 import java.util.UUID;
 
@@ -86,31 +87,31 @@ public class SecretPacket implements Packet<SecretPacket> {
     }
 
     @Override
-    public SecretPacket fromBytes(VCByteBuf buf) {
+    public SecretPacket fromBytes(ByteBuf buf) {
         secret = Secret.fromBytes(buf);
         serverPort = buf.readInt();
-        playerUUID = buf.readUUID();
+        playerUUID = BufferUtils.readUUID(buf);
         codec = ServerConfig.Codec.values()[buf.readByte()];
         mtuSize = buf.readInt();
         voiceChatDistance = buf.readDouble();
         keepAlive = buf.readInt();
         groupsEnabled = buf.readBoolean();
-        voiceHost = buf.readUtf(32767);
+        voiceHost = BufferUtils.readUtf(buf);
         allowRecording = buf.readBoolean();
         return this;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
+    public void toBytes(ByteBuf buf) {
         secret.toBytes(buf);
         buf.writeInt(serverPort);
-        buf.writeUUID(playerUUID);
+        BufferUtils.writeUUID(buf, playerUUID);
         buf.writeByte(codec.ordinal());
         buf.writeInt(mtuSize);
         buf.writeDouble(voiceChatDistance);
         buf.writeInt(keepAlive);
         buf.writeBoolean(groupsEnabled);
-        buf.writeUtf(voiceHost);
+        BufferUtils.writeUtf(buf, voiceHost);
         buf.writeBoolean(allowRecording);
     }
 

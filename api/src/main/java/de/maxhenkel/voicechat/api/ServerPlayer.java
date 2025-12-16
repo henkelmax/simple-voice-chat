@@ -10,9 +10,4 @@ public interface ServerPlayer extends Player {
     @Nullable
     ServerPlayer getCameraPlayer();
 
-    /**
-     * @return the level of the player
-     */
-    ServerLevel getServerLevel();
-
 }

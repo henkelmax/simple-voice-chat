@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import io.netty.buffer.ByteBuf;
 
 public class MicPacket implements Packet<MicPacket> {
 
@@ -40,17 +40,17 @@ public class MicPacket implements Packet<MicPacket> {
     }
 
     @Override
-    public MicPacket fromBytes(VCByteBuf buf) {
+    public MicPacket fromBytes(ByteBuf buf) {
         MicPacket soundPacket = new MicPacket();
-        soundPacket.data = buf.readByteArray();
+        soundPacket.data = BufferUtils.readByteArray(buf);
         soundPacket.sequenceNumber = buf.readLong();
         soundPacket.whispering = buf.readBoolean();
         return soundPacket;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
-        buf.writeByteArray(data);
+    public void toBytes(ByteBuf buf) {
+        BufferUtils.writeByteArray(buf, data);
         buf.writeLong(sequenceNumber);
         buf.writeBoolean(whispering);
     }

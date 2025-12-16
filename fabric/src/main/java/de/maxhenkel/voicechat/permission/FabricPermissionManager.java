@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.permission;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.loader.api.FabricLoader;
@@ -11,7 +12,7 @@ public class FabricPermissionManager extends PermissionManager {
     public Permission createPermissionInternal(String modId, String node, PermissionType type) {
         return new Permission() {
             @Override
-            public boolean hasPermission(de.maxhenkel.voicechat.api.ServerPlayer player) {
+            public boolean hasPermission(ServerPlayer player) {
                 try {
                     if (isFabricPermissionsAPILoaded()) {
                         return Permissions.check(MinecraftCompatibilityManager.getServerPlayer(player), modId + "." + node, type.hasPermission(player));

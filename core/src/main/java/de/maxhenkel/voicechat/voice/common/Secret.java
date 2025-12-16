@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import io.netty.buffer.ByteBuf;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -41,13 +41,13 @@ public class Secret {
         return new Secret(secret);
     }
 
-    public static Secret fromBytes(VCByteBuf buf) {
+    public static Secret fromBytes(ByteBuf buf) {
         byte[] secretBytes = new byte[SECRET_SIZE_BYTES];
         buf.readBytes(secretBytes);
         return Secret.fromBytes(secretBytes);
     }
 
-    public void toBytes(VCByteBuf buf) {
+    public void toBytes(ByteBuf buf) {
         buf.writeBytes(secret);
     }
 

@@ -1,7 +1,8 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
 import de.maxhenkel.voicechat.api.VolumeCategory;
+import de.maxhenkel.voicechat.voice.common.BufferUtils;
+import io.netty.buffer.ByteBuf;
 
 import javax.annotation.Nullable;
 import java.util.regex.Pattern;
@@ -68,9 +69,10 @@ public class VolumeCategoryImpl implements VolumeCategory {
     }
 
     @Override
-    public VolumeCategory fromBytes(VCByteBuf buf) {
-        String id = buf.readUtf(16);
-        String name = buf.readUtf(16);
+    public VolumeCategory fromBytes(Object buffer) {
+        ByteBuf buf = (ByteBuf) buffer;
+        String id = BufferUtils.readUtf(buf, 16);
+        String name = BufferUtils.readUtf(buf, 16);
         String nameTranslationKey = readOptionalString(buf);
         String description = readOptionalString(buf);
         String descriptionTranslationKey = readOptionalString(buf);
@@ -87,17 +89,18 @@ public class VolumeCategoryImpl implements VolumeCategory {
     }
 
     @Nullable
-    private static String readOptionalString(VCByteBuf buf) {
+    private static String readOptionalString(ByteBuf buf) {
         if (buf.readBoolean()) {
-            return buf.readUtf(32767);
+            return BufferUtils.readUtf(buf);
         }
         return null;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
-        buf.writeUtf(id, 16);
-        buf.writeUtf(name, 16);
+    public void toBytes(Object buffer) {
+        ByteBuf buf = (ByteBuf) buffer;
+        BufferUtils.writeUtf(buf, id, 16);
+        BufferUtils.writeUtf(buf, name, 16);
         writeOptionalString(buf, nameTranslationKey);
         writeOptionalString(buf, description);
         writeOptionalString(buf, descriptionTranslationKey);
@@ -117,10 +120,10 @@ public class VolumeCategoryImpl implements VolumeCategory {
         }
     }
 
-    private static void writeOptionalString(VCByteBuf buf, @Nullable String string) {
+    private static void writeOptionalString(ByteBuf buf, @Nullable String string) {
         buf.writeBoolean(string != null);
         if (string != null) {
-            buf.writeUtf(string, 32767);
+            BufferUtils.writeUtf(buf, string, 32767);
         }
     }
 

@@ -35,8 +35,8 @@ public abstract class MinecraftCompatibilityManager extends CommonCompatibilityM
     }
 
     @Override
-    public void sendMinecraftPacket(ServerPlayer player, String id, VCByteBuf buffer) {
-        MinecraftCompatibilityManager.getServerPlayer(player).connection.send(new ClientboundCustomPayloadPacket(new ResourceLocation(Voicechat.MODID, id), new FriendlyByteBuf(MinecraftCompatibilityManager.getFriendlyByteBuf(buffer))));
+    public void sendMinecraftPacket(ServerPlayer player, String id, ByteBuf buffer) {
+        MinecraftCompatibilityManager.getServerPlayer(player).connection.send(new ClientboundCustomPayloadPacket(new ResourceLocation(Voicechat.MODID, id), new FriendlyByteBuf(buffer)));
     }
 
     @Override
@@ -150,15 +150,6 @@ public abstract class MinecraftCompatibilityManager extends CommonCompatibilityM
         }
     }
 
-    @Override
-    public VCByteBuf createVCByteBuff(Object byteBuf) {
-        if (byteBuf instanceof ByteBuf b) {
-            return new VCByteBufImpl(b);
-        } else {
-            throw new IllegalArgumentException("byteBuf is not an instance of ByteBuf");
-        }
-    }
-
     public static net.minecraft.server.level.ServerPlayer getServerPlayer(ServerPlayer player) {
         if (player.getEntity() instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
             return serverPlayer;
@@ -176,11 +167,4 @@ public abstract class MinecraftCompatibilityManager extends CommonCompatibilityM
             return vec3;
         } else throw new IllegalArgumentException("position does not wrap Vec3");
     }
-
-    public static FriendlyByteBuf getFriendlyByteBuf(VCByteBuf vcByteBuf) {
-        if (vcByteBuf.getBuffer() instanceof FriendlyByteBuf vec3) {
-            return vec3;
-        } else throw new IllegalArgumentException("vcByteBuf does not wrap FriendlyByteBuf");
-    }
-
 }

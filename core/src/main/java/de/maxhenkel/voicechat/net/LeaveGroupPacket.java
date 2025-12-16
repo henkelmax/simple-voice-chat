@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import io.netty.buffer.ByteBuf;
 
 public class LeaveGroupPacket implements Packet<LeaveGroupPacket> {
 
@@ -16,12 +16,12 @@ public class LeaveGroupPacket implements Packet<LeaveGroupPacket> {
     }
 
     @Override
-    public LeaveGroupPacket fromBytes(VCByteBuf buf) {
+    public LeaveGroupPacket fromBytes(ByteBuf buf) {
         return this;
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
+    public void toBytes(ByteBuf buf) {
 
     }
 

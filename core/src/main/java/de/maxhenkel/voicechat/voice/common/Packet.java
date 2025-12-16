@@ -1,12 +1,12 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
+import io.netty.buffer.ByteBuf;
 
 public interface Packet<T extends Packet> {
 
-    T fromBytes(VCByteBuf buf);
+    T fromBytes(ByteBuf buf);
 
-    void toBytes(VCByteBuf buf);
+    void toBytes(ByteBuf buf);
 
     default long getTTL() {
         return 10_000L;

@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.api.VCByteBuf;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
+import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +30,7 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
     }
 
     @Override
-    public PlayerStatesPacket fromBytes(VCByteBuf buf) {
+    public PlayerStatesPacket fromBytes(ByteBuf buf) {
         int count = buf.readInt();
         playerStates = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
@@ -42,7 +42,7 @@ public class PlayerStatesPacket implements Packet<PlayerStatesPacket> {
     }
 
     @Override
-    public void toBytes(VCByteBuf buf) {
+    public void toBytes(ByteBuf buf) {
         buf.writeInt(playerStates.size());
         for (PlayerState state : playerStates) {
             state.toBytes(buf);
