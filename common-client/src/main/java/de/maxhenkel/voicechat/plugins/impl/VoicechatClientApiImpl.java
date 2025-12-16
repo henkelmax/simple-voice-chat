@@ -116,7 +116,7 @@ public class VoicechatClientApiImpl extends VoicechatApiImpl implements Voicecha
 
     @Override
     public ClientEntityAudioChannel createEntityAudioChannel(UUID uuid, Entity entity) {
-        return new ClientEntityAudioChannelImpl(uuid, entity.getUuid());
+        return new ClientEntityAudioChannelImpl(uuid, entity.getUUID());
     }
 
     @Override

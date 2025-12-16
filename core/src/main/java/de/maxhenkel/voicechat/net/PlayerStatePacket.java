@@ -22,7 +22,7 @@ public class PlayerStatePacket implements Packet<PlayerStatePacket> {
     }
 
     @Override
-    public String getID() {
+    public String getIdentifier() {
         return PLAYER_STATE;
     }
 

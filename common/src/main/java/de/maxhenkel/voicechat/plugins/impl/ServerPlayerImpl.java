@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
-import de.maxhenkel.voicechat.api.ServerLevel;
 import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
 import net.minecraft.world.entity.Entity;

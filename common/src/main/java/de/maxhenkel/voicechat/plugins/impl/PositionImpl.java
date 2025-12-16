@@ -18,6 +18,11 @@ public class PositionImpl implements Position {
     }
 
     @Override
+    public Vec3 getVec3() {
+        return position;
+    }
+
+    @Override
     public double getX() {
         return position.x;
     }
@@ -30,11 +35,6 @@ public class PositionImpl implements Position {
     @Override
     public double getZ() {
         return position.z;
-    }
-
-    @Override
-    public Vec3 getVec3() {
-        return position;
     }
 
     @Override

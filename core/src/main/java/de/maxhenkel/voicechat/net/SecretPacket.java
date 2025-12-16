@@ -31,7 +31,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     public SecretPacket(ServerPlayer player, Secret secret, int port, ServerConfig serverConfig) {
         this.secret = secret;
         this.serverPort = port;
-        this.playerUUID = player.getUuid();
+        this.playerUUID = player.getUUID();
         this.codec = serverConfig.voiceChatCodec.get();
         this.mtuSize = serverConfig.voiceChatMtuSize.get();
         this.voiceChatDistance = serverConfig.voiceChatDistance.get();
@@ -78,7 +78,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     }
 
     @Override
-    public String getID() {
+    public String getIdentifier() {
         return SECRET;
     }
 

@@ -52,7 +52,7 @@ public class GroupImpl implements Group {
     }
 
     @Nullable
-    public static Group create(PlayerState state) {
+    public static GroupImpl create(PlayerState state) {
         UUID groupId = state.getGroup();
         Server server = Voicechat.SERVER.getServer();
         if (server != null && groupId != null) {

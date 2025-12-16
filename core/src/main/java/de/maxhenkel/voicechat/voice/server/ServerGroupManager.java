@@ -30,16 +30,20 @@ public class ServerGroupManager {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
             }
-            if (!PermissionManager.INSTANCE.hasGroupPermissions(player))
+            if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
+                CommonCompatibilityManager.INSTANCE.displayClientMessage(player, "message.voicechat.no_group_permission", true);
                 return;
+            }
             joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
         });
         CommonCompatibilityManager.INSTANCE.getNetManager().createGroupChannel.setServerListener((srv, player, handler, packet) -> {
             if (!Voicechat.SERVER_CONFIG.groupsEnabled.get()) {
                 return;
             }
-            if (!PermissionManager.INSTANCE.hasGroupPermissions(player))
+            if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
+                CommonCompatibilityManager.INSTANCE.displayClientMessage(player, "message.voicechat.no_group_permission", true);
                 return;
+            }
             if (!Voicechat.GROUP_REGEX.matcher(packet.getName()).matches()) {
                 Voicechat.LOGGER.warn("Player {} tried to create a group with an invalid name: {}", player.getName(), packet.getName());
                 return;
@@ -163,7 +167,7 @@ public class ServerGroupManager {
 
     @Nullable
     public Group getPlayerGroup(ServerPlayer player) {
-        PlayerState state = server.getPlayerStateManager().getState(player.getUuid());
+        PlayerState state = server.getPlayerStateManager().getState(player.getUUID());
         if (state == null) {
             return null;
         }

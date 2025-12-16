@@ -215,7 +215,7 @@ public class PluginManager {
             return false;
         }
         @Nullable de.maxhenkel.voicechat.api.Group group = null;
-        PlayerState state = server.getPlayerStateManager().getState(player.getUuid());
+        PlayerState state = server.getPlayerStateManager().getState(player.getUUID());
         if (state != null) {
             UUID groupUUID = state.getGroup();
             if (groupUUID != null) {
@@ -235,13 +235,13 @@ public class PluginManager {
 
     public boolean onMicPacket(ServerPlayer sender, MicPacket packet) {
         return dispatchEvent(MicrophonePacketEvent.class, new MicrophonePacketEventImpl(
-                new MicrophonePacketImpl(packet, sender.getUuid()),
+                new MicrophonePacketImpl(packet, sender.getUUID()),
                 CommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(sender)
         ));
     }
 
     public float getDistance(ServerPlayer sender, MicPacket packet, float originalDistance) {
-        VoiceDistanceEventImpl event = new VoiceDistanceEventImpl(new MicrophonePacketImpl(packet, sender.getUuid()), CommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(sender), originalDistance);
+        VoiceDistanceEventImpl event = new VoiceDistanceEventImpl(new MicrophonePacketImpl(packet, sender.getUUID()), CommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(sender), originalDistance);
         dispatchEvent(VoiceDistanceEvent.class, event);
         return event.getDistance();
     }

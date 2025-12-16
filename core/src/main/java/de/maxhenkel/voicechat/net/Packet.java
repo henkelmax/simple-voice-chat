@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 public interface Packet<T extends Packet<T>> {
 
-    String getID();
+    String getIdentifier();
 
     T fromBytes(ByteBuf buf);
 

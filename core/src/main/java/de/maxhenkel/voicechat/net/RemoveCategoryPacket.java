@@ -22,7 +22,7 @@ public class RemoveCategoryPacket implements Packet<RemoveCategoryPacket> {
     }
 
     @Override
-    public String getID() {
+    public String getIdentifier() {
         return REMOVE_CATEGORY;
     }
 

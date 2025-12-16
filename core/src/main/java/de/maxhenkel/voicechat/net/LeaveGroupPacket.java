@@ -11,7 +11,7 @@ public class LeaveGroupPacket implements Packet<LeaveGroupPacket> {
     }
 
     @Override
-    public String getID() {
+    public String getIdentifier() {
         return LEAVE_GROUP;
     }
 

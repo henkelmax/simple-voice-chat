@@ -5,8 +5,7 @@ import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
 import de.maxhenkel.voicechat.api.audiochannel.StaticAudioChannel;
 import de.maxhenkel.voicechat.api.packets.MicrophonePacket;
-import de.maxhenkel.voicechat.api.packets.Packet;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.plugins.impl.VoicechatServerApiImpl;
 import de.maxhenkel.voicechat.voice.common.GroupSoundPacket;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Group;
@@ -67,7 +66,7 @@ public class StaticAudioChannelImpl extends AudioChannelImpl implements StaticAu
                         continue;
                     }
                 }
-                CommonCompatibilityManager.INSTANCE.getServerApi().sendPacket(player, (Packet) packet);
+                VoicechatServerApiImpl.sendPacket(player, packet);
             }
         }
     }
@@ -85,14 +84,14 @@ public class StaticAudioChannelImpl extends AudioChannelImpl implements StaticAu
     @Override
     public void addTarget(VoicechatConnection target) {
         synchronized (targets) {
-            targets.add(target.getPlayer().getUuid());
+            targets.add(target.getPlayer().getUUID());
         }
     }
 
     @Override
     public void removeTarget(VoicechatConnection target) {
         synchronized (targets) {
-            targets.remove(target.getPlayer().getUuid());
+            targets.remove(target.getPlayer().getUUID());
         }
     }
 

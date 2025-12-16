@@ -22,7 +22,7 @@ public class AddGroupPacket implements Packet<AddGroupPacket> {
     }
 
     @Override
-    public String getID() {
+    public String getIdentifier() {
         return ADD_ADD_GROUP;
     }
 

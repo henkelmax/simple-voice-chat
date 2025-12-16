@@ -54,7 +54,6 @@ public abstract class VoicechatApiImpl implements VoicechatApi {
         return AUDIO_CONVERTER;
     }
 
-
     @Override
     public VolumeCategory.Builder volumeCategoryBuilder() {
         return new VolumeCategoryImpl.BuilderImpl();

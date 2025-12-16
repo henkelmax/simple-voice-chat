@@ -69,7 +69,7 @@ public class VolumeCategoryImpl implements VolumeCategory {
     }
 
     @Override
-    public VolumeCategory fromBytes(Object buffer) {
+    public VolumeCategoryImpl fromBytes(Object buffer) {
         ByteBuf buf = (ByteBuf) buffer;
         String id = BufferUtils.readUtf(buf, 16);
         String name = BufferUtils.readUtf(buf, 16);

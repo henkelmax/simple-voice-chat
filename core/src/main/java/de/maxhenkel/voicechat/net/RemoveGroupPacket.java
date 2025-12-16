@@ -24,7 +24,7 @@ public class RemoveGroupPacket implements Packet<RemoveGroupPacket> {
     }
 
     @Override
-    public String getID() {
+    public String getIdentifier() {
         return REMOVE_GROUP;
     }
 

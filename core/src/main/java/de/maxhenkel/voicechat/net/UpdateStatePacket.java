@@ -21,7 +21,7 @@ public class UpdateStatePacket implements Packet<UpdateStatePacket> {
     }
 
     @Override
-    public String getID() {
+    public String getIdentifier() {
         return PLAYER_STATE;
     }
 

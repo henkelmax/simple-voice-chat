@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerVoiceEvents {
 
-    public final Map<UUID, Integer> clientCompatibilities;
+    private final Map<UUID, Integer> clientCompatibilities;
     private Server server;
 
     public ServerVoiceEvents() {
@@ -35,7 +35,7 @@ public class ServerVoiceEvents {
 
         CommonCompatibilityManager.INSTANCE.getNetManager().requestSecretChannel.setServerListener((server, player, handler, packet) -> {
             Voicechat.LOGGER.info("Received secret request of {} ({})", player.getName(), packet.getCompatibilityVersion());
-            clientCompatibilities.put(player.getUuid(), packet.getCompatibilityVersion());
+            clientCompatibilities.put(player.getUUID(), packet.getCompatibilityVersion());
             if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
                 Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
                 CommonCompatibilityManager.INSTANCE.sendIncompatibleMessage(player, packet.getCompatibilityVersion());
@@ -46,7 +46,7 @@ public class ServerVoiceEvents {
     }
 
     public boolean isCompatible(ServerPlayer player) {
-        return isCompatible(player.getUuid());
+        return isCompatible(player.getUUID());
     }
 
     public boolean isCompatible(UUID playerUuid) {
@@ -85,7 +85,7 @@ public class ServerVoiceEvents {
         }
         CommonCompatibilityManager.INSTANCE.emitPlayerCompatibilityCheckSucceeded(player);
 
-        Secret secret = server.generateNewSecret(player.getUuid());
+        Secret secret = server.generateNewSecret(player.getUUID());
         if (secret == null) {
             Voicechat.LOGGER.warn("Player already requested secret - ignoring");
             return;
@@ -107,7 +107,7 @@ public class ServerVoiceEvents {
     }
 
     public void playerLoggedOut(ServerPlayer player) {
-        clientCompatibilities.remove(player.getUuid());
+        clientCompatibilities.remove(player.getUUID());
         if (server == null) {
             return;
         }

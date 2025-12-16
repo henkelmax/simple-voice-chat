@@ -22,7 +22,7 @@ public class AddCategoryPacket implements Packet<AddCategoryPacket> {
     }
 
     @Override
-    public String getID() {
+    public String getIdentifier() {
         return ADD_CATEGORY;
     }
 

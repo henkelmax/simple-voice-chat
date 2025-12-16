@@ -14,8 +14,4 @@ public interface ServerLevel {
      */
     List<ServerPlayer> players();
 
-    /**
-     * @return the id of the level
-     */
-    String getResourceLocation();
 }

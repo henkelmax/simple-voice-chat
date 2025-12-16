@@ -21,7 +21,7 @@ public class RequestSecretPacket implements Packet<RequestSecretPacket> {
     }
 
     @Override
-    public String getID() {
+    public String getIdentifier() {
         return REQUEST_SECRET;
     }
 

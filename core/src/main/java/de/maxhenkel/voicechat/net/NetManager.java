@@ -49,7 +49,7 @@ public abstract class NetManager {
         }
         ByteBuf buffer = Unpooled.buffer();
         packet.toBytes(buffer);
-        CommonCompatibilityManager.INSTANCE.sendMinecraftPacket(player, packet.getID(), buffer);
+        CommonCompatibilityManager.INSTANCE.sendMinecraftPacket(player, packet.getIdentifier(), buffer);
     }
 
     public interface ServerReceiver<T extends Packet<T>> {

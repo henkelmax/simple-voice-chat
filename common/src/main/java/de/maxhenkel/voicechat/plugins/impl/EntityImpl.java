@@ -19,12 +19,12 @@ public class EntityImpl implements Entity {
     }
 
     @Override
-    public UUID getUuid() {
+    public UUID getUUID() {
         return entity.getUUID();
     }
 
     @Override
-    public Object getEntity() {
+    public net.minecraft.world.entity.Entity getEntity() {
         return entity;
     }
 

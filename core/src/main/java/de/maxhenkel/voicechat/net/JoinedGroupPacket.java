@@ -33,7 +33,7 @@ public class JoinedGroupPacket implements Packet<JoinedGroupPacket> {
     }
 
     @Override
-    public String getID() {
+    public String getIdentifier() {
         return JOINED_GROUP;
     }
 

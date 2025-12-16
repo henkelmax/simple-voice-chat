@@ -18,18 +18,13 @@ public class ServerLevelImpl implements ServerLevel {
     }
 
     @Override
-    public Object getServerLevel() {
+    public net.minecraft.server.level.ServerLevel getServerLevel() {
         return serverLevel;
     }
 
     @Override
     public List<ServerPlayer> players() {
         return serverLevel.players().stream().map(MinecraftCompatibilityManager::fromServerPlayer).collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    @Override
-    public String getResourceLocation() {
-        return serverLevel.getLevel().dimension().location().toString();
     }
 
     @Override

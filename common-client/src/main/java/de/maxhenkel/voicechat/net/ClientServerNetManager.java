@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -16,7 +15,7 @@ public abstract class ClientServerNetManager extends NetManager {
         packet.toBytes(buffer);
         ClientPacketListener connection = Minecraft.getInstance().getConnection();
         if (connection != null && connection.getLevel() != null) {
-            connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation(Voicechat.MODID, packet.getID()), buffer));
+            connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation(Voicechat.MODID, packet.getIdentifier()), buffer));
         }
     }
 

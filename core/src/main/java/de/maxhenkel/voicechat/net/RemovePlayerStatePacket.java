@@ -24,7 +24,7 @@ public class RemovePlayerStatePacket implements Packet<RemovePlayerStatePacket> 
     }
 
     @Override
-    public String getID() {
+    public String getIdentifier() {
         return REMOVE_PLAYER_STATE;
     }
 

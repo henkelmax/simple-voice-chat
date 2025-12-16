@@ -7,7 +7,7 @@ public interface Entity {
     /**
      * @return the UUID of the entity
      */
-    UUID getUuid();
+    UUID getUUID();
 
     /**
      * @return the actual entity object

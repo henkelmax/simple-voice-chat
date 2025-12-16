@@ -40,7 +40,7 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
     }
 
     @Override
-    public String getID() {
+    public String getIdentifier() {
         return CREATE_GROUP;
     }
 

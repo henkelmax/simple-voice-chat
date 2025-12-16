@@ -52,6 +52,8 @@ public abstract class CommonCompatibilityManager {
 
     public abstract void onPlayerCompatibilityCheckSucceeded(Consumer<ServerPlayer> onPlayerCompatibilityCheckSucceeded);
 
+    public abstract void registerCommands();
+
     public abstract NetManager getNetManager();
 
     public abstract boolean isDevEnvironment();
@@ -68,15 +70,13 @@ public abstract class CommonCompatibilityManager {
 
     public abstract boolean canSee(ServerPlayer player, ServerPlayer other);
 
-    public abstract void registerCommands();
+    public abstract void executeOnMinecraftServer(MinecraftServer server, Runnable runnable);
 
     public abstract void sendMinecraftPacket(ServerPlayer player, String id, ByteBuf buffer);
 
     public abstract void displayClientMessage(ServerPlayer player, String message, boolean overlay);
 
     public abstract void createTimeoutTimer(ServerPlayer player);
-
-    public abstract void executeOnMinecraftServer(MinecraftServer server, Runnable runnable);
 
     public abstract void sendIncompatibleMessage(ServerPlayer serverPlayer, int compatibilityVersion);
 

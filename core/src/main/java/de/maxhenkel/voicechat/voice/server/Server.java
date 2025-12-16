@@ -75,7 +75,7 @@ public class Server extends Thread {
     }
 
     public void onPlayerLoggedOut(ServerPlayer player) {
-        this.disconnectClient(player.getUuid());
+        this.disconnectClient(player.getUUID());
         playerStateManager.onPlayerLoggedOut(player);
         groupManager.onPlayerLoggedOut(player);
     }
@@ -349,10 +349,12 @@ public class Server extends Thread {
         if (player == null) {
             return;
         }
-        if (!PermissionManager.INSTANCE.hasSpeakPermissions(player)) {
+        if (!PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player)) {
+            CooldownTimer.run("no-speak-" + player.getUUID(), 30_000L, () ->
+                    CommonCompatibilityManager.INSTANCE.displayClientMessage(player, "message.voicechat.no_speak_permission", true));
             return;
         }
-        PlayerState state = playerStateManager.getState(player.getUuid());
+        PlayerState state = playerStateManager.getState(player.getUUID());
         if (state == null) {
             return;
         }
@@ -413,7 +415,7 @@ public class Server extends Thread {
                 ServerPlayer camera = sender.getCameraPlayer();
                 if (camera != null) {
                     if (camera != sender) {
-                        PlayerState receiverState = playerStateManager.getState(camera.getUuid());
+                        PlayerState receiverState = playerStateManager.getState(camera.getUUID());
                         if (receiverState == null) {
                             return;
                         }
@@ -425,21 +427,21 @@ public class Server extends Thread {
                 }
             }
             if (Voicechat.SERVER_CONFIG.spectatorInteraction.get()) {
-                soundPacket = new LocationSoundPacket(sender.getUuid(), sender.getUuid(), sender.getEyePosition(), packet.getData(), packet.getSequenceNumber(), distance, null);
+                soundPacket = new LocationSoundPacket(sender.getUUID(), sender.getUUID(), sender.getEyePosition(), packet.getData(), packet.getSequenceNumber(), distance, null);
                 source = SoundPacketEvent.SOURCE_SPECTATOR;
             }
         }
 
         if (soundPacket == null) {
-            soundPacket = new PlayerSoundPacket(sender.getUuid(), sender.getUuid(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering(), distance, null);
+            soundPacket = new PlayerSoundPacket(sender.getUUID(), sender.getUUID(), packet.getData(), packet.getSequenceNumber(), packet.isWhispering(), distance, null);
             source = SoundPacketEvent.SOURCE_PROXIMITY;
         }
 
-        broadcast(ServerWorldUtils.getPlayersInRange(sender.getServerLevel(), sender.getPosition(), getBroadcastRange(distance), p -> !p.getUuid().equals(sender.getUuid())), soundPacket, sender, senderState, groupId, source);
+        broadcast(ServerWorldUtils.getPlayersInRange(sender.getServerLevel(), sender.getPosition(), getBroadcastRange(distance), p -> !p.getUUID().equals(sender.getUUID())), soundPacket, sender, senderState, groupId, source);
     }
 
     public void sendSoundPacket(@Nullable ServerPlayer sender, @Nullable PlayerState senderState, ServerPlayer receiver, PlayerState receiverState, @Nullable ClientConnection connection, SoundPacket<?> soundPacket, String source) {
-        PluginManager.instance().onListenerAudio(receiver.getUuid(), soundPacket);
+        PluginManager.instance().onListenerAudio(receiver.getUUID(), soundPacket);
 
         if (connection == null) {
             return;
@@ -453,7 +455,9 @@ public class Server extends Thread {
             return;
         }
 
-        if (!PermissionManager.INSTANCE.hasListenPermissions(receiver)) {
+        if (!PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(receiver)) {
+            CooldownTimer.run(String.format("no-listen-%s", receiver.getUUID()), 30_000L, () ->
+                    CommonCompatibilityManager.INSTANCE.displayClientMessage(receiver, "message.voicechat.no_listen_permission", true));
             return;
         }
         sendPacket(soundPacket, connection);
@@ -469,7 +473,7 @@ public class Server extends Thread {
 
     public void broadcast(Collection<ServerPlayer> players, SoundPacket<?> packet, @Nullable ServerPlayer sender, @Nullable PlayerState senderState, @Nullable UUID groupId, String source) {
         for (ServerPlayer player : players) {
-            PlayerState state = playerStateManager.getState(player.getUuid());
+            PlayerState state = playerStateManager.getState(player.getUUID());
             if (state == null) {
                 continue;
             }
