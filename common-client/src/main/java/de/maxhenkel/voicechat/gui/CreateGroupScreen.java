@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.gui;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.gui.widgets.GroupEditBox;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.net.CreateGroupPacket;
 import net.minecraft.client.gui.GuiGraphics;
@@ -39,14 +40,12 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         hoverAreas.clear();
         clearWidgets();
 
-        groupName = new EditBox(font, guiLeft + 7, guiTop + 30, xSize - 7 * 2, 14, Component.empty());
+        groupName = new GroupEditBox(font, guiLeft + 7, guiTop + 30, xSize - 7 * 2, 14);
         groupName.setMaxLength(24);
-        groupName.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(groupName);
 
-        password = new EditBox(font, guiLeft + 7, guiTop + 56, xSize - 7 * 2, 14, Component.empty());
+        password = new GroupEditBox(font, guiLeft + 7, guiTop + 56, xSize - 7 * 2, 14);
         password.setMaxLength(32);
-        password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(password);
 
         addRenderableWidget(CycleButton.builder(GroupType::getTranslation, GroupType.NORMAL).withValues(GroupType.values()).withTooltip(object -> {

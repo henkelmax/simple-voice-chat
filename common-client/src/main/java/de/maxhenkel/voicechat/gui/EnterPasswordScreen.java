@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.gui;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.gui.widgets.GroupEditBox;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.net.JoinGroupPacket;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
@@ -35,9 +36,8 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
         hoverAreas.clear();
         clearWidgets();
 
-        password = new EditBox(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 2 - 5, xSize - 7 * 2, 14, Component.empty());
+        password = new GroupEditBox(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 2 - 5, xSize - 7 * 2, 14);
         password.setMaxLength(32);
-        password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(password);
 
         joinGroup = Button.builder(JOIN_GROUP, button -> {
