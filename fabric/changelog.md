@@ -4,3 +4,4 @@
 - Made the audio system safer when used alongside other audio related mods
 - Fixed missing cloth config tab translation
 - Fixed error when saving a voice chat recording
+- Updated German translation
