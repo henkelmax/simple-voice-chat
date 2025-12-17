@@ -6,3 +6,4 @@
 - Fixed error when saving a voice chat recording
 - Fixed disconnect event not being called when disconnecting from a server
 - Fixed game crashing when exiting after being on a server
+- Updated German translation
