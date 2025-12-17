@@ -1,1 +1,1 @@
-- Fixed error when saving a voice chat recording
+- Updated German translation
