@@ -141,6 +141,9 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
      */
     @Subscribe
     public void onPlayerDisconnected(DisconnectEvent event) {
+        if (event.getLoginStatus().equals(DisconnectEvent.LoginStatus.CONFLICTING_LOGIN)) {
+            return;
+        }
         onPlayerServerDisconnected(event.getPlayer().getUniqueId());
     }
 

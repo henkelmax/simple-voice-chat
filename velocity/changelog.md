@@ -1,1 +1,1 @@
-- Added ping command
+- Fixed getting disconnected form voice chat when trying to log in twice with the same account
