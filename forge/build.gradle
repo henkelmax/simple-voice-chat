@@ -1,19 +1,32 @@
+buildscript {
+    println('Loading root gradle.properties')
+    Properties properties = new Properties()
+    properties.load(new FileInputStream(file('../gradle.properties')))
+    properties.each { key, value ->
+        ext.set(key.toString(), value.toString())
+    }
+
+    Properties apiProperties = new Properties()
+    apiProperties.load(new FileInputStream(file('../api/gradle.properties')))
+    ext.set('api_version', apiProperties.get('version'))
+}
+
 plugins {
     id 'net.minecraftforge.gradle' version "${forgegradle_version}"
     id 'org.spongepowered.mixin' version "${mixingradle_version}"
+    id 'com.gradleup.shadow' version "${shadow_version}"
+    id 'de.maxhenkel.cursegradle' version "${cursegradle_version}"
+    id 'com.modrinth.minotaur' version "${minotaur_version}"
+    id 'mod-update' version "${mod_update_version}"
 }
 
-apply plugin: 'com.gradleup.shadow'
-apply plugin: 'de.maxhenkel.cursegradle'
-apply plugin: 'com.modrinth.minotaur'
-apply plugin: 'mod-update'
-
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/taskutils.gradle"
 
 processResources {
     filesMatching('**/*.toml') {
         expand 'mod_version': mod_version,
-                'api_version': project(':api').version,
+                'api_version': api_version,
                 'forge_dependency': forge_dependency,
                 'minecraft_version': minecraft_version,
                 'cloth_config_version': cloth_config_version
@@ -46,7 +59,7 @@ dependencies {
 }
 
 tasks.register('generateJava', Copy) {
-    from project(':common').file('src/template/java')
+    from file('../common/src/template/java')
     into "${layout.buildDirectory.asFile.get()}/generated/java"
     expand 'compatibility_version': voicechat_compatibility_version,
             'mod_compatible_version': mod_compatible_version,
@@ -57,6 +70,28 @@ sourceSets.main.java {
 }
 compileJava.dependsOn generateJava
 
+sourceSets {
+    main {
+        java {
+            srcDir '../common/src/main/java'
+            srcDir '../common-client/src/main/java'
+            srcDir '../api/src/main/java'
+        }
+        resources {
+            srcDir '../common/src/main/resources'
+            srcDir '../common-client/src/main/resources'
+            srcDir '../api/src/main/resources'
+        }
+    }
+}
+
 shadowJar {
     relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'
+}
+
+tasks.register('uploadMod') {
+    group = 'voicechat'
+    doLast {
+        runGradleTasks(['clean'], ['curseforge', 'modrinth', 'modUpdate'])
+    }
 }
