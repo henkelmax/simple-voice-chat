@@ -1,1 +1,1 @@
-- Updated to 26.1-snapshot-1
+- Fixed volume abruptly increasing shortly after starting to speak
