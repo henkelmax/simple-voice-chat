@@ -1,1 +1,1 @@
-- Updated German translation
+- Fixed volume abruptly increasing shortly after starting to speak
