@@ -1,6 +1,1 @@
-- Improved audio device error handling
-- Fixed potential crashes and startup failures related to the audio system
-- Prevented potential audio related resource leaks
-- Made the audio system safer when used alongside other audio related mods
-- Fixed missing cloth config tab translation
-- Fixed error when saving a voice chat recording
+- Fixed volume abruptly increasing shortly after starting to speak
