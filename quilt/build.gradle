@@ -22,6 +22,12 @@ plugins {
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/taskutils.gradle"
 
+loom {
+    interfaceInjection {
+        enableDependencyInterfaceInjection = false
+    }
+}
+
 processResources {
     filesMatching('quilt.mod.json') {
         expand 'java_version': java_version,
