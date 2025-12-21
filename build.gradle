@@ -11,7 +11,7 @@ apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mo
 tasks.register('01-publishForge') {
     group = 'voicechat'
     doLast {
-        runGradleTasks(['common:clean', 'common-client:clean', 'forge:clean'], ['forge:curseforge', 'forge:modrinth', 'forge:modUpdate'])
+        runGradleTask('uploadMod', false, file('forge'))
     }
 }
 
