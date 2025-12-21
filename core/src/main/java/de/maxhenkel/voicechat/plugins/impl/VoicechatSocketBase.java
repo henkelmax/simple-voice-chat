@@ -1,7 +1,5 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
-import de.maxhenkel.voicechat.api.RawUdpPacket;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -10,7 +8,7 @@ public class VoicechatSocketBase {
 
     private final byte[] BUFFER = new byte[4096];
 
-    public RawUdpPacket read(DatagramSocket socket) throws IOException {
+    public RawUdpPacketImpl read(DatagramSocket socket) throws IOException {
         DatagramPacket packet = new DatagramPacket(BUFFER, BUFFER.length);
         socket.receive(packet);
         // Setting the timestamp after receiving the packet

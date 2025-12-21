@@ -68,9 +68,7 @@ public class VolumeCategoryImpl implements VolumeCategory {
         return icon;
     }
 
-    @Override
-    public VolumeCategoryImpl fromBytes(Object buffer) {
-        ByteBuf buf = (ByteBuf) buffer;
+    public static VolumeCategoryImpl fromBytes(ByteBuf buf) {
         String id = BufferUtils.readUtf(buf, 16);
         String name = BufferUtils.readUtf(buf, 16);
         String nameTranslationKey = readOptionalString(buf);
@@ -96,9 +94,7 @@ public class VolumeCategoryImpl implements VolumeCategory {
         return null;
     }
 
-    @Override
-    public void toBytes(Object buffer) {
-        ByteBuf buf = (ByteBuf) buffer;
+    public void toBytes(ByteBuf buf) {
         BufferUtils.writeUtf(buf, id, 16);
         BufferUtils.writeUtf(buf, name, 16);
         writeOptionalString(buf, nameTranslationKey);
@@ -132,10 +128,11 @@ public class VolumeCategoryImpl implements VolumeCategory {
         if (this == object) {
             return true;
         }
-        if (!(object instanceof VolumeCategory that)) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        return id.equals(that.getId());
+        VolumeCategoryImpl that = (VolumeCategoryImpl) object;
+        return id.equals(that.id);
     }
 
     @Override

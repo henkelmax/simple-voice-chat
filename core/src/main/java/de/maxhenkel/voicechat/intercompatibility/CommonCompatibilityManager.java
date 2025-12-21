@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.api.*;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.service.Service;
+import de.maxhenkel.voicechat.voice.common.ResourceLocation;
 import io.netty.buffer.ByteBuf;
 
 import java.nio.file.Path;
@@ -72,7 +73,7 @@ public abstract class CommonCompatibilityManager {
 
     public abstract void executeOnMinecraftServer(MinecraftServer server, Runnable runnable);
 
-    public abstract void sendMinecraftPacket(ServerPlayer player, String id, ByteBuf buffer);
+    public abstract void sendMinecraftPacket(ServerPlayer player, ResourceLocation id, ByteBuf buffer);
 
     public abstract void displayClientMessage(ServerPlayer player, String message, boolean overlay);
 

@@ -11,14 +11,6 @@ import javax.annotation.Nullable;
 public interface VolumeCategory {
 
     /**
-     * Handle creating a new VolumeCategory from an incoming packet
-     *
-     * @param buf the data coming in
-     * @return an instance of your mod/plugin loaders implementation of VolumeCategory
-     */
-    VolumeCategory fromBytes(Object buf);
-
-    /**
      * @return the unique ID of the category
      */
     String getId();
@@ -51,13 +43,6 @@ public interface VolumeCategory {
      */
     @Nullable
     int[][] getIcon();
-
-    /**
-     * Fill a buffer with your VolumeCategory data to be sent over networking
-     *
-     * @param buf the packet to fill
-     */
-    void toBytes(Object buf);
 
     public interface Builder {
 

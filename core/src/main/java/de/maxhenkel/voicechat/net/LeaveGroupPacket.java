@@ -1,17 +1,19 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import io.netty.buffer.ByteBuf;
+import de.maxhenkel.voicechat.voice.common.ResourceLocation;
 
 public class LeaveGroupPacket implements Packet<LeaveGroupPacket> {
 
-    public static final String LEAVE_GROUP = "leave_group";
+    public static final ResourceLocation LEAVE_GROUP = new ResourceLocation(Voicechat.MODID, "leave_group");
 
     public LeaveGroupPacket() {
 
     }
 
     @Override
-    public String getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return LEAVE_GROUP;
     }
 

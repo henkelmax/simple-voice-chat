@@ -47,7 +47,7 @@ public class PlayerAudioListenerImpl implements PlayerAudioListener {
 
         @Override
         public Builder setPlayer(ServerPlayer player) {
-            this.playerUuid = player.getUUID();
+            this.playerUuid = player.getUuid();
             return this;
         }
 

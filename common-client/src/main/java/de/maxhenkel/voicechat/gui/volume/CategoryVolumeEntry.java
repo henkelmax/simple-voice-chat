@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.gui.volume;
 
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.api.VolumeCategory;
 import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
+import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
@@ -11,16 +11,16 @@ import net.minecraft.resources.ResourceLocation;
 
 public class CategoryVolumeEntry extends VolumeEntry {
 
-    protected final VolumeCategory category;
+    protected final VolumeCategoryImpl category;
     protected final ResourceLocation texture;
 
-    public CategoryVolumeEntry(VolumeCategory category, AdjustVolumesScreen screen) {
+    public CategoryVolumeEntry(VolumeCategoryImpl category, AdjustVolumesScreen screen) {
         super(screen, new AdjustCategoryVolumeEntry(category.getId()));
         this.category = category;
         this.texture = ClientManager.getCategoryManager().getTexture(category.getId(), OTHER_VOLUME_ICON);
     }
 
-    public VolumeCategory getCategory() {
+    public VolumeCategoryImpl getCategory() {
         return category;
     }
 

@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.permission;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.ServerPlayer;
 
 import javax.annotation.Nullable;
@@ -12,7 +13,7 @@ public enum PermissionType {
         return switch (this) {
             case EVERYONE -> true;
             case NOONE -> false;
-            case OPS -> player != null && player.hasPermissions(player.getServer().getOperatorUserPermissionLevel());
+            case OPS -> player != null && player.hasPermissions(Voicechat.SERVER.getServer().getServer().getOperatorUserPermissionLevel());
         };
     }
 

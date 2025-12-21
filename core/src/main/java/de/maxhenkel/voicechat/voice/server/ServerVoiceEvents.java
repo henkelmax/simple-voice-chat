@@ -1,14 +1,14 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.api.MinecraftServer;
-import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.Secret;
+import de.maxhenkel.voicechat.api.MinecraftServer;
+import de.maxhenkel.voicechat.api.ServerPlayer;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class ServerVoiceEvents {
 
         CommonCompatibilityManager.INSTANCE.getNetManager().requestSecretChannel.setServerListener((server, player, handler, packet) -> {
             Voicechat.LOGGER.info("Received secret request of {} ({})", player.getName(), packet.getCompatibilityVersion());
-            clientCompatibilities.put(player.getUUID(), packet.getCompatibilityVersion());
+            clientCompatibilities.put(player.getUuid(), packet.getCompatibilityVersion());
             if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
                 Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
                 CommonCompatibilityManager.INSTANCE.sendIncompatibleMessage(player, packet.getCompatibilityVersion());
@@ -46,7 +46,7 @@ public class ServerVoiceEvents {
     }
 
     public boolean isCompatible(ServerPlayer player) {
-        return isCompatible(player.getUUID());
+        return isCompatible(player.getUuid());
     }
 
     public boolean isCompatible(UUID playerUuid) {
@@ -85,7 +85,7 @@ public class ServerVoiceEvents {
         }
         CommonCompatibilityManager.INSTANCE.emitPlayerCompatibilityCheckSucceeded(player);
 
-        Secret secret = server.generateNewSecret(player.getUUID());
+        Secret secret = server.generateNewSecret(player.getUuid());
         if (secret == null) {
             Voicechat.LOGGER.warn("Player already requested secret - ignoring");
             return;
@@ -107,7 +107,7 @@ public class ServerVoiceEvents {
     }
 
     public void playerLoggedOut(ServerPlayer player) {
-        clientCompatibilities.remove(player.getUUID());
+        clientCompatibilities.remove(player.getUuid());
         if (server == null) {
             return;
         }

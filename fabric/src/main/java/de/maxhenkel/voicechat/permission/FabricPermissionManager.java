@@ -1,10 +1,10 @@
 package de.maxhenkel.voicechat.permission;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.loader.api.FabricLoader;
+import de.maxhenkel.voicechat.api.ServerPlayer;
 
 public class FabricPermissionManager extends PermissionManager {
 

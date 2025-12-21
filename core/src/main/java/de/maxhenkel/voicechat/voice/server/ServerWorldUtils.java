@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.voice.server;
 
-import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.api.ServerLevel;
 import de.maxhenkel.voicechat.api.ServerPlayer;
+import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
 import javax.annotation.Nullable;

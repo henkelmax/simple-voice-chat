@@ -5,8 +5,8 @@ import de.maxhenkel.voicechat.api.RawUdpPacket;
 import de.maxhenkel.voicechat.debug.PingHandler;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.buffer.ByteBuf;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

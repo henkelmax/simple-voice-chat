@@ -167,7 +167,7 @@ public class ServerGroupManager {
 
     @Nullable
     public Group getPlayerGroup(ServerPlayer player) {
-        PlayerState state = server.getPlayerStateManager().getState(player.getUUID());
+        PlayerState state = server.getPlayerStateManager().getState(player.getUuid());
         if (state == null) {
             return null;
         }

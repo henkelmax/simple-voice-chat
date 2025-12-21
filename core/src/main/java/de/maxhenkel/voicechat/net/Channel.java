@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.api.MinecraftServer;
 import de.maxhenkel.voicechat.api.ServerPlayer;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 
 import javax.annotation.Nullable;
 

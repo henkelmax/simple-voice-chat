@@ -62,10 +62,11 @@ public class MinecraftServerImpl implements MinecraftServer {
         if (this == object) {
             return true;
         }
-        if (!(object instanceof MinecraftServer server1)) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        return Objects.equals(server, server1.getMinecraftServer());
+        MinecraftServerImpl that = (MinecraftServerImpl) object;
+        return Objects.equals(server, that.server);
     }
 
     @Override

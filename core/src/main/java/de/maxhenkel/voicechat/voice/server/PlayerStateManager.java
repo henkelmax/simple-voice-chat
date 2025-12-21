@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
@@ -9,6 +8,7 @@ import de.maxhenkel.voicechat.net.PlayerStatesPacket;
 import de.maxhenkel.voicechat.net.RemovePlayerStatePacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
+import de.maxhenkel.voicechat.api.ServerPlayer;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class PlayerStateManager {
         this.states = new ConcurrentHashMap<>();
 
         CommonCompatibilityManager.INSTANCE.getNetManager().updateStateChannel.setServerListener((server, player, handler, packet) -> {
-            PlayerState state = states.get(player.getUUID());
+            PlayerState state = states.get(player.getUuid());
 
             if (state == null) {
                 state = defaultDisconnectedState(player);
@@ -35,7 +35,7 @@ public class PlayerStateManager {
 
             state.setDisabled(packet.isDisabled());
 
-            states.put(player.getUUID(), state);
+            states.put(player.getUuid(), state);
 
             broadcastState(player, state);
             Voicechat.LOGGER.debug("Got state of {}: {}", player.getName(), state);
@@ -54,7 +54,7 @@ public class PlayerStateManager {
     }
 
     public void broadcastRemoveState(ServerPlayer stateOwner) {
-        RemovePlayerStatePacket packet = new RemovePlayerStatePacket(stateOwner.getUUID());
+        RemovePlayerStatePacket packet = new RemovePlayerStatePacket(stateOwner.getUuid());
         for (ServerPlayer receiver : voicechatServer.getServer().getPlayers()) {
             NetManager.sendToClient(receiver, packet);
         }
@@ -81,25 +81,25 @@ public class PlayerStateManager {
 
     public void onPlayerLoggedIn(ServerPlayer player) {
         PlayerState state = defaultDisconnectedState(player);
-        states.put(player.getUUID(), state);
+        states.put(player.getUuid(), state);
         broadcastState(player, state);
         Voicechat.LOGGER.debug("Setting default state of {}: {}", player.getName(), state);
     }
 
     public void onPlayerLoggedOut(ServerPlayer player) {
-        states.remove(player.getUUID());
+        states.remove(player.getUuid());
         broadcastRemoveState(player);
         Voicechat.LOGGER.debug("Removing state of {}", player.getName());
     }
 
     public void onPlayerHide(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
-        RemovePlayerStatePacket packet = new RemovePlayerStatePacket(visibilityChangedPlayer.getUUID());
+        RemovePlayerStatePacket packet = new RemovePlayerStatePacket(visibilityChangedPlayer.getUuid());
         NetManager.sendToClient(observingPlayer, packet);
         Voicechat.LOGGER.debug("Removing state of {} for {}", visibilityChangedPlayer.getName(), observingPlayer.getName());
     }
 
     public void onPlayerShow(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
-        PlayerState state = states.get(visibilityChangedPlayer.getUUID());
+        PlayerState state = states.get(visibilityChangedPlayer.getUuid());
         if (state == null) {
             state = defaultDisconnectedState(visibilityChangedPlayer);
         }
@@ -123,7 +123,7 @@ public class PlayerStateManager {
     }
 
     public void onPlayerVoicechatConnect(ServerPlayer player) {
-        PlayerState state = states.get(player.getUUID());
+        PlayerState state = states.get(player.getUuid());
 
         if (state == null) {
             state = defaultDisconnectedState(player);
@@ -131,7 +131,7 @@ public class PlayerStateManager {
 
         state.setDisconnected(false);
 
-        states.put(player.getUUID(), state);
+        states.put(player.getUuid(), state);
 
         broadcastState(player, state);
         Voicechat.LOGGER.debug("Set state of {} to connected: {}", player.getName(), state);
@@ -143,17 +143,17 @@ public class PlayerStateManager {
     }
 
     public static PlayerState defaultDisconnectedState(ServerPlayer player) {
-        return new PlayerState(player.getUUID(), player.getName(), false, true);
+        return new PlayerState(player.getUuid(), player.getName(), false, true);
     }
 
     public void setGroup(ServerPlayer player, @Nullable UUID group) {
-        PlayerState state = states.get(player.getUUID());
+        PlayerState state = states.get(player.getUuid());
         if (state == null) {
             state = PlayerStateManager.defaultDisconnectedState(player);
             Voicechat.LOGGER.debug("Defaulting to default state for {}: {}", player.getName(), state);
         }
         state.setGroup(group);
-        states.put(player.getUUID(), state);
+        states.put(player.getUuid(), state);
         broadcastState(player, state);
         Voicechat.LOGGER.debug("Setting group of {}: {}", player.getName(), state);
     }

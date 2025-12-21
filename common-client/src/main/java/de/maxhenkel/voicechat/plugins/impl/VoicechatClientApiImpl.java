@@ -116,7 +116,7 @@ public class VoicechatClientApiImpl extends VoicechatApiImpl implements Voicecha
 
     @Override
     public ClientEntityAudioChannel createEntityAudioChannel(UUID uuid, Entity entity) {
-        return new ClientEntityAudioChannelImpl(uuid, entity.getUUID());
+        return new ClientEntityAudioChannelImpl(uuid, entity.getUuid());
     }
 
     @Override
@@ -141,7 +141,10 @@ public class VoicechatClientApiImpl extends VoicechatApiImpl implements Voicecha
 
     @Override
     public void registerClientVolumeCategory(VolumeCategory category) {
-        ClientManager.getCategoryManager().addCategory(category);
+        if (!(category instanceof VolumeCategoryImpl c)) {
+            throw new IllegalArgumentException("VolumeCategory is not an instance of VolumeCategoryImpl");
+        }
+        ClientManager.getCategoryManager().addCategory(c);
     }
 
     @Override

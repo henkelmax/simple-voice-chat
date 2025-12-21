@@ -192,7 +192,7 @@ public interface VoicechatServerApi extends VoicechatApi {
      */
     @Nullable
     default VoicechatConnection getConnectionOf(ServerPlayer player) {
-        return getConnectionOf(player.getUUID());
+        return getConnectionOf(player.getUuid());
     }
 
     /**

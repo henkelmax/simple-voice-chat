@@ -7,7 +7,7 @@ public interface Entity {
     /**
      * @return the UUID of the entity
      */
-    UUID getUUID();
+    UUID getUuid();
 
     /**
      * @return the actual entity object
@@ -15,19 +15,9 @@ public interface Entity {
     Object getEntity();
 
     /**
-     * @return the entity name
-     */
-    String getName();
-
-    /**
      * @return the current position of the entity
      */
     Position getPosition();
-
-    /**
-     * @return the level of the entity
-     */
-    ServerLevel getServerLevel();
 
     /**
      * @return the current eye position of the entity
@@ -35,17 +25,7 @@ public interface Entity {
     Position getEyePosition();
 
     /**
-     * @return whether the entity is in spectator
+     * @return the level of the entity
      */
-    boolean isSpectator();
-
-    /**
-     * @return the minecraft server of the entity
-     */
-    MinecraftServer getServer();
-
-    /**
-     * @return whether the entity has given permission level
-     */
-    boolean hasPermissions(int operatorUserPermissionLevel);
+    ServerLevel getLevel();
 }

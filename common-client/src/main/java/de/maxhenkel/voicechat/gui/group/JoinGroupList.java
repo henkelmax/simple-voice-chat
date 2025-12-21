@@ -2,15 +2,14 @@ package de.maxhenkel.voicechat.gui.group;
 
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
+import de.maxhenkel.voicechat.net.ClientServerNetManager;
+import de.maxhenkel.voicechat.net.JoinGroupPacket;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class JoinGroupList extends ListScreenListBase<JoinGroupEntry> {

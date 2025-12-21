@@ -8,14 +8,14 @@
   ],
   "client": [
     "ConnectionAccessor",
-    "GuiMixin",
-    "IntegratedServerMixin",
-    "KeyboardMixin",
+    "PlayerRendererMixin",
     "MinecraftMixin",
+    "KeyboardMixin",
     "MouseMixin",
     "PackRepositoryMixin",
-    "PlayerEntryMixin",
-    "PlayerRendererMixin"
+    "GuiMixin",
+    "IntegratedServerMixin",
+    "PlayerEntryMixin"
   ],
   "injectors": {
     "defaultRequire": 1

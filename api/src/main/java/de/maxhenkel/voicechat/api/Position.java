@@ -3,11 +3,6 @@ package de.maxhenkel.voicechat.api;
 public interface Position {
 
     /**
-     * @return the actual vec3 object
-     */
-    Object getVec3();
-
-    /**
      * @return the X position
      */
     double getX();

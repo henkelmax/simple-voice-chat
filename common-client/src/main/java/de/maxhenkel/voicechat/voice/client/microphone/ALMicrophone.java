@@ -4,9 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.client.MicrophoneException;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
-import org.lwjgl.openal.ALC11;
-import org.lwjgl.openal.ALUtil;
-import org.lwjgl.openal.EXTFloat32;
+import org.lwjgl.openal.*;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -31,6 +29,9 @@ public class ALMicrophone implements Microphone {
     public void open() throws MicrophoneException {
         if (isOpen()) {
             throw new MicrophoneException("Microphone already open");
+        }
+        if (!canCapture()) {
+            throw new MicrophoneException("Extension 'ALC_EXT_CAPTURE' not supported");
         }
         device = openMic(deviceName);
     }
@@ -77,8 +78,9 @@ public class ALMicrophone implements Microphone {
             return;
         }
         stop();
-        ALC11.alcCaptureCloseDevice(device);
-        SoundManager.checkAlcError(device);
+        if (!ALC11.alcCaptureCloseDevice(device)) {
+            SoundManager.checkAlcError(device);
+        }
         device = 0;
     }
 
@@ -116,43 +118,45 @@ public class ALMicrophone implements Microphone {
         try {
             return tryOpenMic(name);
         } catch (MicrophoneException e) {
-            if (name != null) {
-                Voicechat.LOGGER.warn("Failed to open microphone '{}', falling back to default microphone", name);
+            if (name == null) {
+                throw e;
             }
-            try {
-                return tryOpenMic(getDefaultMicrophone());
-            } catch (MicrophoneException ex) {
-                return tryOpenMic(null);
-            }
+            Voicechat.LOGGER.warn("Failed to open microphone '{}', falling back to default microphone", name);
+            return tryOpenMic(null);
         }
     }
 
     private long tryOpenMic(@Nullable String string) throws MicrophoneException {
         long device = ALC11.alcCaptureOpenDevice(string, sampleRate, EXTFloat32.AL_FORMAT_MONO_FLOAT32, bufferSize);
         if (device == 0L) {
-            SoundManager.checkAlcError(0L);
-            throw new MicrophoneException(String.format("Failed to open microphone: %s", SoundManager.getAlcError(0)));
+            throw new MicrophoneException("Failed to open microphone");
         }
         SoundManager.checkAlcError(device);
         return device;
     }
 
-    @Nullable
-    public static String getDefaultMicrophone() {
-        if (!SoundManager.canEnumerate()) {
-            return null;
-        }
-        String mic = ALC11.alcGetString(0L, ALC11.ALC_CAPTURE_DEVICE_SPECIFIER);
-        SoundManager.checkAlcError(0L);
-        return mic;
-    }
-
     public static List<String> getAllMicrophones() {
-        if (!SoundManager.canEnumerate()) {
+        if (!canCapture()) {
+            Voicechat.LOGGER.warn("Extension ALC_EXT_CAPTURE is not present");
+            return Collections.emptyList();
+        }
+        if (!canEnumerate()) {
+            Voicechat.LOGGER.warn("Extension ALC_ENUMERATION_EXT is not present");
             return Collections.emptyList();
         }
         List<String> devices = ALUtil.getStringList(0L, ALC11.ALC_CAPTURE_DEVICE_SPECIFIER);
-        SoundManager.checkAlcError(0L);
-        return devices == null ? Collections.emptyList() : devices;
+        if (devices == null) {
+            Voicechat.LOGGER.warn("Failed to list available microphones");
+            return Collections.emptyList();
+        }
+        return devices;
+    }
+
+    public static boolean canCapture() {
+        return ALC11.alcIsExtensionPresent(0L, "ALC_EXT_CAPTURE");
+    }
+
+    public static boolean canEnumerate() {
+        return ALC11.alcIsExtensionPresent(0L, "ALC_ENUMERATION_EXT");
     }
 }

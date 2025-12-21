@@ -1,11 +1,13 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import io.netty.buffer.ByteBuf;
+import de.maxhenkel.voicechat.voice.common.ResourceLocation;
 
 public class AddGroupPacket implements Packet<AddGroupPacket> {
 
-    public static final String ADD_ADD_GROUP = "add_group";
+    public static final ResourceLocation ADD_ADD_GROUP = new ResourceLocation(Voicechat.MODID, "add_group");
 
     private ClientGroup group;
 
@@ -22,7 +24,7 @@ public class AddGroupPacket implements Packet<AddGroupPacket> {
     }
 
     @Override
-    public String getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return ADD_ADD_GROUP;
     }
 

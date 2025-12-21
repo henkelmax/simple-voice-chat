@@ -1,15 +1,17 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.plugins.impl.GroupImpl;
 import de.maxhenkel.voicechat.voice.common.BufferUtils;
 import io.netty.buffer.ByteBuf;
+import de.maxhenkel.voicechat.voice.common.ResourceLocation;
 
 import javax.annotation.Nullable;
 
 public class CreateGroupPacket implements Packet<CreateGroupPacket> {
 
-    public static final String CREATE_GROUP = "create_group";
+    public static final ResourceLocation CREATE_GROUP = new ResourceLocation(Voicechat.MODID, "create_group");
 
     private String name;
     @Nullable
@@ -40,7 +42,7 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
     }
 
     @Override
-    public String getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return CREATE_GROUP;
     }
 

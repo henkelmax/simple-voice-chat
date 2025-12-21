@@ -7,10 +7,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public abstract class VolumeConfigBase<T> extends CommentedPropertyConfig {
 

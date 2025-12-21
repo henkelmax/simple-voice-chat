@@ -1,10 +1,12 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import io.netty.buffer.ByteBuf;
+import de.maxhenkel.voicechat.voice.common.ResourceLocation;
 
 public class RequestSecretPacket implements Packet<RequestSecretPacket> {
 
-    public static final String REQUEST_SECRET = "request_secret";
+    public static final ResourceLocation REQUEST_SECRET = new ResourceLocation(Voicechat.MODID, "request_secret");
 
     private int compatibilityVersion;
 
@@ -21,7 +23,7 @@ public class RequestSecretPacket implements Packet<RequestSecretPacket> {
     }
 
     @Override
-    public String getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return REQUEST_SECRET;
     }
 

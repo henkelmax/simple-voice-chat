@@ -12,6 +12,7 @@ import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
 import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
 import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.audiochannel.*;
 import de.maxhenkel.voicechat.plugins.impl.audiolistener.PlayerAudioListenerImpl;
@@ -42,24 +43,28 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
 
     }
 
+    public static VoicechatServerApi instance() {
+        return CommonCompatibilityManager.INSTANCE.getServerApi();
+    }
+
     @Override
     public void sendEntitySoundPacketTo(VoicechatConnection connection, EntitySoundPacket p) {
         if (p instanceof EntitySoundPacketImpl packet) {
-            sendPacket(connection.getPlayer(), packet.getPacket());
+            sendPacket(connection, packet.getPacket());
         }
     }
 
     @Override
     public void sendLocationalSoundPacketTo(VoicechatConnection connection, LocationalSoundPacket p) {
         if (p instanceof LocationalSoundPacketImpl packet) {
-            sendPacket(connection.getPlayer(), packet.getPacket());
+            sendPacket(connection, packet.getPacket());
         }
     }
 
     @Override
     public void sendStaticSoundPacketTo(VoicechatConnection connection, StaticSoundPacket p) {
         if (p instanceof StaticSoundPacketImpl packet) {
-            sendPacket(connection.getPlayer(), packet.getPacket());
+            sendPacket(connection, packet.getPacket());
         }
     }
 
@@ -118,7 +123,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
 
     @Override
     public AudioSender createAudioSender(VoicechatConnection connection) {
-        return new AudioSenderImpl(connection.getPlayer().getUUID());
+        return new AudioSenderImpl(connection.getPlayer().getUuid());
     }
 
     @Override
@@ -166,11 +171,11 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (server == null) {
             return;
         }
-        PlayerState state = server.getPlayerStateManager().getState(receiver.getUUID());
+        PlayerState state = server.getPlayerStateManager().getState(receiver.getUuid());
         if (state == null) {
             return;
         }
-        @Nullable ClientConnection c = server.getConnections().get(receiver.getUUID());
+        @Nullable ClientConnection c = server.getConnections().get(receiver.getUuid());
         server.sendSoundPacket(null, null, receiver, state, c, soundPacket, SoundPacketEvent.SOURCE_PLUGIN);
     }
 
@@ -185,11 +190,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (player == null) {
             return null;
         }
-        PlayerState state = server.getPlayerStateManager().getState(player.getUUID());
-        if (state == null) {
-            return null;
-        }
-        return new VoicechatConnectionImpl(player, state);
+        return VoicechatConnectionImpl.fromPlayer(player);
     }
 
     @Override
@@ -253,11 +254,14 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
 
     @Override
     public void registerVolumeCategory(VolumeCategory category) {
+        if (!(category instanceof VolumeCategoryImpl c)) {
+            throw new IllegalArgumentException("VolumeCategory is not an instance of VolumeCategoryImpl");
+        }
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
             return;
         }
-        server.getCategoryManager().addCategory(category);
+        server.getCategoryManager().addCategory(c);
         PluginManager.instance().onRegisterVolumeCategory(category);
     }
 
@@ -267,7 +271,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (server == null) {
             return;
         }
-        VolumeCategory category = server.getCategoryManager().removeCategory(categoryId);
+        VolumeCategoryImpl category = server.getCategoryManager().removeCategory(categoryId);
         if (category != null) {
             PluginManager.instance().onUnregisterVolumeCategory(category);
         }
@@ -279,7 +283,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (server == null) {
             return Collections.emptyList();
         }
-        return server.getCategoryManager().getCategories();
+        return server.getCategoryManager().getCategories().stream().map(VolumeCategory.class::cast).toList();
     }
 
     @Override

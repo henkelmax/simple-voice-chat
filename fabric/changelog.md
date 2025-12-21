@@ -1,1 +1,1 @@
-- Make long text in adjust volumes screen scrollable
+- Fixed volume abruptly increasing shortly after starting to speak

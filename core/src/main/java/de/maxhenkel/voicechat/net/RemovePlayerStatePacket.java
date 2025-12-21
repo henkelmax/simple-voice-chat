@@ -1,13 +1,15 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.BufferUtils;
 import io.netty.buffer.ByteBuf;
+import de.maxhenkel.voicechat.voice.common.ResourceLocation;
 
 import java.util.UUID;
 
 public class RemovePlayerStatePacket implements Packet<RemovePlayerStatePacket> {
 
-    public static final String REMOVE_PLAYER_STATE = "remove_state";
+    public static final ResourceLocation REMOVE_PLAYER_STATE = new ResourceLocation(Voicechat.MODID, "remove_state");
 
     private UUID id;
 
@@ -24,7 +26,7 @@ public class RemovePlayerStatePacket implements Packet<RemovePlayerStatePacket> 
     }
 
     @Override
-    public String getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return REMOVE_PLAYER_STATE;
     }
 

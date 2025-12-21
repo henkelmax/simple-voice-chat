@@ -11,14 +11,14 @@ public interface MinecraftServer {
     Object getMinecraftServer();
 
     /**
-     * @return the port of the server
-     */
-    int getPort();
-
-    /**
      * @return the ip of the server, without port
      */
     String getIp();
+
+    /**
+     * @return the port of the server
+     */
+    int getPort();
 
     /**
      * @param playerUUID the UUID of the player

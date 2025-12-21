@@ -1,10 +1,9 @@
 package de.maxhenkel.voicechat.plugins.impl;
 
 import de.maxhenkel.voicechat.api.Entity;
-import de.maxhenkel.voicechat.api.MinecraftServer;
 import de.maxhenkel.voicechat.api.Position;
-import de.maxhenkel.voicechat.api.ServerLevel;
 import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
+import de.maxhenkel.voicechat.api.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import java.util.Objects;
@@ -19,18 +18,13 @@ public class EntityImpl implements Entity {
     }
 
     @Override
-    public UUID getUUID() {
+    public UUID getUuid() {
         return entity.getUUID();
     }
 
     @Override
-    public net.minecraft.world.entity.Entity getEntity() {
+    public Object getEntity() {
         return entity;
-    }
-
-    @Override
-    public String getName() {
-        return entity.getName().getString();
     }
 
     @Override
@@ -39,7 +33,12 @@ public class EntityImpl implements Entity {
     }
 
     @Override
-    public ServerLevel getServerLevel() {
+    public Position getEyePosition() {
+        return MinecraftCompatibilityManager.fromVec3(entity.getEyePosition());
+    }
+
+    @Override
+    public ServerLevel getLevel() {
         Level level = entity.level();
         if (level instanceof net.minecraft.server.level.ServerLevel serverLevel)
             return MinecraftCompatibilityManager.fromServerLevel(serverLevel);
@@ -47,34 +46,15 @@ public class EntityImpl implements Entity {
     }
 
     @Override
-    public Position getEyePosition() {
-        return MinecraftCompatibilityManager.fromVec3(entity.getEyePosition());
-    }
-
-    @Override
-    public boolean isSpectator() {
-        return entity.isSpectator();
-    }
-
-    @Override
-    public MinecraftServer getServer() {
-        return MinecraftCompatibilityManager.fromServer(entity.getServer());
-    }
-
-    @Override
-    public boolean hasPermissions(int operatorUserPermissionLevel) {
-        return entity.hasPermissions(operatorUserPermissionLevel);
-    }
-
-    @Override
     public boolean equals(Object object) {
         if (this == object) {
             return true;
         }
-        if (!(object instanceof Entity entity1)) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        return Objects.equals(entity, entity1.getEntity());
+        EntityImpl entity1 = (EntityImpl) object;
+        return Objects.equals(entity, entity1.entity);
     }
 
     @Override

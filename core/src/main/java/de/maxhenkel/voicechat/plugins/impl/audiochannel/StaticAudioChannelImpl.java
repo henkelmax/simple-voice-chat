@@ -84,14 +84,14 @@ public class StaticAudioChannelImpl extends AudioChannelImpl implements StaticAu
     @Override
     public void addTarget(VoicechatConnection target) {
         synchronized (targets) {
-            targets.add(target.getPlayer().getUUID());
+            targets.add(target.getPlayer().getUuid());
         }
     }
 
     @Override
     public void removeTarget(VoicechatConnection target) {
         synchronized (targets) {
-            targets.remove(target.getPlayer().getUUID());
+            targets.remove(target.getPlayer().getUuid());
         }
     }
 

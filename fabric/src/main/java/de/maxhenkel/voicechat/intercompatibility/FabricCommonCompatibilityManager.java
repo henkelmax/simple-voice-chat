@@ -2,8 +2,6 @@ package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.brigadier.CommandDispatcher;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.api.MinecraftServer;
-import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.events.PlayerEvents;
 import de.maxhenkel.voicechat.events.ServerVoiceChatEvents;
@@ -20,6 +18,8 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import net.minecraft.commands.CommandSourceStack;
+import de.maxhenkel.voicechat.api.MinecraftServer;
+import de.maxhenkel.voicechat.api.ServerPlayer;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -80,12 +80,12 @@ public class FabricCommonCompatibilityManager extends MinecraftCompatibilityMana
 
     @Override
     public void onServerStarting(Consumer<MinecraftServer> onServerStarting) {
-        ServerLifecycleEvents.SERVER_STARTED.register(t -> onServerStarting.accept(fromServer(t)));
+        ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> onServerStarting.accept(fromServer(minecraftServer)));
     }
 
     @Override
     public void onServerStopping(Consumer<MinecraftServer> onServerStopping) {
-        ServerLifecycleEvents.SERVER_STOPPING.register(t -> onServerStopping.accept(fromServer(t)));
+        ServerLifecycleEvents.SERVER_STOPPING.register(minecraftServer -> onServerStopping.accept(fromServer(minecraftServer)));
     }
 
     @Override

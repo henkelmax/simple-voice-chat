@@ -18,11 +18,6 @@ public class PositionImpl implements Position {
     }
 
     @Override
-    public Vec3 getVec3() {
-        return position;
-    }
-
-    @Override
     public double getX() {
         return position.x;
     }
@@ -37,15 +32,20 @@ public class PositionImpl implements Position {
         return position.z;
     }
 
+    public Vec3 getPosition() {
+        return position;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {
             return true;
         }
-        if (!(object instanceof Position position1)) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        return Objects.equals(position, position1.getVec3());
+        PositionImpl position1 = (PositionImpl) object;
+        return Objects.equals(position, position1.position);
     }
 
     @Override

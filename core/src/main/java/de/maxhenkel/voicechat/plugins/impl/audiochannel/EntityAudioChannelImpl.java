@@ -56,21 +56,21 @@ public class EntityAudioChannelImpl extends AudioChannelImpl implements EntityAu
 
     @Override
     public void send(byte[] opusData) {
-        broadcast(new PlayerSoundPacket(channelId, entity.getUUID(), opusData, sequenceNumber.getAndIncrement(), whispering, distance, category));
+        broadcast(new PlayerSoundPacket(channelId, entity.getUuid(), opusData, sequenceNumber.getAndIncrement(), whispering, distance, category));
     }
 
     @Override
     public void send(MicrophonePacket microphonePacket) {
-        broadcast(new PlayerSoundPacket(channelId, entity.getUUID(), microphonePacket.getOpusEncodedData(), sequenceNumber.getAndIncrement(), whispering, distance, category));
+        broadcast(new PlayerSoundPacket(channelId, entity.getUuid(), microphonePacket.getOpusEncodedData(), sequenceNumber.getAndIncrement(), whispering, distance, category));
     }
 
     @Override
     public void flush() {
-        broadcast(new PlayerSoundPacket(channelId, entity.getUUID(), new byte[0], sequenceNumber.getAndIncrement(), whispering, distance, category));
+        broadcast(new PlayerSoundPacket(channelId, entity.getUuid(), new byte[0], sequenceNumber.getAndIncrement(), whispering, distance, category));
     }
 
     private void broadcast(PlayerSoundPacket packet) {
-        server.broadcast(ServerWorldUtils.getPlayersInRange(entity.getServerLevel(), entity.getEyePosition(), server.getBroadcastRange(distance), filter == null ? player -> true : player -> filter.test(player)), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
+        server.broadcast(ServerWorldUtils.getPlayersInRange(entity.getLevel(), entity.getEyePosition(), server.getBroadcastRange(distance), filter == null ? player -> true : player -> filter.test(player)), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
 
     }
 

@@ -1,13 +1,15 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.BufferUtils;
 import io.netty.buffer.ByteBuf;
+import de.maxhenkel.voicechat.voice.common.ResourceLocation;
 
 import java.util.UUID;
 
 public class RemoveGroupPacket implements Packet<RemoveGroupPacket> {
 
-    public static final String REMOVE_GROUP = "remove_group";
+    public static final ResourceLocation REMOVE_GROUP = new ResourceLocation(Voicechat.MODID, "remove_group");
 
     private UUID groupId;
 
@@ -24,7 +26,7 @@ public class RemoveGroupPacket implements Packet<RemoveGroupPacket> {
     }
 
     @Override
-    public String getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return REMOVE_GROUP;
     }
 

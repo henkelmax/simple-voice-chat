@@ -1,34 +1,36 @@
 package de.maxhenkel.voicechat.net;
 
-import de.maxhenkel.voicechat.api.VolumeCategory;
+import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import io.netty.buffer.ByteBuf;
+import de.maxhenkel.voicechat.voice.common.ResourceLocation;
 
 public class AddCategoryPacket implements Packet<AddCategoryPacket> {
 
-    public static final String ADD_CATEGORY = "add_category";
+    public static final ResourceLocation ADD_CATEGORY = new ResourceLocation(Voicechat.MODID, "add_category");
 
-    private VolumeCategory category;
+    private VolumeCategoryImpl category;
 
     public AddCategoryPacket() {
 
     }
 
-    public AddCategoryPacket(VolumeCategory category) {
+    public AddCategoryPacket(VolumeCategoryImpl category) {
         this.category = category;
     }
 
-    public VolumeCategory getCategory() {
+    public VolumeCategoryImpl getCategory() {
         return category;
     }
 
     @Override
-    public String getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return ADD_CATEGORY;
     }
 
     @Override
     public AddCategoryPacket fromBytes(ByteBuf buf) {
-        category = category.fromBytes(buf);
+        category = VolumeCategoryImpl.fromBytes(buf);
         return this;
     }
 

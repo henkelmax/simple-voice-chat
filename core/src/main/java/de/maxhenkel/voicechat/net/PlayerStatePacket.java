@@ -1,11 +1,13 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import io.netty.buffer.ByteBuf;
+import de.maxhenkel.voicechat.voice.common.ResourceLocation;
 
 public class PlayerStatePacket implements Packet<PlayerStatePacket> {
 
-    public static final String PLAYER_STATE = "state";
+    public static final ResourceLocation PLAYER_STATE = new ResourceLocation(Voicechat.MODID, "state");
 
     private PlayerState playerState;
 
@@ -22,7 +24,7 @@ public class PlayerStatePacket implements Packet<PlayerStatePacket> {
     }
 
     @Override
-    public String getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return PLAYER_STATE;
     }
 

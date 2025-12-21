@@ -35,8 +35,8 @@ public abstract class MinecraftCompatibilityManager extends CommonCompatibilityM
     }
 
     @Override
-    public void sendMinecraftPacket(ServerPlayer player, String id, ByteBuf buffer) {
-        MinecraftCompatibilityManager.getServerPlayer(player).connection.send(new ClientboundCustomPayloadPacket(new ResourceLocation(Voicechat.MODID, id), new FriendlyByteBuf(buffer)));
+    public void sendMinecraftPacket(ServerPlayer player, de.maxhenkel.voicechat.voice.common.ResourceLocation id, ByteBuf buffer) {
+        MinecraftCompatibilityManager.getServerPlayer(player).connection.send(new ClientboundCustomPayloadPacket(new ResourceLocation(id.key(), id.value()), new FriendlyByteBuf(buffer)));
     }
 
     @Override
@@ -163,8 +163,8 @@ public abstract class MinecraftCompatibilityManager extends CommonCompatibilityM
     }
 
     public static Vec3 getVec3(Position position) {
-        if (position.getVec3() instanceof Vec3 vec3) {
-            return vec3;
+        if (position instanceof PositionImpl positionImpl) {
+            return positionImpl.getPosition();
         } else throw new IllegalArgumentException("position does not wrap Vec3");
     }
 }

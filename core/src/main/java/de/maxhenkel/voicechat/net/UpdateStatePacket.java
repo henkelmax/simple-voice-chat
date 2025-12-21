@@ -1,10 +1,12 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import io.netty.buffer.ByteBuf;
+import de.maxhenkel.voicechat.voice.common.ResourceLocation;
 
 public class UpdateStatePacket implements Packet<UpdateStatePacket> {
 
-    public static final String PLAYER_STATE = "update_state";
+    public static final ResourceLocation PLAYER_STATE = new ResourceLocation(Voicechat.MODID, "update_state");
 
     private boolean disabled;
 
@@ -21,7 +23,7 @@ public class UpdateStatePacket implements Packet<UpdateStatePacket> {
     }
 
     @Override
-    public String getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return PLAYER_STATE;
     }
 

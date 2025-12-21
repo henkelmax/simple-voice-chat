@@ -1,11 +1,11 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.api.MinecraftServer;
-import de.maxhenkel.voicechat.api.ServerPlayer;
+import io.netty.buffer.Unpooled;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import de.maxhenkel.voicechat.api.MinecraftServer;
+import de.maxhenkel.voicechat.api.ServerPlayer;
 
 public abstract class NetManager {
 

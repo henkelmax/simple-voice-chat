@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.voice.common;
 
-import de.maxhenkel.voicechat.api.Position;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import io.netty.buffer.ByteBuf;
+import de.maxhenkel.voicechat.api.Position;
 
 import javax.annotation.Nullable;
 import java.util.UUID;

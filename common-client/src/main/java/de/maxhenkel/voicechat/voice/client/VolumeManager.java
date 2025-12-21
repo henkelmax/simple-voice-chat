@@ -71,7 +71,7 @@ public class VolumeManager {
         }
 
         if (max == 0) {
-            return 1D;
+            return multiplier;
         }
         return Math.min(multiplier, (double) MAX_AMPLIFICATION / (double) max);
     }

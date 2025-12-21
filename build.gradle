@@ -1,6 +1,6 @@
 plugins {
     id 'com.gradleup.shadow' version "${shadow_version}" apply false
-    id 'com.matthewprenger.cursegradle' version "${cursegradle_version}" apply false
+    id 'de.maxhenkel.cursegradle' version "${cursegradle_version}" apply false
     id 'com.modrinth.minotaur' version "${minotaur_version}" apply false
     id 'mod-update' version "${mod_update_version}" apply false
     id 'fabric-loom' version "${fabric_loom_version}" apply false
@@ -17,7 +17,7 @@ tasks.register('01-publishQuilt', GradleBuild) {
 tasks.register('02-publishForge') {
     group = 'voicechat'
     doLast {
-        runGradleTasks(['common:clean', 'common-client:clean', 'forge:clean'], ['forge:curseforge', 'forge:modrinth', 'forge:modUpdate'])
+        runGradleTask('uploadMod', false, file('forge'))
     }
 }
 

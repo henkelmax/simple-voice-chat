@@ -2,10 +2,10 @@ package de.maxhenkel.voicechat.intercompatibility;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.api.MinecraftServer;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
+import de.maxhenkel.voicechat.api.MinecraftServer;
 
 public class ClientCrossSideManager extends CrossSideManager {
 

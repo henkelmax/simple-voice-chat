@@ -4,7 +4,6 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.api.ServerPlayer;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.PlayerStateManager;
 import de.maxhenkel.voicechat.voice.server.Server;
@@ -25,11 +24,19 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
     }
 
     @Nullable
-    public static VoicechatConnection fromPlayer(@Nullable ServerPlayer player) {
+    public static VoicechatConnectionImpl fromPlayer(@Nullable ServerPlayer player) {
         if (player == null) {
             return null;
         }
-        return CommonCompatibilityManager.INSTANCE.getServerApi().getConnectionOf(player);
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return null;
+        }
+        PlayerState state = server.getPlayerStateManager().getState(player.getUuid());
+        if (state == null) {
+            return null;
+        }
+        return new VoicechatConnectionImpl(player, state);
     }
 
     @Nullable

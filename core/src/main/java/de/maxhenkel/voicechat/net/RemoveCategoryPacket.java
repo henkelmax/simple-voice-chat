@@ -1,11 +1,13 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.BufferUtils;
 import io.netty.buffer.ByteBuf;
+import de.maxhenkel.voicechat.voice.common.ResourceLocation;
 
 public class RemoveCategoryPacket implements Packet<RemoveCategoryPacket> {
 
-    public static final String REMOVE_CATEGORY = "remove_category";
+    public static final ResourceLocation REMOVE_CATEGORY = new ResourceLocation(Voicechat.MODID, "remove_category");
 
     private String categoryId;
 
@@ -22,7 +24,7 @@ public class RemoveCategoryPacket implements Packet<RemoveCategoryPacket> {
     }
 
     @Override
-    public String getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return REMOVE_CATEGORY;
     }
 

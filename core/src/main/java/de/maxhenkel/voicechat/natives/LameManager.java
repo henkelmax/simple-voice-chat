@@ -8,10 +8,7 @@ import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
 import javax.annotation.Nullable;
 import javax.sound.sampled.AudioFormat;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 public class LameManager extends NativeValidator {
 

@@ -2,9 +2,9 @@ package de.maxhenkel.voicechat.gui.volume;
 
 import com.google.common.collect.Lists;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.api.VolumeCategory;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
+import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.Util;
@@ -38,7 +38,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
         Collection<PlayerState> onlinePlayers = ClientManager.getPlayerStateManager().getPlayerStates(false);
         entries.clear();
 
-        for (VolumeCategory category : ClientManager.getCategoryManager().getCategories()) {
+        for (VolumeCategoryImpl category : ClientManager.getCategoryManager().getCategories()) {
             entries.add(new CategoryVolumeEntry(category, screen));
         }
 

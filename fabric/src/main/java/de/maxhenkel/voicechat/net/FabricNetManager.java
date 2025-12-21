@@ -28,7 +28,7 @@ public class FabricNetManager extends NetManager {
         ClientServerChannel<T> c = new ClientServerChannel<>();
         try {
             T dummyPacket = packetType.getDeclaredConstructor().newInstance();
-            ResourceLocation identifier = new ResourceLocation(Voicechat.MODID, dummyPacket.getIdentifier());
+            ResourceLocation identifier = new ResourceLocation(dummyPacket.getIdentifier().key(), dummyPacket.getIdentifier().value());
             packets.add(identifier);
             if (toServer) {
                 ServerPlayNetworking.registerGlobalReceiver(identifier, (server, player, handler, buf, responseSender) -> {

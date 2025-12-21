@@ -3,12 +3,12 @@ package de.maxhenkel.voicechat.net;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.MinecraftCompatibilityManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.event.EventNetworkChannel;
 
 public class ForgeNetManager extends NetManager {
@@ -19,7 +19,7 @@ public class ForgeNetManager extends NetManager {
         try {
             T dummyPacket = packetType.getDeclaredConstructor().newInstance();
             EventNetworkChannel channel = NetworkRegistry.newEventChannel(
-                    new ResourceLocation(Voicechat.MODID, dummyPacket.getIdentifier()),
+                    new ResourceLocation(dummyPacket.getIdentifier().key(), dummyPacket.getIdentifier().value()),
                     () -> NetworkRegistry.ACCEPTVANILLA,
                     NetworkRegistry.acceptMissingOr(NetworkRegistry.ACCEPTVANILLA),
                     NetworkRegistry.acceptMissingOr(NetworkRegistry.ACCEPTVANILLA)

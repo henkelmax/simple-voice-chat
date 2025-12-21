@@ -32,10 +32,11 @@ public class ServerLevelImpl implements ServerLevel {
         if (this == object) {
             return true;
         }
-        if (!(object instanceof ServerLevel serverLevel1)) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        return Objects.equals(serverLevel, serverLevel1.getServerLevel());
+        ServerLevelImpl that = (ServerLevelImpl) object;
+        return Objects.equals(serverLevel, that.serverLevel);
     }
 
     @Override
