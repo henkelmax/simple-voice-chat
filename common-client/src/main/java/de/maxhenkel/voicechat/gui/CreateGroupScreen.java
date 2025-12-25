@@ -41,11 +41,11 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         clearWidgets();
 
         groupName = new GroupEditBox(font, guiLeft + 7, guiTop + 30, xSize - 7 * 2, 14);
-        groupName.setMaxLength(24);
+        groupName.setMaxLength(Voicechat.MAX_GROUP_NAME_LENGTH);
         addRenderableWidget(groupName);
 
         password = new GroupEditBox(font, guiLeft + 7, guiTop + 56, xSize - 7 * 2, 14);
-        password.setMaxLength(32);
+        password.setMaxLength(Voicechat.MAX_GROUP_NAME_LENGTH);
         addRenderableWidget(password);
 
         addRenderableWidget(CycleButton.builder(GroupType::getTranslation, GroupType.NORMAL).withValues(GroupType.values()).withTooltip(object -> {

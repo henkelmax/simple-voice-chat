@@ -1,2 +1,1 @@
-- Added support for 1.21.11
-- Improved API error handling
+- Improved voice chat group name validation

@@ -43,10 +43,10 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
 
     @Override
     public CreateGroupPacket fromBytes(FriendlyByteBuf buf) {
-        name = buf.readUtf(512);
+        name = buf.readUtf(Voicechat.MAX_GROUP_NAME_LENGTH);
         password = null;
         if (buf.readBoolean()) {
-            password = buf.readUtf(512);
+            password = buf.readUtf(Voicechat.MAX_GROUP_NAME_LENGTH);
         }
         type = GroupImpl.TypeImpl.fromInt(buf.readShort());
         return this;
@@ -54,10 +54,10 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeUtf(name, 512);
+        buf.writeUtf(name, Voicechat.MAX_GROUP_NAME_LENGTH);
         buf.writeBoolean(password != null);
         if (password != null) {
-            buf.writeUtf(password, 512);
+            buf.writeUtf(password, Voicechat.MAX_GROUP_NAME_LENGTH);
         }
         buf.writeShort(GroupImpl.TypeImpl.toInt(type));
     }
