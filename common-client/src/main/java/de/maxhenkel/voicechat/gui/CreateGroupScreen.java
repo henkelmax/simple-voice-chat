@@ -42,12 +42,12 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         clearWidgets();
 
         groupName = new EditBox(font, guiLeft + 7, guiTop + 31, xSize - 7 * 2, 12, Component.empty());
-        groupName.setMaxLength(24);
+        groupName.setMaxLength(Voicechat.MAX_GROUP_NAME_LENGTH);
         groupName.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(groupName);
 
         password = new EditBox(font, guiLeft + 7, guiTop + 57, xSize - 7 * 2, 12, Component.empty());
-        password.setMaxLength(32);
+        password.setMaxLength(Voicechat.MAX_GROUP_NAME_LENGTH);
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(password);
 
