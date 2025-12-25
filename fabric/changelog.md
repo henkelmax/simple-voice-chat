@@ -1,1 +1,1 @@
-- Fixed volume abruptly increasing shortly after starting to speak
+- Improved voice chat group name validation
