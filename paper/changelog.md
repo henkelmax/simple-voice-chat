@@ -1,1 +1,1 @@
-- Improved API error handling
+- Improved voice chat group name validation
