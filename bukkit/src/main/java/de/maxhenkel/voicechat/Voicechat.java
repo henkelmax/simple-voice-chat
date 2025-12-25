@@ -44,7 +44,8 @@ public final class Voicechat extends JavaPlugin {
     public static NetManager netManager;
     public static Compatibility compatibility;
 
-    public static final Pattern GROUP_REGEX = Pattern.compile("^[^\\n\\r\\t\\s][^\\n\\r\\t]{0,23}$");
+    public static final int MAX_GROUP_NAME_LENGTH = 24;
+    public static final Pattern GROUP_REGEX = Pattern.compile("^[^\\p{C}\\s][^\\p{C}]{0,23}$");
 
     @Override
     public void onEnable() {
