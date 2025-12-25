@@ -47,7 +47,7 @@ public class ServerGroupManager {
                 return;
             }
             if (!Voicechat.GROUP_REGEX.matcher(packet.getName()).matches()) {
-                Voicechat.LOGGER.warn("Player {} tried to create a group with an invalid name: {}", player.getName(), packet.getName());
+                Voicechat.LOGGER.warn("Player {} tried to create a group with an invalid name", player.getName());
                 return;
             }
             addGroup(new Group(UUID.randomUUID(), packet.getName(), packet.getPassword(), false, false, packet.getType()), player);

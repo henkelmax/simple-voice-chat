@@ -46,10 +46,10 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
 
     @Override
     public CreateGroupPacket fromBytes(PacketBuffer buf) {
-        name = buf.readString(512);
+        name = buf.readString(Voicechat.MAX_GROUP_NAME_LENGTH);
         password = null;
         if (buf.readBoolean()) {
-            password = buf.readString(512);
+            password = buf.readString(Voicechat.MAX_GROUP_NAME_LENGTH);
         }
         type = GroupImpl.TypeImpl.fromInt(buf.readShort());
         return this;
