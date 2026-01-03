@@ -74,7 +74,7 @@ public abstract class MicrophoneProcessor {
             whispering = w;
             whisperMicActivator.reset();
         } else {
-            whispering = whisperMicActivator.shouldStillSend(w);
+            whispering = !isMuted() && whisperMicActivator.shouldStillSend(w);
         }
     }
 
