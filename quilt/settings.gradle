@@ -6,4 +6,11 @@ pluginManagement {
         maven { url = 'https://maven.fabricmc.net/' }
         maven { url = 'https://maven.maxhenkel.de/repository/public' }
     }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == 'org.quiltmc.loom') {
+                useModule("org.quiltmc:loom:${requested.version}")
+            }
+        }
+    }
 }
