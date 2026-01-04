@@ -60,6 +60,7 @@ dependencies {
     include(modImplementation("org.quiltmc.qsl.core:lifecycle_events:${qsl_version}"))
     include(modImplementation("org.quiltmc.qsl.core:networking:${qsl_version}"))
     include(modImplementation("org.quiltmc.qsl.core:resource_loader:${qsl_version}"))
+    include(modImplementation("org.quiltmc.qsl.gui:screen:${qsl_version}"))
     include(modImplementation("org.quiltmc.qsl.management:command:${qsl_version}"))
 
     modCompileOnly("com.terraformersmc:modmenu:${modmenu_version}") {
