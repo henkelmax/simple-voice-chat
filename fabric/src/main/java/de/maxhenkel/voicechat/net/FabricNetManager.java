@@ -54,7 +54,7 @@ public class FabricNetManager extends NetManager {
                 }
             };
             if (toServer) {
-                PayloadTypeRegistry.playC2S().register(type, codec);
+                PayloadTypeRegistry.serverboundPlay().register(type, codec);
                 ServerPlayNetworking.registerGlobalReceiver(type, (payload, context) -> {
                     try {
                         if (!Voicechat.SERVER.isCompatible(context.player()) && !packetType.equals(RequestSecretPacket.class)) {
@@ -67,7 +67,7 @@ public class FabricNetManager extends NetManager {
                 });
             }
             if (toClient) {
-                PayloadTypeRegistry.playS2C().register(type, codec);
+                PayloadTypeRegistry.clientboundPlay().register(type, codec);
                 if (FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT)) {
                     ClientPlayNetworking.registerGlobalReceiver(type, (payload, context) -> {
                         try {
