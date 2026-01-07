@@ -1,2 +1,1 @@
-- Improved voice chat group name validation
-- Fixed being able to whisper while being muted
+- Updated to 26.1-snapshot-2
