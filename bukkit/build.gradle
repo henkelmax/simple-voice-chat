@@ -124,7 +124,7 @@ tasks.register('copyJarToServer') {
             delete "${projectDir}/run/plugins/${base.archivesName}-${version}.jar"
         }
         copy {
-            from "${layout.buildDirectory.asFile.get()}/libs/${base.archivesName}-${version}.jar"
+            from "${layout.buildDirectory.asFile.get()}/libs/${base.archivesName.get()}-${version}.jar"
             into "${projectDir}/run/plugins"
         }
     }
