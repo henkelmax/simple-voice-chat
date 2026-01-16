@@ -121,10 +121,10 @@ shadowJar {
 tasks.register('copyJarToServer') {
     doLast {
         delete {
-            delete "${projectDir}/run/plugins/${archivesBaseName}-${version}.jar"
+            delete "${projectDir}/run/plugins/${base.archivesName}-${version}.jar"
         }
         copy {
-            from "${layout.buildDirectory.asFile.get()}/libs/${archivesBaseName}-${version}.jar"
+            from "${layout.buildDirectory.asFile.get()}/libs/${base.archivesName}-${version}.jar"
             into "${projectDir}/run/plugins"
         }
     }
