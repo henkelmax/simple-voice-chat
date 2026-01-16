@@ -1,7 +1,7 @@
 modmenu.descriptionTranslation.voicechat=一个在 Minecraft 中实用的语音聊天功能！
 key.categories.voicechat=语音通话
 key.push_to_talk=通话键
-key.whisper=开关降噪
+key.whisper=轻声说话
 key.mute_microphone=禁用音频输入
 key.disable_voice_chat=禁用语音通话
 key.hide_icons=隐藏语音通话图标
