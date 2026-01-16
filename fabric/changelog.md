@@ -1,1 +1,1 @@
-- Updated to 26.1-snapshot-7
+- Fixed incorrect entry in Simplified Chinese translation
