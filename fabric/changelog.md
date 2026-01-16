@@ -1,1 +1,2 @@
 - Fixed incorrect entry in Simplified Chinese translation
+- Fixed OpenAL context destroy event potentially being fired multiple times
