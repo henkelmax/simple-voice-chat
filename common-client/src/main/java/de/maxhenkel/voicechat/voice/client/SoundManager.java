@@ -102,7 +102,9 @@ public class SoundManager {
     }
 
     public void close() {
-        ClientPluginManager.instance().onDestroyALContext(context, device);
+        if (!isClosed()) {
+            ClientPluginManager.instance().onDestroyALContext(context, device);
+        }
         if (context != 0L) {
             ALC11.alcDestroyContext(context);
             checkAlcError(device);
