@@ -1,1 +1,1 @@
-- Improved voice chat group name validation
+- Improved vanish support warning
