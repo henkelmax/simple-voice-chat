@@ -98,6 +98,7 @@ public class ClientVoicechat {
     public void reloadSoundManager() throws SpeakerException {
         if (soundManager != null) {
             soundManager.close();
+            soundManager = null;
         }
         soundManager = SoundManager.create();
     }
