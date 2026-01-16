@@ -45,21 +45,25 @@ public abstract class BaseCompatibility implements Compatibility {
         removeChannel = getMethod(craftPlayer, new String[]{"removeChannel"}, new Class[]{String.class});
 
         try {
-            Class<?> hide = ReflectionUtils.getClazz("org.bukkit.event.player.PlayerHideEntityEvent");
-            if (!PlayerEvent.class.isAssignableFrom(hide)) {
-                throw new CompatibilityReflectionException("PlayerHideEntityEvent is not a subclass of PlayerEvent");
-            }
+            if (doesClassExist("org.bukkit.event.player.PlayerHideEntityEvent") && doesClassExist("org.bukkit.event.player.PlayerShowEntityEvent")) {
+                Class<?> hide = ReflectionUtils.getClazz("org.bukkit.event.player.PlayerHideEntityEvent");
+                if (!PlayerEvent.class.isAssignableFrom(hide)) {
+                    throw new CompatibilityReflectionException("PlayerHideEntityEvent is not a subclass of PlayerEvent");
+                }
 
-            Class<?> show = ReflectionUtils.getClazz("org.bukkit.event.player.PlayerShowEntityEvent");
-            if (!PlayerEvent.class.isAssignableFrom(show)) {
-                throw new CompatibilityReflectionException("PlayerShowEntityEvent is not a subclass of PlayerEvent");
+                Class<?> show = ReflectionUtils.getClazz("org.bukkit.event.player.PlayerShowEntityEvent");
+                if (!PlayerEvent.class.isAssignableFrom(show)) {
+                    throw new CompatibilityReflectionException("PlayerShowEntityEvent is not a subclass of PlayerEvent");
+                }
+                playerShowEntityEventGetEntity = getMethod(show, "getEntity");
+                playerHideEntityEventGetEntity = getMethod(hide, "getEntity");
+                playerShowEntityEvent = (Class<? extends PlayerEvent>) show;
+                playerHideEntityEvent = (Class<? extends PlayerEvent>) hide;
+            } else {
+                Voicechat.LOGGER.warn("Vanish plugin integration is not supported");
             }
-            playerShowEntityEventGetEntity = getMethod(show, "getEntity");
-            playerHideEntityEventGetEntity = getMethod(hide, "getEntity");
-            playerShowEntityEvent = (Class<? extends PlayerEvent>) show;
-            playerHideEntityEvent = (Class<? extends PlayerEvent>) hide;
         } catch (CompatibilityReflectionException e) {
-            Voicechat.LOGGER.warn("Vanish plugin support is disabled");
+            Voicechat.LOGGER.warn("Vanish plugin integration is disabled");
             Voicechat.LOGGER.warn("Failed to load vanish compatibility", e);
             playerHideEntityEvent = null;
             playerShowEntityEvent = null;
