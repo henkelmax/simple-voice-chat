@@ -165,7 +165,8 @@ public class ClientManager {
             Voicechat.LOGGER.error("Failed to change voice chat port", e);
         }
         Component portComponent = ComponentUtils.copyOnClickText(String.valueOf(server.getPort()));
-        Minecraft.getInstance().gui.getChat().addClientSystemMessage(Component.translatable("message.voicechat.server_port", portComponent));
+        Minecraft mc = Minecraft.getInstance();
+        mc.execute(() -> mc.gui.getChat().addClientSystemMessage(Component.translatable("message.voicechat.server_port", portComponent)));
     }
 
     @Nullable
