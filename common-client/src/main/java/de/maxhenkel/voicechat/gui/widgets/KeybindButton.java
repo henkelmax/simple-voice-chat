@@ -70,6 +70,7 @@ public class KeybindButton extends AbstractButton {
                 return false;
             }
             mc.options.setKey(keyMapping, InputConstants.Type.MOUSE.getOrCreate(button));
+            KeyMapping.resetMapping();
             listening = false;
             updateText();
             return true;
@@ -86,6 +87,7 @@ public class KeybindButton extends AbstractButton {
             } else {
                 mc.options.setKey(keyMapping, InputConstants.getKey(key, scanCode));
             }
+            KeyMapping.resetMapping();
             listening = false;
             updateText();
             return true;
