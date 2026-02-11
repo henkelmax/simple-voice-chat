@@ -161,13 +161,13 @@ public class ClientVoicechat {
         if (recording) {
             if (connection == null || !connection.getData().allowRecording()) {
                 if (player != null) {
-                    player.displayClientMessage(Component.translatable("message.voicechat.recording_disabled"), true);
+                    player.sendOverlayMessage(Component.translatable("message.voicechat.recording_disabled"));
                 }
                 return false;
             }
             recorder = AudioRecorder.create();
             if (player != null) {
-                player.displayClientMessage(Component.translatable("message.voicechat.recording_started").withStyle(ChatFormatting.DARK_RED), true);
+                player.sendOverlayMessage(Component.translatable("message.voicechat.recording_started").withStyle(ChatFormatting.DARK_RED));
             }
             return true;
         }
@@ -175,7 +175,7 @@ public class ClientVoicechat {
         AudioRecorder rec = recorder;
         recorder = null;
         if (player != null) {
-            player.displayClientMessage(Component.translatable("message.voicechat.recording_stopped").withStyle(ChatFormatting.DARK_RED), true);
+            player.sendOverlayMessage(Component.translatable("message.voicechat.recording_stopped").withStyle(ChatFormatting.DARK_RED));
         }
         rec.saveAndClose();
         return true;

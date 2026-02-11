@@ -86,7 +86,7 @@ public class ClientPlayerStateManager {
                 if (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
                     Minecraft.getInstance().setScreen(null);
                 }
-                player.displayClientMessage(Component.translatable("message.voicechat.wrong_password").withStyle(ChatFormatting.DARK_RED), true);
+                player.sendOverlayMessage(Component.translatable("message.voicechat.wrong_password").withStyle(ChatFormatting.DARK_RED));
             } else if (group != null && screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
                 ClientGroup clientGroup = getGroup();
                 if (clientGroup != null) {

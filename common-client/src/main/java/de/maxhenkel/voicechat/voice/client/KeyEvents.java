@@ -85,7 +85,7 @@ public class KeyEvents {
             if (minecraft.hasAltDown()) {
                 if (minecraft.hasControlDown()) {
                     VoicechatClient.CLIENT_CONFIG.onboardingFinished.set(false).save();
-                    player.displayClientMessage(Component.translatable("message.voicechat.onboarding.reset"), true);
+                    player.sendOverlayMessage(Component.translatable("message.voicechat.onboarding.reset"));
                 } else {
                     ClientManager.getDebugOverlay().toggle();
                 }
@@ -103,7 +103,7 @@ public class KeyEvents {
                     minecraft.setScreen(new JoinGroupScreen());
                 }
             } else {
-                player.displayClientMessage(Component.translatable("message.voicechat.groups_disabled"), true);
+                player.sendOverlayMessage(Component.translatable("message.voicechat.groups_disabled"));
             }
         }
 
@@ -140,9 +140,9 @@ public class KeyEvents {
             VoicechatClient.CLIENT_CONFIG.hideIcons.set(hidden).save();
 
             if (hidden) {
-                player.displayClientMessage(Component.translatable("message.voicechat.icons_hidden"), true);
+                player.sendOverlayMessage(Component.translatable("message.voicechat.icons_hidden"));
             } else {
-                player.displayClientMessage(Component.translatable("message.voicechat.icons_visible"), true);
+                player.sendOverlayMessage(Component.translatable("message.voicechat.icons_visible"));
             }
         }
     }
@@ -161,7 +161,7 @@ public class KeyEvents {
             Voicechat.LOGGER.warn("Voice chat not connected");
             return;
         }
-        player.displayClientMessage(Component.translatable("message.voicechat.voice_chat_not_connected"), true);
+        player.sendOverlayMessage(Component.translatable("message.voicechat.voice_chat_not_connected"));
     }
 
 }

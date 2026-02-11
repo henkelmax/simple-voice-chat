@@ -42,7 +42,7 @@ public class ChatUtils {
     }
 
     public static void sendPlayerMessage(Component component) {
-        Minecraft.getInstance().gui.getChat().addMessage(component);
+        Minecraft.getInstance().gui.getChat().addClientSystemMessage(component);
     }
 
 }

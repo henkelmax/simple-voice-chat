@@ -32,7 +32,7 @@ public class ServerGroupManager {
                 return;
             }
             if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
-                player.displayClientMessage(Component.translatable("message.voicechat.no_group_permission"), true);
+                player.sendOverlayMessage(Component.translatable("message.voicechat.no_group_permission"));
                 return;
             }
             joinGroup(groups.get(packet.getGroup()), player, packet.getPassword());
@@ -42,7 +42,7 @@ public class ServerGroupManager {
                 return;
             }
             if (!PermissionManager.INSTANCE.GROUPS_PERMISSION.hasPermission(player)) {
-                player.displayClientMessage(Component.translatable("message.voicechat.no_group_permission"), true);
+                player.sendOverlayMessage(Component.translatable("message.voicechat.no_group_permission"));
                 return;
             }
             if (!Voicechat.GROUP_REGEX.matcher(packet.getName()).matches()) {

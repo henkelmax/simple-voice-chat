@@ -356,7 +356,7 @@ public class Server extends Thread {
         }
         if (!PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player)) {
             CooldownTimer.run("no-speak-" + playerUuid, 30_000L, () -> {
-                player.displayClientMessage(Component.translatable("message.voicechat.no_speak_permission"), true);
+                player.sendOverlayMessage(Component.translatable("message.voicechat.no_speak_permission"));
             });
             return;
         }
@@ -463,7 +463,7 @@ public class Server extends Thread {
 
         if (!PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(receiver)) {
             CooldownTimer.run(String.format("no-listen-%s", receiver.getUUID()), 30_000L, () -> {
-                receiver.displayClientMessage(Component.translatable("message.voicechat.no_listen_permission"), true);
+                receiver.sendOverlayMessage(Component.translatable("message.voicechat.no_listen_permission"));
             });
             return;
         }
