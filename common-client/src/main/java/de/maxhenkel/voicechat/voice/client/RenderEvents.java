@@ -162,7 +162,7 @@ public class RenderEvents {
             return;
         }
         float offsetX = (float) (minecraft.font.width(component) / 2 + 2);
-        int alpha = 32;
+        int alpha = 127;
         float offsetY = -1F;
         collector.submitCustomGeometry(stack, RenderTypes.text(texture), (pose, c) -> {
             if (discrete) {
