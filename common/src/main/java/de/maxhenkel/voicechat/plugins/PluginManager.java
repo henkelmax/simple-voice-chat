@@ -163,8 +163,8 @@ public class PluginManager {
         return socket;
     }
 
-    public String getVoiceHost(String voiceHost) {
-        VoiceHostEventImpl event = new VoiceHostEventImpl(voiceHost);
+    public String getVoiceHost(ServerPlayer player, String voiceHost) {
+        VoiceHostEventImpl event = new VoiceHostEventImpl(player, voiceHost);
         dispatchEvent(VoiceHostEvent.class, event);
         return event.getVoiceHost();
     }
