@@ -1,1 +1,1 @@
-- Update to 26.1
+- Added access to the player in the voice host event

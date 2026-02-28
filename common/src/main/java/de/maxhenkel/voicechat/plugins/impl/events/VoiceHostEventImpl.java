@@ -1,12 +1,16 @@
 package de.maxhenkel.voicechat.plugins.impl.events;
 
 import de.maxhenkel.voicechat.api.events.VoiceHostEvent;
+import de.maxhenkel.voicechat.plugins.impl.ServerPlayerImpl;
+import net.minecraft.server.level.ServerPlayer;
 
 public class VoiceHostEventImpl extends ServerEventImpl implements VoiceHostEvent {
 
+    private final ServerPlayerImpl player;
     private String voiceHost;
 
-    public VoiceHostEventImpl(String voiceHost) {
+    public VoiceHostEventImpl(ServerPlayer player, String voiceHost) {
+        this.player = new ServerPlayerImpl(player);
         this.voiceHost = voiceHost;
     }
 
@@ -19,4 +23,10 @@ public class VoiceHostEventImpl extends ServerEventImpl implements VoiceHostEven
     public void setVoiceHost(String voiceHost) {
         this.voiceHost = voiceHost;
     }
+
+    @Override
+    public de.maxhenkel.voicechat.api.ServerPlayer getPlayer() {
+        return player;
+    }
+
 }
