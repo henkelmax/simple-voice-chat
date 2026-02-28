@@ -1,1 +1,1 @@
-- Improved vanish support warning
+- Added access to the player in the voice host event
