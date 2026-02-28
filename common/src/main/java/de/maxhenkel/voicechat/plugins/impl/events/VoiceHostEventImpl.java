@@ -2,14 +2,14 @@ package de.maxhenkel.voicechat.plugins.impl.events;
 
 import de.maxhenkel.voicechat.api.events.VoiceHostEvent;
 import de.maxhenkel.voicechat.plugins.impl.ServerPlayerImpl;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
 public class VoiceHostEventImpl extends ServerEventImpl implements VoiceHostEvent {
 
     private final ServerPlayerImpl player;
     private String voiceHost;
 
-    public VoiceHostEventImpl(ServerPlayer player, String voiceHost) {
+    public VoiceHostEventImpl(ServerPlayerEntity player, String voiceHost) {
         this.player = new ServerPlayerImpl(player);
         this.voiceHost = voiceHost;
     }
