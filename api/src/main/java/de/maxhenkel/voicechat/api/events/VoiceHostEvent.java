@@ -1,5 +1,7 @@
 package de.maxhenkel.voicechat.api.events;
 
+import de.maxhenkel.voicechat.api.ServerPlayer;
+
 public interface VoiceHostEvent extends ServerEvent {
 
     /**
@@ -13,5 +15,10 @@ public interface VoiceHostEvent extends ServerEvent {
      * @param voiceHost the voice host string
      */
     void setVoiceHost(String voiceHost);
+
+    /**
+     * @return the player that is connecting
+     */
+    ServerPlayer getPlayer();
 
 }
