@@ -1,1 +1,1 @@
-- Improved voice chat group name validation
+- Added access to the player in the voice host event
