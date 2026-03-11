@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.gui.group;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.CreateGroupScreen;
-import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
+import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
-public class JoinGroupScreen extends VoiceChatScreenBase {
+public class JoinGroupScreen extends ListScreenBase {
 
     protected static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_join_group.png");
     protected static final Component TITLE = Component.translatable("gui.voicechat.join_create_group.title");
