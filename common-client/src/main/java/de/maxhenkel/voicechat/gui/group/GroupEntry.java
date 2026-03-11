@@ -5,13 +5,13 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeSlider;
 import de.maxhenkel.voicechat.gui.volume.PlayerVolumeEntry;
-import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.Component;
@@ -27,12 +27,12 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
     protected static final int BG_FILL = ARGB.color(255, 74, 74, 74);
     protected static final int PLAYER_NAME_COLOR = ARGB.color(255, 255, 255, 255);
 
-    protected final ListScreenBase parent;
+    protected final Screen parent;
     protected final Minecraft minecraft;
     protected PlayerState state;
     protected final AdjustVolumeSlider volumeSlider;
 
-    public GroupEntry(ListScreenBase parent, PlayerState state) {
+    public GroupEntry(Screen parent, PlayerState state) {
         this.parent = parent;
         this.minecraft = Minecraft.getInstance();
         this.state = state;
