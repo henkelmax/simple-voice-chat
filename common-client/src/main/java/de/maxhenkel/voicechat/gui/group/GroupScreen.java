@@ -4,11 +4,11 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.gui.GroupType;
+import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.gui.tooltips.DisableTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.HideGroupHudTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.MuteTooltipSupplier;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
-import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.net.LeaveGroupPacket;
@@ -23,7 +23,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
-public class GroupScreen extends ListScreenBase {
+public class GroupScreen extends VoiceChatScreenBase {
 
     protected static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_group.png");
     protected static final ResourceLocation LEAVE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/leave.png");

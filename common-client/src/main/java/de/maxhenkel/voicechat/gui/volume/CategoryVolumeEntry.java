@@ -6,7 +6,6 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class CategoryVolumeEntry extends VolumeEntry {
@@ -29,9 +28,7 @@ public class CategoryVolumeEntry extends VolumeEntry {
         guiGraphics.blit(texture, skinX, skinY, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16, 16, 16);
         renderScrollingString(guiGraphics, category.getDisplayName(), top, left, width, height, PLAYER_NAME_COLOR);
         if (hovered && category.getDescription() != null) {
-            screen.postRender(() -> {
-                guiGraphics.renderTooltip(minecraft.font, category.getDisplayDescription(), mouseX, mouseY);
-            });
+            guiGraphics.renderTooltip(minecraft.font, category.getDisplayDescription(), mouseX, mouseY);
         }
     }
 
