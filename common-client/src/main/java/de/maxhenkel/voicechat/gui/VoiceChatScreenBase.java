@@ -45,18 +45,16 @@ public abstract class VoiceChatScreenBase extends Screen {
             extractPanorama(guiGraphics, delta);
             extractBlurredBackground(guiGraphics);
         }
-        renderBackground(guiGraphics, mouseX, mouseY, delta);
+        extractBackgroundRenderState(guiGraphics, mouseX, mouseY, delta);
         super.extractRenderState(guiGraphics, mouseX, mouseY, delta);
-        renderForeground(guiGraphics, mouseX, mouseY, delta);
+        extractForegroundRenderState(guiGraphics, mouseX, mouseY, delta);
     }
 
-    //TODO Rename
-    public void renderBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
 
     }
 
-    //TODO Rename
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractForegroundRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
 
     }
 

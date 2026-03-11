@@ -61,7 +61,7 @@ public abstract class SelectDeviceScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void renderBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         if (isIngame()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE, 256, 256);
             for (int i = 0; i < units; i++) {
@@ -73,7 +73,7 @@ public abstract class SelectDeviceScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractForegroundRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         guiGraphics.text(font, title, width / 2 - font.width(title) / 2, guiTop + 5, isIngame() ? FONT_COLOR : ChatFormatting.WHITE.getColor(), false);
         if (!deviceList.isEmpty()) {
             deviceList.extractRenderState(guiGraphics, mouseX, mouseY, delta);
