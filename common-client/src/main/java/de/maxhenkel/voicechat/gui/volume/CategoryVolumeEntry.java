@@ -29,7 +29,9 @@ public class CategoryVolumeEntry extends VolumeEntry {
         guiGraphics.blit(RenderType::guiTextured, texture, skinX, skinY, 16, 16, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16);
         renderScrollingString(guiGraphics, category.getDisplayName(), top, left, width, height, PLAYER_NAME_COLOR);
         if (hovered && category.getDescription() != null) {
-            guiGraphics.renderTooltip(minecraft.font, category.getDisplayDescription(), mouseX, mouseY);
+            screen.postRender(() -> {
+                guiGraphics.renderTooltip(minecraft.font, category.getDisplayDescription(), mouseX, mouseY);
+            });
         }
     }
 

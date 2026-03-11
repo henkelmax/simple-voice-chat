@@ -4,13 +4,13 @@ import com.google.common.collect.Lists;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.gui.GroupType;
+import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.Component;
@@ -34,11 +34,11 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
     protected static final int BG_FILL_SELECTED = ARGB.color(255, 90, 90, 90);
     protected static final int PLAYER_NAME_COLOR = ARGB.color(255, 255, 255, 255);
 
-    protected final Screen parent;
+    protected final ListScreenBase parent;
     protected final Minecraft minecraft;
     protected final Group group;
 
-    public JoinGroupEntry(Screen parent, Group group) {
+    public JoinGroupEntry(ListScreenBase parent, Group group) {
         this.parent = parent;
         this.minecraft = Minecraft.getInstance();
         this.group = group;
@@ -119,7 +119,9 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             }
         }
 
-        guiGraphics.renderTooltip(minecraft.font, tooltip, mouseX, mouseY);
+        parent.postRender(() -> {
+            guiGraphics.renderTooltip(minecraft.font, tooltip, mouseX, mouseY);
+        });
     }
 
     public Group getGroup() {

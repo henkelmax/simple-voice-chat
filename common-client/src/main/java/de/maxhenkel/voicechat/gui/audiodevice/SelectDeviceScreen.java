@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.gui.audiodevice;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
+import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -13,7 +13,7 @@ import net.minecraft.util.Mth;
 
 import javax.annotation.Nullable;
 
-public abstract class SelectDeviceScreen extends VoiceChatScreenBase {
+public abstract class SelectDeviceScreen extends ListScreenBase {
 
     protected static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_audio_devices.png");
     protected static final Component BACK = Component.translatable("message.voicechat.back");
