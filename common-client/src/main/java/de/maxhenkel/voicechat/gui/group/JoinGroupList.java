@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.gui.group;
 
 import de.maxhenkel.voicechat.gui.EnterPasswordScreen;
-import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.net.JoinGroupPacket;
@@ -9,6 +8,7 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 
@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 
 public class JoinGroupList extends ListScreenListBase<JoinGroupEntry> {
 
-    protected final ListScreenBase parent;
+    protected final Screen parent;
 
-    public JoinGroupList(ListScreenBase parent, int width, int height, int top, int itemSize) {
+    public JoinGroupList(Screen parent, int width, int height, int top, int itemSize) {
         super(width, height, top, itemSize);
         this.parent = parent;
         updateGroups();
