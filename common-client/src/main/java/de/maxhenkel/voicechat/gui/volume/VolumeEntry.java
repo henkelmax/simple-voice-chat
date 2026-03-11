@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.gui.volume;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -31,7 +31,7 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
     }
 
     @Override
-    public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
+    public void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
         int left = getContentX();
         int top = getContentY();
         int width = getContentWidth();
@@ -46,12 +46,12 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
         renderElement(guiGraphics, top, left, width, height, mouseX, mouseY, hovered, delta, skinX, skinY, textX, textY);
 
         volumeSlider.setPosition(left + (width - volumeSlider.getWidth() - PADDING), top + (height - volumeSlider.getHeight()) / 2);
-        volumeSlider.render(guiGraphics, mouseX, mouseY, delta);
+        volumeSlider.extractRenderState(guiGraphics, mouseX, mouseY, delta);
     }
 
-    public abstract void renderElement(GuiGraphics guiGraphics, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY);
+    public abstract void renderElement(GuiGraphicsExtractor guiGraphics, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY);
 
-    protected void renderScrollingString(GuiGraphics guiGraphics, Component text) {
+    protected void renderScrollingString(GuiGraphicsExtractor guiGraphics, Component text) {
         int textX = getContentX() + PADDING + SKIN_SIZE + PADDING;
         int textY = getContentY() + (getContentHeight() - minecraft.font.lineHeight) / 2;
         int textSpace = getContentWidth() - PADDING - SKIN_SIZE - PADDING - PADDING - SLIDER_WIDTH - PADDING;
@@ -59,7 +59,7 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
         if (textWidth > textSpace) {
             guiGraphics.textRenderer().acceptScrollingWithDefaultCenter(text, textX, textX + textSpace, textY, textY + minecraft.font.lineHeight);
         } else {
-            guiGraphics.drawString(minecraft.font, text, textX, textY, 0xFFFFFFFF, false);
+            guiGraphics.text(minecraft.font, text, textX, textY, 0xFFFFFFFF, false);
         }
     }
 

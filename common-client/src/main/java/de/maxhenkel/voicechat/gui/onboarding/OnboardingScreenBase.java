@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -43,11 +43,6 @@ public abstract class OnboardingScreenBase extends Screen {
         contentHeight = height - guiTop * 2;
     }
 
-    @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
-    }
-
     @Nullable
     public Screen getNextScreen() {
         return null;
@@ -79,17 +74,17 @@ public abstract class OnboardingScreenBase extends Screen {
         addBackOrCancelButton(false);
     }
 
-    protected void renderTitle(GuiGraphics guiGraphics, Component titleComponent) {
+    protected void renderTitle(GuiGraphicsExtractor guiGraphics, Component titleComponent) {
         int titleWidth = font.width(titleComponent);
-        guiGraphics.drawString(font, titleComponent.getVisualOrderText(), width / 2 - titleWidth / 2, guiTop, TEXT_COLOR, true);
+        guiGraphics.text(font, titleComponent.getVisualOrderText(), width / 2 - titleWidth / 2, guiTop, TEXT_COLOR, true);
     }
 
-    protected void renderMultilineText(GuiGraphics guiGraphics, Component textComponent) {
+    protected void renderMultilineText(GuiGraphicsExtractor guiGraphics, Component textComponent) {
         List<FormattedCharSequence> text = font.split(textComponent, contentWidth);
 
         for (int i = 0; i < text.size(); i++) {
             FormattedCharSequence line = text.get(i);
-            guiGraphics.drawString(font, line, width / 2 - font.width(line) / 2, guiTop + font.lineHeight + 20 + i * (font.lineHeight + 1), TEXT_COLOR, true);
+            guiGraphics.text(font, line, width / 2 - font.width(line) / 2, guiTop + font.lineHeight + 20 + i * (font.lineHeight + 1), TEXT_COLOR, true);
         }
     }
 

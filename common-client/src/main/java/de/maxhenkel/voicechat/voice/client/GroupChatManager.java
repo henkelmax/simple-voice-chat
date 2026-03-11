@@ -5,7 +5,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.PlayerSkin;
@@ -20,7 +20,7 @@ public class GroupChatManager {
     private static final Identifier TALK_OUTLINE = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/talk_outline.png");
     private static final Identifier SPEAKER_OFF_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_small_off.png");
 
-    public static void renderIcons(GuiGraphics guiGraphics) {
+    public static void renderIcons(GuiGraphicsExtractor guiGraphics) {
         ClientVoicechat client = ClientManager.getClient();
 
         if (client == null) {

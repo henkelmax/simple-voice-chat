@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
@@ -18,7 +18,7 @@ public class ToggleImageButton extends ImageButton {
     }
 
     @Override
-    protected void renderImage(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void extractImage(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if (stateSupplier == null) {
             return;
         }

@@ -10,7 +10,7 @@ import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -45,7 +45,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
     }
 
     @Override
-    public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
+    public void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
         int left = getContentX();
         int top = getContentY();
         int width = getContentWidth();
@@ -67,7 +67,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
         }
 
         MutableComponent groupName = Component.literal(group.group.getName());
-        guiGraphics.drawString(minecraft.font, groupName, left + PADDING + (hasPassword ? 16 + PADDING : 0), top + height / 2 - minecraft.font.lineHeight / 2, PLAYER_NAME_COLOR, false);
+        guiGraphics.text(minecraft.font, groupName, left + PADDING + (hasPassword ? 16 + PADDING : 0), top + height / 2 - minecraft.font.lineHeight / 2, PLAYER_NAME_COLOR, false);
 
         int textWidth = minecraft.font.width(groupName) + (hasPassword ? 16 + PADDING : 0);
 

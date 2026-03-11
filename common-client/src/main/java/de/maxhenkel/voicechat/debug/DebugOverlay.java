@@ -8,7 +8,7 @@ import de.maxhenkel.voicechat.voice.client.speaker.ALSpeaker;
 import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -42,7 +42,7 @@ public class DebugOverlay {
 
     private List<String> rightText = new ArrayList<>();
 
-    private void render(GuiGraphics gui, float tickDelta) {
+    private void render(GuiGraphicsExtractor gui, float tickDelta) {
         if (!active) {
             return;
         }
@@ -152,7 +152,7 @@ public class DebugOverlay {
 
     private static final int LEFT_PADDING = 5;
 
-    private void drawRight(GuiGraphics gui, List<String> strings) {
+    private void drawRight(GuiGraphicsExtractor gui, List<String> strings) {
         for (int i = 0; i < strings.size(); i++) {
             String text = strings.get(i);
             if (text == null || text.isEmpty()) {
@@ -162,7 +162,7 @@ public class DebugOverlay {
             int width = mc.font.width(text);
             gui.pose().translate(mc.getWindow().getGuiScaledWidth() - width - LEFT_PADDING, 25F + i * (mc.font.lineHeight + 1F));
             gui.fill(-1, -1, width, mc.font.lineHeight, 0x90505050);
-            gui.drawString(mc.font, text, 0, 0, 0xFFFFFFFF, false);
+            gui.text(mc.font, text, 0, 0, 0xFFFFFFFF, false);
 
             gui.pose().popMatrix();
         }

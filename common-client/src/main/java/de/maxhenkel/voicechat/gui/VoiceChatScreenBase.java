@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.gui;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -38,23 +38,25 @@ public abstract class VoiceChatScreenBase extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         if (isIngame()) {
-            renderTransparentBackground(guiGraphics);
+            extractTransparentBackground(guiGraphics);
         } else {
-            renderPanorama(guiGraphics, delta);
-            renderBlurredBackground(guiGraphics);
+            extractPanorama(guiGraphics, delta);
+            extractBlurredBackground(guiGraphics);
         }
         renderBackground(guiGraphics, mouseX, mouseY, delta);
-        super.render(guiGraphics, mouseX, mouseY, delta);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, delta);
         renderForeground(guiGraphics, mouseX, mouseY, delta);
     }
 
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    //TODO Rename
+    public void renderBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
 
     }
 
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    //TODO Rename
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
 
     }
 
@@ -74,7 +76,7 @@ public abstract class VoiceChatScreenBase extends Screen {
         return isIngame() ? FONT_COLOR : ChatFormatting.WHITE.getColor();
     }
 
-    public void drawHoverAreas(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void drawHoverAreas(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         for (HoverArea hoverArea : hoverAreas) {
             if (hoverArea.tooltip != null && hoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
                 guiGraphics.setTooltipForNextFrame(minecraft.font, hoverArea.tooltip.get(), mouseX - guiLeft, mouseY - guiTop);

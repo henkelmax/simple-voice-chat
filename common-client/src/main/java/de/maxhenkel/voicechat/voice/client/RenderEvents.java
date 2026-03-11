@@ -8,7 +8,7 @@ import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
@@ -41,7 +41,7 @@ public class RenderEvents {
         ClientCompatibilityManager.INSTANCE.onRenderHUD(this::onRenderHUD);
     }
 
-    private void onRenderHUD(GuiGraphics guiGraphics, float tickDelta) {
+    private void onRenderHUD(GuiGraphicsExtractor guiGraphics, float tickDelta) {
         if (!shouldShowIcons()) {
             return;
         }
@@ -83,7 +83,7 @@ public class RenderEvents {
         return client != null && (System.currentTimeMillis() - client.getStartTime()) < 5000;
     }
 
-    private void renderIcon(GuiGraphics guiGraphics, Identifier texture) {
+    private void renderIcon(GuiGraphicsExtractor guiGraphics, Identifier texture) {
         guiGraphics.pose().pushMatrix();
         int posX = VoicechatClient.CLIENT_CONFIG.hudIconPosX.get();
         int posY = VoicechatClient.CLIENT_CONFIG.hudIconPosY.get();

@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
@@ -39,14 +39,14 @@ public class ImageButton extends AbstractButton {
         }
     }
 
-    protected void renderImage(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void extractImage(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, getX() + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
     }
 
     @Override
-    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
-        renderDefaultSprite(guiGraphics);
-        renderImage(guiGraphics, mouseX, mouseY);
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float f) {
+        extractDefaultSprite(guiGraphics);
+        extractImage(guiGraphics, mouseX, mouseY);
 
         if (tooltipSupplier != null) {
             tooltipSupplier.updateTooltip(this);

@@ -9,7 +9,7 @@ import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerManager;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
@@ -51,8 +51,8 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
     }
 
     @Override
-    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
-        super.renderContents(guiGraphics, mouseX, mouseY, f);
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float f) {
+        super.extractContents(guiGraphics, mouseX, mouseY, f);
         updateLastRender();
     }
 

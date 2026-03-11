@@ -16,7 +16,7 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -111,7 +111,7 @@ public class GroupScreen extends ListScreenBase {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void renderBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE, 256, 256);
         for (int i = 0; i < units; i++) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * i, 0, HEADER_SIZE, xSize, UNIT_SIZE, 256, 256);
@@ -121,8 +121,8 @@ public class GroupScreen extends ListScreenBase {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        groupList.render(guiGraphics, mouseX, mouseY, delta);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+        groupList.extractRenderState(guiGraphics, mouseX, mouseY, delta);
 
         MutableComponent title;
         if (group.getType().equals(Group.Type.NORMAL)) {
@@ -131,7 +131,7 @@ public class GroupScreen extends ListScreenBase {
             title = Component.translatable("message.voicechat.group_type_title", Component.literal(group.getName()), GroupType.fromType(group.getType()).getTranslation());
         }
 
-        guiGraphics.drawString(font, title, guiLeft + xSize / 2 - font.width(title) / 2, guiTop + 5, FONT_COLOR, false);
+        guiGraphics.text(font, title, guiLeft + xSize / 2 - font.width(title) / 2, guiTop + 5, FONT_COLOR, false);
     }
 
 }

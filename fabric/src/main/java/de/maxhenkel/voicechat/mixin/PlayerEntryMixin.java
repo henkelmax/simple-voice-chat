@@ -5,7 +5,7 @@ import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
@@ -67,8 +67,8 @@ public abstract class PlayerEntryMixin extends ContainerObjectSelectionList.Entr
         }
     }
 
-    @Inject(method = "renderContent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/Button;render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", ordinal = 1))
-    private void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float delta, CallbackInfo ci) {
+    @Inject(method = "extractContent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/Button;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", ordinal = 1))
+    private void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean hovered, float delta, CallbackInfo ci) {
         if (inviteButton != null && hideButton != null && reportButton != null) {
             if (ClientManager.getPlayerStateManager().getGroupID() == null || !canInvite()) {
                 inviteButton.visible = false;
@@ -77,7 +77,7 @@ public abstract class PlayerEntryMixin extends ContainerObjectSelectionList.Entr
             inviteButton.visible = true;
             inviteButton.active = !invited;
             inviteButton.setPosition(getContentX() + (getContentWidth() - hideButton.getWidth() - 4 - reportButton.getWidth() - 4) - inviteButton.getWidth() - 4, getContentY() + (getContentHeight() - inviteButton.getHeight()) / 2);
-            inviteButton.render(guiGraphics, mouseX, mouseY, delta);
+            inviteButton.extractRenderState(guiGraphics, mouseX, mouseY, delta);
         }
     }
 

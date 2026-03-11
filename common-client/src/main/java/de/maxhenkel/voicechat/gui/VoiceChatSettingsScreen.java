@@ -8,7 +8,7 @@ import de.maxhenkel.voicechat.gui.widgets.*;
 import de.maxhenkel.voicechat.natives.SpeexManager;
 import de.maxhenkel.voicechat.voice.client.*;
 import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
@@ -81,9 +81,9 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
         addRenderableWidget(new EnumButton<>(guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.audioType) {
             @Override
-            protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
-                renderDefaultSprite(guiGraphics);
-                renderDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
+            protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+                extractDefaultSprite(guiGraphics);
+                extractDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
             }
 
             @Override
@@ -140,16 +140,16 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void renderBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         if (isIngame()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
         }
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         int titleWidth = font.width(TITLE);
-        guiGraphics.drawString(font, TITLE.getVisualOrderText(), guiLeft + (xSize - titleWidth) / 2, guiTop + 7, getFontColor(), false);
+        guiGraphics.text(font, TITLE.getVisualOrderText(), guiLeft + (xSize - titleWidth) / 2, guiTop + 7, getFontColor(), false);
 
         Component sliderTooltip = voiceActivationSlider.getHoverText();
         if (voiceActivationSlider.isHovered() && sliderTooltip != null) {

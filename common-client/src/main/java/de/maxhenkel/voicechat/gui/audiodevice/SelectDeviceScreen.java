@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.gui.audiodevice;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -61,7 +61,7 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void renderBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         if (isIngame()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE, 256, 256);
             for (int i = 0; i < units; i++) {
@@ -73,12 +73,12 @@ public abstract class SelectDeviceScreen extends ListScreenBase {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.drawString(font, title, width / 2 - font.width(title) / 2, guiTop + 5, isIngame() ? FONT_COLOR : ChatFormatting.WHITE.getColor(), false);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+        guiGraphics.text(font, title, width / 2 - font.width(title) / 2, guiTop + 5, isIngame() ? FONT_COLOR : ChatFormatting.WHITE.getColor(), false);
         if (!deviceList.isEmpty()) {
-            deviceList.render(guiGraphics, mouseX, mouseY, delta);
+            deviceList.extractRenderState(guiGraphics, mouseX, mouseY, delta);
         } else {
-            guiGraphics.drawCenteredString(font, getEmptyListComponent(), width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - font.lineHeight / 2, -1);
+            guiGraphics.centeredText(font, getEmptyListComponent(), width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - font.lineHeight / 2, -1);
         }
     }
 

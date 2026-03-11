@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.gui.volume;
 
 import de.maxhenkel.voicechat.gui.widgets.DebouncedSlider;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 public class AdjustVolumeSlider extends DebouncedSlider {
@@ -33,8 +33,8 @@ public class AdjustVolumeSlider extends DebouncedSlider {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-        super.renderWidget(guiGraphics, i, j, f);
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+        super.extractWidgetRenderState(guiGraphics, i, j, f);
         double audioLevel = volumeConfigEntry.getAudioLevel();
         if (audioLevel <= AudioUtils.LOWEST_DB) {
             return;

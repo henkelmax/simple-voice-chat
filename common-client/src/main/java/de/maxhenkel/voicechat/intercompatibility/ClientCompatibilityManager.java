@@ -7,7 +7,7 @@ import de.maxhenkel.voicechat.plugins.impl.VoicechatClientApiImpl;
 import de.maxhenkel.voicechat.service.Service;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -68,7 +68,7 @@ public abstract class ClientCompatibilityManager {
     }
 
     public interface RenderHUDEvent {
-        void render(GuiGraphics guiGraphics, float tickDelta);
+        void render(GuiGraphicsExtractor guiGraphics, float tickDelta);
     }
 
     public interface KeyboardEvent {

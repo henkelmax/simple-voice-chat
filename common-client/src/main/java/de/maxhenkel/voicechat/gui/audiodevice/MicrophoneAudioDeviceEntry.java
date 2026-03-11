@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.gui.audiodevice;
 
 import de.maxhenkel.voicechat.gui.widgets.MicTestButton;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -18,12 +18,12 @@ public class MicrophoneAudioDeviceEntry extends AudioDeviceEntry {
     }
 
     @Override
-    public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
-        super.renderContent(guiGraphics, mouseX, mouseY, hovered, delta);
+    public void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
+        super.extractContent(guiGraphics, mouseX, mouseY, hovered, delta);
         boolean selected = isSelected.get();
         if (selected && (hovered || testButton.isMicActive())) {
             testButton.setPosition(getContentX() + (getContentWidth() - testButton.getWidth() - PADDING), getContentY() + (getContentHeight() - testButton.getHeight()) / 2);
-            testButton.render(guiGraphics, mouseX, mouseY, delta);
+            testButton.extractRenderState(guiGraphics, mouseX, mouseY, delta);
         }
     }
 

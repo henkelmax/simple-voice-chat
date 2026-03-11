@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.gui.audiodevice;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -38,7 +38,7 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
     }
 
     @Override
-    public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
+    public void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
         int left = getContentX();
         int top = getContentY();
         int width = getContentWidth();
@@ -67,7 +67,7 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
         guiGraphics.pose().translate(left + PADDING + 16 + PADDING, top + height / 2 - (minecraft.font.lineHeight * scale) / 2);
         guiGraphics.pose().scale(scale, scale);
 
-        guiGraphics.drawString(minecraft.font, name, 0, 0, DEVICE_NAME_COLOR, false);
+        guiGraphics.text(minecraft.font, name, 0, 0, DEVICE_NAME_COLOR, false);
         guiGraphics.pose().popMatrix();
     }
 

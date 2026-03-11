@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.gui.onboarding;
 
 import de.maxhenkel.voicechat.gui.audiodevice.AudioDeviceList;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -36,9 +36,9 @@ public abstract class DeviceOnboardingScreen extends OnboardingScreenBase {
     public abstract Screen getNextScreen();
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        deviceList.render(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+        deviceList.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
         renderTitle(guiGraphics, title);
     }
 

@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.events;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import java.util.function.Consumer;
 
@@ -15,8 +15,8 @@ public class RenderEvents {
         }
     });
 
-    public static final Event<Consumer<GuiGraphics>> RENDER_HUD = EventFactory.createArrayBacked(Consumer.class, (listeners) -> (guiGraphics) -> {
-        for (Consumer<GuiGraphics> listener : listeners) {
+    public static final Event<Consumer<GuiGraphicsExtractor>> RENDER_HUD = EventFactory.createArrayBacked(Consumer.class, (listeners) -> (guiGraphics) -> {
+        for (Consumer<GuiGraphicsExtractor> listener : listeners) {
             listener.accept(guiGraphics);
         }
     });

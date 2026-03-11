@@ -4,7 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -69,7 +69,7 @@ public class AdjustVolumesScreen extends ListScreenBase {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void renderBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE, 256, 256);
         for (int i = 0; i < units; i++) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * i, 0, HEADER_SIZE, xSize, UNIT_SIZE, 256, 256);
@@ -79,17 +79,17 @@ public class AdjustVolumesScreen extends ListScreenBase {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.drawString(font, TITLE, width / 2 - font.width(TITLE) / 2, guiTop + 5, VoiceChatScreenBase.FONT_COLOR, false);
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+        guiGraphics.text(font, TITLE, width / 2 - font.width(TITLE) / 2, guiTop + 5, VoiceChatScreenBase.FONT_COLOR, false);
         if (!volumeList.isEmpty()) {
-            volumeList.render(guiGraphics, mouseX, mouseY, delta);
+            volumeList.extractRenderState(guiGraphics, mouseX, mouseY, delta);
         } else if (!searchBox.getValue().isEmpty()) {
-            guiGraphics.drawCenteredString(font, EMPTY_SEARCH, width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - font.lineHeight / 2, -1);
+            guiGraphics.centeredText(font, EMPTY_SEARCH, width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - font.lineHeight / 2, -1);
         }
         if (!searchBox.isFocused() && searchBox.getValue().isEmpty()) {
-            guiGraphics.drawString(font, SEARCH_HINT, searchBox.getX(), searchBox.getY(), -1, false);
+            guiGraphics.text(font, SEARCH_HINT, searchBox.getX(), searchBox.getY(), -1, false);
         } else {
-            searchBox.render(guiGraphics, mouseX, mouseY, delta);
+            searchBox.extractRenderState(guiGraphics, mouseX, mouseY, delta);
         }
     }
 
