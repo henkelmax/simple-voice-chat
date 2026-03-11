@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.gui.volume;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
-import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -14,7 +13,7 @@ import net.minecraft.util.Mth;
 
 import java.util.Locale;
 
-public class AdjustVolumesScreen extends ListScreenBase {
+public class AdjustVolumesScreen extends VoiceChatScreenBase {
 
     protected static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/gui_volumes.png");
     protected static final Component TITLE = Component.translatable("gui.voicechat.adjust_volume.title");
