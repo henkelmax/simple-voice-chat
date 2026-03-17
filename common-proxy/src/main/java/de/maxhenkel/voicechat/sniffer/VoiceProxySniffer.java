@@ -69,15 +69,16 @@ public class VoiceProxySniffer {
      * Called whenever a PluginMessage has been received by the proxy.
      *
      * @param channel    the channel on which the message was received
+     * @param fromServer whether the message was sent from the server
      * @param message    the contents of the received message
      * @param playerUUID the UUID of the player that sent or received the message
      * @return ByteBuffer if the plugin message should be replaced, <code>null</code> otherwise
      */
-    public ByteBuffer onPluginMessage(String channel, ByteBuffer message, UUID playerUUID) throws IncompatibleVoiceChatException {
-        if (channel.equals(VoiceProxy.REQUEST_SECRET_CHANNEL) || channel.equals(VoiceProxy.REQUEST_SECRET_CHANNEL_1_12)) {
+    public ByteBuffer onPluginMessage(String channel, boolean fromServer, ByteBuffer message, UUID playerUUID) throws IncompatibleVoiceChatException {
+        if (!fromServer && (channel.equals(VoiceProxy.REQUEST_SECRET_CHANNEL) || channel.equals(VoiceProxy.REQUEST_SECRET_CHANNEL_1_12))) {
             return handleRequestSecretPacket(message, playerUUID);
         }
-        if (channel.equals(VoiceProxy.SECRET_CHANNEL) || channel.equals(VoiceProxy.SECRET_CHANNEL_1_12)) {
+        if (fromServer && (channel.equals(VoiceProxy.SECRET_CHANNEL) || channel.equals(VoiceProxy.SECRET_CHANNEL_1_12))) {
             return handleSecretPacket(message, playerUUID);
         }
         return null;
