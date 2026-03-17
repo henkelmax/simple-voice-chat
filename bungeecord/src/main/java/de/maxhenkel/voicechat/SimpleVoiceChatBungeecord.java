@@ -152,19 +152,20 @@ public class SimpleVoiceChatBungeecord extends VoiceProxy implements Listener {
      */
     @EventHandler
     public void onPluginMessage(PluginMessageEvent event) {
-        ProxiedPlayer p = null;
+        ProxiedPlayer p;
+        boolean fromServer;
         if (event.getSender() instanceof ProxiedPlayer player) {
             p = player;
-        }
-        if (event.getReceiver() instanceof ProxiedPlayer player) {
+            fromServer = false;
+        } else if (event.getReceiver() instanceof ProxiedPlayer player) {
             p = player;
-        }
-        if (p == null) {
+            fromServer = true;
+        } else {
             return;
         }
 
         try {
-            ByteBuffer replacement = voiceProxySniffer.onPluginMessage(event.getTag(), ByteBuffer.wrap(event.getData()), p.getUniqueId());
+            ByteBuffer replacement = voiceProxySniffer.onPluginMessage(event.getTag(), fromServer, ByteBuffer.wrap(event.getData()), p.getUniqueId());
             if (replacement == null) {
                 return;
             }

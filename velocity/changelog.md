@@ -1,1 +1,1 @@
-- Fixed getting disconnected form voice chat when trying to log in twice with the same account
+- Fixed proxy not checking the origin of intercepted packets
