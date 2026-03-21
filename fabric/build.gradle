@@ -35,10 +35,10 @@ dependencies {
     /*compileOnlyApi("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}") {
         exclude(group: 'net.fabricmc.fabric-api')
     }
-    compileOnly "maven.modrinth:vanish:${vanish_version}"
+    compileOnly "maven.modrinth:vanish:${vanish_version}"*/
 
     implementation "me.lucko:fabric-permissions-api:${fabric_permission_api_version}"
-    compileOnly "com.viaversion:viaversion-common:${viaversion_version}"*/
+    //compileOnly "com.viaversion:viaversion-common:${viaversion_version}"
 
     implementation "org.concentus:Concentus:${concentus_version}"
     shadow "org.concentus:Concentus:${concentus_version}"
