@@ -5,7 +5,7 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
 import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import de.maxhenkel.voicechat.integration.clothconfig.ClothConfig;
-//import de.maxhenkel.voicechat.integration.clothconfig.ClothConfigIntegration;
+import de.maxhenkel.voicechat.integration.clothconfig.ClothConfigIntegration;
 
 public class ModMenu implements ModMenuApi {
 
@@ -16,7 +16,7 @@ public class ModMenu implements ModMenuApi {
                 return OnboardingManager.getOnboardingScreen(parent);
             }
             if (ClothConfig.isLoaded()) {
-                //return ClothConfigIntegration.createConfigScreen(parent);
+                return ClothConfigIntegration.createConfigScreen(parent);
             }
             return new VoiceChatSettingsScreen(parent);
         };

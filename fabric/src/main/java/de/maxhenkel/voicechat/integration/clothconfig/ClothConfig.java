@@ -4,7 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-//import me.shedaniel.clothconfig2.gui.ClothConfigScreen;
+import me.shedaniel.clothconfig2.gui.ClothConfigScreen;
 import net.minecraft.client.Minecraft;
 
 public class ClothConfig {
@@ -40,12 +40,12 @@ public class ClothConfig {
 
     private static void onTick() {
         if (isLoaded()) {
-            /*if (MC.screen instanceof ClothConfigScreen screen) {
+            if (MC.screen instanceof ClothConfigScreen screen) {
                 if (screen.getSelectedCategory().equals(ClothConfigIntegration.OTHER_SETTINGS)) {
                     screen.selectedCategoryIndex = 0;
                     MC.setScreen(new VoiceChatSettingsScreen(MC.screen));
                 }
-            }*/
+            }
         }
     }
 

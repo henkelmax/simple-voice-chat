@@ -35,8 +35,12 @@ dependencies {
     /*compileOnlyApi("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}") {
         exclude(group: 'net.fabricmc.fabric-api')
     }*/
+    //Temporarily use cloth config for neoforge as it already is unobfuscated and will compile against fabric
+    compileOnly("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}") {
+        transitive false
+    }
     //compileOnly "maven.modrinth:vanish:${vanish_version}"
-    compileOnly("me.drex:vanish:${vanish_version}"){
+    compileOnly("me.drex:vanish:${vanish_version}") {
         transitive false
     }
 
