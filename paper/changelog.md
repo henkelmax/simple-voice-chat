@@ -1,1 +1,1 @@
-- Improved voice chat group name validation
+- Updated to 26.1
