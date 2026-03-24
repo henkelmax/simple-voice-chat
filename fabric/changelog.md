@@ -1,1 +1,1 @@
-- Updated to 26.1-rc-2
+- Updated to 26.1
