@@ -25,7 +25,7 @@ public class Channel<T extends Packet<T>> {
     public void onServerPacket(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, T packet) {
         if (!Voicechat.SERVER.getRateLimiter().allow(player.getUUID())) {
             Voicechat.LOGGER.warn("Player {} exceeded packet rate limit", player.getName().getString());
-            player.connection.disconnect(Component.translatableWithFallback("disconnect.exceeded_packet_rate", "Kicked for exceeding packet rate limit"));
+            player.connection.disconnect(Component.translatable("disconnect.exceeded_packet_rate"));
             return;
         }
         CommonCompatibilityManager.INSTANCE.execute(server, () -> {
