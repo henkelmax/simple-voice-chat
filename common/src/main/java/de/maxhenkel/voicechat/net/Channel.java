@@ -5,7 +5,7 @@ import net.minecraft.network.NetHandlerPlayServer;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextComponentString;
 
 import javax.annotation.Nullable;
 
@@ -25,7 +25,7 @@ public class Channel<T extends Packet<T>> {
     public void onServerPacket(MinecraftServer server, EntityPlayerMP player, NetHandlerPlayServer handler, T packet) {
         if (!Voicechat.SERVER.getRateLimiter().allow(player.getUniqueID())) {
             Voicechat.LOGGER.warn("Player {} exceeded packet rate limit", player.getName());
-            player.connection.disconnect(new TextComponentTranslation("disconnect.exceeded_packet_rate"));
+            player.connection.disconnect(new TextComponentString("Kicked for exceeding packet rate limit"));
             return;
         }
         CommonCompatibilityManager.INSTANCE.execute(server, () -> {
