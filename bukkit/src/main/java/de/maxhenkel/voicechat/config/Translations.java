@@ -6,6 +6,7 @@ import de.maxhenkel.configbuilder.entry.ConfigEntry;
 public class Translations {
 
     public final ConfigEntry<String> forceVoicechatKickMessage;
+    public final ConfigEntry<String> rateLimitKickMessage;
     public final ConfigEntry<String> voicechatNotCompatibleMessage;
     public final ConfigEntry<String> voicechatNeededForCommandMessage;
     public final ConfigEntry<String> playerCommandMessage;
@@ -24,6 +25,11 @@ public class Translations {
                 "You need %s %s to play on this server",
                 "The message a player gets when kicked for not having voice chat installed and the server has force_voicechat enabled",
                 "The first parameter is the mod/plugin name and the second parameter is the mod/plugin version"
+        );
+        rateLimitKickMessage = builder.stringEntry(
+                "rate_limit_kick_message",
+                "Kicked for exceeding packet rate limit",
+                "The message a player gets when kicked for sending too many voice chat packets"
         );
         voicechatNotCompatibleMessage = builder.stringEntry(
                 "voicechat_not_compatible_message",
