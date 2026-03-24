@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.compatibility.PlayerHideEvent;
 import de.maxhenkel.voicechat.compatibility.PlayerShowEvent;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.net.PacketRateLimiter;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
@@ -23,10 +24,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ServerVoiceEvents implements Listener {
 
     private final Map<UUID, Integer> clientCompatibilities;
+    private final PacketRateLimiter rateLimiter;
     private Server server;
 
     public ServerVoiceEvents() {
         clientCompatibilities = new ConcurrentHashMap<>();
+        rateLimiter = new PacketRateLimiter(Voicechat.SERVER_CONFIG.tcpRateLimit.get());
     }
 
     public void init() {
@@ -132,6 +135,7 @@ public class ServerVoiceEvents implements Listener {
         server.getGroupManager().onPlayerQuit(event);
 
         clientCompatibilities.remove(event.getPlayer().getUniqueId());
+        rateLimiter.onPlayerLoggedOut(event.getPlayer());
         if (server == null) {
             return;
         }
@@ -146,6 +150,10 @@ public class ServerVoiceEvents implements Listener {
 
     public void onPlayerShow(PlayerShowEvent event) {
         server.getPlayerStateManager().onPlayerShow(event);
+    }
+
+    public PacketRateLimiter getRateLimiter() {
+        return rateLimiter;
     }
 
     public Server getServer() {
