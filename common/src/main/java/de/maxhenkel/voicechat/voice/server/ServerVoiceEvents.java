@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
 import de.maxhenkel.voicechat.net.NetManager;
+import de.maxhenkel.voicechat.net.PacketRateLimiter;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.Secret;
@@ -22,10 +23,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ServerVoiceEvents {
 
     private final Map<UUID, Integer> clientCompatibilities;
+    private final PacketRateLimiter rateLimiter;
     private Server server;
 
     public ServerVoiceEvents() {
         clientCompatibilities = new ConcurrentHashMap<>();
+        rateLimiter = new PacketRateLimiter(Voicechat.SERVER_CONFIG.tcpRateLimit.get());
         CommonCompatibilityManager.INSTANCE.onServerStarting(this::serverStarting);
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedIn(this::playerLoggedIn);
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(this::playerLoggedOut);
@@ -144,6 +147,7 @@ public class ServerVoiceEvents {
 
     public void playerLoggedOut(EntityPlayerMP player) {
         clientCompatibilities.remove(player.getUniqueID());
+        rateLimiter.onPlayerLoggedOut(player);
         if (server == null) {
             return;
         }
@@ -190,6 +194,10 @@ public class ServerVoiceEvents {
         }
 
         server.onPlayerCompatibilityCheckSucceeded(player);
+    }
+
+    public PacketRateLimiter getRateLimiter() {
+        return rateLimiter;
     }
 
     @Nullable
