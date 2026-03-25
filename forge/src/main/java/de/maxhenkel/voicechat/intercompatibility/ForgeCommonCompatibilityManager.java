@@ -76,12 +76,12 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
 
     @Override
     public String getModVersion() {
-        return ModList.get().getModFileById(Voicechat.MODID).versionString();
+        return ModList.getModFileById(Voicechat.MODID).versionString();
     }
 
     @Override
     public String getModName() {
-        return ModList.get().getMods().stream().filter(info -> info.getModId().equals(Voicechat.MODID)).findAny().map(IModInfo::getDisplayName).orElse(Voicechat.MODID);
+        return ModList.getMods().stream().filter(info -> info.getModId().equals(Voicechat.MODID)).findAny().map(IModInfo::getDisplayName).orElse(Voicechat.MODID);
     }
 
     @Override
@@ -176,13 +176,13 @@ public class ForgeCommonCompatibilityManager extends CommonCompatibilityManager 
 
     @Override
     public boolean isModLoaded(String modId) {
-        return ModList.get().isLoaded(modId);
+        return ModList.isLoaded(modId);
     }
 
     @Override
     public List<VoicechatPlugin> loadPlugins() {
         List<VoicechatPlugin> plugins = new ArrayList<>();
-        ModList.get().getAllScanData().forEach(scan -> {
+        ModList.getAllScanData().forEach(scan -> {
             scan.getAnnotations().forEach(annotationData -> {
                 if (annotationData.annotationType().getClassName().equals(ForgeVoicechatPlugin.class.getName())) {
                     try {
