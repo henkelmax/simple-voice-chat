@@ -39,12 +39,6 @@ public abstract class VoiceChatScreenBase extends Screen {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
-        if (isIngame()) {
-            extractTransparentBackground(guiGraphics);
-        } else {
-            extractPanorama(guiGraphics, delta);
-            extractBlurredBackground(guiGraphics);
-        }
         extractBackgroundRenderState(guiGraphics, mouseX, mouseY, delta);
         super.extractRenderState(guiGraphics, mouseX, mouseY, delta);
         extractForegroundRenderState(guiGraphics, mouseX, mouseY, delta);

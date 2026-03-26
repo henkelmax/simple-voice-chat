@@ -1,3 +1,4 @@
 - Added access to the player in the voice host event
 - Prevent processing of UDP packets that are too large
 - Added rate limit config option
+- Fixed GUI backgrounds
