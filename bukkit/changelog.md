@@ -1,1 +1,1 @@
-- Improved vanish support warning
+- Update to 26.1

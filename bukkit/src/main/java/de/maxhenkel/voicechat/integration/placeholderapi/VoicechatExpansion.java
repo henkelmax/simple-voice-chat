@@ -5,24 +5,23 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.server.Server;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
 public class VoicechatExpansion extends PlaceholderExpansion {
 
     @Override
-    public @NotNull String getIdentifier() {
+    public String getIdentifier() {
         return Voicechat.MODID;
     }
 
     @Override
-    public @NotNull String getAuthor() {
+    public String getAuthor() {
         return String.join(", ", Voicechat.INSTANCE.getDescription().getAuthors());
     }
 
     @Override
-    public @NotNull String getVersion() {
+    public String getVersion() {
         return Voicechat.INSTANCE.getDescription().getVersion();
     }
 
@@ -32,7 +31,7 @@ public class VoicechatExpansion extends PlaceholderExpansion {
     }
 
     @Override
-    public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
+    public @Nullable String onPlaceholderRequest(Player player, String params) {
         if (player == null) {
             return super.onPlaceholderRequest(player, params);
         }
