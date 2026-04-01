@@ -1,5 +1,5 @@
 plugins {
-    id 'net.neoforged.gradle.userdev' version "${neogradle_version}"
+    id 'net.neoforged.moddev' version "${moddevgradle_version}"
 }
 
 apply plugin: 'com.gradleup.shadow'
