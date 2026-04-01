@@ -1,1 +1,1 @@
-- Fixed rate limit window
+- Allow 26.1.x

@@ -15,6 +15,7 @@ processResources {
                 'api_version': project(':api').version,
                 'neoforge_dependency': neoforge_dependency,
                 'minecraft_version': minecraft_version,
+                'minecraft_dependency': minecraft_dependency,
                 'cloth_config_version': cloth_config_version
     }
 }
