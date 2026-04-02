@@ -1,1 +1,1 @@
-- Allow 26.1.x
+- Added Esperanto translation
