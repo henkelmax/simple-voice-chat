@@ -1,1 +1,1 @@
-- Fixed rate limit window
+- Added Esperanto translation
