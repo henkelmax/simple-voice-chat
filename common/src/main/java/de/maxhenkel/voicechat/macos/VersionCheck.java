@@ -1,46 +1,34 @@
 package de.maxhenkel.voicechat.macos;
 
 import com.sun.jna.Platform;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.maxhenkel.voicechat.util.Version;
 
 public class VersionCheck {
 
-    public static Pattern VERSIONING_PATTERN = Pattern.compile("^(?<major>\\d+)(?:\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+)){0,1}){0,1}$");
+    private static final Version VERSION_13 = new Version(13, 0, 0);
 
-    public static boolean isMinimumVersion(int major, int minor, int patch) {
-        String version = System.getProperty("os.version");
-        if (version == null) {
-            return true;
-        }
-        Matcher matcher = VERSIONING_PATTERN.matcher(version);
-        if (!matcher.matches()) {
-            return true;
-        }
-        String majorGroup = matcher.group("major");
-        String minorGroup = matcher.group("minor");
-        String patchGroup = matcher.group("patch");
-        int actualMajor = majorGroup == null ? 0 : Integer.parseInt(majorGroup);
-        int actualMinor = minorGroup == null ? 0 : Integer.parseInt(minorGroup);
-        int actualPatch = patchGroup == null ? 0 : Integer.parseInt(patchGroup);
-        if (major > actualMajor) {
-            return false;
-        } else if (major == actualMajor) {
-            if (minor > actualMinor) {
-                return false;
-            } else if (minor == actualMinor) {
-                return patch <= actualPatch;
-            } else {
-                return true;
-            }
-        } else {
-            return true;
-        }
-    }
+    private static Boolean isMacOSNativeCompatible;
 
     public static boolean isMacOSNativeCompatible() {
-        return Platform.isMac() && isMinimumVersion(13, 0, 0);
+        if (isMacOSNativeCompatible == null) {
+            isMacOSNativeCompatible = checkIsMacOSNativeCompatible();
+        }
+        return isMacOSNativeCompatible;
+    }
+
+    private static boolean checkIsMacOSNativeCompatible() {
+        if (!Platform.isMac()) {
+            return false;
+        }
+        String version = System.getProperty("os.version");
+        if (version == null) {
+            return false;
+        }
+        Version macOsVersion = Version.fromVersionString(version);
+        if (macOsVersion == null) {
+            return false;
+        }
+        return macOsVersion.compareTo(VERSION_13) >= 0;
     }
 
 }
