@@ -65,9 +65,6 @@ public abstract class VoicechatClient {
             if (!VersionCheck.isMacOSNativeCompatible()) {
                 Voicechat.LOGGER.warn("Your MacOS version is incompatible with {}", CommonCompatibilityManager.INSTANCE.getModName());
             }
-            if (!CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
-                CLIENT_CONFIG.javaMicrophoneImplementation.set(true).save();
-            }
         }
     }
 }
