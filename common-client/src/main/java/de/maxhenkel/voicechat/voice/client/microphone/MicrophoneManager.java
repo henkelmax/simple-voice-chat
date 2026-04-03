@@ -1,9 +1,12 @@
 package de.maxhenkel.voicechat.voice.client.microphone;
 
+import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.util.Version;
 import de.maxhenkel.voicechat.voice.client.MicrophoneException;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
+import org.lwjgl.openal.AL11;
 
 import java.util.List;
 
@@ -13,7 +16,7 @@ public class MicrophoneManager {
 
     public static Microphone createMicrophone() throws MicrophoneException {
         Microphone mic;
-        if (fallback || VoicechatClient.CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
+        if (useJavaImplementation()) {
             mic = createJavaMicrophone();
         } else {
             try {
@@ -41,11 +44,48 @@ public class MicrophoneManager {
     }
 
     public static List<String> deviceNames() {
-        if (fallback || VoicechatClient.CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
+        if (useJavaImplementation()) {
             return JavaxMicrophone.getAllMicrophones();
         } else {
             return ALMicrophone.getAllMicrophones();
         }
+    }
+
+    private static final Version ALSOFT_INCOMPATIBLE_START = new Version(1, 25, 0);
+
+    private static Boolean forceJavaImplementation = null;
+
+    public static boolean shouldForceJavaImplementation() {
+        if (forceJavaImplementation == null) {
+            forceJavaImplementation = !canUseOpenAL();
+            if (forceJavaImplementation) {
+                Voicechat.LOGGER.info("OpenAL is not supported on this platform, falling back to Java microphone implementation");
+            }
+        }
+        return forceJavaImplementation;
+    }
+
+    public static boolean canUseOpenAL() {
+        if (Platform.isMac()) {
+            return false;
+        }
+        String alVersionString = AL11.alGetString(AL11.AL_VERSION);
+        if (alVersionString == null) {
+            return false;
+        }
+        Voicechat.LOGGER.debug("OpenAL version: {}", alVersionString);
+        Version alVersion = Version.fromOpenALVersion(alVersionString);
+        if (alVersion == null) {
+            return false;
+        }
+        return alVersion.compareTo(ALSOFT_INCOMPATIBLE_START) < 0;
+    }
+
+    public static boolean useJavaImplementation() {
+        if (shouldForceJavaImplementation()) {
+            return true;
+        }
+        return fallback || VoicechatClient.CLIENT_CONFIG.javaMicrophoneImplementation.get();
     }
 
 }
