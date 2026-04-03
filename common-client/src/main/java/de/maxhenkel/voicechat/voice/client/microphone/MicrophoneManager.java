@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.voice.client.microphone;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.voice.client.MicrophoneException;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
@@ -13,7 +14,7 @@ public class MicrophoneManager {
 
     public static Microphone createMicrophone() throws MicrophoneException {
         Microphone mic = createJavaMicrophone();
-        /*if (fallback || VoicechatClient.CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
+        /*if (useJavaImplementation()) {
             mic = createJavaMicrophone();
         } else {
             try {
@@ -41,12 +42,36 @@ public class MicrophoneManager {
     }*/
 
     public static List<String> deviceNames() {
-        if (fallback || VoicechatClient.CLIENT_CONFIG.javaMicrophoneImplementation.get()) {
+        if (useJavaImplementation()) {
             return JavaxMicrophone.getAllMicrophones();
         } else {
             return Collections.emptyList();
             //return ALMicrophone.getAllMicrophones();
         }
+    }
+
+    private static Boolean forceJavaImplementation = null;
+
+    public static boolean shouldForceJavaImplementation() {
+        if (forceJavaImplementation == null) {
+            forceJavaImplementation = !canUseOpenAL();
+            if (forceJavaImplementation) {
+                Voicechat.LOGGER.info("OpenAL is not supported on this platform, falling back to Java microphone implementation");
+            }
+        }
+        return forceJavaImplementation;
+    }
+
+    public static boolean canUseOpenAL() {
+        // 1.12.2 does NOT support OpenAL
+        return false;
+    }
+
+    public static boolean useJavaImplementation() {
+        if (shouldForceJavaImplementation()) {
+            return true;
+        }
+        return fallback || VoicechatClient.CLIENT_CONFIG.javaMicrophoneImplementation.get();
     }
 
 }
