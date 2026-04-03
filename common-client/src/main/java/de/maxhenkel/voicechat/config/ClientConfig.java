@@ -209,8 +209,9 @@ public class ClientConfig {
                         "If the voice chat should work in singleplayer or in worlds shared over LAN"
                 );
         javaMicrophoneImplementation = builder
-                .booleanEntry("java_microphone_implementation", Platform.isMac(),
-                        "Whether to use the Java implementation of microphone capture instead of OpenAL"
+                .booleanEntry("java_microphone_implementation", false,
+                        "Whether to use the Java implementation of microphone capture instead of OpenAL",
+                        "Note that having this set to false doesn't necessarily mean the mod will use OpenAL - Some operating systems or Minecraft versions might not support it properly"
                 );
         macosCheckMicrophonePermission = builder
                 .booleanEntry("macos_check_microphone_permission", true,
