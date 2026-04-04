@@ -55,30 +55,35 @@ public class MicrophoneManager {
 
     private static Boolean forceJavaImplementation = null;
 
-    public static boolean shouldForceJavaImplementation() {
+    private static boolean shouldForceJavaImplementation() {
         if (forceJavaImplementation == null) {
             forceJavaImplementation = !canUseOpenAL();
             if (forceJavaImplementation) {
-                Voicechat.LOGGER.info("OpenAL is not supported on this platform, falling back to Java microphone implementation");
+                Voicechat.LOGGER.info("OpenAL microphones are not properly supported on this platform, falling back to Java microphone implementation");
             }
         }
         return forceJavaImplementation;
     }
 
     public static boolean canUseOpenAL() {
+        // OpenAL is completely broken on macOS
         if (Platform.isMac()) {
             return false;
         }
-        String alVersionString = AL11.alGetString(AL11.AL_VERSION);
-        if (alVersionString == null) {
-            return false;
+        // OpenAL causes issues on 1.25.0+ with some virtual microphones
+        if (Platform.isWindows()) {
+            String alVersionString = AL11.alGetString(AL11.AL_VERSION);
+            if (alVersionString == null) {
+                return false;
+            }
+            Voicechat.LOGGER.debug("OpenAL version: {}", alVersionString);
+            Version alVersion = Version.fromOpenALVersion(alVersionString);
+            if (alVersion == null) {
+                return false;
+            }
+            return alVersion.compareTo(ALSOFT_INCOMPATIBLE_START) < 0;
         }
-        Voicechat.LOGGER.debug("OpenAL version: {}", alVersionString);
-        Version alVersion = Version.fromOpenALVersion(alVersionString);
-        if (alVersion == null) {
-            return false;
-        }
-        return alVersion.compareTo(ALSOFT_INCOMPATIBLE_START) < 0;
+        return true;
     }
 
     public static boolean useJavaImplementation() {
