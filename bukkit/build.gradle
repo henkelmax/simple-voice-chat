@@ -16,12 +16,21 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 repositories {
     mavenCentral()
+    maven {
+        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
+        content {
+            includeGroup 'org.bukkit'
+        }
+    }
     maven { url = 'https://libraries.minecraft.net/' }
     maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
     maven { url = 'https://repo.viaversion.com/' }
 }
 
 dependencies {
+    // Old netty, just to have ByteBuf available
+    implementation "io.netty:netty-all:${netty_version}"
+
     implementation "org.json:json:${json_version}"
     shadow "org.json:json:${json_version}"
 
