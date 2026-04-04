@@ -52,11 +52,11 @@ public class MicrophoneManager {
 
     private static Boolean forceJavaImplementation = null;
 
-    public static boolean shouldForceJavaImplementation() {
+    private static boolean shouldForceJavaImplementation() {
         if (forceJavaImplementation == null) {
             forceJavaImplementation = !canUseOpenAL();
             if (forceJavaImplementation) {
-                Voicechat.LOGGER.info("OpenAL is not supported on this platform, falling back to Java microphone implementation");
+                Voicechat.LOGGER.info("OpenAL microphones are not properly supported on this platform, falling back to Java microphone implementation");
             }
         }
         return forceJavaImplementation;
