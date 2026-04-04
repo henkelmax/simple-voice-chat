@@ -1,1 +1,3 @@
-- Added support for 26.1.1
+- Added support for bukkit/spigot 26.1.1
+- Added support for papers new versioning
+- Added support for paper 26.1.1
