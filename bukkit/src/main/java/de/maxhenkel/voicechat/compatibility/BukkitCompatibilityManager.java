@@ -1,6 +1,6 @@
 package de.maxhenkel.voicechat.compatibility;
 
-import de.maxhenkel.voicechat.BukkitVersion;
+import de.maxhenkel.voicechat.Version;
 import de.maxhenkel.voicechat.Voicechat;
 
 import javax.annotation.Nullable;
@@ -9,9 +9,10 @@ import java.util.Map;
 
 public class BukkitCompatibilityManager {
 
-    private static final Map<BukkitVersion, Compatibility> COMPATIBILITIES = new HashMap<>();
+    private static final Map<Version, Compatibility> COMPATIBILITIES = new HashMap<>();
 
     static {
+        COMPATIBILITIES.put(Compatibility1_21_5.VERSION_PAPER_26_1_1, Compatibility1_21_5.INSTANCE);
         COMPATIBILITIES.put(Compatibility1_21_5.VERSION_26_1_1, Compatibility1_21_5.INSTANCE);
         COMPATIBILITIES.put(Compatibility1_21_5.VERSION_26_1, Compatibility1_21_5.INSTANCE);
         COMPATIBILITIES.put(Compatibility1_21_5.VERSION_1_21_11, Compatibility1_21_5.INSTANCE);
@@ -57,13 +58,13 @@ public class BukkitCompatibilityManager {
 
     @Nullable
     public static Compatibility loadCompatibility() {
-        BukkitVersion version;
+        Version version;
 
-        BukkitVersion forcedVersion = getForcedVersion();
+        Version forcedVersion = getForcedVersion();
         if (forcedVersion != null) {
             version = forcedVersion;
         } else {
-            version = BukkitVersion.getVersion();
+            version = Version.getVersion();
         }
 
         if (version == null) {
@@ -130,12 +131,12 @@ public class BukkitCompatibilityManager {
     }
 
     @Nullable
-    public static BukkitVersion getForcedVersion() {
+    public static Version getForcedVersion() {
         String property = System.getProperty("voicechat.compatibility");
         if (property == null) {
             return null;
         }
-        BukkitVersion forcedVersion = BukkitVersion.parseBukkitVersion(property);
+        Version forcedVersion = Version.parse(property);
         if (forcedVersion == null) {
             Voicechat.LOGGER.warn("Failed to parse forced compatibility version: {}", property);
             return null;

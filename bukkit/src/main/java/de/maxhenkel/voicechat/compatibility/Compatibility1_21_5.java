@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.compatibility;
 
 import de.maxhenkel.voicechat.BukkitVersion;
+import de.maxhenkel.voicechat.PaperVersion;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,6 +17,7 @@ public class Compatibility1_21_5 extends Compatibility1_20_3 {
     public static final BukkitVersion VERSION_1_21_11 = BukkitVersion.parseBukkitVersion("1.21.11-R0.1");
     public static final BukkitVersion VERSION_26_1 = BukkitVersion.parseBukkitVersion("26.1-R0.1");
     public static final BukkitVersion VERSION_26_1_1 = BukkitVersion.parseBukkitVersion("26.1.1-R0.1");
+    public static final PaperVersion VERSION_PAPER_26_1_1 = PaperVersion.parsePaperVersion("26.1.1.build.0");
 
     public static final Compatibility1_21_5 INSTANCE = new Compatibility1_21_5();
 

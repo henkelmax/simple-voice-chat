@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat.compatibility;
 
 import com.mojang.brigadier.arguments.ArgumentType;
-import de.maxhenkel.voicechat.BukkitVersion;
 import de.maxhenkel.voicechat.FallbackTranslations;
+import de.maxhenkel.voicechat.Version;
 import de.maxhenkel.voicechat.util.Key;
 import org.bukkit.entity.Player;
 
@@ -34,7 +34,7 @@ public class FallbackCompatibility extends BaseCompatibility {
 
     @Override
     public Key createNamespacedKey(String key) {
-        BukkitVersion version = BukkitVersion.getVersion();
+        Version version = Version.getVersion();
         if (version == null) {
             return super.createNamespacedKey(key);
         }

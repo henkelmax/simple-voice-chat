@@ -1,24 +1,17 @@
 package de.maxhenkel.voicechat;
 
-import org.bukkit.Bukkit;
-
 import javax.annotation.Nullable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BukkitVersion {
+public class BukkitVersion extends Version {
 
     public static final Pattern BUKKIT_VERSION_REGEX = Pattern.compile("^(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?-R(?<revision>[\\d.-]+)(?:-SNAPSHOT)?$");
 
-    private final int major;
-    private final int minor;
-    private final int patch;
-    private final String revision;
+    protected final String revision;
 
     public BukkitVersion(int major, int minor, int patch, String revision) {
-        this.major = major;
-        this.minor = minor;
-        this.patch = patch;
+        super(major, minor, patch);
         this.revision = revision;
     }
 
@@ -31,11 +24,6 @@ public class BukkitVersion {
             patch = "0";
         }
         return new BukkitVersion(Integer.parseInt(major), Integer.parseInt(minor), Integer.parseInt(patch), revision);
-    }
-
-    @Nullable
-    public static BukkitVersion getVersion() {
-        return parseBukkitVersion(Bukkit.getBukkitVersion());
     }
 
     @Nullable
@@ -55,28 +43,12 @@ public class BukkitVersion {
         return parseBukkitVersion(BuildConstants.TARGET_BUKKIT_VERSION);
     }
 
-    public int getMajor() {
-        return major;
-    }
-
-    public int getMinor() {
-        return minor;
-    }
-
-    public int getPatch() {
-        return patch;
-    }
-
-    public String getRevision() {
-        return revision;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof BukkitVersion)) {
             return false;
         }
 
@@ -92,15 +64,6 @@ public class BukkitVersion {
             return false;
         }
         return revision.equals(that.revision);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = major;
-        result = 31 * result + minor;
-        result = 31 * result + patch;
-        result = 31 * result + (revision != null ? revision.hashCode() : 0);
-        return result;
     }
 
     @Override
