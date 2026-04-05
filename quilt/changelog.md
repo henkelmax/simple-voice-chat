@@ -1,2 +1,1 @@
-- Added Esperanto translation
-- Fall back to Java microphone implementation when using ALSoft >= 1.25.0
+- Added microphone workaround for ALSoft >= 1.25.0
