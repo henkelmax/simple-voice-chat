@@ -51,8 +51,6 @@ public class MicrophoneManager {
         }
     }
 
-    private static final Version ALSOFT_INCOMPATIBLE_START = new Version(1, 25, 0);
-
     private static Boolean forceJavaImplementation = null;
 
     private static boolean shouldForceJavaImplementation() {
@@ -69,19 +67,6 @@ public class MicrophoneManager {
         // OpenAL is completely broken on macOS
         if (Platform.isMac()) {
             return false;
-        }
-        // OpenAL causes issues on 1.25.0+ with some virtual microphones
-        if (Platform.isWindows()) {
-            String alVersionString = AL11.alGetString(AL11.AL_VERSION);
-            if (alVersionString == null) {
-                return false;
-            }
-            Voicechat.LOGGER.debug("OpenAL version: {}", alVersionString);
-            Version alVersion = Version.fromOpenALVersion(alVersionString);
-            if (alVersion == null) {
-                return false;
-            }
-            return alVersion.compareTo(ALSOFT_INCOMPATIBLE_START) < 0;
         }
         return true;
     }
