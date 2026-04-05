@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.voice.client.microphone;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.util.Version;
 import de.maxhenkel.voicechat.voice.client.MicrophoneException;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
@@ -17,6 +18,7 @@ public class ALMicrophone implements Microphone {
     private final String deviceName;
     private long device;
     private final int bufferSize;
+    private boolean captureStereo;
     private boolean started;
 
     public ALMicrophone(int sampleRate, int bufferSize, @Nullable String deviceName) {
@@ -33,6 +35,7 @@ public class ALMicrophone implements Microphone {
         if (!canCapture()) {
             throw new MicrophoneException("Extension 'ALC_EXT_CAPTURE' not supported");
         }
+        captureStereo = useStereoWorkaround();
         device = openMic(deviceName);
     }
 
@@ -66,8 +69,8 @@ public class ALMicrophone implements Microphone {
         started = false;
 
         int available = available();
-        float[] data = new float[available];
-        ALC11.alcCaptureSamples(device, data, data.length);
+        float[] data = new float[captureStereo ? available * 2 : available];
+        ALC11.alcCaptureSamples(device, data, available);
         SoundManager.checkAlcError(device);
         Voicechat.LOGGER.debug("Clearing {} samples", available);
     }
@@ -107,11 +110,15 @@ public class ALMicrophone implements Microphone {
         if (bufferSize > available) {
             throw new IllegalStateException(String.format("Failed to read from microphone: Capacity %s, available %s", bufferSize, available));
         }
-        float[] buff = new float[bufferSize];
-        ALC11.alcCaptureSamples(device, buff, buff.length);
+        float[] buff = new float[captureStereo ? bufferSize * 2 : bufferSize];
+        ALC11.alcCaptureSamples(device, buff, bufferSize);
         SoundManager.checkAlcError(device);
 
-        return AudioUtils.floatsToShortsNormalized(buff);
+        if (captureStereo) {
+            return AudioUtils.stereoFloatsToMonoShortsNormalized(buff);
+        } else {
+            return AudioUtils.floatsToShortsNormalized(buff);
+        }
     }
 
     private long openMic(@Nullable String name) throws MicrophoneException {
@@ -127,7 +134,7 @@ public class ALMicrophone implements Microphone {
     }
 
     private long tryOpenMic(@Nullable String string) throws MicrophoneException {
-        long device = ALC11.alcCaptureOpenDevice(string, sampleRate, EXTFloat32.AL_FORMAT_MONO_FLOAT32, bufferSize);
+        long device = ALC11.alcCaptureOpenDevice(string, sampleRate, captureStereo ? EXTFloat32.AL_FORMAT_STEREO_FLOAT32 : EXTFloat32.AL_FORMAT_MONO_FLOAT32, bufferSize);
         if (device == 0L) {
             throw new MicrophoneException("Failed to open microphone");
         }
@@ -159,4 +166,34 @@ public class ALMicrophone implements Microphone {
     public static boolean canEnumerate() {
         return ALC11.alcIsExtensionPresent(0L, "ALC_ENUMERATION_EXT");
     }
+
+    private static Boolean alStereoWorkaround = null;
+
+    private static boolean useStereoWorkaround() {
+        if (alStereoWorkaround == null) {
+            alStereoWorkaround = shouldUseStereoWorkaround();
+            if (alStereoWorkaround) {
+                Voicechat.LOGGER.info("Using stereo workaround for OpenAL microphones");
+            }
+        }
+        return alStereoWorkaround;
+    }
+
+    private static boolean shouldUseStereoWorkaround() {
+        String alVersionString = AL11.alGetString(AL11.AL_VERSION);
+        if (alVersionString == null) {
+            Voicechat.LOGGER.warn("Failed to get OpenAL version - assuming stereo workaround is required");
+            return true;
+        }
+        Voicechat.LOGGER.debug("OpenAL version: {}", alVersionString);
+        Version alVersion = Version.fromOpenALVersion(alVersionString);
+        if (alVersion == null) {
+            Voicechat.LOGGER.warn("Failed to parse OpenAL version - assuming stereo workaround is required");
+            return true;
+        }
+        // OpenAL 1.25 and 1.25.1 has a broken implementation of Multi2Mono which causes stereo microphones to crackle when downmixed to mono
+        // This has been fixed by https://github.com/kcat/openal-soft/pull/1246 so it will work again in 1.25.2+
+        return alVersion.compareTo(new Version(1, 25, 0)) >= 0 && new Version(1, 25, 1).compareTo(alVersion) <= 0;
+    }
+
 }
