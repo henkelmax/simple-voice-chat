@@ -49,6 +49,14 @@ public class AudioUtils {
         return floatAudioData;
     }
 
+    public static short[] stereoFloatsToMonoShortsNormalized(float[] audioData) {
+        short[] shortAudioData = new short[audioData.length / 2];
+        for (int i = 0; i < audioData.length; i += 2) {
+            shortAudioData[i / 2] = (short) Math.max(Math.min((audioData[i] + audioData[i + 1]) / 2F * FLOAT_SHORT_SCALE, FLOAT_CLIP), -FLOAT_SHORT_SCALE);
+        }
+        return shortAudioData;
+    }
+
     public static short[] floatsToShorts(float[] floats) {
         float max = Short.MIN_VALUE;
         float min = Short.MAX_VALUE;
