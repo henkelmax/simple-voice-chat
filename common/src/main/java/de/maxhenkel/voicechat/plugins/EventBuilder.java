@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.plugins;
 
 import de.maxhenkel.voicechat.api.events.Event;
-import net.minecraft.util.Tuple;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -25,13 +24,16 @@ public class EventBuilder {
     public Map<Class<? extends Event>, List<Consumer<? extends Event>>> build() {
         Map<Class<? extends Event>, List<Consumer<? extends Event>>> result = new HashMap<>();
         for (Map.Entry<Class<? extends Event>, List<Tuple<Integer, Consumer<? extends Event>>>> entry : events.entrySet()) {
-            result.put(entry.getKey(), entry.getValue().stream().sorted((o1, o2) -> Integer.compare(o2.getA(), o1.getA())).map(Tuple::getB).collect(Collectors.toList()));
+            result.put(entry.getKey(), entry.getValue().stream().sorted((o1, o2) -> Integer.compare(o2.a(), o1.a())).map(Tuple::b).collect(Collectors.toList()));
         }
         return result;
     }
 
     public static EventBuilder create() {
         return new EventBuilder();
+    }
+
+    private record Tuple<A, B>(A a, B b) {
     }
 
 }

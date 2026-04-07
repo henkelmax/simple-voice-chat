@@ -87,7 +87,7 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
         if (keyEvent.isEscape()) {
-            minecraft.setScreen(null);
+            minecraft.setScreenAndShow(null);
             return true;
         }
         if (super.keyPressed(keyEvent)) {

@@ -55,7 +55,7 @@ public abstract class SelectDeviceScreen extends VoiceChatScreenBase {
         addWidget(deviceList);
 
         back = Button.builder(BACK, button -> {
-            minecraft.setScreen(parent);
+            minecraft.setScreenAndShow(parent);
         }).bounds(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 14, 20).build();
         addRenderableWidget(back);
     }

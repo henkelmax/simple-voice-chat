@@ -26,7 +26,7 @@ public class GroupList extends ListScreenListBase<GroupEntry> {
         UUID group = ClientManager.getPlayerStateManager().getGroupID();
         if (group == null) {
             clearEntries();
-            minecraft.setScreen(null);
+            minecraft.setScreenAndShow(null);
             return;
         }
         boolean changed = false;
@@ -62,7 +62,7 @@ public class GroupList extends ListScreenListBase<GroupEntry> {
     }
 
     public static void update() {
-        if (Minecraft.getInstance().screen instanceof GroupScreen groupScreen) {
+        if (Minecraft.getInstance().gui.screen() instanceof GroupScreen groupScreen) {
             groupScreen.groupList.updateMembers();
         }
     }

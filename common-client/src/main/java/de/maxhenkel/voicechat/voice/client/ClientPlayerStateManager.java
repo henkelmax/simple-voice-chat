@@ -80,17 +80,17 @@ public class ClientPlayerStateManager {
             GroupList.update();
         });
         ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().joinedGroupChannel, (player, packet) -> {
-            Screen screen = Minecraft.getInstance().screen;
+            Screen screen = Minecraft.getInstance().gui.screen();
             this.group = packet.getGroup();
             if (packet.isWrongPassword()) {
                 if (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
-                    Minecraft.getInstance().setScreen(null);
+                    Minecraft.getInstance().setScreenAndShow(null);
                 }
                 player.sendOverlayMessage(Component.translatable("message.voicechat.wrong_password").withStyle(ChatFormatting.DARK_RED));
             } else if (group != null && screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
                 ClientGroup clientGroup = getGroup();
                 if (clientGroup != null) {
-                    Minecraft.getInstance().setScreen(new GroupScreen(clientGroup));
+                    Minecraft.getInstance().setScreenAndShow(new GroupScreen(clientGroup));
                 } else {
                     Voicechat.LOGGER.warn("Received join group packet without group being present");
                 }

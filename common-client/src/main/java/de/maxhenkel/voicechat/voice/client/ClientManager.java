@@ -166,7 +166,7 @@ public class ClientManager {
         }
         Component portComponent = ComponentUtils.copyOnClickText(String.valueOf(server.getPort()));
         Minecraft mc = Minecraft.getInstance();
-        mc.execute(() -> mc.gui.getChat().addClientSystemMessage(Component.translatable("message.voicechat.server_port", portComponent)));
+        mc.execute(() -> mc.gui.hud.getChat().addClientSystemMessage(Component.translatable("message.voicechat.server_port", portComponent)));
     }
 
     @Nullable

@@ -66,7 +66,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         addRenderableWidget(disable);
 
         ImageButton volumes = new ImageButton(guiLeft + 6 + 20 + 2 + 20 + 2, guiTop + ySize - 6 - 20, VOLUMES, button -> {
-            minecraft.setScreen(new AdjustVolumesScreen());
+            minecraft.setScreenAndShow(new AdjustVolumesScreen());
         });
         volumes.setTooltip(Tooltip.create(ADJUST_PLAYER_VOLUMES));
         addRenderableWidget(volumes);
@@ -84,16 +84,16 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         addRenderableWidget(hide);
 
         Button settings = Button.builder(SETTINGS, button -> {
-            minecraft.setScreen(new VoiceChatSettingsScreen());
+            minecraft.setScreenAndShow(new VoiceChatSettingsScreen());
         }).bounds(guiLeft + 6, guiTop + 6 + 15, 75, 20).build();
         addRenderableWidget(settings);
 
         Button group = Button.builder(GROUP, button -> {
             ClientGroup g = stateManager.getGroup();
             if (g != null) {
-                minecraft.setScreen(new GroupScreen(g));
+                minecraft.setScreenAndShow(new GroupScreen(g));
             } else {
-                minecraft.setScreen(new JoinGroupScreen());
+                minecraft.setScreenAndShow(new JoinGroupScreen());
             }
         }).bounds(guiLeft + xSize - 6 - 75 + 1, guiTop + 6 + 15, 75, 20).build();
         addRenderableWidget(group);
@@ -126,7 +126,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
         if (keyEvent.key() == ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_VOICE_CHAT).getValue()) {
-            minecraft.setScreen(null);
+            minecraft.setScreenAndShow(null);
             return true;
         }
         return super.keyPressed(keyEvent);

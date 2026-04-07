@@ -35,7 +35,7 @@ public class JoinGroupList extends ListScreenListBase<JoinGroupEntry> {
         ClientGroup group = entry.getGroup().getGroup();
         minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
         if (group.hasPassword()) {
-            minecraft.setScreen(new EnterPasswordScreen(group));
+            minecraft.setScreenAndShow(new EnterPasswordScreen(group));
         } else {
             ClientServerNetManager.sendToServer(new JoinGroupPacket(group.getId(), null));
         }
@@ -63,7 +63,7 @@ public class JoinGroupList extends ListScreenListBase<JoinGroupEntry> {
     }
 
     public static void update() {
-        if (Minecraft.getInstance().screen instanceof JoinGroupScreen joinGroupScreen) {
+        if (Minecraft.getInstance().gui.screen() instanceof JoinGroupScreen joinGroupScreen) {
             joinGroupScreen.groupList.updateGroups();
         }
     }

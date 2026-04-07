@@ -102,7 +102,7 @@ public class RenderEvents {
     }
 
     private void onRenderName(EntityRenderState s, CameraRenderState cameraRenderState, PoseStack stack, SubmitNodeCollector collector) {
-        if(!(s instanceof AvatarRenderState state)){
+        if (!(s instanceof AvatarRenderState state)) {
             return;
         }
         Component nameTag = s.nameTag;
@@ -128,7 +128,7 @@ public class RenderEvents {
         if (entity == null || entity.equals(minecraft.player)) {
             return;
         }
-        if (minecraft.options.hideGui) {
+        if (minecraft.gui.hud.isHidden()) {
             return;
         }
         ClientPlayerStateManager manager = ClientManager.getPlayerStateManager();

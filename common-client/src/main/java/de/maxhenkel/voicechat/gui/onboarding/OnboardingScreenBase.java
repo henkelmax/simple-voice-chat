@@ -55,7 +55,7 @@ public abstract class OnboardingScreenBase extends Screen {
 
     protected void addNextButton() {
         addPositiveButton(NEXT, button -> {
-            minecraft.setScreen(getNextScreen());
+            minecraft.setScreenAndShow(getNextScreen());
         });
     }
 
@@ -65,7 +65,7 @@ public abstract class OnboardingScreenBase extends Screen {
             text = BACK;
         }
         Button cancel = Button.builder(text, button -> {
-            minecraft.setScreen(previous);
+            minecraft.setScreenAndShow(previous);
         }).bounds(guiLeft, guiTop + contentHeight - BUTTON_HEIGHT, big ? contentWidth : contentWidth / 2 - PADDING / 2, BUTTON_HEIGHT).build();
         addRenderableWidget(cancel);
     }
