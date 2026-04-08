@@ -2,12 +2,15 @@ package de.maxhenkel.voicechat.integration.clothconfig;
 
 import de.maxhenkel.configbuilder.entry.*;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.gui.VoiceChatSettingsScreen;
 import de.maxhenkel.voicechat.integration.freecam.FreecamMode;
 import de.maxhenkel.voicechat.voice.client.GroupPlayerIconOrientation;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import me.shedaniel.clothconfig2.gui.ClothConfigScreen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -111,6 +114,17 @@ public class ClothConfigIntegration {
         }
 
         throw new IllegalArgumentException("Unknown config entry type %s".formatted(entry.getClass().getName()));
+    }
+
+    private static final Minecraft MC = Minecraft.getInstance();
+
+    public static void onTick() {
+        if (MC.gui.screen() instanceof ClothConfigScreen screen) {
+            if (screen.getSelectedCategory().equals(ClothConfigIntegration.OTHER_SETTINGS)) {
+                screen.selectedCategoryIndex = 0;
+                MC.setScreenAndShow(new VoiceChatSettingsScreen(screen));
+            }
+        }
     }
 
 }
