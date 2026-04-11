@@ -24,9 +24,9 @@ public class ToggleImageButton extends ImageButton {
         }
 
         if (stateSupplier.get()) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, getX() + 2, getY() + 2, 16, 0, 16, 16, 32, 32);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, 32, 32, 16, 0, getX() + 2, getY() + 2, 16, 16);
         } else {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, getX() + 2, getY() + 2, 0, 0, 16, 16, 32, 32);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, 32, 32, 0, 0, getX() + 2, getY() + 2, 16, 16);
         }
     }
 

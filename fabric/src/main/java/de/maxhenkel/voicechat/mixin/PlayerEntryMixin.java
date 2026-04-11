@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 @Mixin(PlayerEntry.class)
 public abstract class PlayerEntryMixin extends ContainerObjectSelectionList.Entry<PlayerEntry> {
 
-    private static final ResourceLocation GROUP_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/invite_button.png");
+    private static final ResourceLocation GROUP_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/invite_button");
     private static final Duration TOOLTIP_DELAY = Duration.ofMillis(500L);
 
     @Shadow
