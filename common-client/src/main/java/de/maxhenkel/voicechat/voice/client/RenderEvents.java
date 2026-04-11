@@ -16,6 +16,9 @@ import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -24,14 +27,14 @@ import java.util.UUID;
 
 public class RenderEvents {
 
-    private static final ResourceLocation MICROPHONE_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone.png");
-    private static final ResourceLocation WHISPER_MICROPHONE_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone_whisper.png");
-    private static final ResourceLocation MICROPHONE_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone_off.png");
-    private static final ResourceLocation SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker.png");
-    private static final ResourceLocation WHISPER_SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_whisper.png");
-    private static final ResourceLocation SPEAKER_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_off.png");
-    private static final ResourceLocation DISCONNECT_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/disconnected.png");
-    private static final ResourceLocation GROUP_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/group.png");
+    private static final ResourceLocation MICROPHONE_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/microphone");
+    private static final ResourceLocation WHISPER_MICROPHONE_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/microphone_whisper");
+    private static final ResourceLocation MICROPHONE_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/microphone_off");
+    private static final ResourceLocation SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/speaker");
+    private static final ResourceLocation WHISPER_SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/speaker_whisper");
+    private static final ResourceLocation SPEAKER_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/speaker_off");
+    private static final ResourceLocation DISCONNECT_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/disconnected");
+    private static final ResourceLocation GROUP_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/group");
 
     private final Minecraft minecraft;
 
@@ -97,12 +100,12 @@ public class RenderEvents {
         float scale = VoicechatClient.CLIENT_CONFIG.hudIconScale.get().floatValue();
         guiGraphics.pose().scale(scale, scale);
 
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, posX < 0 ? -16 : 0, posY < 0 ? -16 : 0, 0, 0, 16, 16, 16, 16);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, posX < 0 ? -16 : 0, posY < 0 ? -16 : 0, 16, 16);
         guiGraphics.pose().popMatrix();
     }
 
     private void onRenderName(EntityRenderState s, CameraRenderState cameraRenderState, PoseStack stack, SubmitNodeCollector collector) {
-        if(!(s instanceof AvatarRenderState state)){
+        if (!(s instanceof AvatarRenderState state)) {
             return;
         }
         Component nameTag = s.nameTag;
@@ -164,25 +167,27 @@ public class RenderEvents {
         float offsetX = (float) (minecraft.font.width(component) / 2 + 2);
         int alpha = 32;
         float offsetY = -1F;
-        collector.submitCustomGeometry(stack, RenderType.text(texture), (pose, c) -> {
+        TextureAtlas guiAtlas = minecraft.getAtlasManager().getAtlasOrThrow(AtlasIds.GUI);
+        TextureAtlasSprite sprite = guiAtlas.getSprite(texture);
+        collector.submitCustomGeometry(stack, RenderType.text(sprite.atlasLocation()), (pose, c) -> {
             if (discrete) {
-                vertex(c, pose, offsetX, 10F + offsetY, 0F, 0F, 1F, alpha, light);
-                vertex(c, pose, offsetX + 10F, 10F + offsetY, 0F, 1F, 1F, alpha, light);
-                vertex(c, pose, offsetX + 10F, offsetY, 0F, 1F, 0F, alpha, light);
-                vertex(c, pose, offsetX, offsetY, 0F, 0F, 0F, alpha, light);
+                vertex(c, pose, offsetX, 10F + offsetY, 0F, sprite.getU0(), sprite.getV1(), alpha, light);
+                vertex(c, pose, offsetX + 10F, 10F + offsetY, 0F, sprite.getU1(), sprite.getV1(), alpha, light);
+                vertex(c, pose, offsetX + 10F, offsetY, 0F, sprite.getU1(), sprite.getV0(), alpha, light);
+                vertex(c, pose, offsetX, offsetY, 0F, sprite.getU0(), sprite.getV0(), alpha, light);
             } else {
-                vertex(c, pose, offsetX, 10F + offsetY, 0F, 0F, 1F, light);
-                vertex(c, pose, offsetX + 10F, 10F + offsetY, 0F, 1F, 1F, light);
-                vertex(c, pose, offsetX + 10F, offsetY, 0F, 1F, 0F, light);
-                vertex(c, pose, offsetX, offsetY, 0F, 0F, 0F, light);
+                vertex(c, pose, offsetX, 10F + offsetY, 0F, sprite.getU0(), sprite.getV1(), light);
+                vertex(c, pose, offsetX + 10F, 10F + offsetY, 0F, sprite.getU1(), sprite.getV1(), light);
+                vertex(c, pose, offsetX + 10F, offsetY, 0F, sprite.getU1(), sprite.getV0(), light);
+                vertex(c, pose, offsetX, offsetY, 0F, sprite.getU0(), sprite.getV0(), light);
             }
         });
         if (!discrete) {
-            collector.submitCustomGeometry(stack, RenderType.textSeeThrough(texture), (pose, c) -> {
-                vertex(c, pose, offsetX, 10F + offsetY, 0F, 0F, 1F, alpha, light);
-                vertex(c, pose, offsetX + 10F, 10F + offsetY, 0F, 1F, 1F, alpha, light);
-                vertex(c, pose, offsetX + 10F, offsetY, 0F, 1F, 0F, alpha, light);
-                vertex(c, pose, offsetX, offsetY, 0F, 0F, 0F, alpha, light);
+            collector.submitCustomGeometry(stack, RenderType.textSeeThrough(sprite.atlasLocation()), (pose, c) -> {
+                vertex(c, pose, offsetX, 10F + offsetY, 0F, sprite.getU0(), sprite.getV1(), alpha, light);
+                vertex(c, pose, offsetX + 10F, 10F + offsetY, 0F, sprite.getU1(), sprite.getV1(), alpha, light);
+                vertex(c, pose, offsetX + 10F, offsetY, 0F, sprite.getU1(), sprite.getV0(), alpha, light);
+                vertex(c, pose, offsetX, offsetY, 0F, sprite.getU0(), sprite.getV0(), alpha, light);
             });
         }
     }
