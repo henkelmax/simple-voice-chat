@@ -38,7 +38,7 @@ public class PlayerVolumeEntry extends VolumeEntry {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), skinX, skinY, 40, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
             renderScrollingString(guiGraphics, Component.literal(state.getName()), top, left, width, height, PLAYER_NAME_COLOR);
         } else {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, OTHER_VOLUME_ICON, skinX, skinY, 16, 16, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, OTHER_VOLUME_ICON, SKIN_SIZE, SKIN_SIZE, 0, 0, skinX, skinY, SKIN_SIZE, SKIN_SIZE);
             renderScrollingString(guiGraphics, OTHER_VOLUME, top, left, width, height, PLAYER_NAME_COLOR);
             if (hovered) {
                 guiGraphics.setTooltipForNextFrame(minecraft.font, OTHER_VOLUME_DESCRIPTION, mouseX, mouseY);

@@ -17,8 +17,8 @@ import java.util.UUID;
 
 public class GroupChatManager {
 
-    private static final ResourceLocation TALK_OUTLINE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/talk_outline.png");
-    private static final ResourceLocation SPEAKER_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_small_off.png");
+    private static final ResourceLocation TALK_OUTLINE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/talk_outline");
+    private static final ResourceLocation SPEAKER_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/speaker_small_off");
 
     public static void renderIcons(GuiGraphics guiGraphics) {
         ClientVoicechat client = ClientManager.getClient();
@@ -64,7 +64,7 @@ public class GroupChatManager {
             }
 
             if (client.getTalkCache().isTalking(state.getUuid())) {
-                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TALK_OUTLINE, posX < 0 ? -10 : 0, posY < 0 ? -10 : 0, 0, 0, 10, 10, 16, 16);
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, TALK_OUTLINE, 16, 16, 0, 0, posX < 0 ? -10 : 0, posY < 0 ? -10 : 0, 10, 10);
             }
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
@@ -74,7 +74,7 @@ public class GroupChatManager {
                 guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate((posX < 0 ? -1F - 8F : 1F), posY < 0 ? -1F - 8F : 1F);
                 guiGraphics.pose().scale(0.5F, 0.5F);
-                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SPEAKER_OFF_ICON, 0, 0, 0, 0, 16, 16, 16, 16);
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SPEAKER_OFF_ICON, 0, 0, 16, 16);
                 guiGraphics.pose().popMatrix();
             }
 
