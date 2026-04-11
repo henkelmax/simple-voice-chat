@@ -1,1 +1,1 @@
-- Updated to 26.2-snapshot-5
+- Added voice chat icons to GUI atlas
