@@ -41,7 +41,7 @@ public class PlayerVolumeEntry extends VolumeEntry {
             RenderSystem.disableBlend();
             renderScrollingString(guiGraphics, Component.literal(state.getName()), top, left, width, height, PLAYER_NAME_COLOR);
         } else {
-            guiGraphics.blit(RenderType::guiTextured, OTHER_VOLUME_ICON, skinX, skinY, 16, 16, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16);
+            guiGraphics.blitSprite(RenderType::guiTextured, OTHER_VOLUME_ICON, SKIN_SIZE, SKIN_SIZE, 0, 0, skinX, skinY, SKIN_SIZE, SKIN_SIZE);
             renderScrollingString(guiGraphics, OTHER_VOLUME, top, left, width, height, PLAYER_NAME_COLOR);
             if (hovered) {
                 screen.postRender(() -> {

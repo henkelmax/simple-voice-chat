@@ -19,8 +19,8 @@ import java.util.UUID;
 
 public class GroupChatManager {
 
-    private static final ResourceLocation TALK_OUTLINE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/talk_outline.png");
-    private static final ResourceLocation SPEAKER_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_small_off.png");
+    private static final ResourceLocation TALK_OUTLINE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/talk_outline");
+    private static final ResourceLocation SPEAKER_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/speaker_small_off");
 
     public static void renderIcons(GuiGraphics guiGraphics) {
         ClientVoicechat client = ClientManager.getClient();
@@ -68,7 +68,7 @@ public class GroupChatManager {
             if (client.getTalkCache().isTalking(state.getUuid())) {
                 RenderSystem.setShader(CoreShaders.POSITION_TEX);
                 RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-                guiGraphics.blit(RenderType::guiTextured, TALK_OUTLINE, posX < 0 ? -10 : 0, posY < 0 ? -10 : 0, 0, 0, 10, 10, 16, 16);
+                guiGraphics.blitSprite(RenderType::guiTextured, TALK_OUTLINE, 16, 16, 0, 0, posX < 0 ? -10 : 0, posY < 0 ? -10 : 0, 10, 10);
             }
             RenderSystem.setShader(CoreShaders.POSITION_TEX);
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
@@ -84,7 +84,7 @@ public class GroupChatManager {
                 guiGraphics.pose().scale(0.5F, 0.5F, 1F);
                 RenderSystem.setShader(CoreShaders.POSITION_TEX);
                 RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-                guiGraphics.blit(RenderType::guiTextured, SPEAKER_OFF_ICON, 0, 0, 0, 0, 16, 16, 16, 16);
+                guiGraphics.blitSprite(RenderType::guiTextured, SPEAKER_OFF_ICON, 0, 0, 16, 16);
                 guiGraphics.pose().popPose();
             }
 

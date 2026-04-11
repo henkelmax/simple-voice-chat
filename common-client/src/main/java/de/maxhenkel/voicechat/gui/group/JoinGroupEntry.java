@@ -25,7 +25,7 @@ import java.util.List;
 
 public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
 
-    protected static final ResourceLocation LOCK = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/lock.png");
+    protected static final ResourceLocation LOCK = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/lock");
     protected static final Component GROUP_MEMBERS = Component.translatable("message.voicechat.group_members").withStyle(ChatFormatting.GRAY);
     protected static final Component NO_GROUP_MEMBERS = Component.translatable("message.voicechat.no_group_members").withStyle(ChatFormatting.GRAY);
 
@@ -59,7 +59,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(left + PADDING, top + height / 2F - 8F, 0F);
             guiGraphics.pose().scale(16F / 12F, 16F / 12F, 1F);
-            guiGraphics.blit(RenderType::guiTextured, LOCK, 0, 0, 0, 0, 12, 12, 16, 16);
+            guiGraphics.blitSprite(RenderType::guiTextured, LOCK, 16, 16, 0, 0, 0, 0, 12, 12);
             guiGraphics.pose().popPose();
         }
 
