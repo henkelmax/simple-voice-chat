@@ -1,2 +1,1 @@
-- Added support for bukkit/spigot 26.1.2
-- Added support for paper 26.1.2
+- Try to fall back to spigot mode if version is unknown

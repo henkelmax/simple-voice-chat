@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.compatibility;
 
 import de.maxhenkel.voicechat.Version;
 import de.maxhenkel.voicechat.Voicechat;
+import org.bukkit.Bukkit;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -70,7 +71,8 @@ public class BukkitCompatibilityManager {
         }
 
         if (version == null) {
-            return null;
+            Voicechat.LOGGER.info("Failed to parse version {}, trying to fall back to Spigot API compatibility mode", Bukkit.getBukkitVersion());
+            return tryLoadSpigot();
         }
 
         Voicechat.LOGGER.info("Initializing compatibility for version {}", version);
@@ -91,22 +93,7 @@ public class BukkitCompatibilityManager {
         }
         if (compatibility == null) {
             Voicechat.LOGGER.warn("Incompatible version {}, trying to fall back to Spigot API compatibility mode", version);
-            if (SpigotCompatibility.isSpigotCompatible()) {
-                compatibility = SpigotCompatibility.INSTANCE;
-                try {
-                    compatibility.init();
-                    Voicechat.LOGGER.warn("Falling back to Spigot API compatibility mode, expect issues and lack of features");
-                } catch (CompatibilityReflectionException e) {
-                    compatibility = null;
-                    // Only log the message in case reflection fails
-                    Voicechat.LOGGER.warn("Failed to load Spigot API compatibility mode: {}", e.getMessage());
-                } catch (Throwable t) {
-                    compatibility = null;
-                    Voicechat.LOGGER.warn("Failed to load Spigot API compatibility mode", t);
-                }
-            } else {
-                Voicechat.LOGGER.warn("Spigot API not found");
-            }
+            compatibility = tryLoadSpigot();
         }
 
         if (compatibility == null) {
@@ -129,6 +116,27 @@ public class BukkitCompatibilityManager {
             Voicechat.LOGGER.fatal("Could not load any compatibility for {}", version);
         }
 
+        return compatibility;
+    }
+
+    @Nullable
+    private static Compatibility tryLoadSpigot() {
+        if (!SpigotCompatibility.isSpigotCompatible()) {
+            Voicechat.LOGGER.warn("Spigot API not found");
+            return null;
+        }
+        Compatibility compatibility = SpigotCompatibility.INSTANCE;
+        try {
+            compatibility.init();
+            Voicechat.LOGGER.warn("Falling back to Spigot API compatibility mode, expect issues and lack of features");
+        } catch (CompatibilityReflectionException e) {
+            compatibility = null;
+            // Only log the message in case reflection fails
+            Voicechat.LOGGER.warn("Failed to load Spigot API compatibility mode: {}", e.getMessage());
+        } catch (Throwable t) {
+            compatibility = null;
+            Voicechat.LOGGER.warn("Failed to load Spigot API compatibility mode", t);
+        }
         return compatibility;
     }
 
