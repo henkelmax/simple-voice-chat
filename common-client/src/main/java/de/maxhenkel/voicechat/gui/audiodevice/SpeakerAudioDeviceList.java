@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 public class SpeakerAudioDeviceList extends AudioDeviceList {
 
-    public static final ResourceLocation SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker.png");
+    public static final ResourceLocation SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/speaker");
     public static final Component DEFAULT_SPEAKER = Component.translatable("message.voicechat.default_speaker");
 
     public SpeakerAudioDeviceList(int width, int height, int top) {
