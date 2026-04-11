@@ -1,1 +1,1 @@
-- Added microphone workaround for ALSoft >= 1.25.0
+- Added voice chat icons to GUI atlas
