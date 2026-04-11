@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class SpeakerAudioDeviceEntry extends AudioDeviceEntry {
 
-    public static final Identifier SPEAKER_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/test_speaker.png");
+    public static final Identifier SPEAKER_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "icons/test_speaker");
 
     private ImageButton testButton;
 
