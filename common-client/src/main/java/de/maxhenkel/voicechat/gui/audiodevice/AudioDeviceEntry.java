@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
 
-    protected static final ResourceLocation SELECTED = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/device_selected.png");
+    protected static final ResourceLocation SELECTED = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/device_selected");
 
     protected static final int PADDING = 4;
     protected static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
@@ -48,10 +48,10 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
         }
 
         if (icon != null) {
-            guiGraphics.blit(icon, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
+            guiGraphics.blitSprite(icon, left + PADDING, top + height / 2 - 8,  16, 16);
         }
         if (selected) {
-            guiGraphics.blit(SELECTED, left + PADDING, top + height / 2 - 8, 16, 16, 16, 16, 16, 16);
+            guiGraphics.blitSprite(SELECTED, left + PADDING, top + height / 2 - 8, 16, 16);
         }
 
         float deviceWidth = minecraft.font.width(name);

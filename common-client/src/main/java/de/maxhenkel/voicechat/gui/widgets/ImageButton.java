@@ -42,7 +42,7 @@ public class ImageButton extends AbstractButton {
     protected void renderImage(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        guiGraphics.blit(texture, getX() + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
+        guiGraphics.blitSprite(texture, getX() + 2, getY() + 2, 16, 16);
     }
 
     @Override

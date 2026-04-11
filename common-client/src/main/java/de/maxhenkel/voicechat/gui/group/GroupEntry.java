@@ -19,8 +19,8 @@ import net.minecraft.util.FastColor;
 
 public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
 
-    protected static final ResourceLocation TALK_OUTLINE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/talk_outline.png");
-    protected static final ResourceLocation SPEAKER_OFF = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_small_off.png");
+    protected static final ResourceLocation TALK_OUTLINE = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/talk_outline");
+    protected static final ResourceLocation SPEAKER_OFF = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/speaker_small_off");
 
     protected static final int PADDING = 4;
     protected static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
@@ -53,7 +53,7 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
         if (!state.isDisabled()) {
             ClientVoicechat client = ClientManager.getClient();
             if (client != null && client.getTalkCache().isTalking(state.getUuid())) {
-                guiGraphics.blit(TALK_OUTLINE, 0, 0, 0, 0, 10, 10, 16, 16);
+                guiGraphics.blitSprite(TALK_OUTLINE, 16, 16, 0, 0, 0, 0, 10, 10);
             }
         }
 
@@ -67,7 +67,7 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(1D, 1D, 0D);
             guiGraphics.pose().scale(0.5F, 0.5F, 1F);
-            guiGraphics.blit(SPEAKER_OFF, 0, 0, 0, 0, 16, 16, 16, 16);
+            guiGraphics.blitSprite(SPEAKER_OFF, 0, 0, 16, 16);
             guiGraphics.pose().popPose();
         }
         guiGraphics.pose().popPose();
