@@ -41,7 +41,6 @@ public class PaperVersion extends Version {
         Matcher targetMatcher = PAPER_VERSION_REGEX.matcher(version);
 
         if (!targetMatcher.matches()) {
-            Voicechat.LOGGER.fatal("Failed to parse target Paper version: {}", version);
             return null;
         }
 
