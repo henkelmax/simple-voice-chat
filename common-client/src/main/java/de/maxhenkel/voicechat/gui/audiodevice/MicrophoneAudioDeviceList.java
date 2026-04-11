@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 
 public class MicrophoneAudioDeviceList extends AudioDeviceList {
 
-    public static final Identifier MICROPHONE_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone.png");
+    public static final Identifier MICROPHONE_ICON = Identifier.fromNamespaceAndPath(Voicechat.MODID, "icons/microphone");
     public static final Component DEFAULT_MICROPHONE = Component.translatable("message.voicechat.default_microphone");
 
     private final MicTestButton micTestButton;

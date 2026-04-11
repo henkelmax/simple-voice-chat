@@ -40,7 +40,7 @@ public class ImageButton extends AbstractButton {
     }
 
     protected void extractImage(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, getX() + 2, getY() + 2, 0, 0, 16, 16, 16, 16);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, getX() + 2, getY() + 2, 16, 16);
     }
 
     @Override
