@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -23,14 +24,14 @@ import java.util.UUID;
 
 public class RenderEvents {
 
-    private static final ResourceLocation MICROPHONE_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone.png");
-    private static final ResourceLocation WHISPER_MICROPHONE_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone_whisper.png");
-    private static final ResourceLocation MICROPHONE_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/microphone_off.png");
-    private static final ResourceLocation SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker.png");
-    private static final ResourceLocation WHISPER_SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_whisper.png");
-    private static final ResourceLocation SPEAKER_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/speaker_off.png");
-    private static final ResourceLocation DISCONNECT_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/disconnected.png");
-    private static final ResourceLocation GROUP_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/icons/group.png");
+    private static final ResourceLocation MICROPHONE_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/microphone");
+    private static final ResourceLocation WHISPER_MICROPHONE_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/microphone_whisper");
+    private static final ResourceLocation MICROPHONE_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/microphone_off");
+    private static final ResourceLocation SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/speaker");
+    private static final ResourceLocation WHISPER_SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/speaker_whisper");
+    private static final ResourceLocation SPEAKER_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/speaker_off");
+    private static final ResourceLocation DISCONNECT_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/disconnected");
+    private static final ResourceLocation GROUP_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/group");
 
     private final Minecraft minecraft;
 
@@ -97,7 +98,7 @@ public class RenderEvents {
         float scale = VoicechatClient.CLIENT_CONFIG.hudIconScale.get().floatValue();
         guiGraphics.pose().scale(scale, scale, 1F);
 
-        guiGraphics.blit(RenderType::guiTextured, texture, posX < 0 ? -16 : 0, posY < 0 ? -16 : 0, 0, 0, 16, 16, 16, 16);
+        guiGraphics.blitSprite(RenderType::guiTextured, texture, posX < 0 ? -16 : 0, posY < 0 ? -16 : 0, 16, 16);
         guiGraphics.pose().popPose();
     }
 
@@ -162,25 +163,27 @@ public class RenderEvents {
 
         float offset = (float) (minecraft.font.width(component) / 2 + 2);
 
-        VertexConsumer builder = buffer.getBuffer(RenderType.text(texture));
+        TextureAtlasSprite sprite = minecraft.getGuiSprites().getSprite(texture);
+
+        VertexConsumer builder = buffer.getBuffer(RenderType.text(sprite.atlasLocation()));
         int alpha = 32;
 
         if (renderState.isDiscrete) {
-            vertex(builder, poseStack, offset, 10F, 0F, 0F, 1F, alpha, light);
-            vertex(builder, poseStack, offset + 10F, 10F, 0F, 1F, 1F, alpha, light);
-            vertex(builder, poseStack, offset + 10F, 0F, 0F, 1F, 0F, alpha, light);
-            vertex(builder, poseStack, offset, 0F, 0F, 0F, 0F, alpha, light);
+            vertex(builder, poseStack, offset, 10F, 0F, sprite.getU0(), sprite.getV1(), alpha, light);
+            vertex(builder, poseStack, offset + 10F, 10F, 0F, sprite.getU1(), sprite.getV1(), alpha, light);
+            vertex(builder, poseStack, offset + 10F, 0F, 0F, sprite.getU1(), sprite.getV0(), alpha, light);
+            vertex(builder, poseStack, offset, 0F, 0F, sprite.getU0(), sprite.getV0(), alpha, light);
         } else {
-            vertex(builder, poseStack, offset, 10F, 0F, 0F, 1F, light);
-            vertex(builder, poseStack, offset + 10F, 10F, 0F, 1F, 1F, light);
-            vertex(builder, poseStack, offset + 10F, 0F, 0F, 1F, 0F, light);
-            vertex(builder, poseStack, offset, 0F, 0F, 0F, 0F, light);
+            vertex(builder, poseStack, offset, 10F, 0F, sprite.getU0(), sprite.getV1(), light);
+            vertex(builder, poseStack, offset + 10F, 10F, 0F, sprite.getU1(), sprite.getV1(), light);
+            vertex(builder, poseStack, offset + 10F, 0F, 0F, sprite.getU1(), sprite.getV0(), light);
+            vertex(builder, poseStack, offset, 0F, 0F, sprite.getU0(), sprite.getV0(), light);
 
-            VertexConsumer builderSeeThrough = buffer.getBuffer(RenderType.textSeeThrough(texture));
-            vertex(builderSeeThrough, poseStack, offset, 10F, 0F, 0F, 1F, alpha, light);
-            vertex(builderSeeThrough, poseStack, offset + 10F, 10F, 0F, 1F, 1F, alpha, light);
-            vertex(builderSeeThrough, poseStack, offset + 10F, 0F, 0F, 1F, 0F, alpha, light);
-            vertex(builderSeeThrough, poseStack, offset, 0F, 0F, 0F, 0F, alpha, light);
+            VertexConsumer builderSeeThrough = buffer.getBuffer(RenderType.textSeeThrough(sprite.atlasLocation()));
+            vertex(builderSeeThrough, poseStack, offset, 10F, 0F, sprite.getU0(), sprite.getV1(), alpha, light);
+            vertex(builderSeeThrough, poseStack, offset + 10F, 10F, 0F, sprite.getU1(), sprite.getV1(), alpha, light);
+            vertex(builderSeeThrough, poseStack, offset + 10F, 0F, 0F, sprite.getU1(), sprite.getV0(), alpha, light);
+            vertex(builderSeeThrough, poseStack, offset, 0F, 0F, sprite.getU0(), sprite.getV0(), alpha, light);
         }
 
         poseStack.popPose();
