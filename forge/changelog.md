@@ -1,1 +1,0 @@
-- Added microphone workaround for ALSoft >= 1.25.0
