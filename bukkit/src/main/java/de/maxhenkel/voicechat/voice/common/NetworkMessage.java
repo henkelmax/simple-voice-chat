@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.util.FriendlyByteBuf;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
+import io.netty.handler.codec.DecoderException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -78,27 +79,32 @@ public class NetworkMessage {
     }
 
     @Nullable
-    public static NetworkMessage readPacketServer(RawUdpPacket packet, Server server) throws IllegalAccessException, InstantiationException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvocationTargetException, NoSuchMethodException {
-        byte[] data = packet.getData();
-        FriendlyByteBuf b = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
-        if (b.readByte() != MAGIC_BYTE) {
+    public static NetworkMessage readPacketServer(RawUdpPacket packet, Server server) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+        try {
+            byte[] data = packet.getData();
+            FriendlyByteBuf b = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
+            if (b.readByte() != MAGIC_BYTE) {
+                Voicechat.LOGGER.debug("Received invalid packet from {}", packet.getSocketAddress());
+                return null;
+            }
+            UUID playerID = b.readUUID();
+            if (!server.hasSecret(playerID)) {
+                if (PingHandler.onPacket(server, packet.getSocketAddress(), playerID, b)) {
+                    return null;
+                }
+                // Ignore packets if they are not from a player that has a secret
+                Voicechat.LOGGER.debug("Player {} does not have a secret", playerID);
+                return null;
+            }
+            return readFromBytes(packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray(), packet.getTimestamp());
+        } catch (DecoderException | IndexOutOfBoundsException e) {
             Voicechat.LOGGER.debug("Received invalid packet from {}", packet.getSocketAddress());
             return null;
         }
-        UUID playerID = b.readUUID();
-        if (!server.hasSecret(playerID)) {
-            if (PingHandler.onPacket(server, packet.getSocketAddress(), playerID, b)) {
-                return null;
-            }
-            // Ignore packets if they are not from a player that has a secret
-            Voicechat.LOGGER.debug("Player {} does not have a secret", playerID);
-            return null;
-        }
-        return readFromBytes(packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray(), packet.getTimestamp());
     }
 
     @Nullable
-    private static NetworkMessage readFromBytes(SocketAddress socketAddress, Secret secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, NoSuchMethodException, InvocationTargetException {
+    private static NetworkMessage readFromBytes(SocketAddress socketAddress, Secret secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         byte[] decrypt;
         try {
             decrypt = secret.decrypt(encryptedPayload);
