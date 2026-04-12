@@ -1,1 +1,2 @@
 - Try to fall back to spigot mode if version is unknown
+- Fixed inconsistency with server implementation compared to mods

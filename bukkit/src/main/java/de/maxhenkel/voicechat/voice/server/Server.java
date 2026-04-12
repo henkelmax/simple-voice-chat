@@ -212,8 +212,7 @@ public class Server extends Thread {
                     NetworkMessage message;
                     try {
                         message = NetworkMessage.readPacketServer(rawPacket, Server.this);
-                    } catch (IndexOutOfBoundsException | BadPaddingException | NoSuchPaddingException |
-                             IllegalBlockSizeException | InvalidKeyException e) {
+                    } catch (Exception e) {
                         CooldownTimer.run("failed_reading_packet", () -> {
                             Voicechat.LOGGER.warn("Failed to read packet from {}", rawPacket.getSocketAddress());
                         });
