@@ -1,1 +1,2 @@
 - Added Esperanto translation
+- Improved invalid packet handling on servers
