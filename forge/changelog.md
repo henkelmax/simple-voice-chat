@@ -1,1 +1,2 @@
 - Added voice chat icons to GUI atlas
+- Improved invalid packet handling on servers
