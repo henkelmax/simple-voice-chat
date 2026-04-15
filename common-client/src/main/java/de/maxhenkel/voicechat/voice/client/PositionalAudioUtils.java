@@ -53,7 +53,7 @@ public class PositionalAudioUtils {
      * @return a float array of length 2, containing the left and right volume (0-1)
      */
     private static float[] getStereoVolume(Vec3 soundPos) {
-        Camera mainCamera = mc.gameRenderer.getMainCamera();
+        Camera mainCamera = mc.gameRenderer.mainCamera();
         return getStereoVolume(mainCamera.position(), mainCamera.yRot(), soundPos);
     }
 
@@ -65,7 +65,7 @@ public class PositionalAudioUtils {
      * @return the resulting audio volume
      */
     public static float getDistanceVolume(float maxDistance, Vec3 pos) {
-        return getDistanceVolume(maxDistance, mc.gameRenderer.getMainCamera().position(), pos);
+        return getDistanceVolume(maxDistance, mc.gameRenderer.mainCamera().position(), pos);
     }
 
     /**
@@ -168,11 +168,11 @@ public class PositionalAudioUtils {
     }
 
     public static short[] convertToStereoForRecording(float maxDistance, Vec3 pos, short[] monoData) {
-        return convertToStereoForRecording(maxDistance, mc.gameRenderer.getMainCamera().position(), mc.gameRenderer.getMainCamera().yRot(), pos, monoData);
+        return convertToStereoForRecording(maxDistance, mc.gameRenderer.mainCamera().position(), mc.gameRenderer.mainCamera().yRot(), pos, monoData);
     }
 
     public static short[] convertToStereoForRecording(float maxDistance, Vec3 pos, short[] monoData, float volume) {
-        return convertToStereoForRecording(maxDistance, mc.gameRenderer.getMainCamera().position(), mc.gameRenderer.getMainCamera().yRot(), pos, monoData, volume);
+        return convertToStereoForRecording(maxDistance, mc.gameRenderer.mainCamera().position(), mc.gameRenderer.mainCamera().yRot(), pos, monoData, volume);
     }
 
     public static short[] convertToStereoForRecording(float maxDistance, Vec3 cameraPos, float yRot, Vec3 pos, short[] monoData) {

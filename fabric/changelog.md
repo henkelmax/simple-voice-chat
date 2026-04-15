@@ -1,1 +1,1 @@
-- Added microphone workaround for ALSoft >= 1.25.0
+- Updated to 26.2-snapshot-3

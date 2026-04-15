@@ -201,7 +201,7 @@ public class AudioChannel extends Thread {
         } else if (packet instanceof PlayerSoundPacket soundPacket) {
             @Nullable Entity entity = minecraft.level.getPlayerByUUID(soundPacket.getSender());
             if (entity == null) {
-                Vec3 position = minecraft.gameRenderer.getMainCamera().position();
+                Vec3 position = minecraft.gameRenderer.mainCamera().position();
                 AABB box = new AABB(
                         position.x - soundPacket.getDistance() - 1F,
                         position.y - soundPacket.getDistance() - 1F,

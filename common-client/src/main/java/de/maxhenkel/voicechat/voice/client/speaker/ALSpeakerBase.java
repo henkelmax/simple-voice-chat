@@ -159,7 +159,7 @@ public abstract class ALSpeakerBase implements Speaker {
     }
 
     protected void setPositionSync(@Nullable Vec3 soundPos, float maxDistance) {
-        Camera camera = mc.gameRenderer.getMainCamera();
+        Camera camera = mc.gameRenderer.mainCamera();
         Vec3 position = camera.position();
         Vector3fc look = camera.forwardVector();
         Vector3fc up = camera.upVector();
