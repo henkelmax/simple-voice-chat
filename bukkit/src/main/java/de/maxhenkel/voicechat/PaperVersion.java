@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 public class PaperVersion extends Version {
 
-    public static final Pattern PAPER_VERSION_REGEX = Pattern.compile("^(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?\\.build\\.(?<build>.*)$");
+    public static final Pattern PAPER_VERSION_REGEX = Pattern.compile("^(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?\\.(?<build>.*)$");
 
     private final String build;
 
@@ -50,8 +50,8 @@ public class PaperVersion extends Version {
     @Override
     public String toString() {
         if (patch <= 0) {
-            return major + "." + minor + ".build." + build;
+            return major + "." + minor + "." + build;
         }
-        return major + "." + minor + "." + patch + ".build." + build;
+        return major + "." + minor + "." + patch + "." + build;
     }
 }
