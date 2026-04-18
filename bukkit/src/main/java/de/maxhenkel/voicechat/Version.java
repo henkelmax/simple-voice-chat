@@ -18,9 +18,9 @@ public class Version {
 
     @Nullable
     public static Version parse(String version) {
-        Version v = PaperVersion.parsePaperVersion(version);
+        Version v = BukkitVersion.parseBukkitVersion(version);
         if (v == null) {
-            v = BukkitVersion.parseBukkitVersion(version);
+            v = PaperVersion.parsePaperVersion(version);
         }
         return v;
     }

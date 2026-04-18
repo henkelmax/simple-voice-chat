@@ -31,7 +31,6 @@ public class BukkitVersion extends Version {
         Matcher targetMatcher = BUKKIT_VERSION_REGEX.matcher(bukkitVersion);
 
         if (!targetMatcher.matches()) {
-            Voicechat.LOGGER.fatal("Failed to parse target Bukkit version: {}", bukkitVersion);
             return null;
         }
 
