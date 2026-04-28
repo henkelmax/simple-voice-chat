@@ -2,12 +2,12 @@ package de.maxhenkel.voicechat.gui.audiodevice;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -74,7 +74,7 @@ public abstract class SelectDeviceScreen extends VoiceChatScreenBase {
 
     @Override
     public void extractForegroundRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.text(font, title, width / 2 - font.width(title) / 2, guiTop + 5, isIngame() ? FONT_COLOR : ChatFormatting.WHITE.getColor(), false);
+        guiGraphics.text(font, title, width / 2 - font.width(title) / 2, guiTop + 5, isIngame() ? FONT_COLOR : TextColor.WHITE.getValue(), false);
         if (!deviceList.isEmpty()) {
             deviceList.extractRenderState(guiGraphics, mouseX, mouseY, delta);
         } else {

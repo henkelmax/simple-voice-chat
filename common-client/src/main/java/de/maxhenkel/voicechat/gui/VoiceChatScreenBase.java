@@ -1,9 +1,9 @@
 package de.maxhenkel.voicechat.gui;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.FormattedCharSequence;
 
 import javax.annotation.Nullable;
@@ -65,7 +65,7 @@ public abstract class VoiceChatScreenBase extends Screen {
     }
 
     protected int getFontColor() {
-        return isIngame() ? FONT_COLOR : ChatFormatting.WHITE.getColor();
+        return isIngame() ? FONT_COLOR : TextColor.WHITE.getValue();
     }
 
     public void drawHoverAreas(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
