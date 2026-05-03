@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 
 public class FabricClientCompatibilityManager extends ClientCompatibilityManager {
 
-    private static final ResourceLocation EARLY_JOIN = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "early_join");
+    private static final ResourceLocation EARLY_JOIN = new ResourceLocation(Voicechat.MODID, "early_join");
 
     private static final Minecraft mc = Minecraft.getInstance();
 
