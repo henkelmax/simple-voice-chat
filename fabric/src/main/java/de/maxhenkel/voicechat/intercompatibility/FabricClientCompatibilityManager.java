@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -25,11 +26,13 @@ import java.util.function.Consumer;
 public class FabricClientCompatibilityManager extends ClientCompatibilityManager {
 
     private static final Identifier VOICE_CHAT_ICON_LAYER = Identifier.fromNamespaceAndPath(Voicechat.MODID, "hud");
+    private static final Identifier EARLY_JOIN = Identifier.fromNamespaceAndPath(Voicechat.MODID, "early_join");
 
     private static final Minecraft mc = Minecraft.getInstance();
 
     public FabricClientCompatibilityManager() {
         HudElementRegistry.attachElementBefore(VanillaHudElements.MOB_EFFECTS, VOICE_CHAT_ICON_LAYER, this::onRenderVoiceChatLayer);
+        ClientPlayConnectionEvents.JOIN.addPhaseOrdering(EARLY_JOIN, Event.DEFAULT_PHASE);
     }
 
     private void onRenderVoiceChatLayer(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
@@ -108,7 +111,8 @@ public class FabricClientCompatibilityManager extends ClientCompatibilityManager
 
     @Override
     public void onJoinWorld(Runnable onJoinWorld) {
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> onJoinWorld.run());
+        // Higher priority to prevent this from not firing in case another mod throws an exception in this event
+        ClientPlayConnectionEvents.JOIN.register(EARLY_JOIN, (handler, sender, client) -> onJoinWorld.run());
     }
 
     @Override
