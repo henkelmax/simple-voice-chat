@@ -1,3 +1,1 @@
-- Added voice chat icons to GUI atlas
-- Improved invalid packet handling on servers
-- Improved resilience against other mods breaking Fabric events
+- Updated Japanese translation
