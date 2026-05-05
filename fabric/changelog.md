@@ -1,1 +1,1 @@
-- Updated to 26.2-pre-1
+- Updated Japanese translation
