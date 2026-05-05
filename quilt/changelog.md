@@ -1,1 +1,1 @@
-- Improved invalid packet handling on servers
+- Updated Japanese translation
