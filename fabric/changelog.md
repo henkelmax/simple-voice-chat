@@ -1,1 +1,2 @@
+- Added support for fabric-permission-api-v1
 - Updated to 26.2-snapshot-7

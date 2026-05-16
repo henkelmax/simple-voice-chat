@@ -7,12 +7,11 @@ import javax.annotation.Nullable;
 
 public enum PermissionType {
 
-    EVERYONE, NOONE, OPS;
+    EVERYONE, OPS;
 
     boolean hasPermission(@Nullable ServerPlayer player) {
         return switch (this) {
             case EVERYONE -> true;
-            case NOONE -> false;
             case OPS ->
                     player != null && player.permissions().hasPermission(new net.minecraft.server.permissions.Permission.HasCommandLevel(PermissionLevel.ADMINS));
         };
