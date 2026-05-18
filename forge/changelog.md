@@ -1,1 +1,2 @@
 - Updated Japanese translation
+- Fixed servers not accepting connections from clients without the mod
