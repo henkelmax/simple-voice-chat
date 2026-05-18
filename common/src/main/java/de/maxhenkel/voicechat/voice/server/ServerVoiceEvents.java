@@ -9,6 +9,7 @@ import de.maxhenkel.voicechat.net.PacketRateLimiter;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.Secret;
+import de.maxhenkel.voicechat.voice.rtc.WebRtcUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -110,6 +111,10 @@ public class ServerVoiceEvents {
             Voicechat.LOGGER.warn("Player already requested secret - ignoring");
             return;
         }
+
+        // Only does something if hosting P2P
+        WebRtcUtils.addUncheckedRtcConnection(server, player);
+
         NetManager.sendToClient(player, new SecretPacket(player, secret, server.getPort(), Voicechat.SERVER_CONFIG));
         Voicechat.LOGGER.info("Sent secret to {}", player.getName().getString());
     }

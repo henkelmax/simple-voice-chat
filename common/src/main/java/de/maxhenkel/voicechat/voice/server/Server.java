@@ -592,6 +592,14 @@ public class Server extends Thread {
         connection.send(this, new NetworkMessage(packet));
     }
 
+    public void addUncheckedPlayerConnection(UUID uuid, ClientConnection connection) {
+        unCheckedConnections.put(uuid, connection);
+    }
+
+    public void addRawPacket(RawUdpPacket rawUdpPacket) {
+        packetQueue.add(rawUdpPacket);
+    }
+
     public PingManager getPingManager() {
         return pingManager;
     }

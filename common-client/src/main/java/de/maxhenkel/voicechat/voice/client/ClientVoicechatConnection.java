@@ -12,7 +12,7 @@ import java.net.InetSocketAddress;
 
 public class ClientVoicechatConnection extends Thread {
 
-    private ClientVoicechat client;
+    private final ClientVoicechat client;
     private final InitializationData data;
     private final ClientVoicechatSocket socket;
     private final InetAddress address;
@@ -25,7 +25,11 @@ public class ClientVoicechatConnection extends Thread {
     public ClientVoicechatConnection(ClientVoicechat client, InitializationData data) throws Exception {
         this.client = client;
         this.data = data;
-        this.address = InetAddress.getByName(data.getServerIP());
+        if (data.getServerIP().equals("rtc-local") || data.getServerIP().equals("rtc-remote")) {
+            this.address = InetAddress.getLoopbackAddress();
+        } else {
+            this.address = InetAddress.getByName(data.getServerIP());
+        }
         this.socket = ClientPluginManager.instance().getClientSocketImplementation();
         this.lastKeepAlive = -1;
         this.running = true;

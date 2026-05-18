@@ -5,8 +5,10 @@ import de.maxhenkel.voicechat.api.ClientVoicechatSocket;
 import de.maxhenkel.voicechat.api.events.*;
 import de.maxhenkel.voicechat.plugins.impl.ClientVoicechatSocketImpl;
 import de.maxhenkel.voicechat.plugins.impl.PositionImpl;
+import de.maxhenkel.voicechat.voice.rtc.WebRTCVoicechatClientSocketImpl;
 import de.maxhenkel.voicechat.plugins.impl.events.*;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
+import de.maxhenkel.voicechat.voice.rtc.WebRtcUtils;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -33,6 +35,11 @@ public class ClientPluginManager {
     }
 
     public ClientVoicechatSocket getClientSocketImplementation() {
+        //TODO Maybe add a separate event or pass the socket implementation to the event
+        if (WebRtcUtils.isConnectedViaWebRtc()) {
+            Voicechat.LOGGER.debug("Using WebRTC voicechat client socket implementation");
+            return new WebRTCVoicechatClientSocketImpl();
+        }
         ClientVoicechatInitializationEventImpl event = new ClientVoicechatInitializationEventImpl();
         pluginManager.dispatchEvent(ClientVoicechatInitializationEvent.class, event);
         ClientVoicechatSocket socket = event.getSocketImplementation();
