@@ -1,3 +1,3 @@
 - Added support for fabric-permission-api-v1
 - Added support for peer-to-peer connections using WebRTC
-- Updated to 26.2-snapshot-7
+- Updated to 26.2-snapshot-8
