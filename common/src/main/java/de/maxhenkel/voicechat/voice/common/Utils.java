@@ -6,6 +6,8 @@ import net.minecraft.util.math.Vec2f;
 
 public class Utils {
 
+    public static final int MAX_AUDIO_PAYLOAD_SIZE = 1024;
+
     public static void sleep(int ms) {
         try {
             Thread.sleep(ms);

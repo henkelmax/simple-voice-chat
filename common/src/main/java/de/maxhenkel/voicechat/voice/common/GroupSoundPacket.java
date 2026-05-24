@@ -24,7 +24,7 @@ public class GroupSoundPacket extends SoundPacket<GroupSoundPacket> {
         GroupSoundPacket soundPacket = new GroupSoundPacket();
         soundPacket.channelId = buf.readUniqueId();
         soundPacket.sender = buf.readUniqueId();
-        soundPacket.data = buf.readByteArray();
+        soundPacket.data = buf.readByteArray(Utils.MAX_AUDIO_PAYLOAD_SIZE);
         soundPacket.sequenceNumber = buf.readLong();
 
         byte data = buf.readByte();

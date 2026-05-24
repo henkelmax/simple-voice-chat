@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.RawUdpPacket;
+import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
@@ -26,7 +27,7 @@ public class ClientNetworkMessage {
             Voicechat.LOGGER.debug("Received invalid packet from {}", client.getAddress());
             return null;
         }
-        return NetworkMessage.readFromBytes(packet.getSocketAddress(), client.getData().getSecret(), b.readByteArray(), System.currentTimeMillis());
+        return NetworkMessage.readFromBytes(packet.getSocketAddress(), client.getData().getSecret(), b.readByteArray(CrossSideManager.get().getMtuSize()), System.currentTimeMillis());
     }
 
     public static byte[] writeClient(ClientVoicechatConnection client, NetworkMessage networkMessage) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {

@@ -1,2 +1,3 @@
 - Updated Japanese translation
 - Fixed servers not accepting connections from clients without the mod
+- Fixed MTU size not considered when reading voice chat packets
