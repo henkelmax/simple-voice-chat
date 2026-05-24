@@ -1,2 +1,1 @@
-- Added Esperanto translation
-- Improved invalid packet handling on servers
+- Fixed MTU size not considered when reading voice chat packets
