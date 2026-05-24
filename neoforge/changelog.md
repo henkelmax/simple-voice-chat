@@ -1,1 +1,2 @@
 - Updated Japanese translation
+- Fixed MTU size not considered when reading voice chat packets
