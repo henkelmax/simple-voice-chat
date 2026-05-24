@@ -11,6 +11,7 @@ import java.util.UUID;
 public class PingHandler {
 
     public static final UUID PING_V1 = UUID.fromString("58bc9ae9-c7a8-45e4-a11c-efbb67199425");
+    private static final int PAYLOAD_SIZE = 24;
 
     public static boolean onPacket(VoiceProxyServer proxy, SocketAddress socketAddress, UUID playerID, ByteBuffer buf) {
         if (!proxy.getVoiceProxy().getConfig().allowPings.get()) {
@@ -21,12 +22,12 @@ public class PingHandler {
         }
         try {
             ByteBufferWrapper b = new ByteBufferWrapper(buf);
-            byte[] payload = b.readByteArray();
+            byte[] payload = b.readByteArray(PAYLOAD_SIZE);
             ByteBufferWrapper buffer = new ByteBufferWrapper(ByteBuffer.wrap(payload));
             UUID id = buffer.readUUID();
             long timestamp = buffer.readLong();
             proxy.getVoiceProxy().getLogger().debug("Received ping {} from {}", id, socketAddress);
-            ByteBufferWrapper responseBuffer = new ByteBufferWrapper(ByteBuffer.allocate(24));
+            ByteBufferWrapper responseBuffer = new ByteBufferWrapper(ByteBuffer.allocate(PAYLOAD_SIZE));
 
             responseBuffer.writeUUID(id);
             responseBuffer.writeLong(timestamp);

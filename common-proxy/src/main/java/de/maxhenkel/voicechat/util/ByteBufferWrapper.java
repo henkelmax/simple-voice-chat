@@ -70,7 +70,7 @@ public class ByteBufferWrapper {
         return readByteArray(size);
     }
 
-    protected byte[] readByteArray(int size) {
+    public byte[] readByteArray(int size) {
         byte[] bytes = new byte[size];
         buffer.get(bytes);
         return bytes;
