@@ -11,6 +11,7 @@ import java.util.UUID;
 public class PingHandler {
 
     public static final UUID PING_V1 = UUID.fromString("58bc9ae9-c7a8-45e4-a11c-efbb67199425");
+    private static final int PAYLOAD_SIZE = 24;
 
     public static boolean onPacket(Server server, SocketAddress socketAddress, UUID playerID, PacketBuffer buf) {
         if (!Voicechat.SERVER_CONFIG.allowPings.get()) {
@@ -20,13 +21,13 @@ public class PingHandler {
             return false;
         }
         try {
-            byte[] payload = buf.readByteArray();
+            byte[] payload = buf.readByteArray(PAYLOAD_SIZE);
             PacketBuffer buffer = new PacketBuffer(Unpooled.wrappedBuffer(payload));
             UUID id = buffer.readUUID();
             long timestamp = buffer.readLong();
             Voicechat.LOGGER.debug("Received ping {} from {}", id, socketAddress);
 
-            PacketBuffer responseBuffer = new PacketBuffer(Unpooled.buffer(24));
+            PacketBuffer responseBuffer = new PacketBuffer(Unpooled.buffer(PAYLOAD_SIZE));
 
             responseBuffer.writeUUID(id);
             responseBuffer.writeLong(timestamp);
