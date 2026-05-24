@@ -1,1 +1,1 @@
-- Fixed proxy not checking the origin of intercepted packets
+- Improve ping system

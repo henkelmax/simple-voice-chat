@@ -35,7 +35,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
         soundPacket.channelId = buf.readUUID();
         soundPacket.sender = buf.readUUID();
         soundPacket.location = new Location(null, buf.readDouble(), buf.readDouble(), buf.readDouble());
-        soundPacket.data = buf.readByteArray();
+        soundPacket.data = buf.readByteArray(Utils.MAX_AUDIO_PAYLOAD_SIZE);
         soundPacket.sequenceNumber = buf.readLong();
         soundPacket.distance = buf.readFloat();
 

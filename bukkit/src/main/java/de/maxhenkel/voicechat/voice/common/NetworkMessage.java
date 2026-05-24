@@ -96,7 +96,7 @@ public class NetworkMessage {
                 Voicechat.LOGGER.debug("Player {} does not have a secret", playerID);
                 return null;
             }
-            return readFromBytes(packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray(), packet.getTimestamp());
+            return readFromBytes(packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray(Voicechat.SERVER_CONFIG.voiceChatMtuSize.get()), packet.getTimestamp());
         } catch (DecoderException | IndexOutOfBoundsException e) {
             Voicechat.LOGGER.debug("Received invalid packet from {}", packet.getSocketAddress());
             return null;

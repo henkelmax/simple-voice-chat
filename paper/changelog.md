@@ -1,2 +1,1 @@
-- Improved invalid packet handling on servers
-- Added support for 26.1.2
+- Fixed MTU size not considered when reading voice chat packets

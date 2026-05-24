@@ -1,4 +1,1 @@
-- Try to fall back to spigot mode if version is unknown
-- Fixed inconsistency with server implementation compared to mods
-- Improved invalid packet handling on servers
-- Improved paper version parsing
+- Fixed MTU size not considered when reading voice chat packets

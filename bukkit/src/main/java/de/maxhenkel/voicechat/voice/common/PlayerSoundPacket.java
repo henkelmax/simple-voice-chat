@@ -37,7 +37,7 @@ public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
         PlayerSoundPacket soundPacket = new PlayerSoundPacket();
         soundPacket.channelId = buf.readUUID();
         soundPacket.sender = buf.readUUID();
-        soundPacket.data = buf.readByteArray();
+        soundPacket.data = buf.readByteArray(Utils.MAX_AUDIO_PAYLOAD_SIZE);
         soundPacket.sequenceNumber = buf.readLong();
         soundPacket.distance = buf.readFloat();
 
