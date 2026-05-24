@@ -4,6 +4,8 @@ import de.maxhenkel.voicechat.Voicechat;
 
 public class Utils {
 
+    public static final int MAX_AUDIO_PAYLOAD_SIZE = 1024;
+
     /**
      * Gets the default voice chat distance
      *
