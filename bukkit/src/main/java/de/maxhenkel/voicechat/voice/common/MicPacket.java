@@ -42,7 +42,7 @@ public class MicPacket implements Packet<MicPacket> {
     @Override
     public MicPacket fromBytes(FriendlyByteBuf buf) {
         MicPacket soundPacket = new MicPacket();
-        soundPacket.data = buf.readByteArray(Utils.MAX_AUDIO_PAYLOAD_SIZE);
+        soundPacket.data = buf.readByteArray(AudioUtils.MAX_OPUS_PAYLOAD_SIZE);
         soundPacket.sequenceNumber = buf.readLong();
         soundPacket.whispering = buf.readBoolean();
         return soundPacket;
