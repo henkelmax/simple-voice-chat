@@ -6,6 +6,8 @@ import java.nio.ShortBuffer;
 
 public class AudioUtils {
 
+    public static final int MAX_OPUS_PAYLOAD_SIZE = 1275;
+
     public static short[] bytesToShorts(byte[] bytes) {
         if (bytes.length % 2 != 0) {
             throw new IllegalArgumentException("Input bytes need to be divisible by 2");
