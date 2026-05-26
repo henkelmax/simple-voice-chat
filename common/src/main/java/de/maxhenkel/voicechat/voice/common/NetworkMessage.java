@@ -3,7 +3,6 @@ package de.maxhenkel.voicechat.voice.common;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.RawUdpPacket;
 import de.maxhenkel.voicechat.debug.PingHandler;
-import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
@@ -97,7 +96,7 @@ public class NetworkMessage {
                 Voicechat.LOGGER.debug("Player {} does not have a secret", playerID);
                 return null;
             }
-            return readFromBytes(packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray(CrossSideManager.get().getMtuSize()), packet.getTimestamp());
+            return readFromBytes(packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray(Utils.MAX_VOICE_CHAT_PACKET_SIZE), packet.getTimestamp());
         } catch (DecoderException | IndexOutOfBoundsException e) {
             Voicechat.LOGGER.debug("Received invalid packet from {}", packet.getSocketAddress());
             return null;
