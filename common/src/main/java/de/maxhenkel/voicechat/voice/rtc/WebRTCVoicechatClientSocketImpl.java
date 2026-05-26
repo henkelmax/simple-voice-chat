@@ -1,4 +1,5 @@
 package de.maxhenkel.voicechat.voice.rtc;
+/*
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.ClientVoicechatSocket;
@@ -85,3 +86,4 @@ public class WebRTCVoicechatClientSocketImpl implements ClientVoicechatSocket {
         return dataChannel == null;
     }
 }
+*/

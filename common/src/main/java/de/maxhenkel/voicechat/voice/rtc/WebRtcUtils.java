@@ -1,4 +1,5 @@
 package de.maxhenkel.voicechat.voice.rtc;
+/*
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.server.Server;
@@ -78,12 +79,14 @@ public class WebRtcUtils {
         return (RtcHandshake.HandshakeResult) HANDSHAKE_RESULT_FIELD.get(channel);
     }
 
-    /**
+    */
+/**
      * Adds an unchecked client WebRTC connection to the server in case this is being hosted on a client via WebRTC
      *
      * @param server the server
      * @param player the player
-     */
+     *//*
+
     public static void addUncheckedRtcConnection(Server server, ServerPlayer player) {
         if (server.getServer().isDedicatedServer()) {
             return;
@@ -91,13 +94,15 @@ public class WebRtcUtils {
         addUncheckedRtcConnection0(server, player);
     }
 
-    /**
+    */
+/**
      * Adds an unchecked client WebRTC connection to the server.
      * Note that this method should only be called if not on a dedicated server.
      *
      * @param server the server
      * @param player the player
-     */
+     *//*
+
     private static void addUncheckedRtcConnection0(Server server, ServerPlayer player) {
         try {
             Connection c = getConnection(player.connection);
@@ -110,3 +115,4 @@ public class WebRtcUtils {
         }
     }
 }
+*/

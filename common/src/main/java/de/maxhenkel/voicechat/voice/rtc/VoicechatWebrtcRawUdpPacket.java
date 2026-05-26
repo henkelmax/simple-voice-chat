@@ -1,4 +1,5 @@
 package de.maxhenkel.voicechat.voice.rtc;
+/*
 
 import de.maxhenkel.voicechat.api.RawUdpPacket;
 
@@ -31,3 +32,4 @@ public class VoicechatWebrtcRawUdpPacket implements RawUdpPacket {
         return address;
     }
 }
+*/

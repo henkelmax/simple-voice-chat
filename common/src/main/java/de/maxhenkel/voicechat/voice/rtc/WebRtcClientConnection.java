@@ -1,4 +1,5 @@
 package de.maxhenkel.voicechat.voice.rtc;
+/*
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
@@ -40,3 +41,4 @@ public class WebRtcClientConnection extends ClientConnection {
     }
 
 }
+*/
