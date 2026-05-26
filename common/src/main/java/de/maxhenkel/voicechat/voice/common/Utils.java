@@ -6,7 +6,7 @@ import net.minecraft.util.math.vector.Vector2f;
 
 public class Utils {
 
-    public static final int MAX_AUDIO_PAYLOAD_SIZE = 1024;
+    public static final int MAX_VOICE_CHAT_PACKET_SIZE = 2048;
 
     public static void sleep(int ms) {
         try {
