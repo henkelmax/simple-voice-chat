@@ -41,7 +41,7 @@ public class LocationSoundPacket extends SoundPacket<LocationSoundPacket> {
         soundPacket.channelId = buf.readUniqueId();
         soundPacket.sender = buf.readUniqueId();
         soundPacket.location = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
-        soundPacket.data = buf.readByteArray(Utils.MAX_AUDIO_PAYLOAD_SIZE);
+        soundPacket.data = buf.readByteArray(AudioUtils.MAX_OPUS_PAYLOAD_SIZE);
         soundPacket.sequenceNumber = buf.readLong();
         soundPacket.distance = buf.readFloat();
 
