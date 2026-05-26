@@ -61,9 +61,9 @@ public class ServerConfig {
                         "Valid values are 'VOIP', 'AUDIO', and 'RESTRICTED_LOWDELAY'"
                 );
         voiceChatMtuSize = builder
-                .integerEntry("mtu_size", AudioUtils.DEFAULT_MAX_PAYLOAD_SIZE, 256, 2048,
+                .integerEntry("mtu_size", AudioUtils.MAX_OPUS_PAYLOAD_SIZE, 512, 2048,
                         "The maximum size that audio packets are allowed to have (in bytes)",
-                        "Set this to a lower value if audio packets don't arrive"
+                        "Setting this to lower values might cause issues"
                 );
         tcpRateLimit = builder
                 .integerEntry("tcp_rate_limit", 16, -1, 1024,
