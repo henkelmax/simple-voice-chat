@@ -1,2 +1,1 @@
-- Updated Japanese translation
-- Fixed MTU size not considered when reading voice chat packets
+- Updated to 26.2-pre-2
