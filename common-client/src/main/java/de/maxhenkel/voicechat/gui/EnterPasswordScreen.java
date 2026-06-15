@@ -72,7 +72,7 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
         if (keyEvent.isEscape()) {
-            minecraft.setScreenAndShow(null);
+            minecraft.gui.setScreen(null);
             return true;
         }
         if (super.keyPressed(keyEvent)) {

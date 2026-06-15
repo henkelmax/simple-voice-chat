@@ -29,13 +29,13 @@ public class ActivationOnboardingScreen extends OnboardingScreenBase {
 
         Button ptt = Button.builder(Component.translatable("message.voicechat.onboarding.activation.ptt.name"), button -> {
             VoicechatClient.CLIENT_CONFIG.microphoneActivationType.set(MicrophoneActivationType.PTT).save();
-            minecraft.setScreenAndShow(new PttOnboardingScreen(this));
+            minecraft.gui.setScreen(new PttOnboardingScreen(this));
         }).bounds(guiLeft, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth / 2 - PADDING / 2, BUTTON_HEIGHT).build();
         addRenderableWidget(ptt);
 
         Button voice = Button.builder(Component.translatable("message.voicechat.onboarding.activation.voice.name"), button -> {
             VoicechatClient.CLIENT_CONFIG.microphoneActivationType.set(MicrophoneActivationType.VOICE).save();
-            minecraft.setScreenAndShow(new VoiceActivationOnboardingScreen(this));
+            minecraft.gui.setScreen(new VoiceActivationOnboardingScreen(this));
         }).bounds(guiLeft + contentWidth / 2 + PADDING / 2, guiTop + contentHeight - BUTTON_HEIGHT * 2 - PADDING, contentWidth / 2 - PADDING / 2, BUTTON_HEIGHT).build();
         addRenderableWidget(voice);
 

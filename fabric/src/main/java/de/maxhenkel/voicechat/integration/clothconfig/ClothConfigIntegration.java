@@ -122,7 +122,7 @@ public class ClothConfigIntegration {
         if (MC.gui.screen() instanceof ClothConfigScreen screen) {
             if (screen.getSelectedCategory().equals(ClothConfigIntegration.OTHER_SETTINGS)) {
                 screen.selectedCategoryIndex = 0;
-                MC.setScreenAndShow(new VoiceChatSettingsScreen(screen));
+                MC.gui.setScreen(new VoiceChatSettingsScreen(screen));
             }
         }
     }

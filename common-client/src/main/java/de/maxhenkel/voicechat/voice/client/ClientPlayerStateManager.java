@@ -84,13 +84,13 @@ public class ClientPlayerStateManager {
             this.group = packet.getGroup();
             if (packet.isWrongPassword()) {
                 if (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
-                    Minecraft.getInstance().setScreenAndShow(null);
+                    Minecraft.getInstance().gui.setScreen(null);
                 }
                 player.sendOverlayMessage(Component.translatable("message.voicechat.wrong_password").withStyle(ChatFormatting.DARK_RED));
             } else if (group != null && screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
                 ClientGroup clientGroup = getGroup();
                 if (clientGroup != null) {
-                    Minecraft.getInstance().setScreenAndShow(new GroupScreen(clientGroup));
+                    Minecraft.getInstance().gui.setScreen(new GroupScreen(clientGroup));
                 } else {
                     Voicechat.LOGGER.warn("Received join group packet without group being present");
                 }

@@ -49,7 +49,7 @@ public class JoinGroupScreen extends VoiceChatScreenBase {
         addWidget(groupList);
 
         createGroup = Button.builder(CREATE_GROUP, button -> {
-            minecraft.setScreenAndShow(new CreateGroupScreen());
+            minecraft.gui.setScreen(new CreateGroupScreen());
         }).bounds(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 14, 20).build();
         addRenderableWidget(createGroup);
     }

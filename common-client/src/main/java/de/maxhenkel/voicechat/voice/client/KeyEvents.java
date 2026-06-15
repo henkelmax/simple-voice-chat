@@ -90,7 +90,7 @@ public class KeyEvents {
                     ClientManager.getDebugOverlay().toggle();
                 }
             } else {
-                minecraft.setScreenAndShow(new VoiceChatScreen());
+                minecraft.gui.setScreen(new VoiceChatScreen());
             }
         }
 
@@ -98,9 +98,9 @@ public class KeyEvents {
             if (client != null && client.getConnection() != null && client.getConnection().getData().groupsEnabled()) {
                 ClientGroup group = playerStateManager.getGroup();
                 if (group != null) {
-                    minecraft.setScreenAndShow(new GroupScreen(group));
+                    minecraft.gui.setScreen(new GroupScreen(group));
                 } else {
-                    minecraft.setScreenAndShow(new JoinGroupScreen());
+                    minecraft.gui.setScreen(new JoinGroupScreen());
                 }
             } else {
                 player.sendOverlayMessage(Component.translatable("message.voicechat.groups_disabled"));
@@ -108,11 +108,11 @@ public class KeyEvents {
         }
 
         if (KEY_VOICE_CHAT_SETTINGS.consumeClick()) {
-            minecraft.setScreenAndShow(new VoiceChatSettingsScreen());
+            minecraft.gui.setScreen(new VoiceChatSettingsScreen());
         }
 
         if (KEY_ADJUST_VOLUMES.consumeClick()) {
-            minecraft.setScreenAndShow(new AdjustVolumesScreen());
+            minecraft.gui.setScreen(new AdjustVolumesScreen());
         }
 
         if (KEY_PTT.consumeClick()) {

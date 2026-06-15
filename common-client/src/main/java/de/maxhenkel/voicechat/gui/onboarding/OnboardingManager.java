@@ -20,7 +20,7 @@ public class OnboardingManager {
     }
 
     public static void startOnboarding(@Nullable Screen parent) {
-        MC.setScreenAndShow(getOnboardingScreen(parent));
+        MC.gui.setScreen(getOnboardingScreen(parent));
     }
 
     public static Screen getOnboardingScreen(@Nullable Screen parent) {
@@ -32,7 +32,7 @@ public class OnboardingManager {
         VoicechatClient.CLIENT_CONFIG.disabled.set(false).save();
         VoicechatClient.CLIENT_CONFIG.onboardingFinished.set(true).save();
         ClientManager.getPlayerStateManager().onFinishOnboarding();
-        MC.setScreenAndShow(null);
+        MC.gui.setScreen(null);
     }
 
     public static void onConnecting() {

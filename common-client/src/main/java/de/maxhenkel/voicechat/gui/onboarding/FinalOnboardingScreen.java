@@ -65,7 +65,7 @@ public class FinalOnboardingScreen extends OnboardingScreenBase {
         }
         if (keyEvent.key() == ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_VOICE_CHAT).getValue()) {
             OnboardingManager.finishOnboarding();
-            minecraft.setScreenAndShow(new VoiceChatScreen());
+            minecraft.gui.setScreen(new VoiceChatScreen());
             return true;
         }
 
