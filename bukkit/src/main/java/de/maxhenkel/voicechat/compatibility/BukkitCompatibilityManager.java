@@ -13,6 +13,8 @@ public class BukkitCompatibilityManager {
     private static final Map<Version, Compatibility> COMPATIBILITIES = new HashMap<>();
 
     static {
+        COMPATIBILITIES.put(Compatibility1_21_5.VERSION_PAPER_26_2, Compatibility1_21_5.INSTANCE);
+        COMPATIBILITIES.put(Compatibility1_21_5.VERSION_26_2, Compatibility1_21_5.INSTANCE);
         COMPATIBILITIES.put(Compatibility1_21_5.VERSION_PAPER_26_1_2, Compatibility1_21_5.INSTANCE);
         COMPATIBILITIES.put(Compatibility1_21_5.VERSION_26_1_2, Compatibility1_21_5.INSTANCE);
         COMPATIBILITIES.put(Compatibility1_21_5.VERSION_PAPER_26_1_1, Compatibility1_21_5.INSTANCE);

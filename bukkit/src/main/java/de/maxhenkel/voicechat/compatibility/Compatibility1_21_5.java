@@ -20,6 +20,8 @@ public class Compatibility1_21_5 extends Compatibility1_20_3 {
     public static final PaperVersion VERSION_PAPER_26_1_1 = PaperVersion.parsePaperVersion("26.1.1.build.0");
     public static final BukkitVersion VERSION_26_1_2 = BukkitVersion.parseBukkitVersion("26.1.2-R0.1");
     public static final PaperVersion VERSION_PAPER_26_1_2 = PaperVersion.parsePaperVersion("26.1.2.build.0");
+    public static final BukkitVersion VERSION_26_2 = BukkitVersion.parseBukkitVersion("26.2-R0.1");
+    public static final PaperVersion VERSION_PAPER_26_2 = PaperVersion.parsePaperVersion("26.2.build.0");
 
     public static final Compatibility1_21_5 INSTANCE = new Compatibility1_21_5();
 

@@ -1,1 +1,1 @@
-- Fixed MTU size not considered when reading voice chat packets
+- Added support for 26.2
