@@ -12,9 +12,8 @@ public class PaperPermissionManager extends PermissionManager {
 
     private static PermissionDefault map(PermissionType type) {
         return switch (type) {
-            default -> PermissionDefault.TRUE;
-            case NOONE -> PermissionDefault.FALSE;
             case OPS -> PermissionDefault.OP;
+            default -> PermissionDefault.TRUE;
         };
     }
 
