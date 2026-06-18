@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.api.audiochannel.ClientEntityAudioChannel;
 import de.maxhenkel.voicechat.api.audiochannel.ClientLocationalAudioChannel;
 import de.maxhenkel.voicechat.api.audiochannel.ClientStaticAudioChannel;
 import de.maxhenkel.voicechat.api.config.ConfigAccessor;
+import de.maxhenkel.voicechat.api.config.VolumeConfigAccessor;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -156,5 +157,10 @@ public interface VoicechatClientApi extends VoicechatApi {
      * @return a read-only config accessor for the mods client config
      */
     ConfigAccessor getClientConfig();
+
+    /**
+     * @return a read-only accessor for player and category volumes
+     */
+    VolumeConfigAccessor getVolumeConfig();
 
 }
