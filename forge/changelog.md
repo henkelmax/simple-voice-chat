@@ -1,1 +1,1 @@
-- Updated to 26.2
+- Added volume config accessor to the API
