@@ -9,6 +9,7 @@ import de.maxhenkel.voicechat.api.audiosender.AudioSender;
 import de.maxhenkel.voicechat.api.config.ConfigAccessor;
 import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
+import de.maxhenkel.voicechat.api.packets.ConvertablePacket;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
 import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
 import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
@@ -17,6 +18,7 @@ import de.maxhenkel.voicechat.plugins.impl.audiochannel.*;
 import de.maxhenkel.voicechat.plugins.impl.audiolistener.PlayerAudioListenerImpl;
 import de.maxhenkel.voicechat.plugins.impl.audiosender.AudioSenderImpl;
 import de.maxhenkel.voicechat.plugins.impl.config.ConfigAccessorImpl;
+import de.maxhenkel.voicechat.plugins.impl.packets.ConvertablePacketImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.EntitySoundPacketImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.LocationalSoundPacketImpl;
 import de.maxhenkel.voicechat.plugins.impl.packets.StaticSoundPacketImpl;
@@ -68,6 +70,11 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (p instanceof StaticSoundPacketImpl) {
             sendPacket(connection, ((StaticSoundPacketImpl) p).getPacket());
         }
+    }
+
+    @Override
+    public ConvertablePacket createPacket() {
+        return new ConvertablePacketImpl();
     }
 
     @Nullable
