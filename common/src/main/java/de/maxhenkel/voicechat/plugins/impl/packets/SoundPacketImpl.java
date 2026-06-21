@@ -133,8 +133,20 @@ public class SoundPacketImpl implements SoundPacket {
         }
 
         @Override
+        public T sender(UUID sender) {
+            this.sender = sender;
+            return (T) this;
+        }
+
+        @Override
         public T opusEncodedData(byte[] data) {
             this.opusEncodedData = data;
+            return (T) this;
+        }
+
+        @Override
+        public T sequenceNumber(long sequenceNumber) {
+            this.sequenceNumber = sequenceNumber;
             return (T) this;
         }
 

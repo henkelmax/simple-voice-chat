@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.api.packets;
 
 import de.maxhenkel.voicechat.api.Position;
+import de.maxhenkel.voicechat.api.VoicechatServerApi;
 
 import java.util.UUID;
 
@@ -33,6 +34,7 @@ public interface ConvertablePacket {
      * @param entityUuid the UUID of the entity
      * @param whispering if the entity is whispering
      * @return the entity sound packet
+     * @throws UnsupportedOperationException if this is called on a packet created by {@link VoicechatServerApi#createPacket()}
      * @deprecated use {@link #entitySoundPacketBuilder()}
      */
     @Deprecated
@@ -43,6 +45,7 @@ public interface ConvertablePacket {
      *
      * @param position the position of the audio
      * @return the locational sound packet
+     * @throws UnsupportedOperationException if this is called on a packet created by {@link VoicechatServerApi#createPacket()}
      * @deprecated use {@link #locationalSoundPacketBuilder()}
      */
     @Deprecated
@@ -52,6 +55,7 @@ public interface ConvertablePacket {
      * Converts this packet to a static sound packet.
      *
      * @return the static sound packet
+     * @throws UnsupportedOperationException if this is called on a packet created by {@link VoicechatServerApi#createPacket()}
      * @deprecated use {@link #staticSoundPacketBuilder()}
      */
     @Deprecated
