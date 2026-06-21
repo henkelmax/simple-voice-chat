@@ -1,1 +1,3 @@
-- Added volume config accessor to the API
+- Added a way to create voice chat packets using the API
+- Allow setting sequence numbers for voice chat packets
+- Added a way to set the sender of voice chat packets

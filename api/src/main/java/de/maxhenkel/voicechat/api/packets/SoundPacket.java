@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.api.packets;
 
+import de.maxhenkel.voicechat.api.VoicechatServerApi;
 import de.maxhenkel.voicechat.api.VolumeCategory;
 
 import javax.annotation.Nullable;
@@ -13,7 +14,7 @@ public interface SoundPacket extends Packet, ConvertablePacket {
     UUID getChannelId();
 
     /**
-     * @return the sender of this packet - doesn't necessarily need to be a players UUID
+     * @return the sender of this packet - doesn't necessarily need to be a player's UUID
      */
     UUID getSender();
 
@@ -51,10 +52,31 @@ public interface SoundPacket extends Packet, ConvertablePacket {
         T channelId(UUID channelId);
 
         /**
+         * Sets the sender of the sound packet.
+         * This must be set if this is created using {@link VoicechatServerApi#createPacket()}.
+         *
+         * @param sender the sender of the sound packet
+         * @return the builder
+         */
+        T sender(UUID sender);
+
+        /**
          * @param data the opus encoded audio data
          * @return the builder
          */
         T opusEncodedData(byte[] data);
+
+        /**
+         * Sets the sequence number of the sound packet.
+         * The sequence number is set automatically for everything except when using {@link VoicechatServerApi#createPacket()}.
+         * <br/>
+         * <br/>
+         * <b>NOTE</b>: You should only change this when using {@link VoicechatServerApi#createPacket()}.
+         *
+         * @param sequenceNumber the sequence number of the sound packet
+         * @return the builder
+         */
+        T sequenceNumber(long sequenceNumber);
 
         /**
          * Make sure you registered your category before using it.
