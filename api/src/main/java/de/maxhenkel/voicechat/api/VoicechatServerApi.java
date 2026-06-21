@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.api.audiolistener.PlayerAudioListener;
 import de.maxhenkel.voicechat.api.audiosender.AudioSender;
 import de.maxhenkel.voicechat.api.config.ConfigAccessor;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
+import de.maxhenkel.voicechat.api.packets.ConvertablePacket;
 import de.maxhenkel.voicechat.api.packets.EntitySoundPacket;
 import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
 import de.maxhenkel.voicechat.api.packets.StaticSoundPacket;
@@ -41,6 +42,14 @@ public interface VoicechatServerApi extends VoicechatApi {
      * @param packet     the packet to send
      */
     void sendStaticSoundPacketTo(VoicechatConnection connection, StaticSoundPacket packet);
+
+    /**
+     * Creates a sound packet that can be converted to any type.
+     * <b>NOTE</b>: When creating a packet using this method, the sequence number must be set manually using {@link de.maxhenkel.voicechat.api.packets.SoundPacket.Builder#sequenceNumber(long)}.
+     *
+     * @return a convertable packet without any data
+     */
+    ConvertablePacket createPacket();
 
     /**
      * Creates a sound channel for the specified entity.
