@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class VoiceChatResourcePack extends AbstractPackResources implements Pack.ResourcesSupplier {
+public class VoiceChatResourcePack extends AbstractPackMetadataResources implements PackResources, Pack.ResourcesSupplier {
 
     public VoiceChatResourcePack(String id, Component name) {
         super(new PackLocationInfo(id, name, PackSource.BUILT_IN, Optional.empty()));
@@ -37,7 +37,7 @@ public class VoiceChatResourcePack extends AbstractPackResources implements Pack
     }
 
     private String getPath() {
-        return "/packs/" + packId() + "/";
+        return "/packs/" + location().id() + "/";
     }
 
     @Nullable
@@ -67,7 +67,7 @@ public class VoiceChatResourcePack extends AbstractPackResources implements Pack
     }
 
     @Override
-    public void listResources(PackType type, String namespace, String prefix, ResourceOutput resourceOutput) {
+    public void listResources(PackType type, String namespace, String prefix, PackResources.ResourceOutput resourceOutput) {
         try {
             URL url = Voicechat.class.getResource(getPath());
             if (url == null) {
@@ -115,14 +115,13 @@ public class VoiceChatResourcePack extends AbstractPackResources implements Pack
 
     }
 
-
     @Override
-    public PackResources openPrimary(PackLocationInfo packLocationInfo) {
+    public PackMetadataResources openMetadata(PackLocationInfo packLocationInfo) {
         return this;
     }
 
     @Override
-    public PackResources openFull(PackLocationInfo packLocationInfo, Pack.Metadata metadata) {
-        return this;
+    public Stream<PackResources> openResources(PackLocationInfo packLocationInfo, Pack.Metadata metadata) {
+        return Stream.of(this);
     }
 }
