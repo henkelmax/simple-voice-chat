@@ -1,3 +1,1 @@
-- Added a way to create voice chat packets using the API
-- Allow setting sequence numbers for voice chat packets
-- Added a way to set the sender of voice chat packets
+- Updated to 26.3-snapshot-1
