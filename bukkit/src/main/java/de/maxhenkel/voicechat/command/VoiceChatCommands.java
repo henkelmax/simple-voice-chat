@@ -157,7 +157,7 @@ public class VoiceChatCommands implements CommandExecutor, TabCompleter {
 
         Player player = parsePlayer(commandSender, args[1]);
 
-        if (player == null) {
+        if (player == null || !Voicechat.compatibility.canSee(commandSender, player)) {
             NetManager.sendMessage(commandSender, "argument.entity.notfound.player");
             return true;
         }
