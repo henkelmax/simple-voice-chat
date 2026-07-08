@@ -1,1 +1,1 @@
-- Updated to 26.3-snapshot-4
+- Fixed not being able to enter spaces in group names

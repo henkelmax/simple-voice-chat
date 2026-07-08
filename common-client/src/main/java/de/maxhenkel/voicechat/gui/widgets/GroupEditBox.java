@@ -13,7 +13,8 @@ public class GroupEditBox extends EditBox {
 
     @Override
     public void insertText(String value) {
-        if (value.isEmpty() || Voicechat.GROUP_REGEX.matcher(value).matches()) {
+        String newText = getValue() + value;
+        if (newText.isEmpty() || Voicechat.GROUP_REGEX.matcher(newText).matches()) {
             super.insertText(value);
         }
     }
