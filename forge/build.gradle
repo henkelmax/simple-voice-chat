@@ -27,6 +27,12 @@ repositories {
 dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
 
+    // ForgeGradle 7 only provides LWJGL in the runtime variants on <1.19, so it's missing from the compile classpath
+    ['lwjgl-openal', 'lwjgl-glfw'].each {
+        compileOnly "org.lwjgl:${it}:3.2.2"
+        testCompileOnly "org.lwjgl:${it}:3.2.2"
+    }
+
     implementation renamer.dependency("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
 
     minecraftLibrary "org.concentus:Concentus:${concentus_version}"
