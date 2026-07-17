@@ -1,4 +1,5 @@
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'net.minecraftforge.renamer'
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 

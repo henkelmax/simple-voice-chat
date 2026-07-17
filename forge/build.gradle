@@ -1,5 +1,5 @@
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'net.minecraftforge.renamer'
 apply plugin: 'com.gradleup.shadow'
 apply plugin: 'de.maxhenkel.cursegradle'
 apply plugin: 'com.modrinth.minotaur'
@@ -56,54 +56,4 @@ compileJava.dependsOn generateJava
 
 shadowJar {
     relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'
-}
-
-legacy {
-    fixClasspath = false
-}
-
-mixin {
-    add sourceSets.main, "voicechat.refmap.json"
-    config "voicechat.mixins.json"
-}
-
-minecraft {
-    runs {
-        client {
-            arg '-torg.spongepowered.asm.launch.MixinTweaker'
-        }
-        server {
-            arg '-torg.spongepowered.asm.launch.MixinTweaker'
-        }
-    }
-}
-
-jar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes(['FMLCorePluginContainsFMLMod': 'true',
-                    'ForceLoadAsMod'             : 'true',
-                    'TweakClass'                 : 'org.spongepowered.asm.launch.MixinTweaker',
-                    'TweakOrder'                 : '0'
-        ])
-    }
-}
-
-// https://stackoverflow.com/a/70151634/9889252
-idea {
-    module {
-        inheritOutputDirs = true
-    }
-}
-tasks.register('prepareAssets', Copy) {
-    group = 'build'
-    from project(":common").file('src/main/resources')
-    into project.file('build/classes/java/main')
-}
-classes.dependsOn(prepareAssets)
-
-sourceSets.each {
-    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
-    it.output.resourcesDir = dir
-    it.java.destinationDirectory = dir
 }
