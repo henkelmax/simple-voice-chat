@@ -17,7 +17,7 @@ tasks.register('01-publishQuilt', GradleBuild) {
 tasks.register('02-publishForge') {
     group = 'voicechat'
     doLast {
-        runGradleTask('uploadMod', false, file('forge'))
+        runGradleTasks(['common:clean', 'common-client:clean', 'forge:clean'], ['forge:curseforge', 'forge:modrinth', 'forge:modUpdate'])
     }
 }
 
