@@ -1,1 +1,2 @@
 - Added support for Folia
+- Added `threaded_server_support` config option

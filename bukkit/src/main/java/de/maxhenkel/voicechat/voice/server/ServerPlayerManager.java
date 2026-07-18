@@ -27,6 +27,9 @@ public class ServerPlayerManager implements Listener {
     public static final ServerPlayerManager INSTANCE = new ServerPlayerManager();
 
     public static void init(Plugin plugin) {
+        if (!Voicechat.SERVER_CONFIG.threadedServerSupport.get()) {
+            return;
+        }
         Bukkit.getPluginManager().registerEvents(ServerPlayerManager.INSTANCE, plugin);
         Voicechat.compatibility.scheduleSyncRepeatingTask(INSTANCE::refresh, 0, REFRESH_INTERVAL_TICKS);
     }
@@ -60,11 +63,26 @@ public class ServerPlayerManager implements Listener {
     }
 
     private Collection<Player> getPlayersInRangeInternal(World world, Location pos, double range, @Nullable Predicate<Player> filter) {
+        if (!Voicechat.SERVER_CONFIG.threadedServerSupport.get()) {
+            return getPlayersInRangeDirect(world, pos, range, filter);
+        }
         List<Player> nearbyPlayers = new ArrayList<>();
         for (Player player : players) {
             if (!world.equals(player.getWorld())) {
                 continue;
             }
+            if (isInRange(player.getLocation(), pos, range) && (filter == null || filter.test(player))) {
+                nearbyPlayers.add(player);
+            }
+        }
+        return nearbyPlayers;
+    }
+
+    private static Collection<Player> getPlayersInRangeDirect(World world, Location pos, double range, @Nullable Predicate<Player> filter) {
+        List<Player> nearbyPlayers = new ArrayList<>();
+        List<Player> worldPlayers = world.getPlayers();
+        for (int i = 0; i < worldPlayers.size(); i++) {
+            Player player = worldPlayers.get(i);
             if (isInRange(player.getLocation(), pos, range) && (filter == null || filter.test(player))) {
                 nearbyPlayers.add(player);
             }
