@@ -11,7 +11,7 @@ import de.maxhenkel.voicechat.plugins.impl.ServerPlayerImpl;
 import de.maxhenkel.voicechat.voice.common.LocationSoundPacket;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import de.maxhenkel.voicechat.voice.server.Server;
-import de.maxhenkel.voicechat.voice.server.ServerWorldUtils;
+import de.maxhenkel.voicechat.voice.server.ServerPlayerManager;
 import net.minecraft.world.server.ServerWorld;
 
 import java.util.UUID;
@@ -73,7 +73,7 @@ public class LocationalAudioChannelImpl extends AudioChannelImpl implements Loca
             throw new IllegalArgumentException("level is not an instance of ServerLevelImpl");
         }
         ServerLevelImpl serverLevel = (ServerLevelImpl) level;
-        server.broadcast(ServerWorldUtils.getPlayersInRange(serverLevel.getRawServerLevel(), position.getPosition(), server.getBroadcastRange(distance), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
+        server.broadcast(ServerPlayerManager.getPlayersInRange(serverLevel.getRawServerLevel(), position.getPosition(), server.getBroadcastRange(distance), filter == null ? player -> true : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
     }
 
 }
