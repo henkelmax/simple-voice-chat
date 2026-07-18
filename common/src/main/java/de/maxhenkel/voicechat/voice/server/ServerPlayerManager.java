@@ -2,10 +2,10 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.players.PlayerList;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -35,39 +35,39 @@ public class ServerPlayerManager {
         players = Collections.emptySet();
     }
 
-    private synchronized void onPlayerLoggedIn(ServerPlayer player) {
+    private synchronized void onPlayerLoggedIn(ServerPlayerEntity player) {
         Set<UUID> newPlayers = getOnlinePlayers(player);
         newPlayers.add(player.getUUID());
         players = newPlayers;
     }
 
-    private synchronized void onPlayerLoggedOut(ServerPlayer player) {
+    private synchronized void onPlayerLoggedOut(ServerPlayerEntity player) {
         Set<UUID> newPlayers = getOnlinePlayers(player);
         newPlayers.remove(player.getUUID());
         players = newPlayers;
     }
 
-    private static Set<UUID> getOnlinePlayers(ServerPlayer player) {
+    private static Set<UUID> getOnlinePlayers(ServerPlayerEntity player) {
         Set<UUID> onlinePlayers = new HashSet<>();
-        for (ServerPlayer onlinePlayer : player.level().getServer().getPlayerList().getPlayers()) {
+        for (ServerPlayerEntity onlinePlayer : player.getServer().getPlayerList().getPlayers()) {
             onlinePlayers.add(onlinePlayer.getUUID());
         }
         return onlinePlayers;
     }
 
-    public static Collection<ServerPlayer> getPlayersInRange(ServerLevel level, Vec3 pos, double range, @Nullable Predicate<ServerPlayer> filter) {
+    public static Collection<ServerPlayerEntity> getPlayersInRange(ServerWorld level, Vector3d pos, double range, @Nullable Predicate<ServerPlayerEntity> filter) {
         return INSTANCE.getPlayersInRangeInternal(level, pos, range, filter);
     }
 
-    private Collection<ServerPlayer> getPlayersInRangeInternal(ServerLevel level, Vec3 pos, double range, @Nullable Predicate<ServerPlayer> filter) {
+    private Collection<ServerPlayerEntity> getPlayersInRangeInternal(ServerWorld level, Vector3d pos, double range, @Nullable Predicate<ServerPlayerEntity> filter) {
         if (!Voicechat.SERVER_CONFIG.threadedServerSupport.get()) {
             return getPlayersInRangeDirect(level, pos, range, filter);
         }
-        List<ServerPlayer> nearbyPlayers = new ArrayList<>();
+        List<ServerPlayerEntity> nearbyPlayers = new ArrayList<>();
         PlayerList playerList = level.getServer().getPlayerList();
         for (UUID uuid : players) {
-            ServerPlayer player = playerList.getPlayer(uuid);
-            if (player == null || player.level() != level) {
+            ServerPlayerEntity player = playerList.getPlayer(uuid);
+            if (player == null || player.level != level) {
                 continue;
             }
             if (isInRange(player.position(), pos, range) && (filter == null || filter.test(player))) {
@@ -77,11 +77,11 @@ public class ServerPlayerManager {
         return nearbyPlayers;
     }
 
-    private static Collection<ServerPlayer> getPlayersInRangeDirect(ServerLevel level, Vec3 pos, double range, @Nullable Predicate<ServerPlayer> filter) {
-        List<ServerPlayer> nearbyPlayers = new ArrayList<>();
-        List<ServerPlayer> levelPlayers = level.players();
+    private static Collection<ServerPlayerEntity> getPlayersInRangeDirect(ServerWorld level, Vector3d pos, double range, @Nullable Predicate<ServerPlayerEntity> filter) {
+        List<ServerPlayerEntity> nearbyPlayers = new ArrayList<>();
+        List<ServerPlayerEntity> levelPlayers = level.players();
         for (int i = 0; i < levelPlayers.size(); i++) {
-            ServerPlayer player = levelPlayers.get(i);
+            ServerPlayerEntity player = levelPlayers.get(i);
             if (isInRange(player.position(), pos, range) && (filter == null || filter.test(player))) {
                 nearbyPlayers.add(player);
             }
@@ -89,7 +89,7 @@ public class ServerPlayerManager {
         return nearbyPlayers;
     }
 
-    public static boolean isInRange(Vec3 pos1, Vec3 pos2, double range) {
+    public static boolean isInRange(Vector3d pos1, Vector3d pos2, double range) {
         return pos1.distanceToSqr(pos2) <= range * range;
     }
 
