@@ -25,6 +25,7 @@ public class ServerConfig {
     public ConfigEntry<Integer> loginTimeout;
     public ConfigEntry<Double> broadcastRange;
     public ConfigEntry<Boolean> allowPings;
+    public ConfigEntry<Boolean> threadedServerSupport;
 
     public ServerConfig(ConfigBuilder builder) {
         builder.header(String.format("%s server config v%s", BuildConstants.PLUGIN_NAME, Voicechat.INSTANCE.getDescription().getVersion()));
@@ -113,6 +114,11 @@ public class ServerConfig {
         allowPings = builder
                 .booleanEntry("allow_pings", true,
                         "If the voice chat server should reply to external pings"
+                );
+        threadedServerSupport = builder
+                .booleanEntry("threaded_server_support", true,
+                        "If the voice chat should support servers that run multiple threads, like Folia",
+                        "Disabling this may slightly improve performance, but can cause issues on servers that don't run everything on a single thread"
                 );
     }
 
