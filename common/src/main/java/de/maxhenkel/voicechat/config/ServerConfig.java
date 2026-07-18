@@ -27,6 +27,7 @@ public class ServerConfig {
     public ConfigEntry<Double> broadcastRange;
     public ConfigEntry<Boolean> allowPings;
     public ConfigEntry<Boolean> useNatives;
+    public ConfigEntry<Boolean> threadedServerSupport;
 
     public ServerConfig(ConfigBuilder builder) {
 
@@ -121,6 +122,11 @@ public class ServerConfig {
                 .booleanEntry("use_natives", true,
                         "If the mod should load native libraries on dedicated servers",
                         "This is mostly relevant for voice chat addons"
+                );
+        threadedServerSupport = builder
+                .booleanEntry("threaded_server_support", true,
+                        "If the voice chat should support servers that run multiple threads, like Folia",
+                        "Disabling this may slightly improve performance, but can cause issues on servers that don't run everything on a single thread"
                 );
     }
 

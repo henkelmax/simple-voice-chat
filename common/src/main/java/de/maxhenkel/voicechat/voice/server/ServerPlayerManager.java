@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.voice.server;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,6 +22,9 @@ public class ServerPlayerManager {
     public static final ServerPlayerManager INSTANCE = new ServerPlayerManager();
 
     public static void init() {
+        if (!Voicechat.SERVER_CONFIG.threadedServerSupport.get()) {
+            return;
+        }
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedIn(INSTANCE::onPlayerLoggedIn);
         CommonCompatibilityManager.INSTANCE.onPlayerLoggedOut(INSTANCE::onPlayerLoggedOut);
     }
@@ -56,6 +60,9 @@ public class ServerPlayerManager {
     }
 
     private Collection<ServerPlayer> getPlayersInRangeInternal(ServerLevel level, Vec3 pos, double range, @Nullable Predicate<ServerPlayer> filter) {
+        if (!Voicechat.SERVER_CONFIG.threadedServerSupport.get()) {
+            return getPlayersInRangeDirect(level, pos, range, filter);
+        }
         List<ServerPlayer> nearbyPlayers = new ArrayList<>();
         PlayerList playerList = level.getServer().getPlayerList();
         for (UUID uuid : players) {
@@ -63,6 +70,18 @@ public class ServerPlayerManager {
             if (player == null || player.level() != level) {
                 continue;
             }
+            if (isInRange(player.position(), pos, range) && (filter == null || filter.test(player))) {
+                nearbyPlayers.add(player);
+            }
+        }
+        return nearbyPlayers;
+    }
+
+    private static Collection<ServerPlayer> getPlayersInRangeDirect(ServerLevel level, Vec3 pos, double range, @Nullable Predicate<ServerPlayer> filter) {
+        List<ServerPlayer> nearbyPlayers = new ArrayList<>();
+        List<ServerPlayer> levelPlayers = level.players();
+        for (int i = 0; i < levelPlayers.size(); i++) {
+            ServerPlayer player = levelPlayers.get(i);
             if (isInRange(player.position(), pos, range) && (filter == null || filter.test(player))) {
                 nearbyPlayers.add(player);
             }
