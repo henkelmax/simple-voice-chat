@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.logging.Log4JVoicechatLogger;
 import de.maxhenkel.voicechat.logging.VoicechatLogger;
 import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.voice.server.ServerPlayerManager;
 import de.maxhenkel.voicechat.voice.server.ServerVoiceEvents;
 
 import java.nio.file.Path;
@@ -37,6 +38,7 @@ public abstract class Voicechat {
 
         CommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
+        ServerPlayerManager.init();
         initPlugins();
         registerCommands();
     }
