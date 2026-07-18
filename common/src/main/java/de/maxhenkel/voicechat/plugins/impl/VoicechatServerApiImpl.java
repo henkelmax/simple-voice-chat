@@ -24,7 +24,7 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.Server;
-import de.maxhenkel.voicechat.voice.server.ServerWorldUtils;
+import de.maxhenkel.voicechat.voice.server.ServerPlayerManager;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -262,7 +262,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (!(level instanceof ServerLevelImpl serverLevel)) {
             throw new IllegalArgumentException("ServerLevel is not an instance of ServerLevelImpl");
         }
-        return ServerWorldUtils.getPlayersInRange(serverLevel.getRawServerLevel(), p.getPosition(), range, filter == null ? null : player -> filter.test(new ServerPlayerImpl(player))).stream().map(ServerPlayerImpl::new).collect(Collectors.toList());
+        return ServerPlayerManager.getPlayersInRange(serverLevel.getRawServerLevel(), p.getPosition(), range, filter == null ? null : player -> filter.test(new ServerPlayerImpl(player))).stream().map(ServerPlayerImpl::new).collect(Collectors.toList());
     }
 
     @Override
