@@ -1,1 +1,2 @@
 - Added support for threaded environments
+- Added `threaded_server_support` config option
