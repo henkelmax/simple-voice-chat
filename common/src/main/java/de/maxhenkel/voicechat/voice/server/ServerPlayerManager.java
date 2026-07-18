@@ -49,7 +49,7 @@ public class ServerPlayerManager {
 
     private static Set<UUID> getOnlinePlayers(ServerPlayer player) {
         Set<UUID> onlinePlayers = new HashSet<>();
-        for (ServerPlayer onlinePlayer : player.level().getServer().getPlayerList().getPlayers()) {
+        for (ServerPlayer onlinePlayer : player.getServer().getPlayerList().getPlayers()) {
             onlinePlayers.add(onlinePlayer.getUUID());
         }
         return onlinePlayers;
@@ -67,7 +67,7 @@ public class ServerPlayerManager {
         PlayerList playerList = level.getServer().getPlayerList();
         for (UUID uuid : players) {
             ServerPlayer player = playerList.getPlayer(uuid);
-            if (player == null || player.level() != level) {
+            if (player == null || player.level != level) {
                 continue;
             }
             if (isInRange(player.position(), pos, range) && (filter == null || filter.test(player))) {
