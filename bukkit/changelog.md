@@ -1,1 +1,2 @@
 - Don't allow inviting vanished players to groups
+- Improve Folia support

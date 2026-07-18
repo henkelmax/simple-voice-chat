@@ -1,1 +1,2 @@
 - Fixed not being able to enter spaces in group names
+- Added support for threaded environments
