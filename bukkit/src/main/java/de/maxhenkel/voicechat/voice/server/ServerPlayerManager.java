@@ -13,60 +13,60 @@ import org.bukkit.plugin.Plugin;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
 public class ServerPlayerManager implements Listener {
 
+    private static final long REFRESH_INTERVAL_TICKS = 20L * 30L;
+
     public static final ServerPlayerManager INSTANCE = new ServerPlayerManager();
 
     public static void init(Plugin plugin) {
         Bukkit.getPluginManager().registerEvents(ServerPlayerManager.INSTANCE, plugin);
-        Voicechat.compatibility.scheduleSyncRepeatingTask(INSTANCE::refresh, 0, 20 * 30);
+        Voicechat.compatibility.scheduleSyncRepeatingTask(INSTANCE::refresh, 0, REFRESH_INTERVAL_TICKS);
     }
 
-    private final Set<Player> players;
+    private volatile Set<Player> players;
 
     private ServerPlayerManager() {
-        players = new HashSet<>();
+        players = Collections.emptySet();
     }
 
-    private void refresh() {
-        synchronized (players) {
-            players.clear();
-            players.addAll(Bukkit.getOnlinePlayers());
-        }
+    private synchronized void refresh() {
+        players = new HashSet<>(Bukkit.getOnlinePlayers());
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        synchronized (players) {
-            players.add(event.getPlayer());
-        }
+    public synchronized void onPlayerJoin(PlayerJoinEvent event) {
+        Set<Player> newPlayers = new HashSet<>(players);
+        newPlayers.add(event.getPlayer());
+        players = newPlayers;
     }
 
     @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        synchronized (players) {
-            players.remove(event.getPlayer());
-        }
+    public synchronized void onPlayerQuit(PlayerQuitEvent event) {
+        Set<Player> newPlayers = new HashSet<>(players);
+        newPlayers.remove(event.getPlayer());
+        players = newPlayers;
     }
 
-    public static ArrayList<Player> getPlayersInRange(World level, Location pos, double range, @Nullable Predicate<Player> filter) {
+    public static Collection<Player> getPlayersInRange(World level, Location pos, double range, @Nullable Predicate<Player> filter) {
         return INSTANCE.getPlayersInRangeInternal(level, pos, range, filter);
     }
 
-    private ArrayList<Player> getPlayersInRangeInternal(World world, Location pos, double range, @Nullable Predicate<Player> filter) {
-        ArrayList<Player> nearbyPlayers = new ArrayList<>();
-        synchronized (players) {
-            for (Player player : players) {
-                if (!world.equals(player.getWorld())) {
-                    continue;
-                }
-                if (isInRange(player.getLocation(), pos, range) && (filter == null || filter.test(player))) {
-                    nearbyPlayers.add(player);
-                }
+    private Collection<Player> getPlayersInRangeInternal(World world, Location pos, double range, @Nullable Predicate<Player> filter) {
+        List<Player> nearbyPlayers = new ArrayList<>();
+        for (Player player : players) {
+            if (!world.equals(player.getWorld())) {
+                continue;
+            }
+            if (isInRange(player.getLocation(), pos, range) && (filter == null || filter.test(player))) {
+                nearbyPlayers.add(player);
             }
         }
         return nearbyPlayers;
