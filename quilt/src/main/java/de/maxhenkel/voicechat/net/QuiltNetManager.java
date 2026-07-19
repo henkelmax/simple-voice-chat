@@ -2,6 +2,9 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -9,9 +12,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.quiltmc.loader.api.minecraft.MinecraftQuiltLoader;
-import org.quiltmc.qsl.networking.api.PayloadTypeRegistry;
-import org.quiltmc.qsl.networking.api.server.ServerPlayNetworking;
-import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,7 +35,6 @@ public class QuiltNetManager extends NetManager {
             T dummyPacket = packetType.getDeclaredConstructor().newInstance();
             CustomPacketPayload.Type<T> type = dummyPacket.type();
             packets.add(type.id());
-
             StreamCodec<RegistryFriendlyByteBuf, T> codec = new StreamCodec<>() {
 
                 @Override
@@ -56,12 +55,12 @@ public class QuiltNetManager extends NetManager {
             };
             if (toServer) {
                 PayloadTypeRegistry.playC2S().register(type, codec);
-                ServerPlayNetworking.registerGlobalReceiver(type, (server, player, handler, payload, responseSender) -> {
+                ServerPlayNetworking.registerGlobalReceiver(type, (payload, context) -> {
                     try {
-                        if (!Voicechat.SERVER.isCompatible(player) && !packetType.equals(RequestSecretPacket.class)) {
+                        if (!Voicechat.SERVER.isCompatible(context.player()) && !packetType.equals(RequestSecretPacket.class)) {
                             return;
                         }
-                        c.onServerPacket(player, payload);
+                        c.onServerPacket(context.player(), payload);
                     } catch (Exception e) {
                         Voicechat.LOGGER.error("Failed to process packet", e);
                     }
@@ -70,9 +69,9 @@ public class QuiltNetManager extends NetManager {
             if (toClient) {
                 PayloadTypeRegistry.playS2C().register(type, codec);
                 if (MinecraftQuiltLoader.getEnvironmentType().equals(EnvType.CLIENT)) {
-                    ClientPlayNetworking.registerGlobalReceiver(type, (minecraft, handler, payload, responseSender) -> {
+                    ClientPlayNetworking.registerGlobalReceiver(type, (payload, context) -> {
                         try {
-                            Minecraft.getInstance().execute(() -> c.onClientPacket(minecraft.player, payload));
+                            Minecraft.getInstance().execute(() -> c.onClientPacket(context.player(), payload));
                         } catch (Exception e) {
                             Voicechat.LOGGER.error("Failed to register packet receiver", e);
                         }
