@@ -68,6 +68,11 @@ public class VoicechatPaperPlugin extends JavaPlugin implements Listener {
             protected Translations createTranslations(ConfigBuilder builder) {
                 return new PaperTranslations(builder);
             }
+
+            @Override
+            public Loader getLoader() {
+                return Loader.PAPER;
+            }
         };
         voicechat.initialize();
 
