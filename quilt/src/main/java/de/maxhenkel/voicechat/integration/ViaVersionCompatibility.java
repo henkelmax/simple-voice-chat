@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.integration;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.QuiltNetManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import com.viaversion.viaversion.protocols.v1_12_2to1_13.Protocol1_12_2To1_13;
 import org.quiltmc.loader.api.QuiltLoader;
 
@@ -25,8 +25,8 @@ public class ViaVersionCompatibility {
     }
 
     private static void registerMappings() {
-        Set<ResourceLocation> packets = ((QuiltNetManager) CommonCompatibilityManager.INSTANCE.getNetManager()).getPackets();
-        for (ResourceLocation id : packets) {
+        Set<Identifier> packets = ((QuiltNetManager) CommonCompatibilityManager.INSTANCE.getNetManager()).getPackets();
+        for (Identifier id : packets) {
             Protocol1_12_2To1_13.MAPPINGS.getChannelMappings().put(String.format("%s:%s", OLD_VOICECHAT_PREFIX, id.getPath()), id.toString());
         }
     }
