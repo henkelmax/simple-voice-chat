@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.mixin;
 
 import de.maxhenkel.voicechat.events.PublishServerEvents;
 import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.GameType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,7 +15,7 @@ import javax.annotation.Nullable;
 public abstract class IntegratedServerMixin {
 
     @Inject(method = "publishServer", at = @At(value = "RETURN"))
-    public void publishServer(@Nullable GameType gameType, boolean cheats, int port, CallbackInfoReturnable<Boolean> callbackInfo) {
+    public void publishServer(MinecraftServer.MultiplayerScope scope, @Nullable GameType gameMode, boolean allowCommands, int port, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (!callbackInfo.getReturnValue()) {
             return;
         }
