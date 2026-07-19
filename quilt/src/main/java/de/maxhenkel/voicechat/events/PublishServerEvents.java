@@ -1,12 +1,13 @@
 package de.maxhenkel.voicechat.events;
 
-import org.quiltmc.qsl.base.api.event.Event;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
 import java.util.function.Consumer;
 
 public class PublishServerEvents {
 
-    public static final Event<Consumer<Integer>> SERVER_PUBLISHED = Event.create(Consumer.class, (listeners) -> (port) -> {
+    public static final Event<Consumer<Integer>> SERVER_PUBLISHED = EventFactory.createArrayBacked(Consumer.class, (listeners) -> (port) -> {
         for (Consumer<Integer> listener : listeners) {
             listener.accept(port);
         }
