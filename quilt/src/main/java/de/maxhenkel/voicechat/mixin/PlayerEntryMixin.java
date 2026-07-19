@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.social.PlayerEntry;
 import net.minecraft.client.gui.screens.social.SocialInteractionsScreen;
@@ -28,7 +29,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 @Mixin(PlayerEntry.class)
-public class PlayerEntryMixin {
+public abstract class PlayerEntryMixin extends ContainerObjectSelectionList.Entry<PlayerEntry> {
 
     private static final ResourceLocation GROUP_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/invite_button");
     private static final Duration TOOLTIP_DELAY = Duration.ofMillis(500L);
@@ -66,8 +67,8 @@ public class PlayerEntryMixin {
         }
     }
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/Button;render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", ordinal = 1))
-    private void render(GuiGraphics poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, CallbackInfo ci) {
+    @Inject(method = "renderContent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/Button;render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", ordinal = 1))
+    private void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float delta, CallbackInfo ci) {
         if (inviteButton != null && hideButton != null && reportButton != null) {
             if (ClientManager.getPlayerStateManager().getGroupID() == null || !canInvite()) {
                 inviteButton.visible = false;
@@ -75,8 +76,8 @@ public class PlayerEntryMixin {
             }
             inviteButton.visible = true;
             inviteButton.active = !invited;
-            inviteButton.setPosition(left + (width - hideButton.getWidth() - 4 - reportButton.getWidth() - 4) - inviteButton.getWidth() - 4, top + (height - inviteButton.getHeight()) / 2);
-            inviteButton.render(poseStack, mouseX, mouseY, delta);
+            inviteButton.setPosition(getContentX() + (getContentWidth() - hideButton.getWidth() - 4 - reportButton.getWidth() - 4) - inviteButton.getWidth() - 4, getContentY() + (getContentHeight() - inviteButton.getHeight()) / 2);
+            inviteButton.render(guiGraphics, mouseX, mouseY, delta);
         }
     }
 
