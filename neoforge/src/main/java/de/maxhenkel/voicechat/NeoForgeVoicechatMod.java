@@ -29,4 +29,8 @@ public class NeoForgeVoicechatMod extends Voicechat {
         NeoForge.EVENT_BUS.register(PermissionManager.INSTANCE);
     }
 
+    @Override
+    public Loader getLoader() {
+        return Loader.NEOFORGE;
+    }
 }
