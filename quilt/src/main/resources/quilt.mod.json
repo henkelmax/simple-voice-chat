@@ -31,10 +31,10 @@
       "icon": "icon.png"
     },
     "entrypoints": {
-      "client_init": [
+      "client": [
         "de.maxhenkel.voicechat.QuiltVoicechatClientMod"
       ],
-      "init": [
+      "main": [
         "de.maxhenkel.voicechat.QuiltVoicechatMod"
       ],
       "modmenu": [
@@ -53,30 +53,12 @@
       {
         "id": "java",
         "versions": ">=${java_version}"
-      },
+      }
+    ],
+    "breaks": [
       {
-        "id": "quilt_base",
-        "versions": ">=${qsl_version}"
-      },
-      {
-        "id": "quilt_lifecycle_events",
-        "versions": ">=${qsl_version}"
-      },
-      {
-        "id": "quilt_resource_loader",
-        "versions": ">=${qsl_version}"
-      },
-      {
-        "id": "quilt_networking",
-        "versions": ">=${qsl_version}"
-      },
-      {
-        "id": "quilt_command",
-        "versions": ">=${qsl_version}"
-      },
-      {
-        "id": "quilted_fabric_key_binding_api_v1",
-        "versions": "*"
+        "id": "fabric-api",
+        "versions": "${fabric_api_dependency_breaks}"
       }
     ]
   },
@@ -86,6 +68,30 @@
   "modmenu": {
     "links": {
       "modmenu.discord": "https://discord.gg/4dH2zwTmyX"
+    }
+  },
+  "multiconnect": {
+    "custom_payloads": {
+      "allowed_clientbound": "voicechat:*",
+      "allowed_serverbound": "voicechat:*",
+      "clientbound_112_names": {
+        "voicechat:update_state": "vc:update_state",
+        "voicechat:request_secret": "vc:request_secret",
+        "voicechat:create_group": "vc:create_group",
+        "voicechat:set_group": "vc:set_group",
+        "voicechat:leave_group": "vc:leave_group"
+      },
+      "serverbound_112_names": {
+        "voicechat:secret": "vc:secret",
+        "voicechat:state": "vc:state",
+        "voicechat:states": "vc:states",
+        "voicechat:remove_state": "vc:remove_state",
+        "voicechat:add_group": "vc:add_group",
+        "voicechat:remove_group": "vc:remove_group",
+        "voicechat:joined_group": "vc:joined_group",
+        "voicechat:add_category": "vc:add_category",
+        "voicechat:remove_category": "vc:remove_category"
+      }
     }
   }
 }
