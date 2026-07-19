@@ -11,4 +11,9 @@ public class FabricVoicechatMod extends Voicechat implements ModInitializer {
         ViaVersionCompatibility.register();
     }
 
+    @Override
+    public Loader getLoader() {
+        return Loader.FABRIC;
+    }
+
 }

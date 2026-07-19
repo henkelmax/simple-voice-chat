@@ -36,4 +36,9 @@ public class ForgeVoicechatMod extends Voicechat {
         });
     }
 
+    @Override
+    public Loader getLoader() {
+        return Loader.FORGE;
+    }
+
 }

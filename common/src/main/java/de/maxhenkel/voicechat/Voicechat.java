@@ -53,7 +53,7 @@ public abstract class Voicechat {
     }
 
     public void initializeConfigs() {
-        SERVER_CONFIG = ConfigBuilder.builder(ServerConfig::new).path(getVoicechatConfigFolderInternal().resolve("voicechat-server.properties")).build();
+        SERVER_CONFIG = ConfigBuilder.builder(configBuilder -> new ServerConfig(configBuilder, getLoader())).path(getVoicechatConfigFolderInternal().resolve("voicechat-server.properties")).build();
         TRANSLATIONS = ConfigBuilder.builder(Translations::new).path(getVoicechatConfigFolderInternal().resolve("translations.properties")).build();
     }
 
@@ -65,6 +65,8 @@ public abstract class Voicechat {
         return getVoicechatConfigFolder();
     }
 
+    public abstract Loader getLoader();
+
     public static Path getVoicechatConfigFolder() {
         return getConfigFolder().resolve(MODID);
     }
@@ -73,4 +75,7 @@ public abstract class Voicechat {
         return Paths.get(".").resolve("config");
     }
 
+    public enum Loader {
+        FABRIC, NEOFORGE, FORGE, QUILT, PAPER
+    }
 }
