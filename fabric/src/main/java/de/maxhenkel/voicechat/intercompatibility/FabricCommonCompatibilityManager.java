@@ -115,7 +115,7 @@ public class FabricCommonCompatibilityManager extends CommonCompatibilityManager
 
     @Override
     public void onRegisterServerCommands(Consumer<CommandDispatcher<CommandSourceStack>> onRegisterServerCommands) {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> onRegisterServerCommands.accept(dispatcher));
+        CommandRegistrationCallback.EVENT.register((dispatcher, context, commandSelection) -> onRegisterServerCommands.accept(dispatcher));
     }
 
     private FabricNetManager netManager;
