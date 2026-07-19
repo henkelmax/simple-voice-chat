@@ -1,10 +1,11 @@
 package de.maxhenkel.voicechat.events;
 
-import org.quiltmc.qsl.base.api.event.Event;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
 public class ClientWorldEvents {
 
-    public static final Event<Runnable> DISCONNECT = Event.create(Runnable.class, (listeners) -> () -> {
+    public static final Event<Runnable> DISCONNECT = EventFactory.createArrayBacked(Runnable.class, (listeners) -> () -> {
         for (Runnable listener : listeners) {
             listener.run();
         }
