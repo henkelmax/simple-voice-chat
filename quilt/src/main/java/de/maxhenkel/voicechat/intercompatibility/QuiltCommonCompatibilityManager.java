@@ -10,6 +10,8 @@ import de.maxhenkel.voicechat.net.QuiltNetManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.permission.QuiltPermissionManager;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,8 +19,6 @@ import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.loader.api.QuiltLoader;
 import org.quiltmc.loader.api.entrypoint.EntrypointContainer;
 import org.quiltmc.loader.api.minecraft.MinecraftQuiltLoader;
-import org.quiltmc.qsl.command.api.CommandRegistrationCallback;
-import org.quiltmc.qsl.lifecycle.api.event.ServerLifecycleEvents;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -79,12 +79,12 @@ public class QuiltCommonCompatibilityManager extends CommonCompatibilityManager 
 
     @Override
     public void onServerStarting(Consumer<MinecraftServer> onServerStarting) {
-        ServerLifecycleEvents.READY.register(onServerStarting::accept);
+        ServerLifecycleEvents.SERVER_STARTED.register(onServerStarting::accept);
     }
 
     @Override
     public void onServerStopping(Consumer<MinecraftServer> onServerStopping) {
-        ServerLifecycleEvents.STOPPING.register(onServerStopping::accept);
+        ServerLifecycleEvents.SERVER_STOPPING.register(onServerStopping::accept);
     }
 
     @Override
