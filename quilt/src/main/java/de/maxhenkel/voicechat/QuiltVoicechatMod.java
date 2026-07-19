@@ -12,4 +12,9 @@ public class QuiltVoicechatMod extends Voicechat implements ModInitializer {
         ViaVersionCompatibility.register();
     }
 
+    @Override
+    public Loader getLoader() {
+        return Loader.QUILT;
+    }
+
 }
