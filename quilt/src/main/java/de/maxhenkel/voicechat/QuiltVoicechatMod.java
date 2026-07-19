@@ -1,8 +1,8 @@
 package de.maxhenkel.voicechat;
 
 import de.maxhenkel.voicechat.integration.ViaVersionCompatibility;
+import de.maxhenkel.voicechat.integration.vanish.VanishIntegration;
 import net.fabricmc.api.ModInitializer;
-import org.quiltmc.loader.api.ModContainer;
 
 public class QuiltVoicechatMod extends Voicechat implements ModInitializer {
 
@@ -10,6 +10,7 @@ public class QuiltVoicechatMod extends Voicechat implements ModInitializer {
     public void onInitialize() {
         initialize();
         ViaVersionCompatibility.register();
+        VanishIntegration.init();
     }
 
     @Override
