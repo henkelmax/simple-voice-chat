@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.config;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.configbuilder.entry.ConfigEntry;
 import de.maxhenkel.opus4j.OpusEncoder;
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
@@ -29,7 +30,7 @@ public class ServerConfig {
     public ConfigEntry<Boolean> useNatives;
     public ConfigEntry<Boolean> threadedServerSupport;
 
-    public ServerConfig(ConfigBuilder builder) {
+    public ServerConfig(ConfigBuilder builder, Voicechat.Loader loader) {
 
         builder.header(String.format("%s server config v%s", CommonCompatibilityManager.INSTANCE.getModName(), CommonCompatibilityManager.INSTANCE.getModVersion()));
 
@@ -124,7 +125,7 @@ public class ServerConfig {
                         "This is mostly relevant for voice chat addons"
                 );
         threadedServerSupport = builder
-                .booleanEntry("threaded_server_support", true,
+                .booleanEntry("threaded_server_support", Voicechat.Loader.PAPER.equals(loader),
                         "If the voice chat should support servers that run multiple threads, like Folia",
                         "Disabling this may slightly improve performance, but can cause issues on servers that don't run everything on a single thread"
                 );
