@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.events.PlayerEvents;
 import de.maxhenkel.voicechat.events.ServerVoiceChatEvents;
+import de.maxhenkel.voicechat.events.VanishEvents;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.QuiltNetManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
@@ -99,12 +100,12 @@ public class QuiltCommonCompatibilityManager extends CommonCompatibilityManager 
 
     @Override
     public void onPlayerHide(BiConsumer<ServerPlayer, ServerPlayer> onPlayerHide) {
-        // Do nothing for now
+        VanishEvents.ON_VANISH.register(onPlayerHide);
     }
 
     @Override
     public void onPlayerShow(BiConsumer<ServerPlayer, ServerPlayer> onPlayerShow) {
-        // Do nothing for now
+        VanishEvents.ON_UNVANISH.register(onPlayerShow);
     }
 
     @Override
