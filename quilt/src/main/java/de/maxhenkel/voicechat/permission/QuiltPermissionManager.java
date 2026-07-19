@@ -2,10 +2,10 @@ package de.maxhenkel.voicechat.permission;
 
 import de.maxhenkel.voicechat.Voicechat;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.PermissionLevel;
+import org.quiltmc.loader.api.QuiltLoader;
 
 public class QuiltPermissionManager extends PermissionManager {
 
@@ -49,7 +49,7 @@ public class QuiltPermissionManager extends PermissionManager {
 
     private static boolean isFabricPermissionsAPIv0Loaded() {
         if (v0loaded == null) {
-            v0loaded = FabricLoader.getInstance().isModLoaded("fabric-permissions-api-v0");
+            v0loaded = QuiltLoader.isModLoaded("fabric-permissions-api-v0");
             if (v0loaded) {
                 Voicechat.LOGGER.info("Using Fabric Permissions API");
             }
