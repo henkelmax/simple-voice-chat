@@ -114,8 +114,8 @@ public class QuiltClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @Override
-    public void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource) {
-        IPackRepository repository = (IPackRepository) packRepository;
+    public void addResourcePackSource(RepositorySource repositorySource) {
+        IPackRepository repository = (IPackRepository) mc.getResourcePackRepository();
         repository.voicechat$addSource(repositorySource);
     }
 }
