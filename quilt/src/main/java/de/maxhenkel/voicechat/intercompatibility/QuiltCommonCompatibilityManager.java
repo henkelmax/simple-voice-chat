@@ -116,7 +116,7 @@ public class QuiltCommonCompatibilityManager extends CommonCompatibilityManager 
 
     @Override
     public void onRegisterServerCommands(Consumer<CommandDispatcher<CommandSourceStack>> onRegisterServerCommands) {
-        CommandRegistrationCallback.EVENT.register((dispatcher, integrated, dedicated) -> onRegisterServerCommands.accept(dispatcher));
+        CommandRegistrationCallback.EVENT.register((dispatcher, context, commandSelection) -> onRegisterServerCommands.accept(dispatcher));
     }
 
     private QuiltNetManager netManager;
