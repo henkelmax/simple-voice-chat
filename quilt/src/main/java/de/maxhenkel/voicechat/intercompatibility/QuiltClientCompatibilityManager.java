@@ -13,8 +13,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Connection;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.repository.RepositorySource;
 
 import java.net.SocketAddress;
@@ -22,7 +21,7 @@ import java.util.function.Consumer;
 
 public class QuiltClientCompatibilityManager extends ClientCompatibilityManager {
 
-    private static final ResourceLocation EARLY_JOIN = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "early_join");
+    private static final Identifier EARLY_JOIN = Identifier.fromNamespaceAndPath(Voicechat.MODID, "early_join");
 
     private static final Minecraft mc = Minecraft.getInstance();
 
