@@ -58,4 +58,9 @@ public class ForgeVoicechatMod extends Voicechat {
         compatibilityManager.serverStopping(event);
     }
 
+    @Override
+    public Loader getLoader() {
+        return Loader.FORGE;
+    }
+
 }
