@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.events.PlayerEvents;
 import de.maxhenkel.voicechat.events.ServerVoiceChatEvents;
 import de.maxhenkel.voicechat.events.VanishEvents;
+import de.maxhenkel.voicechat.integration.vanish.VanishIntegration;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.QuiltNetManager;
 import de.maxhenkel.voicechat.permission.PermissionManager;
@@ -155,6 +156,6 @@ public class QuiltCommonCompatibilityManager extends CommonCompatibilityManager 
 
     @Override
     public boolean canSee(ServerPlayer player, ServerPlayer other) {
-        return true;
+        return VanishIntegration.canSee(player, other);
     }
 }
