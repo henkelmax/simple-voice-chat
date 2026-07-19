@@ -20,7 +20,8 @@
       "contact": {
         "homepage": "https://modrepo.de/minecraft/voicechat/overview",
         "issues": "https://github.com/henkelmax/simple-voice-chat/issues",
-        "sources": "https://github.com/henkelmax/simple-voice-chat"
+        "sources": "https://github.com/henkelmax/simple-voice-chat",
+        "discord": "https://discord.gg/4dH2zwTmyX"
       },
       "license": {
         "name": "All Rights Reserved",
