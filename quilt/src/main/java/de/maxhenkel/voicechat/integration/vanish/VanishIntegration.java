@@ -36,7 +36,7 @@ public class VanishIntegration {
         }
         try {
             me.drex.vanish.api.VanishEvents.VANISH_EVENT.register((vanishPlayer, vanish) -> {
-                for (ServerPlayer player : vanishPlayer.getServer().getPlayerList().getPlayers()) {
+                for (ServerPlayer player : vanishPlayer.level().getServer().getPlayerList().getPlayers()) {
                     if (vanish) {
                         if (CommonCompatibilityManager.INSTANCE.canSee(player, vanishPlayer)) {
                             continue;
