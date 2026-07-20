@@ -110,7 +110,7 @@
   "message.voicechat.mute.disabled_ptt": "你不能在使用按键说话的状态下静音",
   "message.voicechat.disable.enabled": "点击以启用所有语音聊天声音",
   "message.voicechat.disable.disabled": "点击以禁用所有语音聊天声音",
-  "message.voicechat.disable.no_speaker": "无音频输出设备可用",
+  "message.voicechat.disable.speaker_unavailable": "无音频输出设备可用",
   "message.voicechat.hide_icons.enabled": "点击以显示所有语音聊天图标",
   "message.voicechat.hide_icons.disabled": "点击以隐藏所有语音聊天图标",
   "message.voicechat.show_group_hud.enabled": "点击以隐藏群聊HUD",

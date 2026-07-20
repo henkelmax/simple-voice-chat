@@ -108,7 +108,7 @@
   "message.voicechat.mute.disabled_ptt": "눌러서 말하기를 사용 중이면 음소거할 수 없습니다",
   "message.voicechat.disable.enabled": "모든 음성 채팅 소리를 활성화하려면 누르세요",
   "message.voicechat.disable.disabled": "모든 음성 채팅 소리를 비활성화하려면 누르세요",
-  "message.voicechat.disable.no_speaker": "사용할 수 있는 스피커 없음",
+  "message.voicechat.disable.speaker_unavailable": "사용할 수 있는 스피커 없음",
   "message.voicechat.hide_icons.enabled": "모든 음성 채팅 아이콘을 표시하려면 누르세요",
   "message.voicechat.hide_icons.disabled": "모든 음성 채팅 아이콘을 숨기려면 누르세요",
   "message.voicechat.show_group_hud.enabled": "그룹 채팅 HUD를 숨기려면 누르세요",
