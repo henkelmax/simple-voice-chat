@@ -73,20 +73,23 @@ public class ClientVoicechat {
         synchronized (audioChannels) {
             if (!ClientManager.getPlayerStateManager().isDisabled()) {
                 AudioChannel sendTo = audioChannels.get(packet.getChannelId());
-                if (sendTo == null) {
-                    try {
-                        AudioChannel ch = new AudioChannel(this, connection.getData(), packet.getChannelId());
-                        ch.addToQueue(packet);
-                        ch.start();
-                        audioChannels.put(packet.getChannelId(), ch);
-                    } catch (Exception e) {
-                        CooldownTimer.run("playback_unavailable", () -> {
-                            Voicechat.LOGGER.error("Failed to create audio channel", e);
-                            ChatUtils.sendModErrorMessage("message.voicechat.playback_unavailable", e);
-                        });
-                    }
-                } else {
+                if (sendTo != null) {
                     sendTo.addToQueue(packet);
+                } else {
+                    SoundManager soundManager = getSoundManager();
+                    if (soundManager != null) {
+                        try {
+                            AudioChannel ch = new AudioChannel(this, connection.getData(), soundManager, packet.getChannelId());
+                            ch.addToQueue(packet);
+                            ch.start();
+                            audioChannels.put(packet.getChannelId(), ch);
+                        } catch (Exception e) {
+                            CooldownTimer.run("playback_unavailable", () -> {
+                                Voicechat.LOGGER.error("Failed to create audio channel", e);
+                                ChatUtils.sendModErrorMessage("message.voicechat.playback_unavailable", e);
+                            });
+                        }
+                    }
                 }
             }
 
