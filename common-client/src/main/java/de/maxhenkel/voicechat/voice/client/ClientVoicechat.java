@@ -74,9 +74,12 @@ public class ClientVoicechat {
         synchronized (audioChannels) {
             if (!ClientManager.getPlayerStateManager().isDisabled()) {
                 AudioChannel sendTo = audioChannels.get(packet.getChannelId());
-                if (sendTo == null) {
+                if (sendTo != null) {
+                    sendTo.addToQueue(packet);
+                } else {
+                    // SoundManager soundManager = getSoundManager();
                     try {
-                        AudioChannel ch = new AudioChannel(this, connection.getData(), packet.getChannelId());
+                        AudioChannel ch = new AudioChannel(this, connection.getData(), null/*soundManager*/, packet.getChannelId());
                         ch.addToQueue(packet);
                         ch.start();
                         audioChannels.put(packet.getChannelId(), ch);
@@ -86,8 +89,6 @@ public class ClientVoicechat {
                             ChatUtils.sendModErrorMessage("message.voicechat.playback_unavailable", e);
                         });
                     }
-                } else {
-                    sendTo.addToQueue(packet);
                 }
             }
 
