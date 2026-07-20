@@ -108,7 +108,7 @@
   "message.voicechat.mute.disabled_ptt": "Você não pode silenciar ao usar o premir para falar",
   "message.voicechat.disable.enabled": "Pressione para ativar todos os sons do chat de voz",
   "message.voicechat.disable.disabled": "Pressione para desativar todos os sons do chat de voz",
-  "message.voicechat.disable.no_speaker": "Nenhum altifalante disponível",
+  "message.voicechat.disable.speaker_unavailable": "Nenhum altifalante disponível",
   "message.voicechat.hide_icons.enabled": "Pressione para mostrar todos os ícones do chat de voz",
   "message.voicechat.hide_icons.disabled": "Pressione para ocultar todos os ícones do chat de voz",
   "message.voicechat.show_group_hud.enabled": "Pressione para ocultar o HUD do chat de voz",
