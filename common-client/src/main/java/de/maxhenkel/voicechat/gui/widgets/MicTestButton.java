@@ -79,18 +79,12 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
         setMicActive(!micActive);
         if (micActive) {
             close();
-            try {
-                voiceThread = new VoiceThread(e -> {
-                    setMicActive(false);
-                    active = false;
-                    Voicechat.LOGGER.error("Microphone error", e);
-                });
-                voiceThread.start();
-            } catch (Exception e) {
+            voiceThread = new VoiceThread(e -> {
                 setMicActive(false);
                 active = false;
-                Voicechat.LOGGER.error("Microphone error", e);
-            }
+                Voicechat.LOGGER.error("Microphone testing error", e);
+            });
+            voiceThread.start();
         } else {
             close();
         }
@@ -132,15 +126,14 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
 
     private class VoiceThread extends Thread {
 
-        private final Speaker speaker;
         private boolean running;
         private long lastRender;
         private MicThread micThread;
         private boolean usesOwnMicThread;
-        @Nullable
-        private SoundManager ownSoundManager;
+        private final Consumer<Exception> onError;
 
-        public VoiceThread(Consumer<MicrophoneException> onMicError) throws SpeakerException {
+        public VoiceThread(Consumer<Exception> onError) {
+            this.onError = onError;
             this.running = true;
             setDaemon(true);
             setName("VoiceTestingThread");
@@ -148,25 +141,11 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
 
             micThread = client != null ? client.getMicThread() : null;
             if (micThread == null) {
-                micThread = new MicThread(client, null, onMicError);
+                micThread = new MicThread(client, null, onError::accept);
                 usesOwnMicThread = true;
             } else {
-                micThread.getError(onMicError);
+                micThread.getError(onError::accept);
             }
-
-            SoundManager soundManager;
-            if (client == null) {
-                soundManager = SoundManager.create();
-                ownSoundManager = soundManager;
-            } else {
-                soundManager = client.getSoundManager();
-            }
-
-            if (soundManager == null) {
-                throw new SpeakerException("No sound manager");
-            }
-
-            speaker = SpeakerManager.createSpeaker(soundManager, null);
 
             updateLastRender();
             setMicLocked(true);
@@ -174,43 +153,56 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
 
         @Override
         public void run() {
-            while (running) {
-                if (System.currentTimeMillis() - lastRender > 500L) {
-                    break;
+            SoundManager soundManager = client != null ? client.getSoundManager() : null;
+            boolean ownSoundManager = soundManager == null;
+            Speaker speaker = null;
+            try {
+                if (ownSoundManager) {
+                    soundManager = SoundManager.create();
                 }
-                if (micThread.isClosed()) {
-                    break;
-                }
-                short[] buff = raw ? micThread.pollMic() : micThread.pollProcessedAudio(true);
-                if (buff == null) {
-                    continue;
-                }
+                speaker = SpeakerManager.createSpeaker(soundManager, null);
+                soundManager.trackSpeaker(speaker);
 
+                while (running) {
+                    if (System.currentTimeMillis() - lastRender > 500L) {
+                        break;
+                    }
+                    if (micThread.isClosed()) {
+                        break;
+                    }
+                    short[] buff = raw ? micThread.pollMic() : micThread.pollProcessedAudio(true);
+                    if (buff == null) {
+                        continue;
+                    }
+
+                    if (micListener != null) {
+                        micListener.onMicValue(AudioUtils.getHighestAudioLevel(buff));
+                    }
+
+                    if (raw || micThread.shouldTransmitAudio()) {
+                        speaker.play(buff, VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue(), null);
+                    }
+                }
+            } catch (SpeakerException e) {
+                onError.accept(e);
+            } finally {
+                if (speaker != null) {
+                    speaker.close();
+                    soundManager.untrackSpeaker(speaker);
+                }
+                if (ownSoundManager && soundManager != null) {
+                    soundManager.close();
+                }
+                setMicLocked(false);
                 if (micListener != null) {
-                    micListener.onMicValue(AudioUtils.getHighestAudioLevel(buff));
+                    micListener.onStop();
                 }
-
-                if (raw || micThread.shouldTransmitAudio()) {
-                    play(buff);
+                if (usesOwnMicThread) {
+                    micThread.close();
                 }
+                setMicActive(false);
+                Voicechat.LOGGER.info("Mic test audio channel closed");
             }
-            speaker.close();
-            setMicLocked(false);
-            if (micListener != null) {
-                micListener.onStop();
-            }
-            if (usesOwnMicThread) {
-                micThread.close();
-            }
-            if (ownSoundManager != null) {
-                ownSoundManager.close();
-            }
-            setMicActive(false);
-            Voicechat.LOGGER.info("Mic test audio channel closed");
-        }
-
-        private void play(short[] buff) {
-            speaker.play(buff, VoicechatClient.CLIENT_CONFIG.voiceChatVolume.get().floatValue(), null);
         }
 
         public void updateLastRender() {

@@ -14,7 +14,7 @@ public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
 
     public static final TranslatableComponent DISABLE_ENABLED = new TranslatableComponent("message.voicechat.disable.enabled");
     public static final TranslatableComponent DISABLE_DISABLED = new TranslatableComponent("message.voicechat.disable.disabled");
-    public static final TranslatableComponent DISABLE_NO_SPEAKER = new TranslatableComponent("message.voicechat.disable.no_speaker");
+    public static final TranslatableComponent DISABLE_NO_SPEAKER = new TranslatableComponent("message.voicechat.disable.speaker_unavailable");
 
     private final Screen screen;
     private final ClientPlayerStateManager stateManager;
