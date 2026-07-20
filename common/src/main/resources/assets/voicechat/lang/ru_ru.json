@@ -108,7 +108,7 @@
   "message.voicechat.mute.disabled_ptt": "Вы не можете отключить микрофон при использовании кнопки нажатия",
   "message.voicechat.disable.enabled": "Нажмите, чтобы включить все звуки голосового чата",
   "message.voicechat.disable.disabled": "Нажмите, чтобы отключить все звуки голосового чата",
-  "message.voicechat.disable.no_speaker": "Динамик недоступен",
+  "message.voicechat.disable.speaker_unavailable": "Динамик недоступен",
   "message.voicechat.hide_icons.enabled": "Нажмите, чтобы показать все значки голосового чата",
   "message.voicechat.hide_icons.disabled": "Нажмите, чтобы скрыть все значки голосового чата",
   "message.voicechat.show_group_hud.enabled": "Нажмите, чтобы скрыть групповой HUD",

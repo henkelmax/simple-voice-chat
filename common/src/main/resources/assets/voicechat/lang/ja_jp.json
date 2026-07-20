@@ -120,7 +120,7 @@
   "message.voicechat.mute.disabled_ptt": "プッシュトゥトーク使用中はミュートできません",
   "message.voicechat.disable.enabled": "スピーカーミュートを解除",
   "message.voicechat.disable.disabled": "スピーカーミュート",
-  "message.voicechat.disable.no_speaker": "スピーカーが利用できません",
+  "message.voicechat.disable.speaker_unavailable": "スピーカーが利用できません",
   "message.voicechat.hide_icons.enabled": "すべてのアイコンを表示",
   "message.voicechat.hide_icons.disabled": "すべてのアイコンを隠す",
   "message.voicechat.show_group_hud.enabled": "グループアイコンを隠す",
