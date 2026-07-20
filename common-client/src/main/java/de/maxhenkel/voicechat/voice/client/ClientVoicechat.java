@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 
 public class ClientVoicechat {
 
@@ -96,7 +97,7 @@ public class ClientVoicechat {
     }
 
     public void reloadSoundManager() {
-        soundManagerExecutor.execute(() -> {
+        submitSoundManagerTask(() -> {
             closeSoundManager();
             // try {
             //     soundManager = SoundManager.create();
@@ -105,6 +106,14 @@ public class ClientVoicechat {
             //     Minecraft.getMinecraft().addScheduledTask(() -> ChatUtils.sendModErrorMessage("message.voicechat.speaker_unavailable", e));
             // }
         });
+    }
+
+    private void submitSoundManagerTask(Runnable task) {
+        try {
+            soundManagerExecutor.execute(task);
+        } catch (RejectedExecutionException e) {
+            Voicechat.LOGGER.debug("Ignoring sound manager task after shutdown");
+        }
     }
 
     private void closeSoundManager() {
@@ -246,7 +255,7 @@ public class ClientVoicechat {
             audioChannels.clear();
         }
 
-        soundManagerExecutor.execute(this::closeSoundManager);
+        submitSoundManagerTask(this::closeSoundManager);
         soundManagerExecutor.shutdown();
 
         closeMicThread();
