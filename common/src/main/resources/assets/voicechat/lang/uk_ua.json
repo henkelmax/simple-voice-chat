@@ -108,7 +108,7 @@
   "message.voicechat.mute.disabled_ptt": "Ви не можете вимкнути звук під час використання «активації кнопкою».",
   "message.voicechat.disable.enabled": "Натисніть, щоб увімкнути всі звуки голосового чату",
   "message.voicechat.disable.disabled": "Натисніть, щоб вимкнути всі звуки голосового чату",
-  "message.voicechat.disable.no_speaker": "Немає доступних динаміків",
+  "message.voicechat.disable.speaker_unavailable": "Немає доступних динаміків",
   "message.voicechat.hide_icons.enabled": "Натисніть, щоб показати всі значки голосового чату",
   "message.voicechat.hide_icons.disabled": "Натисніть, щоб приховати всі значки голосового чату",
   "message.voicechat.show_group_hud.enabled": "Натисніть, щоб приховати HUD групового чату",
