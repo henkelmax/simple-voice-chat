@@ -23,7 +23,13 @@ public class SpeakerManager {
                 speaker = new MonoALSpeaker(soundManager, AudioUtils.SAMPLE_RATE, AudioUtils.FRAME_SIZE, audioChannel);
                 break;
         }
-        speaker.open();
+        try {
+            soundManager.trackSpeaker(speaker);
+            speaker.open();
+        } catch (Throwable t) {
+            speaker.close();
+            throw t;
+        }
         return speaker;
     }
 

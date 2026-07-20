@@ -9,6 +9,7 @@ import de.maxhenkel.voicechat.integration.freecam.FreecamUtil;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import de.maxhenkel.voicechat.natives.OpusManager;
 import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
+import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerManager;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.client.Minecraft;
@@ -89,7 +90,15 @@ public class AudioChannel extends Thread {
     @Override
     public void run() {
         try {
-            speaker = SpeakerManager.createSpeaker(soundManager, uuid);
+            try {
+                speaker = SpeakerManager.createSpeaker(soundManager, uuid);
+            } catch (SpeakerException e) {
+                if (soundManager.isClosing()) {
+                    Voicechat.LOGGER.debug("Sound manager closing, skipping audio channel {}", uuid);
+                    return;
+                }
+                throw e;
+            }
 
             while (!stopped) {
                 if (soundManager.isClosed()) {

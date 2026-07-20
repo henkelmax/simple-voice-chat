@@ -194,6 +194,7 @@ public abstract class ALSpeakerBase implements Speaker {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+        soundManager.untrackSpeaker(this);
     }
 
     protected void closeSync() {
