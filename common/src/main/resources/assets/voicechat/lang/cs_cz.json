@@ -86,7 +86,7 @@
   "message.voicechat.mute.disabled_ptt": "Mikrofon nelze ztišit při Stiskni a Mluv",
   "message.voicechat.disable.enabled": "Zapnout zvuky hlasové komunikace",
   "message.voicechat.disable.disabled": "Vypnout zvuky hlasové komunikace",
-  "message.voicechat.disable.no_speaker": "Výstupové zařízení není dostupné",
+  "message.voicechat.disable.speaker_unavailable": "Výstupové zařízení není dostupné",
   "message.voicechat.hide_icons.enabled": "Zobrazit ikony hlasové komunikace",
   "message.voicechat.hide_icons.disabled": "Skrýt ikony hlasové komunikace",
   "message.voicechat.show_group_hud.enabled": "Skrýt HUD skupinového chatu",

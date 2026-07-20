@@ -109,7 +109,7 @@
   "message.voicechat.mute.disabled_ptt": "您不能在使用按鍵發話時靜音。",
   "message.voicechat.disable.enabled": "按下以啟用語音聊天聲音。",
   "message.voicechat.disable.disabled": "按下以停用所有語音聊天聲音。",
-  "message.voicechat.disable.no_speaker": "沒有可用的喇叭。",
+  "message.voicechat.disable.speaker_unavailable": "沒有可用的喇叭。",
   "message.voicechat.hide_icons.enabled": "按下以顯示語音聊天圖示。",
   "message.voicechat.hide_icons.disabled": "按下以隱藏語音聊天圖示。",
   "message.voicechat.show_group_hud.enabled": "按下以隱藏群組聊天介面。",

@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import de.maxhenkel.voicechat.natives.ClientNativeManager;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
+import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -16,11 +17,14 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ClientVoicechat {
 
     @Nullable
-    private SoundManager soundManager;
+    private volatile SoundManager soundManager;
+    private final ExecutorService soundManagerExecutor;
     private final Map<UUID, AudioChannel> audioChannels;
     private final TalkCache talkCache;
     @Nullable
@@ -31,18 +35,14 @@ public class ClientVoicechat {
     private InitializationData initializationData;
     @Nullable
     private AudioRecorder recorder;
-    private long startTime;
+    private final long startTime;
 
     public ClientVoicechat() {
         this.startTime = System.currentTimeMillis();
         this.talkCache = new TalkCache();
-        try {
-            reloadSoundManager();
-        } catch (SpeakerException e) {
-            Voicechat.LOGGER.error("Failed to start sound manager", e);
-            ChatUtils.sendModErrorMessage("message.voicechat.speaker_unavailable", e);
-        }
         this.audioChannels = new HashMap<>();
+        this.soundManagerExecutor = Executors.newSingleThreadExecutor(NamedThreadPoolFactory.create("VoicechatSoundManagerThread"));
+        reloadSoundManager();
     }
 
     public void onVoiceChatConnected(ClientVoicechatConnection connection) {
@@ -95,12 +95,23 @@ public class ClientVoicechat {
         }
     }
 
-    public void reloadSoundManager() throws SpeakerException {
+    public void reloadSoundManager() {
+        soundManagerExecutor.execute(() -> {
+            closeSoundManager();
+            try {
+                soundManager = SoundManager.create();
+            } catch (SpeakerException e) {
+                Voicechat.LOGGER.error("Failed to start sound manager", e);
+                Minecraft.getInstance().execute(() -> ChatUtils.sendModErrorMessage("message.voicechat.speaker_unavailable", e));
+            }
+        });
+    }
+
+    private void closeSoundManager() {
         if (soundManager != null) {
             soundManager.close();
             soundManager = null;
         }
-        soundManager = SoundManager.create();
     }
 
     public void reloadAudio() {
@@ -112,13 +123,10 @@ public class ClientVoicechat {
             Voicechat.LOGGER.info("Clearing audio channels");
             audioChannels.forEach((uuid, audioChannel) -> audioChannel.closeAndKill());
             audioChannels.clear();
-            try {
-                Voicechat.LOGGER.info("Restarting sound manager");
-                reloadSoundManager();
-            } catch (SpeakerException e) {
-                Voicechat.LOGGER.error("Failed to restart sound manager", e);
-            }
         }
+
+        Voicechat.LOGGER.info("Restarting sound manager");
+        reloadSoundManager();
 
         Voicechat.LOGGER.info("Starting microphone thread");
         if (connection != null) {
@@ -238,9 +246,8 @@ public class ClientVoicechat {
             audioChannels.clear();
         }
 
-        if (soundManager != null) {
-            soundManager.close();
-        }
+        soundManagerExecutor.execute(this::closeSoundManager);
+        soundManagerExecutor.shutdown();
 
         closeMicThread();
 
