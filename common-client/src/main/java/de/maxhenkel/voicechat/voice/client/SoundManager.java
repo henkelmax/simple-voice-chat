@@ -9,6 +9,23 @@ import java.util.regex.Pattern;
 
 public class SoundManager {
 
+    /*private final Set<Speaker> speakers = ConcurrentHashMap.newKeySet();
+
+    public void trackSpeaker(Speaker speaker) {
+        speakers.add(speaker);
+    }
+
+    public void untrackSpeaker(Speaker speaker) {
+        speakers.remove(speaker);
+    }
+
+    private void closeSpeakers() {
+        for (Speaker speaker : speakers) {
+            speaker.close();
+        }
+        speakers.clear();
+    }*/
+
     private static final Pattern DEVICE_NAME = Pattern.compile("^(?:OpenAL.+?on )?(.*)$");
 
     public static String cleanDeviceName(String name) {
