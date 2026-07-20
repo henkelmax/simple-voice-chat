@@ -9,10 +9,11 @@ import org.lwjgl.openal.*;
 
 import javax.annotation.Nullable;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,7 +27,8 @@ public class SoundManager {
     private final ALCCapabilities alcCaps;
     private final ALCapabilities alCaps;
     private final float maxGain;
-    private final Set<Speaker> speakers = ConcurrentHashMap.newKeySet();
+    private final Set<Speaker> speakers = new HashSet<>();
+    private boolean closing;
 
     public SoundManager(@Nullable String deviceName, long device, long context, ALCCapabilities alcCaps, ALCapabilities alCaps, float maxGain) {
         this.deviceName = deviceName;
@@ -94,19 +96,37 @@ public class SoundManager {
         }
     }
 
-    public void trackSpeaker(Speaker speaker) {
-        speakers.add(speaker);
+    public void trackSpeaker(Speaker speaker) throws SpeakerException {
+        synchronized (speakers) {
+            if (closing) {
+                throw new SpeakerException("Sound manager is closing");
+            }
+            speakers.add(speaker);
+        }
     }
 
     public void untrackSpeaker(Speaker speaker) {
-        speakers.remove(speaker);
+        synchronized (speakers) {
+            speakers.remove(speaker);
+        }
+    }
+
+    public boolean isClosing() {
+        synchronized (speakers) {
+            return closing;
+        }
     }
 
     private void closeSpeakers() {
-        for (Speaker speaker : speakers) {
+        List<Speaker> toClose;
+        synchronized (speakers) {
+            closing = true;
+            toClose = new ArrayList<>(speakers);
+            speakers.clear();
+        }
+        for (Speaker speaker : toClose) {
             speaker.close();
         }
-        speakers.clear();
     }
 
     public void close() {
