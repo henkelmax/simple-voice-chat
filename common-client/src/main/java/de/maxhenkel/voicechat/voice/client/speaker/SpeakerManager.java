@@ -21,8 +21,13 @@ public class SpeakerManager {
                 speaker = new MonoJavaSpeaker();
                 break;
         }
-
-        speaker.open();
+        try {
+            //soundManager.trackSpeaker(speaker);
+            speaker.open();
+        } catch (Throwable t) {
+            speaker.close();
+            throw t;
+        }
         return speaker;
     }
 

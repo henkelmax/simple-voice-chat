@@ -67,8 +67,6 @@ public class TestSoundPlayer {
             Speaker speaker = null;
             try {
                 speaker = SpeakerManager.createSpeaker(null/*soundManager*/, UUID.randomUUID());
-                //soundManager.trackSpeaker(speaker);
-                speaker.open();
                 for (short[] shorts : testSound) {
                     speaker.play(shorts, 1F, null);
                     Utils.sleep(20);
@@ -77,7 +75,6 @@ public class TestSoundPlayer {
             } finally {
                 if (speaker != null) {
                     speaker.close();
-                    //soundManager.untrackSpeaker(speaker);
                 }
                 /*if (ownSoundManager) {
                     soundManager.close();

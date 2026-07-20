@@ -9,21 +9,40 @@ import java.util.regex.Pattern;
 
 public class SoundManager {
 
-    /*private final Set<Speaker> speakers = ConcurrentHashMap.newKeySet();
+    /*private final Set<Speaker> speakers = new HashSet<>();
+    private boolean closing;
 
-    public void trackSpeaker(Speaker speaker) {
-        speakers.add(speaker);
+    public void trackSpeaker(Speaker speaker) throws SpeakerException {
+        synchronized (speakers) {
+            if (closing) {
+                throw new SpeakerException("Sound manager is closing");
+            }
+            speakers.add(speaker);
+        }
     }
 
     public void untrackSpeaker(Speaker speaker) {
-        speakers.remove(speaker);
+        synchronized (speakers) {
+            speakers.remove(speaker);
+        }
+    }
+
+    public boolean isClosing() {
+        synchronized (speakers) {
+            return closing;
+        }
     }
 
     private void closeSpeakers() {
-        for (Speaker speaker : speakers) {
+        List<Speaker> toClose;
+        synchronized (speakers) {
+            closing = true;
+            toClose = new ArrayList<>(speakers);
+            speakers.clear();
+        }
+        for (Speaker speaker : toClose) {
             speaker.close();
         }
-        speakers.clear();
     }*/
 
     private static final Pattern DEVICE_NAME = Pattern.compile("^(?:OpenAL.+?on )?(.*)$");
