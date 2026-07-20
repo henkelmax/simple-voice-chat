@@ -161,7 +161,6 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
                     soundManager = SoundManager.create();
                 }
                 speaker = SpeakerManager.createSpeaker(soundManager, null);
-                soundManager.trackSpeaker(speaker);
 
                 while (running) {
                     if (System.currentTimeMillis() - lastRender > 500L) {
@@ -188,7 +187,6 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
             } finally {
                 if (speaker != null) {
                     speaker.close();
-                    soundManager.untrackSpeaker(speaker);
                 }
                 if (ownSoundManager && soundManager != null) {
                     soundManager.close();
