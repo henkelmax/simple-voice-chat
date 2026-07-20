@@ -108,7 +108,7 @@
   "message.voicechat.mute.disabled_ptt": "No se puede silenciar cuando se utiliza pulsar para hablar",
   "message.voicechat.disable.enabled": "Pulsa para encender todos los sonidos del chat de voz",
   "message.voicechat.disable.disabled": "Pulsa para apagar todos los sonidos del chat de voz",
-  "message.voicechat.disable.no_speaker": "No hay altavoz un disponible",
+  "message.voicechat.disable.speaker_unavailable": "No hay altavoz un disponible",
   "message.voicechat.hide_icons.enabled": "Pulsar para mostrar todos los iconos del chat de voz",
   "message.voicechat.hide_icons.disabled": "Pulsa para ocultar todos los iconos del chat de voz",
   "message.voicechat.show_group_hud.enabled": "Pulsa para ocultar el chat de grupo HUD",
