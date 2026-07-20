@@ -105,7 +105,7 @@
   "message.voicechat.mute.disabled_ptt": "Du kan ikke dempe når du bruker trykk og snakk",
   "message.voicechat.disable.enabled": "Trykk for å aktivere alle stemmepratlyder",
   "message.voicechat.disable.disabled": "Trykk for å deaktivere alle stemmepratlyder",
-  "message.voicechat.disable.no_speaker": "Ingen lydutgang tilgjengelig",
+  "message.voicechat.disable.speaker_unavailable": "Ingen lydutgang tilgjengelig",
   "message.voicechat.hide_icons.enabled": "Trykk for å vise alle stemmepratikoner",
   "message.voicechat.hide_icons.disabled": "Trykk for å skjule alle stemmepratikoner",
   "message.voicechat.show_group_hud.enabled": "Trykk for å skjule gruppeprat HUD",
