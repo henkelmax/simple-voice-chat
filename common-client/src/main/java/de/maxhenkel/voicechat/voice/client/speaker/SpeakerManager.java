@@ -15,7 +15,13 @@ public class SpeakerManager {
             case REDUCED -> new FakeALSpeaker(soundManager, AudioUtils.SAMPLE_RATE, AudioUtils.FRAME_SIZE, audioChannel);
             case OFF -> new MonoALSpeaker(soundManager, AudioUtils.SAMPLE_RATE, AudioUtils.FRAME_SIZE, audioChannel);
         };
-        speaker.open();
+        try {
+            soundManager.trackSpeaker(speaker);
+            speaker.open();
+        } catch (Throwable t) {
+            speaker.close();
+            throw t;
+        }
         return speaker;
     }
 
