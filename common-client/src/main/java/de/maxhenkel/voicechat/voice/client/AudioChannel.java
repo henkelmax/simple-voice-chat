@@ -30,6 +30,7 @@ public class AudioChannel extends Thread {
     private final Minecraft minecraft;
     private final ClientVoicechat client;
     private final InitializationData initializationData;
+    private final SoundManager soundManager;
     private final UUID uuid;
     private final BlockingQueue<SoundPacket<?>> queue;
     private final AudioPacketBuffer packetBuffer;
@@ -40,9 +41,10 @@ public class AudioChannel extends Thread {
     private long lastSequenceNumber;
     private long lostPackets;
 
-    public AudioChannel(ClientVoicechat client, InitializationData initializationData, UUID uuid) {
+    public AudioChannel(ClientVoicechat client, InitializationData initializationData, SoundManager soundManager, UUID uuid) {
         this.client = client;
         this.initializationData = initializationData;
+        this.soundManager = soundManager;
         this.uuid = uuid;
         this.queue = new LinkedBlockingQueue<>();
         this.packetBuffer = new AudioPacketBuffer(VoicechatClient.CLIENT_CONFIG.audioPacketThreshold.get());
@@ -87,13 +89,12 @@ public class AudioChannel extends Thread {
     @Override
     public void run() {
         try {
-            if (client.getSoundManager() == null) {
-                throw new IllegalStateException("Started audio channel without sound manager");
-            }
-
-            speaker = SpeakerManager.createSpeaker(client.getSoundManager(), uuid);
+            speaker = SpeakerManager.createSpeaker(soundManager, uuid);
 
             while (!stopped) {
+                if (soundManager.isClosed()) {
+                    break;
+                }
                 if (ClientManager.getPlayerStateManager().isDisabled()) {
                     closeAndKill();
                     return;
@@ -165,6 +166,7 @@ public class AudioChannel extends Thread {
         } catch (Throwable e) {
             Voicechat.LOGGER.error("Audio channel error", e);
         } finally {
+            stopped = true;
             if (speaker != null) {
                 flushRecording();
                 speaker.close();
