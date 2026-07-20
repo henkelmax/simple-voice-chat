@@ -46,6 +46,9 @@ public class SoundManager {
         long context = 0L;
         try {
             device = openSpeaker(deviceName);
+            if (!ALC11.alcIsExtensionPresent(device, "ALC_EXT_thread_local_context")) {
+                throw new SpeakerException("OpenAL extension 'ALC_EXT_thread_local_context' is not supported");
+            }
             context = ALC11.alcCreateContext(device, (IntBuffer) null);
             if (context == 0L) {
                 int error = ALC11.alcGetError(device);
