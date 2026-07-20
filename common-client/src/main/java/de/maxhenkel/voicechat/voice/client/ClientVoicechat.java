@@ -20,6 +20,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class ClientVoicechat {
 
@@ -260,6 +261,13 @@ public class ClientVoicechat {
 
         submitSoundManagerTask(this::closeSoundManager);
         soundManagerExecutor.shutdown();
+        try {
+            if (!soundManagerExecutor.awaitTermination(1L, TimeUnit.SECONDS)) {
+                Voicechat.LOGGER.warn("Timed out waiting for sound manager to close");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
 
         closeMicThread();
 
