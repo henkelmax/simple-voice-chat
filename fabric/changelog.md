@@ -1,3 +1,1 @@
-- Fixed not being able to enter spaces in group names
-- Added support for threaded environments
-- Added `threaded_server_support` config option
+- Updated to 26.3-snapshot-5
