@@ -109,6 +109,7 @@ public class ClientVoicechat {
                 Voicechat.LOGGER.error("Failed to start sound manager", e);
                 Minecraft.getInstance().execute(() -> ChatUtils.sendModErrorMessage("message.voicechat.speaker_unavailable", e));
             }
+            Minecraft.getInstance().execute(() -> ClientManager.getPlayerStateManager().onSpeakerAvailabilityChanged());
         });
     }
 
