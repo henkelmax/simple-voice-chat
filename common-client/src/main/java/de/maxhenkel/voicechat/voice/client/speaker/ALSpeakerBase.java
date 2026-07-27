@@ -188,13 +188,14 @@ public abstract class ALSpeakerBase implements Speaker {
         runInContext(this::closeSync);
         executor.shutdown();
         try {
-            if (!executor.awaitTermination(1L, TimeUnit.SECONDS)) {
+            if (executor.awaitTermination(1L, TimeUnit.SECONDS)) {
+                soundManager.untrackSpeaker(this);
+            } else {
                 Voicechat.LOGGER.warn("Timed out waiting for speaker to close");
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-        soundManager.untrackSpeaker(this);
     }
 
     protected void closeSync() {
