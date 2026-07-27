@@ -203,6 +203,10 @@ public class ClientPlayerStateManager {
         syncOwnState();
     }
 
+    public void onSpeakerAvailabilityChanged() {
+        syncOwnState();
+    }
+
     public boolean isInGroup(EntityPlayer player) {
         PlayerState state = states.get(player.getUniqueID());
         if (state == null) {
