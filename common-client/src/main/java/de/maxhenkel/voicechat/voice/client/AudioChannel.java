@@ -36,7 +36,7 @@ public class AudioChannel extends Thread {
     private final AudioPacketBuffer packetBuffer;
     private long lastPacketTime;
     private Speaker speaker;
-    private boolean stopped;
+    private volatile boolean stopped;
     private final OpusDecoder decoder;
     private long lastSequenceNumber;
     private long lostPackets;
@@ -70,9 +70,11 @@ public class AudioChannel extends Thread {
         if (Thread.currentThread() == this) {
             return;
         }
-        interrupt();
         try {
-            join();
+            join(3_000L);
+            if (isAlive()) {
+                Voicechat.LOGGER.warn("Timed out waiting for audio channel {} to close", uuid);
+            }
         } catch (InterruptedException e) {
             Voicechat.LOGGER.error("Interrupted while waiting for audio channel to close", e);
         }
