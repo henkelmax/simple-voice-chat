@@ -24,17 +24,15 @@ public class SoundManager {
     private final String deviceName;
     private long device;
     private long context;
-    private final ALCCapabilities alcCaps;
     private final ALCapabilities alCaps;
     private final float maxGain;
     private final Set<Speaker> speakers = new HashSet<>();
     private boolean closing;
 
-    public SoundManager(@Nullable String deviceName, long device, long context, ALCCapabilities alcCaps, ALCapabilities alCaps, float maxGain) {
+    public SoundManager(@Nullable String deviceName, long device, long context, ALCapabilities alCaps, float maxGain) {
         this.deviceName = deviceName;
         this.device = device;
         this.context = context;
-        this.alcCaps = alcCaps;
         this.alCaps = alCaps;
         this.maxGain = maxGain;
     }
@@ -61,8 +59,7 @@ public class SoundManager {
                 throw new SpeakerException(String.format("Failed to make OpenAL context current: %s", getAlcError(error)));
             }
 
-            ALCCapabilities alcCaps = ALC.createCapabilities(device);
-            ALCapabilities alCaps = AL.createCapabilities(alcCaps);
+            ALCapabilities alCaps = AL.createCapabilities(ALC.createCapabilities(device));
 
             float maxGain;
 
@@ -76,7 +73,7 @@ public class SoundManager {
 
             ClientPluginManager.instance().onCreateALContext(context, device);
 
-            SoundManager soundManager = new SoundManager(deviceName, device, context, alcCaps, alCaps, maxGain);
+            SoundManager soundManager = new SoundManager(deviceName, device, context, alCaps, maxGain);
             device = 0L;
             context = 0L;
             return soundManager;
@@ -230,10 +227,14 @@ public class SoundManager {
         }
         boolean success = EXTThreadLocalContext.alcSetThreadContext(context);
         checkAlcError(device);
+        if (success) {
+            AL.setCurrentThread(alCaps);
+        }
         return success;
     }
 
     public void closeContext() {
+        AL.setCurrentThread(null);
         EXTThreadLocalContext.alcSetThreadContext(0L);
         checkAlcError(device);
     }
