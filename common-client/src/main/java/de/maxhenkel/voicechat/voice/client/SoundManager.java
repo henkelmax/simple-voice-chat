@@ -22,8 +22,8 @@ public class SoundManager {
 
     @Nullable
     private final String deviceName;
-    private long device;
-    private long context;
+    private volatile long device;
+    private volatile long context;
     private final ALCapabilities alCaps;
     private final float maxGain;
     private final Set<Speaker> speakers = new HashSet<>();
@@ -128,20 +128,20 @@ public class SoundManager {
 
     public void close() {
         closeSpeakers();
-        if (!isClosed()) {
-            ClientPluginManager.instance().onDestroyALContext(context, device);
+        if (isClosed()) {
+            return;
         }
-        if (context != 0L) {
-            ALC11.alcDestroyContext(context);
-            checkAlcError(device);
+        long ctx = context;
+        long dev = device;
+        context = 0L;
+        device = 0L;
+
+        ClientPluginManager.instance().onDestroyALContext(ctx, dev);
+        ALC11.alcDestroyContext(ctx);
+        checkAlcError(dev);
+        if (!ALC11.alcCloseDevice(dev)) {
+            checkAlcError(dev);
         }
-        if (device != 0L) {
-            if (!ALC11.alcCloseDevice(device)) {
-                checkAlcError(device);
-            }
-        }
-        context = 0;
-        device = 0;
     }
 
     public float getMaxGain() {
