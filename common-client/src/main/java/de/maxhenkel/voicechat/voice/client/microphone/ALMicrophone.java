@@ -171,6 +171,10 @@ public class ALMicrophone implements Microphone {
 
     private static boolean useStereoWorkaround() {
         if (alStereoWorkaround == null) {
+            if (ALC11.alcGetCurrentContext() == 0L) {
+                Voicechat.LOGGER.warn("No OpenAL context is current - assuming stereo workaround is required");
+                return true;
+            }
             alStereoWorkaround = shouldUseStereoWorkaround();
             if (alStereoWorkaround) {
                 Voicechat.LOGGER.info("Using stereo workaround for OpenAL microphones");
