@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.voice.client.microphone;
 /*import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.util.Version;
 import de.maxhenkel.voicechat.voice.client.MicrophoneException;
+import de.maxhenkel.voicechat.voice.client.OpenALVersion;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import org.lwjgl.openal.*;
@@ -171,10 +172,6 @@ public class ALMicrophone implements Microphone {
 
     private static boolean useStereoWorkaround() {
         if (alStereoWorkaround == null) {
-            if (ALC11.alcGetCurrentContext() == 0L) {
-                Voicechat.LOGGER.warn("No OpenAL context is current - assuming stereo workaround is required");
-                return true;
-            }
             alStereoWorkaround = shouldUseStereoWorkaround();
             if (alStereoWorkaround) {
                 Voicechat.LOGGER.info("Using stereo workaround for OpenAL microphones");
@@ -184,15 +181,9 @@ public class ALMicrophone implements Microphone {
     }
 
     private static boolean shouldUseStereoWorkaround() {
-        String alVersionString = AL11.alGetString(AL11.AL_VERSION);
-        if (alVersionString == null) {
-            Voicechat.LOGGER.warn("Failed to get OpenAL version - assuming stereo workaround is required");
-            return true;
-        }
-        Voicechat.LOGGER.debug("OpenAL version: {}", alVersionString);
-        Version alVersion = Version.fromOpenALVersion(alVersionString);
+        Version alVersion = OpenALVersion.get();
         if (alVersion == null) {
-            Voicechat.LOGGER.warn("Failed to parse OpenAL version - assuming stereo workaround is required");
+            Voicechat.LOGGER.warn("Failed to get OpenAL version - assuming stereo workaround is required");
             return true;
         }
         // OpenAL 1.25 and 1.25.1 has a broken implementation of Multi2Mono which causes stereo microphones to crackle when downmixed to mono
