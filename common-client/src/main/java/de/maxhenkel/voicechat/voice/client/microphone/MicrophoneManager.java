@@ -3,10 +3,8 @@ package de.maxhenkel.voicechat.voice.client.microphone;
 import com.sun.jna.Platform;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.util.Version;
 import de.maxhenkel.voicechat.voice.client.MicrophoneException;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
-import org.lwjgl.openal.AL11;
 
 import java.util.List;
 
