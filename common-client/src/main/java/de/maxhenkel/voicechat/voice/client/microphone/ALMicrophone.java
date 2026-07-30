@@ -193,7 +193,7 @@ public class ALMicrophone implements Microphone {
         }
         // OpenAL 1.25 and 1.25.1 has a broken implementation of Multi2Mono which causes stereo microphones to crackle when downmixed to mono
         // This has been fixed by https://github.com/kcat/openal-soft/pull/1246 so it will work again in 1.25.2+
-        return alVersion.compareTo(new Version(1, 25, 0)) >= 0 && new Version(1, 25, 1).compareTo(alVersion) <= 0;
+        return alVersion.compareTo(new Version(1, 25, 0)) >= 0 && alVersion.compareTo(new Version(1, 25, 1)) <= 0;
     }
 
 }
