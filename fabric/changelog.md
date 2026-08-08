@@ -1,2 +1,5 @@
-- Added support for threaded environments
-- Added `threaded_server_support` config option
+- Fixed some speakers breaking voice chat audio
+- Fixed race condition when quickly disconnecting and reconnecting
+- Fixed voice chat breaking if Minecrafts audio system is not initialized
+- Fixed potential OpenAL resource leaks
+- Fixed incorrect OpenAL version detection
