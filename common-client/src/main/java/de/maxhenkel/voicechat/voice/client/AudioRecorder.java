@@ -31,12 +31,15 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 public class AudioRecorder {
 
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
 
     private static final int MP3_BITRATE = 320;
+
+    private static final Pattern RECORDING_FILE_REPLACE_REGEX = Pattern.compile("[^a-zA-Z0-9-_ ]");
 
     private final long timestamp;
     private final Path location;
@@ -110,15 +113,21 @@ public class AudioRecorder {
         return FileUtils.byteCountToDisplaySize(size);
     }
 
+    @Nullable
     private String lookupName(UUID uuid) {
         if (uuid.equals(ownProfile.getId())) {
             return ownProfile.getName();
         }
-        String username = VoicechatClient.USERNAME_CACHE.getUsername(uuid);
-        if (username == null) {
-            return "system-" + uuid;
+        return VoicechatClient.USERNAME_CACHE.getUsername(uuid);
+    }
+
+    private Path getRecordingFile(UUID uuid) {
+        String username = lookupName(uuid);
+        if (username == null || username.isBlank()) {
+            username = String.format("system-%s", uuid);
         }
-        return username;
+        String fileName = RECORDING_FILE_REPLACE_REGEX.matcher(username).replaceAll("_");
+        return location.resolve(String.format("%s.mp3", fileName));
     }
 
     public void appendChunk(UUID uuid, long chunkTimestamp, short[] data) throws IOException {
@@ -128,7 +137,7 @@ public class AudioRecorder {
         }
 
         if (!encoders.containsKey(uuid)) {
-            Mp3Encoder encoder = LameManager.createEncoder(stereoFormat, MP3_BITRATE, VoicechatClient.CLIENT_CONFIG.recordingQuality.get(), Files.newOutputStream(location.resolve(lookupName(uuid) + ".mp3"), StandardOpenOption.CREATE_NEW));
+            Mp3Encoder encoder = LameManager.createEncoder(stereoFormat, MP3_BITRATE, VoicechatClient.CLIENT_CONFIG.recordingQuality.get(), Files.newOutputStream(getRecordingFile(uuid), StandardOpenOption.CREATE_NEW));
             encoders.put(uuid, new EncoderData(encoder, timestamp));
             if (encoder == null) {
                 throw new IOException("Failed to load mp3 encoder");
