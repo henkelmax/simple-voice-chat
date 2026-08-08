@@ -121,7 +121,7 @@ public class AudioRecorder {
 
     private Path getRecordingFile(UUID uuid) {
         String username = lookupName(uuid);
-        if (username == null || username.isBlank()) {
+        if (username == null || username.trim().isEmpty()) {
             username = String.format("system-%s", uuid);
         }
         String fileName = RECORDING_FILE_REPLACE_REGEX.matcher(username).replaceAll("_");
