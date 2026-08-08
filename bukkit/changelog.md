@@ -1,3 +1,0 @@
-- Don't allow inviting vanished players to groups
-- Improve Folia support
-- Added `threaded_server_support` config option
