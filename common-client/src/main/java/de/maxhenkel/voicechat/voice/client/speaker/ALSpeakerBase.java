@@ -17,6 +17,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public abstract class ALSpeakerBase implements Speaker {
@@ -185,6 +186,16 @@ public abstract class ALSpeakerBase implements Speaker {
     @Override
     public void close() {
         runInContext(this::closeSync);
+        executor.shutdown();
+        try {
+            if (executor.awaitTermination(1L, TimeUnit.SECONDS)) {
+                soundManager.untrackSpeaker(this);
+            } else {
+                Voicechat.LOGGER.warn("Timed out waiting for speaker to close");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     protected void closeSync() {
@@ -200,7 +211,6 @@ public abstract class ALSpeakerBase implements Speaker {
             SoundManager.checkAlError();
         }
         source = 0;
-        executor.shutdown();
     }
 
     public void checkBufferEmpty(Runnable onEmpty) {

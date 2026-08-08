@@ -194,6 +194,10 @@ public class ClientPlayerStateManager {
         syncOwnState();
     }
 
+    public void onSpeakerAvailabilityChanged() {
+        syncOwnState();
+    }
+
     public boolean isInGroup(Player player) {
         PlayerState state = states.get(player.getUUID());
         if (state == null) {

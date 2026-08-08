@@ -3,13 +3,17 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
+import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import org.lwjgl.openal.*;
 
 import javax.annotation.Nullable;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,17 +22,17 @@ public class SoundManager {
 
     @Nullable
     private final String deviceName;
-    private long device;
-    private long context;
-    private final ALCCapabilities alcCaps;
+    private volatile long device;
+    private volatile long context;
     private final ALCapabilities alCaps;
     private final float maxGain;
+    private final Set<Speaker> speakers = new HashSet<>();
+    private boolean closing;
 
-    public SoundManager(@Nullable String deviceName, long device, long context, ALCCapabilities alcCaps, ALCapabilities alCaps, float maxGain) {
+    public SoundManager(@Nullable String deviceName, long device, long context, ALCapabilities alCaps, float maxGain) {
         this.deviceName = deviceName;
         this.device = device;
         this.context = context;
-        this.alcCaps = alcCaps;
         this.alCaps = alCaps;
         this.maxGain = maxGain;
     }
@@ -38,28 +42,24 @@ public class SoundManager {
     }
 
     public static SoundManager create(@Nullable String deviceName) throws SpeakerException {
-        long prevContext = ALC11.alcGetCurrentContext();
-        long prevDevice = (prevContext != 0L) ? ALC11.alcGetContextsDevice(prevContext) : 0L;
+        long device = 0L;
+        long context = 0L;
         try {
-            long device = openSpeaker(deviceName);
-            long context = ALC11.alcCreateContext(device, (IntBuffer) null);
+            device = openSpeaker(deviceName);
+            if (!ALC11.alcIsExtensionPresent(device, "ALC_EXT_thread_local_context")) {
+                throw new SpeakerException("OpenAL extension 'ALC_EXT_thread_local_context' is not supported");
+            }
+            context = ALC11.alcCreateContext(device, (IntBuffer) null);
             if (context == 0L) {
                 int error = ALC11.alcGetError(device);
-                ALC11.alcCloseDevice(device);
-                checkAlcError(device);
                 throw new SpeakerException(String.format("Failed to create OpenAL context: %s", getAlcError(error)));
             }
-            if (!ALC11.alcMakeContextCurrent(context)) {
+            if (!EXTThreadLocalContext.alcSetThreadContext(context)) {
                 int error = ALC11.alcGetError(device);
-                ALC11.alcDestroyContext(context);
-                checkAlcError(device);
-                ALC11.alcCloseDevice(device);
-                checkAlcError(device);
                 throw new SpeakerException(String.format("Failed to make OpenAL context current: %s", getAlcError(error)));
             }
 
-            ALCCapabilities alcCaps = ALC.createCapabilities(device);
-            ALCapabilities alCaps = AL.createCapabilities(alcCaps);
+            ALCapabilities alCaps = AL.createCapabilities(ALC.createCapabilities(device));
 
             float maxGain;
 
@@ -73,49 +73,75 @@ public class SoundManager {
 
             ClientPluginManager.instance().onCreateALContext(context, device);
 
-            return new SoundManager(deviceName, device, context, alcCaps, alCaps, maxGain);
+            SoundManager soundManager = new SoundManager(deviceName, device, context, alCaps, maxGain);
+            device = 0L;
+            context = 0L;
+            return soundManager;
         } catch (SpeakerException speakerException) {
             throw speakerException;
         } catch (Throwable t) {
             throw new SpeakerException("Failed to initialize OpenAL context", t);
         } finally {
-            try {
-                if (prevContext != 0L) {
-                    if (!ALC11.alcMakeContextCurrent(prevContext)) {
-                        if (prevDevice != 0L) {
-                            int error = ALC11.alcGetError(prevDevice);
-                            Voicechat.LOGGER.error("Failed to restore previous OpenAL context ({}): {}", prevContext, getAlcError(error));
-                        } else {
-                            Voicechat.LOGGER.error("Failed to restore previous OpenAL context ({}): Device not found", prevContext);
-                        }
-                    } else {
-                        if (prevDevice != 0L) {
-                            ALCCapabilities prevAlcCaps = ALC.createCapabilities(prevDevice);
-                            AL.createCapabilities(prevAlcCaps);
-                        }
-                    }
-                }
-            } catch (Throwable t) {
-                Voicechat.LOGGER.warn("Failed to restore previous OpenAL context", t);
+            EXTThreadLocalContext.alcSetThreadContext(0L);
+            AL.setCurrentThread(null);
+            if (context != 0L) {
+                ALC11.alcDestroyContext(context);
+            }
+            if (device != 0L && !ALC11.alcCloseDevice(device)) {
+                Voicechat.LOGGER.warn("Failed to close audio device");
             }
         }
     }
 
-    public void close() {
-        if (!isClosed()) {
-            ClientPluginManager.instance().onDestroyALContext(context, device);
-        }
-        if (context != 0L) {
-            ALC11.alcDestroyContext(context);
-            checkAlcError(device);
-        }
-        if (device != 0L) {
-            if (!ALC11.alcCloseDevice(device)) {
-                checkAlcError(device);
+    public void trackSpeaker(Speaker speaker) throws SpeakerException {
+        synchronized (speakers) {
+            if (closing) {
+                throw new SpeakerException("Sound manager is closing");
             }
+            speakers.add(speaker);
         }
-        context = 0;
-        device = 0;
+    }
+
+    public void untrackSpeaker(Speaker speaker) {
+        synchronized (speakers) {
+            speakers.remove(speaker);
+        }
+    }
+
+    public boolean isClosing() {
+        synchronized (speakers) {
+            return closing;
+        }
+    }
+
+    private void closeSpeakers() {
+        List<Speaker> toClose;
+        synchronized (speakers) {
+            closing = true;
+            toClose = new ArrayList<>(speakers);
+            speakers.clear();
+        }
+        for (Speaker speaker : toClose) {
+            speaker.close();
+        }
+    }
+
+    public void close() {
+        closeSpeakers();
+        if (isClosed()) {
+            return;
+        }
+        long ctx = context;
+        long dev = device;
+        context = 0L;
+        device = 0L;
+
+        ClientPluginManager.instance().onDestroyALContext(ctx, dev);
+        ALC11.alcDestroyContext(ctx);
+        checkAlcError(dev);
+        if (!ALC11.alcCloseDevice(dev)) {
+            checkAlcError(dev);
+        }
     }
 
     public float getMaxGain() {
@@ -201,10 +227,14 @@ public class SoundManager {
         }
         boolean success = EXTThreadLocalContext.alcSetThreadContext(context);
         checkAlcError(device);
+        if (success) {
+            AL.setCurrentThread(alCaps);
+        }
         return success;
     }
 
     public void closeContext() {
+        AL.setCurrentThread(null);
         EXTThreadLocalContext.alcSetThreadContext(0L);
         checkAlcError(device);
     }
