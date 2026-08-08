@@ -18,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 
 public class MicThread extends Thread {
 
@@ -25,15 +26,21 @@ public class MicThread extends Thread {
     private final ClientVoicechat client;
     @Nullable
     private final ClientVoicechatConnection connection;
-    private final Microphone mic;
+    @Nullable
+    private Microphone mic;
+    @Nullable
+    private MicrophoneException microphoneError;
     private boolean running;
     private boolean microphoneLocked;
     private final OpusEncoder encoder;
     private MicrophoneProcessor microphoneProcessor;
 
-    public MicThread(@Nullable ClientVoicechat client, @Nullable ClientVoicechatConnection connection) throws MicrophoneException {
+    private final Consumer<MicrophoneException> onError;
+
+    public MicThread(@Nullable ClientVoicechat client, @Nullable ClientVoicechatConnection connection, Consumer<MicrophoneException> onError) {
         this.client = client;
         this.connection = connection;
+        this.onError = onError;
         this.running = true;
         this.encoder = OpusManager.createEncoder(connection == null ? ServerConfig.Codec.VOIP.getMode() : connection.getData().getCodec().getMode());
         microphoneProcessor = createMicrophoneProcessor();
@@ -41,7 +48,6 @@ public class MicThread extends Thread {
         setDaemon(true);
         setName("MicrophoneThread");
         setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
-        mic = MicrophoneManager.createMicrophone();
     }
 
     private MicrophoneProcessor createMicrophoneProcessor() {
@@ -53,8 +59,19 @@ public class MicThread extends Thread {
         }
     }
 
+    public void getError(Consumer<MicrophoneException> onError) {
+        if (microphoneError != null) {
+            onError.accept(microphoneError);
+        }
+    }
+
     @Override
     public void run() {
+        Microphone mic = getMic();
+        if (mic == null) {
+            return;
+        }
+
         while (running) {
             MicrophoneActivationType type = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get();
             if (!type.equals(microphoneProcessor.getActivationType())) {
@@ -98,6 +115,10 @@ public class MicThread extends Thread {
 
     @Nullable
     public short[] pollMic() {
+        Microphone mic = getMic();
+        if (mic == null) {
+            throw new IllegalStateException("No microphone available");
+        }
         if (!mic.isStarted()) {
             mic.start();
         }
@@ -116,6 +137,24 @@ public class MicThread extends Thread {
         }
         microphoneProcessor.process(audio, testing);
         return audio;
+    }
+
+    @Nullable
+    private Microphone getMic() {
+        if (!running) {
+            return null;
+        }
+        if (mic == null) {
+            try {
+                mic = MicrophoneManager.createMicrophone();
+            } catch (MicrophoneException e) {
+                onError.accept(e);
+                microphoneError = e;
+                running = false;
+                return null;
+            }
+        }
+        return mic;
     }
 
     private void flush() {
