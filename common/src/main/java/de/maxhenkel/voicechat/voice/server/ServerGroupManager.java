@@ -93,18 +93,18 @@ public class ServerGroupManager {
     }
 
     public void joinGroup(@Nullable Group group, ServerPlayer player, @Nullable String password) {
+        if (group != null && group.getPassword() != null && !group.getPassword().equals(password)) {
+            NetManager.sendToClient(player, new JoinedGroupPacket(null, true));
+            return;
+        }
+
         if (PluginManager.instance().onJoinGroup(player, group)) {
             return;
         }
+
         if (group == null) {
             NetManager.sendToClient(player, new JoinedGroupPacket(null, false));
             return;
-        }
-        if (group.getPassword() != null) {
-            if (!group.getPassword().equals(password)) {
-                NetManager.sendToClient(player, new JoinedGroupPacket(null, true));
-                return;
-            }
         }
 
         PlayerStateManager manager = getStates();
