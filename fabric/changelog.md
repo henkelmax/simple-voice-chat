@@ -1,1 +1,1 @@
-- Updated to 26.3-pre-2
+- Fixed JoinGroupEvent being fired for wrong password attempts
