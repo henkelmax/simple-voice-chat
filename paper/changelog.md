@@ -1,0 +1,1 @@
+- Fixed JoinGroupEvent being fired for wrong password attempts
