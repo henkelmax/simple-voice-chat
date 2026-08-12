@@ -100,7 +100,11 @@ public class VoicechatSocketImpl extends VoicechatSocketBase implements Voicecha
     @Override
     public void close() {
         if (socket != null) {
-            socket.close();
+            try {
+                socket.close();
+            } catch (Throwable ignored) {
+                // Apparently some JDKs throw an "Error" when closing a datagram socket
+            }
         }
     }
 
