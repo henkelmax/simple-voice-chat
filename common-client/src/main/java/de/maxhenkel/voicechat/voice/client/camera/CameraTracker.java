@@ -28,9 +28,9 @@ public class CameraTracker {
         Entity cameraEntity = minecraft.getCameraEntity();
         state = new CameraState(
                 camera.position(),
-                new Vector3f(camera.forwardVector()),
-                new Vector3f(camera.upVector()),
-                camera.yRot(),
+                new Vector3f(camera.getLookVector()),
+                new Vector3f(camera.getUpVector()),
+                camera.getYRot(),
                 player.getUUID(),
                 player.getEyePosition(),
                 cameraEntity == null ? null : cameraEntity.getUUID(),

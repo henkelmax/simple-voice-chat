@@ -11,6 +11,7 @@ import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.lwjgl.openal.AL11;
 
 import javax.annotation.Nullable;

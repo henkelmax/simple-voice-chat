@@ -51,7 +51,7 @@ public class PositionalAudioUtils {
      */
     private static float[] getStereoVolume(Vec3 soundPos) {
         CameraState camera = ClientManager.getCameraState();
-        return getStereoVolume(camera.getPosition(), camera.getYRot(), soundPos);
+        return getStereoVolume(camera.position(), camera.yRot(), soundPos);
     }
 
     /**
@@ -62,7 +62,7 @@ public class PositionalAudioUtils {
      * @return the resulting audio volume
      */
     public static float getDistanceVolume(float maxDistance, Vec3 pos) {
-        return getDistanceVolume(maxDistance, ClientManager.getCameraState().getPosition(), pos);
+        return getDistanceVolume(maxDistance, ClientManager.getCameraState().position(), pos);
     }
 
     /**
@@ -170,7 +170,7 @@ public class PositionalAudioUtils {
 
     public static short[] convertToStereoForRecording(float maxDistance, Vec3 pos, short[] monoData, float volume) {
         CameraState camera = ClientManager.getCameraState();
-        return convertToStereoForRecording(maxDistance, camera.getPosition(), camera.getYRot(), pos, monoData, volume);
+        return convertToStereoForRecording(maxDistance, camera.position(), camera.yRot(), pos, monoData, volume);
     }
 
     public static short[] convertToStereoForRecording(float maxDistance, Vec3 cameraPos, float yRot, Vec3 pos, short[] monoData) {
