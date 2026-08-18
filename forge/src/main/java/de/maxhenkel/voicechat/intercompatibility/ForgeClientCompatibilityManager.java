@@ -34,6 +34,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     private final List<KeyboardEvent> keyboardEvents;
     private final List<MouseEvent> mouseEvents;
     private final List<Runnable> clientTickEvents;
+    private final List<Runnable> renderTickEvents;
     private final List<Runnable> inputEvents;
     private final List<Runnable> disconnectEvents;
     private final List<Runnable> joinWorldEvents;
@@ -48,6 +49,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         keyboardEvents = new CopyOnWriteArrayList<>();
         mouseEvents = new CopyOnWriteArrayList<>();
         clientTickEvents = new CopyOnWriteArrayList<>();
+        renderTickEvents = new CopyOnWriteArrayList<>();
         inputEvents = new CopyOnWriteArrayList<>();
         disconnectEvents = new CopyOnWriteArrayList<>();
         joinWorldEvents = new CopyOnWriteArrayList<>();
@@ -93,6 +95,14 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @SubscribeEvent
     public void onInput(TickEvent.ClientTickEvent event) {
         inputEvents.forEach(Runnable::run);
+    }
+
+    @SubscribeEvent
+    public void onRenderTick(TickEvent.RenderTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) {
+            return;
+        }
+        renderTickEvents.forEach(Runnable::run);
     }
 
     @SubscribeEvent
@@ -155,6 +165,11 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @Override
     public void onClientTick(Runnable onClientTick) {
         clientTickEvents.add(onClientTick);
+    }
+
+    @Override
+    public void onRenderTick(Runnable onRenderTick) {
+        renderTickEvents.add(onRenderTick);
     }
 
     @Override
