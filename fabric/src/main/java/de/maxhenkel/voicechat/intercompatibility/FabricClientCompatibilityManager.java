@@ -47,6 +47,11 @@ public class FabricClientCompatibilityManager extends ClientCompatibilityManager
     }
 
     @Override
+    public void onRenderTick(Runnable onRenderTick) {
+        RenderEvents.RENDER_TICK.register(onRenderTick);
+    }
+
+    @Override
     public InputMappings.Input getBoundKeyOf(KeyBinding keyBinding) {
         return KeyBindingHelper.getBoundKeyOf(keyBinding);
     }

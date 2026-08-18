@@ -4,11 +4,11 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.events.OpenALSoundEvent;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientUtils;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
+import de.maxhenkel.voicechat.voice.client.camera.CameraState;
 import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.openal.AL11;
@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 
 public abstract class ALSpeakerBase implements Speaker {
 
-    protected final Minecraft mc;
     protected final SoundManager soundManager;
     protected final int sampleRate;
     protected int bufferSize;
@@ -36,7 +35,6 @@ public abstract class ALSpeakerBase implements Speaker {
     protected UUID audioChannelId;
 
     public ALSpeakerBase(SoundManager soundManager, int sampleRate, int bufferSize, @Nullable UUID audioChannelId) {
-        mc = Minecraft.getInstance();
         this.soundManager = soundManager;
         this.sampleRate = sampleRate;
         this.bufferSize = bufferSize;
@@ -160,10 +158,10 @@ public abstract class ALSpeakerBase implements Speaker {
     }
 
     protected void setPositionSync(@Nullable Vector3d soundPos, float maxDistance) {
-        ActiveRenderInfo camera = mc.gameRenderer.getMainCamera();
-        Vector3d position = camera.getPosition();
-        Vector3f look = camera.getLookVector();
-        Vector3f up = camera.getUpVector();
+        CameraState camera = ClientManager.getCameraState();
+        Vector3d position = camera.position();
+        Vector3f look = camera.forward();
+        Vector3f up = camera.up();
         AL11.alListener3f(AL11.AL_POSITION, (float) position.x, (float) position.y, (float) position.z);
         SoundManager.checkAlError();
         AL11.alListenerfv(AL11.AL_ORIENTATION, new float[]{look.x(), look.y(), look.z(), up.x(), up.y(), up.z()});

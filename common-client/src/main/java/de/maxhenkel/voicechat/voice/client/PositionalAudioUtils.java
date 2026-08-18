@@ -1,18 +1,15 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.voice.client.camera.CameraState;
 import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
 import de.maxhenkel.voicechat.voice.common.Utils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nullable;
 
 public class PositionalAudioUtils {
-
-    private static final Minecraft mc = Minecraft.getInstance();
 
     /**
      * @param cameraPos the position of the listener
@@ -53,8 +50,8 @@ public class PositionalAudioUtils {
      * @return a float array of length 2, containing the left and right volume (0-1)
      */
     private static float[] getStereoVolume(Vector3d soundPos) {
-        ActiveRenderInfo mainCamera = mc.gameRenderer.getMainCamera();
-        return getStereoVolume(mainCamera.getPosition(), mainCamera.getYRot(), soundPos);
+        CameraState camera = ClientManager.getCameraState();
+        return getStereoVolume(camera.position(), camera.yRot(), soundPos);
     }
 
     /**
@@ -65,7 +62,7 @@ public class PositionalAudioUtils {
      * @return the resulting audio volume
      */
     public static float getDistanceVolume(float maxDistance, Vector3d pos) {
-        return getDistanceVolume(maxDistance, mc.gameRenderer.getMainCamera().getPosition(), pos);
+        return getDistanceVolume(maxDistance, ClientManager.getCameraState().position(), pos);
     }
 
     /**
@@ -168,11 +165,12 @@ public class PositionalAudioUtils {
     }
 
     public static short[] convertToStereoForRecording(float maxDistance, Vector3d pos, short[] monoData) {
-        return convertToStereoForRecording(maxDistance, mc.gameRenderer.getMainCamera().getPosition(), mc.gameRenderer.getMainCamera().getYRot(), pos, monoData);
+        return convertToStereoForRecording(maxDistance, pos, monoData, 1F);
     }
 
     public static short[] convertToStereoForRecording(float maxDistance, Vector3d pos, short[] monoData, float volume) {
-        return convertToStereoForRecording(maxDistance, mc.gameRenderer.getMainCamera().getPosition(), mc.gameRenderer.getMainCamera().getYRot(), pos, monoData, volume);
+        CameraState camera = ClientManager.getCameraState();
+        return convertToStereoForRecording(maxDistance, camera.position(), camera.yRot(), pos, monoData, volume);
     }
 
     public static short[] convertToStereoForRecording(float maxDistance, Vector3d cameraPos, float yRot, Vector3d pos, short[] monoData) {
