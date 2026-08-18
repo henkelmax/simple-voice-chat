@@ -1,1 +1,1 @@
-- Improve ping system
+- Fixed error when pinging unresolved addresses on proxies

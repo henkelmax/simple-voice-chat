@@ -7,16 +7,8 @@ import java.util.UUID;
 
 public class PingManager {
 
-    public static void sendPing(SocketAddress address, int attempts, PingListener listener) {
-        new PingThread(address, attempts, listener).start();
-    }
-
-    public static InetSocketAddress withPort(SocketAddress address, int newPort) {
-        InetSocketAddress inetAddress = (InetSocketAddress) address;
-        if (inetAddress.isUnresolved()) {
-            return InetSocketAddress.createUnresolved(inetAddress.getHostString(), newPort);
-        }
-        return new InetSocketAddress(inetAddress.getAddress(), newPort);
+    public static void sendPing(SocketAddress address, int port, int attempts, PingListener listener) {
+        new PingThread((InetSocketAddress) address, port, attempts, listener).start();
     }
 
     private static class PingThread extends Thread {
@@ -26,12 +18,14 @@ public class PingManager {
 
         private static final int INTERVAL = 1000;
 
-        private final SocketAddress address;
+        private final InetSocketAddress address;
+        private final int port;
         private final int totalAttempts;
         private final PingListener listener;
 
-        public PingThread(SocketAddress address, int totalAttempts, PingListener listener) {
+        public PingThread(InetSocketAddress address, int port, int totalAttempts, PingListener listener) {
             this.address = address;
+            this.port = port;
             this.totalAttempts = totalAttempts;
             this.listener = listener;
             setDaemon(true);
@@ -40,6 +34,15 @@ public class PingManager {
 
         @Override
         public void run() {
+            InetAddress host = address.getAddress();
+            if (host == null) {
+                try {
+                    host = InetAddress.getByName(address.getHostString());
+                } catch (UnknownHostException e) {
+                    listener.onError(e);
+                    return;
+                }
+            }
             try (DatagramSocket socket = new DatagramSocket()) {
                 socket.setSoTimeout(INTERVAL);
                 int timeoutCount = 0;
@@ -48,7 +51,7 @@ public class PingManager {
                 for (int i = 0; i < totalAttempts; i++) {
                     try {
                         listener.onSend(i + 1);
-                        sendPing(socket, address);
+                        sendPing(socket, host, port);
                     } catch (Exception e) {
                         listener.onError(e);
                         return;
@@ -76,14 +79,14 @@ public class PingManager {
             }
         }
 
-        private static void sendPing(DatagramSocket socket, SocketAddress address) throws IOException {
+        private static void sendPing(DatagramSocket socket, InetAddress host, int port) throws IOException {
             Ping ping = new Ping(UUID.randomUUID(), System.currentTimeMillis());
             ByteBuffer byteBuf = ByteBuffer.allocate(3 * 8);
             ping.write(byteBuf);
             byteBuf.flip();
             byte[] byteArray = new byte[byteBuf.remaining()];
             byteBuf.get(byteArray);
-            send(socket, address, CHECK_V1, byteArray);
+            send(socket, host, port, CHECK_V1, byteArray);
         }
 
         private static Pong receivePong(DatagramSocket socket) throws IOException {
@@ -91,7 +94,7 @@ public class PingManager {
             return read(received);
         }
 
-        protected static void send(DatagramSocket socket, SocketAddress address, UUID id, byte[] payload) throws IOException {
+        protected static void send(DatagramSocket socket, InetAddress host, int port, UUID id, byte[] payload) throws IOException {
             ByteBuffer byteBuf = ByteBuffer.allocate(4096);
 
             byteBuf.put(MAGIC_BYTE);
@@ -105,7 +108,7 @@ public class PingManager {
             byte[] byteArray = new byte[byteBuf.remaining()];
             byteBuf.get(byteArray);
 
-            DatagramPacket sendPacket = new DatagramPacket(byteArray, byteArray.length, address);
+            DatagramPacket sendPacket = new DatagramPacket(byteArray, byteArray.length, host, port);
 
             socket.send(sendPacket);
         }

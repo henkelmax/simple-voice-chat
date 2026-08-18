@@ -203,7 +203,7 @@ public abstract class VoiceProxy {
         }
 
         try {
-            PingManager.sendPing(PingManager.withPort(server.getAddress(), voiceChatPort), 10, new PingManager.PingListener() {
+            PingManager.sendPing(server.getAddress(), voiceChatPort, 10, new PingManager.PingListener() {
                 @Override
                 public void onSend(int attempts) {
                     sender.sendMessage(String.format("Sending ping to server '%s'", server.getName()));
