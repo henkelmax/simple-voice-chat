@@ -1,22 +1,22 @@
 package de.maxhenkel.voicechat.integration.freecam;
 
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.voice.client.camera.CameraState;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.PositionalAudioUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
 
 public class FreecamUtil {
-
-    private static final Minecraft mc = Minecraft.getInstance();
 
     /**
      * @return whether freecam is currently in use
      */
     public static boolean isFreecamEnabled() {
-        if (mc.player == null) {
-            return false;
-        }
-        return VoicechatClient.CLIENT_CONFIG.freecamMode.get().equals(FreecamMode.PLAYER) && !(mc.player.isSpectator() || mc.player.equals(mc.getCameraEntity()));
+        return isFreecamEnabled(ClientManager.getCameraState());
+    }
+
+    private static boolean isFreecamEnabled(CameraState camera) {
+        return VoicechatClient.CLIENT_CONFIG.freecamMode.get().equals(FreecamMode.PLAYER) && !camera.spectator() && camera.detached();
     }
 
     /**
@@ -25,10 +25,8 @@ public class FreecamUtil {
      * @return the position distances should be measured from
      */
     public static Vec3 getReferencePoint() {
-        if (mc.player == null) {
-            return Vec3.ZERO;
-        }
-        return isFreecamEnabled() ? mc.player.getEyePosition() : mc.gameRenderer.mainCamera().position();
+        CameraState camera = ClientManager.getCameraState();
+        return isFreecamEnabled(camera) ? camera.playerEyePosition() : camera.position();
     }
 
     /**

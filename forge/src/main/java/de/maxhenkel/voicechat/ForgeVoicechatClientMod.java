@@ -24,6 +24,7 @@ public class ForgeVoicechatClientMod extends VoicechatClient {
         InputEvent.Key.BUS.addListener(clientCompatibilityManager::onKey);
         InputEvent.MouseButton.Pre.BUS.addListener(clientCompatibilityManager::onMouse);
         TickEvent.ClientTickEvent.Pre.BUS.addListener(clientCompatibilityManager::onClientTick);
+        TickEvent.RenderTickEvent.Pre.BUS.addListener(clientCompatibilityManager::onRenderTick);
         TickEvent.ClientTickEvent.Post.BUS.addListener(clientCompatibilityManager::onKeyInput);
         LevelEvent.Unload.BUS.addListener(clientCompatibilityManager::onDisconnect);
         ClientPlayerNetworkEvent.LoggingIn.BUS.addListener(clientCompatibilityManager::onJoinServer);
