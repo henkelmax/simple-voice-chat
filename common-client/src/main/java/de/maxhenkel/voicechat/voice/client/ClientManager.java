@@ -11,6 +11,8 @@ import de.maxhenkel.voicechat.macos.avfoundation.AVAuthorizationStatus;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
+import de.maxhenkel.voicechat.voice.client.camera.CameraState;
+import de.maxhenkel.voicechat.voice.client.camera.CameraTracker;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.channel.local.LocalAddress;
 import net.minecraft.client.Minecraft;
@@ -33,6 +35,7 @@ public class ClientManager {
     private final ClientCategoryManager categoryManager;
     private final PTTKeyHandler pttKeyHandler;
     private final RenderEvents renderEvents;
+    private final CameraTracker cameraTracker;
     private final DebugOverlay debugOverlay;
     private final KeyEvents keyEvents;
     private final Minecraft minecraft;
@@ -44,6 +47,7 @@ public class ClientManager {
         categoryManager = new ClientCategoryManager();
         pttKeyHandler = new PTTKeyHandler();
         renderEvents = new RenderEvents();
+        cameraTracker = new CameraTracker();
         debugOverlay = new DebugOverlay();
         keyEvents = new KeyEvents();
         minecraft = Minecraft.getInstance();
@@ -191,6 +195,10 @@ public class ClientManager {
 
     public static RenderEvents getRenderEvents() {
         return instance().renderEvents;
+    }
+
+    public static CameraState getCameraState() {
+        return instance().cameraTracker.getState();
     }
 
     public static DebugOverlay getDebugOverlay() {
