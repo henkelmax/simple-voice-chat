@@ -31,6 +31,7 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
     private final List<KeyboardEvent> keyboardEvents;
     private final List<MouseEvent> mouseEvents;
     private final List<Runnable> clientTickEvents;
+    private final List<Runnable> renderTickEvents;
     private final List<Runnable> inputEvents;
     private final List<Runnable> disconnectEvents;
     private final List<Runnable> joinWorldEvents;
@@ -46,6 +47,7 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
         keyboardEvents = new CopyOnWriteArrayList<>();
         mouseEvents = new CopyOnWriteArrayList<>();
         clientTickEvents = new CopyOnWriteArrayList<>();
+        renderTickEvents = new CopyOnWriteArrayList<>();
         inputEvents = new CopyOnWriteArrayList<>();
         disconnectEvents = new CopyOnWriteArrayList<>();
         joinWorldEvents = new CopyOnWriteArrayList<>();
@@ -85,6 +87,11 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
     public void onKeyInput(ClientTickEvent.Pre event) {
         clientTickEvents.forEach(Runnable::run);
         inputEvents.forEach(Runnable::run);
+    }
+
+    @SubscribeEvent
+    public void onRenderTick(RenderFrameEvent.Pre event) {
+        renderTickEvents.forEach(Runnable::run);
     }
 
     @SubscribeEvent
@@ -150,6 +157,11 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
     @Override
     public void onClientTick(Runnable onClientTick) {
         clientTickEvents.add(onClientTick);
+    }
+
+    @Override
+    public void onRenderTick(Runnable onRenderTick) {
+        renderTickEvents.add(onRenderTick);
     }
 
     @Override
