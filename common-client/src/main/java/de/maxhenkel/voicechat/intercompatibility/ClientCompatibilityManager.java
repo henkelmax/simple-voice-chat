@@ -31,6 +31,8 @@ public abstract class ClientCompatibilityManager {
 
     public abstract void onClientTick(Runnable onClientTick);
 
+    public abstract void onRenderTick(Runnable onRenderTick);
+
     public abstract InputConstants.Key getBoundKeyOf(KeyMapping keyBinding);
 
     public abstract void onHandleKeyBinds(Runnable onHandleKeyBinds);

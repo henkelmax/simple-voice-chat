@@ -9,6 +9,7 @@
   "client": [
     "ConnectionAccessor",
     "PlayerRendererMixin",
+    "GameRendererMixin",
     "MinecraftMixin",
     "KeyboardMixin",
     "MouseMixin",
