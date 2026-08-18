@@ -23,6 +23,8 @@ public abstract class ClientCompatibilityManager {
 
     public abstract void onMouseEvent(MouseEvent onMouseEvent);
 
+    public abstract void onRenderTick(Runnable onRenderTick);
+
     public abstract int getBoundKeyOf(KeyBinding keyBinding);
 
     public abstract void onHandleKeyBinds(Runnable onHandleKeyBinds);

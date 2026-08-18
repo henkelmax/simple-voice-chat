@@ -27,6 +27,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     private final List<RenderHUDEvent> renderHUDEvents;
     private final List<KeyboardEvent> keyboardEvents;
     private final List<MouseEvent> mouseEvents;
+    private final List<Runnable> renderTickEvents;
     private final List<Runnable> inputEvents;
     private final List<Runnable> disconnectEvents;
     private final List<Runnable> joinWorldEvents;
@@ -40,6 +41,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         renderHUDEvents = new CopyOnWriteArrayList<>();
         keyboardEvents = new CopyOnWriteArrayList<>();
         mouseEvents = new CopyOnWriteArrayList<>();
+        renderTickEvents = new CopyOnWriteArrayList<>();
         inputEvents = new CopyOnWriteArrayList<>();
         disconnectEvents = new CopyOnWriteArrayList<>();
         joinWorldEvents = new CopyOnWriteArrayList<>();
@@ -93,6 +95,14 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         changingServer = true;
     }
 
+    @SubscribeEvent
+    public void onRenderTick(TickEvent.RenderTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) {
+            return;
+        }
+        renderTickEvents.forEach(Runnable::run);
+    }
+
     public void onRespawn() {
         if (changingServer) {
             changingServer = false;
@@ -126,6 +136,11 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @Override
     public void onMouseEvent(MouseEvent onMouseEvent) {
         mouseEvents.add(onMouseEvent);
+    }
+
+    @Override
+    public void onRenderTick(Runnable onRenderTick) {
+        renderTickEvents.add(onRenderTick);
     }
 
     @Override
