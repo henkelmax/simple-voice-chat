@@ -52,6 +52,11 @@ public class QuiltClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @Override
+    public void onRenderTick(Runnable onRenderTick) {
+        RenderEvents.RENDER_TICK.register(onRenderTick);
+    }
+
+    @Override
     public InputConstants.Key getBoundKeyOf(KeyMapping keyBinding) {
         return KeyBindingHelper.getBoundKeyOf(keyBinding);
     }
