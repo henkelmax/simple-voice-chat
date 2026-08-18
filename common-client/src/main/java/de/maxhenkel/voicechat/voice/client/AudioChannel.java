@@ -247,13 +247,13 @@ public class AudioChannel extends Thread {
 
             short[] processedMonoData = ClientPluginManager.instance().onReceiveEntityClientSound(uuid, soundPacket.getSender(), monoData, soundPacket.isWhispering(), soundPacket.getDistance());
 
-            if (FreecamUtil.getDistanceTo(pos) > soundPacket.getDistance() + 1D) {
+            if (FreecamUtil.getDistanceTo(camera, pos) > soundPacket.getDistance() + 1D) {
                 return;
             }
 
-            float distanceVolume = FreecamUtil.getDistanceVolume(soundPacket.getDistance(), pos);
+            float distanceVolume = FreecamUtil.getDistanceVolume(camera, soundPacket.getDistance(), pos);
 
-            if (FreecamUtil.isFreecamEnabled()) {
+            if (FreecamUtil.isFreecamEnabled(camera)) {
                 // Static, but with volume adjusted for distance
                 volume *= distanceVolume;
                 speaker.play(processedMonoData, volume, soundPacket.getCategory());
@@ -273,7 +273,7 @@ public class AudioChannel extends Thread {
             appendRecording(() -> PositionalAudioUtils.convertToStereoForRecording(soundPacket.getDistance(), camera.position(), camera.yRot(), pos, processedMonoData, recordingVolume));
         } else if (packet instanceof LocationSoundPacket p) {
             short[] processedMonoData = ClientPluginManager.instance().onReceiveLocationalClientSound(uuid, monoData, p.getLocation(), p.getDistance());
-            if (FreecamUtil.getDistanceTo(p.getLocation()) > p.getDistance() + 1D) {
+            if (FreecamUtil.getDistanceTo(camera, p.getLocation()) > p.getDistance() + 1D) {
                 return;
             }
             speaker.play(processedMonoData, volume, p.getLocation(), p.getCategory(), p.getDistance());
