@@ -6,9 +6,11 @@ import de.maxhenkel.voicechat.events.*;
 import de.maxhenkel.voicechat.mixin.ConnectionAccessor;
 import de.maxhenkel.voicechat.resourcepacks.IPackRepository;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
+import de.maxhenkel.voicechat.voice.client.IconFeatureRenderer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.FeatureRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.event.Event;
@@ -33,6 +35,7 @@ public class FabricClientCompatibilityManager extends ClientCompatibilityManager
     public FabricClientCompatibilityManager() {
         HudElementRegistry.attachElementBefore(VanillaHudElements.MOB_EFFECTS, VOICE_CHAT_ICON_LAYER, this::onRenderVoiceChatLayer);
         ClientPlayConnectionEvents.JOIN.addPhaseOrdering(EARLY_JOIN, Event.DEFAULT_PHASE);
+        FeatureRendererRegistry.register(IconFeatureRenderer.TYPE, IconFeatureRenderer::new);
     }
 
     private void onRenderVoiceChatLayer(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {

@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.feature.CustomFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -187,7 +186,7 @@ public class RenderEvents {
         if (!discrete) {
             // Render type textSeeThrough crashes in the OIT phase
             SubmitNodeCollection collection = (SubmitNodeCollection) collector.order(0);
-            collection.solid.submit(new CustomFeatureRenderer.Submit(stack.last().copy(), RenderTypes.textSeeThrough(sprite.atlasLocation()), (pose, c) -> {
+            collection.seeThrough.submit(new IconFeatureRenderer.Submit(stack.last().copy(), RenderTypes.textSeeThrough(sprite.atlasLocation()), (pose, c) -> {
                 vertex(c, pose, offsetX, 10F + offsetY, 0F, sprite.getU0(), sprite.getV1(), alpha, light);
                 vertex(c, pose, offsetX + 10F, 10F + offsetY, 0F, sprite.getU1(), sprite.getV1(), alpha, light);
                 vertex(c, pose, offsetX + 10F, offsetY, 0F, sprite.getU1(), sprite.getV0(), alpha, light);
