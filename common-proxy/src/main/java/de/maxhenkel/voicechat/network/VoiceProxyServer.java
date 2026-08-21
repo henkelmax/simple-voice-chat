@@ -58,6 +58,12 @@ public class VoiceProxyServer extends Thread {
             return;
         }
 
+        // Fix a tiny race that wouldn't close the socket when interrupted before the socket exists yet
+        if (isInterrupted()) {
+            socket.close();
+            return;
+        }
+
         while (!isInterrupted() && !socket.isClosed()) {
             try {
                 DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
