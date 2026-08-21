@@ -1,5 +1,5 @@
 - Fixed error when pinging unresolved addresses on proxies
-- Fixed players not receiving audio after the voice chat reconnects on proxies
+- Fixed players on proxies not reconnecting
 - Fixed voice chat packets being delayed on proxies under load
 - Fixed proxies spamming errors when the backend voice chat server is unreachable
 - Fixed the voice chat proxy server failing to restart when reloading the proxy
