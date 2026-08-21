@@ -2,6 +2,8 @@ package de.maxhenkel.voicechat.sniffer;
 
 import de.maxhenkel.voicechat.VoiceProxy;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.UUID;
@@ -20,9 +22,9 @@ public class VoiceProxySniffer {
     private final Map<UUID, UUID> playerUUIDMap = new ConcurrentHashMap<>();
 
     /**
-     * Maps a given player UUID to the sniffed UDP port.
+     * Maps a given player UUID to the address and sniffed port of the backend voice chat server.
      */
-    private final Map<UUID, Integer> serverUDPPortMap = new ConcurrentHashMap<>();
+    private final Map<UUID, InetSocketAddress> backendSocketMap = new ConcurrentHashMap<>();
 
     /**
      * Maps a given player UUID to the sniffed compatibility version.
@@ -46,13 +48,13 @@ public class VoiceProxySniffer {
     }
 
     /**
-     * Returns the sniffed server UDP port or <code>null</code> if not found.
+     * Returns the address and sniffed port of the backend voice chat server.
      *
      * @param playerUUID the UUID of the player on the proxy
-     * @return the sniffed UDP port or <code>null</code>
+     * @return the backend voice chat socket address or <code>null</code> if the secret handshake was not sniffed yet
      */
-    public Integer getServerPort(UUID playerUUID) {
-        return serverUDPPortMap.getOrDefault(playerUUID, null);
+    public InetSocketAddress getBackendSocket(UUID playerUUID) {
+        return backendSocketMap.get(playerUUID);
     }
 
     /**
@@ -80,7 +82,7 @@ public class VoiceProxySniffer {
      * @param playerUUID the UUID of the player that disconnected
      */
     public void onPlayerServerDisconnect(UUID playerUUID) {
-        serverUDPPortMap.remove(playerUUID);
+        backendSocketMap.remove(playerUUID);
         compatibilityVersionMap.remove(playerUUID);
         // Remove by the proxies known player UUID e.g., the value of the map
         playerUUIDMap.values().remove(playerUUID);
@@ -99,8 +101,38 @@ public class VoiceProxySniffer {
         }
         SniffedSecretPacket packet = SniffedSecretPacket.fromBytes(message, compatibilityVersion);
         playerUUIDMap.put(packet.getPlayerUUID(), playerUUID);
-        serverUDPPortMap.put(playerUUID, packet.getServerPort());
+
+        InetSocketAddress backendSocket = resolveBackendSocket(playerUUID, packet.getServerPort());
+        if (backendSocket != null) {
+            backendSocketMap.put(playerUUID, backendSocket);
+        }
         return packet.patch(voiceProxy);
+    }
+
+    /**
+     * Resolves the address of the backend voice chat server. This is done while sniffing the handshake to keep the name resolution off the thread that proxies the voice chat packets.
+     *
+     * @param playerUUID the UUID of the player on the proxy
+     * @param serverPort the sniffed UDP port of the backend voice chat server
+     * @return the resolved socket or <code>null</code> if the address could not be resolved
+     */
+    private InetSocketAddress resolveBackendSocket(UUID playerUUID, int serverPort) {
+        InetSocketAddress backendSocket = voiceProxy.getDefaultBackendSocket(playerUUID);
+        if (backendSocket == null) {
+            return null;
+        }
+
+        InetAddress backendAddress = backendSocket.getAddress();
+        if (backendAddress != null) {
+            return new InetSocketAddress(backendAddress, serverPort);
+        }
+
+        InetSocketAddress resolved = new InetSocketAddress(backendSocket.getHostString(), serverPort);
+        if (resolved.isUnresolved()) {
+            voiceProxy.getLogger().error("Failed to resolve backend server address '{}'", backendSocket.getHostString());
+            return null;
+        }
+        return resolved;
     }
 
     /**
