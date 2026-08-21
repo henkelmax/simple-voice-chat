@@ -41,24 +41,17 @@ public class VoiceProxyServer extends Thread {
 
     @Override
     public void interrupt() {
+        super.interrupt();
         if (socket != null) {
             socket.close();
         }
-        voiceProxyBridgeManager.shutdown();
-        super.interrupt();
     }
 
     @Override
     public void run() {
         try {
             socket = openSocket();
-        } catch (Exception e) {
-            voiceProxy.getLogger().error("The voice chat proxy server encountered a fatal error and has been shut down", e);
-            interrupt();
-            return;
-        }
 
-        try {
             while (!isInterrupted() && !socket.isClosed()) {
                 try {
                     DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
@@ -70,9 +63,15 @@ public class VoiceProxyServer extends Thread {
                     }
                 }
             }
+        } catch (Exception e) {
+            voiceProxy.getLogger().error("The voice chat proxy server encountered a fatal error and has been shut down", e);
         } finally {
             // interrupt() might have run before the socket existed, so it has to be closed here
-            socket.close();
+            if (socket != null) {
+                socket.close();
+            }
+            // No packets are handled anymore, so no new bridges can be created from here on
+            voiceProxyBridgeManager.shutdown();
         }
     }
 
