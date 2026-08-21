@@ -30,7 +30,7 @@ public class PluginManager {
 
     private List<VoicechatPlugin> plugins;
     private Map<Class<? extends Event>, List<Consumer<? extends Event>>> events;
-    private Map<UUID, List<PlayerAudioListener>> playerAudioListeners;
+    private final Map<UUID, List<PlayerAudioListener>> playerAudioListeners = new ConcurrentHashMap<>();
 
     public void init() {
         Voicechat.LOGGER.info("Loading plugins");
@@ -46,7 +46,6 @@ public class PluginManager {
         }
         Voicechat.LOGGER.info("Initialized {} plugin(s)", plugins.size());
         gatherEvents();
-        playerAudioListeners = new ConcurrentHashMap<>();
     }
 
     private void gatherEvents() {
