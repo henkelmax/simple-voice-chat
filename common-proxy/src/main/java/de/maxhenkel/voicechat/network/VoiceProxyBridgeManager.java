@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
+import java.net.SocketException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,7 +29,7 @@ public class VoiceProxyBridgeManager {
     /**
      * Determines whether this bridge is allowed to create new bridges
      */
-    private boolean allowBridgeCreation = true;
+    private volatile boolean allowBridgeCreation = true;
 
     public VoiceProxyBridgeManager(VoiceProxy voiceProxy, VoiceProxyServer voiceProxyServer) {
         this.voiceProxy = voiceProxy;
@@ -41,11 +42,10 @@ public class VoiceProxyBridgeManager {
      * @param playerUUID Which player to disconnect the bridge for
      */
     public void disconnect(UUID playerUUID) {
-        VoiceProxyBridge bridge = bridgeMap.getOrDefault(playerUUID, null);
+        VoiceProxyBridge bridge = bridgeMap.get(playerUUID);
         if (bridge != null) {
             bridge.interrupt();
         }
-        bridgeMap.remove(playerUUID);
     }
 
     /**
@@ -53,7 +53,7 @@ public class VoiceProxyBridgeManager {
      *
      * @param playerUUID    Which player to get or create the bridge for
      * @param playerAddress Which address to relay the packets back to
-     * @return The existing or newly created VoiceProxyBridge
+     * @return The existing or newly created VoiceProxyBridge, <code>null</code> if none could be created
      */
     public VoiceProxyBridge getOrCreateBridge(UUID playerUUID, SocketAddress playerAddress) {
         return bridgeMap.computeIfAbsent(playerUUID, uuid -> {
@@ -61,14 +61,19 @@ public class VoiceProxyBridgeManager {
                 return null;
             }
 
-            SocketAddress serverAddress = voiceProxy.getBackendUDPSocket(playerUUID);
+            SocketAddress serverAddress = voiceProxy.getBackendUDPSocket(uuid);
             if (serverAddress == null) {
                 return null;
             }
 
-            VoiceProxyBridge newBridge = new VoiceProxyBridge(uuid, playerAddress, serverAddress);
-            newBridge.start();
-            return newBridge;
+            try {
+                VoiceProxyBridge newBridge = new VoiceProxyBridge(uuid, playerAddress, serverAddress);
+                newBridge.start();
+                return newBridge;
+            } catch (SocketException e) {
+                voiceProxy.getLogger().error("Failed to create DatagramSocket", e);
+                return null;
+            }
         });
     }
 
@@ -90,7 +95,7 @@ public class VoiceProxyBridgeManager {
         /**
          * The connection between the Velocity proxy, acting as a player, to the backend server's UDP server
          */
-        private DatagramSocket backendServerSocket;
+        private final DatagramSocket backendServerSocket;
 
         /**
          * The SocketAddress used by the player to connect to the Velocity UDP proxy.
@@ -107,15 +112,16 @@ public class VoiceProxyBridgeManager {
          */
         private final SocketAddress serverAddress;
 
-        public VoiceProxyBridge(UUID playerUUID, SocketAddress playerAddress, SocketAddress serverAddress) {
+        public VoiceProxyBridge(UUID playerUUID, SocketAddress playerAddress, SocketAddress serverAddress) throws SocketException {
             this.playerUUID = playerUUID;
             this.playerAddress = playerAddress;
             this.serverAddress = serverAddress;
+            this.backendServerSocket = new DatagramSocket();
         }
 
         @Override
         public void interrupt() {
-            bridgeMap.remove(playerUUID);
+            bridgeMap.remove(playerUUID, this);
             backendServerSocket.close();
             super.interrupt();
         }
@@ -126,29 +132,19 @@ public class VoiceProxyBridgeManager {
          */
         @Override
         public void run() {
-            try {
-                backendServerSocket = new DatagramSocket();
-                voiceProxy.getLogger().debug("Opened new DatagramSocket for communication with backend server");
+            while (!isInterrupted() && !backendServerSocket.isClosed()) {
+                try {
+                    DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
+                    backendServerSocket.receive(packet);
 
-                while (!isInterrupted() && !backendServerSocket.isClosed()) {
-                    try {
-                        DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
-                        backendServerSocket.receive(packet);
-
-                        DatagramPacket proxyPacket = new DatagramPacket(packet.getData(), packet.getLength(), playerAddress);
-                        voiceProxyServer.write(proxyPacket);
-                    } catch (Exception e) {
-                        if (!backendServerSocket.isClosed()) {
-                            voiceProxy.getLogger().error("Failed to bridge packet from backend server to player", e);
-                        } else {
-                            break;
-                        }
+                    voiceProxyServer.write(new DatagramPacket(packet.getData(), packet.getLength(), playerAddress));
+                } catch (Exception e) {
+                    if (!backendServerSocket.isClosed()) {
+                        voiceProxy.getLogger().debug("Failed to bridge packet from backend server to player", e);
                     }
                 }
-            } catch (Exception e) {
-                voiceProxy.getLogger().error("Failed to create DatagramSocket for backend communication, shutting down", e);
             }
-            bridgeMap.remove(playerUUID);
+            bridgeMap.remove(playerUUID, this);
         }
 
         /**
@@ -157,9 +153,6 @@ public class VoiceProxyBridgeManager {
          * @param packet The DatagramPacket to be re-packaged and sent to the backend server
          */
         public void forward(DatagramPacket packet) throws IOException {
-            if (backendServerSocket == null) {
-                return;
-            }
             if (backendServerSocket.isClosed()) {
                 return;
             }

@@ -56,16 +56,6 @@ public class VoiceProxySniffer {
     }
 
     /**
-     * Checks whether a player has completed the Secret handshake, and we are ready to proxy the connection.
-     *
-     * @param playerUUID the UUID of the player on the proxy
-     * @return <code>true</code>> if the secret handshake was captured
-     */
-    public boolean isPlayerReady(UUID playerUUID) {
-        return playerUUIDMap.containsValue(playerUUID);
-    }
-
-    /**
      * Called whenever a PluginMessage has been received by the proxy.
      *
      * @param channel    the channel on which the message was received
