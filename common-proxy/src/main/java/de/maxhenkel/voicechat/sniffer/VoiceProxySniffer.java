@@ -113,7 +113,9 @@ public class VoiceProxySniffer {
         playerUUIDMap.put(packet.getPlayerUUID(), playerUUID);
 
         InetSocketAddress backendSocket = resolveBackendSocket(playerUUID, packet.getServerPort());
-        if (backendSocket != null) {
+        if (backendSocket == null) {
+            resetBackendSocket(playerUUID);
+        } else {
             backendSocketMap.put(playerUUID, backendSocket);
         }
 
