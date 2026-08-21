@@ -106,6 +106,9 @@ public class VoiceProxySniffer {
         if (backendSocket != null) {
             backendSocketMap.put(playerUUID, backendSocket);
         }
+
+        // The player reconnects with a new socket, so the bridge of the previous session is outdated
+        voiceProxy.disconnectBridge(playerUUID);
         return packet.patch(voiceProxy);
     }
 
