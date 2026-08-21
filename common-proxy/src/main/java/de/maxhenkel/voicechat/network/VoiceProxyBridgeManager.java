@@ -37,11 +37,6 @@ public class VoiceProxyBridgeManager {
 
     private final VoiceProxyServer voiceProxyServer;
 
-    /**
-     * Determines whether this bridge is allowed to create new bridges
-     */
-    private volatile boolean allowBridgeCreation = true;
-
     public VoiceProxyBridgeManager(VoiceProxy voiceProxy, VoiceProxyServer voiceProxyServer) {
         this.voiceProxy = voiceProxy;
         this.voiceProxyServer = voiceProxyServer;
@@ -67,11 +62,7 @@ public class VoiceProxyBridgeManager {
      * @return The existing or newly created VoiceProxyBridge, <code>null</code> if none could be created
      */
     public VoiceProxyBridge getOrCreateBridge(UUID playerUUID, SocketAddress playerAddress) {
-        VoiceProxyBridge bridge = bridgeMap.computeIfAbsent(playerUUID, uuid -> {
-            if (!allowBridgeCreation) {
-                return null;
-            }
-
+        return bridgeMap.computeIfAbsent(playerUUID, uuid -> {
             InetSocketAddress serverAddress = voiceProxy.getSniffer().getBackendSocket(uuid);
             if (serverAddress == null) {
                 return null;
@@ -88,20 +79,13 @@ public class VoiceProxyBridgeManager {
                 return null;
             }
         });
-
-        // This just exists to fix a tiny race when reloading the proxy
-        if (bridge != null && !allowBridgeCreation) {
-            bridge.interrupt();
-            return null;
-        }
-        return bridge;
     }
 
     /**
-     * Notifies all bridges to shut down and disallows the creation of further bridges
+     * Notifies all bridges to shut down.
+     * This must only be called once no more packets are handled, as it does not prevent the creation of new bridges.
      */
     public void shutdown() {
-        allowBridgeCreation = false;
         bridgeMap.values().forEach(VoiceProxyBridge::interrupt);
     }
 
