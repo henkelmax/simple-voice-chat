@@ -63,11 +63,7 @@ public class SimpleVoiceChatVelocity extends VoiceProxy {
             return null;
         }
 
-        InetSocketAddress serverSocket = server.get().getServerInfo().getAddress();
-        if (serverSocket.isUnresolved()) {
-            serverSocket = new InetSocketAddress(serverSocket.getHostString(), serverSocket.getPort());
-        }
-        return serverSocket;
+        return server.get().getServerInfo().getAddress();
     }
 
     @Override

@@ -43,7 +43,7 @@ public abstract class VoiceProxy {
      * Determine which SocketAddress is used by the player to communicate with the game server
      *
      * @param playerUUID Which player to find the socket for
-     * @return The SocketAddress used for game traffic between the game server and the proxy
+     * @return The SocketAddress used for game traffic between the game server and the proxy, which may be unresolved, <code>null</code> if the player is not connected to a backend server
      */
     public abstract InetSocketAddress getDefaultBackendSocket(UUID playerUUID);
 
