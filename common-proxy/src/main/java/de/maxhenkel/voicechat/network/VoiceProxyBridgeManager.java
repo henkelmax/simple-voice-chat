@@ -142,7 +142,8 @@ public class VoiceProxyBridgeManager {
         public void run() {
             if (!resolveServerAddress()) {
                 voiceProxy.getLogger().warn("Failed to resolve backend server address '{}' of player {}", serverAddress.getHostString(), playerUUID);
-                // The backend socket is kept, so the next packet of the player retries the resolution
+                // The player has to negotiate a new secret to get a working bridge
+                voiceProxy.getSniffer().resetBackendSocket(playerUUID);
                 interrupt();
                 return;
             }
