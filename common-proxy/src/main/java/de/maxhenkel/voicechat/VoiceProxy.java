@@ -121,7 +121,7 @@ public abstract class VoiceProxy {
     protected void onPlayerServerDisconnected(UUID playerUUID) {
         disconnectBridge(playerUUID);
         voiceProxySniffer.onPlayerServerDisconnect(playerUUID);
-        getLogger().debug("Player {} is has disconnected from backend server, interrupting bridge if it exists", playerUUID);
+        getLogger().debug("Player {} has disconnected from backend server, interrupting bridge if it exists", playerUUID);
     }
 
     protected void onVoicechatCommand(CommandSender sender, String[] args) {
