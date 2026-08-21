@@ -9,9 +9,7 @@ import de.maxhenkel.voicechat.sniffer.VoiceProxySniffer;
 import de.maxhenkel.voicechat.util.BackendServer;
 import de.maxhenkel.voicechat.util.PingManager;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -60,30 +58,6 @@ public abstract class VoiceProxy {
     public abstract Path getDataDirectory();
 
     public abstract List<BackendServer> getBackendServers();
-
-    /**
-     * Determine which SocketAddress to use for backend UDP traffic
-     *
-     * @param playerUUID Which player to find the socket for
-     * @return The SocketAddress of the backend voice chat server, <code>null</code> if the secret handshake was not sniffed yet
-     */
-    public SocketAddress getBackendUDPSocket(UUID playerUUID) {
-        Integer port = voiceProxySniffer.getServerPort(playerUUID);
-        if (port == null) {
-            return null;
-        }
-
-        InetSocketAddress backendSocket = getDefaultBackendSocket(playerUUID);
-        if (backendSocket == null) {
-            return null;
-        }
-
-        InetAddress backendAddress = backendSocket.getAddress();
-        if (backendAddress == null) {
-            return new InetSocketAddress(backendSocket.getHostString(), port);
-        }
-        return new InetSocketAddress(backendAddress, port);
-    }
 
     /**
      * Returns which port to use for the VoiceProxyServer

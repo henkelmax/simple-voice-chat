@@ -61,7 +61,7 @@ public class VoiceProxyBridgeManager {
                 return null;
             }
 
-            SocketAddress serverAddress = voiceProxy.getBackendUDPSocket(uuid);
+            SocketAddress serverAddress = voiceProxy.getSniffer().getBackendSocket(uuid);
             if (serverAddress == null) {
                 return null;
             }
