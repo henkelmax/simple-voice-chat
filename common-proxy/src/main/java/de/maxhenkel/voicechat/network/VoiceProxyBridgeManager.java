@@ -56,7 +56,7 @@ public class VoiceProxyBridgeManager {
      * @return The existing or newly created VoiceProxyBridge, <code>null</code> if none could be created
      */
     public VoiceProxyBridge getOrCreateBridge(UUID playerUUID, SocketAddress playerAddress) {
-        return bridgeMap.computeIfAbsent(playerUUID, uuid -> {
+        VoiceProxyBridge bridge = bridgeMap.computeIfAbsent(playerUUID, uuid -> {
             if (!allowBridgeCreation) {
                 return null;
             }
@@ -75,6 +75,13 @@ public class VoiceProxyBridgeManager {
                 return null;
             }
         });
+
+        // This just exists to fix a tiny race when reloading the proxy
+        if (bridge != null && !allowBridgeCreation) {
+            bridge.interrupt();
+            return null;
+        }
+        return bridge;
     }
 
     /**
