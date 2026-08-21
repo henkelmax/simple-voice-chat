@@ -23,7 +23,7 @@ public class ServerCategoryManager extends CategoryManager {
     public void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
         Voicechat.LOGGER.debug("Synchronizing {} volume categories with {}", categories.size(), player.getName().getString());
         for (VolumeCategoryImpl category : getCategories()) {
-            broadcastAddCategory(server.getServer(), category);
+            NetManager.sendToClient(player, new AddCategoryPacket(category));
         }
     }
 
