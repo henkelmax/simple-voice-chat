@@ -30,10 +30,10 @@ public class MicThread extends Thread {
     private Microphone mic;
     @Nullable
     private MicrophoneException microphoneError;
-    private boolean running;
-    private boolean microphoneLocked;
+    private volatile boolean running;
+    private volatile boolean microphoneLocked;
     private final OpusEncoder encoder;
-    private MicrophoneProcessor microphoneProcessor;
+    private volatile MicrophoneProcessor microphoneProcessor;
 
     private final Consumer<MicrophoneException> onError;
 
@@ -234,6 +234,7 @@ public class MicThread extends Thread {
             try {
                 join(100);
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 Voicechat.LOGGER.error("Interrupted while waiting for mic thread to close", e);
             }
         }
