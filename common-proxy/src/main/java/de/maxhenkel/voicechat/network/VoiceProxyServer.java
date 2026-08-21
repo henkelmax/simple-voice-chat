@@ -65,7 +65,7 @@ public class VoiceProxyServer extends Thread {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             voiceProxy.getLogger().error("The voice chat proxy server encountered a fatal error and has been shut down", e);
         } finally {
             // interrupt() might have run before the socket existed, so it has to be closed here
