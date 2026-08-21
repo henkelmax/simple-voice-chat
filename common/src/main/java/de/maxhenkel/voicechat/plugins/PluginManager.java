@@ -18,6 +18,8 @@ import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 public class PluginManager {
@@ -43,7 +45,7 @@ public class PluginManager {
         }
         Voicechat.LOGGER.info("Initialized {} plugin(s)", plugins.size());
         gatherEvents();
-        playerAudioListeners = new HashMap<>();
+        playerAudioListeners = new ConcurrentHashMap<>();
     }
 
     private void gatherEvents() {
@@ -60,7 +62,7 @@ public class PluginManager {
         events = eventBuilder.build();
     }
 
-    public boolean registerAudioListener(AudioListener l) {
+    public synchronized boolean registerAudioListener(AudioListener l) {
         if (!(l instanceof PlayerAudioListener)) {
             return false;
         }
@@ -78,11 +80,11 @@ public class PluginManager {
             return false;
         }
 
-        playerAudioListeners.computeIfAbsent(listener.getPlayerUuid(), k -> new ArrayList<>()).add(listener);
+        playerAudioListeners.computeIfAbsent(listener.getPlayerUuid(), k -> new CopyOnWriteArrayList<>()).add(listener);
         return true;
     }
 
-    public boolean unregisterAudioListener(UUID listenerId) {
+    public synchronized boolean unregisterAudioListener(UUID listenerId) {
         boolean removed = playerAudioListeners
                 .values()
                 .stream()
