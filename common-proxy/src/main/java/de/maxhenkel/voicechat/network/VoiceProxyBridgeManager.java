@@ -150,7 +150,10 @@ public class VoiceProxyBridgeManager {
                     voiceProxyServer.write(new DatagramPacket(packet.getData(), packet.getLength(), playerAddress));
                 } catch (Exception e) {
                     if (!backendServerSocket.isClosed()) {
-                        voiceProxy.getLogger().debug("Failed to bridge packet from backend server to player", e);
+                        voiceProxy.getLogger().error("Failed to bridge packet from backend server to player", e);
+                        // Reset the player's backend socket so this doesn't get spammed until the server times them out and sends a new secret
+                        voiceProxy.getSniffer().resetBackendSocket(playerUUID);
+                        interrupt();
                     }
                 }
             }
