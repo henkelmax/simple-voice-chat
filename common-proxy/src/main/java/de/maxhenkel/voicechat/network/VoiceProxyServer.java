@@ -3,10 +3,12 @@ package de.maxhenkel.voicechat.network;
 import de.maxhenkel.voicechat.VoiceProxy;
 import de.maxhenkel.voicechat.debug.PingHandler;
 
+import java.io.IOException;
 import java.net.BindException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
@@ -17,7 +19,7 @@ import java.util.UUID;
 public class VoiceProxyServer extends Thread {
 
     /**
-     * The instance that created this VoiceProxyBridgeManager
+     * The instance that created this VoiceProxyServer
      */
     private final VoiceProxy voiceProxy;
 
@@ -75,7 +77,7 @@ public class VoiceProxyServer extends Thread {
         }
     }
 
-    private DatagramSocket openSocket() throws Exception {
+    private DatagramSocket openSocket() throws SocketException {
         int port = voiceProxy.getPort();
 
         String bindAddress = voiceProxy.getConfig().bindAddress.get();
@@ -112,7 +114,7 @@ public class VoiceProxyServer extends Thread {
      *
      * @param packet The datagram that was received on the public UDP socket
      */
-    private void handlePacket(DatagramPacket packet) throws Exception {
+    private void handlePacket(DatagramPacket packet) throws IOException {
         // The first byte in the datagram must match the magic byte, else this is not a valid SimpleVoiceChat packet
         ByteBuffer bb = ByteBuffer.wrap(packet.getData());
         if (bb.get() != (byte) 0b11111111) {
