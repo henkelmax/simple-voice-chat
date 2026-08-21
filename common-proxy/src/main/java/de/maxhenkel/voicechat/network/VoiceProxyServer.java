@@ -58,22 +58,21 @@ public class VoiceProxyServer extends Thread {
             return;
         }
 
-        // Fix a tiny race that wouldn't close the socket when interrupted before the socket exists yet
-        if (isInterrupted()) {
-            socket.close();
-            return;
-        }
-
-        while (!isInterrupted() && !socket.isClosed()) {
-            try {
-                DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
-                socket.receive(packet);
-                handlePacket(packet);
-            } catch (Exception e) {
-                if (!socket.isClosed()) {
-                    voiceProxy.getLogger().debug("An exception occurred while handling an incoming datagram", e);
+        try {
+            while (!isInterrupted() && !socket.isClosed()) {
+                try {
+                    DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
+                    socket.receive(packet);
+                    handlePacket(packet);
+                } catch (Exception e) {
+                    if (!socket.isClosed()) {
+                        voiceProxy.getLogger().debug("An exception occurred while handling an incoming datagram", e);
+                    }
                 }
             }
+        } finally {
+            // interrupt() might have run before the socket existed, so it has to be closed here
+            socket.close();
         }
     }
 
