@@ -85,6 +85,12 @@ public abstract class VoiceProxy {
 
         if (voiceProxyServer != null) {
             voiceProxyServer.interrupt();
+            try {
+                // The old server has to release the port before the new one can bind to it
+                voiceProxyServer.join();
+            } catch (InterruptedException e) {
+                voiceChatLogger.error("Interrupted while waiting for the voice chat proxy server to shut down", e);
+            }
         }
         voiceProxyServer = new VoiceProxyServer(this);
         voiceProxyServer.start();
