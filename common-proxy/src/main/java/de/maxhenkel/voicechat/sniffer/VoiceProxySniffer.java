@@ -91,8 +91,9 @@ public class VoiceProxySniffer {
      */
     public void onPlayerServerDisconnect(UUID playerUUID) {
         serverUDPPortMap.remove(playerUUID);
-        playerUUIDMap.remove(playerUUID);
         compatibilityVersionMap.remove(playerUUID);
+        // Remove by the proxies known player UUID e.g., the value of the map
+        playerUUIDMap.values().remove(playerUUID);
     }
 
     /**
