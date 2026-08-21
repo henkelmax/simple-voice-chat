@@ -17,6 +17,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class VoiceProxyBridgeManager {
 
     /**
+     * How many consecutive errors a bridge tolerates before it gives up
+     */
+    private static final int MAX_CONSECUTIVE_ERRORS = 100;
+
+    /**
+     * How long a bridge waits before retrying after an error
+     */
+    private static final int ERROR_RETRY_DELAY = 50;
+
+    /**
      * A map of all currently connected players and their respective VoiceProxyBridge
      * Not all players connected to the Velocity proxy necessarily have a VoiceProxyBridge.
      */
@@ -144,18 +154,33 @@ public class VoiceProxyBridgeManager {
          */
         @Override
         public void run() {
+            int consecutiveErrors = 0;
             while (!isInterrupted() && !backendServerSocket.isClosed()) {
                 try {
                     DatagramPacket packet = new DatagramPacket(new byte[4096], 4096);
                     backendServerSocket.receive(packet);
+                    consecutiveErrors = 0;
 
                     voiceProxyServer.write(new DatagramPacket(packet.getData(), packet.getLength(), playerAddress));
                 } catch (Exception e) {
-                    if (!backendServerSocket.isClosed()) {
-                        voiceProxy.getLogger().error("Failed to bridge packet from backend server to player", e);
-                        // Reset the player's backend socket so this doesn't get spammed until the server times them out and sends a new secret
+                    if (backendServerSocket.isClosed()) {
+                        break;
+                    }
+                    consecutiveErrors++;
+                    if (consecutiveErrors == 1) {
+                        voiceProxy.getLogger().warn("Failed to bridge packet from backend server to player {}, retrying", playerUUID, e);
+                    }
+                    if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
+                        voiceProxy.getLogger().error("Closing the bridge of player {} after {} consecutive errors", playerUUID, consecutiveErrors, e);
+                        // The player has to negotiate a new secret to get a working bridge
                         voiceProxy.getSniffer().resetBackendSocket(playerUUID);
                         interrupt();
+                    } else {
+                        try {
+                            Thread.sleep(ERROR_RETRY_DELAY);
+                        } catch (InterruptedException interrupted) {
+                            break;
+                        }
                     }
                 }
             }
