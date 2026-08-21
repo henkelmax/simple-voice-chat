@@ -58,6 +58,16 @@ public class VoiceProxySniffer {
     }
 
     /**
+     * Forgets the backend voice chat socket of a given player.
+     * No packets are bridged for this player until the backend server times them out and sends a new secret.
+     *
+     * @param playerUUID the UUID of the player on the proxy
+     */
+    public void resetBackendSocket(UUID playerUUID) {
+        backendSocketMap.remove(playerUUID);
+    }
+
+    /**
      * Called whenever a PluginMessage has been received by the proxy.
      *
      * @param channel    the channel on which the message was received
