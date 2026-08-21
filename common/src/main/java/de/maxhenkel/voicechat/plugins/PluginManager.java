@@ -289,7 +289,7 @@ public class PluginManager {
 
     private static PluginManager instance;
 
-    public static PluginManager instance() {
+    public static synchronized PluginManager instance() {
         if (instance == null) {
             instance = new PluginManager();
             instance.init();
