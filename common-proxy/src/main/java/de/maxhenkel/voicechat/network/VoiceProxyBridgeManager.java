@@ -72,6 +72,8 @@ public class VoiceProxyBridgeManager {
                 return newBridge;
             } catch (SocketException e) {
                 voiceProxy.getLogger().error("Failed to create DatagramSocket", e);
+                // No socket can be created, so the player has to negotiate a new secret to get a working bridge
+                voiceProxy.getSniffer().resetBackendSocket(uuid);
                 return null;
             }
         });
