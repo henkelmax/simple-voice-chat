@@ -103,14 +103,23 @@ public abstract class VoiceProxy {
     }
 
     /**
+     * Interrupts the bridge of a given player if one exists
+     *
+     * @param playerUUID The UUID of the player on the proxy
+     */
+    public void disconnectBridge(UUID playerUUID) {
+        if (voiceProxyServer != null) {
+            voiceProxyServer.getVoiceProxyBridgeManager().disconnect(playerUUID);
+        }
+    }
+
+    /**
      * Called whenever a player disconnects from a backend server
      *
      * @param playerUUID The UUID of the player that disconnected from a backend server
      */
     protected void onPlayerServerDisconnected(UUID playerUUID) {
-        if (voiceProxyServer != null) {
-            voiceProxyServer.getVoiceProxyBridgeManager().disconnect(playerUUID);
-        }
+        disconnectBridge(playerUUID);
         voiceProxySniffer.onPlayerServerDisconnect(playerUUID);
         getLogger().debug("Player {} is has disconnected from backend server, interrupting bridge if it exists", playerUUID);
     }
