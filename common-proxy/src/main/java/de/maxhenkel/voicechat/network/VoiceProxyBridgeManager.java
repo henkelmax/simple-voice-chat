@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.VoiceProxy;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.Map;
@@ -71,7 +72,7 @@ public class VoiceProxyBridgeManager {
                 return null;
             }
 
-            SocketAddress serverAddress = voiceProxy.getSniffer().getBackendSocket(uuid);
+            InetSocketAddress serverAddress = voiceProxy.getSniffer().getBackendSocket(uuid);
             if (serverAddress == null) {
                 return null;
             }
@@ -128,10 +129,11 @@ public class VoiceProxyBridgeManager {
 
         /**
          * The SocketAddress used by the velocity proxy to write to the backend server's UDP server.
+         * This is unresolved until the bridge thread has resolved it.
          */
-        private final SocketAddress serverAddress;
+        private volatile InetSocketAddress serverAddress;
 
-        public VoiceProxyBridge(UUID playerUUID, SocketAddress playerAddress, SocketAddress serverAddress) throws SocketException {
+        public VoiceProxyBridge(UUID playerUUID, SocketAddress playerAddress, InetSocketAddress serverAddress) throws SocketException {
             setDaemon(true);
             setName(String.format("VoiceProxyBridge-%s", playerUUID));
 
@@ -154,6 +156,13 @@ public class VoiceProxyBridgeManager {
          */
         @Override
         public void run() {
+            if (!resolveServerAddress()) {
+                voiceProxy.getLogger().warn("Failed to resolve backend server address '{}' of player {}", serverAddress.getHostString(), playerUUID);
+                // The backend socket is kept, so the next packet of the player retries the resolution
+                interrupt();
+                return;
+            }
+
             int consecutiveErrors = 0;
             while (!isInterrupted() && !backendServerSocket.isClosed()) {
                 try {
@@ -188,15 +197,33 @@ public class VoiceProxyBridgeManager {
         }
 
         /**
+         * Resolves the address of the backend server if it is not resolved yet.
+         *
+         * @return <code>true</code> if the address can be used to send packets to
+         */
+        private boolean resolveServerAddress() {
+            if (!serverAddress.isUnresolved()) {
+                return true;
+            }
+            InetSocketAddress resolved = new InetSocketAddress(serverAddress.getHostString(), serverAddress.getPort());
+            if (resolved.isUnresolved()) {
+                return false;
+            }
+            serverAddress = resolved;
+            return true;
+        }
+
+        /**
          * Forwards any given DatagramPacket from the player to the backend server
          *
          * @param packet The DatagramPacket to be re-packaged and sent to the backend server
          */
         public void forward(DatagramPacket packet) throws IOException {
-            if (backendServerSocket.isClosed()) {
+            InetSocketAddress address = serverAddress;
+            if (backendServerSocket.isClosed() || address.isUnresolved()) {
                 return;
             }
-            backendServerSocket.send(new DatagramPacket(packet.getData(), packet.getLength(), serverAddress));
+            backendServerSocket.send(new DatagramPacket(packet.getData(), packet.getLength(), address));
         }
     }
 
