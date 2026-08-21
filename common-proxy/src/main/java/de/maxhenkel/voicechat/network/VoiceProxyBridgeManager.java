@@ -113,6 +113,9 @@ public class VoiceProxyBridgeManager {
         private final SocketAddress serverAddress;
 
         public VoiceProxyBridge(UUID playerUUID, SocketAddress playerAddress, SocketAddress serverAddress) throws SocketException {
+            setDaemon(true);
+            setName(String.format("VoiceProxyBridge-%s", playerUUID));
+
             this.playerUUID = playerUUID;
             this.playerAddress = playerAddress;
             this.serverAddress = serverAddress;
