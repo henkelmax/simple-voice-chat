@@ -72,3 +72,12 @@ shadowJar {
     relocate 'org.concentus', 'de.maxhenkel.voicechat.concentus'
     exclude 'natives/*-x86/*'
 }
+
+// Temporary fix for the game crashing with snapshot-10
+loom {
+    runs {
+        client {
+            jvmArguments.add('-Dmax.bg.threads=1')
+        }
+    }
+}
