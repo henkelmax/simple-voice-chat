@@ -1,1 +1,2 @@
-- Updated to 26.3-snapshot-9
+- Updated to 26.3-snapshot-10
+- Fixed name tag icons crashing the game

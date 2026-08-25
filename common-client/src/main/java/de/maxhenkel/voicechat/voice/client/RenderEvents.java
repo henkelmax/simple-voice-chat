@@ -143,7 +143,7 @@ public class RenderEvents {
         stack.pushPose();
         stack.translate(state.nameTagAttachment);
         stack.translate(0D, 0.5D, 0D);
-        stack.mulPose(cameraRenderState.orientation);
+        stack.rotate(cameraRenderState.orientation);
         stack.scale(0.025F, -0.025F, 0.025F);
 
         if (client != null && client.getTalkCache().isWhispering(entityId)) {
