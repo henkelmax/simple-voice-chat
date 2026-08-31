@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.mixin;
 
 import de.maxhenkel.voicechat.events.RenderEvents;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GameRendererMixin {
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void render(DeltaTracker deltaTracker, boolean advanceGameTime, CallbackInfo info) {
+    private void render(float f, long l, boolean bl, CallbackInfo ci) {
         RenderEvents.RENDER_TICK.invoker().run();
     }
 
