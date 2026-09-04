@@ -20,7 +20,7 @@ public class RenderEvents {
         }
     });
 
-    public static final Event<Runnable> RENDER_TICK = EventFactory.createArrayBacked(Runnable.class, (listeners) -> () -> {
+    public static final Event<Runnable> RENDER_TICK = Event.create(Runnable.class, (listeners) -> () -> {
         for (Runnable listener : listeners) {
             listener.run();
         }
