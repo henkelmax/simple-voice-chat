@@ -14,7 +14,6 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Connection;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
 
 import java.net.SocketAddress;
@@ -119,8 +118,9 @@ public class QuiltClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     @Override
-    public void addResourcePackSource(PackRepository packRepository, RepositorySource repositorySource) {
-        IPackRepository repository = (IPackRepository) packRepository;
+    public void addResourcePackSource(RepositorySource repositorySource) {
+        IPackRepository repository = (IPackRepository) mc.getResourcePackRepository();
         repository.voicechat$addSource(repositorySource);
     }
+
 }
