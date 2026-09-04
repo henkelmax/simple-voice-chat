@@ -1,3 +1,4 @@
 - Fixed JoinGroupEvent being fired for wrong password attempts
 - Fixed error when shutting down a server
 - Improved resiliency against mods that change the camera off-thread
+- Fixed voice chat server not published to lan properly
