@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GameRendererMixin {
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void render(DeltaTracker deltaTracker, boolean advanceGameTime, CallbackInfo info) {
+    private void render(CallbackInfo ci) {
         RenderEvents.RENDER_TICK.invoker().run();
     }
 
