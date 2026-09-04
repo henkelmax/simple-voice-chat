@@ -54,7 +54,7 @@ repositories {
 dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
 
-    included_fabric_api_modules.split(",").collect({ it.trim() }).forEach {
+    included_fabric_api_modules.collect({ it.trim() }).forEach {
         include(modImplementation(fabricApi.module(it, fabric_api_version)))
     }
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
