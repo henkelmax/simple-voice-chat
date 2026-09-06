@@ -1,1 +1,1 @@
-- Updated to 26.3
+- Ignore `voice_host` in singleplayer and LAN worlds
