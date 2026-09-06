@@ -603,10 +603,6 @@ public class Server extends Thread {
         packetQueue.add(rawUdpPacket);
     }
 
-    public boolean isDedicated() {
-        return dedicated;
-    }
-
     public PingManager getPingManager() {
         return pingManager;
     }
