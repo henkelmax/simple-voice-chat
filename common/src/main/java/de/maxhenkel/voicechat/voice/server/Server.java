@@ -595,6 +595,10 @@ public class Server extends Thread {
         connection.send(this, new NetworkMessage(packet));
     }
 
+    public boolean isDedicated() {
+        return dedicated;
+    }
+
     public PingManager getPingManager() {
         return pingManager;
     }
