@@ -102,9 +102,10 @@ public class ServerVoiceEvents {
             return;
         }
 
-        String configuredVoiceHost = server.isDedicated() ? Voicechat.SERVER_CONFIG.voiceHost.get() : "";
+        boolean dedicated = CommonCompatibilityManager.INSTANCE.isDedicatedServer();
+        String configuredVoiceHost = dedicated ? Voicechat.SERVER_CONFIG.voiceHost.get() : "";
         String voiceHost = PluginManager.instance().getVoiceHost(player, configuredVoiceHost);
-        if (!server.isDedicated() && !voiceHost.isEmpty()) {
+        if (!dedicated && !voiceHost.isEmpty()) {
             Voicechat.LOGGER.warn("A plugin modified voice_host on a non-dedicated server - Ignore this message if this is intended");
         }
 
