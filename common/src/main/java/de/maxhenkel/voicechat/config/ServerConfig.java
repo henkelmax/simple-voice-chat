@@ -41,13 +41,15 @@ public class ServerConfig {
                         "specified here, independently of other networking used for the game server.",
                         "Set this to '-1' to use the same port number that is used by the Minecraft server.",
                         "However, it is strongly recommended NOT to use the same port number because UDP on",
-                        "it is also used by default for the server query. Doing so may crash the server!"
+                        "it is also used by default for the server query. Doing so may crash the server!",
+                        "This option only works on dedicated servers."
                 );
         voiceChatBindAddress = builder
                 .stringEntry("bind_address", "",
                         "The server IP address to bind the voice chat to",
                         "Leave blank to use the 'server-ip' property from the 'server.properties' config file",
-                        "To bind to the wildcard IP address, use '*'"
+                        "To bind to the wildcard IP address, use '*'",
+                        "This option only works on dedicated servers"
                 );
         voiceChatDistance = builder
                 .doubleEntry("max_voice_distance", 48D, 1D, 1_000_000D,
@@ -87,7 +89,8 @@ public class ServerConfig {
                 .stringEntry("voice_host", "",
                         "The hostname that clients should use to connect to the voice chat",
                         "This may also include a port, e.g. 'example.com:24454' or just a port, e.g. '24454'",
-                        "Do NOT change this value if you don't know what you're doing"
+                        "Do NOT change this value if you don't know what you're doing",
+                        "This option only works on dedicated servers"
                 );
         allowRecording = builder
                 .booleanEntry("allow_recording", true,

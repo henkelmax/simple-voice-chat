@@ -109,7 +109,13 @@ public class ServerVoiceEvents {
         // Only does something if hosting P2P
         // WebRtcUtils.addUncheckedRtcConnection(server, player);
 
-        NetManager.sendToClient(player, new SecretPacket(player, secret, server.getPort(), Voicechat.SERVER_CONFIG));
+        String configuredVoiceHost = server.isDedicated() ? Voicechat.SERVER_CONFIG.voiceHost.get() : "";
+        String voiceHost = PluginManager.instance().getVoiceHost(player, configuredVoiceHost);
+        if (!server.isDedicated() && !voiceHost.isEmpty()) {
+            Voicechat.LOGGER.warn("A plugin modified voice_host on a non-dedicated server - Ignore this message if this is intended");
+        }
+
+        NetManager.sendToClient(player, new SecretPacket(player, secret, server.getPort(), Voicechat.SERVER_CONFIG, voiceHost));
         Voicechat.LOGGER.info("Sent secret to {}", player.getName().getString());
     }
 

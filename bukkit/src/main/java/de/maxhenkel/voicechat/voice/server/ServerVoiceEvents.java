@@ -102,7 +102,9 @@ public class ServerVoiceEvents implements Listener {
             Voicechat.LOGGER.warn("Player already requested secret - ignoring");
             return;
         }
-        NetManager.sendToClient(player, new SecretPacket(player, secret, server.getPort(), Voicechat.SERVER_CONFIG));
+
+        String voiceHost = PluginManager.instance().getVoiceHost(player, Voicechat.SERVER_CONFIG.voiceHost.get());
+        NetManager.sendToClient(player, new SecretPacket(player, secret, server.getPort(), Voicechat.SERVER_CONFIG, voiceHost));
         Voicechat.LOGGER.info("Sent secret to {}", player.getName());
     }
 
