@@ -48,6 +48,9 @@ public class Server extends Thread {
     public Server(MinecraftServer server) {
         dedicated = server instanceof DedicatedServer;
         if (dedicated) {
+            if (!server.usesAuthentication()) {
+                Voicechat.LOGGER.warn("Running in offline mode - Voice chat encryption is not secure!");
+            }
             int configPort = Voicechat.SERVER_CONFIG.voiceChatPort.get();
             if (configPort < 0) {
                 Voicechat.LOGGER.info("Using the Minecraft servers port as voice chat port");

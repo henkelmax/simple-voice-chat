@@ -84,12 +84,6 @@ public class ServerVoiceEvents {
             return;
         }
 
-        if (mcServer instanceof DedicatedServer) {
-            if (!mcServer.usesAuthentication()) {
-                Voicechat.LOGGER.warn("Running in offline mode - Voice chat encryption is not secure!");
-            }
-        }
-
         try {
             server = new Server(mcServer);
             server.start();
