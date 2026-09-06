@@ -19,7 +19,10 @@ public class VoicechatSocketImpl extends VoicechatSocketBase implements Voicecha
         if (socket != null) {
             throw new IllegalStateException("Socket already opened");
         }
-        checkCorrectHost();
+        boolean dedicated = CommonCompatibilityManager.INSTANCE.isDedicatedServer();
+        if (dedicated) {
+            checkCorrectHost();
+        }
         InetAddress address = null;
         try {
             if (!bindAddress.isEmpty()) {
@@ -43,7 +46,7 @@ public class VoicechatSocketImpl extends VoicechatSocketBase implements Voicecha
         } catch (BindException e) {
             Voicechat.LOGGER.error("Failed to run voice chat at UDP port {}, make sure no other application is running at that port", port);
             Voicechat.LOGGER.error("Voice chat server error", e);
-            if (CommonCompatibilityManager.INSTANCE.isDedicatedServer()) {
+            if (dedicated) {
                 Voicechat.LOGGER.error("Shutting down server");
                 FMLCommonHandler.instance().exitJava(1, false);
             }
