@@ -11,7 +11,6 @@ import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.Secret;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -107,9 +106,10 @@ public class ServerVoiceEvents {
             return;
         }
 
-        String configuredVoiceHost = server.isDedicated() ? Voicechat.SERVER_CONFIG.voiceHost.get() : "";
+        boolean dedicated = CommonCompatibilityManager.INSTANCE.isDedicatedServer();
+        String configuredVoiceHost = dedicated ? Voicechat.SERVER_CONFIG.voiceHost.get() : "";
         String voiceHost = PluginManager.instance().getVoiceHost(player, configuredVoiceHost);
-        if (!server.isDedicated() && !voiceHost.isEmpty()) {
+        if (!dedicated && !voiceHost.isEmpty()) {
             Voicechat.LOGGER.warn("A plugin modified voice_host on a non-dedicated server - Ignore this message if this is intended");
         }
 
