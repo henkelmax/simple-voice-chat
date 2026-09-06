@@ -2,7 +2,6 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
-import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.Secret;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -30,7 +29,7 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     }
 
-    public SecretPacket(ServerPlayer player, Secret secret, int port, ServerConfig serverConfig) {
+    public SecretPacket(ServerPlayer player, Secret secret, int port, ServerConfig serverConfig, String voiceHost) {
         this.secret = secret;
         this.serverPort = port;
         this.playerUUID = player.getUUID();
@@ -39,7 +38,7 @@ public class SecretPacket implements Packet<SecretPacket> {
         this.voiceChatDistance = serverConfig.voiceChatDistance.get();
         this.keepAlive = serverConfig.keepAlive.get();
         this.groupsEnabled = serverConfig.groupsEnabled.get();
-        this.voiceHost = PluginManager.instance().getVoiceHost(player, serverConfig.voiceHost.get());
+        this.voiceHost = voiceHost;
         this.allowRecording = serverConfig.allowRecording.get();
     }
 
