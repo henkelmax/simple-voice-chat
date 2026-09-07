@@ -1,1 +1,2 @@
 - Ignore `voice_host` in singleplayer and LAN worlds
+- Improved sound manager error messages
