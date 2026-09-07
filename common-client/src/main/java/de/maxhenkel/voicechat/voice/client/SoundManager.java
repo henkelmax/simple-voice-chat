@@ -167,6 +167,9 @@ public class SoundManager {
     private static long tryOpenSpeaker(@Nullable String string) throws SpeakerException {
         long device = ALC11.alcOpenDevice(string);
         if (device == 0L) {
+            if (string == null) {
+                throw new SpeakerException("Failed to open default audio device");
+            }
             throw new SpeakerException(String.format("Failed to open audio device: Audio device '%s' not found", string));
         }
         int error = ALC11.alcGetError(device);
