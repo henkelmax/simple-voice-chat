@@ -15,6 +15,7 @@ import net.neoforged.neoforge.common.NeoForge;
 public class NeoForgeVoicechatClientMod extends VoicechatClient {
 
     public NeoForgeVoicechatClientMod(IEventBus eventBus) {
+        NeoForge.EVENT_BUS.register(ClientCompatibilityManager.INSTANCE);
         eventBus.addListener(this::clientSetup);
         eventBus.addListener(((NeoForgeClientCompatibilityManager) ClientCompatibilityManager.INSTANCE)::onRegisterKeyBinds);
         eventBus.addListener(((NeoForgeClientCompatibilityManager) ClientCompatibilityManager.INSTANCE)::onAddPackFindersEvent);
@@ -22,7 +23,6 @@ public class NeoForgeVoicechatClientMod extends VoicechatClient {
 
     public void clientSetup(FMLClientSetupEvent event) {
         initializeClient();
-        NeoForge.EVENT_BUS.register(ClientCompatibilityManager.INSTANCE);
         ClothConfig.init();
         ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class, () -> (client, parent) -> {
             if (OnboardingManager.isOnboarding()) {

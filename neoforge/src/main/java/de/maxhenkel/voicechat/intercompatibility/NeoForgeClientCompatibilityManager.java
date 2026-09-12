@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import de.maxhenkel.voicechat.events.ClientVoiceChatConnectedEvent;
 import de.maxhenkel.voicechat.events.ClientVoiceChatDisconnectedEvent;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
+import de.maxhenkel.voicechat.voice.client.IconFeatureRenderer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
@@ -54,6 +55,11 @@ public class NeoForgeClientCompatibilityManager extends ClientCompatibilityManag
         publishServerEvents = new CopyOnWriteArrayList<>();
         repositorySources = new CopyOnWriteArrayList<>();
         keyMappings = new CopyOnWriteArrayList<>();
+    }
+
+    @SubscribeEvent
+    public void onRegisterFeatureRenderers(RegisterFeatureRenderersEvent event) {
+        event.register(IconFeatureRenderer.TYPE, new IconFeatureRenderer());
     }
 
     @SubscribeEvent
