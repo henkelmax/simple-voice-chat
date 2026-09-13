@@ -45,7 +45,8 @@
     "viaversion": ">=${viaversion_version}"
   },
   "breaks": {
-    "fabric-api": "${fabric_api_dependency_breaks}"
+    "fabric-api": "${fabric_api_dependency_breaks}",
+    "flashback": "<=0.39.8"
   },
   "custom": {
     "modmenu": {
