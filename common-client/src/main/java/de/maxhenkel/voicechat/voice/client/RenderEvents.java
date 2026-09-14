@@ -59,6 +59,10 @@ public class RenderEvents {
             return;
         }
 
+        if (!ClientPluginManager.instance().shouldRenderHudIcons()) {
+            return;
+        }
+
         if (manager.isDisconnected()) {
             renderIcon(guiGraphics, DISCONNECT_ICON);
         } else if (manager.isDisabled()) {
@@ -152,7 +156,7 @@ public class RenderEvents {
         if (renderState.nameTagAttachment == null) {
             return;
         }
-        if (!ClientPluginManager.instance().shouldRenderPlayerIcons(entityId)) {
+        if (!ClientPluginManager.instance().shouldRenderPlayerIcons(entityId, texture == DISCONNECT_ICON)) {
             return;
         }
         poseStack.pushPose();
@@ -190,6 +194,9 @@ public class RenderEvents {
     }
 
     private boolean shouldShowIcons() {
+        if (ClientPluginManager.instance().shouldForceShowIcons()) {
+            return true;
+        }
         if (OnboardingManager.isOnboarding()) {
             return false;
         }
