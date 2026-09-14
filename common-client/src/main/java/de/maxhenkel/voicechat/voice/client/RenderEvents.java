@@ -56,6 +56,10 @@ public class RenderEvents {
             return;
         }
 
+        if (!ClientPluginManager.instance().shouldRenderHudIcons()) {
+            return;
+        }
+
         if (manager.isDisconnected()) {
             renderIcon(DISCONNECT_ICON);
         } else if (manager.isDisabled()) {
@@ -141,7 +145,7 @@ public class RenderEvents {
     }
 
     private void renderPlayerIcon(EntityPlayer entity, String str, double x, double y, double z, int maxDistance, ResourceLocation texture) {
-        if (!ClientPluginManager.instance().shouldRenderPlayerIcons(entity.getUniqueID())) {
+        if (!ClientPluginManager.instance().shouldRenderPlayerIcons(entity.getUniqueID(), texture == DISCONNECT_ICON)) {
             return;
         }
         RenderManager renderManager = minecraft.getRenderManager();
@@ -193,6 +197,9 @@ public class RenderEvents {
     }
 
     private boolean shouldShowIcons() {
+        if (ClientPluginManager.instance().shouldForceShowIcons()) {
+            return true;
+        }
         if (OnboardingManager.isOnboarding()) {
             return false;
         }

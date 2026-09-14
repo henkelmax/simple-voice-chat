@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.voice.client.camera;
 
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
+import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.ActiveRenderInfo;
@@ -18,6 +19,12 @@ public class CameraTracker {
     }
 
     private void update() {
+        CameraState cameraState = ClientPluginManager.instance().onUpdateCameraPosition();
+        if (cameraState != null) {
+            state = cameraState;
+            return;
+        }
+
         EntityPlayerSP player = minecraft.player;
         if (player == null) {
             state = CameraState.INITIAL;
