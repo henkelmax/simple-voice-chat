@@ -62,6 +62,10 @@ public class RenderEvents {
             return;
         }
 
+        if (!ClientPluginManager.instance().shouldRenderHudIcons()) {
+            return;
+        }
+
         if (manager.isDisconnected()) {
             renderIcon(guiGraphics, DISCONNECT_ICON);
         } else if (manager.isDisabled()) {
@@ -161,7 +165,7 @@ public class RenderEvents {
     }
 
     private void renderPlayerIcon(UUID entityId, boolean discrete, Component component, Identifier texture, PoseStack stack, SubmitNodeCollector collector, int light) {
-        if (!ClientPluginManager.instance().shouldRenderPlayerIcons(entityId)) {
+        if (!ClientPluginManager.instance().shouldRenderPlayerIcons(entityId, texture == DISCONNECT_ICON)) {
             return;
         }
         float offsetX = (float) (minecraft.font.width(component) / 2 + 2);
@@ -193,6 +197,9 @@ public class RenderEvents {
     }
 
     private boolean shouldShowIcons() {
+        if (ClientPluginManager.instance().shouldForceShowIcons()) {
+            return true;
+        }
         if (OnboardingManager.isOnboarding()) {
             return false;
         }
