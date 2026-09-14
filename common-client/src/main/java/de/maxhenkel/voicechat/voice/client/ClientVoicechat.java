@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import de.maxhenkel.voicechat.natives.ClientNativeManager;
+import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
@@ -151,6 +152,9 @@ public class ClientVoicechat {
     private void startMicThread(ClientVoicechatConnection connection) {
         if (micThread != null) {
             micThread.close();
+        }
+        if (ClientPluginManager.instance().onStartMic()) {
+            return;
         }
         micThread = new MicThread(this, connection, e -> {
             Voicechat.LOGGER.error("Failed to start microphone thread", e);
