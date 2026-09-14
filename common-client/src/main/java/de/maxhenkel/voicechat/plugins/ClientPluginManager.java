@@ -3,11 +3,14 @@ package de.maxhenkel.voicechat.plugins;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.ClientVoicechatSocket;
 import de.maxhenkel.voicechat.api.events.*;
+import de.maxhenkel.voicechat.api.internal.events.*;
 import de.maxhenkel.voicechat.plugins.impl.ClientVoicechatSocketImpl;
 import de.maxhenkel.voicechat.plugins.impl.PositionImpl;
 import de.maxhenkel.voicechat.plugins.impl.events.*;
+import de.maxhenkel.voicechat.voice.client.camera.CameraState;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -24,12 +27,26 @@ public class ClientPluginManager {
     /**
      * We are caching the event to avoid creating a new one every frame
      */
-    private final NameTagIconRenderEventImpl cachedRenderEvent = new NameTagIconRenderEventImpl();
+    private final NameTagIconRenderEventImpl cachedNameTagIconRenderEvent = new NameTagIconRenderEventImpl();
+    /**
+     * We are caching the event to avoid creating a new one every frame
+     */
+    private final HudIconRenderEventImpl cachedHudIconRenderEvent = new HudIconRenderEventImpl();
+    /**
+     * We are caching the event to avoid creating a new one every time
+     */
+    private final UpdateCameraPositionEventImpl cachedUpdateCameraPositionEvent = new UpdateCameraPositionEventImpl();
 
-    public boolean shouldRenderPlayerIcons(UUID entityId) {
-        cachedRenderEvent.setEntityId(entityId);
-        cachedRenderEvent.setCancelled(false);
-        return !pluginManager.dispatchEvent(NameTagIconRenderEvent.class, cachedRenderEvent);
+    public boolean shouldRenderPlayerIcons(UUID entityId, boolean disconnected) {
+        cachedNameTagIconRenderEvent.setEntityId(entityId);
+        cachedNameTagIconRenderEvent.setDisconnected(disconnected);
+        cachedNameTagIconRenderEvent.setCancelled(false);
+        return !pluginManager.dispatchEvent(NameTagIconRenderEvent.class, cachedNameTagIconRenderEvent);
+    }
+
+    public boolean shouldRenderHudIcons() {
+        cachedHudIconRenderEvent.setCancelled(false);
+        return !pluginManager.dispatchEvent(HudIconRenderEvent.class, cachedHudIconRenderEvent);
     }
 
     public ClientVoicechatSocket getClientSocketImplementation() {
@@ -114,6 +131,46 @@ public class ClientPluginManager {
                 context,
                 device
         ));
+    }
+
+    public boolean shouldForceShowIcons() {
+        ForceShowIconsEventImpl event = new ForceShowIconsEventImpl();
+        pluginManager.dispatchEvent(ForceShowIconsEvent.class, event);
+        return event.shouldForceShow();
+    }
+
+    @Nullable
+    public CameraState onUpdateCameraPosition() {
+        cachedUpdateCameraPositionEvent.setPos(null);
+        cachedUpdateCameraPositionEvent.getForward().set(0F);
+        cachedUpdateCameraPositionEvent.getUp().set(0F);
+        pluginManager.dispatchEvent(UpdateCameraPositionEvent.class, cachedUpdateCameraPositionEvent);
+        if (cachedUpdateCameraPositionEvent.getPos() == null) {
+            return null;
+        }
+        return new CameraState(
+                cachedUpdateCameraPositionEvent.getPos(),
+                new Vector3f(cachedUpdateCameraPositionEvent.getForward()),
+                new Vector3f(cachedUpdateCameraPositionEvent.getUp()),
+                cachedUpdateCameraPositionEvent.getYRot(),
+                null,
+                cachedUpdateCameraPositionEvent.getPos(),
+                null,
+                false
+        );
+    }
+
+    /**
+     * @return if the event was canceled
+     */
+    public boolean onStartMic() {
+        return pluginManager.dispatchEvent(StartMicEvent.class, new StartMicEventImpl());
+    }
+
+    public long getAlcContext(long originalContext) {
+        AlcContextEventImpl event = new AlcContextEventImpl(originalContext);
+        pluginManager.dispatchEvent(AlcContextEvent.class, event);
+        return event.getContext();
     }
 
     private static ClientPluginManager instance;
