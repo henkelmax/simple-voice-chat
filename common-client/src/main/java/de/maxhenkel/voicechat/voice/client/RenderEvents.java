@@ -61,6 +61,10 @@ public class RenderEvents {
             return;
         }
 
+        if (!ClientPluginManager.instance().shouldRenderHudIcons()) {
+            return;
+        }
+
         if (manager.isDisconnected()) {
             renderIcon(guiGraphics, DISCONNECT_ICON);
         } else if (manager.isDisabled()) {
@@ -145,7 +149,7 @@ public class RenderEvents {
     }
 
     private void renderPlayerIcon(Player player, Component component, ResourceLocation texture, PoseStack poseStack, MultiBufferSource buffer, int light, float partialTicks) {
-        if (!ClientPluginManager.instance().shouldRenderPlayerIcons(player.getUUID())) {
+        if (!ClientPluginManager.instance().shouldRenderPlayerIcons(player.getUUID(), texture == DISCONNECT_ICON)) {
             return;
         }
         Vec3 nametagPos = player.getAttachments().getNullable(EntityAttachment.NAME_TAG, 0, player.getViewYRot(partialTicks));
@@ -187,6 +191,9 @@ public class RenderEvents {
     }
 
     private boolean shouldShowIcons() {
+        if (ClientPluginManager.instance().shouldForceShowIcons()) {
+            return true;
+        }
         if (OnboardingManager.isOnboarding()) {
             return false;
         }
