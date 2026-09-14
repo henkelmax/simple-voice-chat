@@ -56,6 +56,10 @@ public class RenderEvents {
             return;
         }
 
+        if (!ClientPluginManager.instance().shouldRenderHudIcons()) {
+            return;
+        }
+
         if (manager.isDisconnected()) {
             renderIcon(stack, DISCONNECT_ICON);
         } else if (manager.isDisabled()) {
@@ -140,7 +144,7 @@ public class RenderEvents {
     }
 
     private void renderPlayerIcon(PlayerEntity player, ITextComponent component, ResourceLocation texture, MatrixStack matrixStackIn, IRenderTypeBuffer buffer, int light) {
-        if (!ClientPluginManager.instance().shouldRenderPlayerIcons(player.getUUID())) {
+        if (!ClientPluginManager.instance().shouldRenderPlayerIcons(player.getUUID(), texture == DISCONNECT_ICON)) {
             return;
         }
         matrixStackIn.pushPose();
@@ -176,6 +180,9 @@ public class RenderEvents {
     }
 
     private boolean shouldShowIcons() {
+        if (ClientPluginManager.instance().shouldForceShowIcons()) {
+            return true;
+        }
         if (OnboardingManager.isOnboarding()) {
             return false;
         }
