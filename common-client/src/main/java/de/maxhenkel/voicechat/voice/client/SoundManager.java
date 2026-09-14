@@ -225,10 +225,11 @@ public class SoundManager {
     }
 
     public boolean openContext() {
-        if (context == 0) {
+        long alcContext = ClientPluginManager.instance().getAlcContext(context);
+        if (alcContext == 0) {
             return false;
         }
-        boolean success = EXTThreadLocalContext.alcSetThreadContext(context);
+        boolean success = EXTThreadLocalContext.alcSetThreadContext(alcContext);
         checkAlcError(device);
         if (success) {
             AL.setCurrentThread(alCaps);
