@@ -43,7 +43,7 @@
   },
   "breaks": {
     "fabric-api": "${fabric_api_dependency_breaks}",
-    "flashback": "<=0.39.8"
+    "flashback": "<=0.39.9"
   },
   "custom": {
     "modmenu": {
