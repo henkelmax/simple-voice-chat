@@ -1,10 +1,9 @@
 package de.maxhenkel.voicechat.plugins.impl.events;
 
+import com.mojang.math.Vector3f;
 import de.maxhenkel.voicechat.api.internal.events.UpdateCameraPositionEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
-import org.joml.Vector3fc;
 
 import javax.annotation.Nullable;
 
@@ -21,10 +20,10 @@ public class UpdateCameraPositionEventImpl extends ClientEventImpl implements Up
     }
 
     @Override
-    public void setCameraPosition(Vec3 pos, Vector3fc forward, Vector3fc up) {
+    public void setCameraPosition(Vec3 pos, Vector3f forward, Vector3f up) {
         this.pos = pos;
-        this.forward.set(forward);
-        this.up.set(up);
+        this.forward.set(forward.x(), forward.y(), forward.z());
+        this.up.set(up.x(), up.y(), up.z());
     }
 
     public void setPos(@Nullable Vec3 pos) {
