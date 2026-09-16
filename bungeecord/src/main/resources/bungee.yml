@@ -1,6 +1,0 @@
-name: voicechat
-version: ${mod_version}
-main: de.maxhenkel.voicechat.BungeecordPlugin
-author: NilaTheDragon, Max Henkel
-description: Run multiple servers with Simple Voice Chat behind a single public port
-website: https://github.com/henkelmax/simple-voice-chat

@@ -11,78 +11,36 @@ plugins {
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/taskutils.gradle"
 
-tasks.register('01-publishBungeeCord') {
-    group = 'voicechat'
-    doLast {
-        runGradleTasks(['common-proxy:clean', 'bungeecord:clean'], ['bungeecord:modrinth', 'bungeecord:publishAllPublicationsToHangar'])
-    }
-}
-
-tasks.register('02-publishVelocity') {
-    group = 'voicechat'
-    doLast {
-        runGradleTasks(['common-proxy:clean', 'velocity:clean'], ['velocity:modrinth', 'velocity:publishAllPublicationsToHangar'])
-    }
-}
-
-tasks.register('03-publishBukkit') {
-    group = 'voicechat'
-    doLast {
-        runGradleTasks(['bukkit:clean'], ['bukkit:curseforge', 'bukkit:modrinth', 'bukkit:publishAllPublicationsToHangar'])
-    }
-}
-
-tasks.register('04-publishPaper') {
+tasks.register('01-publishPaper') {
     group = 'voicechat'
     doLast {
         runGradleTasks(['common:clean'], ['paper:modrinth', 'paper:publishAllPublicationsToHangar'])
     }
 }
 
-tasks.register('05-publishQuilt', GradleBuild) {
+tasks.register('02-publishQuilt', GradleBuild) {
     group = 'voicechat'
     dir = 'quilt'
     tasks = ['uploadMod']
 }
 
-tasks.register('06-publishForge') {
+tasks.register('03-publishForge') {
     group = 'voicechat'
     doLast {
         runGradleTasks(['common:clean', 'common-client:clean', 'forge:clean'], ['forge:curseforge', 'forge:modrinth', 'forge:modUpdate'])
     }
 }
 
-tasks.register('07-publishNeoForge') {
+tasks.register('04-publishNeoForge') {
     group = 'voicechat'
     doLast {
         runGradleTasks(['common:clean', 'common-client:clean', 'neoforge:clean'], ['neoforge:curseforge', 'neoforge:modrinth', 'neoforge:modUpdate'])
     }
 }
 
-tasks.register('08-publishFabric') {
+tasks.register('05-publishFabric') {
     group = 'voicechat'
     doLast {
         runGradleTasks(['common:clean', 'common-client:clean', 'fabric:clean', 'fabric:api-stub:clean'], ['fabric:curseforge', 'fabric:modrinth', 'fabric:modUpdate'])
-    }
-}
-
-tasks.register('publishFabricSnapshot') {
-    group = 'voicechat'
-    doLast {
-        runGradleTasks(['common:clean', 'common-client:clean', 'fabric:clean', 'fabric:api-stub:clean'], ['fabric:curseforge', 'fabric:modrinth'])
-    }
-}
-
-tasks.register('publishApi') {
-    group = 'voicechat'
-    doLast {
-        runGradleTasks(['api:clean', 'fabric:api-stub:clean'], ['api:publish', 'fabric:api-stub:publish'])
-    }
-}
-
-tasks.register('publishApiLocal') {
-    group = 'voicechat'
-    doLast {
-        runGradleTasks(['api:clean', 'fabric:api-stub:clean'], ['api:publishToMavenLocal', 'fabric:api-stub:publishToMavenLocal'])
     }
 }
