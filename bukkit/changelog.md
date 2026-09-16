@@ -1,2 +1,1 @@
-- Fixed JoinGroupEvent being fired for wrong password attempts
-- Fixed error when shutting down a server
+- Added support for 26.3
