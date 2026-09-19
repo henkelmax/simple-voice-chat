@@ -3,10 +3,11 @@ package de.maxhenkel.voicechat.intercompatibility;
 import com.mojang.blaze3d.platform.InputConstants;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
+import de.maxhenkel.voicechat.voice.client.IconFeatureRenderer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.client.renderer.feature.FeatureRendererMap;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.Connection;
 import net.minecraft.resources.Identifier;
@@ -59,6 +60,11 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         keyMappings = new CopyOnWriteArrayList<>();
     }
 
+    //TODO Use Forge event once its added
+    public void onRegisterFeatureRenderers(FeatureRendererMap featureRenderers) {
+        featureRenderers.put(IconFeatureRenderer.TYPE, new IconFeatureRenderer());
+    }
+
     public void onRenderName(net.minecraftforge.client.event.RenderNameTagEvent event) {
         renderNameplateEvents.forEach(renderNameplateEvent -> renderNameplateEvent.render(event.getState(), event.getCameraState(), event.getPoseStack(), event.getNodeCollector()));
     }
@@ -73,7 +79,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     }
 
     public void onKey(InputEvent.Key event) {
-        keyboardEvents.forEach(keyboardEvent -> keyboardEvent.onKeyboardEvent(new KeyEvent(event.getKey(), event.getScanCode(), event.getModifiers())));
+        keyboardEvents.forEach(keyboardEvent -> keyboardEvent.onKeyboardEvent(event.getInfo()));
     }
 
     public void onMouse(InputEvent.MouseButton.Pre event) {
