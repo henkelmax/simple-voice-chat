@@ -71,10 +71,10 @@ public abstract class PlayerEntryMixin extends ContainerObjectSelectionList.Entr
     private void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean hovered, float delta, CallbackInfo ci) {
         if (inviteButton != null && hideButton != null && reportButton != null) {
             if (ClientManager.getPlayerStateManager().getGroupID() == null || !canInvite()) {
-                inviteButton.visible = false;
+                inviteButton.setVisible(false);
                 return;
             }
-            inviteButton.visible = true;
+            inviteButton.setVisible(true);
             inviteButton.active = !invited;
             inviteButton.setPosition(getContentX() + (getContentWidth() - hideButton.getWidth() - 4 - reportButton.getWidth() - 4) - inviteButton.getWidth() - 4, getContentY() + (getContentHeight() - inviteButton.getHeight()) / 2);
             inviteButton.extractRenderState(guiGraphics, mouseX, mouseY, delta);
