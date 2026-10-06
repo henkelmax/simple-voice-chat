@@ -9,7 +9,7 @@ import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.plugins.CategoryManager;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureResources;
 import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
@@ -59,7 +59,7 @@ public class ClientCategoryManager extends CategoryManager {
 
     private void registerImage(String id, NativeImage image) {
         Identifier identifier = Identifier.fromNamespaceAndPath(Voicechat.MODID, id);
-        Minecraft.getInstance().getEntityRenderDispatcher().textureManager.register(identifier, new DynamicTexture(identifier::toString, image));
+        Minecraft.getInstance().getEntityRenderDispatcher().textureManager.register(identifier, TextureResources.from2dImage(identifier::toString, image));
         images.put(id, identifier);
     }
 

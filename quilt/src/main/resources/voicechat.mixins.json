@@ -14,8 +14,7 @@
     "KeyboardMixin",
     "MinecraftMixin",
     "MouseMixin",
-    "PackRepositoryMixin",
-    "PlayerEntryMixin"
+    "PackRepositoryMixin"
   ],
   "injectors": {
     "defaultRequire": 1
