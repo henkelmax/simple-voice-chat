@@ -14,7 +14,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.FeatureRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.event.Event;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -38,7 +37,7 @@ public class FabricClientCompatibilityManager extends ClientCompatibilityManager
         FeatureRendererRegistry.register(IconFeatureRenderer.TYPE, IconFeatureRenderer::new);
     }
 
-    private void onRenderVoiceChatLayer(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
+    private void onRenderVoiceChatLayer(GuiGraphicsExtractor guiGraphics) {
         RenderEvents.RENDER_HUD.invoker().accept(guiGraphics);
     }
 
