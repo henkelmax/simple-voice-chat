@@ -6,9 +6,9 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.PlayerSkin;
 
@@ -31,7 +31,7 @@ public class PlayerVolumeEntry extends VolumeEntry {
     }
 
     @Override
-    public void renderElement(GuiGraphicsExtractor guiGraphics, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
+    public void renderElement(GuiGraphicsExtractor guiGraphics, int top, int left, int width, int height, boolean hovered, int skinX, int skinY, int textX, int textY) {
         if (state != null) {
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), skinX, skinY, 8, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
@@ -41,7 +41,7 @@ public class PlayerVolumeEntry extends VolumeEntry {
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, OTHER_VOLUME_ICON, SKIN_SIZE, SKIN_SIZE, 0, 0, skinX, skinY, SKIN_SIZE, SKIN_SIZE);
             renderScrollingString(guiGraphics, OTHER_VOLUME);
             if (hovered) {
-                guiGraphics.setTooltipForNextFrame(minecraft.font, OTHER_VOLUME_DESCRIPTION, mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(minecraft.font, OTHER_VOLUME_DESCRIPTION, guiGraphics.mouseX(), guiGraphics.mouseY());
             }
         }
     }

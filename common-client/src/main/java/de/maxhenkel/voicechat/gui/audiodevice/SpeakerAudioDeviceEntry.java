@@ -30,13 +30,13 @@ public class SpeakerAudioDeviceEntry extends AudioDeviceEntry {
     }
 
     @Override
-    public void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
-        super.extractContent(guiGraphics, mouseX, mouseY, hovered, delta);
+    public void extractContent(GuiGraphicsExtractor guiGraphics, boolean hovered) {
+        super.extractContent(guiGraphics, hovered);
         boolean selected = isSelected.get();
         if (selected && hovered) {
             testButton.setVisible(true);
             testButton.setPosition(getContentX() + (getContentWidth() - testButton.getWidth() - PADDING), getContentY() + (getContentHeight() - testButton.getHeight()) / 2);
-            testButton.extractRenderState(guiGraphics, mouseX, mouseY, delta);
+            testButton.extractRenderState(guiGraphics);
         } else {
             testButton.setVisible(false);
         }

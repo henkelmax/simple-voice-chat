@@ -5,7 +5,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -39,14 +39,14 @@ public class ImageButton extends AbstractButton {
         }
     }
 
-    protected void extractImage(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void extractImage(GuiGraphicsExtractor guiGraphics) {
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, getX() + 2, getY() + 2, 16, 16);
     }
 
     @Override
-    protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float f) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics) {
         extractDefaultSprite(guiGraphics);
-        extractImage(guiGraphics, mouseX, mouseY);
+        extractImage(guiGraphics);
 
         if (tooltipSupplier != null) {
             tooltipSupplier.updateTooltip(this);

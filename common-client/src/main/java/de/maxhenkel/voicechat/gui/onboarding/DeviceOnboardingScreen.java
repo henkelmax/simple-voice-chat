@@ -36,9 +36,9 @@ public abstract class DeviceOnboardingScreen extends OnboardingScreenBase {
     public abstract Screen getNextScreen();
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
-        deviceList.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics) {
+        super.extractRenderState(guiGraphics);
+        deviceList.extractRenderState(guiGraphics);
         renderTitle(guiGraphics, title);
     }
 

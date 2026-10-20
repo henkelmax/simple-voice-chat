@@ -6,7 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -68,7 +68,7 @@ public class AdjustVolumesScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE, 256, 256);
         for (int i = 0; i < units; i++) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * i, 0, HEADER_SIZE, xSize, UNIT_SIZE, 256, 256);
@@ -78,17 +78,17 @@ public class AdjustVolumesScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void extractForegroundRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractForegroundRenderState(GuiGraphicsExtractor guiGraphics) {
         guiGraphics.text(font, TITLE, width / 2 - font.width(TITLE) / 2, guiTop + 5, VoiceChatScreenBase.FONT_COLOR, false);
         if (!volumeList.isEmpty()) {
-            volumeList.extractRenderState(guiGraphics, mouseX, mouseY, delta);
+            volumeList.extractRenderState(guiGraphics);
         } else if (!searchBox.getValue().isEmpty()) {
             guiGraphics.centeredText(font, EMPTY_SEARCH, width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - font.lineHeight / 2, -1);
         }
         if (!searchBox.isFocused() && searchBox.getValue().isEmpty()) {
             guiGraphics.text(font, SEARCH_HINT, searchBox.getX(), searchBox.getY(), -1, false);
         } else {
-            searchBox.extractRenderState(guiGraphics, mouseX, mouseY, delta);
+            searchBox.extractRenderState(guiGraphics);
         }
     }
 

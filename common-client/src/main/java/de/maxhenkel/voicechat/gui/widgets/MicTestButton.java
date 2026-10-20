@@ -51,8 +51,8 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float f) {
-        super.extractContents(guiGraphics, mouseX, mouseY, f);
+    public void extractContents(GuiGraphicsExtractor guiGraphics) {
+        super.extractContents(guiGraphics);
         updateLastRender();
     }
 

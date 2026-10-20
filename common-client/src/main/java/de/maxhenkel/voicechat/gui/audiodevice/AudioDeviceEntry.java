@@ -4,7 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -38,7 +38,7 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
     }
 
     @Override
-    public void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
+    public void extractContent(GuiGraphicsExtractor guiGraphics, boolean hovered) {
         int left = getContentX();
         int top = getContentY();
         int width = getContentWidth();
@@ -74,4 +74,5 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
     public String getDevice() {
         return device;
     }
+
 }

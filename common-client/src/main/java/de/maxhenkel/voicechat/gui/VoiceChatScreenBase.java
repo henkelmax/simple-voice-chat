@@ -38,17 +38,17 @@ public abstract class VoiceChatScreenBase extends Screen {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
-        extractBackgroundRenderState(guiGraphics, mouseX, mouseY, delta);
-        super.extractRenderState(guiGraphics, mouseX, mouseY, delta);
-        extractForegroundRenderState(guiGraphics, mouseX, mouseY, delta);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics) {
+        extractBackgroundRenderState(guiGraphics);
+        super.extractRenderState(guiGraphics);
+        extractForegroundRenderState(guiGraphics);
     }
 
-    public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics) {
 
     }
 
-    public void extractForegroundRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractForegroundRenderState(GuiGraphicsExtractor guiGraphics) {
 
     }
 

@@ -38,8 +38,8 @@ public class IntroductionOnboardingScreen extends OnboardingScreenBase {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics) {
+        super.extractRenderState(guiGraphics);
         renderTitle(guiGraphics, TITLE);
         renderMultilineText(guiGraphics, DESCRIPTION);
     }

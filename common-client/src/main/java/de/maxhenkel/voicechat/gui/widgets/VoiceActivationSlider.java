@@ -7,7 +7,7 @@ import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -42,7 +42,7 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     }
 
     @Override
-    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics) {
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getSlider(), getX(), getY(), getWidth(), getHeight());
 
         int micWidth = (int) ((width - 2) * micValue.smoothMax());

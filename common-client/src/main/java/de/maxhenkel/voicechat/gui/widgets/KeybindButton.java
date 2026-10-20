@@ -61,7 +61,7 @@ public class KeybindButton extends AbstractButton {
     }
 
     @Override
-    protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics) {
         extractDefaultSprite(guiGraphics);
         extractDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
     }

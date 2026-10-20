@@ -13,7 +13,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -81,7 +81,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
 
         addRenderableWidget(new EnumButton<>(guiLeft + 10, y, xSize - 20, 20, VoicechatClient.CLIENT_CONFIG.audioType) {
             @Override
-            protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+            protected void extractContents(GuiGraphicsExtractor guiGraphics) {
                 extractDefaultSprite(guiGraphics);
                 extractDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
             }
@@ -140,22 +140,22 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics) {
         if (isIngame()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
         }
     }
 
     @Override
-    public void extractForegroundRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractForegroundRenderState(GuiGraphicsExtractor guiGraphics) {
         int titleWidth = font.width(TITLE);
         guiGraphics.text(font, TITLE.getVisualOrderText(), guiLeft + (xSize - titleWidth) / 2, guiTop + 7, getFontColor(), false);
 
         Component sliderTooltip = voiceActivationSlider.getHoverText();
         if (voiceActivationSlider.isHovered() && sliderTooltip != null) {
-            guiGraphics.setTooltipForNextFrame(font, sliderTooltip, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(font, sliderTooltip, guiGraphics.mouseX(), guiGraphics.mouseY());
         } else if (keybindButton.isHovered()) {
-            guiGraphics.setTooltipForNextFrame(font, ASSIGN_TOOLTIP, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(font, ASSIGN_TOOLTIP, guiGraphics.mouseX(), guiGraphics.mouseY());
         }
     }
 

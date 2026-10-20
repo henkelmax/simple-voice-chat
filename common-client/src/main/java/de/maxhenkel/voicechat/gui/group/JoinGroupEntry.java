@@ -11,7 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -45,7 +45,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
     }
 
     @Override
-    public void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
+    public void extractContent(GuiGraphicsExtractor guiGraphics, boolean hovered) {
         int left = getContentX();
         int top = getContentY();
         int width = getContentWidth();
@@ -123,7 +123,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             }
         }
 
-        guiGraphics.setTooltipForNextFrame(minecraft.font, tooltip, mouseX, mouseY);
+        guiGraphics.setTooltipForNextFrame(minecraft.font, tooltip, guiGraphics.mouseX(), guiGraphics.mouseY());
     }
 
     public Group getGroup() {

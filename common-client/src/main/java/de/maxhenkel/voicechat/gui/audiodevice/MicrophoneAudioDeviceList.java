@@ -34,8 +34,8 @@ public class MicrophoneAudioDeviceList extends AudioDeviceList {
     }
 
     @Override
-    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
-        super.extractWidgetRenderState(guiGraphics, i, j, f);
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics) {
+        super.extractWidgetRenderState(guiGraphics);
         micTestButton.updateLastRender();
     }
 

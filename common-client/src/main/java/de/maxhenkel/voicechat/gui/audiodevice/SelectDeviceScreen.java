@@ -5,7 +5,7 @@ import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
@@ -61,7 +61,7 @@ public abstract class SelectDeviceScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics) {
         if (isIngame()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE, 256, 256);
             for (int i = 0; i < units; i++) {
@@ -73,10 +73,10 @@ public abstract class SelectDeviceScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void extractForegroundRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractForegroundRenderState(GuiGraphicsExtractor guiGraphics) {
         guiGraphics.text(font, title, width / 2 - font.width(title) / 2, guiTop + 5, isIngame() ? FONT_COLOR : TextColor.WHITE.getValue(), false);
         if (!deviceList.isEmpty()) {
-            deviceList.extractRenderState(guiGraphics, mouseX, mouseY, delta);
+            deviceList.extractRenderState(guiGraphics);
         } else {
             guiGraphics.centeredText(font, getEmptyListComponent(), width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - font.lineHeight / 2, -1);
         }

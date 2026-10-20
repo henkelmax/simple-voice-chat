@@ -7,7 +7,7 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
 public class CategoryVolumeEntry extends VolumeEntry {
@@ -28,11 +28,11 @@ public class CategoryVolumeEntry extends VolumeEntry {
     }
 
     @Override
-    public void renderElement(GuiGraphicsExtractor guiGraphics, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY) {
+    public void renderElement(GuiGraphicsExtractor guiGraphics, int top, int left, int width, int height, boolean hovered, int skinX, int skinY, int textX, int textY) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, skinX, skinY, 16, 16, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16);
         renderScrollingString(guiGraphics, category.getDisplayName());
         if (hovered && category.getDescription() != null) {
-            guiGraphics.setTooltipForNextFrame(minecraft.font, category.getDisplayDescription(), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(minecraft.font, category.getDisplayDescription(), guiGraphics.mouseX(), guiGraphics.mouseY());
         }
     }
 

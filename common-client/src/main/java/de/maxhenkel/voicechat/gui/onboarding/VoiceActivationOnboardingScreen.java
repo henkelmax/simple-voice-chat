@@ -52,14 +52,14 @@ public class VoiceActivationOnboardingScreen extends OnboardingScreenBase {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics) {
+        super.extractRenderState(guiGraphics);
         renderTitle(guiGraphics, TITLE);
         renderMultilineText(guiGraphics, DESCRIPTION);
 
         Component sliderTooltip = slider.getHoverText();
         if (slider.isHovered() && sliderTooltip != null) {
-            guiGraphics.setTooltipForNextFrame(font, sliderTooltip, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(font, sliderTooltip, guiGraphics.mouseX(), guiGraphics.mouseY());
         }
     }
 

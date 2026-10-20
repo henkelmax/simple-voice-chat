@@ -31,7 +31,7 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
     }
 
     @Override
-    public void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
+    public void extractContent(GuiGraphicsExtractor guiGraphics, boolean hovered) {
         int left = getContentX();
         int top = getContentY();
         int width = getContentWidth();
@@ -43,13 +43,13 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
 
         guiGraphics.fill(left, top, left + width, top + height, BG_FILL);
 
-        renderElement(guiGraphics, top, left, width, height, mouseX, mouseY, hovered, delta, skinX, skinY, textX, textY);
+        renderElement(guiGraphics, top, left, width, height, hovered, skinX, skinY, textX, textY);
 
         volumeSlider.setPosition(left + (width - volumeSlider.getWidth() - PADDING), top + (height - volumeSlider.getHeight()) / 2);
-        volumeSlider.extractRenderState(guiGraphics, mouseX, mouseY, delta);
+        volumeSlider.extractRenderState(guiGraphics);
     }
 
-    public abstract void renderElement(GuiGraphicsExtractor guiGraphics, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float delta, int skinX, int skinY, int textX, int textY);
+    public abstract void renderElement(GuiGraphicsExtractor guiGraphics, int top, int left, int width, int height, boolean hovered, int skinX, int skinY, int textX, int textY);
 
     protected void renderScrollingString(GuiGraphicsExtractor guiGraphics, Component text) {
         int textX = getContentX() + PADDING + SKIN_SIZE + PADDING;

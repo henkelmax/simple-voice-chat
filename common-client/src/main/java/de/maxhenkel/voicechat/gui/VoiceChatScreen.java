@@ -19,7 +19,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -133,12 +133,12 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
     }
 
     @Override
-    public void extractForegroundRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractForegroundRenderState(GuiGraphicsExtractor guiGraphics) {
         int titleWidth = font.width(TITLE);
         guiGraphics.text(font, TITLE, guiLeft + (xSize - titleWidth) / 2, guiTop + 7, FONT_COLOR, false);
 
@@ -148,8 +148,8 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
             MutableComponent time = Component.literal(recorder.getDuration());
             guiGraphics.text(font, time.withStyle(ChatFormatting.DARK_RED), guiLeft + recordingHoverArea.getPosX() + recordingHoverArea.getWidth() / 2 - font.width(time) / 2, guiTop + recordingHoverArea.getPosY() + recordingHoverArea.getHeight() / 2 - font.lineHeight / 2, 0xFF000000, false);
 
-            if (recordingHoverArea.isHovered(guiLeft, guiTop, mouseX, mouseY)) {
-                guiGraphics.setTooltipForNextFrame(font, Component.translatable("message.voicechat.storage_size", recorder.getStorage()), mouseX, mouseY);
+            if (recordingHoverArea.isHovered(guiLeft, guiTop, guiGraphics.mouseX(), guiGraphics.mouseY())) {
+                guiGraphics.setTooltipForNextFrame(font, Component.translatable("message.voicechat.storage_size", recorder.getStorage()), guiGraphics.mouseX(), guiGraphics.mouseY());
             }
         }
     }

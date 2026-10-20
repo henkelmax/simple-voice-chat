@@ -33,8 +33,8 @@ public class AdjustVolumeSlider extends DebouncedSlider {
     }
 
     @Override
-    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
-        super.extractWidgetRenderState(guiGraphics, i, j, f);
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics) {
+        super.extractWidgetRenderState(guiGraphics);
         double audioLevel = volumeConfigEntry.getAudioLevel();
         if (audioLevel <= AudioUtils.LOWEST_DB) {
             return;
