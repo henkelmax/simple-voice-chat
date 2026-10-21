@@ -61,7 +61,10 @@ public abstract class ALSpeakerBase implements Speaker {
             return;
         }
         source = AL11.alGenSources();
-        SoundManager.checkAlError();
+        if (SoundManager.checkAlError()) {
+            Voicechat.LOGGER.error("Failed to create OpenAL source for audio channel {} - The source limit might be reached. This channels audio will be silent until recreated.", audioChannelId);
+            return;
+        }
         AL11.alSourcei(source, AL11.AL_LOOPING, AL11.AL_FALSE);
         SoundManager.checkAlError();
 
@@ -79,6 +82,9 @@ public abstract class ALSpeakerBase implements Speaker {
     @Override
     public void play(short[] data, float volume, @Nullable Vec3 position, @Nullable String category, float maxDistance) {
         runInContext(() -> {
+            if (!hasValidSourceSync()) {
+                return;
+            }
             removeProcessedBuffersSync();
             boolean stopped = isStoppedSync();
             if (stopped) {
