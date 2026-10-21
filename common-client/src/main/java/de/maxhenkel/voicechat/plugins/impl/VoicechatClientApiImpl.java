@@ -67,8 +67,7 @@ public class VoicechatClientApiImpl extends VoicechatApiImpl implements Voicecha
             }
             return micThread.isTalking();
         }
-        client.getTalkCache().isTalking(playerId);
-        return false;
+        return client.getTalkCache().isTalking(playerId);
     }
 
     @Override
@@ -84,8 +83,7 @@ public class VoicechatClientApiImpl extends VoicechatApiImpl implements Voicecha
             }
             return micThread.isWhispering();
         }
-        client.getTalkCache().isWhispering(playerId);
-        return false;
+        return client.getTalkCache().isWhispering(playerId);
     }
 
     @Override
