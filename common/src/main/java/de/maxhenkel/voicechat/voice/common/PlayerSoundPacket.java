@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public class PlayerSoundPacket extends SoundPacket<PlayerSoundPacket> {
 
+    // TODO Add a separate entity UUID instead of using the sender as the entity when breaking network compatibility
     protected boolean whispering;
     protected float distance;
 
