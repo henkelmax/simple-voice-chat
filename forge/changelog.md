@@ -1,2 +1,1 @@
-- Ignore `voice_host` in singleplayer and LAN worlds
-- Added Thai translation
+- Fixed resource leak when player disconnects

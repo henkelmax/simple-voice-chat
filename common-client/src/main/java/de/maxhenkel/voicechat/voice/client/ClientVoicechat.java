@@ -245,11 +245,13 @@ public class ClientVoicechat {
 
     public boolean closeAudioChannel(UUID id) {
         synchronized (audioChannels) {
-            boolean removed = audioChannels.remove(id) != null;
-            if (removed) {
-                Voicechat.LOGGER.debug("Removed audio channel of {} due to disconnection from voice chat", id);
+            AudioChannel channel = audioChannels.remove(id);
+            if (channel == null) {
+                return false;
             }
-            return removed;
+            channel.closeAndKill();
+            Voicechat.LOGGER.debug("Removed audio channel of {} due to disconnection from voice chat", id);
+            return true;
         }
     }
 
