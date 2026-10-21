@@ -81,6 +81,7 @@ public class PositionalAudioUtils {
 
     /**
      * Converts 16 bit mono audio to stereo based on the sound position
+     * The channels are scaled to constant power, to match the loudness of mono sources panned by OpenAL
      * This does not include the volume based on distance
      *
      * @param audio    the audio data
@@ -88,10 +89,9 @@ public class PositionalAudioUtils {
      * @return the stereo audio data
      */
     public static short[] convertToStereo(short[] audio, @Nullable Vector3d soundPos) {
-        if (soundPos == null) {
-            return convertToStereo(audio);
-        }
-        return convertToStereo(audio, getStereoVolume(soundPos));
+        float[] volumes = soundPos == null ? new float[]{1F, 1F} : getStereoVolume(soundPos);
+        float power = (float) Math.sqrt(volumes[0] * volumes[0] + volumes[1] * volumes[1]);
+        return convertToStereo(audio, volumes[0] / power, volumes[1] / power);
     }
 
     /**
