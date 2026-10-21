@@ -88,7 +88,7 @@ public class EntitySoundPacketImpl extends SoundPacketImpl implements EntitySoun
             if (entityUuid == null) {
                 throw new IllegalStateException("entityUuid missing");
             }
-            return new EntitySoundPacketImpl(new PlayerSoundPacket(channelId, sender, opusEncodedData, sequenceNumber, whispering, distance, category));
+            return new EntitySoundPacketImpl(new PlayerSoundPacket(channelId, entityUuid, opusEncodedData, sequenceNumber, whispering, distance, category));
         }
 
     }
