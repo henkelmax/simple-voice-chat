@@ -60,6 +60,10 @@
       {
         "id": "fabric-api",
         "versions": "${fabric_api_dependency_breaks}"
+      },
+      {
+        "id": "sound_physics_remastered",
+        "versions": "<1.5.2"
       }
     ]
   },
