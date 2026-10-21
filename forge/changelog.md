@@ -4,3 +4,4 @@
 - Validate audio frame sizes from plugin audio
 - Fixed race condition when closing speakers
 - Fixed client entity audio channels using channel ID as entity ID
+- Fixed plugin entity sound packets ignoring entity UUID
