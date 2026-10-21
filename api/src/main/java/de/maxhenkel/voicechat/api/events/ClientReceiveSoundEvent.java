@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface ClientReceiveSoundEvent extends ClientEvent {
 
     /**
-     * @return the ID of the sender
+     * @return the ID of the channel
      */
     UUID getId();
 
