@@ -10,9 +10,8 @@ import java.util.UUID;
 
 public class FakeALSpeaker extends ALSpeakerBase {
 
-    public FakeALSpeaker(SoundManager soundManager, int sampleRate, int bufferSize, @Nullable UUID audioChannelId) {
-        super(soundManager, sampleRate, bufferSize, audioChannelId);
-        this.bufferSize *= 2;
+    public FakeALSpeaker(SoundManager soundManager, int sampleRate, int frameSize, @Nullable UUID audioChannelId) {
+        super(soundManager, sampleRate, frameSize, audioChannelId);
     }
 
     @Override
