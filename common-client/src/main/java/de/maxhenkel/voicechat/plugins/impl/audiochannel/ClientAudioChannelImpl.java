@@ -1,8 +1,10 @@
 package de.maxhenkel.voicechat.plugins.impl.audiochannel;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.audiochannel.ClientAudioChannel;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
 
 import javax.annotation.Nullable;
@@ -27,6 +29,10 @@ public abstract class ClientAudioChannelImpl implements ClientAudioChannel {
 
     @Override
     public void play(short[] rawAudio) {
+        if (rawAudio.length != 0 && rawAudio.length != AudioUtils.FRAME_SIZE) {
+            Voicechat.LOGGER.error("Got invalid audio frame size {}!={}", rawAudio.length, AudioUtils.FRAME_SIZE);
+            return;
+        }
         ClientVoicechat client = ClientManager.getClient();
         if (client != null) {
             client.processSoundPacket(createSoundPacket(rawAudio));

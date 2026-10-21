@@ -8,8 +8,8 @@ import java.util.UUID;
 
 public class ALSpeaker extends ALSpeakerBase {
 
-    public ALSpeaker(SoundManager soundManager, int sampleRate, int bufferSize, @Nullable UUID audioChannelId) {
-        super(soundManager, sampleRate, bufferSize, audioChannelId);
+    public ALSpeaker(SoundManager soundManager, int sampleRate, int frameSize, @Nullable UUID audioChannelId) {
+        super(soundManager, sampleRate, frameSize, audioChannelId);
     }
 
     @Override
