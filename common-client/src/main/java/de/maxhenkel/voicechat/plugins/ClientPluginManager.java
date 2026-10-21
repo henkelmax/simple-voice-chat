@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.ClientVoicechatSocket;
 import de.maxhenkel.voicechat.api.events.*;
 import de.maxhenkel.voicechat.api.internal.events.*;
+import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.plugins.impl.ClientVoicechatSocketImpl;
 import de.maxhenkel.voicechat.plugins.impl.PositionImpl;
 import de.maxhenkel.voicechat.plugins.impl.events.*;
@@ -116,7 +117,9 @@ public class ClientPluginManager {
             return new short[0];
         }
         if (processedAudio.length != 0 && processedAudio.length != AudioUtils.FRAME_SIZE) {
-            Voicechat.LOGGER.error("Got invalid audio frame size {}!={}", processedAudio.length, AudioUtils.FRAME_SIZE);
+            CooldownTimer.run("receive_sound_frame_size", () -> {
+                Voicechat.LOGGER.error("Got invalid audio frame size {}!={}", processedAudio.length, AudioUtils.FRAME_SIZE);
+            });
             return rawAudio;
         }
         return processedAudio;
