@@ -3,3 +3,4 @@
 - Fixed audio playback errors in potential audio buffer overflow scenarios
 - Validate audio frame sizes from plugin audio
 - Fixed race condition when closing speakers
+- Fixed client entity audio channels using channel ID as entity ID
