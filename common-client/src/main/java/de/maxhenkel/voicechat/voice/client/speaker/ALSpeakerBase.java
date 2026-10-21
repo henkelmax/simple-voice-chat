@@ -25,8 +25,7 @@ public abstract class ALSpeakerBase implements Speaker {
 
     protected final SoundManager soundManager;
     protected final int sampleRate;
-    protected int bufferSize;
-    protected int bufferSampleSize;
+    protected final int frameSize;
     protected int source;
     protected volatile int bufferIndex;
     protected final int[] buffers;
@@ -35,18 +34,17 @@ public abstract class ALSpeakerBase implements Speaker {
     @Nullable
     protected UUID audioChannelId;
 
-    public ALSpeakerBase(SoundManager soundManager, int sampleRate, int bufferSize, @Nullable UUID audioChannelId) {
+    public ALSpeakerBase(SoundManager soundManager, int sampleRate, int frameSize, @Nullable UUID audioChannelId) {
         this.soundManager = soundManager;
         this.sampleRate = sampleRate;
-        this.bufferSize = bufferSize;
-        this.bufferSampleSize = bufferSize;
+        this.frameSize = frameSize;
         this.audioChannelId = audioChannelId;
         this.buffers = new int[32];
         String threadName;
         if (audioChannelId == null) {
             threadName = "SoundSourceThread";
         } else {
-            threadName = "SoundSourceThread-%s".formatted(audioChannelId);
+            threadName = String.format("SoundSourceThread-%s", audioChannelId);
         }
         executor = Executors.newSingleThreadExecutor(NamedThreadPoolFactory.create(threadName));
     }
@@ -81,6 +79,12 @@ public abstract class ALSpeakerBase implements Speaker {
 
     @Override
     public void play(short[] data, float volume, @Nullable Vec3 position, @Nullable String category, float maxDistance) {
+        if (data.length == 0) {
+            return;
+        }
+        if (data.length != frameSize) {
+            throw new IllegalArgumentException(String.format("Expected %d samples, got %d", frameSize, data.length));
+        }
         runInContext(() -> {
             if (!hasValidSourceSync()) {
                 return;
@@ -90,7 +94,7 @@ public abstract class ALSpeakerBase implements Speaker {
             if (stopped) {
                 Voicechat.LOGGER.debug("Filling playback buffer {}", audioChannelId);
                 for (int i = 0; i < getBufferSize(); i++) {
-                    writeSync(new short[bufferSize], 1F, position, category, maxDistance);
+                    writeSync(new short[frameSize], 1F, position, category, maxDistance);
                 }
             }
 
@@ -128,9 +132,11 @@ public abstract class ALSpeakerBase implements Speaker {
             Voicechat.LOGGER.warn("Full playback buffer: {}/{}", queuedBuffers, buffers.length);
             int sampleOffset = AL11.alGetSourcei(source, AL11.AL_SAMPLE_OFFSET);
             SoundManager.checkAlError();
-            int buffersToSkip = queuedBuffers - getBufferSize();
-            AL11.alSourcei(source, AL11.AL_SAMPLE_OFFSET, sampleOffset + buffersToSkip * bufferSampleSize);
-            SoundManager.checkAlError();
+            int skipOffset = (queuedBuffers - getBufferSize()) * frameSize;
+            if (sampleOffset < skipOffset) {
+                AL11.alSourcei(source, AL11.AL_SAMPLE_OFFSET, skipOffset);
+                SoundManager.checkAlError();
+            }
             removeProcessedBuffersSync();
         }
 
