@@ -225,14 +225,6 @@ public abstract class ALSpeakerBase implements Speaker {
         source = 0;
     }
 
-    public void checkBufferEmpty(Runnable onEmpty) {
-        runInContext(() -> {
-            if (getStateSync() == AL11.AL_STOPPED || getQueuedBuffersSync() <= 0) {
-                onEmpty.run();
-            }
-        });
-    }
-
     protected void removeProcessedBuffersSync() {
         int processed = AL11.alGetSourcei(source, AL11.AL_BUFFERS_PROCESSED);
         SoundManager.checkAlError();
@@ -260,7 +252,7 @@ public abstract class ALSpeakerBase implements Speaker {
         return validSource;
     }
 
-    public void runInContext(Runnable runnable) {
+    protected void runInContext(Runnable runnable) {
         try {
             soundManager.runInContext(executor, runnable);
         } catch (RejectedExecutionException e) {
@@ -270,7 +262,7 @@ public abstract class ALSpeakerBase implements Speaker {
 
     public void fetchQueuedBuffersAsync(Consumer<Integer> supplier) {
         runInContext(() -> {
-            if (isStoppedSync()) {
+            if (!hasValidSourceSync() || isStoppedSync()) {
                 supplier.accept(-1);
                 return;
             }
