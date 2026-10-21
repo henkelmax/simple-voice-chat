@@ -1,1 +1,2 @@
 - Fixed resource leak when player disconnects
+- Don't spam voice chat errors when OpenAL resources are exhausted
