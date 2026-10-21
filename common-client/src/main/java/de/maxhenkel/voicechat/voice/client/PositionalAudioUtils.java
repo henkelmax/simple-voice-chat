@@ -22,7 +22,7 @@ public class PositionalAudioUtils {
         Vec2f diff = new Vec2f((float) d.x, (float) d.z);
         float diffAngle = Utils.angle(diff, new Vec2f(-1F, 0F));
         float angle = Utils.normalizeAngle(diffAngle - (yRot % 360F));
-        float dif = (float) (Math.abs(cameraPos.y - soundPos.y) / 32);
+        float dif = Math.min((float) (Math.abs(cameraPos.y - soundPos.y) / 32), 1F);
 
         float rot = angle / 180F;
         float perc = rot;
