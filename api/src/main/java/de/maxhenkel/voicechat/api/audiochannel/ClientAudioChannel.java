@@ -16,6 +16,7 @@ public interface ClientAudioChannel {
      * Plays this audio data on this audio channel.
      * <br>
      * Providing audio that's not 960 samples will be ignored.
+     * An empty array marks the end of a sound (e.g. flushes recordings).
      *
      * @param rawAudio the raw 16 bit PCM audio frame
      */
