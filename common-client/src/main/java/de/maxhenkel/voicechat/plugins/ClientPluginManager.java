@@ -88,19 +88,28 @@ public class ClientPluginManager {
     public short[] onReceiveEntityClientSound(UUID id, UUID entity, short[] rawAudio, boolean whispering, float distance) {
         ClientReceiveSoundEventImpl.EntitySoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.EntitySoundImpl(id, entity, rawAudio, whispering, distance);
         pluginManager.dispatchEvent(ClientReceiveSoundEvent.EntitySound.class, clientSoundEvent);
-        return clientSoundEvent.getRawAudio();
+        return getValidRawAudio(clientSoundEvent, rawAudio);
     }
 
     public short[] onReceiveLocationalClientSound(UUID id, short[] rawAudio, Vec3 pos, float distance) {
         ClientReceiveSoundEventImpl.LocationalSoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.LocationalSoundImpl(id, rawAudio, new PositionImpl(pos), distance);
         pluginManager.dispatchEvent(ClientReceiveSoundEvent.LocationalSound.class, clientSoundEvent);
-        return clientSoundEvent.getRawAudio();
+        return getValidRawAudio(clientSoundEvent, rawAudio);
     }
 
     public short[] onReceiveStaticClientSound(UUID id, short[] rawAudio) {
         ClientReceiveSoundEventImpl.StaticSoundImpl clientSoundEvent = new ClientReceiveSoundEventImpl.StaticSoundImpl(id, rawAudio);
         pluginManager.dispatchEvent(ClientReceiveSoundEvent.StaticSound.class, clientSoundEvent);
-        return clientSoundEvent.getRawAudio();
+        return getValidRawAudio(clientSoundEvent, rawAudio);
+    }
+
+    private static short[] getValidRawAudio(ClientReceiveSoundEventImpl event, short[] rawAudio) {
+        short[] processedAudio = event.getRawAudio();
+        if (processedAudio != null && processedAudio.length != 0 && processedAudio.length != AudioUtils.FRAME_SIZE) {
+            Voicechat.LOGGER.error("Got invalid audio frame size {}!={}", processedAudio.length, AudioUtils.FRAME_SIZE);
+            return rawAudio;
+        }
+        return processedAudio;
     }
 
     public void onALSound(int source, @Nullable UUID channelId, @Nullable Vec3 pos, @Nullable String category, Class<? extends OpenALSoundEvent> eventClass) {
