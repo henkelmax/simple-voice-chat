@@ -104,8 +104,8 @@ public interface VoicechatClientApi extends VoicechatApi {
     /**
      * Creates a client side entity audio channel.
      *
-     * @param uuid   the UUID of the entity
-     * @param entity the entity
+     * @param uuid   the ID of the channel
+     * @param entity the entity to attach the channel to
      * @return the audio channel
      */
     ClientEntityAudioChannel createEntityAudioChannel(UUID uuid, Entity entity);
