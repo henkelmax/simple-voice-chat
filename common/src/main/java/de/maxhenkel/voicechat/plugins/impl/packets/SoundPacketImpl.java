@@ -69,7 +69,7 @@ public class SoundPacketImpl implements SoundPacket {
 
     @Override
     public EntitySoundPacket toEntitySoundPacket(UUID entityUuid, boolean whispering) {
-        return new EntitySoundPacketImpl(new PlayerSoundPacket(packet.getChannelId(), packet.getSender(), packet.getData(), packet.getSequenceNumber(), whispering, getDistance(), null));
+        return new EntitySoundPacketImpl(new PlayerSoundPacket(packet.getChannelId(), entityUuid, packet.getData(), packet.getSequenceNumber(), whispering, getDistance(), null));
     }
 
     @Override
