@@ -15,7 +15,6 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TestSoundPlayer {
@@ -66,7 +65,7 @@ public class TestSoundPlayer {
             }
             Speaker speaker = null;
             try {
-                speaker = SpeakerManager.createSpeaker(soundManager, UUID.randomUUID());
+                speaker = SpeakerManager.createSpeaker(soundManager, null);
                 for (short[] shorts : testSound) {
                     speaker.play(shorts, 1F, null);
                     Utils.sleep(20);
