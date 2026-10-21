@@ -106,7 +106,10 @@ public class ClientPluginManager {
 
     private static short[] getValidRawAudio(ClientReceiveSoundEventImpl event, short[] rawAudio) {
         short[] processedAudio = event.getRawAudio();
-        if (processedAudio != null && processedAudio.length != 0 && processedAudio.length != AudioUtils.FRAME_SIZE) {
+        if (processedAudio == null) {
+            return new short[0];
+        }
+        if (processedAudio.length != 0 && processedAudio.length != AudioUtils.FRAME_SIZE) {
             Voicechat.LOGGER.error("Got invalid audio frame size {}!={}", processedAudio.length, AudioUtils.FRAME_SIZE);
             return rawAudio;
         }
