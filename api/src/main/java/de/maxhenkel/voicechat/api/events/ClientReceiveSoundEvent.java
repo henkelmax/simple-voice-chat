@@ -30,7 +30,7 @@ public interface ClientReceiveSoundEvent extends ClientEvent {
      * This is ignored, if the {@link #getRawAudio} array is empty
      * <br>
      * Providing audio that's not 960 samples will be ignored.
-     * An empty array skips this frame, which adds latency. To mute the audio, use an array filled with zeros instead.
+     * An empty array or <code>null</code> skips this frame, which adds latency. To mute the audio, use an array filled with zeros instead.
      *
      * @param rawAudio the raw 16 bit PCM audio frame
      */
