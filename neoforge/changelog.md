@@ -6,3 +6,4 @@
 - Fixed client entity audio channels using channel ID as entity ID
 - Fixed plugin entity sound packets ignoring entity UUID
 - Fixed `isTalking` and `isWhispering` not working for other players in the API
+- Fixed reduced 3D sound and recordings being incorrect in some cases
