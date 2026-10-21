@@ -35,6 +35,8 @@ public interface EntitySoundPacket extends SoundPacket {
 
         /**
          * This is required to be set!
+         * <br>
+         * The entity UUID is also used as the sender of the packet.
          *
          * @param entityUuid the UUID of the entity
          * @return the builder
