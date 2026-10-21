@@ -1,1 +1,1 @@
-- Added support for 26.3
+- Fixed plugin entity sound packets ignoring entity UUID
