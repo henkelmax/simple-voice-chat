@@ -10,8 +10,8 @@ import java.util.UUID;
 
 public class MonoALSpeaker extends ALSpeakerBase {
 
-    public MonoALSpeaker(SoundManager soundManager, int sampleRate, int bufferSize, @Nullable UUID audioChannelId) {
-        super(soundManager, sampleRate, bufferSize, audioChannelId);
+    public MonoALSpeaker(SoundManager soundManager, int sampleRate, int frameSize, @Nullable UUID audioChannelId) {
+        super(soundManager, sampleRate, frameSize, audioChannelId);
     }
 
     @Override
