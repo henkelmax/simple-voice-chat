@@ -54,7 +54,7 @@ public class MicrophonePacketImpl implements MicrophonePacket {
     @Override
     @Deprecated
     public EntitySoundPacket toEntitySoundPacket(UUID entityUuid, boolean whispering) {
-        return new EntitySoundPacketImpl(new PlayerSoundPacket(sender, sender, packet.getData(), packet.getSequenceNumber(), whispering, Utils.getDefaultDistanceServer(), null));
+        return new EntitySoundPacketImpl(new PlayerSoundPacket(sender, entityUuid, packet.getData(), packet.getSequenceNumber(), whispering, Utils.getDefaultDistanceServer(), null));
     }
 
     @Override
