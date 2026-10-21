@@ -1,2 +1,4 @@
 - Fixed resource leak when player disconnects
 - Don't spam voice chat errors when OpenAL resources are exhausted
+- Fixed audio playback errors in potential audio buffer overflow scenarios
+- Validate audio frame sizes from plugin audio
