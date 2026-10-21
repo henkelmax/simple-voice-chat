@@ -1,1 +1,1 @@
-- Updated to 26.4-snapshot-5
+- Fixed resource leak when player disconnects
