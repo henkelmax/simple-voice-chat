@@ -139,7 +139,7 @@ public class ConvertablePacketImpl implements ConvertablePacket {
             if (distance == null) {
                 distance = Utils.getDefaultDistanceServer();
             }
-            return new EntitySoundPacketImpl(new PlayerSoundPacket(channelId, sender, opusEncodedData, sequenceNumber, whispering, distance, category));
+            return new EntitySoundPacketImpl(new PlayerSoundPacket(channelId, entityUuid, opusEncodedData, sequenceNumber, whispering, distance, category));
         }
     }
 
