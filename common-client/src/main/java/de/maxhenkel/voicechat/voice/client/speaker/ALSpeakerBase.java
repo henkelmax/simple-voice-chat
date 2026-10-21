@@ -18,6 +18,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -260,10 +261,11 @@ public abstract class ALSpeakerBase implements Speaker {
     }
 
     public void runInContext(Runnable runnable) {
-        if (executor.isShutdown()) {
-            return;
+        try {
+            soundManager.runInContext(executor, runnable);
+        } catch (RejectedExecutionException e) {
+            Voicechat.LOGGER.debug("Ignoring speaker task after shutdown");
         }
-        soundManager.runInContext(executor, runnable);
     }
 
     public void fetchQueuedBuffersAsync(Consumer<Integer> supplier) {
