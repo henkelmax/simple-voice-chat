@@ -1,0 +1,10 @@
+de.maxhenkel.voicechat.api
+de.maxhenkel.voicechat.api.audio
+de.maxhenkel.voicechat.api.audiochannel
+de.maxhenkel.voicechat.api.audiolistener
+de.maxhenkel.voicechat.api.audiosender
+de.maxhenkel.voicechat.api.config
+de.maxhenkel.voicechat.api.events
+de.maxhenkel.voicechat.api.mp3
+de.maxhenkel.voicechat.api.opus
+de.maxhenkel.voicechat.api.packets
