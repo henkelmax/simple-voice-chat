@@ -46,7 +46,8 @@
   },
   "breaks": {
     "fabric-api": "${fabric_api_dependency_breaks}",
-    "flashback": "<=0.39.9"
+    "flashback": "<=0.39.9",
+    "sound_physics_remastered": "<1.21.8-1.5.2"
   },
   "custom": {
     "modmenu": {
