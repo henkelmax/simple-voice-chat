@@ -1,2 +1,1 @@
-- Updated to 26.3
 - Fixed plugin entity sound packets ignoring the entity UUID
