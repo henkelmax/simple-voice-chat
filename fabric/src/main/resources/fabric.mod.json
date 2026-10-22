@@ -42,8 +42,7 @@
     "viaversion": ">=${viaversion_version}"
   },
   "breaks": {
-    "fabric-api": "${fabric_api_dependency_breaks}",
-    "sound_physics_remastered": "<1.20.1-1.5.2"
+    "fabric-api": "${fabric_api_dependency_breaks}"
   },
   "custom": {
     "modmenu": {
