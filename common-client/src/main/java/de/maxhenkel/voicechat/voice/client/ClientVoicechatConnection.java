@@ -2,6 +2,8 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.ClientVoicechatSocket;
+import de.maxhenkel.voicechat.api.RawUdpPacket;
+import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
@@ -61,7 +63,20 @@ public class ClientVoicechatConnection extends Thread {
     public void run() {
         try {
             while (running) {
-                NetworkMessage in = ClientNetworkMessage.readPacketClient(socket.read(), this);
+                RawUdpPacket rawPacket = socket.read();
+                NetworkMessage in;
+                try {
+                    in = ClientNetworkMessage.readPacketClient(rawPacket, this);
+                } catch (Exception e) {
+                    if (Voicechat.debugMode()) {
+                        Voicechat.LOGGER.debug("Failed to read packet from {}", rawPacket.getSocketAddress(), e);
+                    } else {
+                        CooldownTimer.run("failed_reading_packet", () -> {
+                            Voicechat.LOGGER.warn("Failed to read packet from {}", rawPacket.getSocketAddress());
+                        });
+                    }
+                    continue;
+                }
                 if (in == null) {
                     continue;
                 } else if (in.getPacket() instanceof AuthenticateAckPacket) {
@@ -89,7 +104,8 @@ public class ClientVoicechatConnection extends Thread {
         } catch (InterruptedException ignored) {
         } catch (Exception e) {
             if (running) {
-                Voicechat.LOGGER.error("Failed to process packet from server", e);
+                Voicechat.LOGGER.error("Failed to process packet from server - Disconnecting", e);
+                disconnect();
             }
         }
     }
