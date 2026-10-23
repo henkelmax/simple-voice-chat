@@ -127,7 +127,7 @@ public class VoicechatCommands {
                 return 1;
             }
 
-            String passwordSuffix = group.getPassword() == null ? "" : " \"" + group.getPassword() + "\"";
+            String passwordSuffix = group.getPassword() == null ? "" : String.format(" %s", StringArgumentType.escapeIfRequired(group.getPassword()));
             player.sendSystemMessage(Component.translatable("message.voicechat.invite", source.getDisplayName(), Component.literal(group.getName()).withStyle(ChatFormatting.GRAY), ComponentUtils.wrapInSquareBrackets(Component.translatable("message.voicechat.accept_invite").withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/voicechat join " + group.getId().toString() + passwordSuffix)).withHoverEvent(new HoverEvent.ShowText(Component.translatable("message.voicechat.accept_invite.hover"))))).withStyle(ChatFormatting.GREEN)));
 
             commandSource.getSource().sendSuccess(() -> Component.translatable("message.voicechat.invite_successful", player.getDisplayName()), false);
