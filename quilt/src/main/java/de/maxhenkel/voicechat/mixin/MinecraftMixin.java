@@ -17,8 +17,8 @@ public class MinecraftMixin {
     @Shadow
     public ClientLevel level;
 
-    @Inject(at = @At("HEAD"), method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V")
-    private void disconnect(Screen screen, boolean bl, CallbackInfo ci) {
+    @Inject(at = @At("HEAD"), method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V")
+    private void disconnect(Screen screen, boolean bl, boolean bl2, CallbackInfo ci) {
         if (level != null) {
             ClientWorldEvents.DISCONNECT.invoker().run();
         }
