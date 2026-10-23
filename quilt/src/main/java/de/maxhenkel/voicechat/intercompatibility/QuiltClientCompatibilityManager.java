@@ -9,9 +9,13 @@ import de.maxhenkel.voicechat.voice.client.ClientVoicechatConnection;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.event.Event;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.Connection;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.repository.RepositorySource;
@@ -21,14 +25,23 @@ import java.util.function.Consumer;
 
 public class QuiltClientCompatibilityManager extends ClientCompatibilityManager {
 
+    private static final Identifier VOICE_CHAT_ICON_LAYER = Identifier.fromNamespaceAndPath(Voicechat.MODID, "hud");
     private static final Identifier EARLY_JOIN = Identifier.fromNamespaceAndPath(Voicechat.MODID, "early_join");
 
     private static final Minecraft mc = Minecraft.getInstance();
 
+    public QuiltClientCompatibilityManager() {
+        HudElementRegistry.attachElementBefore(VanillaHudElements.STATUS_EFFECTS, VOICE_CHAT_ICON_LAYER, this::onRenderVoiceChatLayer);
+        ClientPlayConnectionEvents.JOIN.addPhaseOrdering(EARLY_JOIN, Event.DEFAULT_PHASE);
+    }
+
+    private void onRenderVoiceChatLayer(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+        RenderEvents.RENDER_HUD.invoker().accept(guiGraphics);
+    }
+
     @Override
     public void onRenderNamePlate(RenderNameplateEvent onRenderNamePlate) {
         RenderEvents.RENDER_NAMEPLATE.register(onRenderNamePlate);
-        ClientPlayConnectionEvents.JOIN.addPhaseOrdering(EARLY_JOIN, Event.DEFAULT_PHASE);
     }
 
     @Override
