@@ -2,3 +2,4 @@
 - Fixed invites with passwords that contained backslashes or quotes not working
 - Fixed voice chat being shut down when disabling any plugin
 - Fixed API returning a nonexistent group as non-null
+- Fixed audio player not being stopped in some cases
