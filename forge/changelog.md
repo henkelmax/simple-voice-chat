@@ -1,1 +1,2 @@
-- Fixed failing to join a group while in another group desyncing the clients state 
+- Fixed failing to join a group while in another group desyncing the clients state
+- Fixed group desync when joining a group that was destroyed before joining it
