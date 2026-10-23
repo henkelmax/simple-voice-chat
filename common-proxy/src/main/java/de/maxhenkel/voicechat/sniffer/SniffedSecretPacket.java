@@ -3,13 +3,23 @@ package de.maxhenkel.voicechat.sniffer;
 import de.maxhenkel.voicechat.VoiceProxy;
 import de.maxhenkel.voicechat.util.ByteBufferWrapper;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.ByteBuffer;
+import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
 import java.util.UUID;
 
 public class SniffedSecretPacket {
 
-    protected int compatibilityVersion;
+    private static final byte AUTHENTICATE_PACKET_ID = 0x5;
+    private static final int CBC_IV_SIZE = 16;
+    private static final int GCM_IV_SIZE = 12;
+    private static final int GCM_TAG_LENGTH_BITS = 128;
 
+    protected int compatibilityVersion;
     protected byte[] secret;
     protected int serverPort;
     protected UUID playerUUID;
@@ -38,6 +48,7 @@ public class SniffedSecretPacket {
         ByteBufferWrapper buf = new ByteBufferWrapper(buffer);
         SniffedSecretPacket packet = new SniffedSecretPacket();
 
+        packet.compatibilityVersion = compatibilityVersion;
         packet.secret = new byte[16];
         buf.readBytes(packet.secret);
         packet.serverPort = buf.readInt();
@@ -94,5 +105,43 @@ public class SniffedSecretPacket {
         serverPort = voiceProxy.getPort();
         voiceHost = voiceProxy.getConfig().voiceHost.get();
         return toBytes();
+    }
+
+    /**
+     * Checks if the UDP packet is encrypted with the users secret.
+     *
+     * @param buffer the voice chat packet, offset right after the player UUID
+     * @return if the packet authenticates the player
+     */
+    public boolean isLegitimateAuthPacket(ByteBuffer buffer) {
+        try {
+            ByteBufferWrapper buf = new ByteBufferWrapper(buffer);
+            int payloadLength = buf.readVarInt();
+            if (payloadLength < 0 || payloadLength > buffer.remaining()) {
+                return false;
+            }
+            ByteBufferWrapper payload = new ByteBufferWrapper(ByteBuffer.wrap(decrypt(buf.readByteArray(payloadLength))));
+            if (payload.readByte() != AUTHENTICATE_PACKET_ID || !playerUUID.equals(payload.readUUID())) {
+                return false;
+            }
+            byte[] authenticationSecret = new byte[secret.length];
+            payload.readBytes(authenticationSecret);
+            return MessageDigest.isEqual(secret, authenticationSecret);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private byte[] decrypt(byte[] payload) throws GeneralSecurityException {
+        SecretKeySpec key = new SecretKeySpec(secret, "AES");
+        // Compatibility version 19 switched from AES/CBC to AES/GCM
+        if (compatibilityVersion < 19) {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(payload, 0, CBC_IV_SIZE));
+            return cipher.doFinal(payload, CBC_IV_SIZE, payload.length - CBC_IV_SIZE);
+        }
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(GCM_TAG_LENGTH_BITS, payload, 0, GCM_IV_SIZE));
+        return cipher.doFinal(payload, GCM_IV_SIZE, payload.length - GCM_IV_SIZE);
     }
 }

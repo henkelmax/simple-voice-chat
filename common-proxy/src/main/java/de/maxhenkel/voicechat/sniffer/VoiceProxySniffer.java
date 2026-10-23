@@ -31,6 +31,11 @@ public class VoiceProxySniffer {
      */
     private final Map<UUID, Integer> compatibilityVersionMap = new ConcurrentHashMap<>();
 
+    /**
+     * Maps a given player UUID to the sniffed secret packet.
+     */
+    private final Map<UUID, SniffedSecretPacket> secretPacketMap = new ConcurrentHashMap<>();
+
     private final VoiceProxy voiceProxy;
 
     public VoiceProxySniffer(VoiceProxy voiceProxy) {
@@ -51,10 +56,20 @@ public class VoiceProxySniffer {
      * Returns the address and sniffed port of the backend voice chat server.
      *
      * @param playerUUID the UUID of the player on the proxy
-     * @return the backend voice chat socket address, which may be unresolved, <code>null</code> if the secret handshake was not sniffed yet
+     * @return the backend voice chat socket address, which may be unresolved or <code>null</code> if the secret handshake was not sniffed yet
      */
     public InetSocketAddress getBackendSocket(UUID playerUUID) {
         return backendSocketMap.get(playerUUID);
+    }
+
+    /**
+     * Returns the last secret packet the backend server sent to the player.
+     *
+     * @param playerUUID the UUID of the player on the proxy
+     * @return the sniffed secret packet, <code>null</code> if the secret handshake was not sniffed yet
+     */
+    public SniffedSecretPacket getSecretPacket(UUID playerUUID) {
+        return secretPacketMap.get(playerUUID);
     }
 
     /**
@@ -94,6 +109,7 @@ public class VoiceProxySniffer {
     public void onPlayerServerDisconnect(UUID playerUUID) {
         backendSocketMap.remove(playerUUID);
         compatibilityVersionMap.remove(playerUUID);
+        secretPacketMap.remove(playerUUID);
         // Remove by the proxies known player UUID e.g., the value of the map
         playerUUIDMap.values().remove(playerUUID);
     }
@@ -111,6 +127,7 @@ public class VoiceProxySniffer {
         }
         SniffedSecretPacket packet = SniffedSecretPacket.fromBytes(message, compatibilityVersion);
         playerUUIDMap.put(packet.getPlayerUUID(), playerUUID);
+        secretPacketMap.put(playerUUID, packet);
 
         InetSocketAddress backendSocket = createBackendSocket(playerUUID, packet.getServerPort());
         if (backendSocket == null) {
