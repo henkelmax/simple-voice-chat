@@ -158,8 +158,8 @@ public class ClientPluginManager {
         }
         return new CameraState(
                 cachedUpdateCameraPositionEvent.getPos(),
-                cachedUpdateCameraPositionEvent.getForward(),
-                cachedUpdateCameraPositionEvent.getUp(),
+                cachedUpdateCameraPositionEvent.getForward().copy(),
+                cachedUpdateCameraPositionEvent.getUp().copy(),
                 cachedUpdateCameraPositionEvent.getYRot(),
                 null,
                 cachedUpdateCameraPositionEvent.getPos(),
