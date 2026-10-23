@@ -41,6 +41,11 @@ public class VoicechatCommand extends CommandBase {
     }
 
     @Override
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+        return true;
+    }
+
+    @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException {
         if (checkNoVoicechat(commandSender)) {
             return;
