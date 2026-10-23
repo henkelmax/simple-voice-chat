@@ -22,6 +22,11 @@ public class PingHandler {
         }
         try {
             ByteBufferWrapper b = new ByteBufferWrapper(buf);
+            int payloadSize = b.readVarInt();
+            if (payloadSize != PAYLOAD_SIZE) {
+                proxy.getVoiceProxy().getLogger().debug("Received ping with invalid payload size {} from {}", payloadSize, socketAddress);
+                return true;
+            }
             byte[] payload = b.readByteArray(PAYLOAD_SIZE);
             ByteBufferWrapper buffer = new ByteBufferWrapper(ByteBuffer.wrap(payload));
             UUID id = buffer.readUUID();
