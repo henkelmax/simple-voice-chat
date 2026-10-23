@@ -1,0 +1,1 @@
+- Fixed group desync when joining a group that was destroyed before joining it
