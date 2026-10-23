@@ -7,3 +7,4 @@
 - Fixed audio player not being stopped in some cases
 - Fixed removing audio senders not returning if the actual audio sender has been removed
 - Fixed HUD rendering
+- Fixed keybinds not applied properly from the voice chat settings screen
