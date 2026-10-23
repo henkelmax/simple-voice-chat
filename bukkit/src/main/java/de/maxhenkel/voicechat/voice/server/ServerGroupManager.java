@@ -91,17 +91,16 @@ public class ServerGroupManager {
     }
 
     public void joinGroup(@Nullable Group group, Player player, String password) {
-        if (group != null && group.getPassword() != null && !group.getPassword().equals(password)) {
+        if (group == null) {
+            return;
+        }
+
+        if (group.getPassword() != null && !group.getPassword().equals(password)) {
             NetManager.sendToClient(player, new JoinedGroupPacket(null, true));
             return;
         }
 
         if (PluginManager.instance().onJoinGroup(player, group)) {
-            return;
-        }
-
-        if (group == null) {
-            NetManager.sendToClient(player, new JoinedGroupPacket(null, false));
             return;
         }
 

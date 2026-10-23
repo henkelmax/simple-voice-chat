@@ -1,1 +1,1 @@
-- Fixed plugin entity sound packets ignoring entity UUID
+- Fixed group desync when joining a group that was destroyed before joining it
