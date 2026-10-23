@@ -73,7 +73,7 @@ public class AudioPlayerImpl extends Thread implements AudioPlayer {
 
         short[] frame;
 
-        while ((frame = audioSupplier.get()) != null) {
+        while (!isInterrupted() && (frame = audioSupplier.get()) != null) {
             if (frame.length != FRAME_SIZE) {
                 Voicechat.LOGGER.error("Got invalid audio frame size {}!={}", frame.length, FRAME_SIZE);
                 break;
