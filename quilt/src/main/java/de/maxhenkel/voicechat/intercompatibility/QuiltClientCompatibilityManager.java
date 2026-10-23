@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.intercompatibility;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.events.*;
 import de.maxhenkel.voicechat.mixin.ConnectionAccessor;
 import de.maxhenkel.voicechat.resourcepacks.IPackRepository;
@@ -9,8 +10,10 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Connection;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.RepositorySource;
+import org.quiltmc.qsl.base.api.event.Event;
 import org.quiltmc.qsl.lifecycle.api.client.event.ClientTickEvents;
 import org.quiltmc.qsl.networking.api.client.ClientPlayConnectionEvents;
 
@@ -19,7 +22,13 @@ import java.util.function.Consumer;
 
 public class QuiltClientCompatibilityManager extends ClientCompatibilityManager {
 
+    private static final ResourceLocation EARLY_JOIN = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "early_join");
+
     private static final Minecraft mc = Minecraft.getInstance();
+
+    public QuiltClientCompatibilityManager() {
+        ClientPlayConnectionEvents.JOIN.addPhaseOrdering(EARLY_JOIN, Event.DEFAULT_PHASE);
+    }
 
     @Override
     public void onRenderNamePlate(RenderNameplateEvent onRenderNamePlate) {
@@ -98,7 +107,8 @@ public class QuiltClientCompatibilityManager extends ClientCompatibilityManager 
 
     @Override
     public void onJoinWorld(Runnable onJoinWorld) {
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> onJoinWorld.run());
+        // Higher priority to prevent this from not firing in case another mod throws an exception in this event
+        ClientPlayConnectionEvents.JOIN.register(EARLY_JOIN, (handler, sender, client) -> onJoinWorld.run());
     }
 
     @Override
