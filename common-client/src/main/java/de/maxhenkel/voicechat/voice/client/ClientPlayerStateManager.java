@@ -82,13 +82,15 @@ public class ClientPlayerStateManager {
         });
         ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().joinedGroupChannel, (client, handler, packet) -> {
             GuiScreen screen = Minecraft.getMinecraft().currentScreen;
-            this.group = packet.getGroup();
             if (packet.isWrongPassword()) {
                 if (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
                     Minecraft.getMinecraft().displayGuiScreen(null);
                 }
                 client.player.sendStatusMessage(new TextComponentTranslation("message.voicechat.wrong_password").setStyle(new Style().setColor(TextFormatting.DARK_RED)), true);
-            } else if (group != null && screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
+                return;
+            }
+            this.group = packet.getGroup();
+            if (group != null && screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
                 ClientGroup clientGroup = getGroup();
                 if (clientGroup != null) {
                     Minecraft.getMinecraft().displayGuiScreen(new GroupScreen(clientGroup));
