@@ -2,3 +2,4 @@
 - Fixed invites with passwords that contained backslashes or quotes not working
 - Fixed group join command parsing
 - Fixed API returning a nonexistent group as non-null
+- Fixed audio player not being stopped in some cases
