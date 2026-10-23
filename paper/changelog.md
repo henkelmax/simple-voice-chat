@@ -1,3 +1,4 @@
 - Fixed group desync when joining a group that was destroyed before joining it
 - Fixed invites with passwords that contained backslashes or quotes not working
 - Fixed voice chat being shut down when disabling any plugin
+- Fixed API returning a nonexistent group as non-null
