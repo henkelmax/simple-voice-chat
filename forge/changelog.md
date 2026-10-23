@@ -1,3 +1,5 @@
 - Fixed failing to join a group while in another group desyncing the clients state
 - Fixed group desync when joining a group that was destroyed before joining it
 - Fixed invites with passwords that contained backslashes or quotes not working
+- Instantly disconnect the client on a packet parsing error instead of timing out
+- Don't stop processing when receiving an invalid UDP packet on the client
