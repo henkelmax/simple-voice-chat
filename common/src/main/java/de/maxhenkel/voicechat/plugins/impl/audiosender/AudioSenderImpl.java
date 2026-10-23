@@ -33,7 +33,7 @@ public class AudioSenderImpl implements AudioSender {
     }
 
     public static boolean unregisterAudioSender(AudioSenderImpl audioSender) {
-        return AUDIO_SENDERS.remove(audioSender.uuid) != null;
+        return AUDIO_SENDERS.remove(audioSender.uuid, audioSender);
     }
 
     @Override
