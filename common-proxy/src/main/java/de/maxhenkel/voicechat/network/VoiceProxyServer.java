@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.network;
 
 import de.maxhenkel.voicechat.VoiceProxy;
 import de.maxhenkel.voicechat.debug.PingHandler;
+import de.maxhenkel.voicechat.sniffer.SniffedSecretPacket;
 
 import java.io.IOException;
 import java.net.BindException;
@@ -116,7 +117,7 @@ public class VoiceProxyServer extends Thread {
      */
     private void handlePacket(DatagramPacket packet) throws IOException {
         // The first byte in the datagram must match the magic byte, else this is not a valid SimpleVoiceChat packet
-        ByteBuffer bb = ByteBuffer.wrap(packet.getData());
+        ByteBuffer bb = ByteBuffer.wrap(packet.getData(), 0, packet.getLength());
         if (bb.get() != (byte) 0b11111111) {
             return;
         }
@@ -130,9 +131,16 @@ public class VoiceProxyServer extends Thread {
 
         playerUuid = voiceProxy.getSniffer().getMappedPlayerUUID(playerUuid);
 
-        VoiceProxyBridgeManager.VoiceProxyBridge bridge = voiceProxyBridgeManager.getOrCreateBridge(playerUuid, packet.getSocketAddress());
+        VoiceProxyBridgeManager.VoiceProxyBridge bridge = voiceProxyBridgeManager.getBridge(playerUuid);
         if (bridge == null) {
-            return;
+            SniffedSecretPacket secretPacket = voiceProxy.getSniffer().getSecretPacket(playerUuid);
+            if (secretPacket == null || !secretPacket.isLegitimateAuthPacket(bb)) {
+                return;
+            }
+            bridge = voiceProxyBridgeManager.getOrCreateBridge(playerUuid, packet.getSocketAddress());
+            if (bridge == null) {
+                return;
+            }
         }
 
         bridge.forward(packet);

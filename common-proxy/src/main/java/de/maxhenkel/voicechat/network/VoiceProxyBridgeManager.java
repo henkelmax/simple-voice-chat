@@ -55,6 +55,16 @@ public class VoiceProxyBridgeManager {
     }
 
     /**
+     * Gets the bridge for a given player UUID
+     *
+     * @param playerUUID Which player to get the bridge for
+     * @return The existing VoiceProxyBridge, <code>null</code> if there is none
+     */
+    public VoiceProxyBridge getBridge(UUID playerUUID) {
+        return bridgeMap.get(playerUUID);
+    }
+
+    /**
      * Gets or creates a new bridge for a given player UUID
      *
      * @param playerUUID    Which player to get or create the bridge for
