@@ -68,6 +68,9 @@ public class PaperCommonCompatibilityManager extends CommonCompatibilityManager 
 
     @EventHandler
     public void onServerStop(PluginDisableEvent event) {
+        if (event.getPlugin() != VoicechatPaperPlugin.INSTANCE) {
+            return;
+        }
         DedicatedServer server = ((CraftServer) Bukkit.getServer()).getServer();
         serverStoppingEvents.forEach(consumer -> consumer.accept(server));
         if (netManager != null) {
