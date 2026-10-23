@@ -103,6 +103,9 @@ public class ClientVoicechatConnection extends Thread {
         } catch (Exception e) {
             if (running) {
                 Voicechat.LOGGER.error("Failed to process packet from server - Disconnecting", e);
+                if (!isInitialized()) {
+                    Voicechat.LOGGER.error("Voice chat connection failed during initialization");
+                }
                 disconnect();
             }
         }
@@ -129,6 +132,9 @@ public class ClientVoicechatConnection extends Thread {
             return true;
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to send voice chat packet - Disconnecting", e);
+            if (!isInitialized()) {
+                Voicechat.LOGGER.error("Voice chat connection failed during initialization");
+            }
             disconnect();
             return false;
         }
