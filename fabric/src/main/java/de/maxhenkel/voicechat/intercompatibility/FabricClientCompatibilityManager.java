@@ -26,10 +26,13 @@ public class FabricClientCompatibilityManager extends ClientCompatibilityManager
 
     private static final Minecraft mc = Minecraft.getInstance();
 
+    public FabricClientCompatibilityManager() {
+        ClientPlayConnectionEvents.JOIN.addPhaseOrdering(EARLY_JOIN, Event.DEFAULT_PHASE);
+    }
+
     @Override
     public void onRenderNamePlate(RenderNameplateEvent onRenderNamePlate) {
         RenderEvents.RENDER_NAMEPLATE.register(onRenderNamePlate);
-        ClientPlayConnectionEvents.JOIN.addPhaseOrdering(EARLY_JOIN, Event.DEFAULT_PHASE);
     }
 
     @Override
