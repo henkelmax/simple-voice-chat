@@ -4,3 +4,4 @@
 - Fixed group join command parsing
 - Instantly disconnect the client on a packet parsing error instead of timing out
 - Don't stop processing when receiving an invalid UDP packet on the client
+- Fixed API returning a nonexistent group as non-null
