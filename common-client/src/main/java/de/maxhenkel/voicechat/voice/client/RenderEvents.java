@@ -177,7 +177,7 @@ public class RenderEvents {
         }
 
         GlStateManager.depthMask(true);
-        drawIcon(texture, false);
+        drawIcon(texture, entity.isSneaking());
         GlStateManager.enableLighting();
         GlStateManager.disableBlend();
         GlStateManager.color(1F, 1F, 1F, 1F);

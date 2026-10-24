@@ -9,3 +9,4 @@
 - Fixed removing audio senders not returning if the actual audio sender has been removed
 - Fixed requiring operator permissions to execute voice chat commands
 - Fixed potential race when opening to LAN
+- Fixed name tag icon rendering
