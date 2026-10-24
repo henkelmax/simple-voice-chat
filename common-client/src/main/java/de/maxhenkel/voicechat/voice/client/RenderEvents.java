@@ -172,7 +172,7 @@ public class RenderEvents {
         TextureAtlasSprite sprite = minecraft.getGuiSprites().getSprite(texture);
 
         VertexConsumer builder = buffer.getBuffer(RenderType.text(sprite.atlasLocation()));
-        int alpha = 32;
+        int alpha = 128;
 
         if (renderState.isDiscrete) {
             vertex(builder, poseStack, offset, 10F, 0F, sprite.getU0(), sprite.getV1(), alpha, light);
