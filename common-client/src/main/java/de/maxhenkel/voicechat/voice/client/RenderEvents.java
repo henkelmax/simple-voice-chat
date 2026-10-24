@@ -169,7 +169,9 @@ public class RenderEvents {
         }
         float offsetX = (float) (minecraft.font.width(component) / 2 + 2);
         float offsetY = -1F;
-        int translucentColor = ARGB.color(127, 0xFFFFFF);
+        // See SumbitNodeCollection.submitNameTag
+        float backgroundAlpha = minecraft.gameRenderer.gameRenderState().optionsRenderState.getBackgroundOpacity(0.25F);
+        int translucentColor = ARGB.color(Math.max((backgroundAlpha + 0.75F) * 0.5F, 0.5F), 0xFFFFFF);
         FormattedCharSequence icon = Component.object(new AtlasSprite(AtlasIds.GUI, texture)).getVisualOrderText();
         stack.pushPose();
         stack.translate(offsetX, offsetY, 0F);
