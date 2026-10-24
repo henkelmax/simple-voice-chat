@@ -7,3 +7,4 @@
 - Fixed audio player not being stopped in some cases
 - Fixed removing audio senders not returning if the actual audio sender has been removed
 - Fixed HUD rendering
+- Fixed crashes with mods that modify player rendering
