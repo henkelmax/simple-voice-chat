@@ -8,3 +8,4 @@
 - Fixed removing audio senders not returning if the actual audio sender has been removed
 - Fixed keybinds not applied properly from the voice chat settings screen
 - Fixed potential race when opening to LAN
+- Fixed crashes with mods that modify player rendering

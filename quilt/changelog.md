@@ -9,3 +9,4 @@
 - Fixed HUD rendering
 - Fixed keybinds not applied properly from the voice chat settings screen
 - Fixed potential race when opening to LAN
+- Fixed crashes with mods that modify player rendering

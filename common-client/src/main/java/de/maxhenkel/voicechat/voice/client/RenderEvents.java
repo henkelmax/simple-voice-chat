@@ -1,26 +1,25 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.objects.AtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.Entity;
 
 import java.util.UUID;
@@ -169,31 +168,18 @@ public class RenderEvents {
             return;
         }
         float offsetX = (float) (minecraft.font.width(component) / 2 + 2);
-        int alpha = 32;
         float offsetY = -1F;
-        TextureAtlas guiAtlas = minecraft.getAtlasManager().getAtlasOrThrow(AtlasIds.GUI);
-        TextureAtlasSprite sprite = guiAtlas.getSprite(texture);
-        collector.submitCustomGeometry(stack, RenderType.text(sprite.atlasLocation()), (pose, c) -> {
-            if (discrete) {
-                vertex(c, pose, offsetX, 10F + offsetY, 0F, sprite.getU0(), sprite.getV1(), alpha, light);
-                vertex(c, pose, offsetX + 10F, 10F + offsetY, 0F, sprite.getU1(), sprite.getV1(), alpha, light);
-                vertex(c, pose, offsetX + 10F, offsetY, 0F, sprite.getU1(), sprite.getV0(), alpha, light);
-                vertex(c, pose, offsetX, offsetY, 0F, sprite.getU0(), sprite.getV0(), alpha, light);
-            } else {
-                vertex(c, pose, offsetX, 10F + offsetY, 0F, sprite.getU0(), sprite.getV1(), light);
-                vertex(c, pose, offsetX + 10F, 10F + offsetY, 0F, sprite.getU1(), sprite.getV1(), light);
-                vertex(c, pose, offsetX + 10F, offsetY, 0F, sprite.getU1(), sprite.getV0(), light);
-                vertex(c, pose, offsetX, offsetY, 0F, sprite.getU0(), sprite.getV0(), light);
-            }
-        });
+        int translucentColor = ARGB.color(32, 0xFFFFFF);
+        FormattedCharSequence icon = Component.object(new AtlasSprite(AtlasIds.GUI, texture)).getVisualOrderText();
+        stack.pushPose();
+        stack.translate(offsetX, offsetY, 0F);
+        // MC font is 8x8, VC icons are 10x10
+        stack.scale(10F / 8F, 10F / 8F, 1F);
+        collector.submitText(stack, 0F, 1F, icon, false, Font.DisplayMode.NORMAL, light, discrete ? translucentColor : 0xFFFFFFFF, 0, 0);
         if (!discrete) {
-            collector.submitCustomGeometry(stack, RenderType.textSeeThrough(sprite.atlasLocation()), (pose, c) -> {
-                vertex(c, pose, offsetX, 10F + offsetY, 0F, sprite.getU0(), sprite.getV1(), alpha, light);
-                vertex(c, pose, offsetX + 10F, 10F + offsetY, 0F, sprite.getU1(), sprite.getV1(), alpha, light);
-                vertex(c, pose, offsetX + 10F, offsetY, 0F, sprite.getU1(), sprite.getV0(), alpha, light);
-                vertex(c, pose, offsetX, offsetY, 0F, sprite.getU0(), sprite.getV0(), alpha, light);
-            });
+            collector.submitText(stack, 0F, 1F, icon, false, Font.DisplayMode.SEE_THROUGH, light, translucentColor, 0, 0);
         }
+        stack.popPose();
     }
 
     private boolean shouldShowIcons() {
@@ -207,19 +193,6 @@ public class RenderEvents {
             return true;
         }
         return minecraft.getSingleplayerServer() == null || minecraft.getSingleplayerServer().isPublished();
-    }
-
-    private static void vertex(VertexConsumer builder, PoseStack.Pose pose, float x, float y, float z, float u, float v, int light) {
-        vertex(builder, pose, x, y, z, u, v, 255, light);
-    }
-
-    private static void vertex(VertexConsumer builder, PoseStack.Pose pose, float x, float y, float z, float u, float v, int alpha, int light) {
-        builder.addVertex(pose.pose(), x, y, z)
-                .setColor(255, 255, 255, alpha)
-                .setUv(u, v)
-                .setOverlay(OverlayTexture.NO_OVERLAY)
-                .setLight(light)
-                .setNormal(pose, 0F, 0F, -1F);
     }
 
 }
