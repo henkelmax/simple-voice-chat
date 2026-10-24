@@ -169,7 +169,7 @@ public class RenderEvents {
         }
         float offsetX = (float) (minecraft.font.width(component) / 2 + 2);
         float offsetY = -1F;
-        int translucentColor = ARGB.color(127, 0xFFFFFF);
+        int translucentColor = ARGB.color(128, 0xFFFFFF);
         FormattedCharSequence icon = Component.object(new AtlasSprite(AtlasIds.GUI, texture)).getVisualOrderText();
         stack.pushPose();
         stack.translate(offsetX, offsetY, 0F);
