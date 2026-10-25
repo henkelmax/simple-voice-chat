@@ -41,6 +41,6 @@ public class ClientVoicechatSocketImpl extends VoicechatSocketBase implements Cl
 
     @Override
     public boolean isClosed() {
-        return socket == null;
+        return socket == null || socket.isClosed();
     }
 }
