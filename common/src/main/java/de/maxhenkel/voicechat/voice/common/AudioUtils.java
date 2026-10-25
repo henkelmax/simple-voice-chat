@@ -58,22 +58,9 @@ public class AudioUtils {
     }
 
     public static short[] floatsToShorts(float[] floats) {
-        float max = Short.MIN_VALUE;
-        float min = Short.MAX_VALUE;
-        for (int i = 0; i < floats.length; i++) {
-            if (floats[i] > max) {
-                max = floats[i];
-            }
-            if (floats[i] < min) {
-                min = floats[i];
-            }
-        }
-
-        float scale = Math.min(1F, FLOAT_CLIP / Math.max(Math.abs(max), Math.abs(min)));
-
         short[] shorts = new short[floats.length];
         for (int i = 0; i < floats.length; i++) {
-            shorts[i] = ((Float) (floats[i] * scale)).shortValue();
+            shorts[i] = clampToShort(floats[i]);
         }
         return shorts;
     }
@@ -89,11 +76,15 @@ public class AudioUtils {
     public static byte[] floatsToBytes(float[] floats) {
         byte[] bytes = new byte[floats.length * 2];
         for (int i = 0; i < floats.length; i++) {
-            short x = ((Float) floats[i]).shortValue();
+            short x = clampToShort(floats[i]);
             bytes[i * 2] = (byte) (x & 0x00FF);
             bytes[i * 2 + 1] = (byte) ((x & 0xFF00) >> 8);
         }
         return bytes;
+    }
+
+    private static short clampToShort(float value) {
+        return (short) Math.max(Math.min(value, Short.MAX_VALUE), Short.MIN_VALUE);
     }
 
     public static float[] bytesToFloats(byte[] bytes) {
