@@ -1,7 +1,1 @@
-- Fixed group desync when joining a group that was destroyed before joining it
-- Fixed invites with passwords that contained backslashes or quotes not working
-- Fixed voice chat being shut down when disabling any plugin
-- Fixed API returning a nonexistent group as non-null
-- Fixed audio player not being stopped in some cases
-- Fixed removing audio senders not returning if the actual audio sender has been removed
-- Fixed player state being initialized for players with denied logins
+- Log an error if the server tries to send a packet that's too large
