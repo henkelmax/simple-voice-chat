@@ -9,6 +9,8 @@ import de.maxhenkel.voicechat.voice.common.PlayerSoundPacket;
 import de.maxhenkel.voicechat.voice.common.Utils;
 import de.maxhenkel.voicechat.voice.server.Server;
 import de.maxhenkel.voicechat.voice.server.ServerPlayerManager;
+import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 
 import java.util.UUID;
 
@@ -73,7 +75,8 @@ public class EntityAudioChannelImpl extends AudioChannelImpl implements EntityAu
     private void broadcast(PlayerSoundPacket packet) {
         if (entity.getEntity() instanceof org.bukkit.entity.Entity) {
             org.bukkit.entity.Entity entity = (org.bukkit.entity.Entity) this.entity.getEntity();
-            server.broadcast(ServerPlayerManager.getPlayersInRange(entity.getWorld(), entity.getLocation(), server.getBroadcastRange(distance), filter == null ? null : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
+            Location location = entity instanceof LivingEntity ? ((LivingEntity) entity).getEyeLocation() : entity.getLocation();
+            server.broadcast(ServerPlayerManager.getPlayersInRange(entity.getWorld(), location, server.getBroadcastRange(distance), filter == null ? null : player -> filter.test(new ServerPlayerImpl(player))), packet, null, null, null, SoundPacketEvent.SOURCE_PLUGIN);
         }
     }
 
