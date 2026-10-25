@@ -1,1 +1,2 @@
-- Updated to 26.4-snapshot-6
+- Don't disconnect clients when receiving invalid data
+- Log an error if the server tries to send a packet that's too large
