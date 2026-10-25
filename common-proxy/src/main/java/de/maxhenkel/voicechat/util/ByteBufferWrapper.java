@@ -114,12 +114,10 @@ public class ByteBufferWrapper {
     }
 
     public void writeUtf(String string, int i) {
-        byte[] stringBytes = string.getBytes(StandardCharsets.UTF_8);
-        if (stringBytes.length > i) {
+        if (string.length() > i) {
             throw new RuntimeException("Trying to write string with a length larger than the allowed maximum");
-        } else {
-            writeByteArray(stringBytes);
         }
+        writeByteArray(string.getBytes(StandardCharsets.UTF_8));
     }
 
     public int readVarInt() {

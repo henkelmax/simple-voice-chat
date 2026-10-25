@@ -108,14 +108,13 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     public FriendlyByteBuf writeUtf(String string, int i) {
-        byte[] bs = string.getBytes(StandardCharsets.UTF_8);
-        if (bs.length > i) {
-            throw new EncoderException("String too big (was " + bs.length + " bytes encoded, max " + i + ')');
-        } else {
-            writeVarInt(bs.length);
-            writeBytes(bs);
-            return this;
+        if (string.length() > i) {
+            throw new EncoderException("String too big (was " + string.length() + " characters, max " + i + ')');
         }
+        byte[] bs = string.getBytes(StandardCharsets.UTF_8);
+        writeVarInt(bs.length);
+        writeBytes(bs);
+        return this;
     }
 
     public String readUtf() {
