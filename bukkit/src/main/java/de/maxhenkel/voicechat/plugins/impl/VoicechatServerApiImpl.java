@@ -249,7 +249,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (server == null) {
             return Collections.emptyList();
         }
-        return server.getGroupManager().getGroups().values().stream().map(group -> (Group) new GroupImpl(group)).collect(Collectors.toList());
+        return Collections.unmodifiableList(server.getGroupManager().getGroups().values().stream().map(group -> (Group) new GroupImpl(group)).collect(Collectors.toList()));
     }
 
     @Nullable
@@ -303,7 +303,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
         if (server == null) {
             return Collections.emptyList();
         }
-        return server.getCategoryManager().getCategories().stream().map(VolumeCategory.class::cast).collect(Collectors.toList());
+        return Collections.unmodifiableList(server.getCategoryManager().getCategories().stream().map(VolumeCategory.class::cast).collect(Collectors.toList()));
     }
 
     @Override
