@@ -40,7 +40,7 @@ public class PluginManager {
         for (VoicechatPlugin plugin : plugins) {
             try {
                 plugin.initialize(VoicechatServerApiImpl.instance());
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 Voicechat.LOGGER.error("Failed to initialize plugin '{}'", plugin.getPluginId(), e);
             }
         }
