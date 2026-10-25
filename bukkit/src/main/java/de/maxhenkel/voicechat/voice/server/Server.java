@@ -16,14 +16,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.net.InetAddress;
+import java.net.ProtocolException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.channels.AsynchronousCloseException;
-import java.security.InvalidKeyException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -94,6 +91,14 @@ public class Server extends Thread {
             while (!socket.isClosed()) {
                 try {
                     packetQueue.add(socket.read());
+                } catch (ProtocolException e) {
+                    if (Voicechat.debugMode()) {
+                        Voicechat.LOGGER.warn("Failed to read packet", e);
+                    } else {
+                        CooldownTimer.run("socket_protocol_error", () -> {
+                            Voicechat.LOGGER.warn("Failed to read packet: {}", e.getMessage());
+                        });
+                    }
                 } catch (Exception e) {
                     // Only log an error if the error isn't caused by the socket being closed
                     if (!(e instanceof SocketException && e.getCause() instanceof AsynchronousCloseException)) {
