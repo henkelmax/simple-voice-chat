@@ -11,6 +11,7 @@ import de.maxhenkel.voicechat.voice.common.*;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.ProtocolException;
 
 public class ClientVoicechatConnection extends Thread {
 
@@ -58,18 +59,16 @@ public class ClientVoicechatConnection extends Thread {
     @Override
     public void run() {
         try {
-            while (running && !socket.isClosed()) {
+            while (running) {
                 RawUdpPacket rawPacket;
                 try {
                     rawPacket = socket.read();
-                } catch (InterruptedException e) {
-                    return;
-                } catch (Exception e) {
+                } catch (ProtocolException e) {
                     if (Voicechat.debugMode()) {
-                        Voicechat.LOGGER.error("Failed to read from socket", e);
+                        Voicechat.LOGGER.warn("Failed to read packet", e);
                     } else {
-                        CooldownTimer.run("failed_reading_socket", () -> {
-                            Voicechat.LOGGER.warn("Failed to read from socket: {}", e.getMessage());
+                        CooldownTimer.run("socket_protocol_error", () -> {
+                            Voicechat.LOGGER.warn("Failed to read packet: {}", e.getMessage());
                         });
                     }
                     continue;
@@ -113,10 +112,7 @@ public class ClientVoicechatConnection extends Thread {
                     sendToServer(new NetworkMessage(new KeepAlivePacket()));
                 }
             }
-            if (running) {
-                Voicechat.LOGGER.error("Voice chat socket closed unexpectedly - Disconnecting");
-                disconnect();
-            }
+        } catch (InterruptedException ignored) {
         } catch (Exception e) {
             if (running) {
                 Voicechat.LOGGER.error("Failed to process packet from server - Disconnecting", e);
