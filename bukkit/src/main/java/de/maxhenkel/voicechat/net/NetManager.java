@@ -85,6 +85,9 @@ public class NetManager implements Listener {
                 player.kickPlayer(Voicechat.TRANSLATIONS.rateLimitKickMessage.get());
                 return;
             }
+            if (!Voicechat.SERVER.isCompatible(player) && !packetClass.equals(RequestSecretPacket.class)) {
+                return;
+            }
             T packet;
             try {
                 packet = c.newInstance();
