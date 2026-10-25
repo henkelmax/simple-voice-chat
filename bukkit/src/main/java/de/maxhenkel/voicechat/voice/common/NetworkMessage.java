@@ -160,7 +160,9 @@ public class NetworkMessage {
         buffer.writeByte(type);
         packet.toBytes(buffer);
 
-        return secret.encrypt(buffer.array());
+        byte[] bytes = new byte[buffer.readableBytes()];
+        buffer.readBytes(bytes);
+        return secret.encrypt(bytes);
     }
 
 }

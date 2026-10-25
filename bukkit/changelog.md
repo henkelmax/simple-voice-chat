@@ -1,3 +1,4 @@
 - Log an error if the server tries to send a packet that's too large
 - Allow skipping a packet in the API by throwing a `ProtocolException`
 - Added defaults to bukkit plugin.yml permissions
+- Fixed packets sent from the server to the client being too large
