@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.plugins.impl.opus;
 
+import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoderMode;
@@ -29,7 +30,7 @@ public class OpusManager {
             }
 
         }
-        return createEncoder(SAMPLE_RATE, FRAME_SIZE, 1024, application);
+        return createEncoder(SAMPLE_RATE, FRAME_SIZE, Voicechat.SERVER_CONFIG.voiceChatMtuSize.get(), application);
     }
 
     public static OpusDecoder createDecoder(int sampleRate, int frameSize) {
