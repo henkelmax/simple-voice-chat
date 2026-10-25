@@ -29,7 +29,7 @@ public class AudioUtils {
     public static short[] floatsToShorts(float[] floats) {
         short[] shorts = new short[floats.length];
         for (int i = 0; i < floats.length; i++) {
-            shorts[i] = ((Float) floats[i]).shortValue();
+            shorts[i] = clampToShort(floats[i]);
         }
         return shorts;
     }
@@ -45,11 +45,15 @@ public class AudioUtils {
     public static byte[] floatsToBytes(float[] floats) {
         byte[] bytes = new byte[floats.length * 2];
         for (int i = 0; i < floats.length; i++) {
-            short x = ((Float) floats[i]).shortValue();
+            short x = clampToShort(floats[i]);
             bytes[i * 2] = (byte) (x & 0x00FF);
             bytes[i * 2 + 1] = (byte) ((x & 0xFF00) >> 8);
         }
         return bytes;
+    }
+
+    private static short clampToShort(float value) {
+        return (short) Math.max(Math.min(value, Short.MAX_VALUE), Short.MIN_VALUE);
     }
 
     public static float[] bytesToFloats(byte[] bytes) {
