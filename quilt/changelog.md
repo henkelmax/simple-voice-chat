@@ -1,2 +1,3 @@
 - Don't disconnect clients when receiving invalid data
 - Log an error if the server tries to send a packet that's too large
+- Allow skipping a packet in the API by throwing a `ProtocolException`
