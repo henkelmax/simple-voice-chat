@@ -5,3 +5,4 @@
 - Fixed old API audio channels not bypassing group isolation
 - Fixed MTU size config option not respected
 - Use eye position for entity audio channels
+- Fixed inconsistency with mods timing of no speak permission message

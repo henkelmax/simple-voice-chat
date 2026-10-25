@@ -307,7 +307,7 @@ public class Server extends Thread {
             return;
         }
         if (!player.hasPermission(PermissionManager.SPEAK_PERMISSION)) {
-            CooldownTimer.run("no-speak-" + playerUuid, () -> {
+            CooldownTimer.run("no-speak-" + playerUuid, 30_000L, () -> {
                 NetManager.sendStatusMessage(player, "message.voicechat.no_speak_permission");
             });
             return;
