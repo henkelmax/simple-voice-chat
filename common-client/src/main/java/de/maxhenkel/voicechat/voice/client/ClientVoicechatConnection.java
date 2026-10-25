@@ -18,11 +18,11 @@ public class ClientVoicechatConnection extends Thread {
     private final InitializationData data;
     private final ClientVoicechatSocket socket;
     private final InetAddress address;
-    private boolean running;
-    private boolean authenticated;
-    private boolean connected;
+    private volatile boolean running;
+    private volatile boolean authenticated;
+    private volatile boolean connected;
     private final AuthThread authThread;
-    private long lastKeepAlive;
+    private volatile long lastKeepAlive;
 
     public ClientVoicechatConnection(ClientVoicechat client, InitializationData data) throws Exception {
         this.client = client;
@@ -58,8 +58,22 @@ public class ClientVoicechatConnection extends Thread {
     @Override
     public void run() {
         try {
-            while (running) {
-                RawUdpPacket rawPacket = socket.read();
+            while (running && !socket.isClosed()) {
+                RawUdpPacket rawPacket;
+                try {
+                    rawPacket = socket.read();
+                } catch (InterruptedException e) {
+                    return;
+                } catch (Exception e) {
+                    if (Voicechat.debugMode()) {
+                        Voicechat.LOGGER.error("Failed to read from socket", e);
+                    } else {
+                        CooldownTimer.run("failed_reading_socket", () -> {
+                            Voicechat.LOGGER.warn("Failed to read from socket: {}", e.getMessage());
+                        });
+                    }
+                    continue;
+                }
                 NetworkMessage in;
                 try {
                     in = ClientNetworkMessage.readPacketClient(rawPacket, this);
@@ -97,7 +111,10 @@ public class ClientVoicechatConnection extends Thread {
                     sendToServer(new NetworkMessage(new KeepAlivePacket()));
                 }
             }
-        } catch (InterruptedException ignored) {
+            if (running) {
+                Voicechat.LOGGER.error("Voice chat socket closed unexpectedly - Disconnecting");
+                disconnect();
+            }
         } catch (Exception e) {
             if (running) {
                 Voicechat.LOGGER.error("Failed to process packet from server - Disconnecting", e);
@@ -151,7 +168,7 @@ public class ClientVoicechatConnection extends Thread {
 
     private class AuthThread extends Thread {
 
-        private boolean running;
+        private volatile boolean running;
         private int authLogMessageCount;
         private int validateLogMessageCount;
 
