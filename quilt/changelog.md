@@ -1,10 +1,2 @@
-- Fixed failing to join a group while in another group desyncing the clients state
-- Fixed group desync when joining a group that was destroyed before joining it
-- Fixed invites with passwords that contained backslashes or quotes not working
-- Instantly disconnect the client on a packet parsing error instead of timing out
-- Don't stop processing when receiving an invalid UDP packet on the client
-- Fixed API returning a nonexistent group as non-null
-- Fixed audio player not being stopped in some cases
-- Fixed removing audio senders not returning if the actual audio sender has been removed
-- Fixed HUD rendering
-- Fixed crashes with mods that modify player rendering
+- Don't disconnect clients when receiving invalid data
+- Log an error if the server tries to send a packet that's too large
