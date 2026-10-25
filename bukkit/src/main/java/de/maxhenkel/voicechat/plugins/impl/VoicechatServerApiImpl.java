@@ -109,6 +109,7 @@ public class VoicechatServerApiImpl extends VoicechatApiImpl implements Voicecha
             return null;
         }
         StaticAudioChannelImpl staticAudioChannel = new StaticAudioChannelImpl(channelId, server);
+        staticAudioChannel.setBypassGroupIsolation(true);
         staticAudioChannel.addTarget(connection);
         return staticAudioChannel;
     }

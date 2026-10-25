@@ -2,3 +2,4 @@
 - Allow skipping a packet in the API by throwing a `ProtocolException`
 - Added defaults to bukkit plugin.yml permissions
 - Fixed packets sent from the server to the client being too large
+- Fixed old API audio channels not bypassing group isolation
