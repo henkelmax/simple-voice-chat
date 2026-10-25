@@ -33,6 +33,7 @@ public class PaperNetManager extends NetManager {
         try {
             T dummyPacket = packetType.getDeclaredConstructor().newInstance();
             CustomPacketPayload.Type<T> type = dummyPacket.type();
+            packets.add(type.id());
             String packetId = type.id().toString();
             if (toServer) {
                 Bukkit.getMessenger().registerIncomingPluginChannel(VoicechatPaperPlugin.INSTANCE, packetId, (s, player, bytes) -> {
