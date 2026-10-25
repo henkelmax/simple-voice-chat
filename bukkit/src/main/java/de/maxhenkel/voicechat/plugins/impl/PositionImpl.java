@@ -44,12 +44,12 @@ public class PositionImpl implements Position {
         if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        PositionImpl position1 = (PositionImpl) object;
-        return Objects.equals(position, position1.position);
+        PositionImpl other = (PositionImpl) object;
+        return Double.compare(getX(), other.getX()) == 0 && Double.compare(getY(), other.getY()) == 0 && Double.compare(getZ(), other.getZ()) == 0;
     }
 
     @Override
     public int hashCode() {
-        return position != null ? position.hashCode() : 0;
+        return Objects.hash(getX(), getY(), getZ());
     }
 }
