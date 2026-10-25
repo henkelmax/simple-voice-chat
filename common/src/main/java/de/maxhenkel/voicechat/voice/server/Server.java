@@ -454,6 +454,12 @@ public class Server extends Thread {
     }
 
     public void sendSoundPacket(@Nullable EntityPlayerMP sender, @Nullable PlayerState senderState, EntityPlayerMP receiver, PlayerState receiverState, @Nullable ClientConnection connection, SoundPacket<?> soundPacket, String source) {
+        if (soundPacket.getData().length > AudioUtils.MAX_OPUS_PAYLOAD_SIZE) {
+            CooldownTimer.run("packet_data_too_large", () -> {
+                Voicechat.LOGGER.warn("Tried to send a packet that's too large ({} bytes > {} bytes)", soundPacket.getData().length, AudioUtils.MAX_OPUS_PAYLOAD_SIZE);
+            });
+            return;
+        }
         PluginManager.instance().onListenerAudio(receiver.getUniqueID(), soundPacket);
 
         if (connection == null) {
