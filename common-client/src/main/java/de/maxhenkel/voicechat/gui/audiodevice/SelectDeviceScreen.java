@@ -3,9 +3,9 @@ package de.maxhenkel.voicechat.gui.audiodevice;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
@@ -63,12 +63,12 @@ public abstract class SelectDeviceScreen extends VoiceChatScreenBase {
     @Override
     public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics) {
         if (isIngame()) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE, 256, 256);
+            guiGraphics.blit(GuiPipeline.TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE, 256, 256);
             for (int i = 0; i < units; i++) {
-                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * i, 0, HEADER_SIZE, xSize, UNIT_SIZE, 256, 256);
+                guiGraphics.blit(GuiPipeline.TEXTURED, TEXTURE, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * i, 0, HEADER_SIZE, xSize, UNIT_SIZE, 256, 256);
             }
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * units, 0, HEADER_SIZE + UNIT_SIZE, xSize, FOOTER_SIZE, 256, 256);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft + 10, guiTop + HEADER_SIZE + 6 - 2, xSize, 0, 12, 12, 256, 256);
+            guiGraphics.blit(GuiPipeline.TEXTURED, TEXTURE, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * units, 0, HEADER_SIZE + UNIT_SIZE, xSize, FOOTER_SIZE, 256, 256);
+            guiGraphics.blit(GuiPipeline.TEXTURED, TEXTURE, guiLeft + 10, guiTop + HEADER_SIZE + 6 - 2, xSize, 0, 12, 12, 256, 256);
         }
     }
 

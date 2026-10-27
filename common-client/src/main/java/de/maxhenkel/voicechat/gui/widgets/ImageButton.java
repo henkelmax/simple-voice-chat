@@ -2,10 +2,10 @@ package de.maxhenkel.voicechat.gui.widgets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -40,7 +40,7 @@ public class ImageButton extends AbstractButton {
     }
 
     protected void extractImage(GuiGraphicsExtractor guiGraphics) {
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, getX() + 2, getY() + 2, 16, 16);
+        guiGraphics.blitSprite(GuiPipeline.TEXTURED, texture, getX() + 2, getY() + 2, 16, 16);
     }
 
     @Override

@@ -5,8 +5,8 @@ import de.maxhenkel.voicechat.gui.CreateGroupScreen;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -56,12 +56,12 @@ public class JoinGroupScreen extends VoiceChatScreenBase {
 
     @Override
     public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE, 256, 256);
+        guiGraphics.blit(GuiPipeline.TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, HEADER_SIZE, 256, 256);
         for (int i = 0; i < units; i++) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * i, 0, HEADER_SIZE, xSize, UNIT_SIZE, 256, 256);
+            guiGraphics.blit(GuiPipeline.TEXTURED, TEXTURE, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * i, 0, HEADER_SIZE, xSize, UNIT_SIZE, 256, 256);
         }
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * units, 0, HEADER_SIZE + UNIT_SIZE, xSize, FOOTER_SIZE, 256, 256);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft + 10, guiTop + HEADER_SIZE + 6 - 2, xSize, 0, 12, 12, 256, 256);
+        guiGraphics.blit(GuiPipeline.TEXTURED, TEXTURE, guiLeft, guiTop + HEADER_SIZE + UNIT_SIZE * units, 0, HEADER_SIZE + UNIT_SIZE, xSize, FOOTER_SIZE, 256, 256);
+        guiGraphics.blit(GuiPipeline.TEXTURED, TEXTURE, guiLeft + 10, guiTop + HEADER_SIZE + 6 - 2, xSize, 0, 12, 12, 256, 256);
     }
 
     @Override

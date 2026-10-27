@@ -9,11 +9,11 @@ import de.maxhenkel.voicechat.natives.SpeexManager;
 import de.maxhenkel.voicechat.voice.client.*;
 import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -142,7 +142,7 @@ public class VoiceChatSettingsScreen extends VoiceChatScreenBase {
     @Override
     public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics) {
         if (isIngame()) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
+            guiGraphics.blit(GuiPipeline.TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
         }
     }
 

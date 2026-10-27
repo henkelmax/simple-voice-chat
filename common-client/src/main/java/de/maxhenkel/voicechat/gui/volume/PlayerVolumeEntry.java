@@ -6,7 +6,7 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -34,11 +34,11 @@ public class PlayerVolumeEntry extends VolumeEntry {
     public void renderElement(GuiGraphicsExtractor guiGraphics, int top, int left, int width, int height, boolean hovered, int skinX, int skinY, int textX, int textY) {
         if (state != null) {
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), skinX, skinY, 8, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), skinX, skinY, 40, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
+            guiGraphics.blit(GuiPipeline.TEXTURED, skin.body().texturePath(), skinX, skinY, 8, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
+            guiGraphics.blit(GuiPipeline.TEXTURED, skin.body().texturePath(), skinX, skinY, 40, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
             renderScrollingString(guiGraphics, Component.literal(state.getName()));
         } else {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, OTHER_VOLUME_ICON, SKIN_SIZE, SKIN_SIZE, 0, 0, skinX, skinY, SKIN_SIZE, SKIN_SIZE);
+            guiGraphics.blitSprite(GuiPipeline.TEXTURED, OTHER_VOLUME_ICON, SKIN_SIZE, SKIN_SIZE, 0, 0, skinX, skinY, SKIN_SIZE, SKIN_SIZE);
             renderScrollingString(guiGraphics, OTHER_VOLUME);
             if (hovered) {
                 guiGraphics.setTooltipForNextFrame(minecraft.font, OTHER_VOLUME_DESCRIPTION, guiGraphics.mouseX(), guiGraphics.mouseY());

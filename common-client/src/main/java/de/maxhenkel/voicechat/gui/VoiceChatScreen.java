@@ -16,10 +16,10 @@ import de.maxhenkel.voicechat.voice.client.*;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -134,7 +134,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
 
     @Override
     public void extractBackgroundRenderState(GuiGraphicsExtractor guiGraphics) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
+        guiGraphics.blit(GuiPipeline.TEXTURED, TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
     }
 
     @Override

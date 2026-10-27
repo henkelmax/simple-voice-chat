@@ -9,10 +9,10 @@ import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
@@ -103,7 +103,7 @@ public class RenderEvents {
         float scale = VoicechatClient.CLIENT_CONFIG.hudIconScale.get().floatValue();
         guiGraphics.pose().scale(scale, scale);
 
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, posX < 0 ? -16 : 0, posY < 0 ? -16 : 0, 16, 16);
+        guiGraphics.blitSprite(GuiPipeline.TEXTURED, texture, posX < 0 ? -16 : 0, posY < 0 ? -16 : 0, 16, 16);
         guiGraphics.pose().popMatrix();
     }
 

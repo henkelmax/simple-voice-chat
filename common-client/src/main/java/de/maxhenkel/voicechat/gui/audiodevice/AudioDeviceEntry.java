@@ -4,7 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -53,10 +53,10 @@ public class AudioDeviceEntry extends ListScreenEntryBase<AudioDeviceEntry> {
         }
 
         if (icon != null) {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, icon, left + PADDING, top + height / 2 - 8,  16, 16);
+            guiGraphics.blitSprite(GuiPipeline.TEXTURED, icon, left + PADDING, top + height / 2 - 8,  16, 16);
         }
         if (selected) {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SELECTED, left + PADDING, top + height / 2 - 8, 16, 16);
+            guiGraphics.blitSprite(GuiPipeline.TEXTURED, SELECTED, left + PADDING, top + height / 2 - 8, 16, 16);
         }
 
         float deviceWidth = minecraft.font.width(name);

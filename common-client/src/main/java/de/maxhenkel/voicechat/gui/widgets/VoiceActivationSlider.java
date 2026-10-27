@@ -7,7 +7,7 @@ import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -43,17 +43,17 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
 
     @Override
     public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics) {
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getSlider(), getX(), getY(), getWidth(), getHeight());
+        guiGraphics.blitSprite(GuiPipeline.TEXTURED, getSlider(), getX(), getY(), getWidth(), getHeight());
 
         int micWidth = (int) ((width - 2) * micValue.smoothMax());
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, VOICE_ACTIVATION_SLIDER, getX() + 1, getY() + 1, 0, 0, micWidth, 18, 256, 256);
+        guiGraphics.blit(GuiPipeline.TEXTURED, VOICE_ACTIVATION_SLIDER, getX() + 1, getY() + 1, 0, 0, micWidth, 18, 256, 256);
 
         active = shouldShowSlider();
         if (!active) {
             return;
         }
 
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getHandle(), getX() + (int) (value * (double) (width - 8)), getY(), 8, 20);
+        guiGraphics.blitSprite(GuiPipeline.TEXTURED, getHandle(), getX() + (int) (value * (double) (width - 8)), getY(), 8, 20);
 
         extractScrollingStringOverContents(guiGraphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE), getMessage(), 2);
     }

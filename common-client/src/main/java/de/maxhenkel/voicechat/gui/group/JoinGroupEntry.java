@@ -10,6 +10,7 @@ import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -62,7 +63,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             guiGraphics.pose().pushMatrix();
             guiGraphics.pose().translate(left + PADDING, top + height / 2F - 8F);
             guiGraphics.pose().scale(16F / 12F, 16F / 12F);
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, LOCK, 16, 16, 0, 0, 0, 0, 12, 12);
+            guiGraphics.blitSprite(GuiPipeline.TEXTURED, LOCK, 16, 16, 0, 0, 0, 0, 12, 12);
             guiGraphics.pose().popMatrix();
         }
 
@@ -92,8 +93,8 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             float scale = (float) SKIN_SIZE / 8F;
             guiGraphics.pose().scale(scale, scale);
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), 0, 0, 8, 8, 8, 8, 64, 64);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), 0, 0, 40, 8, 8, 8, 64, 64);
+            guiGraphics.blit(GuiPipeline.TEXTURED, skin.body().texturePath(), 0, 0, 8, 8, 8, 8, 64, 64);
+            guiGraphics.blit(GuiPipeline.TEXTURED, skin.body().texturePath(), 0, 0, 40, 8, 8, 8, 64, 64);
             guiGraphics.pose().popMatrix();
         }
 

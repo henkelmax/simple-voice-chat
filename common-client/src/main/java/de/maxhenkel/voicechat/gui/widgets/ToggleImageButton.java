@@ -1,7 +1,7 @@
 package de.maxhenkel.voicechat.gui.widgets;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
@@ -24,9 +24,9 @@ public class ToggleImageButton extends ImageButton {
         }
 
         if (stateSupplier.get()) {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, 32, 32, 16, 0, getX() + 2, getY() + 2, 16, 16);
+            guiGraphics.blitSprite(GuiPipeline.TEXTURED, texture, 32, 32, 16, 0, getX() + 2, getY() + 2, 16, 16);
         } else {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, 32, 32, 0, 0, getX() + 2, getY() + 2, 16, 16);
+            guiGraphics.blitSprite(GuiPipeline.TEXTURED, texture, 32, 32, 0, 0, getX() + 2, getY() + 2, 16, 16);
         }
     }
 
