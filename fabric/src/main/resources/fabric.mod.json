@@ -25,6 +25,9 @@
     ],
     "modmenu": [
       "de.maxhenkel.voicechat.integration.ModMenu"
+    ],
+    "viafabric:via_api_initialized": [
+      "de.maxhenkel.voicechat.integration.ViaVersionCompatibility::onViaInitialized"
     ]
   },
   "mixins": [

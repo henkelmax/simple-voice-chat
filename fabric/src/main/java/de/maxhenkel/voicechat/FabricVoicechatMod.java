@@ -9,7 +9,7 @@ public class FabricVoicechatMod extends Voicechat implements ModInitializer {
     @Override
     public void onInitialize() {
         initialize();
-        ViaVersionCompatibility.register();
+        ViaVersionCompatibility.onVoicechatInitialized();
         VanishIntegration.init();
     }
 
