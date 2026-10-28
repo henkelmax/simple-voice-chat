@@ -42,6 +42,6 @@ side = "BOTH"
 [[dependencies.voicechat]]
 modId = "sound_physics_remastered"
 mandatory = false
-versionRange = "[1.21.5-1.5.2)"
+versionRange = "[1.21.5-1.5.2,)"
 ordering = "NONE"
 side = "BOTH"
