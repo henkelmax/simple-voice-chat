@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.gui.volume;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
+import de.maxhenkel.voicechat.gui.widgets.ButtonBase;
 import de.maxhenkel.voicechat.gui.widgets.IngameListScreenBase;
 import net.minecraft.client.gui.GuiPageButtonList;
 import net.minecraft.client.gui.GuiTextField;
@@ -10,12 +11,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
-import java.util.Locale;
+import java.util.*;
 
 public class AdjustVolumesScreen extends IngameListScreenBase {
 
@@ -29,15 +31,30 @@ public class AdjustVolumesScreen extends IngameListScreenBase {
     protected static final int SEARCH_HEIGHT = 16;
     protected static final int UNIT_SIZE = 18;
     protected static final int CELL_HEIGHT = 36;
+    protected static final int TAB_HEIGHT = 20;
+    protected static final int TAB_SPACING = 2;
+    protected static final int MIN_TAB_WIDTH = 50;
+    protected static final int SCROLL_BUTTON_WIDTH = 20;
 
     protected AdjustVolumeList volumeList;
     protected GuiTextField searchBox;
+    protected final List<VolumeTab> tabs;
+    protected final List<ButtonBase> tabButtons;
+    protected ButtonBase scrollTabsLeft;
+    protected ButtonBase scrollTabsRight;
+    protected int tabScroll;
     protected String lastSearch;
     protected int units;
 
     public AdjustVolumesScreen() {
         super(TITLE, 236, 0);
         this.lastSearch = "";
+        this.tabs = new ArrayList<>(Arrays.asList(VolumeTab.PLAYERS, VolumeTab.OTHER));
+        //TODO Remove this
+        for (int i = 1; i <= 10; i++) {
+            tabs.add(new VolumeTab(new TextComponentString("Tab " + i), screen -> new ArrayList<>()));
+        }
+        this.tabButtons = new ArrayList<>();
     }
 
     @Override
@@ -57,7 +74,7 @@ public class AdjustVolumesScreen extends IngameListScreenBase {
 
         Keyboard.enableRepeatEvents(true);
 
-        volumeList = new AdjustVolumeList(width, units * UNIT_SIZE - SEARCH_HEIGHT, guiTop + HEADER_SIZE + SEARCH_HEIGHT, CELL_HEIGHT, this);
+        volumeList = new AdjustVolumeList(width, units * UNIT_SIZE - SEARCH_HEIGHT, guiTop + HEADER_SIZE + SEARCH_HEIGHT, CELL_HEIGHT, this, volumeList != null ? volumeList.getTab() : tabs.get(0));
 
         String string = searchBox != null ? searchBox.getText() : "";
         searchBox = new GuiTextField(0, fontRenderer, guiLeft + 28, guiTop + HEADER_SIZE + 6, 196, SEARCH_HEIGHT);
@@ -81,6 +98,73 @@ public class AdjustVolumesScreen extends IngameListScreenBase {
             }
         });
         setList(volumeList);
+
+        initTabButtons();
+    }
+
+    private void initTabButtons() {
+        int tabY = guiTop - TAB_HEIGHT - TAB_SPACING;
+        int tabsX = guiLeft;
+        int tabsWidth = xSize;
+        boolean scrollable = tabs.size() * (MIN_TAB_WIDTH + TAB_SPACING) - TAB_SPACING > xSize;
+        if (scrollable) {
+            tabsX += SCROLL_BUTTON_WIDTH + TAB_SPACING;
+            tabsWidth -= (SCROLL_BUTTON_WIDTH + TAB_SPACING) * 2;
+        }
+
+        scrollTabsLeft = new ButtonBase(0, guiLeft, tabY, SCROLL_BUTTON_WIDTH, TAB_HEIGHT, "<") {
+            @Override
+            public void onPress() {
+                scrollTabs(-1);
+            }
+        };
+        scrollTabsLeft.visible = scrollable;
+        addButton(scrollTabsLeft);
+        scrollTabsRight = new ButtonBase(1, guiLeft + xSize - SCROLL_BUTTON_WIDTH, tabY, SCROLL_BUTTON_WIDTH, TAB_HEIGHT, ">") {
+            @Override
+            public void onPress() {
+                scrollTabs(1);
+            }
+        };
+        scrollTabsRight.visible = scrollable;
+        addButton(scrollTabsRight);
+
+        int visibleTabs = Math.min(tabs.size(), (tabsWidth + TAB_SPACING) / (MIN_TAB_WIDTH + TAB_SPACING));
+        int tabWidth = (tabsWidth - TAB_SPACING * (visibleTabs - 1)) / visibleTabs;
+        tabButtons.clear();
+        for (int i = 0; i < visibleTabs; i++) {
+            int index = i;
+            ButtonBase tabButton = new ButtonBase(2 + i, tabsX + i * (tabWidth + TAB_SPACING), tabY, tabWidth, TAB_HEIGHT, "") {
+                @Override
+                public void onPress() {
+                    selectTab(tabs.get(tabScroll + index));
+                }
+            };
+            tabButtons.add(tabButton);
+            addButton(tabButton);
+        }
+        scrollTabs(0);
+    }
+
+    private void scrollTabs(int amount) {
+        tabScroll = MathHelper.clamp(tabScroll + amount, 0, tabs.size() - tabButtons.size());
+        updateTabButtons();
+    }
+
+    private void selectTab(VolumeTab tab) {
+        volumeList.setTab(tab);
+        updateTabButtons();
+    }
+
+    private void updateTabButtons() {
+        for (int i = 0; i < tabButtons.size(); i++) {
+            VolumeTab tab = tabs.get(tabScroll + i);
+            ButtonBase tabButton = tabButtons.get(i);
+            tabButton.displayString = tab.getTitle().getUnformattedComponentText();
+            tabButton.enabled = tab != volumeList.getTab();
+        }
+        scrollTabsLeft.enabled = tabScroll > 0;
+        scrollTabsRight.enabled = tabScroll < tabs.size() - tabButtons.size();
     }
 
     @Override
