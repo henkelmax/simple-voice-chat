@@ -1,7 +1,6 @@
 package de.maxhenkel.voicechat.gui.volume;
 
 import com.google.common.collect.Lists;
-import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
@@ -16,12 +15,14 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
     protected AdjustVolumesScreen screen;
     protected final List<VolumeEntry> entries;
     protected String filter;
+    protected VolumeTab tab;
 
-    public AdjustVolumeList(int width, int height, int top, int itemSize, AdjustVolumesScreen screen) {
+    public AdjustVolumeList(int width, int height, int top, int itemSize, AdjustVolumesScreen screen, VolumeTab tab) {
         super(width, height, top, itemSize);
         this.screen = screen;
         this.entries = Lists.newArrayList();
         this.filter = "";
+        this.tab = tab;
         updateEntryList();
     }
 
@@ -32,41 +33,9 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
     }
 
     public void updateEntryList() {
-        Collection<PlayerState> onlinePlayers = ClientManager.getPlayerStateManager().getPlayerStates(false);
         entries.clear();
-
-        for (VolumeCategoryImpl category : ClientManager.getCategoryManager().getCategories()) {
-            entries.add(new CategoryVolumeEntry(category, screen));
-        }
-
-        for (PlayerState state : onlinePlayers) {
-            entries.add(new PlayerVolumeEntry(state, screen));
-        }
-
-        if (VoicechatClient.CLIENT_CONFIG.offlinePlayerVolumeAdjustment.get()) {
-            addOfflinePlayers(onlinePlayers);
-        }
-
+        entries.addAll(tab.createEntries(screen));
         updateFilter();
-    }
-
-    private void addOfflinePlayers(Collection<PlayerState> onlinePlayers) {
-        for (UUID uuid : VoicechatClient.PLAYER_VOLUME_CONFIG.getVolumes().keySet()) {
-            if (uuid.equals(Util.NIL_UUID)) {
-                continue;
-            }
-            if (onlinePlayers.stream().anyMatch(state -> uuid.equals(state.getUuid()))) {
-                continue;
-            }
-
-            String name = VoicechatClient.USERNAME_CACHE.getUsername(uuid);
-
-            if (name == null) {
-                continue;
-            }
-
-            entries.add(new PlayerVolumeEntry(new PlayerState(uuid, name, false, false, true), screen));
-        }
     }
 
     public void updateFilter() {
@@ -82,20 +51,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
                 return true;
             });
         }
-        filteredEntries.sort((e1, e2) -> {
-            if (!e1.getClass().equals(e2.getClass())) {
-                if (e1 instanceof PlayerVolumeEntry) {
-                    return 1;
-                } else {
-                    return -1;
-                }
-            }
-
-            return volumeEntryToSearchString(e1).compareToIgnoreCase(volumeEntryToSearchString(e2));
-        });
-        if (filter.isEmpty()) {
-            filteredEntries.add(0, new PlayerVolumeEntry(null, screen));
-        }
+        filteredEntries.sort((e1, e2) -> volumeEntryToSearchString(e1).compareToIgnoreCase(volumeEntryToSearchString(e2)));
         replaceEntries(filteredEntries);
     }
 
@@ -111,6 +67,16 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
     public void setFilter(String filter) {
         this.filter = filter;
         updateFilter();
+    }
+
+    public void setTab(VolumeTab tab) {
+        this.tab = tab;
+        updateEntryList();
+        setScrollAmount(0D);
+    }
+
+    public VolumeTab getTab() {
+        return tab;
     }
 
     public boolean isEmpty() {
