@@ -134,6 +134,8 @@
   "message.voicechat.search_empty": "Couldn't find any players with that name",
   "message.voicechat.other_volume": "Other",
   "message.voicechat.other_volume.description": "The volume of any sound not listed below.",
+  "message.voicechat.volume_tab.players": "Players",
+  "message.voicechat.volume_tab.other": "Other",
   "message.voicechat.more_members": "and %s more...",
   "message.voicechat.no_groups": "No existing groups",
   "message.voicechat.audio_type": "3D Audio: %s",
