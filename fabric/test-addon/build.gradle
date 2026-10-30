@@ -1,0 +1,7 @@
+apply plugin: 'fabric-loom'
+
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
+
+dependencies {
+    compileOnly project(':api')
+}
