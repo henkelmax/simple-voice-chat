@@ -52,7 +52,9 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
         float scale = outlineSize / 10F;
         poseStack.scale(scale, scale, scale);
 
-        if (!state.isDisabled()) {
+        boolean disabled = state.isDisabled() || state.isForceDisabled();
+
+        if (!disabled) {
             ClientVoicechat client = ClientManager.getClient();
             if (client != null && client.getTalkCache().isTalking(state.getUuid())) {
                 RenderSystem.setShaderTexture(0, TALK_OUTLINE);
@@ -66,7 +68,7 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
         GuiComponent.blit(poseStack, 1, 1, 8, 8, 40, 8, 8, 8, 64, 64);
         RenderSystem.disableBlend();
 
-        if (state.isDisabled()) {
+        if (disabled) {
             poseStack.pushPose();
             poseStack.translate(1D, 1D, 0D);
             poseStack.scale(0.5F, 0.5F, 1F);
