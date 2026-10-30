@@ -19,6 +19,7 @@ import java.net.ProtocolException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.channels.AsynchronousCloseException;
+import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -29,8 +30,11 @@ import java.util.concurrent.TimeUnit;
 
 public class Server extends Thread {
 
+    private static final SecureRandom RANDOM = new SecureRandom();
+
     private final Map<UUID, ClientConnection> connections;
     private final Map<UUID, ClientConnection> unCheckedConnections;
+    private final Map<UUID, UUID> connectionIds;
     private final Map<UUID, Secret> secrets;
     private final int port;
     private final org.bukkit.Server server;
@@ -54,6 +58,7 @@ public class Server extends Thread {
         socket = PluginManager.instance().getSocketImplementation();
         connections = new ConcurrentHashMap<>();
         unCheckedConnections = new ConcurrentHashMap<>();
+        connectionIds = new ConcurrentHashMap<>();
         secrets = new ConcurrentHashMap<>();
         packetQueue = new LinkedBlockingQueue<>();
         pingManager = new PingManager(this);
@@ -141,13 +146,15 @@ public class Server extends Thread {
     }
 
     public Secret getSecret(UUID playerUUID) {
-        if (hasSecret(playerUUID)) {
-            return secrets.get(playerUUID);
-        } else {
-            Secret secret = Secret.generateNewRandomSecret();
-            secrets.put(playerUUID, secret);
-            return secret;
+        UUID connectionId = connectionIds.get(playerUUID);
+        if (connectionId != null) {
+            return secrets.get(connectionId);
         }
+        connectionId = new UUID(RANDOM.nextLong(), RANDOM.nextLong());
+        Secret secret = Secret.generateNewRandomSecret();
+        secrets.put(connectionId, secret);
+        connectionIds.put(playerUUID, connectionId);
+        return secret;
     }
 
     /**
@@ -163,14 +170,35 @@ public class Server extends Thread {
     }
 
     public boolean hasSecret(UUID playerUUID) {
-        return secrets.containsKey(playerUUID);
+        return connectionIds.containsKey(playerUUID);
+    }
+
+    /**
+     * @param playerUUID the player uuid
+     * @return the random ID that identifies the player in voice chat packets or null if the player has no secret
+     */
+    @Nullable
+    public UUID getConnectionId(UUID playerUUID) {
+        return connectionIds.get(playerUUID);
+    }
+
+    @Nullable
+    public Secret getSecretByConnectionId(UUID connectionId) {
+        return secrets.get(connectionId);
     }
 
     public void disconnectClient(UUID playerUUID) {
         connections.remove(playerUUID);
         unCheckedConnections.remove(playerUUID);
-        secrets.remove(playerUUID);
+        removeSecret(playerUUID);
         PluginManager.instance().onPlayerDisconnected(playerUUID);
+    }
+
+    private void removeSecret(UUID playerUUID) {
+        UUID connectionId = connectionIds.remove(playerUUID);
+        if (connectionId != null) {
+            secrets.remove(connectionId);
+        }
     }
 
     public void close() {
@@ -236,8 +264,8 @@ public class Server extends Thread {
 
                     if (message.getPacket() instanceof AuthenticatePacket) {
                         AuthenticatePacket packet = (AuthenticatePacket) message.getPacket();
-                        Secret secret = secrets.get(packet.getPlayerUUID());
-                        if (secret != null && secret.equals(packet.getSecret())) {
+                        UUID connectionId = connectionIds.get(packet.getPlayerUUID());
+                        if (connectionId != null && packet.getSecret().equals(secrets.get(connectionId))) {
                             ClientConnection connection = unCheckedConnections.get(packet.getPlayerUUID());
                             if (connection == null) {
                                 connection = connections.get(packet.getPlayerUUID());
@@ -451,7 +479,7 @@ public class Server extends Thread {
         connections.values().removeIf(connection -> {
             if (timestamp - connection.getLastKeepAliveResponse() >= Voicechat.SERVER_CONFIG.keepAlive.get() * 10L) {
                 // Don't call disconnectClient here!
-                secrets.remove(connection.getPlayerUUID());
+                removeSecret(connection.getPlayerUUID());
                 Voicechat.LOGGER.info("Player {} timed out", connection.getPlayerUUID());
                 Player player = server.getPlayer(connection.getPlayerUUID());
                 if (player != null) {
