@@ -595,10 +595,12 @@ public class Server extends Thread {
 
     @Nullable
     public ClientConnection getSender(NetworkMessage message) {
+        // The address alone can be spoofed, so the message also has to be encrypted with the secret of the connection
         return connections
                 .values()
                 .stream()
                 .filter(connection -> connection.getAddress().equals(message.getAddress()))
+                .filter(connection -> message.getConnectionId().equals(connectionIds.get(connection.getPlayerUUID())))
                 .findAny()
                 .orElse(null);
     }
