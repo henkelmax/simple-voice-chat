@@ -27,6 +27,7 @@ import java.util.UUID;
 public class NetworkMessage {
 
     public static final byte MAGIC_BYTE = (byte) 0b11111111;
+    public static final int NONCE_SIZE_BYTES = 16;
 
     private final long timestamp;
     private Packet<? extends Packet> packet;

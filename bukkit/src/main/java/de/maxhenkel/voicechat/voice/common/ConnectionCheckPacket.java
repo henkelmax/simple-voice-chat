@@ -21,7 +21,7 @@ public class ConnectionCheckPacket implements Packet<ConnectionCheckPacket> {
     @Override
     public ConnectionCheckPacket fromBytes(FriendlyByteBuf buf) {
         ConnectionCheckPacket packet = new ConnectionCheckPacket();
-        packet.nonce = new byte[Secret.NONCE_SIZE_BYTES];
+        packet.nonce = new byte[NetworkMessage.NONCE_SIZE_BYTES];
         buf.readBytes(packet.nonce);
         return packet;
     }
