@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.plugins.impl.audiosender.AudioSenderImpl;
 import de.maxhenkel.voicechat.voice.common.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -479,12 +480,20 @@ public class Server extends Thread {
 
         for (ClientConnection connection : connections.values()) {
             sendPacket(new KeepAlivePacket(), connection);
-            Player player = server.getPlayer(connection.getPlayerUUID());
-            if (player != null) {
-                playerStateManager.updateForcedState(player);
-            }
+            updateForcedState(connection.getPlayerUUID());
         }
 
+        for (UUID audioSenderPlayer : AudioSenderImpl.getRegisteredPlayers()) {
+            updateForcedState(audioSenderPlayer);
+        }
+
+    }
+
+    public void updateForcedState(UUID playerUuid) {
+        Player player = server.getPlayer(playerUuid);
+        if (player != null) {
+            playerStateManager.updateForcedState(player);
+        }
     }
 
     @Nullable

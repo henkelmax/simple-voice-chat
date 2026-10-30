@@ -7,6 +7,7 @@ import de.maxhenkel.voicechat.compatibility.PlayerShowEvent;
 import de.maxhenkel.voicechat.net.*;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.plugins.impl.audiosender.AudioSenderImpl;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -56,6 +57,9 @@ public class PlayerStateManager implements Listener {
         states.put(event.getPlayer().getUniqueId(), state);
         broadcastState(event.getPlayer(), state);
         Voicechat.LOGGER.debug("Setting default state of {}: {}", event.getPlayer().getName(), state);
+        if (AudioSenderImpl.getRegisteredPlayers().contains(event.getPlayer().getUniqueId())) {
+            updateForcedState(event.getPlayer());
+        }
     }
 
     public void onPlayerHide(PlayerHideEvent event) {
