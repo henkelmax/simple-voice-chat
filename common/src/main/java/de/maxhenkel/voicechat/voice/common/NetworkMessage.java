@@ -87,16 +87,17 @@ public class NetworkMessage {
                 Voicechat.LOGGER.debug("Received invalid packet from {}", packet.getSocketAddress());
                 return null;
             }
-            UUID playerID = b.readUniqueId();
-            if (!server.hasSecret(playerID)) {
-                if (PingHandler.onPacket(server, packet.getSocketAddress(), playerID, b)) {
+            UUID connectionId = b.readUniqueId();
+            Secret secret = server.getSecretByConnectionId(connectionId);
+            if (secret == null) {
+                if (PingHandler.onPacket(server, packet.getSocketAddress(), connectionId, b)) {
                     return null;
                 }
                 // Ignore packets if they are not from a player that has a secret
-                Voicechat.LOGGER.debug("Player " + playerID + " does not have a secret");
+                Voicechat.LOGGER.debug("Connection {} does not have a secret", connectionId);
                 return null;
             }
-            return readFromBytes(packet.getSocketAddress(), server.getSecret(playerID), b.readByteArray(Utils.MAX_VOICE_CHAT_PACKET_SIZE), packet.getTimestamp());
+            return readFromBytes(packet.getSocketAddress(), secret, b.readByteArray(Utils.MAX_VOICE_CHAT_PACKET_SIZE), packet.getTimestamp());
         } catch (DecoderException | IndexOutOfBoundsException e) {
             Voicechat.LOGGER.debug("Received invalid packet from {}", packet.getSocketAddress());
             return null;
