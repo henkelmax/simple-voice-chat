@@ -17,6 +17,7 @@ public class MuteTooltipSupplier implements ImageButton.TooltipSupplier {
     public static final Component MUTE_UNMUTED = Component.translatable("message.voicechat.mute.disabled");
     public static final Component MUTE_MUTED = Component.translatable("message.voicechat.mute.enabled");
     public static final Component MUTE_DISABLED_PTT = Component.translatable("message.voicechat.mute.disabled_ptt");
+    public static final Component MUTE_FORCED = Component.translatable("message.voicechat.mute.forced");
 
     private Screen screen;
     private ClientPlayerStateManager stateManager;
@@ -30,7 +31,9 @@ public class MuteTooltipSupplier implements ImageButton.TooltipSupplier {
     public void onTooltip(ImageButton button, PoseStack matrices, int mouseX, int mouseY) {
         List<FormattedCharSequence> tooltip = new ArrayList<>();
 
-        if (!canMuteMic()) {
+        if (stateManager.isForceMuted()) {
+            tooltip.add(MUTE_FORCED.getVisualOrderText());
+        } else if (!canMuteMic()) {
             tooltip.add(MUTE_DISABLED_PTT.getVisualOrderText());
         } else if (stateManager.isMuted()) {
             tooltip.add(MUTE_MUTED.getVisualOrderText());

@@ -31,6 +31,7 @@ import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class ClientPlayerStateManager {
@@ -45,7 +46,7 @@ public class ClientPlayerStateManager {
         this.disconnected = true;
         this.group = null;
 
-        states = new HashMap<>();
+        states = new ConcurrentHashMap<>();
 
         ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().playerStateChannel, (client, handler, packet) -> {
             states.put(packet.getPlayerState().getUuid(), packet.getPlayerState());
@@ -62,7 +63,7 @@ public class ClientPlayerStateManager {
             GroupList.update();
         });
         ClientServerNetManager.setClientListener(CommonCompatibilityManager.INSTANCE.getNetManager().playerStatesChannel, (client, handler, packet) -> {
-            states = packet.getPlayerStates().stream().collect(Collectors.toMap(PlayerState::getUuid, p -> p));
+            states = packet.getPlayerStates().stream().collect(Collectors.toConcurrentMap(PlayerState::getUuid, p -> p));
             Voicechat.LOGGER.debug("Received {} state(s)", states.size());
             for (PlayerState state : states.values()) {
                 VoicechatClient.USERNAME_CACHE.updateUsername(state.getUuid(), state.getName());
@@ -132,6 +133,15 @@ public class ClientPlayerStateManager {
         resetOwnState();
     }
 
+    public boolean isPlayerMuted(UUID playerId) {
+        PlayerState playerState = states.get(playerId);
+        if (playerState == null) {
+            return false;
+        }
+
+        return playerState.isMuted() || playerState.isForceMuted();
+    }
+
     public boolean isPlayerDisabled(Player player) {
         return isPlayerDisabled(player.getUUID());
     }
@@ -142,7 +152,25 @@ public class ClientPlayerStateManager {
             return false;
         }
 
-        return playerState.isDisabled();
+        return playerState.isDisabled() || playerState.isForceDisabled();
+    }
+
+    public boolean isPlayerForceMuted(UUID playerId) {
+        PlayerState playerState = states.get(playerId);
+        if (playerState == null) {
+            return false;
+        }
+
+        return playerState.isForceMuted();
+    }
+
+    public boolean isPlayerForceDisabled(UUID playerId) {
+        PlayerState playerState = states.get(playerId);
+        if (playerState == null) {
+            return false;
+        }
+
+        return playerState.isForceDisabled();
     }
 
     public boolean isPlayerDisconnected(Player player) {
@@ -159,15 +187,25 @@ public class ClientPlayerStateManager {
     }
 
     public void syncOwnState() {
-        ClientServerNetManager.sendToServer(new UpdateStatePacket(isMuted(), isDisabled()));
-        Voicechat.LOGGER.debug("Sent own state to server: muted={}, disabled={}", isMuted(), isDisabled());
+        boolean muted = isMutedLocally();
+        boolean disabled = isDisabledLocally();
+        ClientServerNetManager.sendToServer(new UpdateStatePacket(muted, disabled));
+        Voicechat.LOGGER.debug("Sent own state to server: muted={}, disabled={}", muted, disabled);
     }
 
     public boolean isDisabled() {
+        return isForceDisabled() || isDisabledLocally();
+    }
+
+    private boolean isDisabledLocally() {
         if (!canEnable()) {
             return true;
         }
         return VoicechatClient.CLIENT_CONFIG.disabled.get();
+    }
+
+    public boolean isForceDisabled() {
+        return isPlayerForceDisabled(getOwnID());
     }
 
     public boolean canEnable() {
@@ -192,7 +230,15 @@ public class ClientPlayerStateManager {
     }
 
     public boolean isMuted() {
+        return isForceMuted() || isMutedLocally();
+    }
+
+    private boolean isMutedLocally() {
         return VoicechatClient.CLIENT_CONFIG.muted.get();
+    }
+
+    public boolean isForceMuted() {
+        return isPlayerForceMuted(getOwnID());
     }
 
     public void setMuted(boolean muted) {
