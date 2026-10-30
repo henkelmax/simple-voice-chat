@@ -7,18 +7,22 @@ import java.util.UUID;
 
 public class ClientConnection {
 
-    protected final UUID playerUUID;
+    protected final ConnectionSecret connectionSecret;
     protected final SocketAddress address;
     protected long lastKeepAliveResponse;
 
-    public ClientConnection(UUID playerUUID, SocketAddress address) {
-        this.playerUUID = playerUUID;
+    public ClientConnection(ConnectionSecret connectionSecret, SocketAddress address) {
+        this.connectionSecret = connectionSecret;
         this.address = address;
         this.lastKeepAliveResponse = System.currentTimeMillis();
     }
 
     public UUID getPlayerUUID() {
-        return playerUUID;
+        return connectionSecret.getPlayerUUID();
+    }
+
+    public ConnectionSecret getConnectionSecret() {
+        return connectionSecret;
     }
 
     public SocketAddress getAddress() {
@@ -34,7 +38,7 @@ public class ClientConnection {
     }
 
     public void send(Server server, NetworkMessage message) throws Exception {
-        server.getSocket().send(message.writeServer(server, this), address);
+        server.getSocket().send(message.writeServer(this), address);
     }
 
 }
