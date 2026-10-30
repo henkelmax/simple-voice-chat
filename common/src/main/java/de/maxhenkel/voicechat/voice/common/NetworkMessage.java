@@ -155,12 +155,8 @@ public class NetworkMessage {
         return -1;
     }
 
-    public byte[] writeServer(Server server, ClientConnection connection) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        ConnectionSecret connectionSecret = server.getConnectionSecrets().get(connection.getPlayerUUID());
-        if (connectionSecret == null) {
-            throw new IllegalStateException(String.format("Player %s has no secret", connection.getPlayerUUID()));
-        }
-        byte[] payload = write(connectionSecret.getSecret());
+    public byte[] writeServer(ClientConnection connection) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        byte[] payload = write(connection.getConnectionSecret().getSecret());
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer(1 + payload.length));
         buffer.writeByte(MAGIC_BYTE);
         buffer.writeByteArray(payload);
