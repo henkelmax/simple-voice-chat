@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "voicechat_test_addon",
+  "version": "1.0.0",
+  "name": "Simple Voice Chat Test Addon",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "de.maxhenkel.voicechat.testaddon.TestAddon"
+    ],
+    "voicechat": [
+      "de.maxhenkel.voicechat.testaddon.TestVoicechatPlugin"
+    ]
+  },
+  "depends": {
+    "voicechat": "*",
+    "fabric-command-api-v2": "*"
+  }
+}
