@@ -10,7 +10,8 @@ public class ViaVersionCompatibility {
 
     private static final String LEGACY_CHANNEL = "vc";
     private static final String[] CHANNELS = {
-            "update_state",
+            "update_state", // Kept for clients that use <21 or <2.7
+            "client_state",
             "request_secret",
             "create_group",
             "set_group",

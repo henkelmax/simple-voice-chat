@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 public class UpdateStatePacket implements Packet<UpdateStatePacket> {
 
-    public static final Key PLAYER_STATE = Voicechat.compatibility.createNamespacedKey("update_state");
+    public static final Key PLAYER_STATE = Voicechat.compatibility.createNamespacedKey("client_state");
 
     private boolean muted;
     private boolean disabled;

@@ -59,7 +59,7 @@
         "allowed_clientbound": "voicechat:*",
         "allowed_serverbound": "voicechat:*",
         "clientbound_112_names": {
-          "voicechat:update_state": "vc:update_state",
+          "voicechat:client_state": "vc:client_state",
           "voicechat:request_secret": "vc:request_secret",
           "voicechat:create_group": "vc:create_group",
           "voicechat:set_group": "vc:set_group",
