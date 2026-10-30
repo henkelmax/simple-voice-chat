@@ -54,6 +54,10 @@ dependencies {
 
     implementation "de.maxhenkel.speex4j:speex4j:${speex4j_version}"
     shadow "de.maxhenkel.speex4j:speex4j:${speex4j_version}"
+
+    if (include_test_addon.toBoolean()) {
+        localRuntime project(path: ':fabric:test-addon', configuration: 'namedElements')
+    }
 }
 
 tasks.register('generateJava', Copy) {

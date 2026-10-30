@@ -1,11 +1,13 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.events.PlayerForcedStateEvent;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
 import de.maxhenkel.voicechat.net.PlayerStatesPacket;
 import de.maxhenkel.voicechat.net.RemovePlayerStatePacket;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -136,6 +138,23 @@ public class PlayerStateManager {
 
         broadcastState(player, state);
         Voicechat.LOGGER.debug("Set state of {} to connected: {}", player.getName().getString(), state);
+    }
+
+    public void updateForcedState(ServerPlayerEntity player) {
+        PlayerState state = states.get(player.getUUID());
+        if (state == null) {
+            return;
+        }
+        boolean forceMuted = !PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player);
+        boolean forceDisabled = !PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(player);
+        PlayerForcedStateEvent event = PluginManager.instance().onPlayerForcedState(player, state, forceMuted, forceDisabled);
+        if (state.isForceMuted() == event.isForceMuted() && state.isForceDisabled() == event.isForceDisabled()) {
+            return;
+        }
+        state.setForceMuted(event.isForceMuted());
+        state.setForceDisabled(event.isForceDisabled());
+        broadcastState(player, state);
+        Voicechat.LOGGER.debug("Updated forced state of {}: {}", player.getName().getString(), state);
     }
 
     @Nullable

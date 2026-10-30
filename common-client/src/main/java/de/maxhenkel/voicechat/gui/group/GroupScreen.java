@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.gui.GroupType;
 import de.maxhenkel.voicechat.gui.tooltips.DisableTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.HideGroupHudTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.MuteTooltipSupplier;
+import de.maxhenkel.voicechat.gui.widgets.ForceableToggleImageButton;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
@@ -44,8 +45,8 @@ public class GroupScreen extends ListScreenBase {
     protected int units;
 
     protected final ClientGroup group;
-    protected ToggleImageButton mute;
-    protected ToggleImageButton disable;
+    protected ForceableToggleImageButton mute;
+    protected ForceableToggleImageButton disable;
     protected ToggleImageButton showHUD;
     protected ImageButton leave;
 
@@ -75,12 +76,12 @@ public class GroupScreen extends ListScreenBase {
         int buttonY = guiTop + ySize - 20 - 7;
         int buttonSize = 20;
 
-        mute = new ToggleImageButton(guiLeft + 7, buttonY, MICROPHONE, stateManager::isMuted, button -> {
+        mute = new ForceableToggleImageButton(guiLeft + 7, buttonY, MICROPHONE, stateManager::isMuted, button -> {
             stateManager.setMuted(!stateManager.isMuted());
         }, new MuteTooltipSupplier(this, stateManager));
         addButton(mute);
 
-        disable = new ToggleImageButton(guiLeft + 7 + buttonSize + 3, buttonY, SPEAKER, stateManager::isDisabled, button -> {
+        disable = new ForceableToggleImageButton(guiLeft + 7 + buttonSize + 3, buttonY, SPEAKER, stateManager::isDisabled, button -> {
             stateManager.setDisabled(!stateManager.isDisabled());
         }, new DisableTooltipSupplier(this, stateManager));
         addButton(disable);
@@ -108,7 +109,9 @@ public class GroupScreen extends ListScreenBase {
     }
 
     private void checkButtons() {
-        mute.active = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE);
+        ClientPlayerStateManager stateManager = ClientManager.getPlayerStateManager();
+        mute.active = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE) && !stateManager.isForceMuted();
+        disable.active = !stateManager.isForceDisabled();
         showHUD.active = !VoicechatClient.CLIENT_CONFIG.hideIcons.get();
     }
 
