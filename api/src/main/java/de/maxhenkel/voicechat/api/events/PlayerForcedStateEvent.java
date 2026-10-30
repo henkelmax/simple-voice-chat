@@ -10,8 +10,9 @@ import de.maxhenkel.voicechat.api.VoicechatConnection;
  * <b>NOTE</b>:
  * <br>
  * This event is emitted initially for a player after the {@link PlayerConnectedEvent} and then emitted periodically with the keep alive interval.
+ * For players without voice chat, it is emitted initially when an {@link de.maxhenkel.voicechat.api.audiosender.AudioSender} gets registered for them.
  * <br>
- * This is emitted off-thread and needs to return very quickly, don't run expensive code here!
+ * This is emitted off-thread in most cases and needs to return very quickly, don't run expensive code here!
  */
 public interface PlayerForcedStateEvent extends ServerEvent {
 
