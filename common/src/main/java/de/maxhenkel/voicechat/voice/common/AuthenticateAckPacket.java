@@ -21,7 +21,7 @@ public class AuthenticateAckPacket implements Packet<AuthenticateAckPacket> {
     @Override
     public AuthenticateAckPacket fromBytes(PacketBuffer buf) {
         AuthenticateAckPacket packet = new AuthenticateAckPacket();
-        packet.nonce = new byte[Secret.NONCE_SIZE_BYTES];
+        packet.nonce = new byte[NetworkMessage.NONCE_SIZE_BYTES];
         buf.readBytes(packet.nonce);
         return packet;
     }
