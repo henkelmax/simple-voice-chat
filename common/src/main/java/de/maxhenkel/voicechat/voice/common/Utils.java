@@ -4,9 +4,23 @@ import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector2f;
 
+import java.security.SecureRandom;
+import java.util.UUID;
+
 public class Utils {
 
     public static final int MAX_VOICE_CHAT_PACKET_SIZE = 2048;
+
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+
+    /**
+     * Unlike {@link UUID#randomUUID()}, all 128 bits are random.
+     *
+     * @return a UUID generated with a {@link SecureRandom}
+     */
+    public static UUID generateSecureRandomUUID() {
+        return new UUID(SECURE_RANDOM.nextLong(), SECURE_RANDOM.nextLong());
+    }
 
     public static void sleep(int ms) {
         try {

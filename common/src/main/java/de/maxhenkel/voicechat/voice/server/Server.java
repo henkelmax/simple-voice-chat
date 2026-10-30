@@ -20,7 +20,6 @@ import java.net.ProtocolException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.channels.AsynchronousCloseException;
-import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -30,8 +29,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class Server extends Thread {
-
-    private static final SecureRandom RANDOM = new SecureRandom();
 
     private final Map<UUID, ClientConnection> connections;
     private final Map<UUID, ClientConnection> unCheckedConnections;
@@ -213,7 +210,7 @@ public class Server extends Thread {
         if (connectionId != null) {
             return secrets.get(connectionId);
         }
-        connectionId = new UUID(RANDOM.nextLong(), RANDOM.nextLong());
+        connectionId = Utils.generateSecureRandomUUID();
         Secret secret = Secret.generateNewRandomSecret();
         secrets.put(connectionId, secret);
         connectionIds.put(playerUUID, connectionId);
