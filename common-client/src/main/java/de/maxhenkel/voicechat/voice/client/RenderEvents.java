@@ -168,6 +168,8 @@ public class RenderEvents {
             renderPlayerIcon(entityId, state.isDiscrete, nameTag, SPEAKER_OFF_ICON, stack, collector, state.lightCoords);
         } else if (manager.isPlayerForceMuted(entityId)) {
             renderPlayerIcon(entityId, state.isDiscrete, nameTag, MICROPHONE_FORCED_OFF_ICON, stack, collector, state.lightCoords);
+        } else if (manager.isPlayerMuted(entityId)) {
+            renderPlayerIcon(entityId, state.isDiscrete, nameTag, MICROPHONE_OFF_ICON, stack, collector, state.lightCoords);
         }
 
         stack.popPose();
