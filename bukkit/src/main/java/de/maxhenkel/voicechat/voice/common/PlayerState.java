@@ -14,6 +14,8 @@ public class PlayerState {
     private boolean disabled;
     private boolean forceDisabled;
     private boolean disconnected;
+    private boolean speakPermission;
+    private boolean listenPermission;
     @Nullable
     private UUID group;
 
@@ -79,6 +81,22 @@ public class PlayerState {
 
     public void setDisconnected(boolean disconnected) {
         this.disconnected = disconnected;
+    }
+
+    public boolean hasSpeakPermission() {
+        return speakPermission;
+    }
+
+    public void setSpeakPermission(boolean speakPermission) {
+        this.speakPermission = speakPermission;
+    }
+
+    public boolean hasListenPermission() {
+        return listenPermission;
+    }
+
+    public void setListenPermission(boolean listenPermission) {
+        this.listenPermission = listenPermission;
     }
 
     @Nullable
