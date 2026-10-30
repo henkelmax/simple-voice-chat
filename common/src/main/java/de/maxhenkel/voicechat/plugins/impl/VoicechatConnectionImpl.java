@@ -99,8 +99,39 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
     }
 
     @Override
+    public boolean isMuted() {
+        return state.isMuted() || state.isForceMuted();
+    }
+
+    @Override
+    public void setMuted(boolean muted) {
+        if (isInstalled()) {
+            return;
+        }
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return;
+        }
+        PlayerStateManager manager = server.getPlayerStateManager();
+        PlayerState actualState = manager.getState(state.getUuid());
+        if (actualState == null) {
+            return;
+        }
+        if (actualState.isMuted() == muted) {
+            return;
+        }
+        actualState.setMuted(muted);
+        manager.broadcastState(null, actualState);
+    }
+
+    @Override
+    public boolean isForceMuted() {
+        return state.isForceMuted();
+    }
+
+    @Override
     public boolean isDisabled() {
-        return state.isDisabled();
+        return state.isDisabled() || state.isForceDisabled();
     }
 
     @Override
@@ -122,6 +153,11 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
         }
         actualState.setDisabled(disabled);
         manager.broadcastState(null, actualState);
+    }
+
+    @Override
+    public boolean isForceDisabled() {
+        return state.isForceDisabled();
     }
 
     @Override

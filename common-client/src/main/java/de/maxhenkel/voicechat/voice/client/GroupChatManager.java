@@ -70,7 +70,7 @@ public class GroupChatManager {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 40, 8, 8, 8, 64, 64);
 
-            if (state.isDisabled()) {
+            if (state.isDisabled() || state.isForceDisabled()) {
                 guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate((posX < 0 ? -1F - 8F : 1F), posY < 0 ? -1F - 8F : 1F);
                 guiGraphics.pose().scale(0.5F, 0.5F);
