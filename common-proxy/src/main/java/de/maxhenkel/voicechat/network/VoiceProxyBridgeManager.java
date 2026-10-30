@@ -210,6 +210,13 @@ public class VoiceProxyBridgeManager {
         }
 
         /**
+         * @return the address the player connected to the proxy from, which is the only address packets are forwarded from
+         */
+        public SocketAddress getPlayerAddress() {
+            return playerAddress;
+        }
+
+        /**
          * Forwards any given DatagramPacket from the player to the backend server
          *
          * @param packet The DatagramPacket to be re-packaged and sent to the backend server

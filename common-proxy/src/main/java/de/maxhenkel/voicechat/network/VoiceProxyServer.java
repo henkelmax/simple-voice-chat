@@ -146,6 +146,11 @@ public class VoiceProxyServer extends Thread {
             }
         }
 
+        // Only the address that opened the bridge may use it, so copied packets can't be injected from anywhere else
+        if (!bridge.getPlayerAddress().equals(packet.getSocketAddress())) {
+            return;
+        }
+
         bridge.forward(packet);
     }
 
