@@ -144,7 +144,7 @@ public class PlayerStateManager {
         Voicechat.LOGGER.debug("Set state of {} to connected: {}", player.getName().getString(), state);
     }
 
-    public void evaluateForcedStateIfPermissionsChanged(ServerPlayer player) {
+    public synchronized void evaluateForcedStateIfPermissionsChanged(ServerPlayer player) {
         PlayerState state = states.get(player.getUUID());
         if (state == null) {
             return;
@@ -156,7 +156,7 @@ public class PlayerStateManager {
         }
     }
 
-    public void evaluateForcedState(ServerPlayer player) {
+    public synchronized void evaluateForcedState(ServerPlayer player) {
         PlayerState state = states.get(player.getUUID());
         if (state == null) {
             return;
