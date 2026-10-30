@@ -121,11 +121,19 @@ public class KeyEvents {
         }
 
         if (KEY_MUTE.consumeClick()) {
-            playerStateManager.setMuted(!playerStateManager.isMuted());
+            if (playerStateManager.isForceMuted()) {
+                player.displayClientMessage(Component.translatable("message.voicechat.mute.forced"), true);
+            } else {
+                playerStateManager.setMuted(!playerStateManager.isMuted());
+            }
         }
 
         if (KEY_DISABLE.consumeClick()) {
-            playerStateManager.setDisabled(!playerStateManager.isDisabled());
+            if (playerStateManager.isForceDisabled()) {
+                player.displayClientMessage(Component.translatable("message.voicechat.disable.forced"), true);
+            } else {
+                playerStateManager.setDisabled(!playerStateManager.isDisabled());
+            }
         }
 
         if (KEY_TOGGLE_RECORDING.consumeClick() && client != null) {

@@ -7,10 +7,8 @@ import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
-import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.*;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -332,6 +330,7 @@ public class Server extends Thread {
                         if (player != null) {
                             CommonCompatibilityManager.INSTANCE.emitServerVoiceChatConnectedEvent(player);
                             PluginManager.instance().onPlayerConnected(player);
+                            playerStateManager.updateForcedState(player);
                             Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getName().getString(), connection.getPlayerUUID());
                         }
                         sendPacket(new ConnectionCheckAckPacket(), connection);
@@ -366,14 +365,8 @@ public class Server extends Thread {
         if (player == null) {
             return;
         }
-        if (!PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player)) {
-            CooldownTimer.run("no-speak-" + playerUuid, 30_000L, () -> {
-                player.displayClientMessage(Component.translatable("message.voicechat.no_speak_permission"), true);
-            });
-            return;
-        }
         PlayerState state = playerStateManager.getState(player.getUUID());
-        if (state == null) {
+        if (state == null || state.isForceMuted()) {
             return;
         }
         if (!PluginManager.instance().onMicPacket(player, state, packet)) {
@@ -471,7 +464,7 @@ public class Server extends Thread {
             return;
         }
 
-        if (receiverState.isDisabled() || receiverState.isDisconnected()) {
+        if (receiverState.isDisabled() || receiverState.isForceDisabled() || receiverState.isDisconnected()) {
             return;
         }
 
@@ -479,12 +472,6 @@ public class Server extends Thread {
             return;
         }
 
-        if (!PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(receiver)) {
-            CooldownTimer.run(String.format("no-listen-%s", receiver.getUUID()), 30_000L, () -> {
-                receiver.displayClientMessage(Component.translatable("message.voicechat.no_listen_permission"), true);
-            });
-            return;
-        }
         sendPacket(soundPacket, connection);
     }
 
@@ -541,6 +528,10 @@ public class Server extends Thread {
 
         for (ClientConnection connection : connections.values()) {
             sendPacket(new KeepAlivePacket(), connection);
+            ServerPlayer player = server.getPlayerList().getPlayer(connection.getPlayerUUID());
+            if (player != null) {
+                playerStateManager.updateForcedState(player);
+            }
         }
 
     }

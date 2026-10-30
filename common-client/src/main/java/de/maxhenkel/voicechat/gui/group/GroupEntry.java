@@ -50,7 +50,9 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
         float scale = outlineSize / 10F;
         guiGraphics.pose().scale(scale, scale);
 
-        if (!state.isDisabled()) {
+        boolean disabled = state.isDisabled() || state.isForceDisabled();
+
+        if (!disabled) {
             ClientVoicechat client = ClientManager.getClient();
             if (client != null && client.getTalkCache().isTalking(state.getUuid())) {
                 guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, TALK_OUTLINE, 16, 16, 0, 0, 0, 0, 10, 10);
@@ -61,7 +63,7 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), 1, 1, 8, 8, 8, 8, 64, 64);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.texture(), 1, 1, 40, 8, 8, 8, 64, 64);
 
-        if (state.isDisabled()) {
+        if (disabled) {
             guiGraphics.pose().pushMatrix();
             guiGraphics.pose().translate(1F, 1F);
             guiGraphics.pose().scale(0.5F, 0.5F);

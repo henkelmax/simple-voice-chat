@@ -198,6 +198,12 @@ public class PluginManager {
         dispatchEvent(PlayerStateChangedEvent.class, new PlayerStateChangedEventImpl(state));
     }
 
+    public PlayerForcedStateEvent onPlayerForcedState(ServerPlayer player, PlayerState state, boolean forceMuted, boolean forceDisabled) {
+        PlayerForcedStateEventImpl event = new PlayerForcedStateEventImpl(new VoicechatConnectionImpl(player, state), forceMuted, forceDisabled);
+        dispatchEvent(PlayerForcedStateEvent.class, event);
+        return event;
+    }
+
     public boolean onJoinGroup(ServerPlayer player, @Nullable Group group) {
         if (group == null) {
             return onLeaveGroup(player);
