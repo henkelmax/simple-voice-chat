@@ -9,7 +9,6 @@ import de.maxhenkel.voicechat.net.PacketRateLimiter;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.plugins.PluginManager;
-import de.maxhenkel.voicechat.voice.common.Secret;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -97,14 +96,14 @@ public class ServerVoiceEvents implements Listener {
         server.getCategoryManager().onPlayerCompatibilityCheckSucceeded(player);
         server.getGroupManager().onPlayerCompatibilityCheckSucceeded(player);
 
-        Secret secret = server.generateNewSecret(player.getUniqueId());
-        if (secret == null) {
+        ConnectionSecret connectionSecret = server.getConnectionSecrets().create(player.getUniqueId());
+        if (connectionSecret == null) {
             Voicechat.LOGGER.warn("Player already requested secret - ignoring");
             return;
         }
 
         String voiceHost = PluginManager.instance().getVoiceHost(player, Voicechat.SERVER_CONFIG.voiceHost.get());
-        NetManager.sendToClient(player, new SecretPacket(player, secret, server.getConnectionId(player.getUniqueId()), server.getPort(), Voicechat.SERVER_CONFIG, voiceHost));
+        NetManager.sendToClient(player, new SecretPacket(player, connectionSecret.getSecret(), connectionSecret.getConnectionId(), server.getPort(), Voicechat.SERVER_CONFIG, voiceHost));
         Voicechat.LOGGER.info("Sent secret to {}", player.getName());
     }
 

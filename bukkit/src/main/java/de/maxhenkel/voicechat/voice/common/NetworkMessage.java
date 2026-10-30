@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.api.RawUdpPacket;
 import de.maxhenkel.voicechat.debug.PingHandler;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
+import de.maxhenkel.voicechat.voice.server.ConnectionSecret;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.DecoderException;
@@ -98,8 +99,8 @@ public class NetworkMessage {
                 return null;
             }
             UUID connectionId = b.readUUID();
-            Secret secret = server.getSecretByConnectionId(connectionId);
-            if (secret == null) {
+            ConnectionSecret connectionSecret = server.getConnectionSecrets().getByConnectionId(connectionId);
+            if (connectionSecret == null) {
                 if (PingHandler.onPacket(server, packet.getSocketAddress(), connectionId, b)) {
                     return null;
                 }
@@ -107,7 +108,7 @@ public class NetworkMessage {
                 Voicechat.LOGGER.debug("Connection {} does not have a secret", connectionId);
                 return null;
             }
-            NetworkMessage message = readFromBytes(packet.getSocketAddress(), secret, b.readByteArray(Utils.MAX_VOICE_CHAT_PACKET_SIZE), packet.getTimestamp());
+            NetworkMessage message = readFromBytes(packet.getSocketAddress(), connectionSecret.getSecret(), b.readByteArray(Utils.MAX_VOICE_CHAT_PACKET_SIZE), packet.getTimestamp());
             if (message != null) {
                 message.connectionId = connectionId;
             }
@@ -154,7 +155,11 @@ public class NetworkMessage {
     }
 
     public byte[] writeServer(Server server, ClientConnection connection) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        byte[] payload = write(server.getSecret(connection.getPlayerUUID()));
+        ConnectionSecret connectionSecret = server.getConnectionSecrets().get(connection.getPlayerUUID());
+        if (connectionSecret == null) {
+            throw new IllegalStateException(String.format("Player %s has no secret", connection.getPlayerUUID()));
+        }
+        byte[] payload = write(connectionSecret.getSecret());
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer(1 + payload.length));
         buffer.writeByte(MAGIC_BYTE);
         buffer.writeByteArray(payload);
