@@ -17,7 +17,7 @@ public class PTTMicrophoneProcessor extends MicrophoneProcessor {
 
     @Override
     protected boolean processInternal(short[] audio, boolean testing) {
-        transmitting = isPttButtonDown() || testing;
+        transmitting = (isPttButtonDown() && !isMuted()) || testing;
         return transmitting;
     }
 
