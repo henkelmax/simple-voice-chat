@@ -15,7 +15,6 @@ import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.net.LeaveGroupPacket;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
-import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
@@ -108,7 +107,7 @@ public class GroupScreen extends VoiceChatScreenBase {
 
     private void checkButtons() {
         ClientPlayerStateManager stateManager = ClientManager.getPlayerStateManager();
-        mute.active = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE) && !stateManager.isForceMuted();
+        mute.active = !stateManager.isForceMuted();
         disable.active = !stateManager.isForceDisabled();
         showHUD.active = !VoicechatClient.CLIENT_CONFIG.hideIcons.get();
     }
