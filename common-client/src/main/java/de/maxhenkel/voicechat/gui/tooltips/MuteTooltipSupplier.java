@@ -1,10 +1,8 @@
 package de.maxhenkel.voicechat.gui.tooltips;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
-import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -16,7 +14,6 @@ public class MuteTooltipSupplier implements ImageButton.TooltipSupplier {
 
     public static final TranslationTextComponent MUTE_UNMUTED = new TranslationTextComponent("message.voicechat.mute.disabled");
     public static final TranslationTextComponent MUTE_MUTED = new TranslationTextComponent("message.voicechat.mute.enabled");
-    public static final TranslationTextComponent MUTE_DISABLED_PTT = new TranslationTextComponent("message.voicechat.mute.disabled_ptt");
     public static final TranslationTextComponent MUTE_FORCED = new TranslationTextComponent("message.voicechat.mute.forced");
 
     private Screen screen;
@@ -33,8 +30,6 @@ public class MuteTooltipSupplier implements ImageButton.TooltipSupplier {
 
         if (stateManager.isForceMuted()) {
             tooltip.add(MUTE_FORCED.getVisualOrderText());
-        } else if (!canMuteMic()) {
-            tooltip.add(MUTE_DISABLED_PTT.getVisualOrderText());
         } else if (stateManager.isMuted()) {
             tooltip.add(MUTE_MUTED.getVisualOrderText());
         } else {
@@ -42,10 +37,6 @@ public class MuteTooltipSupplier implements ImageButton.TooltipSupplier {
         }
 
         screen.renderTooltip(matrices, tooltip, mouseX, mouseY);
-    }
-
-    public static boolean canMuteMic() {
-        return VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE);
     }
 
 }
