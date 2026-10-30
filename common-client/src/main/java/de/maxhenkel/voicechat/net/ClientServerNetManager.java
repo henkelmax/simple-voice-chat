@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.voice.client.ClientManager;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -9,6 +10,9 @@ import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
 public abstract class ClientServerNetManager extends NetManager {
 
     public static void sendToServer(Packet<?> packet) {
+        if (!(packet instanceof RequestSecretPacket) && !ClientManager.isServerCompatible()) {
+            return;
+        }
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         packet.toBytes(buffer);
         ClientPacketListener connection = Minecraft.getInstance().getConnection();
