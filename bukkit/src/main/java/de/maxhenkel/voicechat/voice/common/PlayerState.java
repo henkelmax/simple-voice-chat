@@ -88,16 +88,23 @@ public class PlayerState {
                 '}';
     }
 
+    private static final byte MUTED_OFFSET = 0;
+    private static final byte DISABLED_OFFSET = 1;
+    private static final byte DISCONNECTED_OFFSET = 2;
+    private static final byte HAS_GROUP_OFFSET = 3;
+
     public static PlayerState fromBytes(FriendlyByteBuf buf) {
-        boolean muted = buf.readBoolean();
-        boolean disabled = buf.readBoolean();
-        boolean disconnected = buf.readBoolean();
+        byte flags = buf.readByte();
+        boolean muted = getFlag(flags, MUTED_OFFSET);
+        boolean disabled = getFlag(flags, DISABLED_OFFSET);
+        boolean disconnected = getFlag(flags, DISCONNECTED_OFFSET);
+        boolean hasGroup = getFlag(flags, HAS_GROUP_OFFSET);
         UUID uuid = buf.readUUID();
         String name = buf.readUtf(32767);
 
         PlayerState state = new PlayerState(uuid, name, muted, disabled, disconnected);
 
-        if (buf.readBoolean()) {
+        if (hasGroup) {
             state.setGroup(buf.readUUID());
         }
 
@@ -105,15 +112,29 @@ public class PlayerState {
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeBoolean(muted);
-        buf.writeBoolean(disabled);
-        buf.writeBoolean(disconnected);
+        byte flags = 0b0;
+        flags = setFlag(flags, MUTED_OFFSET, muted);
+        flags = setFlag(flags, DISABLED_OFFSET, disabled);
+        flags = setFlag(flags, DISCONNECTED_OFFSET, disconnected);
+        boolean hasGroup = hasGroup();
+        flags = setFlag(flags, HAS_GROUP_OFFSET, hasGroup);
+        buf.writeByte(flags);
         buf.writeUUID(uuid);
         buf.writeUtf(name);
-        buf.writeBoolean(hasGroup());
-        if (hasGroup()) {
+        if (hasGroup) {
             buf.writeUUID(group);
         }
+    }
+
+    private static boolean getFlag(byte flags, byte offset) {
+        return (flags & (0b1 << offset)) != 0;
+    }
+
+    private static byte setFlag(byte flags, byte offset, boolean value) {
+        if (value) {
+            return (byte) (flags | (0b1 << offset));
+        }
+        return flags;
     }
 
 }
