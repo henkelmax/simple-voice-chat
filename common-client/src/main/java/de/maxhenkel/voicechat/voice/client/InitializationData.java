@@ -14,6 +14,7 @@ public class InitializationData {
     private final int serverPort;
     private final UUID playerUUID;
     private final Secret secret;
+    private final UUID connectionId;
     private final ServerConfig.Codec codec;
     private final int mtuSize;
     private final double voiceChatDistance;
@@ -27,6 +28,7 @@ public class InitializationData {
         this.serverPort = hostData.port;
         this.playerUUID = secretPacket.getPlayerUUID();
         this.secret = secretPacket.getSecret();
+        this.connectionId = secretPacket.getConnectionId();
         this.codec = secretPacket.getCodec();
         this.mtuSize = secretPacket.getMtuSize();
         this.voiceChatDistance = secretPacket.getVoiceChatDistance();
@@ -83,6 +85,10 @@ public class InitializationData {
 
     public Secret getSecret() {
         return secret;
+    }
+
+    public UUID getConnectionId() {
+        return connectionId;
     }
 
     public ServerConfig.Codec getCodec() {
