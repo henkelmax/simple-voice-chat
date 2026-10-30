@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
@@ -8,6 +9,9 @@ import net.minecraft.client.player.LocalPlayer;
 public abstract class ClientServerNetManager extends NetManager {
 
     public static void sendToServer(Packet<?> packet) {
+        if (!(packet instanceof RequestSecretPacket) && !ClientManager.isServerCompatible()) {
+            return;
+        }
         ClientPacketListener connection = Minecraft.getInstance().getConnection();
         if (connection != null && connection.getLevel() != null) {
             CommonCompatibilityManager.INSTANCE.getNetManager().sendToServerInternal(packet);
