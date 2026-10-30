@@ -96,8 +96,8 @@ public class ServerVoiceEvents {
         }
         CommonCompatibilityManager.INSTANCE.emitPlayerCompatibilityCheckSucceeded(player);
 
-        Secret secret = server.generateNewSecret(player.getUniqueID());
-        if (secret == null) {
+        ConnectionSecret connectionSecret = server.getConnectionSecrets().create(player.getUniqueID());
+        if (connectionSecret == null) {
             Voicechat.LOGGER.warn("Player already requested secret - ignoring");
             return;
         }
@@ -109,7 +109,7 @@ public class ServerVoiceEvents {
             Voicechat.LOGGER.warn("A plugin modified voice_host on a non-dedicated server - Ignore this message if this is intended");
         }
 
-        NetManager.sendToClient(player, new SecretPacket(player, secret, server.getConnectionId(player.getUniqueID()), server.getPort(), Voicechat.SERVER_CONFIG, voiceHost));
+        NetManager.sendToClient(player, new SecretPacket(player, connectionSecret.getSecret(), connectionSecret.getConnectionId(), server.getPort(), Voicechat.SERVER_CONFIG, voiceHost));
         Voicechat.LOGGER.info("Sent secret to {}", player.getName());
     }
 
