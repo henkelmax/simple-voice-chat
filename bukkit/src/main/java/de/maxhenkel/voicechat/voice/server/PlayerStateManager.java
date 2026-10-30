@@ -35,6 +35,7 @@ public class PlayerStateManager implements Listener {
         }
 
         state.setDisabled(packet.isDisabled());
+        state.setMuted(packet.isMuted());
 
         states.put(player.getUniqueId(), state);
 
@@ -143,7 +144,7 @@ public class PlayerStateManager implements Listener {
     }
 
     public static PlayerState defaultDisconnectedState(Player player) {
-        return new PlayerState(player.getUniqueId(), player.getName(), false, true);
+        return new PlayerState(player.getUniqueId(), player.getName(), false, false, true);
     }
 
     public void setGroup(Player player, @Nullable UUID group) {
