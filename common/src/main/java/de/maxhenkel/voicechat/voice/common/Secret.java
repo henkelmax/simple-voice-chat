@@ -20,6 +20,7 @@ public class Secret {
     public static final int IV_SIZE_BYTES = 12;
     public static final int TAG_LEN_BITS = 128;
     public static final String CIPHER = "AES/GCM/NoPadding";
+    public static final int NONCE_SIZE_BYTES = 16;
 
     private static final SecureRandom RANDOM = new SecureRandom();
 

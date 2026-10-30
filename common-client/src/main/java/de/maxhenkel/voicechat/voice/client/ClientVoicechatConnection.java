@@ -20,6 +20,7 @@ public class ClientVoicechatConnection extends Thread {
     private final ClientVoicechatSocket socket;
     private final InetAddress address;
     private volatile boolean running;
+    private volatile byte[] connectionCheckNonce;
     private volatile boolean authenticated;
     private volatile boolean connected;
     private final AuthThread authThread;
@@ -88,9 +89,10 @@ public class ClientVoicechatConnection extends Thread {
                 }
                 if (in == null) {
                     continue;
-                } else if (in.getPacket() instanceof AuthenticateAckPacket) {
+                } else if (in.getPacket() instanceof AuthenticateAckPacket packet) {
                     if (!authenticated) {
                         Voicechat.LOGGER.info("Server acknowledged authentication");
+                        connectionCheckNonce = packet.getNonce();
                         authenticated = true;
                     }
                 } else if (in.getPacket() instanceof ConnectionCheckAckPacket) {
@@ -200,7 +202,7 @@ public class ClientVoicechatConnection extends Thread {
                         Voicechat.LOGGER.warn("Trying to validate voice chat connection (this message will not be logged again)");
                         validateLogMessageCount++;
                     }
-                    sendToServer(new NetworkMessage(new ConnectionCheckPacket()));
+                    sendToServer(new NetworkMessage(new ConnectionCheckPacket(data.getPlayerUUID(), connectionCheckNonce)));
                 }
 
                 Utils.sleep(1000);
