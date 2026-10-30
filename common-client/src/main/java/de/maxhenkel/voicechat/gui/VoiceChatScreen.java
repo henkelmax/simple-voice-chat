@@ -113,7 +113,7 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
 
     private void checkButtons() {
         if (mute != null) {
-            mute.enabled = MuteTooltipSupplier.canMuteMic() && !stateManager.isForceMuted();
+            mute.enabled = !stateManager.isForceMuted();
         }
         if (disable != null) {
             disable.enabled = stateManager.canEnable() && !stateManager.isForceDisabled();
