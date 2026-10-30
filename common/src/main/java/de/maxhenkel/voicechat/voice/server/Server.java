@@ -43,6 +43,7 @@ public class Server extends Thread {
 
     private static final String NONCE_MAC = "HmacSHA256";
     private static final int NONCE_KEY_SIZE_BYTES = 32;
+    private static final long PERMISSION_CHECK_INTERVAL = 500L;
 
     private final Map<UUID, ClientConnection> connections;
     private final ConnectionSecrets connectionSecrets;
@@ -265,10 +266,12 @@ public class Server extends Thread {
     private class ProcessThread extends Thread {
         private boolean running;
         private long lastKeepAlive;
+        private long lastPermissionCheck;
 
         public ProcessThread() {
             running = true;
             lastKeepAlive = 0L;
+            lastPermissionCheck = 0L;
             setDaemon(true);
             setName("VoiceChatPacketProcessingThread");
             setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
@@ -279,10 +282,14 @@ public class Server extends Thread {
             while (running) {
                 try {
                     pingManager.checkTimeouts();
-                    long keepAliveTime = System.currentTimeMillis();
-                    if (keepAliveTime - lastKeepAlive > Voicechat.SERVER_CONFIG.keepAlive.get()) {
+                    long time = System.currentTimeMillis();
+                    if (time - lastKeepAlive > Voicechat.SERVER_CONFIG.keepAlive.get()) {
                         sendKeepAlives();
-                        lastKeepAlive = keepAliveTime;
+                        lastKeepAlive = time;
+                    }
+                    if (time - lastPermissionCheck > PERMISSION_CHECK_INTERVAL) {
+                        pollPermissions();
+                        lastPermissionCheck = time;
                     }
 
                     RawUdpPacket rawPacket = packetQueue.poll(10, TimeUnit.MILLISECONDS);
@@ -340,7 +347,7 @@ public class Server extends Thread {
                         if (player != null) {
                             CommonCompatibilityManager.INSTANCE.emitServerVoiceChatConnectedEvent(player);
                             PluginManager.instance().onPlayerConnected(player);
-                            playerStateManager.updateForcedState(player);
+                            playerStateManager.evaluateForcedState(player);
                             Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getName().getString(), connection.getPlayerUUID());
                         }
                         sendPacket(new ConnectionCheckAckPacket(), connection);
@@ -538,19 +545,30 @@ public class Server extends Thread {
 
         for (ClientConnection connection : connections.values()) {
             sendPacket(new KeepAlivePacket(), connection);
-            updateForcedState(connection.getPlayerUUID());
-        }
-
-        for (UUID audioSenderPlayer : AudioSenderImpl.getRegisteredPlayers()) {
-            updateForcedState(audioSenderPlayer);
         }
 
     }
 
-    public void updateForcedState(UUID playerUuid) {
+    private void pollPermissions() {
+        for (ClientConnection connection : connections.values()) {
+            pollPermissions(connection.getPlayerUUID());
+        }
+        for (UUID audioSenderPlayer : AudioSenderImpl.getRegisteredPlayers()) {
+            pollPermissions(audioSenderPlayer);
+        }
+    }
+
+    private void pollPermissions(UUID playerUuid) {
         ServerPlayer player = server.getPlayerList().getPlayer(playerUuid);
         if (player != null) {
-            playerStateManager.updateForcedState(player);
+            playerStateManager.evaluateForcedStateIfPermissionsChanged(player);
+        }
+    }
+
+    public void evaluateForcedState(UUID playerUuid) {
+        ServerPlayer player = server.getPlayerList().getPlayer(playerUuid);
+        if (player != null) {
+            playerStateManager.evaluateForcedState(player);
         }
     }
 
