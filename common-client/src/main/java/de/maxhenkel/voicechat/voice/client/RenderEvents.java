@@ -154,6 +154,8 @@ public class RenderEvents {
                 renderPlayerIcon(player, component, SPEAKER_OFF_ICON, stack, vertexConsumers, light, partialTicks);
             } else if (manager.isPlayerForceMuted(player.getUUID())) {
                 renderPlayerIcon(player, component, MICROPHONE_FORCED_OFF_ICON, stack, vertexConsumers, light, partialTicks);
+            } else if (manager.isPlayerMuted(player.getUUID())) {
+                renderPlayerIcon(player, component, MICROPHONE_OFF_ICON, stack, vertexConsumers, light, partialTicks);
             }
         }
     }
