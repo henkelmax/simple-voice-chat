@@ -5,7 +5,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class UpdateStatePacket implements Packet<UpdateStatePacket> {
 
-    public static final ResourceLocation PLAYER_STATE = new ResourceLocation(NetManager.CHANNEL, "update_state");
+    public static final ResourceLocation PLAYER_STATE = new ResourceLocation(NetManager.CHANNEL, "client_state");
 
     private boolean muted;
     private boolean disabled;
