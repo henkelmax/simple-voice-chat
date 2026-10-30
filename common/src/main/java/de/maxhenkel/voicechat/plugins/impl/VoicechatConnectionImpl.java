@@ -163,6 +163,15 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
     }
 
     @Override
+    public void evaluateForcedState() {
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return;
+        }
+        server.getPlayerStateManager().evaluateForcedState(serverPlayer);
+    }
+
+    @Override
     public boolean isInstalled() {
         return Voicechat.SERVER.isCompatible(serverPlayer);
     }

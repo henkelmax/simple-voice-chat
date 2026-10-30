@@ -37,6 +37,7 @@ public class TestAddon implements ModInitializer {
         if (forced) {
             players.add(uuid);
         }
+        TestVoicechatPlugin.evaluateForcedState(uuid);
         context.getSource().sendSuccess(new StringTextComponent("")
                 .append(player.getDisplayName())
                 .append(" ")
