@@ -9,14 +9,20 @@ public class UpdateStatePacket implements Packet<UpdateStatePacket> {
 
     public static final Key PLAYER_STATE = Voicechat.compatibility.createNamespacedKey("update_state");
 
+    private boolean muted;
     private boolean disabled;
 
     public UpdateStatePacket() {
 
     }
 
-    public UpdateStatePacket(boolean disabled) {
+    public UpdateStatePacket(boolean muted, boolean disabled) {
+        this.muted = muted;
         this.disabled = disabled;
+    }
+
+    public boolean isMuted() {
+        return muted;
     }
 
     public boolean isDisabled() {
@@ -35,12 +41,14 @@ public class UpdateStatePacket implements Packet<UpdateStatePacket> {
 
     @Override
     public UpdateStatePacket fromBytes(FriendlyByteBuf buf) {
+        muted = buf.readBoolean();
         disabled = buf.readBoolean();
         return this;
     }
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
+        buf.writeBoolean(muted);
         buf.writeBoolean(disabled);
     }
 
