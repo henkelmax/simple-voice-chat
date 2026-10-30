@@ -10,4 +10,4 @@ pluginManagement {
 }
 
 rootProject.name = 'voicechat'
-include('api', 'common', 'common-client', 'fabric', 'fabric:api-stub', 'neoforge', 'forge')
+include('api', 'common', 'common-client', 'fabric', 'fabric:api-stub', 'fabric:test-addon', 'neoforge', 'forge')

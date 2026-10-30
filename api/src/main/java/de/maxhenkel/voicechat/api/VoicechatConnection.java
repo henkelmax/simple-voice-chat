@@ -52,10 +52,34 @@ public interface VoicechatConnection {
     void setConnected(boolean connected);
 
     /**
+     * <b>Note</b>: This only returns if the player had the microphone muted when fetching this connection object.
+     * Calling {@link #setMuted(boolean)} won't update the return value of this method.
+     *
+     * @return if the player has muted their microphone or has been force muted by the server
+     */
+    boolean isMuted();
+
+    /**
+     * Sets the players muted state.
+     * <b>NOTE</b>: This method will only work for players that don't have the mod installed. See {@link #isInstalled()}.
+     *
+     * @param muted if the player should have the microphone muted icon
+     */
+    void setMuted(boolean muted);
+
+    /**
+     * <b>Note</b>: This only returns if the player was force muted when fetching this connection object.
+     * See {@link de.maxhenkel.voicechat.api.events.PlayerForcedStateEvent}.
+     *
+     * @return if the microphone of the player has been force muted by the server
+     */
+    boolean isForceMuted();
+
+    /**
      * <b>Note</b>: This only returns if the player has the voice chat disabled when fetching this connection object.
      * Calling {@link #setDisabled(boolean)} won't update the return value of this method.
      *
-     * @return If the player muted the sound
+     * @return If the player muted the sound or has been force disabled by the server
      */
     boolean isDisabled();
 
@@ -66,6 +90,14 @@ public interface VoicechatConnection {
      * @param disabled if the player should have the voice chat disabled icon
      */
     void setDisabled(boolean disabled);
+
+    /**
+     * <b>Note</b>: This only returns if the player was force disabled when fetching this connection object.
+     * See {@link de.maxhenkel.voicechat.api.events.PlayerForcedStateEvent}.
+     *
+     * @return if the players voice chat has been force disabled by the server
+     */
+    boolean isForceDisabled();
 
     /**
      * @return if the player has a version of voice chat installed that is compatible with the server

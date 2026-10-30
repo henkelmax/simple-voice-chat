@@ -29,9 +29,11 @@ public class RenderEvents {
     private static final ResourceLocation MICROPHONE_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/microphone");
     private static final ResourceLocation WHISPER_MICROPHONE_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/microphone_whisper");
     private static final ResourceLocation MICROPHONE_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/microphone_off");
+    private static final ResourceLocation MICROPHONE_FORCED_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/microphone_forced_off");
     private static final ResourceLocation SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/speaker");
     private static final ResourceLocation WHISPER_SPEAKER_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/speaker_whisper");
     private static final ResourceLocation SPEAKER_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/speaker_off");
+    private static final ResourceLocation SPEAKER_FORCED_OFF_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/speaker_forced_off");
     private static final ResourceLocation DISCONNECT_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/disconnected");
     private static final ResourceLocation GROUP_ICON = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "icons/group");
 
@@ -67,8 +69,12 @@ public class RenderEvents {
 
         if (manager.isDisconnected()) {
             renderIcon(guiGraphics, DISCONNECT_ICON);
+        } else if (manager.isForceDisabled()) {
+            renderIcon(guiGraphics, SPEAKER_FORCED_OFF_ICON);
         } else if (manager.isDisabled()) {
             renderIcon(guiGraphics, SPEAKER_OFF_ICON);
+        } else if (manager.isForceMuted()) {
+            renderIcon(guiGraphics, MICROPHONE_FORCED_OFF_ICON);
         } else if (manager.isMuted() && VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE)) {
             renderIcon(guiGraphics, MICROPHONE_OFF_ICON);
         } else if (client != null && client.getMicThread() != null) {
@@ -142,8 +148,12 @@ public class RenderEvents {
                 renderPlayerIcon(player, component, DISCONNECT_ICON, stack, vertexConsumers, light, partialTicks);
             } else if (groupId != null && !groupId.equals(manager.getGroupID())) {
                 renderPlayerIcon(player, component, GROUP_ICON, stack, vertexConsumers, light, partialTicks);
+            } else if (manager.isPlayerForceDisabled(player.getUUID())) {
+                renderPlayerIcon(player, component, SPEAKER_FORCED_OFF_ICON, stack, vertexConsumers, light, partialTicks);
             } else if (manager.isPlayerDisabled(player)) {
                 renderPlayerIcon(player, component, SPEAKER_OFF_ICON, stack, vertexConsumers, light, partialTicks);
+            } else if (manager.isPlayerForceMuted(player.getUUID())) {
+                renderPlayerIcon(player, component, MICROPHONE_FORCED_OFF_ICON, stack, vertexConsumers, light, partialTicks);
             }
         }
     }
