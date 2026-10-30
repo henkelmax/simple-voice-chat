@@ -22,6 +22,16 @@ public class Utils {
         return new UUID(SECURE_RANDOM.nextLong(), SECURE_RANDOM.nextLong());
     }
 
+    /**
+     * @param length the number of bytes
+     * @return bytes generated with a {@link SecureRandom}
+     */
+    public static byte[] generateSecureRandomBytes(int length) {
+        byte[] bytes = new byte[length];
+        SECURE_RANDOM.nextBytes(bytes);
+        return bytes;
+    }
+
     public static void sleep(int ms) {
         try {
             Thread.sleep(ms);
