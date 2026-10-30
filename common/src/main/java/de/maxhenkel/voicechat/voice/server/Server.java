@@ -232,7 +232,7 @@ public class Server extends Thread {
         mac.init(nonceKey);
         mac.update(ByteBuffer.allocate(16).putLong(connectionId.getMostSignificantBits()).putLong(connectionId.getLeastSignificantBits()).array());
         mac.update(addressToBytes(address));
-        return Arrays.copyOf(mac.doFinal(), Secret.NONCE_SIZE_BYTES);
+        return Arrays.copyOf(mac.doFinal(), NetworkMessage.NONCE_SIZE_BYTES);
     }
 
     private static byte[] addressToBytes(SocketAddress address) {
