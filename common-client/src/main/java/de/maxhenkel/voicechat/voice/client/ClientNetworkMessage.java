@@ -34,7 +34,7 @@ public class ClientNetworkMessage {
         byte[] payload = networkMessage.write(client.getData().getSecret());
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(1 + 16 + payload.length));
         buffer.writeByte(NetworkMessage.MAGIC_BYTE);
-        buffer.writeUUID(client.getData().getPlayerUUID());
+        buffer.writeUUID(client.getData().getConnectionId());
         buffer.writeByteArray(payload);
 
         byte[] bytes = new byte[buffer.readableBytes()];

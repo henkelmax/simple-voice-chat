@@ -14,6 +14,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     public static final ResourceLocation SECRET = new ResourceLocation(Voicechat.MODID, "secret");
 
     private Secret secret;
+    private UUID connectionId;
     private int serverPort;
     private UUID playerUUID;
     private ServerConfig.Codec codec;
@@ -28,8 +29,9 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     }
 
-    public SecretPacket(ServerPlayerEntity player, Secret secret, int port, ServerConfig serverConfig, String voiceHost) {
+    public SecretPacket(ServerPlayerEntity player, Secret secret, UUID connectionId, int port, ServerConfig serverConfig, String voiceHost) {
         this.secret = secret;
+        this.connectionId = connectionId;
         this.serverPort = port;
         this.playerUUID = player.getUUID();
         this.codec = serverConfig.voiceChatCodec.get();
@@ -43,6 +45,10 @@ public class SecretPacket implements Packet<SecretPacket> {
 
     public Secret getSecret() {
         return secret;
+    }
+
+    public UUID getConnectionId() {
+        return connectionId;
     }
 
     public int getServerPort() {
@@ -89,6 +95,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     @Override
     public SecretPacket fromBytes(PacketBuffer buf) {
         secret = Secret.fromBytes(buf);
+        connectionId = buf.readUUID();
         serverPort = buf.readInt();
         playerUUID = buf.readUUID();
         codec = ServerConfig.Codec.values()[buf.readByte()];
@@ -104,6 +111,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     @Override
     public void toBytes(PacketBuffer buf) {
         secret.toBytes(buf);
+        buf.writeUUID(connectionId);
         buf.writeInt(serverPort);
         buf.writeUUID(playerUUID);
         buf.writeByte(codec.ordinal());
