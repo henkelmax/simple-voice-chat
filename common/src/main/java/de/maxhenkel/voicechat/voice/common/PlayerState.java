@@ -9,14 +9,16 @@ public class PlayerState {
 
     private UUID uuid;
     private String name;
+    private boolean muted;
     private boolean disabled;
     private boolean disconnected;
     @Nullable
     private UUID group;
 
-    public PlayerState(UUID uuid, String name, boolean disabled, boolean disconnected) {
+    public PlayerState(UUID uuid, String name, boolean muted, boolean disabled, boolean disconnected) {
         this.uuid = uuid;
         this.name = name;
+        this.muted = muted;
         this.disabled = disabled;
         this.disconnected = disconnected;
     }
@@ -35,6 +37,14 @@ public class PlayerState {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isMuted() {
+        return muted;
+    }
+
+    public void setMuted(boolean muted) {
+        this.muted = muted;
     }
 
     public boolean isDisabled() {
@@ -69,7 +79,8 @@ public class PlayerState {
     @Override
     public String toString() {
         return "{" +
-                "disabled=" + disabled +
+                "muted=" + muted +
+                ", disabled=" + disabled +
                 ", disconnected=" + disconnected +
                 ", uuid=" + uuid +
                 ", name=" + name +
@@ -78,12 +89,13 @@ public class PlayerState {
     }
 
     public static PlayerState fromBytes(PacketBuffer buf) {
+        boolean muted = buf.readBoolean();
         boolean disabled = buf.readBoolean();
         boolean disconnected = buf.readBoolean();
         UUID uuid = buf.readUniqueId();
         String name = buf.readString(32767);
 
-        PlayerState state = new PlayerState(uuid, name, disabled, disconnected);
+        PlayerState state = new PlayerState(uuid, name, muted, disabled, disconnected);
 
         if (buf.readBoolean()) {
             state.setGroup(buf.readUniqueId());
@@ -93,6 +105,7 @@ public class PlayerState {
     }
 
     public void toBytes(PacketBuffer buf) {
+        buf.writeBoolean(muted);
         buf.writeBoolean(disabled);
         buf.writeBoolean(disconnected);
         buf.writeUniqueId(uuid);

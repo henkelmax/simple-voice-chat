@@ -64,7 +64,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
                 continue;
             }
 
-            entries.add(new PlayerVolumeEntry(new PlayerState(uuid, name, false, true), screen));
+            entries.add(new PlayerVolumeEntry(new PlayerState(uuid, name, false, false, true), screen));
         }
     }
 

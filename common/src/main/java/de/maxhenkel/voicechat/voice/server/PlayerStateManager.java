@@ -34,6 +34,7 @@ public class PlayerStateManager {
             }
 
             state.setDisabled(packet.isDisabled());
+            state.setMuted(packet.isMuted());
 
             states.put(player.getUniqueID(), state);
 
@@ -143,7 +144,7 @@ public class PlayerStateManager {
     }
 
     public static PlayerState defaultDisconnectedState(EntityPlayerMP player) {
-        return new PlayerState(player.getUniqueID(), player.getGameProfile().getName(), false, true);
+        return new PlayerState(player.getUniqueID(), player.getGameProfile().getName(), false, false, true);
     }
 
     public void setGroup(EntityPlayerMP player, @Nullable UUID group) {

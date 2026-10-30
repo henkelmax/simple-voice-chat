@@ -160,8 +160,8 @@ public class ClientPlayerStateManager {
     }
 
     public void syncOwnState() {
-        ClientServerNetManager.sendToServer(new UpdateStatePacket(isDisabled()));
-        Voicechat.LOGGER.debug("Sent own state to server: disabled={}", isDisabled());
+        ClientServerNetManager.sendToServer(new UpdateStatePacket(isMuted(), isDisabled()));
+        Voicechat.LOGGER.debug("Sent own state to server: muted={}, disabled={}", isMuted(), isDisabled());
     }
 
     public boolean isDisabled() {
@@ -198,6 +198,7 @@ public class ClientPlayerStateManager {
 
     public void setMuted(boolean muted) {
         VoicechatClient.CLIENT_CONFIG.muted.set(muted).save();
+        syncOwnState();
         PluginManager.instance().dispatchEvent(MicrophoneMuteEvent.class, new MicrophoneMuteEventImpl(muted));
     }
 
