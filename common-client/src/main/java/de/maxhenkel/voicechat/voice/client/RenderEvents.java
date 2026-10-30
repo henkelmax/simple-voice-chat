@@ -72,7 +72,7 @@ public class RenderEvents {
             renderIcon(stack, SPEAKER_OFF_ICON);
         } else if (manager.isForceMuted()) {
             renderIcon(stack, MICROPHONE_FORCED_OFF_ICON);
-        } else if (manager.isMuted() && VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get().equals(MicrophoneActivationType.VOICE)) {
+        } else if (manager.isMuted()) {
             renderIcon(stack, MICROPHONE_OFF_ICON);
         } else if (client != null && client.getMicThread() != null) {
             if (client.getMicThread().isWhispering()) {
