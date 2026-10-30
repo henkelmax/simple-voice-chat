@@ -44,8 +44,7 @@ public class Server extends Thread {
     private static final int NONCE_KEY_SIZE_BYTES = 32;
 
     private final Map<UUID, ClientConnection> connections;
-    private final Map<UUID, UUID> connectionIds;
-    private final Map<UUID, Secret> secrets;
+    private final ConnectionSecrets connectionSecrets;
     private final SecretKeySpec nonceKey;
     private final boolean dedicated;
     private int port;
@@ -77,8 +76,7 @@ public class Server extends Thread {
         this.server = server;
         socket = PluginManager.instance().getSocketImplementation(server);
         connections = new ConcurrentHashMap<>();
-        connectionIds = new ConcurrentHashMap<>();
-        secrets = new ConcurrentHashMap<>();
+        connectionSecrets = new ConnectionSecrets();
         nonceKey = new SecretKeySpec(Utils.generateSecureRandomBytes(NONCE_KEY_SIZE_BYTES), NONCE_MAC);
         packetQueue = new LinkedBlockingQueue<>();
         pingManager = new PingManager(this);
@@ -213,50 +211,11 @@ public class Server extends Thread {
         this.port = port;
         old.close();
         connections.clear();
-        connectionIds.clear();
-        secrets.clear();
+        connectionSecrets.clear();
     }
 
-    public Secret getSecret(UUID playerUUID) {
-        UUID connectionId = connectionIds.get(playerUUID);
-        if (connectionId != null) {
-            return secrets.get(connectionId);
-        }
-        connectionId = Utils.generateSecureRandomUUID();
-        Secret secret = Secret.generateNewRandomSecret();
-        secrets.put(connectionId, secret);
-        connectionIds.put(playerUUID, connectionId);
-        return secret;
-    }
-
-    /**
-     * @param playerUUID the player uuid
-     * @return the new secret or null if the player already has a secret
-     */
-    @Nullable
-    public Secret generateNewSecret(UUID playerUUID) {
-        if (hasSecret(playerUUID)) {
-            return null;
-        }
-        return getSecret(playerUUID);
-    }
-
-    public boolean hasSecret(UUID playerUUID) {
-        return connectionIds.containsKey(playerUUID);
-    }
-
-    /**
-     * @param playerUUID the player uuid
-     * @return the random ID that identifies the player in voice chat packets or null if the player has no secret
-     */
-    @Nullable
-    public UUID getConnectionId(UUID playerUUID) {
-        return connectionIds.get(playerUUID);
-    }
-
-    @Nullable
-    public Secret getSecretByConnectionId(UUID connectionId) {
-        return secrets.get(connectionId);
+    public ConnectionSecrets getConnectionSecrets() {
+        return connectionSecrets;
     }
 
     /**
@@ -287,15 +246,8 @@ public class Server extends Thread {
 
     public void disconnectClient(UUID playerUUID) {
         connections.remove(playerUUID);
-        removeSecret(playerUUID);
+        connectionSecrets.remove(playerUUID);
         PluginManager.instance().onPlayerDisconnected(playerUUID);
-    }
-
-    private void removeSecret(UUID playerUUID) {
-        UUID connectionId = connectionIds.remove(playerUUID);
-        if (connectionId != null) {
-            secrets.remove(connectionId);
-        }
     }
 
     public void close() {
@@ -360,17 +312,17 @@ public class Server extends Thread {
                     }
 
                     if (message.getPacket() instanceof AuthenticatePacket packet) {
-                        UUID connectionId = connectionIds.get(packet.getPlayerUUID());
-                        if (connectionId != null && packet.getSecret().equals(secrets.get(connectionId))) {
+                        ConnectionSecret connectionSecret = connectionSecrets.get(packet.getPlayerUUID());
+                        if (connectionSecret != null && connectionSecret.getSecret().equals(packet.getSecret())) {
                             // The connection is only created once the client sends the nonce back from the same address
-                            sendPacket(new AuthenticateAckPacket(createNonce(connectionId, message.getAddress())), new ClientConnection(packet.getPlayerUUID(), message.getAddress()));
+                            sendPacket(new AuthenticateAckPacket(createNonce(connectionSecret.getConnectionId(), message.getAddress())), new ClientConnection(packet.getPlayerUUID(), message.getAddress()));
                             Voicechat.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
                         }
                     }
 
                     if (message.getPacket() instanceof ConnectionCheckPacket packet) {
-                        UUID connectionId = connectionIds.get(packet.getPlayerUUID());
-                        if (connectionId == null || !MessageDigest.isEqual(createNonce(connectionId, message.getAddress()), packet.getNonce())) {
+                        ConnectionSecret connectionSecret = connectionSecrets.get(packet.getPlayerUUID());
+                        if (connectionSecret == null || !MessageDigest.isEqual(createNonce(connectionSecret.getConnectionId(), message.getAddress()), packet.getNonce())) {
                             continue;
                         }
                         ClientConnection connection = connections.get(packet.getPlayerUUID());
@@ -567,7 +519,7 @@ public class Server extends Thread {
         connections.values().removeIf(connection -> {
             if (timestamp - connection.getLastKeepAliveResponse() >= Voicechat.SERVER_CONFIG.keepAlive.get() * 10L) {
                 // Don't call disconnectClient here!
-                removeSecret(connection.getPlayerUUID());
+                connectionSecrets.remove(connection.getPlayerUUID());
                 Voicechat.LOGGER.info("Player {} timed out", connection.getPlayerUUID());
                 ServerPlayer player = server.getPlayerList().getPlayer(connection.getPlayerUUID());
                 if (player != null) {
@@ -595,14 +547,15 @@ public class Server extends Thread {
 
     @Nullable
     public ClientConnection getSender(NetworkMessage message) {
-        // The address alone can be spoofed, so the message also has to be encrypted with the secret of the connection
-        return connections
-                .values()
-                .stream()
-                .filter(connection -> connection.getAddress().equals(message.getAddress()))
-                .filter(connection -> message.getConnectionId().equals(connectionIds.get(connection.getPlayerUUID())))
-                .findAny()
-                .orElse(null);
+        ConnectionSecret connectionSecret = connectionSecrets.getByConnectionId(message.getConnectionId());
+        if (connectionSecret == null) {
+            return null;
+        }
+        ClientConnection connection = connections.get(connectionSecret.getPlayerUUID());
+        if (connection == null || !connection.getAddress().equals(message.getAddress())) {
+            return null;
+        }
+        return connection;
     }
 
     public Map<UUID, ClientConnection> getConnections() {
