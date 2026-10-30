@@ -59,6 +59,7 @@ public class ClientPlayerStateManager {
                     c.closeAudioChannel(packet.getPlayerState().getUuid());
                 }
             }
+            applyForcedState();
             AdjustVolumeList.update();
             JoinGroupList.update();
             GroupList.update();
@@ -172,6 +173,18 @@ public class ClientPlayerStateManager {
         }
 
         return playerState.isForceDisabled();
+    }
+
+    /**
+     * Mute/disable the player when they get force muted/disabled, so revoking doesn't accidentally make the player send or hear audio.
+     */
+    private void applyForcedState() {
+        if (isForceMuted() && !VoicechatClient.CLIENT_CONFIG.muted.get()) {
+            setMuted(true);
+        }
+        if (isForceDisabled() && !VoicechatClient.CLIENT_CONFIG.disabled.get()) {
+            setDisabled(true);
+        }
     }
 
     public boolean isPlayerDisconnected(EntityPlayer player) {
