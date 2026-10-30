@@ -89,7 +89,7 @@ public class PlayerStateManager {
         broadcastState(player, state);
         Voicechat.LOGGER.debug("Setting default state of {}: {}", player.getName(), state);
         if (AudioSenderImpl.getRegisteredPlayers().contains(player.getUniqueID())) {
-            updateForcedState(player);
+            evaluateForcedState(player);
         }
     }
 
@@ -144,14 +144,30 @@ public class PlayerStateManager {
         Voicechat.LOGGER.debug("Set state of {} to connected: {}", player.getName(), state);
     }
 
-    public void updateForcedState(EntityPlayerMP player) {
+    public void evaluateForcedStateIfPermissionsChanged(EntityPlayerMP player) {
         PlayerState state = states.get(player.getUniqueID());
         if (state == null) {
             return;
         }
-        boolean forceMuted = !PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player);
-        boolean forceDisabled = !PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(player);
-        PlayerForcedStateEvent event = PluginManager.instance().onPlayerForcedState(player, state, forceMuted, forceDisabled);
+        boolean speakPermission = PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player);
+        boolean listenPermission = PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(player);
+        if (state.hasSpeakPermission() != speakPermission || state.hasListenPermission() != listenPermission) {
+            evaluateForcedState(player, state, speakPermission, listenPermission);
+        }
+    }
+
+    public void evaluateForcedState(EntityPlayerMP player) {
+        PlayerState state = states.get(player.getUniqueID());
+        if (state == null) {
+            return;
+        }
+        evaluateForcedState(player, state, PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player), PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(player));
+    }
+
+    private void evaluateForcedState(EntityPlayerMP player, PlayerState state, boolean speakPermission, boolean listenPermission) {
+        state.setSpeakPermission(speakPermission);
+        state.setListenPermission(listenPermission);
+        PlayerForcedStateEvent event = PluginManager.instance().onPlayerForcedState(player, state, !speakPermission, !listenPermission);
         if (state.isForceMuted() == event.isForceMuted() && state.isForceDisabled() == event.isForceDisabled()) {
             return;
         }
