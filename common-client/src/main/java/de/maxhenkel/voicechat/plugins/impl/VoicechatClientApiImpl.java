@@ -34,8 +34,19 @@ public class VoicechatClientApiImpl extends VoicechatApiImpl implements Voicecha
     }
 
     @Override
-    public boolean isMuted() {
-        return ClientManager.getPlayerStateManager().isMuted();
+    public boolean isMuted(@Nullable UUID playerId) {
+        if (playerId == null) {
+            return ClientManager.getPlayerStateManager().isMuted();
+        }
+        return ClientManager.getPlayerStateManager().isPlayerMuted(playerId);
+    }
+
+    @Override
+    public boolean isForceMuted(@Nullable UUID playerId) {
+        if (playerId == null) {
+            return ClientManager.getPlayerStateManager().isForceMuted();
+        }
+        return ClientManager.getPlayerStateManager().isPlayerForceMuted(playerId);
     }
 
     @Override
@@ -44,6 +55,14 @@ public class VoicechatClientApiImpl extends VoicechatApiImpl implements Voicecha
             return ClientManager.getPlayerStateManager().isDisabled();
         }
         return ClientManager.getPlayerStateManager().isPlayerDisabled(playerId);
+    }
+
+    @Override
+    public boolean isForceDisabled(@Nullable UUID playerId) {
+        if (playerId == null) {
+            return ClientManager.getPlayerStateManager().isForceDisabled();
+        }
+        return ClientManager.getPlayerStateManager().isPlayerForceDisabled(playerId);
     }
 
     @Override

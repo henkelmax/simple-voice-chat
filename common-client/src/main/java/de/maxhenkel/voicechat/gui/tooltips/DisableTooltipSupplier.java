@@ -13,6 +13,7 @@ public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
     public static final TextComponentTranslation DISABLE_ENABLED = new TextComponentTranslation("message.voicechat.disable.enabled");
     public static final TextComponentTranslation DISABLE_DISABLED = new TextComponentTranslation("message.voicechat.disable.disabled");
     public static final TextComponentTranslation DISABLE_NO_SPEAKER = new TextComponentTranslation("message.voicechat.disable.speaker_unavailable");
+    public static final TextComponentTranslation DISABLE_FORCED = new TextComponentTranslation("message.voicechat.disable.forced");
 
     private final GuiScreen screen;
     private final ClientPlayerStateManager stateManager;
@@ -26,7 +27,9 @@ public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
     public void onTooltip(ImageButton button, int mouseX, int mouseY) {
         List<String> tooltip = new ArrayList<>();
 
-        if (!stateManager.canEnable()) {
+        if (stateManager.isForceDisabled()) {
+            tooltip.add(DISABLE_FORCED.getUnformattedComponentText());
+        } else if (!stateManager.canEnable()) {
             tooltip.add(DISABLE_NO_SPEAKER.getUnformattedComponentText());
         } else if (stateManager.isDisabled()) {
             tooltip.add(DISABLE_ENABLED.getUnformattedComponentText());

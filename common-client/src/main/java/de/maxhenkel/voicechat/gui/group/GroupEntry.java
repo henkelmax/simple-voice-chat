@@ -52,7 +52,9 @@ public class GroupEntry extends ListScreenEntryBase {
 
         GlStateManager.color(1F, 1F, 1F, 1F);
 
-        if (!state.isDisabled()) {
+        boolean disabled = state.isDisabled() || state.isForceDisabled();
+
+        if (!disabled) {
             ClientVoicechat client = ClientManager.getClient();
             if (client != null && client.getTalkCache().isTalking(state.getUuid())) {
                 minecraft.getTextureManager().bindTexture(TALK_OUTLINE);
@@ -67,7 +69,7 @@ public class GroupEntry extends ListScreenEntryBase {
         Gui.drawScaledCustomSizeModalRect(1, 1, 40F, 8F, 8, 8, 8, 8, 64F, 64F);
         GlStateManager.disableBlend();
 
-        if (state.isDisabled()) {
+        if (disabled) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(1D, 1D, 0D);
             GlStateManager.scale(0.5F, 0.5F, 1F);

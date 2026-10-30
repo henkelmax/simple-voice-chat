@@ -10,7 +10,9 @@ public class PlayerState {
     private UUID uuid;
     private String name;
     private boolean muted;
+    private boolean forceMuted;
     private boolean disabled;
+    private boolean forceDisabled;
     private boolean disconnected;
     @Nullable
     private UUID group;
@@ -47,12 +49,28 @@ public class PlayerState {
         this.muted = muted;
     }
 
+    public boolean isForceMuted() {
+        return forceMuted;
+    }
+
+    public void setForceMuted(boolean forceMuted) {
+        this.forceMuted = forceMuted;
+    }
+
     public boolean isDisabled() {
         return disabled;
     }
 
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
+    }
+
+    public boolean isForceDisabled() {
+        return forceDisabled;
+    }
+
+    public void setForceDisabled(boolean forceDisabled) {
+        this.forceDisabled = forceDisabled;
     }
 
     public boolean isDisconnected() {
@@ -80,7 +98,9 @@ public class PlayerState {
     public String toString() {
         return "{" +
                 "muted=" + muted +
+                ", forceMuted=" + forceMuted +
                 ", disabled=" + disabled +
+                ", forceDisabled=" + forceDisabled +
                 ", disconnected=" + disconnected +
                 ", uuid=" + uuid +
                 ", name=" + name +
@@ -89,20 +109,26 @@ public class PlayerState {
     }
 
     private static final byte MUTED_OFFSET = 0;
-    private static final byte DISABLED_OFFSET = 1;
-    private static final byte DISCONNECTED_OFFSET = 2;
-    private static final byte HAS_GROUP_OFFSET = 3;
+    private static final byte FORCE_MUTED_OFFSET = 1;
+    private static final byte DISABLED_OFFSET = 2;
+    private static final byte FORCE_DISABLED_OFFSET = 3;
+    private static final byte DISCONNECTED_OFFSET = 4;
+    private static final byte HAS_GROUP_OFFSET = 5;
 
     public static PlayerState fromBytes(PacketBuffer buf) {
         byte flags = buf.readByte();
         boolean muted = getFlag(flags, MUTED_OFFSET);
+        boolean forceMuted = getFlag(flags, FORCE_MUTED_OFFSET);
         boolean disabled = getFlag(flags, DISABLED_OFFSET);
+        boolean forceDisabled = getFlag(flags, FORCE_DISABLED_OFFSET);
         boolean disconnected = getFlag(flags, DISCONNECTED_OFFSET);
         boolean hasGroup = getFlag(flags, HAS_GROUP_OFFSET);
         UUID uuid = buf.readUniqueId();
         String name = buf.readString(32767);
 
         PlayerState state = new PlayerState(uuid, name, muted, disabled, disconnected);
+        state.setForceMuted(forceMuted);
+        state.setForceDisabled(forceDisabled);
 
         if (hasGroup) {
             state.setGroup(buf.readUniqueId());
@@ -114,7 +140,9 @@ public class PlayerState {
     public void toBytes(PacketBuffer buf) {
         byte flags = 0b0;
         flags = setFlag(flags, MUTED_OFFSET, muted);
+        flags = setFlag(flags, FORCE_MUTED_OFFSET, forceMuted);
         flags = setFlag(flags, DISABLED_OFFSET, disabled);
+        flags = setFlag(flags, FORCE_DISABLED_OFFSET, forceDisabled);
         flags = setFlag(flags, DISCONNECTED_OFFSET, disconnected);
         boolean hasGroup = hasGroup();
         flags = setFlag(flags, HAS_GROUP_OFFSET, hasGroup);

@@ -10,6 +10,7 @@ import de.maxhenkel.voicechat.gui.tooltips.MuteTooltipSupplier;
 import de.maxhenkel.voicechat.gui.tooltips.RecordingTooltipSupplier;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
 import de.maxhenkel.voicechat.gui.widgets.ButtonBase;
+import de.maxhenkel.voicechat.gui.widgets.ForceableToggleImageButton;
 import de.maxhenkel.voicechat.gui.widgets.ImageButton;
 import de.maxhenkel.voicechat.gui.widgets.ToggleImageButton;
 import de.maxhenkel.voicechat.voice.client.*;
@@ -33,8 +34,8 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
     private static final ITextComponent GROUP = new TextComponentTranslation("message.voicechat.group");
     private static final ITextComponent ADJUST_PLAYER_VOLUMES = new TextComponentTranslation("message.voicechat.adjust_volumes");
 
-    private ToggleImageButton mute;
-    private ToggleImageButton disable;
+    private ForceableToggleImageButton mute;
+    private ForceableToggleImageButton disable;
     private HoverArea recordingHoverArea;
 
     private ClientPlayerStateManager stateManager;
@@ -49,12 +50,12 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
         super.initGui();
         @Nullable ClientVoicechat client = ClientManager.getClient();
 
-        mute = new ToggleImageButton(0, guiLeft + 6, guiTop + ySize - 6 - 20, MICROPHONE, stateManager::isMuted, button -> {
+        mute = new ForceableToggleImageButton(0, guiLeft + 6, guiTop + ySize - 6 - 20, MICROPHONE, stateManager::isMuted, button -> {
             stateManager.setMuted(!stateManager.isMuted());
         }, new MuteTooltipSupplier(this, stateManager));
         addButton(mute);
 
-        disable = new ToggleImageButton(1, guiLeft + 6 + 20 + 2, guiTop + ySize - 6 - 20, SPEAKER, stateManager::isDisabled, button -> {
+        disable = new ForceableToggleImageButton(1, guiLeft + 6 + 20 + 2, guiTop + ySize - 6 - 20, SPEAKER, stateManager::isDisabled, button -> {
             stateManager.setDisabled(!stateManager.isDisabled());
         }, new DisableTooltipSupplier(this, stateManager));
         addButton(disable);
@@ -112,10 +113,10 @@ public class VoiceChatScreen extends VoiceChatScreenBase {
 
     private void checkButtons() {
         if (mute != null) {
-            mute.enabled = MuteTooltipSupplier.canMuteMic();
+            mute.enabled = MuteTooltipSupplier.canMuteMic() && !stateManager.isForceMuted();
         }
         if (disable != null) {
-            disable.enabled = stateManager.canEnable();
+            disable.enabled = stateManager.canEnable() && !stateManager.isForceDisabled();
         }
     }
 

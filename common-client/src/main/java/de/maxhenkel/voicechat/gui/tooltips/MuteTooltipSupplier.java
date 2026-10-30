@@ -15,6 +15,7 @@ public class MuteTooltipSupplier implements ImageButton.TooltipSupplier {
     public static final TextComponentTranslation MUTE_UNMUTED = new TextComponentTranslation("message.voicechat.mute.disabled");
     public static final TextComponentTranslation MUTE_MUTED = new TextComponentTranslation("message.voicechat.mute.enabled");
     public static final TextComponentTranslation MUTE_DISABLED_PTT = new TextComponentTranslation("message.voicechat.mute.disabled_ptt");
+    public static final TextComponentTranslation MUTE_FORCED = new TextComponentTranslation("message.voicechat.mute.forced");
 
     private GuiScreen screen;
     private ClientPlayerStateManager stateManager;
@@ -28,7 +29,9 @@ public class MuteTooltipSupplier implements ImageButton.TooltipSupplier {
     public void onTooltip(ImageButton button, int mouseX, int mouseY) {
         List<String> tooltip = new ArrayList<>();
 
-        if (!canMuteMic()) {
+        if (stateManager.isForceMuted()) {
+            tooltip.add(MUTE_FORCED.getUnformattedComponentText());
+        } else if (!canMuteMic()) {
             tooltip.add(MUTE_DISABLED_PTT.getUnformattedComponentText());
         } else if (stateManager.isMuted()) {
             tooltip.add(MUTE_MUTED.getUnformattedComponentText());

@@ -105,7 +105,7 @@ public class MicThread extends Thread {
                 continue;
             }
 
-            if (!microphoneProcessor.shouldTransmitAudio()) {
+            if (!microphoneProcessor.shouldTransmitAudio() || ClientManager.getPlayerStateManager().isForceMuted()) {
                 processed = null;
             }
 

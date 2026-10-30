@@ -73,7 +73,7 @@ public class GroupChatManager {
             GuiScreen.drawModalRectWithCustomSizedTexture(posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 8, 8, 8, 8, 64, 64);
             GuiScreen.drawModalRectWithCustomSizedTexture(posX < 0 ? -1 - 8 : 1, posY < 0 ? -1 - 8 : 1, 40, 8, 8, 8, 64, 64);
 
-            if (state.isDisabled()) {
+            if (state.isDisabled() || state.isForceDisabled()) {
                 GlStateManager.pushMatrix();
                 GlStateManager.translate((posX < 0 ? -1D - 8D : 1D), posY < 0 ? -1D - 8D : 1D, 0D);
                 GlStateManager.scale(0.5F, 0.5F, 1F);
