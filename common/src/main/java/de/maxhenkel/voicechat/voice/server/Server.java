@@ -311,28 +311,28 @@ public class Server extends Thread {
                         continue;
                     }
 
-                    if (message.getPacket() instanceof AuthenticatePacket packet) {
-                        ConnectionSecret connectionSecret = connectionSecrets.get(packet.getPlayerUUID());
-                        if (connectionSecret != null && connectionSecret.getSecret().equals(packet.getSecret())) {
+                    if (message.getPacket() instanceof AuthenticatePacket) {
+                        ConnectionSecret connectionSecret = connectionSecrets.getByConnectionId(message.getConnectionId());
+                        if (connectionSecret != null) {
                             // The connection is only created once the client sends the nonce back from the same address
-                            sendPacket(new AuthenticateAckPacket(createNonce(connectionSecret.getConnectionId(), message.getAddress())), new ClientConnection(packet.getPlayerUUID(), message.getAddress()));
-                            Voicechat.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
+                            sendPacket(new AuthenticateAckPacket(createNonce(connectionSecret.getConnectionId(), message.getAddress())), new ClientConnection(connectionSecret.getPlayerUUID(), message.getAddress()));
+                            Voicechat.LOGGER.info("Successfully authenticated player {}", connectionSecret.getPlayerUUID());
                         }
                     }
 
                     if (message.getPacket() instanceof ConnectionCheckPacket packet) {
-                        ConnectionSecret connectionSecret = connectionSecrets.get(packet.getPlayerUUID());
+                        ConnectionSecret connectionSecret = connectionSecrets.getByConnectionId(message.getConnectionId());
                         if (connectionSecret == null || !MessageDigest.isEqual(createNonce(connectionSecret.getConnectionId(), message.getAddress()), packet.getNonce())) {
                             continue;
                         }
-                        ClientConnection connection = connections.get(packet.getPlayerUUID());
+                        ClientConnection connection = connections.get(connectionSecret.getPlayerUUID());
                         if (connection != null) {
                             if (connection.getAddress().equals(message.getAddress())) {
                                 sendPacket(new ConnectionCheckAckPacket(), connection);
                             }
                             continue;
                         }
-                        connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress());
+                        connection = new ClientConnection(connectionSecret.getPlayerUUID(), message.getAddress());
                         connections.put(connection.getPlayerUUID(), connection);
                         Voicechat.LOGGER.info("Successfully validated connection of player {}", connection.getPlayerUUID());
                         ServerPlayer player = server.getPlayerList().getPlayer(connection.getPlayerUUID());
