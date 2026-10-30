@@ -157,6 +157,8 @@ public class RenderEvents {
                 renderPlayerIcon(entityId, renderState, component, SPEAKER_OFF_ICON, stack, vertexConsumers, light);
             } else if (manager.isPlayerForceMuted(entityId)) {
                 renderPlayerIcon(entityId, renderState, component, MICROPHONE_FORCED_OFF_ICON, stack, vertexConsumers, light);
+            } else if (manager.isPlayerMuted(entityId)) {
+                renderPlayerIcon(entityId, renderState, component, MICROPHONE_OFF_ICON, stack, vertexConsumers, light);
             }
         }
     }
