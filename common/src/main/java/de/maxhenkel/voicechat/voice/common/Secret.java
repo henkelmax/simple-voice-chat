@@ -11,7 +11,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.Arrays;
 
 public class Secret {
@@ -20,9 +19,6 @@ public class Secret {
     public static final int IV_SIZE_BYTES = 12;
     public static final int TAG_LEN_BITS = 128;
     public static final String CIPHER = "AES/GCM/NoPadding";
-    public static final int NONCE_SIZE_BYTES = 16;
-
-    private static final SecureRandom RANDOM = new SecureRandom();
 
     private final byte[] secret;
     private final SecretKeySpec keySpec;
@@ -33,9 +29,7 @@ public class Secret {
     }
 
     public static Secret generateNewRandomSecret() {
-        byte[] secret = new byte[SECRET_SIZE_BYTES];
-        RANDOM.nextBytes(secret);
-        return new Secret(secret);
+        return new Secret(Utils.generateSecureRandomBytes(SECRET_SIZE_BYTES));
     }
 
     public static Secret fromBytes(byte[] secret) {
@@ -61,9 +55,7 @@ public class Secret {
     }
 
     public static byte[] generateIV() {
-        byte[] iv = new byte[IV_SIZE_BYTES];
-        RANDOM.nextBytes(iv);
-        return iv;
+        return Utils.generateSecureRandomBytes(IV_SIZE_BYTES);
     }
 
     public byte[] encrypt(byte[] data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
