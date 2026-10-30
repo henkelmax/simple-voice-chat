@@ -13,6 +13,7 @@ public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
     public static final Component DISABLE_ENABLED = Component.translatable("message.voicechat.disable.enabled");
     public static final Component DISABLE_DISABLED = Component.translatable("message.voicechat.disable.disabled");
     public static final Component DISABLE_NO_SPEAKER = Component.translatable("message.voicechat.disable.speaker_unavailable");
+    public static final Component DISABLE_FORCED = Component.translatable("message.voicechat.disable.forced");
 
     private final Screen screen;
     private final ClientPlayerStateManager stateManager;
@@ -34,7 +35,9 @@ public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
     }
 
     private State getState() {
-        if (!stateManager.canEnable()) {
+        if (stateManager.isForceDisabled()) {
+            return State.FORCED;
+        } else if (!stateManager.canEnable()) {
             return State.NO_SPEAKER;
         } else if (stateManager.isDisabled()) {
             return State.DISABLED;
@@ -46,7 +49,8 @@ public class DisableTooltipSupplier implements ImageButton.TooltipSupplier {
     private enum State {
         ENABLED(DISABLE_DISABLED),
         DISABLED(DISABLE_ENABLED),
-        NO_SPEAKER(DISABLE_NO_SPEAKER);
+        NO_SPEAKER(DISABLE_NO_SPEAKER),
+        FORCED(DISABLE_FORCED);
 
         private final Component component;
 
