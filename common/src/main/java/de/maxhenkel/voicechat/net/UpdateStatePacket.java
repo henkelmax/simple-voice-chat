@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class UpdateStatePacket implements Packet<UpdateStatePacket> {
 
-    public static final ResourceLocation PLAYER_STATE = new ResourceLocation(Voicechat.MODID, "update_state");
+    public static final ResourceLocation PLAYER_STATE = new ResourceLocation(Voicechat.MODID, "client_state");
 
     private boolean muted;
     private boolean disabled;

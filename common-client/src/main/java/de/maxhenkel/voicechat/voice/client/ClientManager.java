@@ -35,6 +35,7 @@ public class ClientManager {
     private final DebugOverlay debugOverlay;
     private final KeyEvents keyEvents;
     private final Minecraft minecraft;
+    private boolean serverCompatible;
 
     private ClientManager() {
         playerStateManager = new ClientPlayerStateManager();
@@ -71,6 +72,8 @@ public class ClientManager {
             return;
         }
         Voicechat.LOGGER.info("Received secret");
+        serverCompatible = true;
+        playerStateManager.syncOwnState();
         if (client.getConnection() != null) {
             ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
         }
@@ -101,6 +104,7 @@ public class ClientManager {
     }
 
     private void onJoinWorld() {
+        serverCompatible = false;
         if (VoicechatClient.CLIENT_CONFIG.muteOnJoin.get()) {
             playerStateManager.setMuted(true);
         }
@@ -114,6 +118,7 @@ public class ClientManager {
     }
 
     private void onDisconnect() {
+        serverCompatible = false;
         if (client != null) {
             client.close();
             client = null;
@@ -148,6 +153,13 @@ public class ClientManager {
     @Nullable
     public static ClientVoicechat getClient() {
         return instance().client;
+    }
+
+    /**
+     * The server only sends the secret to clients with a matching compatibility version
+     */
+    public static boolean isServerCompatible() {
+        return instance().serverCompatible;
     }
 
     public static ClientPlayerStateManager getPlayerStateManager() {
