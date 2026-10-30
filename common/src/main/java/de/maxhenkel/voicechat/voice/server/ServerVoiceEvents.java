@@ -111,7 +111,7 @@ public class ServerVoiceEvents {
             Voicechat.LOGGER.warn("A plugin modified voice_host on a non-dedicated server - Ignore this message if this is intended");
         }
 
-        NetManager.sendToClient(player, new SecretPacket(player, secret, server.getPort(), Voicechat.SERVER_CONFIG, voiceHost));
+        NetManager.sendToClient(player, new SecretPacket(player, secret, server.getConnectionId(player.getUUID()), server.getPort(), Voicechat.SERVER_CONFIG, voiceHost));
         Voicechat.LOGGER.info("Sent secret to {}", player.getName().getString());
     }
 
