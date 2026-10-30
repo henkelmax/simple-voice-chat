@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.plugins.impl.audiosender.AudioSenderImpl;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -541,12 +542,20 @@ public class Server extends Thread {
 
         for (ClientConnection connection : connections.values()) {
             sendPacket(new KeepAlivePacket(), connection);
-            ServerPlayerEntity player = server.getPlayerList().getPlayer(connection.getPlayerUUID());
-            if (player != null) {
-                playerStateManager.updateForcedState(player);
-            }
+            updateForcedState(connection.getPlayerUUID());
         }
 
+        for (UUID audioSenderPlayer : AudioSenderImpl.getRegisteredPlayers()) {
+            updateForcedState(audioSenderPlayer);
+        }
+
+    }
+
+    public void updateForcedState(UUID playerUuid) {
+        ServerPlayerEntity player = server.getPlayerList().getPlayer(playerUuid);
+        if (player != null) {
+            playerStateManager.updateForcedState(player);
+        }
     }
 
     @Nullable

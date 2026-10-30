@@ -9,6 +9,7 @@ import de.maxhenkel.voicechat.net.PlayerStatesPacket;
 import de.maxhenkel.voicechat.net.RemovePlayerStatePacket;
 import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
+import de.maxhenkel.voicechat.plugins.impl.audiosender.AudioSenderImpl;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
@@ -87,6 +88,9 @@ public class PlayerStateManager {
         states.put(player.getUUID(), state);
         broadcastState(player, state);
         Voicechat.LOGGER.debug("Setting default state of {}: {}", player.getName().getString(), state);
+        if (AudioSenderImpl.getRegisteredPlayers().contains(player.getUUID())) {
+            updateForcedState(player);
+        }
     }
 
     public void onPlayerLoggedOut(ServerPlayerEntity player) {
