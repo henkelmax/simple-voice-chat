@@ -15,6 +15,7 @@ public class MuteTooltipSupplier implements ImageButton.TooltipSupplier {
     public static final Component MUTE_UNMUTED = Component.translatable("message.voicechat.mute.disabled");
     public static final Component MUTE_MUTED = Component.translatable("message.voicechat.mute.enabled");
     public static final Component MUTE_DISABLED_PTT = Component.translatable("message.voicechat.mute.disabled_ptt");
+    public static final Component MUTE_FORCED = Component.translatable("message.voicechat.mute.forced");
 
     private Screen screen;
     private ClientPlayerStateManager stateManager;
@@ -40,7 +41,9 @@ public class MuteTooltipSupplier implements ImageButton.TooltipSupplier {
     }
 
     private State getState() {
-        if (!canMuteMic()) {
+        if (stateManager.isForceMuted()) {
+            return State.FORCED;
+        } else if (!canMuteMic()) {
             return State.DISABLED_PTT;
         } else if (stateManager.isMuted()) {
             return State.MUTED;
@@ -52,7 +55,8 @@ public class MuteTooltipSupplier implements ImageButton.TooltipSupplier {
     private enum State {
         UNMUTED(MUTE_UNMUTED),
         MUTED(MUTE_MUTED),
-        DISABLED_PTT(MUTE_DISABLED_PTT);
+        DISABLED_PTT(MUTE_DISABLED_PTT),
+        FORCED(MUTE_FORCED);
 
         private final Component component;
 
