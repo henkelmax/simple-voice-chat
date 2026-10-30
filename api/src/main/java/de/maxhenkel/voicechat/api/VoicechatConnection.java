@@ -100,6 +100,13 @@ public interface VoicechatConnection {
     boolean isForceDisabled();
 
     /**
+     * Re-evaluates if the player is force muted or force disabled and emits a {@link de.maxhenkel.voicechat.api.events.PlayerForcedStateEvent}.
+     * <br/>
+     * Call this when the conditions your addon uses to force mute or force disable this player change.
+     */
+    void evaluateForcedState();
+
+    /**
      * @return if the player has a version of voice chat installed that is compatible with the server
      */
     boolean isInstalled();
