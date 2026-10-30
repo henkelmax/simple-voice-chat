@@ -150,6 +150,8 @@ public class RenderEvents {
                 renderPlayerIcon(player, str, x, y, z, maxDistance, SPEAKER_OFF_ICON);
             } else if (manager.isPlayerForceMuted(player.getUniqueID())) {
                 renderPlayerIcon(player, str, x, y, z, maxDistance, MICROPHONE_FORCED_OFF_ICON);
+            } else if (manager.isPlayerMuted(player.getUniqueID())) {
+                renderPlayerIcon(player, str, x, y, z, maxDistance, MICROPHONE_OFF_ICON);
             }
         }
     }
