@@ -30,6 +30,8 @@ public class NetworkMessage {
     private final long timestamp;
     private Packet<? extends Packet> packet;
     private SocketAddress address;
+    @Nullable
+    private UUID connectionId;
 
     public NetworkMessage(long timestamp, Packet<?> packet) {
         this(timestamp);
@@ -60,6 +62,14 @@ public class NetworkMessage {
 
     public SocketAddress getAddress() {
         return address;
+    }
+
+    /**
+     * @return the connection ID whose secret decrypted this message or null if the message was not received by the server
+     */
+    @Nullable
+    public UUID getConnectionId() {
+        return connectionId;
     }
 
     private static final Map<Byte, Class<? extends Packet>> packetRegistry;
@@ -97,7 +107,11 @@ public class NetworkMessage {
                 Voicechat.LOGGER.debug("Connection {} does not have a secret", connectionId);
                 return null;
             }
-            return readFromBytes(packet.getSocketAddress(), secret, b.readByteArray(Utils.MAX_VOICE_CHAT_PACKET_SIZE), packet.getTimestamp());
+            NetworkMessage message = readFromBytes(packet.getSocketAddress(), secret, b.readByteArray(Utils.MAX_VOICE_CHAT_PACKET_SIZE), packet.getTimestamp());
+            if (message != null) {
+                message.connectionId = connectionId;
+            }
+            return message;
         } catch (DecoderException | IndexOutOfBoundsException e) {
             Voicechat.LOGGER.debug("Received invalid packet from {}", packet.getSocketAddress());
             return null;
