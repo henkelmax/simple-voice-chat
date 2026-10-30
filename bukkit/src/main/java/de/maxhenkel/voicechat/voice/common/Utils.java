@@ -21,6 +21,16 @@ public class Utils {
     }
 
     /**
+     * @param length the number of bytes
+     * @return bytes generated with a {@link SecureRandom}
+     */
+    public static byte[] generateSecureRandomBytes(int length) {
+        byte[] bytes = new byte[length];
+        SECURE_RANDOM.nextBytes(bytes);
+        return bytes;
+    }
+
+    /**
      * Gets the default voice chat distance
      *
      * @return the default voice chat distance

@@ -15,11 +15,21 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nullable;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ProtocolException;
 import java.net.SocketException;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousCloseException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -30,10 +40,13 @@ import java.util.concurrent.TimeUnit;
 
 public class Server extends Thread {
 
+    private static final String NONCE_MAC = "HmacSHA256";
+    private static final int NONCE_KEY_SIZE_BYTES = 32;
+
     private final Map<UUID, ClientConnection> connections;
-    private final Map<UUID, ClientConnection> unCheckedConnections;
     private final Map<UUID, UUID> connectionIds;
     private final Map<UUID, Secret> secrets;
+    private final SecretKeySpec nonceKey;
     private final boolean dedicated;
     private int port;
     private final MinecraftServer server;
@@ -64,9 +77,9 @@ public class Server extends Thread {
         this.server = server;
         socket = PluginManager.instance().getSocketImplementation(server);
         connections = new ConcurrentHashMap<>();
-        unCheckedConnections = new ConcurrentHashMap<>();
         connectionIds = new ConcurrentHashMap<>();
         secrets = new ConcurrentHashMap<>();
+        nonceKey = new SecretKeySpec(Utils.generateSecureRandomBytes(NONCE_KEY_SIZE_BYTES), NONCE_MAC);
         packetQueue = new LinkedBlockingQueue<>();
         pingManager = new PingManager(this);
         playerStateManager = new PlayerStateManager(this);
@@ -200,7 +213,6 @@ public class Server extends Thread {
         this.port = port;
         old.close();
         connections.clear();
-        unCheckedConnections.clear();
         connectionIds.clear();
         secrets.clear();
     }
@@ -247,9 +259,34 @@ public class Server extends Thread {
         return secrets.get(connectionId);
     }
 
+    /**
+     * Creates a nonce that only this server can create for the given connection and address.
+     * The server sends it to the address in the {@link AuthenticateAckPacket} and only accepts a {@link ConnectionCheckPacket} with it from the same address.
+     * This way, a client can only connect from an address it can receive packets at.
+     *
+     * @param connectionId the connection ID of the player
+     * @param address      the address of the client
+     * @return the nonce
+     */
+    private byte[] createNonce(UUID connectionId, SocketAddress address) throws NoSuchAlgorithmException, InvalidKeyException {
+        Mac mac = Mac.getInstance(NONCE_MAC);
+        mac.init(nonceKey);
+        mac.update(ByteBuffer.allocate(16).putLong(connectionId.getMostSignificantBits()).putLong(connectionId.getLeastSignificantBits()).array());
+        mac.update(addressToBytes(address));
+        return Arrays.copyOf(mac.doFinal(), Secret.NONCE_SIZE_BYTES);
+    }
+
+    private static byte[] addressToBytes(SocketAddress address) {
+        if (!(address instanceof InetSocketAddress)) {
+            return address.toString().getBytes(StandardCharsets.UTF_8);
+        }
+        InetSocketAddress inetAddress = (InetSocketAddress) address;
+        byte[] ip = inetAddress.getAddress().getAddress();
+        return ByteBuffer.allocate(ip.length + 4).put(ip).putInt(inetAddress.getPort()).array();
+    }
+
     public void disconnectClient(UUID playerUUID) {
         connections.remove(playerUUID);
-        unCheckedConnections.remove(playerUUID);
         removeSecret(playerUUID);
         PluginManager.instance().onPlayerDisconnected(playerUUID);
     }
@@ -325,32 +362,26 @@ public class Server extends Thread {
                     if (message.getPacket() instanceof AuthenticatePacket packet) {
                         UUID connectionId = connectionIds.get(packet.getPlayerUUID());
                         if (connectionId != null && packet.getSecret().equals(secrets.get(connectionId))) {
-                            ClientConnection connection = unCheckedConnections.get(packet.getPlayerUUID());
-                            if (connection == null) {
-                                connection = connections.get(packet.getPlayerUUID());
-                            }
-                            if (connection == null) {
-                                connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress());
-                                unCheckedConnections.put(packet.getPlayerUUID(), connection);
-                                Voicechat.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
-                            }
-                            sendPacket(new AuthenticateAckPacket(), connection);
+                            // The connection is only created once the client sends the nonce back from the same address
+                            sendPacket(new AuthenticateAckPacket(createNonce(connectionId, message.getAddress())), new ClientConnection(packet.getPlayerUUID(), message.getAddress()));
+                            Voicechat.LOGGER.info("Successfully authenticated player {}", packet.getPlayerUUID());
                         }
                     }
 
-                    if (message.getPacket() instanceof ConnectionCheckPacket) {
-                        ClientConnection connection = getUnconnectedSender(message);
-                        if (connection == null) {
-                            connection = getSender(message);
-                            if (connection != null) {
+                    if (message.getPacket() instanceof ConnectionCheckPacket packet) {
+                        UUID connectionId = connectionIds.get(packet.getPlayerUUID());
+                        if (connectionId == null || !MessageDigest.isEqual(createNonce(connectionId, message.getAddress()), packet.getNonce())) {
+                            continue;
+                        }
+                        ClientConnection connection = connections.get(packet.getPlayerUUID());
+                        if (connection != null) {
+                            if (connection.getAddress().equals(message.getAddress())) {
                                 sendPacket(new ConnectionCheckAckPacket(), connection);
                             }
                             continue;
                         }
-                        // Refresh keepalive, so players who took longer than the timeout can still connect
-                        connection.setLastKeepAliveResponse(System.currentTimeMillis());
+                        connection = new ClientConnection(packet.getPlayerUUID(), message.getAddress());
                         connections.put(connection.getPlayerUUID(), connection);
-                        unCheckedConnections.remove(connection.getPlayerUUID());
                         Voicechat.LOGGER.info("Successfully validated connection of player {}", connection.getPlayerUUID());
                         ServerPlayer player = server.getPlayerList().getPlayer(connection.getPlayerUUID());
                         if (player != null) {
@@ -572,16 +603,6 @@ public class Server extends Thread {
                 .orElse(null);
     }
 
-    @Nullable
-    public ClientConnection getUnconnectedSender(NetworkMessage message) {
-        return unCheckedConnections
-                .values()
-                .stream()
-                .filter(connection -> connection.getAddress().equals(message.getAddress()))
-                .findAny()
-                .orElse(null);
-    }
-
     public Map<UUID, ClientConnection> getConnections() {
         return connections;
     }
@@ -625,10 +646,6 @@ public class Server extends Thread {
      */
     public void sendPacketRaw(Packet<?> packet, ClientConnection connection) throws Exception {
         connection.send(this, new NetworkMessage(packet));
-    }
-
-    public void addUncheckedPlayerConnection(UUID uuid, ClientConnection connection) {
-        unCheckedConnections.put(uuid, connection);
     }
 
     public void addRawPacket(RawUdpPacket rawUdpPacket) {
