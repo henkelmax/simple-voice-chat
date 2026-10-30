@@ -21,6 +21,7 @@ public class SniffedSecretPacket {
 
     protected int compatibilityVersion;
     protected byte[] secret;
+    protected UUID connectionId;
     protected int serverPort;
     protected UUID playerUUID;
     protected byte codec;
@@ -51,6 +52,10 @@ public class SniffedSecretPacket {
         packet.compatibilityVersion = compatibilityVersion;
         packet.secret = new byte[16];
         buf.readBytes(packet.secret);
+        // Compatibility version 21 added a random connection ID that replaces the player UUID in voice chat packets
+        if (compatibilityVersion >= 21) {
+            packet.connectionId = buf.readUUID();
+        }
         packet.serverPort = buf.readInt();
         packet.playerUUID = buf.readUUID();
         packet.codec = buf.readByte();
@@ -65,10 +70,13 @@ public class SniffedSecretPacket {
 
     public ByteBuffer toBytes() {
         int maxHostSize = voiceHost.length() * 4 + 5;
-        int size = secret.length + 4 + 16 + 1 + 4 + 8 + 4 + 1 + maxHostSize + 1;
+        int size = secret.length + 16 + 4 + 16 + 1 + 4 + 8 + 4 + 1 + maxHostSize + 1;
         ByteBuffer buffer = ByteBuffer.allocate(size);
         ByteBufferWrapper buf = new ByteBufferWrapper(buffer);
         buf.writeBytes(secret);
+        if (connectionId != null) {
+            buf.writeUUID(connectionId);
+        }
         buf.writeInt(serverPort);
         buf.writeUUID(playerUUID);
         buf.writeByte(codec);
@@ -95,6 +103,13 @@ public class SniffedSecretPacket {
     }
 
     /**
+     * @return the ID in the header of the players voice chat packets, which is the player UUID before compatibility version 21
+     */
+    public UUID getConnectionId() {
+        return connectionId != null ? connectionId : playerUUID;
+    }
+
+    /**
      * Modifies the packet to use the proxy port and clears the voice host.
      * If a voice host is present on the proxy, this value will be used.
      *
@@ -108,12 +123,17 @@ public class SniffedSecretPacket {
     }
 
     /**
-     * Checks if the UDP packet is encrypted with the users secret.
+     * Checks if the UDP packet is from the player.
+     * Since compatibility version 21, the random connection ID is only known to the player, the backend server and the proxy, so it proves this on its own.
+     * Before that, the connection ID is the public player UUID, so the packet has to be encrypted with the users secret.
      *
-     * @param buffer the voice chat packet, offset right after the player UUID
+     * @param buffer the voice chat packet, offset right after the connection ID
      * @return if the packet authenticates the player
      */
     public boolean isLegitimateAuthPacket(ByteBuffer buffer) {
+        if (connectionId != null) {
+            return true;
+        }
         try {
             ByteBufferWrapper buf = new ByteBufferWrapper(buffer);
             int payloadLength = buf.readVarInt();
