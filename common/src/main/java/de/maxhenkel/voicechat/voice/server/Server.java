@@ -315,7 +315,7 @@ public class Server extends Thread {
                         ConnectionSecret connectionSecret = connectionSecrets.getByConnectionId(message.getConnectionId());
                         if (connectionSecret != null) {
                             // The connection is only created once the client sends the nonce back from the same address
-                            sendPacket(new AuthenticateAckPacket(createNonce(connectionSecret.getConnectionId(), message.getAddress())), new ClientConnection(connectionSecret.getPlayerUUID(), message.getAddress()));
+                            sendPacket(new AuthenticateAckPacket(createNonce(connectionSecret.getConnectionId(), message.getAddress())), new ClientConnection(connectionSecret, message.getAddress()));
                             Voicechat.LOGGER.info("Successfully authenticated player {}", connectionSecret.getPlayerUUID());
                         }
                     }
@@ -333,7 +333,7 @@ public class Server extends Thread {
                             }
                             continue;
                         }
-                        connection = new ClientConnection(connectionSecret.getPlayerUUID(), message.getAddress());
+                        connection = new ClientConnection(connectionSecret, message.getAddress());
                         connections.put(connection.getPlayerUUID(), connection);
                         Voicechat.LOGGER.info("Successfully validated connection of player {}", connection.getPlayerUUID());
                         ServerPlayerEntity player = server.getPlayerList().getPlayer(connection.getPlayerUUID());
