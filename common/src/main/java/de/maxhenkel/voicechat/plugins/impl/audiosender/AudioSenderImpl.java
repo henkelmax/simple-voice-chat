@@ -32,7 +32,7 @@ public class AudioSenderImpl implements AudioSender {
         AUDIO_SENDERS.put(audioSender.uuid, audioSender);
         Server server = Voicechat.SERVER.getServer();
         if (server != null) {
-            server.updateForcedState(audioSender.uuid);
+            server.evaluateForcedState(audioSender.uuid);
         }
         return true;
     }
