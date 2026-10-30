@@ -1,9 +1,11 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.api.events.PlayerForcedStateEvent;
 import de.maxhenkel.voicechat.compatibility.PlayerHideEvent;
 import de.maxhenkel.voicechat.compatibility.PlayerShowEvent;
 import de.maxhenkel.voicechat.net.*;
+import de.maxhenkel.voicechat.permission.PermissionManager;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import org.bukkit.Bukkit;
@@ -136,6 +138,23 @@ public class PlayerStateManager implements Listener {
 
         broadcastState(player, state);
         Voicechat.LOGGER.debug("Set state of {} to connected: {}", player.getName(), state);
+    }
+
+    public void updateForcedState(Player player) {
+        PlayerState state = states.get(player.getUniqueId());
+        if (state == null) {
+            return;
+        }
+        boolean forceMuted = !player.hasPermission(PermissionManager.SPEAK_PERMISSION);
+        boolean forceDisabled = !player.hasPermission(PermissionManager.LISTEN_PERMISSION);
+        PlayerForcedStateEvent event = PluginManager.instance().onPlayerForcedState(player, state, forceMuted, forceDisabled);
+        if (state.isForceMuted() == event.isForceMuted() && state.isForceDisabled() == event.isForceDisabled()) {
+            return;
+        }
+        state.setForceMuted(event.isForceMuted());
+        state.setForceDisabled(event.isForceDisabled());
+        broadcastState(player, state);
+        Voicechat.LOGGER.debug("Updated forced state of {}: {}", player.getName(), state);
     }
 
     @Nullable
