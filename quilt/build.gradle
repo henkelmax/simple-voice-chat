@@ -86,11 +86,16 @@ dependencies {
 }
 
 tasks.register('generateJava', Copy) {
+    def templateProperties = [
+            'compatibility_version' : voicechat_compatibility_version,
+            'mod_compatible_version': mod_compatible_version,
+            'minecraft_version'     : minecraft_version
+    ]
+    // Trigger gradle regenerating the files in case something changes
+    inputs.properties(templateProperties)
     from file('../common/src/template/java')
     into "${layout.buildDirectory.asFile.get()}/generated/java"
-    expand 'compatibility_version': voicechat_compatibility_version,
-            'mod_compatible_version': mod_compatible_version,
-            'minecraft_version': minecraft_version
+    expand templateProperties
 }
 sourceSets.main.java {
     srcDir "${layout.buildDirectory.asFile.get()}/generated/java"
