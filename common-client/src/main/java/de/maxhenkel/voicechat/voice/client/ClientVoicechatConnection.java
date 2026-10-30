@@ -195,7 +195,7 @@ public class ClientVoicechatConnection extends Thread {
                         Voicechat.LOGGER.warn("Trying to authenticate voice chat connection (this message will not be logged again)");
                         authLogMessageCount++;
                     }
-                    sendToServer(new NetworkMessage(new AuthenticatePacket(data.getPlayerUUID(), data.getSecret())));
+                    sendToServer(new NetworkMessage(new AuthenticatePacket()));
                 } else {
                     authLogMessageCount = 0;
                     if (validateLogMessageCount < 10) {
@@ -205,7 +205,7 @@ public class ClientVoicechatConnection extends Thread {
                         Voicechat.LOGGER.warn("Trying to validate voice chat connection (this message will not be logged again)");
                         validateLogMessageCount++;
                     }
-                    sendToServer(new NetworkMessage(new ConnectionCheckPacket(data.getPlayerUUID(), connectionCheckNonce)));
+                    sendToServer(new NetworkMessage(new ConnectionCheckPacket(connectionCheckNonce)));
                 }
 
                 Utils.sleep(1000);
