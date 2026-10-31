@@ -135,9 +135,9 @@ public class VolumeCategoryImpl implements VolumeCategory {
     public static VolumeCategoryImpl fromBytes(FriendlyByteBuf buf) {
         String id = buf.readUtf(16);
         String name = buf.readUtf(16);
-        String nameTranslationKey = readOptionalString(buf);
-        String description = readOptionalString(buf);
-        String descriptionTranslationKey = readOptionalString(buf);
+        String nameTranslationKey = readOptionalString(buf, 256);
+        String description = readOptionalString(buf, 256);
+        String descriptionTranslationKey = readOptionalString(buf, 256);
         int[][] icon = null;
         if (buf.readBoolean()) {
             icon = new int[16][16];
@@ -147,16 +147,16 @@ public class VolumeCategoryImpl implements VolumeCategory {
                 }
             }
         }
-        String tab = readOptionalString(buf);
-        String tabName = readOptionalString(buf);
-        String tabTranslationKey = readOptionalString(buf);
+        String tab = readOptionalString(buf, 16);
+        String tabName = readOptionalString(buf, 16);
+        String tabTranslationKey = readOptionalString(buf, 256);
         return new VolumeCategoryImpl(id, name, nameTranslationKey, description, descriptionTranslationKey, icon, tab, tabName, tabTranslationKey);
     }
 
     @Nullable
-    private static String readOptionalString(FriendlyByteBuf buf) {
+    private static String readOptionalString(FriendlyByteBuf buf, int maxLength) {
         if (buf.readBoolean()) {
-            return buf.readUtf(32767);
+            return buf.readUtf(maxLength);
         }
         return null;
     }
@@ -164,9 +164,9 @@ public class VolumeCategoryImpl implements VolumeCategory {
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeUtf(id, 16);
         buf.writeUtf(name, 16);
-        writeOptionalString(buf, nameTranslationKey);
-        writeOptionalString(buf, description);
-        writeOptionalString(buf, descriptionTranslationKey);
+        writeOptionalString(buf, nameTranslationKey, 256);
+        writeOptionalString(buf, description, 256);
+        writeOptionalString(buf, descriptionTranslationKey, 256);
         buf.writeBoolean(icon != null);
         if (icon != null) {
             if (icon.length != 16) {
@@ -181,15 +181,15 @@ public class VolumeCategoryImpl implements VolumeCategory {
                 }
             }
         }
-        writeOptionalString(buf, tab);
-        writeOptionalString(buf, tabName);
-        writeOptionalString(buf, tabTranslationKey);
+        writeOptionalString(buf, tab, 16);
+        writeOptionalString(buf, tabName, 16);
+        writeOptionalString(buf, tabTranslationKey, 256);
     }
 
-    private static void writeOptionalString(FriendlyByteBuf buf, @Nullable String string) {
+    private static void writeOptionalString(FriendlyByteBuf buf, @Nullable String string, int maxLength) {
         buf.writeBoolean(string != null);
         if (string != null) {
-            buf.writeUtf(string, 32767);
+            buf.writeUtf(string, maxLength);
         }
     }
 
@@ -286,12 +286,24 @@ public class VolumeCategoryImpl implements VolumeCategory {
         @Override
         public VolumeCategory build() {
             if (id == null) {
-                throw new IllegalStateException("id missing");
+                throw new IllegalStateException("Id missing");
             }
             if (name == null) {
-                throw new IllegalStateException("name missing");
+                throw new IllegalStateException("Name missing");
             }
+            checkLength(name, 16, "Name");
+            checkLength(nameTranslationKey, 256, "Name translation key");
+            checkLength(description, 256, "Description");
+            checkLength(descriptionTranslationKey, 256, "Description translation key");
+            checkLength(tabName, 16, "Tab name");
+            checkLength(tabTranslationKey, 256, "Tab translation key");
             return new VolumeCategoryImpl(id, name, nameTranslationKey, description, descriptionTranslationKey, icon, tab, tabName, tabTranslationKey);
+        }
+
+        private static void checkLength(@Nullable String value, int maxLength, String name) {
+            if (value != null && value.length() > maxLength) {
+                throw new IllegalStateException(String.format("%s can't be longer than %s characters", name, maxLength));
+            }
         }
     }
 
