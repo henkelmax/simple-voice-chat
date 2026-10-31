@@ -19,6 +19,8 @@ import javax.annotation.Nullable;
 public class VoiceActivationSlider extends DebouncedSlider implements MicTestButton.MicListener {
 
     private static final ResourceLocation SLIDER = new ResourceLocation(Voicechat.MODID, "textures/gui/voice_activation_slider.png");
+    private static final int VOICE_ACTIVATION_TEXTURE_WIDTH = 226;
+    private static final int VOICE_ACTIVATION_TEXTURE_HEIGHT = 18;
     private static final ITextComponent NO_ACTIVATION = new TranslationTextComponent("message.voicechat.voice_activation.disabled").withStyle(TextFormatting.RED);
 
     private final SlidingMaxSmooth micValue;
@@ -43,8 +45,10 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     protected void renderBg(MatrixStack poseStack, Minecraft minecraft, int i, int j) {
         minecraft.getTextureManager().bind(SLIDER);
         RenderSystem.color4f(1F, 1F, 1F, 1F);
-        int width = (int) ((getWidth() - 2) * micValue.smoothMax());
-        blit(poseStack, x + 1, y + 1, 0, 0, width, 18);
+        double micLevel = micValue.smoothMax();
+        int width = (int) ((getWidth() - 2) * micLevel);
+        int textureWidth = (int) (VOICE_ACTIVATION_TEXTURE_WIDTH * micLevel);
+        blit(poseStack, x + 1, y + 1, width, VOICE_ACTIVATION_TEXTURE_HEIGHT, 0, 0, textureWidth, VOICE_ACTIVATION_TEXTURE_HEIGHT, 256, 256);
         boolean shouldShow = shouldShowSlider();
         if (shouldShow != active) {
             active = shouldShow;
