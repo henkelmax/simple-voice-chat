@@ -3,6 +3,19 @@ description: Submit a translation for this project
 labels: [translation]
 assignees: henkelmax
 body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!IMPORTANT]  
+        > AI generated translations are not allowed and will be closed without response.
+        > If we accepted AI translations, we could just generate them ourselves.
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmation
+      options:
+        - label: I didn't use AI to write this translation
+          required: true
   - type: textarea
     id: notes
     attributes:
