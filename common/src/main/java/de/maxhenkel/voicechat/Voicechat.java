@@ -26,6 +26,7 @@ public abstract class Voicechat {
     public static int COMPATIBILITY_VERSION = BuildConstants.COMPATIBILITY_VERSION;
 
     public static final int MAX_GROUP_NAME_LENGTH = 24;
+    public static final int MAX_GROUP_PASSWORD_LENGTH = 256;
     public static final Pattern GROUP_REGEX = Pattern.compile("^[^\\p{C}\\s][^\\p{C}]{0,23}$");
 
     public void initialize() {
