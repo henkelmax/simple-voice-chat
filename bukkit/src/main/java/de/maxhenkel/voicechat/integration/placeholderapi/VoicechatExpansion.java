@@ -49,8 +49,8 @@ public class VoicechatExpansion extends PlaceholderExpansion {
         switch (params.toLowerCase(Locale.ROOT)) {
             case "installed":
                 return bool(installed);
-            case "disconnected":
-                return bool(state.isDisconnected());
+            case "connected":
+                return bool(!state.isDisconnected());
             case "disabled":
                 return bool(state.isDisabledOrForceDisabled());
             case "force_disabled":
