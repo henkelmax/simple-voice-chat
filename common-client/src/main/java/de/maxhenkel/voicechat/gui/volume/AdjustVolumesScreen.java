@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ButtonBase;
 import de.maxhenkel.voicechat.gui.widgets.IngameListScreenBase;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiPageButtonList;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
@@ -11,13 +12,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class AdjustVolumesScreen extends IngameListScreenBase {
 
@@ -38,7 +40,7 @@ public class AdjustVolumesScreen extends IngameListScreenBase {
 
     protected AdjustVolumeList volumeList;
     protected GuiTextField searchBox;
-    protected final List<VolumeTab> tabs;
+    protected List<VolumeTab> tabs;
     protected final List<ButtonBase> tabButtons;
     protected ButtonBase scrollTabsLeft;
     protected ButtonBase scrollTabsRight;
@@ -49,11 +51,7 @@ public class AdjustVolumesScreen extends IngameListScreenBase {
     public AdjustVolumesScreen() {
         super(TITLE, 236, 0);
         this.lastSearch = "";
-        this.tabs = new ArrayList<>(Arrays.asList(VolumeTab.PLAYERS, VolumeTab.OTHER));
-        //TODO Remove this
-        for (int i = 1; i <= 10; i++) {
-            tabs.add(new VolumeTab(new TextComponentString("Tab " + i), screen -> new ArrayList<>()));
-        }
+        this.tabs = VolumeTab.createTabs();
         this.tabButtons = new ArrayList<>();
     }
 
@@ -146,6 +144,30 @@ public class AdjustVolumesScreen extends IngameListScreenBase {
         scrollTabs(0);
     }
 
+    public static void updateCategories() {
+        if (Minecraft.getMinecraft().currentScreen instanceof AdjustVolumesScreen) {
+            AdjustVolumesScreen volumesScreen = (AdjustVolumesScreen) Minecraft.getMinecraft().currentScreen;
+            volumesScreen.updateTabs();
+        }
+    }
+
+    private void updateTabs() {
+        tabs = VolumeTab.createTabs();
+        if (tabs.stream().anyMatch(tab -> tab.getId().equals(volumeList.getTab().getId()))) {
+            volumeList.updateEntryList();
+        } else {
+            volumeList.setTab(tabs.get(0));
+        }
+        removeButton(scrollTabsLeft);
+        removeButton(scrollTabsRight);
+        tabButtons.forEach(this::removeButton);
+        initTabButtons();
+    }
+
+    private void removeButton(ButtonBase button) {
+        buttonList.remove(button);
+    }
+
     private void scrollTabs(int amount) {
         tabScroll = MathHelper.clamp(tabScroll + amount, 0, tabs.size() - tabButtons.size());
         updateTabButtons();
@@ -161,7 +183,7 @@ public class AdjustVolumesScreen extends IngameListScreenBase {
             VolumeTab tab = tabs.get(tabScroll + i);
             ButtonBase tabButton = tabButtons.get(i);
             tabButton.displayString = tab.getTitle().getUnformattedComponentText();
-            tabButton.enabled = tab != volumeList.getTab();
+            tabButton.enabled = !tab.getId().equals(volumeList.getTab().getId());
         }
         scrollTabsLeft.enabled = tabScroll > 0;
         scrollTabsRight.enabled = tabScroll < tabs.size() - tabButtons.size();

@@ -5,25 +5,26 @@ import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Function;
+import java.util.*;
 
 public class VolumeTab {
 
-    public static final VolumeTab PLAYERS = new VolumeTab(new TextComponentTranslation("message.voicechat.volume_tab.players"), VolumeTab::createPlayerEntries);
-    public static final VolumeTab OTHER = new VolumeTab(new TextComponentTranslation("message.voicechat.volume_tab.other"), VolumeTab::createOtherEntries);
+    public static final String PLAYERS = "players";
+    public static final String OTHER = "other";
 
+    private final String id;
     private final ITextComponent title;
-    private final Function<AdjustVolumesScreen, List<VolumeEntry>> entryFactory;
 
-    public VolumeTab(ITextComponent title, Function<AdjustVolumesScreen, List<VolumeEntry>> entryFactory) {
+    private VolumeTab(String id, ITextComponent title) {
+        this.id = id;
         this.title = title;
-        this.entryFactory = entryFactory;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public ITextComponent getTitle() {
@@ -31,11 +32,21 @@ public class VolumeTab {
     }
 
     public List<VolumeEntry> createEntries(AdjustVolumesScreen screen) {
-        return entryFactory.apply(screen);
+        List<VolumeEntry> entries = new ArrayList<>();
+        if (id.equals(PLAYERS)) {
+            addPlayers(entries, screen);
+        } else if (id.equals(OTHER)) {
+            entries.add(new PlayerVolumeEntry(null, screen));
+        }
+        for (VolumeCategoryImpl category : ClientManager.getCategoryManager().getCategories()) {
+            if (id.equals(getTabId(category))) {
+                entries.add(new CategoryVolumeEntry(category, screen));
+            }
+        }
+        return entries;
     }
 
-    private static List<VolumeEntry> createPlayerEntries(AdjustVolumesScreen screen) {
-        List<VolumeEntry> entries = new ArrayList<>();
+    private static void addPlayers(List<VolumeEntry> entries, AdjustVolumesScreen screen) {
         Collection<PlayerState> onlinePlayers = ClientManager.getPlayerStateManager().getPlayerStates(false);
 
         for (PlayerState state : onlinePlayers) {
@@ -45,7 +56,6 @@ public class VolumeTab {
         if (VoicechatClient.CLIENT_CONFIG.offlinePlayerVolumeAdjustment.get()) {
             addOfflinePlayers(entries, onlinePlayers, screen);
         }
-        return entries;
     }
 
     private static void addOfflinePlayers(List<VolumeEntry> entries, Collection<PlayerState> onlinePlayers, AdjustVolumesScreen screen) {
@@ -67,13 +77,36 @@ public class VolumeTab {
         }
     }
 
-    private static List<VolumeEntry> createOtherEntries(AdjustVolumesScreen screen) {
-        List<VolumeEntry> entries = new ArrayList<>();
-        entries.add(new PlayerVolumeEntry(null, screen));
-        for (VolumeCategoryImpl category : ClientManager.getCategoryManager().getCategories()) {
-            entries.add(new CategoryVolumeEntry(category, screen));
+    public static List<VolumeTab> createTabs() {
+        List<VolumeTab> tabs = new ArrayList<>();
+        tabs.add(new VolumeTab(PLAYERS, new TextComponentTranslation("message.voicechat.volume_tab.players")));
+        tabs.add(new VolumeTab(OTHER, new TextComponentTranslation("message.voicechat.volume_tab.other")));
+
+        // Sorting by category ID makes the tab name deterministic if categories define different names for the same tab
+        List<VolumeCategoryImpl> categories = new ArrayList<>(ClientManager.getCategoryManager().getCategories());
+        categories.sort(Comparator.comparing(VolumeCategoryImpl::getId));
+        Set<String> customTabIds = new HashSet<>();
+        Map<String, ITextComponent> customTabTitles = new HashMap<>();
+        for (VolumeCategoryImpl category : categories) {
+            String tabId = getTabId(category);
+            if (tabId.equals(PLAYERS) || tabId.equals(OTHER)) {
+                continue;
+            }
+            customTabIds.add(tabId);
+            ITextComponent title = category.getTabDisplayName();
+            if (title != null) {
+                customTabTitles.putIfAbsent(tabId, title);
+            }
         }
-        return entries;
+        customTabIds.stream()
+                .map(tabId -> new VolumeTab(tabId, customTabTitles.getOrDefault(tabId, new TextComponentString(tabId))))
+                .sorted(Comparator.comparing(tab -> tab.getTitle().getUnformattedText(), String.CASE_INSENSITIVE_ORDER))
+                .forEach(tabs::add);
+        return tabs;
+    }
+
+    private static String getTabId(VolumeCategoryImpl category) {
+        return category.getTab() != null ? category.getTab() : OTHER;
     }
 
 }
