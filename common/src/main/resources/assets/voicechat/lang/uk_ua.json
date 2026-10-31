@@ -116,7 +116,6 @@
   "message.voicechat.recording.enabled": "Натисніть, щоб зупинити запис",
   "message.voicechat.no_group_permission": "Ви не маєте дозволу приєднуватися до груп",
   "message.voicechat.search_hint": "Пошук...",
-  "message.voicechat.search_empty": "Не вдалося знайти жодного гравця з таким іменем",
   "message.voicechat.other_volume": "Інше",
   "message.voicechat.more_members": "і ще %s...",
   "message.voicechat.no_groups": "Немає існуючих груп",
