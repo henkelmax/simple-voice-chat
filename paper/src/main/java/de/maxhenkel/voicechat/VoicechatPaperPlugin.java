@@ -1,9 +1,6 @@
 package de.maxhenkel.voicechat;
 
-import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.api.BukkitVoicechatService;
-import de.maxhenkel.voicechat.config.PaperTranslations;
-import de.maxhenkel.voicechat.config.Translations;
 import de.maxhenkel.voicechat.integration.placeholderapi.VoicechatExpansion;
 import de.maxhenkel.voicechat.integration.viaversion.ViaVersionCompatibility;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
@@ -62,11 +59,6 @@ public class VoicechatPaperPlugin extends JavaPlugin implements Listener {
             @Override
             protected void registerCommands() {
                 //NOOP, since commands need to get registered even earlier
-            }
-
-            @Override
-            protected Translations createTranslations(ConfigBuilder builder) {
-                return new PaperTranslations(builder);
             }
 
             @Override
