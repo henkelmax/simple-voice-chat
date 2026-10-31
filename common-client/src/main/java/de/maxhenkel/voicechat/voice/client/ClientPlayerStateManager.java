@@ -2,9 +2,6 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.api.events.ClientVoicechatConnectionEvent;
-import de.maxhenkel.voicechat.api.events.MicrophoneMuteEvent;
-import de.maxhenkel.voicechat.api.events.VoicechatDisableEvent;
 import de.maxhenkel.voicechat.gui.CreateGroupScreen;
 import de.maxhenkel.voicechat.gui.EnterPasswordScreen;
 import de.maxhenkel.voicechat.gui.group.GroupList;
@@ -17,10 +14,7 @@ import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.net.UpdateStatePacket;
-import de.maxhenkel.voicechat.plugins.PluginManager;
-import de.maxhenkel.voicechat.plugins.impl.events.ClientVoicechatConnectionEventImpl;
-import de.maxhenkel.voicechat.plugins.impl.events.MicrophoneMuteEventImpl;
-import de.maxhenkel.voicechat.plugins.impl.events.VoicechatDisableEventImpl;
+import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
@@ -117,7 +111,7 @@ public class ClientPlayerStateManager {
     public void onVoiceChatDisconnected() {
         disconnected = true;
         syncOwnState();
-        PluginManager.instance().dispatchEvent(ClientVoicechatConnectionEvent.class, new ClientVoicechatConnectionEventImpl(false));
+        ClientPluginManager.instance().onVoicechatConnection(false);
     }
 
     /**
@@ -126,7 +120,7 @@ public class ClientPlayerStateManager {
     public void onVoiceChatConnected(ClientVoicechatConnection client) {
         disconnected = false;
         syncOwnState();
-        PluginManager.instance().dispatchEvent(ClientVoicechatConnectionEvent.class, new ClientVoicechatConnectionEventImpl(true));
+        ClientPluginManager.instance().onVoicechatConnection(true);
     }
 
     private void onDisconnect() {
@@ -235,7 +229,7 @@ public class ClientPlayerStateManager {
     public void setDisabled(boolean disabled) {
         VoicechatClient.CLIENT_CONFIG.disabled.set(disabled).save();
         syncOwnState();
-        PluginManager.instance().dispatchEvent(VoicechatDisableEvent.class, new VoicechatDisableEventImpl(disabled));
+        ClientPluginManager.instance().onVoicechatDisable(disabled);
     }
 
     public boolean isDisconnected() {
@@ -257,7 +251,7 @@ public class ClientPlayerStateManager {
     public void setMuted(boolean muted) {
         VoicechatClient.CLIENT_CONFIG.muted.set(muted).save();
         syncOwnState();
-        PluginManager.instance().dispatchEvent(MicrophoneMuteEvent.class, new MicrophoneMuteEventImpl(muted));
+        ClientPluginManager.instance().onMicrophoneMute(muted);
     }
 
     public void onFinishOnboarding() {
