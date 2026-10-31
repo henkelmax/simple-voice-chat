@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.api.VolumeCategory;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class VolumeCategoryImpl implements VolumeCategory {
@@ -134,13 +135,7 @@ public class VolumeCategoryImpl implements VolumeCategory {
         writeOptionalString(buf, descriptionTranslationKey, 256);
         buf.writeBoolean(icon != null);
         if (icon != null) {
-            if (icon.length != 16) {
-                throw new IllegalStateException("Icon is not 16x16");
-            }
             for (int x = 0; x < icon.length; x++) {
-                if (icon[x].length != 16) {
-                    throw new IllegalStateException("Icon is not 16x16");
-                }
                 for (int y = 0; y < icon.length; y++) {
                     buf.writeInt(icon[x][y]);
                 }
@@ -262,6 +257,9 @@ public class VolumeCategoryImpl implements VolumeCategory {
             checkLength(descriptionTranslationKey, 256, "Description translation key");
             checkLength(tabName, 16, "Tab name");
             checkLength(tabTranslationKey, 256, "Tab translation key");
+            if (icon != null && (icon.length != 16 || Arrays.stream(icon).anyMatch(row -> row.length != 16))) {
+                throw new IllegalStateException("Icon is not 16x16");
+            }
             return new VolumeCategoryImpl(id, name, nameTranslationKey, description, descriptionTranslationKey, icon, tab, tabName, tabTranslationKey);
         }
 
