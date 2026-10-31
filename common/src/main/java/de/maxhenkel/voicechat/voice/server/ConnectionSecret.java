@@ -9,6 +9,7 @@ public class ConnectionSecret {
     private final UUID playerUUID;
     private final UUID connectionId;
     private final Secret secret;
+    private boolean authenticated;
 
     public ConnectionSecret(UUID playerUUID, UUID connectionId, Secret secret) {
         this.playerUUID = playerUUID;
@@ -26,6 +27,14 @@ public class ConnectionSecret {
 
     public Secret getSecret() {
         return secret;
+    }
+
+    public boolean isAuthenticated() {
+        return authenticated;
+    }
+
+    public void setAuthenticated(boolean authenticated) {
+        this.authenticated = authenticated;
     }
 
 }
