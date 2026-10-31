@@ -102,7 +102,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
 
     @Override
     public boolean isMuted() {
-        return state.isMuted() || state.isForceMuted();
+        return state.isMutedOrForceMuted();
     }
 
     @Override
@@ -133,7 +133,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
 
     @Override
     public boolean isDisabled() {
-        return state.isDisabled() || state.isForceDisabled();
+        return state.isDisabledOrForceDisabled();
     }
 
     @Override
