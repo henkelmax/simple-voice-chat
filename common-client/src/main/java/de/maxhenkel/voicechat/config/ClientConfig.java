@@ -16,7 +16,7 @@ import de.maxhenkel.voicechat.voice.common.AudioUtils;
 
 public class ClientConfig {
 
-    private static final int CONFIG_VERSION = 1;
+    private static final int CONFIG_VERSION = 2;
 
     public ConfigEntry<Integer> configVersion;
     public ConfigEntry<Boolean> onboardingFinished;
@@ -262,6 +262,11 @@ public class ClientConfig {
             migrateFrom0To1(migratableConfig);
             configVersion = 1;
         }
+
+        if (configVersion == 1) {
+            migrateFrom1To2(migratableConfig);
+            configVersion = 2;
+        }
     }
 
     private static void migrateFrom0To1(MigratableConfig migratableConfig) {
@@ -271,5 +276,14 @@ public class ClientConfig {
         migratableConfig.set("denoiser", "true");
         migratableConfig.set("voice_activation_threshold", "-50");
         migratableConfig.set("onboarding_finished", "false");
+    }
+
+    private static void migrateFrom1To2(MigratableConfig migratableConfig) {
+        Voicechat.LOGGER.info("Migrating config from version 1 to 2");
+
+        migratableConfig.set("config_version", "2");
+        if (!"VOICE".equals(migratableConfig.get("microphone_activation_type"))) {
+            migratableConfig.set("muted", "false");
+        }
     }
 }
