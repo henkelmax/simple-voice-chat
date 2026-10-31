@@ -116,7 +116,6 @@ message.voicechat.recording.disabled=Tryck för att påbörja inspelning
 message.voicechat.recording.enabled=Tryck för att avsluta inspelning
 message.voicechat.no_group_permission=Du har inte tillåtelse att gå med i en grupp
 message.voicechat.search_hint=Sök...
-message.voicechat.search_empty=Hittade inga spelare med det namnet
 message.voicechat.other_volume=Annat
 message.voicechat.more_members=och %s till...
 message.voicechat.no_groups=Inga existerande grupper

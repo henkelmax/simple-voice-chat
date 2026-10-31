@@ -116,7 +116,6 @@ message.voicechat.recording.disabled=Naciśnij, aby rozpocząć nagrywanie.
 message.voicechat.recording.enabled=Naciśnij, aby zatrzymać nagrywanie.
 message.voicechat.no_group_permission=Nie masz uprawnień do dołączania do grup
 message.voicechat.search_hint=Szukaj...
-message.voicechat.search_empty=Nie znaleziono graczy o takiej nazwie
 message.voicechat.other_volume=Pozostałe
 message.voicechat.more_members=i %s więcej...
 message.voicechat.no_groups=Brak istniejących grup

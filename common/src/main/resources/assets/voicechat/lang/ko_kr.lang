@@ -115,7 +115,6 @@ message.voicechat.recording.disabled=녹음을 시작하려면 누르세요
 message.voicechat.recording.enabled=녹음을 중단하려면 누르세요
 message.voicechat.no_group_permission=그룹에 들어갈 수 있는 권한이 없습니다
 message.voicechat.search_hint=검색...
-message.voicechat.search_empty=해당 이름의 플레이어를 찾지 못했습니다
 message.voicechat.other_volume=기타
 message.voicechat.more_members=그리고 %s 더...
 message.voicechat.no_groups=존재하는 그룹이 없음

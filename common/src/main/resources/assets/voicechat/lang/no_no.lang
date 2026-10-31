@@ -112,7 +112,6 @@ message.voicechat.recording.disabled=Trykk for å starte opptak
 message.voicechat.recording.enabled=Trykk for å stoppe opptak
 message.voicechat.no_group_permission=Du har ikke tillatelse til å bli med i grupper
 message.voicechat.search_hint=Søk...
-message.voicechat.search_empty=Kunne ikke finne noen spillere med det navnet
 message.voicechat.other_volume=Andre
 message.voicechat.more_members=og %s til...
 message.voicechat.no_groups=Ingen eksisterende grupper

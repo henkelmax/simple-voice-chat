@@ -112,7 +112,6 @@ message.voicechat.recording.disabled=Яздыруны башлау өчен ба
 message.voicechat.recording.enabled=Яздыруны туктату өчен басыгыз
 message.voicechat.no_group_permission=Сезгә төркемнәргә кушылып булмый; хокук юк
 message.voicechat.search_hint=Эзләү...
-message.voicechat.search_empty=Шундый исемле теләсә кайсы уенчыларны табып булмый
 message.voicechat.other_volume=Башка
 message.voicechat.more_members=һәм тагы %s...
 message.voicechat.no_groups=Төркемнәр юк

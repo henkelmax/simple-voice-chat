@@ -116,7 +116,6 @@ message.voicechat.recording.disabled=按下以開始錄音。
 message.voicechat.recording.enabled=按下以停止錄音。
 message.voicechat.no_group_permission=你沒有加入群組的權限
 message.voicechat.search_hint=搜尋...
-message.voicechat.search_empty=找不到該名稱的玩家
 message.voicechat.other_volume=雜項
 message.voicechat.more_members=和其他 %s 人...
 message.voicechat.no_groups=沒有現有群組

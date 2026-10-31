@@ -127,7 +127,6 @@ message.voicechat.recording.disabled=Alklaku por ekregistri.
 message.voicechat.recording.enabled=Alklaku por ĉesi registri.
 message.voicechat.no_group_permission=Vi ne povas aliĝi al grupoj
 message.voicechat.search_hint=Serĉi…
-message.voicechat.search_empty=Ludantoj kun tiu nomo ne troveblis
 message.voicechat.other_volume=Alio
 message.voicechat.more_members=kaj %s pliaj…
 message.voicechat.no_groups=Mankas grupoj
