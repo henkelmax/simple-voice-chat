@@ -117,7 +117,6 @@
   "message.voicechat.recording.enabled": "Pressione para parar a gravação.",
   "message.voicechat.no_group_permission": "Você não tem permissão para entrar em grupos",
   "message.voicechat.search_hint": "Pesquisar...",
-  "message.voicechat.search_empty": "Não foi encontrado nenhum jogador com esse nome",
   "message.voicechat.other_volume": "Outros",
   "message.voicechat.more_members": "e %s mais...",
   "message.voicechat.no_groups": "Nenhum grupo existente",

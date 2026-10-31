@@ -117,7 +117,6 @@
   "message.voicechat.recording.enabled": "Kayıtı bitirmek için tıkla",
   "message.voicechat.no_group_permission": "Gruplara girme izniniz yok",
   "message.voicechat.search_hint": "Ara...",
-  "message.voicechat.search_empty": "O isimle hiç bir oyuncu bulunmadı",
   "message.voicechat.other_volume": "Diğer",
   "message.voicechat.more_members": "ve %s daha fazla...",
   "message.voicechat.no_groups": "Hiç bir grup yok",
