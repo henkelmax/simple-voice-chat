@@ -490,7 +490,7 @@ public class Server extends Thread {
             return;
         }
 
-        if (receiverState.isDisabled() || receiverState.isForceDisabled() || receiverState.isDisconnected()) {
+        if (receiverState.isDisabledOrForceDisabled() || receiverState.isDisconnected()) {
             return;
         }
 
