@@ -73,24 +73,32 @@ public interface VolumeCategory {
         Builder setId(String id);
 
         /**
+         * Can't be longer than 16 characters.
+         *
          * @param name the full name of the category, that is displayed for the end user if no translation is present
          * @return the builder
          */
         Builder setName(String name);
 
         /**
+         * Can't be longer than 256 characters.
+         *
          * @param translationKey the translation key for the full name of the category
          * @return the builder
          */
         Builder setNameTranslationKey(@Nullable String translationKey);
 
         /**
+         * Can't be longer than 256 characters.
+         *
          * @param description the hover tooltip that is shown for this category if no translation is present
          * @return the builder
          */
         Builder setDescription(@Nullable String description);
 
         /**
+         * Can't be longer than 256 characters.
+         *
          * @param translationKey the translation key for the hover tooltip
          * @return the builder
          */
@@ -121,6 +129,7 @@ public interface VolumeCategory {
 
         /**
          * If no category in the tab provides a name, the tab ID is displayed.
+         * Can't be longer than 16 characters.
          *
          * @param tabName the name of the tab, that is displayed for the end user if no translation is present
          * @return the builder
@@ -128,6 +137,8 @@ public interface VolumeCategory {
         Builder setTabName(@Nullable String tabName);
 
         /**
+         * Can't be longer than 256 characters.
+         *
          * @param translationKey the translation key for the name of the tab
          * @return the builder
          */
