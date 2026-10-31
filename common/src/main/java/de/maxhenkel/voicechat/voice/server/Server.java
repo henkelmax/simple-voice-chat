@@ -288,7 +288,8 @@ public class Server extends Thread {
                         lastKeepAlive = time;
                     }
                     if (time - lastPermissionCheck > PERMISSION_CHECK_INTERVAL) {
-                        pollPermissions();
+                        // Permission checks are not guaranteed to be thread-safe
+                        CommonCompatibilityManager.INSTANCE.execute(server, Server.this::pollPermissions);
                         lastPermissionCheck = time;
                     }
 
@@ -348,6 +349,7 @@ public class Server extends Thread {
                             CommonCompatibilityManager.INSTANCE.emitServerVoiceChatConnectedEvent(player);
                             PluginManager.instance().onPlayerConnected(player);
                             playerStateManager.evaluateForcedState(player);
+                            connection.setInitialized(true);
                             Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getName().getString(), connection.getPlayerUUID());
                         }
                         sendPacket(new ConnectionCheckAckPacket(), connection);
@@ -551,7 +553,10 @@ public class Server extends Thread {
 
     private void pollPermissions() {
         for (ClientConnection connection : connections.values()) {
-            pollPermissions(connection.getPlayerUUID());
+            // The initial forced state evaluation needs to happen after the connected event
+            if (connection.isInitialized()) {
+                pollPermissions(connection.getPlayerUUID());
+            }
         }
         for (UUID audioSenderPlayer : AudioSenderImpl.getRegisteredPlayers()) {
             pollPermissions(audioSenderPlayer);
