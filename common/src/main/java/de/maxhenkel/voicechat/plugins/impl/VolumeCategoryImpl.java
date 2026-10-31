@@ -146,9 +146,9 @@ public class VolumeCategoryImpl implements VolumeCategory {
     public static VolumeCategoryImpl fromBytes(PacketBuffer buf) {
         String id = buf.readString(16);
         String name = buf.readString(16);
-        String nameTranslationKey = readOptionalString(buf);
-        String description = readOptionalString(buf);
-        String descriptionTranslationKey = readOptionalString(buf);
+        String nameTranslationKey = readOptionalString(buf, 256);
+        String description = readOptionalString(buf, 256);
+        String descriptionTranslationKey = readOptionalString(buf, 256);
         int[][] icon = null;
         if (buf.readBoolean()) {
             icon = new int[16][16];
@@ -158,16 +158,16 @@ public class VolumeCategoryImpl implements VolumeCategory {
                 }
             }
         }
-        String tab = readOptionalString(buf);
-        String tabName = readOptionalString(buf);
-        String tabTranslationKey = readOptionalString(buf);
+        String tab = readOptionalString(buf, 16);
+        String tabName = readOptionalString(buf, 16);
+        String tabTranslationKey = readOptionalString(buf, 256);
         return new VolumeCategoryImpl(id, name, nameTranslationKey, description, descriptionTranslationKey, icon, tab, tabName, tabTranslationKey);
     }
 
     @Nullable
-    private static String readOptionalString(PacketBuffer buf) {
+    private static String readOptionalString(PacketBuffer buf, int maxLength) {
         if (buf.readBoolean()) {
-            return buf.readString(32767);
+            return buf.readString(maxLength);
         }
         return null;
     }
@@ -297,12 +297,24 @@ public class VolumeCategoryImpl implements VolumeCategory {
         @Override
         public VolumeCategory build() {
             if (id == null) {
-                throw new IllegalStateException("id missing");
+                throw new IllegalStateException("Id missing");
             }
             if (name == null) {
-                throw new IllegalStateException("name missing");
+                throw new IllegalStateException("Name missing");
             }
+            checkLength(name, 16, "Name");
+            checkLength(nameTranslationKey, 256, "Name translation key");
+            checkLength(description, 256, "Description");
+            checkLength(descriptionTranslationKey, 256, "Description translation key");
+            checkLength(tabName, 16, "Tab name");
+            checkLength(tabTranslationKey, 256, "Tab translation key");
             return new VolumeCategoryImpl(id, name, nameTranslationKey, description, descriptionTranslationKey, icon, tab, tabName, tabTranslationKey);
+        }
+
+        private static void checkLength(@Nullable String value, int maxLength, String name) {
+            if (value != null && value.length() > maxLength) {
+                throw new IllegalStateException(String.format("%s can't be longer than %s characters", name, maxLength));
+            }
         }
     }
 
