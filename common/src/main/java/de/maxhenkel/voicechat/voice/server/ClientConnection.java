@@ -10,6 +10,7 @@ public class ClientConnection {
     protected final ConnectionSecret connectionSecret;
     protected final SocketAddress address;
     protected long lastKeepAliveResponse;
+    protected volatile boolean initialized;
 
     public ClientConnection(ConnectionSecret connectionSecret, SocketAddress address) {
         this.connectionSecret = connectionSecret;
@@ -35,6 +36,14 @@ public class ClientConnection {
 
     public void setLastKeepAliveResponse(long lastKeepAliveResponse) {
         this.lastKeepAliveResponse = lastKeepAliveResponse;
+    }
+
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    public void setInitialized(boolean initialized) {
+        this.initialized = initialized;
     }
 
     public void send(Server server, NetworkMessage message) throws Exception {
