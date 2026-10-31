@@ -128,7 +128,6 @@
   "message.voicechat.recording.enabled": "録音を停止",
   "message.voicechat.no_group_permission": "グループに参加する権限がありません",
   "message.voicechat.search_hint": "検索...",
-  "message.voicechat.search_empty": "この名前のプレイヤーは見つかりませんでした。",
   "message.voicechat.other_volume": "その他",
   "message.voicechat.more_members": "...他 %s人",
   "message.voicechat.no_groups": "既存のグループはありません",
