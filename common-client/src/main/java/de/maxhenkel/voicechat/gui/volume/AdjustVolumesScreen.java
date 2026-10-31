@@ -22,6 +22,7 @@ public class AdjustVolumesScreen extends VoiceChatScreenBase {
     protected static final Component TITLE = Component.translatable("gui.voicechat.adjust_volume.title");
     protected static final Component SEARCH_HINT = Component.translatable("message.voicechat.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
     protected static final Component EMPTY_SEARCH = Component.translatable("message.voicechat.search_empty").withStyle(ChatFormatting.GRAY);
+    protected static final Component NO_PLAYERS = Component.translatable("message.voicechat.no_players").withStyle(ChatFormatting.GRAY);
 
     protected static final int HEADER_SIZE = 16;
     protected static final int FOOTER_SIZE = 8;
@@ -175,6 +176,8 @@ public class AdjustVolumesScreen extends VoiceChatScreenBase {
             volumeList.render(guiGraphics, mouseX, mouseY, delta);
         } else if (!searchBox.getValue().isEmpty()) {
             guiGraphics.drawCenteredString(font, EMPTY_SEARCH, width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - font.lineHeight / 2, -1);
+        } else if (volumeList.getTab().getId().equals(VolumeTab.PLAYERS)) {
+            guiGraphics.drawCenteredString(font, NO_PLAYERS, width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - font.lineHeight / 2, -1);
         }
         if (!searchBox.isFocused() && searchBox.getValue().isEmpty()) {
             guiGraphics.drawString(font, SEARCH_HINT, searchBox.getX(), searchBox.getY(), -1, false);
