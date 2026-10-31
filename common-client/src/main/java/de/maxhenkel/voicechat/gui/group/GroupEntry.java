@@ -53,7 +53,7 @@ public class GroupEntry extends ListScreenEntryBase<GroupEntry> {
         float scale = outlineSize / 10F;
         poseStack.scale(scale, scale, scale);
 
-        boolean disabled = state.isDisabled() || state.isForceDisabled();
+        boolean disabled = state.isDisabledOrForceDisabled();
 
         if (!disabled) {
             ClientVoicechat client = ClientManager.getClient();
