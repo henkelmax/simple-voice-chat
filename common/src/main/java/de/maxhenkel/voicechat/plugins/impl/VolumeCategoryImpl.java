@@ -22,10 +22,19 @@ public class VolumeCategoryImpl implements VolumeCategory {
     private final String descriptionTranslationKey;
     @Nullable
     private final int[][] icon;
+    @Nullable
+    private final String tab;
+    @Nullable
+    private final String tabName;
+    @Nullable
+    private final String tabTranslationKey;
 
-    public VolumeCategoryImpl(String id, String name, @Nullable String nameTranslationKey, @Nullable String description, @Nullable String descriptionTranslationKey, @Nullable int[][] icon) {
+    public VolumeCategoryImpl(String id, String name, @Nullable String nameTranslationKey, @Nullable String description, @Nullable String descriptionTranslationKey, @Nullable int[][] icon, @Nullable String tab, @Nullable String tabName, @Nullable String tabTranslationKey) {
         if (!ID_REGEX.matcher(id).matches()) {
             throw new IllegalArgumentException("Volume category ID can only contain a-z and _ with a maximum amount of 16 characters");
+        }
+        if (tab != null && !ID_REGEX.matcher(tab).matches()) {
+            throw new IllegalArgumentException("Volume category tab can only contain a-z and _ with a maximum amount of 16 characters");
         }
         this.id = id;
         this.name = name;
@@ -33,6 +42,9 @@ public class VolumeCategoryImpl implements VolumeCategory {
         this.description = description;
         this.descriptionTranslationKey = descriptionTranslationKey;
         this.icon = icon;
+        this.tab = tab;
+        this.tabName = tabName;
+        this.tabTranslationKey = tabTranslationKey;
     }
 
     @Override
@@ -91,6 +103,35 @@ public class VolumeCategoryImpl implements VolumeCategory {
         return icon;
     }
 
+    @Nullable
+    @Override
+    public String getTab() {
+        return tab;
+    }
+
+    @Nullable
+    @Override
+    public String getTabName() {
+        return tabName;
+    }
+
+    /**
+     * @return the tab name or <code>null</code> if this category doesn't provide one, so the name of another category in the same tab or the tab ID can be used instead
+     */
+    @Nullable
+    public Component getTabDisplayName() {
+        if (tabTranslationKey != null) {
+            return Component.translatableWithFallback(tabTranslationKey, tabName != null ? tabName : tab);
+        }
+        return tabName != null ? Component.literal(tabName) : null;
+    }
+
+    @Nullable
+    @Override
+    public String getTabTranslationKey() {
+        return tabTranslationKey;
+    }
+
     public static VolumeCategoryImpl fromBytes(FriendlyByteBuf buf) {
         String id = buf.readUtf(16);
         String name = buf.readUtf(16);
@@ -106,7 +147,10 @@ public class VolumeCategoryImpl implements VolumeCategory {
                 }
             }
         }
-        return new VolumeCategoryImpl(id, name, nameTranslationKey, description, descriptionTranslationKey, icon);
+        String tab = readOptionalString(buf);
+        String tabName = readOptionalString(buf);
+        String tabTranslationKey = readOptionalString(buf);
+        return new VolumeCategoryImpl(id, name, nameTranslationKey, description, descriptionTranslationKey, icon, tab, tabName, tabTranslationKey);
     }
 
     @Nullable
@@ -137,6 +181,9 @@ public class VolumeCategoryImpl implements VolumeCategory {
                 }
             }
         }
+        writeOptionalString(buf, tab);
+        writeOptionalString(buf, tabName);
+        writeOptionalString(buf, tabTranslationKey);
     }
 
     private static void writeOptionalString(FriendlyByteBuf buf, @Nullable String string) {
@@ -175,6 +222,12 @@ public class VolumeCategoryImpl implements VolumeCategory {
         private String descriptionTranslationKey;
         @Nullable
         private int[][] icon;
+        @Nullable
+        private String tab;
+        @Nullable
+        private String tabName;
+        @Nullable
+        private String tabTranslationKey;
 
         @Override
         public Builder setId(String id) {
@@ -213,6 +266,24 @@ public class VolumeCategoryImpl implements VolumeCategory {
         }
 
         @Override
+        public Builder setTab(@Nullable String tab) {
+            this.tab = tab;
+            return this;
+        }
+
+        @Override
+        public Builder setTabName(@Nullable String tabName) {
+            this.tabName = tabName;
+            return this;
+        }
+
+        @Override
+        public Builder setTabTranslationKey(@Nullable String translationKey) {
+            this.tabTranslationKey = translationKey;
+            return this;
+        }
+
+        @Override
         public VolumeCategory build() {
             if (id == null) {
                 throw new IllegalStateException("id missing");
@@ -220,7 +291,7 @@ public class VolumeCategoryImpl implements VolumeCategory {
             if (name == null) {
                 throw new IllegalStateException("name missing");
             }
-            return new VolumeCategoryImpl(id, name, nameTranslationKey, description, descriptionTranslationKey, icon);
+            return new VolumeCategoryImpl(id, name, nameTranslationKey, description, descriptionTranslationKey, icon, tab, tabName, tabTranslationKey);
         }
     }
 
