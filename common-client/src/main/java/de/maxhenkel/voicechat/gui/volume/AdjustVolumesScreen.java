@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -11,7 +12,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class AdjustVolumesScreen extends ListScreenBase {
 
@@ -32,7 +35,7 @@ public class AdjustVolumesScreen extends ListScreenBase {
 
     protected AdjustVolumeList volumeList;
     protected EditBox searchBox;
-    protected final List<VolumeTab> tabs;
+    protected List<VolumeTab> tabs;
     protected final List<Button> tabButtons;
     protected Button scrollTabsLeft;
     protected Button scrollTabsRight;
@@ -43,11 +46,7 @@ public class AdjustVolumesScreen extends ListScreenBase {
     public AdjustVolumesScreen() {
         super(TITLE, 236, 0);
         this.lastSearch = "";
-        this.tabs = new ArrayList<>(Arrays.asList(VolumeTab.PLAYERS, VolumeTab.OTHER));
-        //TODO Remove this
-        for (int i = 1; i <= 10; i++) {
-            tabs.add(new VolumeTab(Component.literal("Tab " + i), screen -> new ArrayList<>()));
-        }
+        this.tabs = VolumeTab.createTabs();
         this.tabButtons = new ArrayList<>();
     }
 
@@ -119,6 +118,25 @@ public class AdjustVolumesScreen extends ListScreenBase {
         scrollTabs(0);
     }
 
+    public static void updateCategories() {
+        if (Minecraft.getInstance().screen instanceof AdjustVolumesScreen volumesScreen) {
+            volumesScreen.updateTabs();
+        }
+    }
+
+    private void updateTabs() {
+        tabs = VolumeTab.createTabs();
+        if (tabs.stream().anyMatch(tab -> tab.getId().equals(volumeList.getTab().getId()))) {
+            volumeList.updateEntryList();
+        } else {
+            volumeList.setTab(tabs.get(0));
+        }
+        removeWidget(scrollTabsLeft);
+        removeWidget(scrollTabsRight);
+        tabButtons.forEach(this::removeWidget);
+        initTabButtons();
+    }
+
     private void scrollTabs(int amount) {
         tabScroll = Mth.clamp(tabScroll + amount, 0, tabs.size() - tabButtons.size());
         updateTabButtons();
@@ -134,7 +152,7 @@ public class AdjustVolumesScreen extends ListScreenBase {
             VolumeTab tab = tabs.get(tabScroll + i);
             Button tabButton = tabButtons.get(i);
             tabButton.setMessage(tab.getTitle());
-            tabButton.active = tab != volumeList.getTab();
+            tabButton.active = !tab.getId().equals(volumeList.getTab().getId());
         }
         scrollTabsLeft.active = tabScroll > 0;
         scrollTabsRight.active = tabScroll < tabs.size() - tabButtons.size();
