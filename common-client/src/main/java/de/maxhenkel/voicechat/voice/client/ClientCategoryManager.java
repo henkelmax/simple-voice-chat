@@ -73,14 +73,8 @@ public class ClientCategoryManager extends CategoryManager {
     }
 
     private BufferedImage fromIntArray(int[][] icon) {
-        if (icon.length != 16) {
-            throw new IllegalStateException("Icon is not 16x16");
-        }
         BufferedImage nativeImage = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
         for (int x = 0; x < icon.length; x++) {
-            if (icon[x].length != 16) {
-                throw new IllegalStateException("Icon is not 16x16");
-            }
             for (int y = 0; y < icon.length; y++) {
                 nativeImage.setRGB(x, y, icon[x][y]);
             }
