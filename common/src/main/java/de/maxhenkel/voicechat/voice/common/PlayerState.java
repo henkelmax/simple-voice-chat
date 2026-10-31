@@ -10,9 +10,9 @@ public class PlayerState {
     private UUID uuid;
     private String name;
     private boolean muted;
-    private boolean forceMuted;
+    private volatile boolean forceMuted;
     private boolean disabled;
-    private boolean forceDisabled;
+    private volatile boolean forceDisabled;
     private boolean disconnected;
     private boolean speakPermission;
     private boolean listenPermission;
