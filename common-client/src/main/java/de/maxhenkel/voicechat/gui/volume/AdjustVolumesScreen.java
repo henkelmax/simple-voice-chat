@@ -25,6 +25,7 @@ public class AdjustVolumesScreen extends ListScreenBase {
     protected static final Component TITLE = new TranslatableComponent("gui.voicechat.adjust_volume.title");
     protected static final Component SEARCH_HINT = new TranslatableComponent("message.voicechat.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
     protected static final Component EMPTY_SEARCH = new TranslatableComponent("message.voicechat.search_empty").withStyle(ChatFormatting.GRAY);
+    protected static final Component NO_PLAYERS = new TranslatableComponent("message.voicechat.no_players").withStyle(ChatFormatting.GRAY);
 
     protected static final int HEADER_SIZE = 16;
     protected static final int FOOTER_SIZE = 8;
@@ -187,6 +188,8 @@ public class AdjustVolumesScreen extends ListScreenBase {
             volumeList.render(poseStack, mouseX, mouseY, delta);
         } else if (!searchBox.getValue().isEmpty()) {
             drawCenteredString(poseStack, font, EMPTY_SEARCH, width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - font.lineHeight / 2, -1);
+        } else if (volumeList.getTab().getId().equals(VolumeTab.PLAYERS)) {
+            drawCenteredString(poseStack, font, NO_PLAYERS, width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - font.lineHeight / 2, -1);
         }
         if (!searchBox.isFocused() && searchBox.getValue().isEmpty()) {
             drawString(poseStack, font, SEARCH_HINT, searchBox.x, searchBox.y, -1);
