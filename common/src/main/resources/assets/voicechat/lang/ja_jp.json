@@ -130,7 +130,6 @@
   "message.voicechat.search_hint": "検索...",
   "message.voicechat.search_empty": "この名前のプレイヤーは見つかりませんでした。",
   "message.voicechat.other_volume": "その他",
-  "message.voicechat.other_volume.description": "下記以外の音量",
   "message.voicechat.more_members": "...他 %s人",
   "message.voicechat.no_groups": "既存のグループはありません",
   "message.voicechat.audio_type": "3Dオーディオ：%s",
