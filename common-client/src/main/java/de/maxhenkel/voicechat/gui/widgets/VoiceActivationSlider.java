@@ -23,6 +23,8 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
     private static final ResourceLocation SLIDER_HANDLE_SPRITE = ResourceLocation.withDefaultNamespace("widget/slider_handle");
     private static final ResourceLocation SLIDER_HANDLE_HIGHLIGHTED_SPRITE = ResourceLocation.withDefaultNamespace("widget/slider_handle_highlighted");
     private static final ResourceLocation VOICE_ACTIVATION_SLIDER = ResourceLocation.fromNamespaceAndPath(Voicechat.MODID, "textures/gui/voice_activation_slider.png");
+    private static final int VOICE_ACTIVATION_TEXTURE_WIDTH = 226;
+    private static final int VOICE_ACTIVATION_TEXTURE_HEIGHT = 18;
     private static final Component NO_ACTIVATION = Component.translatable("message.voicechat.voice_activation.disabled").withStyle(ChatFormatting.RED);
 
     private final SlidingMaxSmooth micValue;
@@ -52,8 +54,10 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         RenderSystem.enableDepthTest();
         guiGraphics.blitSprite(RenderType::guiTextured, getSlider(), getX(), getY(), getWidth(), getHeight());
 
-        int micWidth = (int) ((width - 2) * micValue.smoothMax());
-        guiGraphics.blit(RenderType::guiTextured, VOICE_ACTIVATION_SLIDER, getX() + 1, getY() + 1, 0, 0, micWidth, 18, 256, 256);
+        double micLevel = micValue.smoothMax();
+        int micWidth = (int) ((width - 2) * micLevel);
+        int textureWidth = (int) (VOICE_ACTIVATION_TEXTURE_WIDTH * micLevel);
+        guiGraphics.blit(RenderType::guiTextured, VOICE_ACTIVATION_SLIDER, getX() + 1, getY() + 1, 0, 0, micWidth, VOICE_ACTIVATION_TEXTURE_HEIGHT, textureWidth, VOICE_ACTIVATION_TEXTURE_HEIGHT, 256, 256);
 
         active = shouldShowSlider();
         if (!active) {
