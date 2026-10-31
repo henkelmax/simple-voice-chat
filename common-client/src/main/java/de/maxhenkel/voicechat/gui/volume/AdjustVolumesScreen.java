@@ -53,11 +53,6 @@ public class AdjustVolumesScreen extends VoiceChatScreenBase {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-    }
-
-    @Override
     protected void init() {
         super.init();
         guiLeft = guiLeft + 2;
