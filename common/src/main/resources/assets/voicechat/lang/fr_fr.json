@@ -114,7 +114,6 @@
   "message.voicechat.recording.enabled": "Appuyez pour arrêter l'enregistrement",
   "message.voicechat.no_group_permission": "Vous n'avez pas l'autorisation de rejoindre des groupes",
   "message.voicechat.search_hint": "Rechercher...",
-  "message.voicechat.search_empty": "Aucun joueur trouvé avec ce nom",
   "message.voicechat.other_volume": "Autre",
   "message.voicechat.more_members": "et %s de plus...",
   "message.voicechat.no_groups": "Aucun groupe existant",

@@ -117,7 +117,6 @@
   "message.voicechat.recording.enabled": "برای توقف ضبط فشار دﻫﻴد.",
   "message.voicechat.no_group_permission": "شما مجوز پیوستن به گروه‌ها را ندارید",
   "message.voicechat.search_hint": "جستجو...",
-  "message.voicechat.search_empty": "هیچ بازیکنی با این نام پیدا نشد",
   "message.voicechat.other_volume": "دﻳگر",
   "message.voicechat.more_members": "و %s بیشتر...",
   "message.voicechat.no_groups": "گروهی وجود ندارد",
