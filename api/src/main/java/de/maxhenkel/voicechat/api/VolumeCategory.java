@@ -119,7 +119,7 @@ public interface VolumeCategory {
          * In case you are adding multiple categories in the same tab, you only need to provide a name/translation key once.
          * This is also the case for other addons that use this ID.
          * Use <code>players</code> to show the category in the player tab.
-         * If <code>other</code> left <code>null</code>, it will be shown in the other tab.
+         * Using <code>other</code> or leaving it <code>null</code>, shows it in the "Other" tab.
          * This ID has to be between 1 and 16 characters and can only contain lowercase <code>a-z</code> and <code>_</code>.
          *
          * @param tab the ID of the tab this category is shown in or <code>null</code> to show it in the default tab
