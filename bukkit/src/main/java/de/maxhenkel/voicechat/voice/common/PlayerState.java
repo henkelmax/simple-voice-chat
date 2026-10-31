@@ -75,6 +75,14 @@ public class PlayerState {
         this.forceDisabled = forceDisabled;
     }
 
+    public boolean isMutedOrForceMuted() {
+        return muted || forceMuted;
+    }
+
+    public boolean isDisabledOrForceDisabled() {
+        return disabled || forceDisabled;
+    }
+
     public boolean isDisconnected() {
         return disconnected;
     }
