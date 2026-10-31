@@ -115,7 +115,6 @@
   "message.voicechat.search_hint": "Эзләү...",
   "message.voicechat.search_empty": "Шундый исемле теләсә кайсы уенчыларны табып булмый",
   "message.voicechat.other_volume": "Башка",
-  "message.voicechat.other_volume.description": "Теләсә кайсы аста күрсәтелмәгән тавыш катылыгы",
   "message.voicechat.more_members": "һәм тагы %s...",
   "message.voicechat.no_groups": "Төркемнәр юк",
   "message.voicechat.audio_type": "3D-тавыш: %s",
