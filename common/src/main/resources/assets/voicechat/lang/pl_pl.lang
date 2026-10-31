@@ -118,7 +118,6 @@ message.voicechat.no_group_permission=Nie masz uprawnień do dołączania do gru
 message.voicechat.search_hint=Szukaj...
 message.voicechat.search_empty=Nie znaleziono graczy o takiej nazwie
 message.voicechat.other_volume=Pozostałe
-message.voicechat.other_volume.description=Głośność wszystkich innych dźwięków niż te wymienione poniżej.
 message.voicechat.more_members=i %s więcej...
 message.voicechat.no_groups=Brak istniejących grup
 message.voicechat.audio_type=Dźwięk 3D: %s

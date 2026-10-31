@@ -117,7 +117,6 @@ message.voicechat.no_group_permission=No tienes permiso para unirte a grupos
 message.voicechat.search_hint=Buscar...
 message.voicechat.search_empty=No se pudo encontrar al jugador con ese nombre
 message.voicechat.other_volume=Otro
-message.voicechat.other_volume.description=El volumen de cualquier sonido no listado debajo
 message.voicechat.more_members=y %s más...
 message.voicechat.no_groups=No se encontraron grupos
 message.voicechat.audio_type=Audio 3D: %s

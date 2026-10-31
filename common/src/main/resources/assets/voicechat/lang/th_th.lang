@@ -129,7 +129,6 @@ message.voicechat.no_group_permission=คุณไม่มีสิทธิ์
 message.voicechat.search_hint=ค้นหา…
 message.voicechat.search_empty=ไม่พบผู้เล่นชื่อนี้
 message.voicechat.other_volume=อื่นๆ
-message.voicechat.other_volume.description=ระดับเสียงของเสียงใดๆ ที่ไม่ได้ระบุไว้ด้านล่าง
 message.voicechat.more_members=และอีก %s คน…
 message.voicechat.no_groups=ไม่มีกลุ่ม
 message.voicechat.audio_type=เสียง 3D: %s

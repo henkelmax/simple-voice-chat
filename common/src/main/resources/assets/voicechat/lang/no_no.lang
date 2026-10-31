@@ -114,7 +114,6 @@ message.voicechat.no_group_permission=Du har ikke tillatelse til å bli med i gr
 message.voicechat.search_hint=Søk...
 message.voicechat.search_empty=Kunne ikke finne noen spillere med det navnet
 message.voicechat.other_volume=Andre
-message.voicechat.other_volume.description=Volumet på lyder som ikke er oppført nedenfor
 message.voicechat.more_members=og %s til...
 message.voicechat.no_groups=Ingen eksisterende grupper
 message.voicechat.audio_type=3D lyd: %s

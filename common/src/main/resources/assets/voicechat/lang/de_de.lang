@@ -124,7 +124,6 @@ message.voicechat.no_group_permission=Sie haben keine Berechtigung Gruppen beizu
 message.voicechat.search_hint=Suchen...
 message.voicechat.search_empty=Keine Spieler mit diesem namen gefunden
 message.voicechat.other_volume=Sonstiges
-message.voicechat.other_volume.description=Die Lautstärke aller Geräusche, die hier nicht aufgeführt sind
 message.voicechat.more_members=und %s weitere...
 message.voicechat.no_groups=Keine existierenden Gruppen
 message.voicechat.audio_type=3D audio: %s

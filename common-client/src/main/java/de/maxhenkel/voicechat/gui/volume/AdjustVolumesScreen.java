@@ -27,6 +27,7 @@ public class AdjustVolumesScreen extends IngameListScreenBase {
     protected static final ITextComponent TITLE = new TextComponentTranslation("gui.voicechat.adjust_volume.title");
     protected static final ITextComponent SEARCH_HINT = new TextComponentTranslation("message.voicechat.search_hint").setStyle(new Style().setColor(TextFormatting.GRAY).setItalic(true));
     protected static final ITextComponent EMPTY_SEARCH = new TextComponentTranslation("message.voicechat.search_empty").setStyle(new Style().setColor(TextFormatting.GRAY));
+    protected static final ITextComponent NO_PLAYERS = new TextComponentTranslation("message.voicechat.no_players").setStyle(new Style().setColor(TextFormatting.GRAY));
 
     protected static final int HEADER_SIZE = 16;
     protected static final int FOOTER_SIZE = 8;
@@ -218,6 +219,8 @@ public class AdjustVolumesScreen extends IngameListScreenBase {
             volumeList.drawScreen(mouseX, mouseY, delta);
         } else if (!searchBox.getText().isEmpty()) {
             drawCenteredString(fontRenderer, EMPTY_SEARCH.getFormattedText(), width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - fontRenderer.FONT_HEIGHT / 2, -1);
+        } else if (volumeList.getTab().getId().equals(VolumeTab.PLAYERS)) {
+            drawCenteredString(fontRenderer, NO_PLAYERS.getFormattedText(), width / 2, guiTop + HEADER_SIZE + (units * UNIT_SIZE) / 2 - fontRenderer.FONT_HEIGHT / 2, -1);
         }
         if (!searchBox.isFocused() && searchBox.getText().isEmpty()) {
             drawString(fontRenderer, SEARCH_HINT.getFormattedText(), searchBox.x, searchBox.y, -1);

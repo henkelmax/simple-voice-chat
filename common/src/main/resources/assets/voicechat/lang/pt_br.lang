@@ -118,7 +118,6 @@ message.voicechat.no_group_permission=Você não tem permissão para entrar em g
 message.voicechat.search_hint=Pesquisar...
 message.voicechat.search_empty=Não foi encontrado nenhum jogador com esse nome
 message.voicechat.other_volume=Outros
-message.voicechat.other_volume.description=O volume de qualquer som não listado abaixo.
 message.voicechat.more_members=e %s mais...
 message.voicechat.no_groups=Nenhum grupo existente
 message.voicechat.audio_type=Áudio 3D: %s

@@ -115,7 +115,6 @@ message.voicechat.no_group_permission=Vous n'avez pas l'autorisation de rejoindr
 message.voicechat.search_hint=Rechercher...
 message.voicechat.search_empty=Aucun joueur trouvé avec ce nom
 message.voicechat.other_volume=Autre
-message.voicechat.other_volume.description=Le volume de tout son non répertorié ci-dessous
 message.voicechat.more_members=et %s de plus...
 message.voicechat.no_groups=Aucun groupe existant
 message.voicechat.audio_type=Audio 3D : %s
