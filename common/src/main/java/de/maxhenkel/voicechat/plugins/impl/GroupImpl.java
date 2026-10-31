@@ -151,6 +151,9 @@ public class GroupImpl implements Group {
             if (!Voicechat.GROUP_REGEX.matcher(name).matches()) {
                 throw new IllegalStateException(String.format("Invalid group name: %s", name));
             }
+            if (password != null && password.length() > Voicechat.MAX_GROUP_PASSWORD_LENGTH) {
+                throw new IllegalStateException(String.format("Group password can't be longer than %s characters", Voicechat.MAX_GROUP_PASSWORD_LENGTH));
+            }
             GroupImpl group = new GroupImpl(new de.maxhenkel.voicechat.voice.server.Group(id == null ? UUID.randomUUID() : id, name, password, persistent, hidden, type));
             Server server = Voicechat.SERVER.getServer();
             if (server != null && persistent) {
