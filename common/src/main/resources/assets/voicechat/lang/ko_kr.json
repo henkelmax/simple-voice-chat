@@ -118,7 +118,6 @@
   "message.voicechat.search_hint": "검색...",
   "message.voicechat.search_empty": "해당 이름의 플레이어를 찾지 못했습니다",
   "message.voicechat.other_volume": "기타",
-  "message.voicechat.other_volume.description": "플레이어가 아닌 대상 소리 볼륨",
   "message.voicechat.more_members": "그리고 %s 더...",
   "message.voicechat.no_groups": "존재하는 그룹이 없음",
   "message.voicechat.audio_type": "3D 오디오: %s",
