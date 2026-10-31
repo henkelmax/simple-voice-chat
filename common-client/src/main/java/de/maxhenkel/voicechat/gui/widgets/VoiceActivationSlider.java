@@ -15,6 +15,8 @@ import javax.annotation.Nullable;
 public class VoiceActivationSlider extends DebouncedSlider implements MicTestButton.MicListener {
 
     private static final ResourceLocation SLIDER = new ResourceLocation(Voicechat.MODID, "textures/gui/voice_activation_slider.png");
+    private static final int VOICE_ACTIVATION_TEXTURE_WIDTH = 226;
+    private static final int VOICE_ACTIVATION_TEXTURE_HEIGHT = 18;
     private static final ITextComponent NO_ACTIVATION = new TextComponentTranslation("message.voicechat.voice_activation.disabled").setStyle(new Style().setColor(TextFormatting.RED));
 
     private final SlidingMaxSmooth micValue;
@@ -40,8 +42,10 @@ public class VoiceActivationSlider extends DebouncedSlider implements MicTestBut
         super.mouseDragged(mc, mouseX, mouseY);
         mc.getTextureManager().bindTexture(SLIDER);
         GlStateManager.color(1F, 1F, 1F, 1F);
-        int width = (int) ((getButtonWidth() - 2) * micValue.smoothMax());
-        drawTexturedModalRect(x + 1, y + 1, 0, 0, width, 18);
+        double micLevel = micValue.smoothMax();
+        int width = (int) ((getButtonWidth() - 2) * micLevel);
+        int textureWidth = (int) (VOICE_ACTIVATION_TEXTURE_WIDTH * micLevel);
+        drawScaledCustomSizeModalRect(x + 1, y + 1, 0, 0, textureWidth, VOICE_ACTIVATION_TEXTURE_HEIGHT, width, VOICE_ACTIVATION_TEXTURE_HEIGHT, 256, 256);
     }
 
     @Override
