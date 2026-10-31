@@ -264,7 +264,10 @@ public class Server extends Thread {
                         if (connectionSecret != null) {
                             // The connection is only created once the client sends the nonce back from the same address
                             sendPacket(new AuthenticateAckPacket(createNonce(connectionSecret.getConnectionId(), message.getAddress())), new ClientConnection(connectionSecret, message.getAddress()));
-                            Voicechat.LOGGER.info("Successfully authenticated player {}", connectionSecret.getPlayerUUID());
+                            if (!connectionSecret.isAuthenticated()) {
+                                connectionSecret.setAuthenticated(true);
+                                Voicechat.LOGGER.info("Successfully authenticated player {}", connectionSecret.getPlayerUUID());
+                            }
                         }
                     }
 
