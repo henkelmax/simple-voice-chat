@@ -2,7 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.gui.volume.AdjustVolumeList;
+import de.maxhenkel.voicechat.gui.volume.AdjustVolumesScreen;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
@@ -40,7 +40,7 @@ public class ClientCategoryManager extends CategoryManager {
         if (category.getIcon() != null) {
             registerImage(category.getId(), fromIntArray(category.getIcon()));
         }
-        AdjustVolumeList.update();
+        AdjustVolumesScreen.updateCategories();
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ClientCategoryManager extends CategoryManager {
     public VolumeCategoryImpl removeCategory(String categoryId) {
         VolumeCategoryImpl volumeCategory = super.removeCategory(categoryId);
         unRegisterImage(categoryId);
-        AdjustVolumeList.update();
+        AdjustVolumesScreen.updateCategories();
         return volumeCategory;
     }
 
