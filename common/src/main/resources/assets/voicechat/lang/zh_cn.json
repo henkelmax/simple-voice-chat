@@ -118,7 +118,6 @@
   "message.voicechat.recording.enabled": "点击以停止录音",
   "message.voicechat.no_group_permission": "你没有权限加入群组",
   "message.voicechat.search_hint": "搜索...",
-  "message.voicechat.search_empty": "找不到这个名称的玩家",
   "message.voicechat.other_volume": "其他",
   "message.voicechat.more_members": "和其他 %s 人...",
   "message.voicechat.no_groups": "没有存在的群组",
