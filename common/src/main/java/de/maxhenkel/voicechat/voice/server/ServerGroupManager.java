@@ -150,7 +150,6 @@ public class ServerGroupManager {
 
         groups.remove(groupId);
         broadcastRemoveGroup(groupId);
-        // TODO Handle kicking players from group instead of preventing it
         return true;
     }
 
