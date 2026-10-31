@@ -118,7 +118,6 @@
   "message.voicechat.search_hint": "Поиск...",
   "message.voicechat.search_empty": "Не найдено игроков с таким именем",
   "message.voicechat.other_volume": "Другое",
-  "message.voicechat.other_volume.description": "Громкость любого звука, не указанного ниже",
   "message.voicechat.more_members": "и еще %s...",
   "message.voicechat.no_groups": "Нет существующих групп",
   "message.voicechat.audio_type": "3D звук: %s",
