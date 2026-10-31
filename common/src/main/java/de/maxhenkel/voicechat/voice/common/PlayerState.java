@@ -150,7 +150,7 @@ public class PlayerState {
         boolean disconnected = getFlag(flags, DISCONNECTED_OFFSET);
         boolean hasGroup = getFlag(flags, HAS_GROUP_OFFSET);
         UUID uuid = buf.readUniqueId();
-        String name = buf.readString(32767);
+        String name = buf.readString(256);
 
         PlayerState state = new PlayerState(uuid, name, muted, disabled, disconnected);
         state.setForceMuted(forceMuted);

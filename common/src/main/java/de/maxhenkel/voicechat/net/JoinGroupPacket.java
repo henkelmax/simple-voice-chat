@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.net;
 
+import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
@@ -41,7 +42,7 @@ public class JoinGroupPacket implements Packet<JoinGroupPacket> {
     public JoinGroupPacket fromBytes(PacketBuffer buf) {
         group = buf.readUniqueId();
         if (buf.readBoolean()) {
-            password = buf.readString(512);
+            password = buf.readString(Voicechat.MAX_GROUP_PASSWORD_LENGTH);
         }
         return this;
     }
