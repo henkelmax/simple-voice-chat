@@ -52,7 +52,7 @@ public class GroupEntry extends ListScreenEntryBase {
 
         GlStateManager.color(1F, 1F, 1F, 1F);
 
-        boolean disabled = state.isDisabled() || state.isForceDisabled();
+        boolean disabled = state.isDisabledOrForceDisabled();
 
         if (!disabled) {
             ClientVoicechat client = ClientManager.getClient();

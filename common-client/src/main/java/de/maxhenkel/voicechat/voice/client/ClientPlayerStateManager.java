@@ -141,7 +141,7 @@ public class ClientPlayerStateManager {
             return false;
         }
 
-        return playerState.isMuted() || playerState.isForceMuted();
+        return playerState.isMutedOrForceMuted();
     }
 
     public boolean isPlayerDisabled(EntityPlayer player) {
@@ -154,7 +154,7 @@ public class ClientPlayerStateManager {
             return false;
         }
 
-        return playerState.isDisabled() || playerState.isForceDisabled();
+        return playerState.isDisabledOrForceDisabled();
     }
 
     public boolean isPlayerForceMuted(UUID playerId) {
