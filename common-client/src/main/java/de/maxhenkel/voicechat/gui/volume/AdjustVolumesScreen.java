@@ -4,16 +4,19 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenBase;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class AdjustVolumesScreen extends ListScreenBase {
 
@@ -34,7 +37,7 @@ public class AdjustVolumesScreen extends ListScreenBase {
 
     protected AdjustVolumeList volumeList;
     protected TextFieldWidget searchBox;
-    protected final List<VolumeTab> tabs;
+    protected List<VolumeTab> tabs;
     protected final List<Button> tabButtons;
     protected Button scrollTabsLeft;
     protected Button scrollTabsRight;
@@ -45,11 +48,7 @@ public class AdjustVolumesScreen extends ListScreenBase {
     public AdjustVolumesScreen() {
         super(TITLE, 236, 0);
         this.lastSearch = "";
-        this.tabs = new ArrayList<>(Arrays.asList(VolumeTab.PLAYERS, VolumeTab.OTHER));
-        //TODO Remove this
-        for (int i = 1; i <= 10; i++) {
-            tabs.add(new VolumeTab(new StringTextComponent("Tab " + i), screen -> new ArrayList<>()));
-        }
+        this.tabs = VolumeTab.createTabs();
         this.tabButtons = new ArrayList<>();
     }
 
@@ -123,6 +122,31 @@ public class AdjustVolumesScreen extends ListScreenBase {
         scrollTabs(0);
     }
 
+    public static void updateCategories() {
+        if (Minecraft.getInstance().screen instanceof AdjustVolumesScreen) {
+            AdjustVolumesScreen volumesScreen = (AdjustVolumesScreen) Minecraft.getInstance().screen;
+            volumesScreen.updateTabs();
+        }
+    }
+
+    private void updateTabs() {
+        tabs = VolumeTab.createTabs();
+        if (tabs.stream().anyMatch(tab -> tab.getId().equals(volumeList.getTab().getId()))) {
+            volumeList.updateEntryList();
+        } else {
+            volumeList.setTab(tabs.get(0));
+        }
+        removeButton(scrollTabsLeft);
+        removeButton(scrollTabsRight);
+        tabButtons.forEach(this::removeButton);
+        initTabButtons();
+    }
+
+    private void removeButton(Button button) {
+        buttons.remove(button);
+        children.remove(button);
+    }
+
     private void scrollTabs(int amount) {
         tabScroll = MathHelper.clamp(tabScroll + amount, 0, tabs.size() - tabButtons.size());
         updateTabButtons();
@@ -138,7 +162,7 @@ public class AdjustVolumesScreen extends ListScreenBase {
             VolumeTab tab = tabs.get(tabScroll + i);
             Button tabButton = tabButtons.get(i);
             tabButton.setMessage(tab.getTitle());
-            tabButton.active = tab != volumeList.getTab();
+            tabButton.active = !tab.getId().equals(volumeList.getTab().getId());
         }
         scrollTabsLeft.active = tabScroll > 0;
         scrollTabsRight.active = tabScroll < tabs.size() - tabButtons.size();
