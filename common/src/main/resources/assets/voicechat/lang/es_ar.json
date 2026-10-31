@@ -99,7 +99,6 @@
   "message.voicechat.search_hint": "Buscar...",
   "message.voicechat.search_empty": "No se encontró ningún jugador con ese nombre",
   "message.voicechat.other_volume": "Otros",
-  "message.voicechat.other_volume.description": "El volúmen de cualquier sonido que no sea un jugador",
   "message.voicechat.more_members": "y %s más...",
   "message.voicechat.no_groups": "No hay grupos existentes",
   "message.voicechat.audio_type": "Sonido 3D: %s",
