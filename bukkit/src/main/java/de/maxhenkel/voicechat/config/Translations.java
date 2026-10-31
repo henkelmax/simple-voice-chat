@@ -10,9 +10,6 @@ public class Translations {
     public final ConfigEntry<String> voicechatNotCompatibleMessage;
     public final ConfigEntry<String> voicechatNeededForCommandMessage;
     public final ConfigEntry<String> playerCommandMessage;
-    public final ConfigEntry<String> placeholderVoicechatInstalled;
-    public final ConfigEntry<String> placeholderVoicechatNotInstalled;
-    public final ConfigEntry<String> placeholderVoicechatDisabled;
 
     public Translations(ConfigBuilder builder) {
         builder.header(
@@ -47,21 +44,6 @@ public class Translations {
                 "player_command_message",
                 "This command can only be executed as a player",
                 "The message a player gets when trying to execute a command that can only be executed as a player"
-        );
-        placeholderVoicechatInstalled = builder.stringEntry(
-                "placeholder_api_voicechat_installed",
-                "",
-                "The Placeholder API string for '%voicechat_installed%'"
-        );
-        placeholderVoicechatNotInstalled = builder.stringEntry(
-                "placeholder_api_voicechat_not_installed",
-                "",
-                "The Placeholder API string for '%voicechat_not_installed%'"
-        );
-        placeholderVoicechatDisabled = builder.stringEntry(
-                "placeholder_api_voicechat_disabled",
-                "",
-                "The Placeholder API string for '%voicechat_disabled%'"
         );
     }
 
