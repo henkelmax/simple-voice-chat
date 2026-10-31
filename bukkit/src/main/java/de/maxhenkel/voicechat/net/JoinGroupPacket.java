@@ -48,7 +48,7 @@ public class JoinGroupPacket implements Packet<JoinGroupPacket> {
     public JoinGroupPacket fromBytes(FriendlyByteBuf buf) {
         group = buf.readUUID();
         if (buf.readBoolean()) {
-            password = buf.readUtf(512);
+            password = buf.readUtf(Voicechat.MAX_GROUP_PASSWORD_LENGTH);
         }
         return this;
     }
@@ -58,7 +58,7 @@ public class JoinGroupPacket implements Packet<JoinGroupPacket> {
         buf.writeUUID(group);
         buf.writeBoolean(password != null);
         if (password != null) {
-            buf.writeUtf(password, 512);
+            buf.writeUtf(password, Voicechat.MAX_GROUP_PASSWORD_LENGTH);
         }
     }
 
