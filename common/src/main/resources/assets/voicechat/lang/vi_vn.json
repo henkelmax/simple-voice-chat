@@ -116,7 +116,6 @@
   "message.voicechat.recording.enabled": "Nhấn để dừng ghi âm",
   "message.voicechat.no_group_permission": "Bạn không có quyền tham gia nhóm",
   "message.voicechat.search_hint": "Tìm kiếm...",
-  "message.voicechat.search_empty": "Không thể tìm thấy người chơi với tên đó",
   "message.voicechat.other_volume": "Khác",
   "message.voicechat.more_members": "và %s người khác nữa...",
   "message.voicechat.no_groups": "Không có nhóm nào tồn tại",
