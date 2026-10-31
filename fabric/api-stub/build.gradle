@@ -14,8 +14,13 @@ version = project(':api').version
 group = maven_group
 
 processResources {
+    def templateProperties = [
+            'api_version': version
+    ]
+    // Trigger gradle regenerating the files in case something changes
+    inputs.properties(templateProperties)
     filesMatching('fabric.mod.json') {
-        expand 'api_version': version
+        expand templateProperties
     }
 }
 
