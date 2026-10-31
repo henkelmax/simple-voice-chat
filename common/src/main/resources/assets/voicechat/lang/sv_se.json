@@ -119,7 +119,6 @@
   "message.voicechat.search_hint": "Sök...",
   "message.voicechat.search_empty": "Hittade inga spelare med det namnet",
   "message.voicechat.other_volume": "Annat",
-  "message.voicechat.other_volume.description": "Volymen för alla ljud som inte anges nedan",
   "message.voicechat.more_members": "och %s till...",
   "message.voicechat.no_groups": "Inga existerande grupper",
   "message.voicechat.audio_type": "3D-ljud: %s",
