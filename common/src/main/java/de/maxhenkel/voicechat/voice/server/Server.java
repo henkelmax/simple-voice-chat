@@ -348,10 +348,14 @@ public class Server extends Thread {
                         Voicechat.LOGGER.info("Successfully validated connection of player {}", connection.getPlayerUUID());
                         EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(connection.getPlayerUUID());
                         if (player != null) {
-                            CommonCompatibilityManager.INSTANCE.emitServerVoiceChatConnectedEvent(player);
-                            PluginManager.instance().onPlayerConnected(player);
-                            playerStateManager.evaluateForcedState(player);
-                            connection.setInitialized(true);
+                            try {
+                                CommonCompatibilityManager.INSTANCE.emitServerVoiceChatConnectedEvent(player);
+                                PluginManager.instance().onPlayerConnected(player);
+                                playerStateManager.evaluateForcedState(player);
+                            } finally {
+                                // Permission polling retries the evaluation if it failed
+                                connection.setInitialized(true);
+                            }
                             Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getName(), connection.getPlayerUUID());
                         }
                         sendPacket(new ConnectionCheckAckPacket(), connection);
