@@ -81,6 +81,8 @@ public interface Group {
         Builder setName(String name);
 
         /**
+         * Can't be longer than 256 characters.
+         *
          * @param password the group password
          * @return the builder
          */
