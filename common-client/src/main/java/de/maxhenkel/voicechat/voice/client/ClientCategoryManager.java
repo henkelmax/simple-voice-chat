@@ -71,15 +71,8 @@ public class ClientCategoryManager extends CategoryManager {
     }
 
     private NativeImage fromIntArray(int[][] icon) {
-        if (icon.length != 16) {
-            throw new IllegalStateException("Icon is not 16x16");
-        }
         NativeImage nativeImage = new NativeImage(16, 16, true);
         for (int x = 0; x < icon.length; x++) {
-            if (icon[x].length != 16) {
-                nativeImage.close();
-                throw new IllegalStateException("Icon is not 16x16");
-            }
             for (int y = 0; y < icon.length; y++) {
                 nativeImage.setPixelRGBA(x, y, icon[x][y]);
             }
