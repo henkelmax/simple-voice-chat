@@ -1,8 +1,15 @@
-- Log an error if the server tries to send a packet that's too large
-- Allow skipping a packet in the API by throwing a `ProtocolException`
-- Added defaults to bukkit plugin.yml permissions
-- Fixed packets sent from the server to the client being too large
-- Fixed old API audio channels not bypassing group isolation
-- Fixed MTU size config option not respected
-- Use eye position for entity audio channels
-- Fixed inconsistency with mods timing of no speak permission message
+- Added server-side force muting
+- Added server-side force disabling
+- Make `voicechat.speak` permission use force muting
+- Make `voicechat.listen` permission use force disabling
+- Make force muting and force disabling available in the API
+- New force mute and force disable icons that are shown above other players and in the HUD
+- Allow muting when using push to talk
+- Sync mute state to other players
+- Show above other players if they are muted
+- Fixed onboarding volume testing bar being broken on wide screens
+- Separate players and other volumes into separate tabs in the adjust volumes screen
+- Allow the creation of custom volume tabs using the API
+- Improved voice chat initialization protocol to prevent potential attacks
+- Prevent incompatible clients from receiving/sending their states to the server
+- Reworked PlaceholderAPI support

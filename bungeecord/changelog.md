@@ -1,1 +1,1 @@
-- Fixed ping being broken
+- Added support for voice chat 2.7.x
