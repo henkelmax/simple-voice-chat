@@ -14,7 +14,7 @@ import de.maxhenkel.voicechat.api.VoicechatConnection;
  * After that, it is only emitted when the <code>voicechat.speak</code> or <code>voicechat.listen</code> permission of the player changes
  * or when it is requested using {@link VoicechatConnection#evaluateForcedState()}.
  * <br>
- * This is emitted off-thread in most cases and needs to return very quickly, don't run expensive code here!
+ * This can be emitted on any thread, including the main server thread, and needs to return very quickly, don't run expensive code here!
  */
 public interface PlayerForcedStateEvent extends ServerEvent {
 
