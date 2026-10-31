@@ -37,7 +37,7 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
         clearWidgets();
 
         password = new EditBox(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 2 - 5, xSize - 7 * 2, 14, Component.empty());
-        password.setMaxLength(32);
+        password.setMaxLength(Voicechat.MAX_GROUP_PASSWORD_LENGTH);
         password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
         addRenderableWidget(password);
 
