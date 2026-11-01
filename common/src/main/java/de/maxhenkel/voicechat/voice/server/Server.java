@@ -395,7 +395,7 @@ public class Server extends Thread {
             return;
         }
         PlayerState state = playerStateManager.getState(player.getUniqueID());
-        if (state == null || state.isForceMuted()) {
+        if (state == null || state.isForceMuted() || state.isForceDisabled()) {
             return;
         }
         if (!PluginManager.instance().onMicPacket(player, state, packet)) {
