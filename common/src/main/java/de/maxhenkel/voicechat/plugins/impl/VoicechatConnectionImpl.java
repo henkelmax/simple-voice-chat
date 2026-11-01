@@ -15,15 +15,25 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
 
     private final ServerPlayer player;
     private final ServerPlayerEntity serverPlayer;
-    private final PlayerState state;
     @Nullable
     private final Group group;
+    private final boolean connected;
+    private final boolean muted;
+    private final boolean forceMuted;
+    private final boolean disabled;
+    private final boolean forceDisabled;
+    private final boolean installed;
 
     public VoicechatConnectionImpl(ServerPlayerEntity player, PlayerState state) {
         this.serverPlayer = player;
         this.player = new ServerPlayerImpl(player);
-        this.state = state;
         this.group = GroupImpl.create(state);
+        this.connected = !state.isDisconnected();
+        this.muted = state.isMutedOrForceMuted();
+        this.forceMuted = state.isForceMuted();
+        this.disabled = state.isDisabledOrForceDisabled();
+        this.forceDisabled = state.isForceDisabled();
+        this.installed = Voicechat.SERVER.isCompatible(player);
     }
 
     @Nullable
@@ -76,7 +86,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
 
     @Override
     public boolean isConnected() {
-        return !state.isDisconnected();
+        return connected;
     }
 
     @Override
@@ -89,7 +99,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
             return;
         }
         PlayerStateManager manager = server.getPlayerStateManager();
-        PlayerState actualState = manager.getState(state.getUuid());
+        PlayerState actualState = manager.getState(serverPlayer.getUUID());
         if (actualState == null) {
             return;
         }
@@ -102,7 +112,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
 
     @Override
     public boolean isMuted() {
-        return state.isMutedOrForceMuted();
+        return muted;
     }
 
     @Override
@@ -115,7 +125,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
             return;
         }
         PlayerStateManager manager = server.getPlayerStateManager();
-        PlayerState actualState = manager.getState(state.getUuid());
+        PlayerState actualState = manager.getState(serverPlayer.getUUID());
         if (actualState == null) {
             return;
         }
@@ -128,12 +138,12 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
 
     @Override
     public boolean isForceMuted() {
-        return state.isForceMuted();
+        return forceMuted;
     }
 
     @Override
     public boolean isDisabled() {
-        return state.isDisabledOrForceDisabled();
+        return disabled;
     }
 
     @Override
@@ -146,7 +156,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
             return;
         }
         PlayerStateManager manager = server.getPlayerStateManager();
-        PlayerState actualState = manager.getState(state.getUuid());
+        PlayerState actualState = manager.getState(serverPlayer.getUUID());
         if (actualState == null) {
             return;
         }
@@ -159,7 +169,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
 
     @Override
     public boolean isForceDisabled() {
-        return state.isForceDisabled();
+        return forceDisabled;
     }
 
     @Override
@@ -173,7 +183,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
 
     @Override
     public boolean isInstalled() {
-        return Voicechat.SERVER.isCompatible(serverPlayer);
+        return installed;
     }
 
     @Override
