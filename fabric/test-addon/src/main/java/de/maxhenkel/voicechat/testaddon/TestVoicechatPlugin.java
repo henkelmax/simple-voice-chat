@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.api.VoicechatServerApi;
 import de.maxhenkel.voicechat.api.events.EventRegistration;
 import de.maxhenkel.voicechat.api.events.PlayerForcedStateEvent;
+import de.maxhenkel.voicechat.api.events.PlayerVisibilityEvent;
 import de.maxhenkel.voicechat.api.events.VoicechatServerStartedEvent;
 
 import javax.annotation.Nullable;
@@ -23,6 +24,7 @@ public class TestVoicechatPlugin implements VoicechatPlugin {
     public void registerEvents(EventRegistration registration) {
         registration.registerEvent(VoicechatServerStartedEvent.class, event -> serverApi = event.getVoicechat());
         registration.registerEvent(PlayerForcedStateEvent.class, this::onForcedState);
+        registration.registerEvent(PlayerVisibilityEvent.class, this::onVisibility);
     }
 
     public static boolean registerVolumeCategory(String id, String name, @Nullable String tab, @Nullable String tabName) {
@@ -48,6 +50,16 @@ public class TestVoicechatPlugin implements VoicechatPlugin {
         }
     }
 
+    public static void evaluateVisibility(UUID playerUuid) {
+        if (serverApi == null) {
+            return;
+        }
+        VoicechatConnection connection = serverApi.getConnectionOf(playerUuid);
+        if (connection != null) {
+            connection.evaluateVisibility();
+        }
+    }
+
     private void onForcedState(PlayerForcedStateEvent event) {
         UUID uuid = event.getConnection().getPlayer().getUuid();
         if (TestAddon.FORCE_MUTED.contains(uuid)) {
@@ -55,6 +67,12 @@ public class TestVoicechatPlugin implements VoicechatPlugin {
         }
         if (TestAddon.FORCE_DISABLED.contains(uuid)) {
             event.forceDisable();
+        }
+    }
+
+    private void onVisibility(PlayerVisibilityEvent event) {
+        if (TestAddon.HIDDEN.contains(event.getPlayer().getUuid())) {
+            event.hide();
         }
     }
 
