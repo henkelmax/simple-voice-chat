@@ -13,3 +13,4 @@
 - Improved voice chat initialization protocol to prevent potential attacks
 - Prevent incompatible clients from receiving/sending their states to the server
 - Reworked PlaceholderAPI support
+- Allow addons to hide players from other players using the API

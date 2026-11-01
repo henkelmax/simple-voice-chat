@@ -9,6 +9,7 @@ import de.maxhenkel.voicechat.api.audiolistener.AudioListener;
 import de.maxhenkel.voicechat.api.audiolistener.PlayerAudioListener;
 import de.maxhenkel.voicechat.api.events.*;
 import de.maxhenkel.voicechat.plugins.impl.GroupImpl;
+import de.maxhenkel.voicechat.plugins.impl.ServerPlayerImpl;
 import de.maxhenkel.voicechat.plugins.impl.VoicechatConnectionImpl;
 import de.maxhenkel.voicechat.plugins.impl.VoicechatServerApiImpl;
 import de.maxhenkel.voicechat.plugins.impl.VoicechatSocketImpl;
@@ -212,6 +213,15 @@ public class PluginManager {
         PlayerForcedStateEventImpl event = new PlayerForcedStateEventImpl(new VoicechatConnectionImpl(player, state), forceMuted, forceDisabled);
         dispatchEvent(PlayerForcedStateEvent.class, () -> event);
         return event;
+    }
+
+    public boolean isHidden(Player observer, Player player, boolean hidden) {
+        if (!hasListeners(PlayerVisibilityEvent.class)) {
+            return hidden;
+        }
+        PlayerVisibilityEventImpl event = new PlayerVisibilityEventImpl(new ServerPlayerImpl(observer), new ServerPlayerImpl(player), hidden);
+        dispatchEvent(PlayerVisibilityEvent.class, () -> event);
+        return event.isHidden();
     }
 
     public boolean onJoinGroup(Player player, @Nullable Group group) {

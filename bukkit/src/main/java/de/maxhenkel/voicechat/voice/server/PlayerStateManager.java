@@ -26,6 +26,7 @@ public class PlayerStateManager implements Listener {
 
     private final ConcurrentHashMap<UUID, PlayerState> states;
     private boolean evaluatingForcedState;
+    private boolean evaluatingVisibility;
 
     public PlayerStateManager() {
         this.states = new ConcurrentHashMap<>();
@@ -70,6 +71,9 @@ public class PlayerStateManager implements Listener {
     }
 
     public void onPlayerShow(PlayerShowEvent event) {
+        if (!canSee(event.getObserver(), event.getShownPlayer(), true)) {
+            return;
+        }
         PlayerState state = states.get(event.getShownPlayer().getUniqueId());
         if (state == null) {
             state = defaultDisconnectedState(event.getShownPlayer());
@@ -82,7 +86,7 @@ public class PlayerStateManager implements Listener {
     public void broadcastState(@Nullable Player stateOwner, PlayerState state) {
         PlayerStatePacket packet = new PlayerStatePacket(state);
         for (Player receiver : Voicechat.INSTANCE.getServer().getOnlinePlayers()) {
-            if (stateOwner != null && !Voicechat.compatibility.canSee(receiver, stateOwner)) {
+            if (stateOwner != null && !canSee(receiver, stateOwner)) {
                 continue;
             }
             NetManager.sendToClient(receiver, packet);
@@ -106,7 +110,7 @@ public class PlayerStateManager implements Listener {
             if (otherPlayer == null) {
                 continue;
             }
-            if (!Voicechat.compatibility.canSee(player, otherPlayer)) {
+            if (!canSee(player, otherPlayer)) {
                 continue;
             }
             stateList.add(state);
@@ -185,6 +189,42 @@ public class PlayerStateManager implements Listener {
         state.setForceDisabled(event.isForceDisabled());
         broadcastState(player, state);
         Voicechat.LOGGER.debug("Updated forced state of {}: {}", player.getName(), state);
+    }
+
+    public synchronized void evaluateVisibility(Player player) {
+        if (evaluatingVisibility) {
+            throw new IllegalStateException("Can't evaluate the visibility from within a PlayerVisibilityEvent");
+        }
+        PlayerState state = states.get(player.getUniqueId());
+        if (state == null) {
+            return;
+        }
+        PlayerStatePacket statePacket = new PlayerStatePacket(state);
+        RemovePlayerStatePacket removePacket = new RemovePlayerStatePacket(player.getUniqueId());
+        for (Player observer : Voicechat.INSTANCE.getServer().getOnlinePlayers()) {
+            if (canSee(observer, player)) {
+                NetManager.sendToClient(observer, statePacket);
+            } else {
+                NetManager.sendToClient(observer, removePacket);
+            }
+        }
+        Voicechat.LOGGER.debug("Evaluated visibility of {}", player.getName());
+    }
+
+    private boolean canSee(Player observer, Player player) {
+        return canSee(observer, player, Voicechat.compatibility.canSee(observer, player));
+    }
+
+    private synchronized boolean canSee(Player observer, Player player, boolean visibleOnPlatform) {
+        if (observer.getUniqueId().equals(player.getUniqueId())) {
+            return true;
+        }
+        evaluatingVisibility = true;
+        try {
+            return !PluginManager.instance().isHidden(observer, player, !visibleOnPlatform);
+        } finally {
+            evaluatingVisibility = false;
+        }
     }
 
     @Nullable

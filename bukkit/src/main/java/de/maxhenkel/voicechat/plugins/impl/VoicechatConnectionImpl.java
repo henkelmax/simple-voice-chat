@@ -107,7 +107,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
             return;
         }
         actualState.setDisconnected(!connected);
-        manager.broadcastState(null, actualState);
+        manager.broadcastState(serverPlayer, actualState);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
             return;
         }
         actualState.setMuted(muted);
-        manager.broadcastState(null, actualState);
+        manager.broadcastState(serverPlayer, actualState);
     }
 
     @Override
@@ -164,7 +164,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
             return;
         }
         actualState.setDisabled(disabled);
-        manager.broadcastState(null, actualState);
+        manager.broadcastState(serverPlayer, actualState);
     }
 
     @Override
@@ -179,6 +179,15 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
             return;
         }
         server.getPlayerStateManager().evaluateForcedState(serverPlayer);
+    }
+
+    @Override
+    public void evaluateVisibility() {
+        Server server = Voicechat.SERVER.getServer();
+        if (server == null) {
+            return;
+        }
+        server.getPlayerStateManager().evaluateVisibility(serverPlayer);
     }
 
     @Override
