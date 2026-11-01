@@ -24,6 +24,7 @@ public interface VoicechatConnection {
      * Joins this player to the provided group.
      *
      * @param group the group to join or <code>null</code> to leave the current group
+     * @throws IllegalStateException if called from within an event that modifies the state of a player itself
      */
     void setGroup(@Nullable Group group);
 
@@ -40,6 +41,7 @@ public interface VoicechatConnection {
      * <b>NOTE</b>: This method will only work for players that don't have the mod installed. See {@link #isInstalled()}.
      *
      * @param connected if the player should be shown as connected to voice chat
+     * @throws IllegalStateException if called from within an event that modifies the state of a player itself
      */
     void setConnected(boolean connected);
 
@@ -53,6 +55,7 @@ public interface VoicechatConnection {
      * <b>NOTE</b>: This method will only work for players that don't have the mod installed. See {@link #isInstalled()}.
      *
      * @param muted if the player should have the microphone muted icon
+     * @throws IllegalStateException if called from within an event that modifies the state of a player itself
      */
     void setMuted(boolean muted);
 
@@ -73,6 +76,7 @@ public interface VoicechatConnection {
      * <b>NOTE</b>: This method will only work for players that don't have the mod installed. See {@link #isInstalled()}.
      *
      * @param disabled if the player should have the voice chat disabled icon
+     * @throws IllegalStateException if called from within an event that modifies the state of a player itself
      */
     void setDisabled(boolean disabled);
 
@@ -88,7 +92,7 @@ public interface VoicechatConnection {
      * <br/>
      * Call this when the conditions your addon uses to force mute or force disable this player change.
      *
-     * @throws IllegalStateException if called from within a {@link de.maxhenkel.voicechat.api.events.PlayerForcedStateEvent}
+     * @throws IllegalStateException if called from within an event that modifies the state of a player itself
      */
     void evaluateForcedState();
 
@@ -97,7 +101,7 @@ public interface VoicechatConnection {
      * <br/>
      * Call this when the conditions your addon uses to hide this player change.
      *
-     * @throws IllegalStateException if called from within a {@link de.maxhenkel.voicechat.api.events.PlayerVisibilityEvent}
+     * @throws IllegalStateException if called from within an event that modifies the state of a player itself
      */
     void evaluateVisibility();
 
