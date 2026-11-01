@@ -3,24 +3,19 @@ package de.maxhenkel.voicechat.api;
 import javax.annotation.Nullable;
 
 /**
- * <b>Note</b>: It is not guaranteed that the state of this connection object is up to date.
- * Please re-fetch the connection object to get the latest state.
+ * <b>Note</b>: Connection objects must not be kept longer than the duration of the event they were obtained in.
+ * Using them afterwards results in undefined behavior.
+ * Re-fetch the connection using {@link VoicechatServerApi#getConnectionOf(java.util.UUID)} instead.
  */
 public interface VoicechatConnection {
 
     /**
-     * <b>Note</b>: This only returns the group the player was in when fetching this connection object.
-     * Calling {@link #setGroup(Group)} won't update the return value of this method.
-     *
      * @return the group of the player - <code>null</code> if the player is not in a group
      */
     @Nullable
     Group getGroup();
 
     /**
-     * <b>Note</b>: This only returns if the player was in a group when fetching this connection object.
-     * Calling {@link #setGroup(Group)} won't update the return value of this method.
-     *
      * @return if the player is in a group
      */
     boolean isInGroup();
@@ -34,9 +29,6 @@ public interface VoicechatConnection {
 
     /**
      * This might not represent the actual state of the voice chat connection, since other voice chat plugins can fake having a player connected.
-     * <br/>
-     * <b>Note</b>: This only returns if the player was connected fetching this connection object.
-     * Calling {@link #setConnected(boolean)} won't update the return value of this method.
      *
      * @return if the player is connected to voice chat
      */
@@ -52,9 +44,6 @@ public interface VoicechatConnection {
     void setConnected(boolean connected);
 
     /**
-     * <b>Note</b>: This only returns if the player had the microphone muted when fetching this connection object.
-     * Calling {@link #setMuted(boolean)} won't update the return value of this method.
-     *
      * @return if the player has muted their microphone or has been force muted by the server
      */
     boolean isMuted();
@@ -68,7 +57,6 @@ public interface VoicechatConnection {
     void setMuted(boolean muted);
 
     /**
-     * <b>Note</b>: This only returns if the player was force muted when fetching this connection object.
      * See {@link de.maxhenkel.voicechat.api.events.PlayerForcedStateEvent}.
      *
      * @return if the microphone of the player has been force muted by the server
@@ -76,9 +64,6 @@ public interface VoicechatConnection {
     boolean isForceMuted();
 
     /**
-     * <b>Note</b>: This only returns if the player has the voice chat disabled when fetching this connection object.
-     * Calling {@link #setDisabled(boolean)} won't update the return value of this method.
-     *
      * @return If the player muted the sound or has been force disabled by the server
      */
     boolean isDisabled();
@@ -92,7 +77,6 @@ public interface VoicechatConnection {
     void setDisabled(boolean disabled);
 
     /**
-     * <b>Note</b>: This only returns if the player was force disabled when fetching this connection object.
      * See {@link de.maxhenkel.voicechat.api.events.PlayerForcedStateEvent}.
      *
      * @return if the players voice chat has been force disabled by the server
