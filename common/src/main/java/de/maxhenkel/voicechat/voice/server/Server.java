@@ -354,7 +354,6 @@ public class Server extends Thread {
                                 PluginManager.instance().onPlayerConnected(player);
                                 playerStateManager.evaluateForcedState(player);
                             } finally {
-                                // Permission polling retries the evaluation if it failed
                                 connection.setInitialized(true);
                             }
                             Voicechat.LOGGER.info("Player {} ({}) successfully connected to voice chat", player.getName().getString(), connection.getPlayerUUID());
