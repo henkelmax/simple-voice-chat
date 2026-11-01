@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.api.events.PlayerForcedStateEvent;
+import de.maxhenkel.voicechat.api.events.PlayerVisibilityEvent;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PlayerStatePacket;
@@ -17,12 +18,14 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerStateManager {
 
     private final ConcurrentHashMap<UUID, PlayerState> states;
+    private final ConcurrentHashMap<UUID, Set<UUID>> hiddenPlayersByObserver;
     private boolean evaluatingForcedState;
     private boolean evaluatingVisibility;
     private final Server voicechatServer;
@@ -30,21 +33,21 @@ public class PlayerStateManager {
     public PlayerStateManager(Server voicechatServer) {
         this.voicechatServer = voicechatServer;
         this.states = new ConcurrentHashMap<>();
+        this.hiddenPlayersByObserver = new ConcurrentHashMap<>();
 
         CommonCompatibilityManager.INSTANCE.getNetManager().updateStateChannel.setServerListener((player, packet) -> {
-            PlayerState state = states.get(player.getUUID());
-
-            if (state == null) {
-                state = defaultDisconnectedState(player);
-            } else if (state.isDisabled() == packet.isDisabled() && state.isMuted() == packet.isMuted()) {
-                return;
+            PlayerState state;
+            synchronized (this) {
+                state = states.get(player.getUUID());
+                if (state == null) {
+                    return;
+                }
+                if (state.isDisabled() == packet.isDisabled() && state.isMuted() == packet.isMuted()) {
+                    return;
+                }
+                state.setDisabled(packet.isDisabled());
+                state.setMuted(packet.isMuted());
             }
-
-            state.setDisabled(packet.isDisabled());
-            state.setMuted(packet.isMuted());
-
-            states.put(player.getUUID(), state);
-
             broadcastState(player, state);
             Voicechat.LOGGER.debug("Got state of {}: {}", player.getName().getString(), state);
         });
@@ -52,16 +55,22 @@ public class PlayerStateManager {
 
     public void broadcastState(@Nullable ServerPlayer stateOwner, PlayerState state) {
         PlayerStatePacket packet = new PlayerStatePacket(state);
-        for (ServerPlayer receiver : voicechatServer.getServer().getPlayerList().getPlayers()) {
-            if (stateOwner != null && !canSee(receiver, stateOwner)) {
-                continue;
+        synchronized (this) {
+            // Outdated states of players that already logged out must not be sent anymore
+            if (states.get(state.getUuid()) != state) {
+                return;
             }
-            NetManager.sendToClient(receiver, packet);
+            for (ServerPlayer receiver : voicechatServer.getServer().getPlayerList().getPlayers()) {
+                if (stateOwner != null && !canSee(receiver, stateOwner)) {
+                    continue;
+                }
+                NetManager.sendToClient(receiver, packet);
+            }
         }
         PluginManager.instance().onPlayerStateChanged(state);
     }
 
-    public void broadcastRemoveState(ServerPlayer stateOwner) {
+    private void broadcastRemoveState(ServerPlayer stateOwner) {
         RemovePlayerStatePacket packet = new RemovePlayerStatePacket(stateOwner.getUUID());
         for (ServerPlayer receiver : voicechatServer.getServer().getPlayerList().getPlayers()) {
             NetManager.sendToClient(receiver, packet);
@@ -70,14 +79,14 @@ public class PlayerStateManager {
         PluginManager.instance().onPlayerStateChanged(defaultDisconnectedState(stateOwner));
     }
 
-    public void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
+    public synchronized void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
         List<PlayerState> stateList = new ArrayList<>(states.size());
         for (PlayerState state : states.values()) {
             ServerPlayer otherPlayer = voicechatServer.getServer().getPlayerList().getPlayer(state.getUuid());
             if (otherPlayer == null) {
                 continue;
             }
-            if (!canSee(player, otherPlayer)) {
+            if (!updateVisibility(player, otherPlayer)) {
                 continue;
             }
             stateList.add(state);
@@ -89,7 +98,12 @@ public class PlayerStateManager {
 
     public void onPlayerLoggedIn(ServerPlayer player) {
         PlayerState state = defaultDisconnectedState(player);
-        states.put(player.getUUID(), state);
+        synchronized (this) {
+            states.put(player.getUUID(), state);
+            for (ServerPlayer observer : voicechatServer.getServer().getPlayerList().getPlayers()) {
+                updateVisibility(observer, player);
+            }
+        }
         broadcastState(player, state);
         Voicechat.LOGGER.debug("Setting default state of {}: {}", player.getName().getString(), state);
         if (AudioSenderImpl.getRegisteredPlayers().contains(player.getUUID())) {
@@ -98,19 +112,23 @@ public class PlayerStateManager {
     }
 
     public void onPlayerLoggedOut(ServerPlayer player) {
-        states.remove(player.getUUID());
+        synchronized (this) {
+            states.remove(player.getUUID());
+            forgetVisibility(player);
+        }
         broadcastRemoveState(player);
         Voicechat.LOGGER.debug("Removing state of {}", player.getName().getString());
     }
 
-    public void onPlayerHide(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
+    public synchronized void onPlayerHide(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
+        setHidden(observingPlayer, visibilityChangedPlayer, true);
         RemovePlayerStatePacket packet = new RemovePlayerStatePacket(visibilityChangedPlayer.getUUID());
         NetManager.sendToClient(observingPlayer, packet);
         Voicechat.LOGGER.debug("Removing state of {} for {}", visibilityChangedPlayer.getName().getString(), observingPlayer.getName().getString());
     }
 
-    public void onPlayerShow(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
-        if (!canSee(observingPlayer, visibilityChangedPlayer, true)) {
+    public synchronized void onPlayerShow(ServerPlayer visibilityChangedPlayer, ServerPlayer observingPlayer) {
+        if (!updateVisibility(observingPlayer, visibilityChangedPlayer, true)) {
             return;
         }
         PlayerState state = states.get(visibilityChangedPlayer.getUUID());
@@ -123,12 +141,14 @@ public class PlayerStateManager {
     }
 
     public void onPlayerVoicechatDisconnect(UUID uuid) {
-        PlayerState state = states.get(uuid);
-        if (state == null) {
-            return;
+        PlayerState state;
+        synchronized (this) {
+            state = states.get(uuid);
+            if (state == null) {
+                return;
+            }
+            state.setDisconnected(true);
         }
-
-        state.setDisconnected(true);
 
         @Nullable ServerPlayer player = voicechatServer.getServer().getPlayerList().getPlayer(uuid);
 
@@ -137,41 +157,55 @@ public class PlayerStateManager {
     }
 
     public void onPlayerVoicechatConnect(ServerPlayer player) {
-        PlayerState state = states.get(player.getUUID());
-
-        if (state == null) {
-            state = defaultDisconnectedState(player);
+        PlayerState state;
+        synchronized (this) {
+            state = states.get(player.getUUID());
+            if (state == null) {
+                return;
+            }
+            state.setDisconnected(false);
         }
-
-        state.setDisconnected(false);
-
-        states.put(player.getUUID(), state);
-
         broadcastState(player, state);
         Voicechat.LOGGER.debug("Set state of {} to connected: {}", player.getName().getString(), state);
     }
 
-    public synchronized void evaluateForcedStateIfPermissionsChanged(ServerPlayer player) {
-        PlayerState state = states.get(player.getUUID());
-        if (state == null) {
-            return;
+    public void evaluateForcedStateIfPermissionsChanged(ServerPlayer player) {
+        PlayerState state;
+        synchronized (this) {
+            state = states.get(player.getUUID());
+            if (state == null) {
+                return;
+            }
+            boolean speakPermission = PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player);
+            boolean listenPermission = PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(player);
+            if (state.hasSpeakPermission() == speakPermission && state.hasListenPermission() == listenPermission) {
+                return;
+            }
+            if (!evaluateForcedState(player, state, speakPermission, listenPermission)) {
+                return;
+            }
         }
-        boolean speakPermission = PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player);
-        boolean listenPermission = PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(player);
-        if (state.hasSpeakPermission() != speakPermission || state.hasListenPermission() != listenPermission) {
-            evaluateForcedState(player, state, speakPermission, listenPermission);
-        }
+        broadcastState(player, state);
     }
 
-    public synchronized void evaluateForcedState(ServerPlayer player) {
-        PlayerState state = states.get(player.getUUID());
-        if (state == null) {
-            return;
+    public void evaluateForcedState(ServerPlayer player) {
+        PlayerState state;
+        synchronized (this) {
+            state = states.get(player.getUUID());
+            if (state == null) {
+                return;
+            }
+            if (!evaluateForcedState(player, state, PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player), PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(player))) {
+                return;
+            }
         }
-        evaluateForcedState(player, state, PermissionManager.INSTANCE.SPEAK_PERMISSION.hasPermission(player), PermissionManager.INSTANCE.LISTEN_PERMISSION.hasPermission(player));
+        broadcastState(player, state);
     }
 
-    private void evaluateForcedState(ServerPlayer player, PlayerState state, boolean speakPermission, boolean listenPermission) {
+    /**
+     * @return if the forced state changed
+     */
+    private boolean evaluateForcedState(ServerPlayer player, PlayerState state, boolean speakPermission, boolean listenPermission) {
         if (evaluatingForcedState) {
             throw new IllegalStateException("Can't evaluate the forced state from within a PlayerForcedStateEvent");
         }
@@ -185,12 +219,12 @@ public class PlayerStateManager {
             evaluatingForcedState = false;
         }
         if (state.isForceMuted() == event.isForceMuted() && state.isForceDisabled() == event.isForceDisabled()) {
-            return;
+            return false;
         }
         state.setForceMuted(event.isForceMuted());
         state.setForceDisabled(event.isForceDisabled());
-        broadcastState(player, state);
         Voicechat.LOGGER.debug("Updated forced state of {}: {}", player.getName().getString(), state);
+        return true;
     }
 
     public synchronized void evaluateVisibility(ServerPlayer player) {
@@ -204,7 +238,12 @@ public class PlayerStateManager {
         PlayerStatePacket statePacket = new PlayerStatePacket(state);
         RemovePlayerStatePacket removePacket = new RemovePlayerStatePacket(player.getUUID());
         for (ServerPlayer observer : voicechatServer.getServer().getPlayerList().getPlayers()) {
-            if (canSee(observer, player)) {
+            boolean wasVisible = !isHidden(observer, player);
+            boolean visible = updateVisibility(observer, player);
+            if (visible == wasVisible) {
+                continue;
+            }
+            if (visible) {
                 NetManager.sendToClient(observer, statePacket);
             } else {
                 NetManager.sendToClient(observer, removePacket);
@@ -213,11 +252,22 @@ public class PlayerStateManager {
         Voicechat.LOGGER.debug("Evaluated visibility of {}", player.getName().getString());
     }
 
-    private boolean canSee(ServerPlayer observer, ServerPlayer player) {
-        return canSee(observer, player, CommonCompatibilityManager.INSTANCE.canSee(observer, player));
+    /**
+     * Emits a {@link PlayerVisibilityEvent} and remembers the result.
+     *
+     * @return if the observer can see the player
+     */
+    private boolean updateVisibility(ServerPlayer observer, ServerPlayer player) {
+        return updateVisibility(observer, player, CommonCompatibilityManager.INSTANCE.canSee(observer, player));
     }
 
-    private synchronized boolean canSee(ServerPlayer observer, ServerPlayer player, boolean visibleOnPlatform) {
+    private synchronized boolean updateVisibility(ServerPlayer observer, ServerPlayer player, boolean visibleOnPlatform) {
+        boolean visible = emitVisibilityEvent(observer, player, visibleOnPlatform);
+        setHidden(observer, player, !visible);
+        return visible;
+    }
+
+    private boolean emitVisibilityEvent(ServerPlayer observer, ServerPlayer player, boolean visibleOnPlatform) {
         if (observer.getUUID().equals(player.getUUID())) {
             return true;
         }
@@ -227,6 +277,40 @@ public class PlayerStateManager {
         } finally {
             evaluatingVisibility = false;
         }
+    }
+
+    /**
+     * Uses the remembered visibility without emitting a {@link PlayerVisibilityEvent}.
+     *
+     * @return if the observer can see the player
+     */
+    private boolean canSee(ServerPlayer observer, ServerPlayer player) {
+        return CommonCompatibilityManager.INSTANCE.canSee(observer, player) && !isHidden(observer, player);
+    }
+
+    private boolean isHidden(ServerPlayer observer, ServerPlayer player) {
+        Set<UUID> hiddenPlayers = hiddenPlayersByObserver.get(observer.getUUID());
+        return hiddenPlayers != null && hiddenPlayers.contains(player.getUUID());
+    }
+
+    private synchronized void setHidden(ServerPlayer observer, ServerPlayer player, boolean hidden) {
+        // Observers that already logged out must not get new entries
+        if (!states.containsKey(observer.getUUID())) {
+            return;
+        }
+        if (hidden) {
+            hiddenPlayersByObserver.computeIfAbsent(observer.getUUID(), uuid -> ConcurrentHashMap.newKeySet()).add(player.getUUID());
+            return;
+        }
+        Set<UUID> hiddenPlayers = hiddenPlayersByObserver.get(observer.getUUID());
+        if (hiddenPlayers != null) {
+            hiddenPlayers.remove(player.getUUID());
+        }
+    }
+
+    private void forgetVisibility(ServerPlayer player) {
+        hiddenPlayersByObserver.remove(player.getUUID());
+        hiddenPlayersByObserver.values().forEach(hiddenPlayers -> hiddenPlayers.remove(player.getUUID()));
     }
 
     @Nullable
@@ -239,13 +323,14 @@ public class PlayerStateManager {
     }
 
     public void setGroup(ServerPlayer player, @Nullable UUID group) {
-        PlayerState state = states.get(player.getUUID());
-        if (state == null) {
-            state = PlayerStateManager.defaultDisconnectedState(player);
-            Voicechat.LOGGER.debug("Defaulting to default state for {}: {}", player.getName().getString(), state);
+        PlayerState state;
+        synchronized (this) {
+            state = states.get(player.getUUID());
+            if (state == null) {
+                return;
+            }
+            state.setGroup(group);
         }
-        state.setGroup(group);
-        states.put(player.getUUID(), state);
         broadcastState(player, state);
         Voicechat.LOGGER.debug("Setting group of {}: {}", player.getName().getString(), state);
     }
