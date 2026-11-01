@@ -210,6 +210,15 @@ public class PluginManager {
         return event;
     }
 
+    public boolean isHidden(EntityPlayerMP observer, EntityPlayerMP player, boolean hidden) {
+        if (!hasListeners(PlayerVisibilityEvent.class)) {
+            return hidden;
+        }
+        PlayerVisibilityEventImpl event = new PlayerVisibilityEventImpl(new ServerPlayerImpl(observer), new ServerPlayerImpl(player), hidden);
+        dispatchEvent(PlayerVisibilityEvent.class, () -> event);
+        return event.isHidden();
+    }
+
     public boolean onJoinGroup(EntityPlayerMP player, @Nullable Group group) {
         if (group == null) {
             return onLeaveGroup(player);
