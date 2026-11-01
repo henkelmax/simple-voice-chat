@@ -15,18 +15,21 @@ import javax.annotation.Nullable;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 public class TestAddon implements ModInitializer {
 
     public static final Set<UUID> FORCE_MUTED = ConcurrentHashMap.newKeySet();
     public static final Set<UUID> FORCE_DISABLED = ConcurrentHashMap.newKeySet();
+    public static final Set<UUID> HIDDEN = ConcurrentHashMap.newKeySet();
 
     @Override
     public void onInitialize() {
         CommandRegistrationCallback.EVENT.register((dispatcher, context, commandSelection) -> {
             dispatcher.register(Commands.literal("voicechattest")
-                    .then(Commands.literal("forcemute").then(Commands.argument("target", EntityArgument.player()).executes(c -> toggle(c, FORCE_MUTED, "forceMuted"))))
-                    .then(Commands.literal("forcedisable").then(Commands.argument("target", EntityArgument.player()).executes(c -> toggle(c, FORCE_DISABLED, "forceDisabled"))))
+                    .then(Commands.literal("forcemute").then(Commands.argument("target", EntityArgument.player()).executes(c -> toggle(c, FORCE_MUTED, "forceMuted", TestVoicechatPlugin::evaluateForcedState))))
+                    .then(Commands.literal("forcedisable").then(Commands.argument("target", EntityArgument.player()).executes(c -> toggle(c, FORCE_DISABLED, "forceDisabled", TestVoicechatPlugin::evaluateForcedState))))
+                    .then(Commands.literal("hide").then(Commands.argument("target", EntityArgument.player()).executes(c -> toggle(c, HIDDEN, "hidden", TestVoicechatPlugin::evaluateVisibility))))
                     .then(Commands.literal("category").then(Commands.argument("id", StringArgumentType.word()).then(Commands.argument("name", StringArgumentType.string())
                             .executes(c -> registerCategory(c, null, null))
                             .then(Commands.argument("tab", StringArgumentType.word())
@@ -51,14 +54,14 @@ public class TestAddon implements ModInitializer {
         return 1;
     }
 
-    private static int toggle(CommandContext<CommandSourceStack> context, Set<UUID> players, String key) throws CommandSyntaxException {
+    private static int toggle(CommandContext<CommandSourceStack> context, Set<UUID> players, String key, Consumer<UUID> evaluate) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(context, "target");
         UUID uuid = player.getUUID();
         boolean forced = !players.remove(uuid);
         if (forced) {
             players.add(uuid);
         }
-        TestVoicechatPlugin.evaluateForcedState(uuid);
+        evaluate.accept(uuid);
         context.getSource().sendSuccess(Component.empty()
                 .append(player.getDisplayName())
                 .append(" ")
