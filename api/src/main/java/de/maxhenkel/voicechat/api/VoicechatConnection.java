@@ -3,7 +3,7 @@ package de.maxhenkel.voicechat.api;
 import javax.annotation.Nullable;
 
 /**
- * <b>Note</b>: Connection objects must not be kept longer than the duration of the event they were obtained in.
+ * <b>Note</b>: Connection objects must not be kept longer than the duration of the event or method call they were obtained in.
  * Using them afterwards results in undefined behavior.
  * Re-fetch the connection using {@link VoicechatServerApi#getConnectionOf(java.util.UUID)} instead.
  */
