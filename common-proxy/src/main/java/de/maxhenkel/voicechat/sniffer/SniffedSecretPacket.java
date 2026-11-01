@@ -123,17 +123,12 @@ public class SniffedSecretPacket {
     }
 
     /**
-     * Checks if the UDP packet is from the player.
-     * Since compatibility version 21, the random connection ID is only known to the player, the backend server and the proxy, so it proves this on its own.
-     * Before that, the connection ID is the public player UUID, so the packet has to be encrypted with the users secret.
+     * Checks if the UDP packet is an authentication packet encrypted with the users secret.
      *
      * @param buffer the voice chat packet, offset right after the connection ID
      * @return if the packet authenticates the player
      */
     public boolean isLegitimateAuthPacket(ByteBuffer buffer) {
-        if (connectionId != null) {
-            return true;
-        }
         try {
             ByteBufferWrapper buf = new ByteBufferWrapper(buffer);
             int payloadLength = buf.readVarInt();
@@ -141,7 +136,14 @@ public class SniffedSecretPacket {
                 return false;
             }
             ByteBufferWrapper payload = new ByteBufferWrapper(ByteBuffer.wrap(decrypt(buf.readByteArray(payloadLength))));
-            if (payload.readByte() != AUTHENTICATE_PACKET_ID || !playerUUID.equals(payload.readUUID())) {
+            if (payload.readByte() != AUTHENTICATE_PACKET_ID) {
+                return false;
+            }
+            // Since compatibility version 21, the authentication packet is empty, as the GCM tag already proves the secret
+            if (connectionId != null) {
+                return true;
+            }
+            if (!playerUUID.equals(payload.readUUID())) {
                 return false;
             }
             byte[] authenticationSecret = new byte[secret.length];
