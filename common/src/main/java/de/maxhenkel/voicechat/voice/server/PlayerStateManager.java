@@ -191,6 +191,7 @@ public class PlayerStateManager {
     public void evaluateForcedState(EntityPlayerMP player) {
         PlayerState state;
         synchronized (this) {
+            checkIfStateCanBeModified();
             state = states.get(player.getUniqueID());
             if (state == null) {
                 return;
@@ -206,9 +207,6 @@ public class PlayerStateManager {
      * @return if the forced state changed
      */
     private boolean evaluateForcedState(EntityPlayerMP player, PlayerState state, boolean speakPermission, boolean listenPermission) {
-        if (evaluatingForcedState) {
-            throw new IllegalStateException("Can't evaluate the forced state from within a PlayerForcedStateEvent");
-        }
         state.setSpeakPermission(speakPermission);
         state.setListenPermission(listenPermission);
         PlayerForcedStateEvent event;
@@ -227,10 +225,17 @@ public class PlayerStateManager {
         return true;
     }
 
-    public synchronized void evaluateVisibility(EntityPlayerMP player) {
-        if (evaluatingVisibility) {
-            throw new IllegalStateException("Can't evaluate the visibility from within a PlayerVisibilityEvent");
+    /**
+     * @throws IllegalStateException if called from within a {@link PlayerForcedStateEvent} or a {@link PlayerVisibilityEvent}
+     */
+    public synchronized void checkIfStateCanBeModified() {
+        if (evaluatingForcedState || evaluatingVisibility) {
+            throw new IllegalStateException("Can't modify the state of a player from within an event that modifies the state of a player itself");
         }
+    }
+
+    public synchronized void evaluateVisibility(EntityPlayerMP player) {
+        checkIfStateCanBeModified();
         PlayerState state = states.get(player.getUniqueID());
         if (state == null) {
             return;
