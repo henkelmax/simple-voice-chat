@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PlayerStateManager implements Listener {
 
     private final ConcurrentHashMap<UUID, PlayerState> states;
+    private boolean evaluatingForcedState;
 
     public PlayerStateManager() {
         this.states = new ConcurrentHashMap<>();
@@ -165,9 +166,18 @@ public class PlayerStateManager implements Listener {
     }
 
     private void evaluateForcedState(Player player, PlayerState state, boolean speakPermission, boolean listenPermission) {
+        if (evaluatingForcedState) {
+            throw new IllegalStateException("Can't evaluate the forced state from within a PlayerForcedStateEvent");
+        }
         state.setSpeakPermission(speakPermission);
         state.setListenPermission(listenPermission);
-        PlayerForcedStateEvent event = PluginManager.instance().onPlayerForcedState(player, state, !speakPermission, !listenPermission);
+        PlayerForcedStateEvent event;
+        evaluatingForcedState = true;
+        try {
+            event = PluginManager.instance().onPlayerForcedState(player, state, !speakPermission, !listenPermission);
+        } finally {
+            evaluatingForcedState = false;
+        }
         if (state.isForceMuted() == event.isForceMuted() && state.isForceDisabled() == event.isForceDisabled()) {
             return;
         }
