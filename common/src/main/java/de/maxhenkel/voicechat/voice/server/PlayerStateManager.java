@@ -36,6 +36,8 @@ public class PlayerStateManager {
 
             if (state == null) {
                 state = defaultDisconnectedState(player);
+            } else if (state.isDisabled() == packet.isDisabled() && state.isMuted() == packet.isMuted()) {
+                return;
             }
 
             state.setDisabled(packet.isDisabled());
