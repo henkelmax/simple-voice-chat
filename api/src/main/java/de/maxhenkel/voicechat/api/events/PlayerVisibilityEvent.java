@@ -20,6 +20,8 @@ import de.maxhenkel.voicechat.api.VoicechatConnection;
  * Voice chat remembers the result, so call {@link VoicechatConnection#evaluateVisibility()} when the conditions your addon uses to hide a player change.
  * It is not emitted for the player itself.
  * <br>
+ * Modifying the state of a player from within this event (e.g. their group or forced state) throws an {@link IllegalStateException}.
+ * <br>
  * Note that hiding a player from another player still makes the hidden player send audio to the observer, if you don't intend that, you need to handle this yourself.
  * <br>
  * This can be emitted on any thread, including the main server thread, and needs to return very quickly, don't run expensive code here!
