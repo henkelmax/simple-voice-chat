@@ -19,6 +19,9 @@ import de.maxhenkel.voicechat.api.VoicechatConnection;
 public interface PlayerForcedStateEvent extends ServerEvent {
 
     /**
+     * Since the forced states are currently being evaluated, this connection doesn't reflect the state the player will have.
+     * The methods {@link #isForceMuted()} and {@link #isForceDisabled()} of this event also reflect the state based on permissions and addons that received this event before.
+     *
      * @return the connection of the player
      */
     VoicechatConnection getConnection();
