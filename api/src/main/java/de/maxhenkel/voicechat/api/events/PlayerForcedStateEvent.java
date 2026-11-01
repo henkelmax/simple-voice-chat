@@ -41,7 +41,7 @@ public interface PlayerForcedStateEvent extends ServerEvent {
 
     /**
      * Force disables voice chat for the player.
-     * The player won't receive any voice chat audio and can't enable voice chat.
+     * The player won't receive any voice chat audio, the server won't process any audio of the player and the player can't enable voice chat.
      */
     void forceDisable();
 
