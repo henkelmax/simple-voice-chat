@@ -11,9 +11,14 @@ import de.maxhenkel.voicechat.api.VoicechatConnection;
  * <br>
  * <b>NOTE</b>:
  * <br>
- * This event is emitted whenever the state of a player is sent to another player.
+ * This event is emitted
+ * <ul>
+ *     <li>Between the joining player and every other online player when a player joins</li>
+ *     <li>When a vanish plugin or mod shows a player again</li>
+ *     <li>When it is requested using {@link VoicechatConnection#evaluateVisibility()}</li>
+ * </ul>
+ * Voice chat remembers the result, so call {@link VoicechatConnection#evaluateVisibility()} when the conditions your addon uses to hide a player change.
  * It is not emitted for the player itself.
- * To re-evaluate the visibility of a player, use {@link VoicechatConnection#evaluateVisibility()}.
  * <br>
  * Note that hiding a player from another player still makes the hidden player send audio to the observer, if you don't intend that, you need to handle this yourself.
  * <br>
