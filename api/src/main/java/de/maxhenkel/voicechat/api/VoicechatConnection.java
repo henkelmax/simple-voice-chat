@@ -93,6 +93,15 @@ public interface VoicechatConnection {
     void evaluateForcedState();
 
     /**
+     * Re-evaluates the visibility of the player for all other players and emits a {@link de.maxhenkel.voicechat.api.events.PlayerVisibilityEvent} for each of them.
+     * <br/>
+     * Call this when the conditions your addon uses to hide this player change.
+     *
+     * @throws IllegalStateException if called from within a {@link de.maxhenkel.voicechat.api.events.PlayerVisibilityEvent}
+     */
+    void evaluateVisibility();
+
+    /**
      * @return if the player has a version of voice chat installed that is compatible with the server
      */
     boolean isInstalled();
