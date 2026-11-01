@@ -9,15 +9,15 @@ public class PlayerState {
 
     private UUID uuid;
     private String name;
-    private boolean muted;
+    private volatile boolean muted;
     private volatile boolean forceMuted;
-    private boolean disabled;
+    private volatile boolean disabled;
     private volatile boolean forceDisabled;
-    private boolean disconnected;
+    private volatile boolean disconnected;
     private boolean speakPermission;
     private boolean listenPermission;
     @Nullable
-    private UUID group;
+    private volatile UUID group;
 
     public PlayerState(UUID uuid, String name, boolean muted, boolean disabled, boolean disconnected) {
         this.uuid = uuid;
