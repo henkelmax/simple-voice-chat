@@ -68,6 +68,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
         if (server == null) {
             return;
         }
+        server.getPlayerStateManager().checkIfStateCanBeModified();
         if (group == null) {
             server.getGroupManager().leaveGroup(serverPlayer);
             return;
@@ -97,6 +98,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
             return;
         }
         PlayerStateManager manager = server.getPlayerStateManager();
+        manager.checkIfStateCanBeModified();
         PlayerState actualState = manager.getState(serverPlayer.getUUID());
         if (actualState == null) {
             return;
@@ -123,6 +125,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
             return;
         }
         PlayerStateManager manager = server.getPlayerStateManager();
+        manager.checkIfStateCanBeModified();
         PlayerState actualState = manager.getState(serverPlayer.getUUID());
         if (actualState == null) {
             return;
@@ -154,6 +157,7 @@ public class VoicechatConnectionImpl implements VoicechatConnection {
             return;
         }
         PlayerStateManager manager = server.getPlayerStateManager();
+        manager.checkIfStateCanBeModified();
         PlayerState actualState = manager.getState(serverPlayer.getUUID());
         if (actualState == null) {
             return;
