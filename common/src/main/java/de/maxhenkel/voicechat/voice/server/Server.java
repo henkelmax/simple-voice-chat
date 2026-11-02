@@ -80,7 +80,7 @@ public class Server extends Thread {
         connections = new ConcurrentHashMap<>();
         connectionSecrets = new ConnectionSecrets();
         nonceKey = new SecretKeySpec(Utils.generateSecureRandomBytes(NONCE_KEY_SIZE_BYTES), NONCE_MAC);
-        packetQueue = new LinkedBlockingQueue<>();
+        packetQueue = new LinkedBlockingQueue<>(Voicechat.SERVER_CONFIG.packetQueueSize.get());
         pingManager = new PingManager(this);
         playerStateManager = new PlayerStateManager(this);
         groupManager = new ServerGroupManager(this);
@@ -145,7 +145,7 @@ public class Server extends Thread {
 
             while (!socket.isClosed()) {
                 try {
-                    packetQueue.add(socket.read());
+                    queuePacket(socket.read());
                 } catch (ProtocolException e) {
                     if (Voicechat.debugMode()) {
                         Voicechat.LOGGER.warn("Failed to read packet", e);
@@ -642,7 +642,15 @@ public class Server extends Thread {
     }
 
     public void addRawPacket(RawUdpPacket rawUdpPacket) {
-        packetQueue.add(rawUdpPacket);
+        queuePacket(rawUdpPacket);
+    }
+
+    private void queuePacket(RawUdpPacket rawUdpPacket) {
+        if (!packetQueue.offer(rawUdpPacket)) {
+            CooldownTimer.run("packet_queue_full", () -> {
+                Voicechat.LOGGER.warn("Voice chat packet queue is full ({} packets) - dropping packets", packetQueue.size());
+            });
+        }
     }
 
     public PingManager getPingManager() {
