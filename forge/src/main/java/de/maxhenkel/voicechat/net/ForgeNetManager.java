@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -23,7 +24,8 @@ public class ForgeNetManager extends NetManager {
                         vcPacket.fromBytes(packet.getBufferData());
                         c.onServerPacket(player.mcServer, player, player.connection, vcPacket);
                     } catch (Exception e) {
-                        Voicechat.LOGGER.error("Failed to process packet", e);
+                        Voicechat.LOGGER.debug("Failed to parse packet", e);
+                        player.connection.disconnect(new TextComponentTranslation("disconnect.genericReason", "Failed to parse packet"));
                     }
                 });
             }
