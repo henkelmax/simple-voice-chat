@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.api.VoicechatSocket;
 import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
+import de.maxhenkel.voicechat.net.PacketRateLimiter;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.audiosender.AudioSenderImpl;
 import de.maxhenkel.voicechat.voice.common.*;
@@ -43,6 +44,7 @@ public class Server extends Thread {
     private static final String NONCE_MAC = "HmacSHA256";
     private static final int NONCE_KEY_SIZE_BYTES = 32;
     private static final long PERMISSION_CHECK_INTERVAL = 500L;
+    private static final int MAX_PACKETS_PER_SECOND = 100;
 
     private final Map<UUID, ClientConnection> connections;
     private final ConnectionSecrets connectionSecrets;
@@ -56,6 +58,7 @@ public class Server extends Thread {
     private final PlayerStateManager playerStateManager;
     private final ServerGroupManager groupManager;
     private final ServerCategoryManager categoryManager;
+    private final PacketRateLimiter packetRateLimiter;
 
     public Server() {
         int configPort = Voicechat.SERVER_CONFIG.voiceChatPort.get();
@@ -75,6 +78,7 @@ public class Server extends Thread {
         playerStateManager = new PlayerStateManager();
         groupManager = new ServerGroupManager();
         categoryManager = new ServerCategoryManager();
+        packetRateLimiter = new PacketRateLimiter(MAX_PACKETS_PER_SECOND);
         setDaemon(true);
         setName("VoiceChatServerThread");
         setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
@@ -259,22 +263,23 @@ public class Server extends Thread {
                         continue;
                     }
 
+                    ConnectionSecret connectionSecret = connectionSecrets.getByConnectionId(message.getConnectionId());
+                    if (connectionSecret == null) {
+                        continue;
+                    }
+
                     if (message.getPacket() instanceof AuthenticatePacket) {
-                        ConnectionSecret connectionSecret = connectionSecrets.getByConnectionId(message.getConnectionId());
-                        if (connectionSecret != null) {
-                            // The connection is only created once the client sends the nonce back from the same address
-                            sendPacket(new AuthenticateAckPacket(createNonce(connectionSecret.getConnectionId(), message.getAddress())), new ClientConnection(connectionSecret, message.getAddress()));
-                            if (!connectionSecret.isAuthenticated()) {
-                                connectionSecret.setAuthenticated(true);
-                                Voicechat.LOGGER.info("Successfully authenticated player {}", connectionSecret.getPlayerUUID());
-                            }
+                        // The connection is only created once the client sends the nonce back from the same address
+                        sendPacket(new AuthenticateAckPacket(createNonce(connectionSecret.getConnectionId(), message.getAddress())), new ClientConnection(connectionSecret, message.getAddress()));
+                        if (!connectionSecret.isAuthenticated()) {
+                            connectionSecret.setAuthenticated(true);
+                            Voicechat.LOGGER.info("Successfully authenticated player {}", connectionSecret.getPlayerUUID());
                         }
                     }
 
                     if (message.getPacket() instanceof ConnectionCheckPacket) {
                         ConnectionCheckPacket packet = (ConnectionCheckPacket) message.getPacket();
-                        ConnectionSecret connectionSecret = connectionSecrets.getByConnectionId(message.getConnectionId());
-                        if (connectionSecret == null || !MessageDigest.isEqual(createNonce(connectionSecret.getConnectionId(), message.getAddress()), packet.getNonce())) {
+                        if (!MessageDigest.isEqual(createNonce(connectionSecret.getConnectionId(), message.getAddress()), packet.getNonce())) {
                             continue;
                         }
                         ClientConnection connection = connections.get(connectionSecret.getPlayerUUID());
@@ -307,6 +312,14 @@ public class Server extends Thread {
                         continue;
                     }
 
+                    if (!packetRateLimiter.allow(conn.getPlayerUUID())) {
+                        // Remove the connection and remove the secret, so the player can't continue spamming until the kick is processed
+                        connections.remove(conn.getPlayerUUID());
+                        connectionSecrets.remove(conn.getPlayerUUID());
+                        Voicechat.compatibility.runTask(() -> kickForExceedingRateLimit(conn.getPlayerUUID()));
+                        continue;
+                    }
+
                     if (message.getPacket() instanceof MicPacket) {
                         onMicPacket(conn.getPlayerUUID(), (MicPacket) message.getPacket());
                     } else if (message.getPacket() instanceof PingPacket) {
@@ -324,6 +337,15 @@ public class Server extends Thread {
         public void close() {
             running = false;
         }
+    }
+
+    private void kickForExceedingRateLimit(UUID playerUuid) {
+        Player player = server.getPlayer(playerUuid);
+        if (player == null) {
+            return;
+        }
+        Voicechat.LOGGER.warn("Player {} exceeded voice chat packet rate limit", player.getDisplayName());
+        player.kickPlayer(Voicechat.TRANSLATIONS.rateLimitKickMessage.get());
     }
 
     public void onMicPacket(UUID playerUuid, MicPacket packet) {
@@ -589,6 +611,10 @@ public class Server extends Thread {
                 Voicechat.LOGGER.warn("Voice chat packet queue is full ({} packets) - dropping packets", packetQueue.size());
             });
         }
+    }
+
+    public PacketRateLimiter getPacketRateLimiter() {
+        return packetRateLimiter;
     }
 
     public PingManager getPingManager() {

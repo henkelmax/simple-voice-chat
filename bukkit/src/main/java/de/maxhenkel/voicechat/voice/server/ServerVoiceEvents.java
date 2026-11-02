@@ -149,6 +149,7 @@ public class ServerVoiceEvents implements Listener {
         }
 
         server.disconnectClient(event.getPlayer().getUniqueId());
+        server.getPacketRateLimiter().onPlayerLoggedOut(event.getPlayer());
         Voicechat.LOGGER.info("Disconnecting client {}", event.getPlayer().getName());
     }
 
