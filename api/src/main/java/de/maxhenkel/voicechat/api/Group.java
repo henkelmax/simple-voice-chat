@@ -108,7 +108,7 @@ public interface Group {
 
         /**
          * @return the built group
-         * @throws IllegalStateException if the name is not set or invalid
+         * @throws IllegalStateException if the name is not set or invalid or the password is too long
          */
         Group build();
 
