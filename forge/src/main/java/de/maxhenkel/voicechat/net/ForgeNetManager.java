@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -47,7 +48,8 @@ public class ForgeNetManager extends NetManager {
                         c.onServerPacket(context.getSender(), packet);
                         context.setPacketHandled(true);
                     } catch (Exception e) {
-                        Voicechat.LOGGER.error("Failed to process packet", e);
+                        Voicechat.LOGGER.debug("Failed to parse packet", e);
+                        context.getSender().connection.disconnect(Component.translatable("disconnect.genericReason", "Failed to parse packet"));
                     }
                 } else {
                     if (isSameThread()) {
