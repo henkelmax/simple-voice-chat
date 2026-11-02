@@ -22,6 +22,8 @@ public class TestAddon implements ModInitializer {
     public static final Set<UUID> FORCE_MUTED = ConcurrentHashMap.newKeySet();
     public static final Set<UUID> FORCE_DISABLED = ConcurrentHashMap.newKeySet();
     public static final Set<UUID> HIDDEN = ConcurrentHashMap.newKeySet();
+    public static final Set<UUID> PREVENT_LEAVE_GROUP = ConcurrentHashMap.newKeySet();
+    public static final Set<UUID> PREVENT_CREATE_GROUP = ConcurrentHashMap.newKeySet();
 
     @Override
     public void onInitialize() {
@@ -30,6 +32,8 @@ public class TestAddon implements ModInitializer {
                     .then(Commands.literal("forcemute").then(Commands.argument("target", EntityArgument.player()).executes(c -> toggle(c, FORCE_MUTED, "forceMuted", TestVoicechatPlugin::evaluateForcedState))))
                     .then(Commands.literal("forcedisable").then(Commands.argument("target", EntityArgument.player()).executes(c -> toggle(c, FORCE_DISABLED, "forceDisabled", TestVoicechatPlugin::evaluateForcedState))))
                     .then(Commands.literal("hide").then(Commands.argument("target", EntityArgument.player()).executes(c -> toggle(c, HIDDEN, "hidden", TestVoicechatPlugin::evaluateVisibility))))
+                    .then(Commands.literal("preventleavegroup").then(Commands.argument("target", EntityArgument.player()).executes(c -> toggle(c, PREVENT_LEAVE_GROUP, "preventLeaveGroup", uuid -> {}))))
+                    .then(Commands.literal("preventcreategroup").then(Commands.argument("target", EntityArgument.player()).executes(c -> toggle(c, PREVENT_CREATE_GROUP, "preventCreateGroup", uuid -> {}))))
                     .then(Commands.literal("category").then(Commands.argument("id", StringArgumentType.word()).then(Commands.argument("name", StringArgumentType.string())
                             .executes(c -> registerCategory(c, null, null))
                             .then(Commands.argument("tab", StringArgumentType.word())
