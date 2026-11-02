@@ -49,6 +49,11 @@ public class AudioRecorder {
     private final AudioFormat stereoFormat;
 
     private final ExecutorService threadPool;
+    /**
+     * Prevent the mic thread to continue writing after the recorder is closed.
+     * Pending stuff will be flushed on closed.
+     */
+    private boolean closed;
 
     public AudioRecorder(Path location, long timestamp) {
         this.timestamp = timestamp;
@@ -127,7 +132,10 @@ public class AudioRecorder {
         return location.resolve(String.format("%s.mp3", fileName));
     }
 
-    public void appendChunk(UUID uuid, long chunkTimestamp, short[] data) throws IOException {
+    public synchronized void appendChunk(UUID uuid, long chunkTimestamp, short[] data) throws IOException {
+        if (closed) {
+            return;
+        }
         if (data.length <= 0) {
             flushChunkThreaded(uuid);
             return;
@@ -197,7 +205,10 @@ public class AudioRecorder {
         encoderData.lastTimestamp = chunk.timestamp + getAudioTimeMillis(audio.length);
     }
 
-    public void flushChunkThreaded(UUID playerUUID) {
+    public synchronized void flushChunkThreaded(UUID playerUUID) {
+        if (closed) {
+            return;
+        }
         AudioChunk chunk = getAndRemoveChunk(playerUUID);
         if (chunk == null) {
             return;
@@ -243,7 +254,8 @@ public class AudioRecorder {
         threadPool.shutdown();
     }
 
-    public void saveAndClose() {
+    public synchronized void saveAndClose() {
+        closed = true;
         save();
         close();
     }
