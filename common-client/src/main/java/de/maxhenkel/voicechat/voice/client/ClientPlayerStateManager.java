@@ -85,13 +85,15 @@ public class ClientPlayerStateManager {
                 return;
             }
             this.group = packet.getGroup();
-            if (group != null && screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen) {
+            if (group != null && (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen)) {
                 ClientGroup clientGroup = getGroup();
                 if (clientGroup != null) {
                     Minecraft.getInstance().setScreen(new GroupScreen(clientGroup));
                 } else {
                     Voicechat.LOGGER.warn("Received join group packet without group being present");
                 }
+            } else if (group == null && screen instanceof GroupScreen) {
+                Minecraft.getInstance().setScreen(new JoinGroupScreen());
             }
             GroupList.update();
         });
