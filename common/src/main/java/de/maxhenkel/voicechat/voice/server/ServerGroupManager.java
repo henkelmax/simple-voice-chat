@@ -77,6 +77,12 @@ public class ServerGroupManager {
     }
 
     public void addGroup(Group group, @Nullable EntityPlayerMP player) {
+        PlayerState state = player == null ? null : getStates().getState(player.getUniqueID());
+        boolean switchingGroup = state != null && state.hasGroup();
+        if (switchingGroup && PluginManager.instance().onLeaveGroup(player)) {
+            return;
+        }
+
         if (PluginManager.instance().onCreateGroup(player, group)) {
             return;
         }
@@ -91,6 +97,10 @@ public class ServerGroupManager {
         manager.setGroup(player, group.getId());
 
         NetManager.sendToClient(player, new JoinedGroupPacket(group.getId(), false));
+
+        if (switchingGroup) {
+            cleanupGroups();
+        }
     }
 
     public void joinGroup(@Nullable Group group, EntityPlayerMP player, @Nullable String password) {
@@ -98,10 +108,21 @@ public class ServerGroupManager {
             return;
         }
 
+        PlayerState state = getStates().getState(player.getUniqueID());
+        if (state != null && group.getId().equals(state.getGroup())) {
+            return;
+        }
+
         if (group.getPassword() != null && !group.getPassword().equals(password)) {
             NetManager.sendToClient(player, new JoinedGroupPacket(null, true));
             return;
         }
+
+        boolean switchingGroup = state != null && state.hasGroup();
+        if (switchingGroup && PluginManager.instance().onLeaveGroup(player)) {
+            return;
+        }
+
         if (PluginManager.instance().onJoinGroup(player, group)) {
             return;
         }
@@ -110,6 +131,10 @@ public class ServerGroupManager {
         manager.setGroup(player, group.getId());
 
         NetManager.sendToClient(player, new JoinedGroupPacket(group.getId(), false));
+
+        if (switchingGroup) {
+            cleanupGroups();
+        }
     }
 
     public void leaveGroup(EntityPlayerMP player) {

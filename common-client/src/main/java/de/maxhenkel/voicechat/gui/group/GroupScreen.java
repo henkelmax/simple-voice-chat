@@ -85,7 +85,6 @@ public class GroupScreen extends IngameListScreenBase {
 
         leave = new ImageButton(3, guiLeft + xSize - buttonSize - 7, buttonY, LEAVE, button -> {
             ClientServerNetManager.sendToServer(new LeaveGroupPacket());
-            mc.displayGuiScreen(new JoinGroupScreen());
         }, (button, mouseX, mouseY) -> {
             drawHoveringText(LEAVE_GROUP.getUnformattedComponentText(), mouseX, mouseY);
         });
