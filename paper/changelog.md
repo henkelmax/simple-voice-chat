@@ -19,3 +19,4 @@
 - Properly prevent players from leaving groups using the API
 - Always call leave group event when a player changes their group
 - Don't register commands on paper if the plugin doesn't support the Minecraft version
+- Added UDP packet rate limiting
