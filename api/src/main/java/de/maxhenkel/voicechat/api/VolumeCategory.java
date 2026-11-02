@@ -146,6 +146,7 @@ public interface VolumeCategory {
 
         /**
          * @return the built category
+         * @throws IllegalStateException if the ID or name is not set, the ID or tab is invalid, a string is too long or the icon is not 16x16
          */
         VolumeCategory build();
 
