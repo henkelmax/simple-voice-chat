@@ -149,6 +149,9 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
 
             updateLastRender();
             setMicLocked(true);
+            if (usesOwnMicThread) {
+                micThread.start();
+            }
         }
 
         @Override
@@ -191,12 +194,13 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
                 if (ownSoundManager && soundManager != null) {
                     soundManager.close();
                 }
-                setMicLocked(false);
-                if (micListener != null) {
-                    micListener.onStop();
-                }
                 if (usesOwnMicThread) {
                     micThread.close();
+                } else {
+                    setMicLocked(false);
+                }
+                if (micListener != null) {
+                    micListener.onStop();
                 }
                 setMicActive(false);
                 Voicechat.LOGGER.info("Mic test audio channel closed");
