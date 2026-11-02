@@ -30,10 +30,10 @@ public class VolumeCategoryImpl implements VolumeCategory {
 
     public VolumeCategoryImpl(String id, String name, @Nullable String nameTranslationKey, @Nullable String description, @Nullable String descriptionTranslationKey, @Nullable int[][] icon, @Nullable String tab, @Nullable String tabName, @Nullable String tabTranslationKey) {
         if (!ID_REGEX.matcher(id).matches()) {
-            throw new IllegalArgumentException("Volume category ID can only contain a-z and _ with a maximum amount of 16 characters");
+            throw new IllegalStateException("Volume category ID can only contain a-z and _ with a maximum amount of 16 characters");
         }
         if (tab != null && !ID_REGEX.matcher(tab).matches()) {
-            throw new IllegalArgumentException("Volume category tab can only contain a-z and _ with a maximum amount of 16 characters");
+            throw new IllegalStateException("Volume category tab can only contain a-z and _ with a maximum amount of 16 characters");
         }
         this.id = id;
         this.name = name;
