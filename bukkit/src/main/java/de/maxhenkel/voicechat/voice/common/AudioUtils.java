@@ -7,6 +7,8 @@ import java.nio.ShortBuffer;
 public class AudioUtils {
 
     public static final int MAX_OPUS_PAYLOAD_SIZE = 1275;
+    public static final int MIN_MTU_SIZE = 512;
+    public static final int MAX_MTU_SIZE = 2048;
 
     public static short[] bytesToShorts(byte[] bytes) {
         if (bytes.length % 2 != 0) {
