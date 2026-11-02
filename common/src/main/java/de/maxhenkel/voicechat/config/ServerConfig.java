@@ -17,6 +17,7 @@ public class ServerConfig {
     public ConfigEntry<Codec> voiceChatCodec;
     public ConfigEntry<Integer> voiceChatMtuSize;
     public ConfigEntry<Integer> tcpRateLimit;
+    public ConfigEntry<Integer> packetQueueSize;
     public ConfigEntry<Integer> keepAlive;
     public ConfigEntry<Boolean> groupsEnabled;
     public ConfigEntry<String> voiceHost;
@@ -75,6 +76,10 @@ public class ServerConfig {
                         "Set this to -1 to disable the rate limit - This must be greater than 0 in all other cases",
                         "This only applies to voice chat packets that are sent through Minecrafts networking",
                         "This affects actions like opening/joining/leaving voice chat groups or general state changes like disabling/enabling the voice chat"
+                );
+        packetQueueSize = builder
+                .integerEntry("packet_queue_size", 16384, 64, Integer.MAX_VALUE,
+                        "The maximum amount of packets that can be queued on the server before new ones are dropped"
                 );
         keepAlive = builder
                 .integerEntry("keep_alive", 1000, 1000, Integer.MAX_VALUE,
