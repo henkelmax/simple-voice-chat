@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
 import de.maxhenkel.voicechat.util.Key;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import de.maxhenkel.voicechat.voice.common.Secret;
 import org.bukkit.entity.Player;
 
@@ -99,7 +100,7 @@ public class SecretPacket implements Packet<SecretPacket> {
         serverPort = buf.readInt();
         playerUUID = buf.readUUID();
         codec = ServerConfig.Codec.values()[buf.readByte()];
-        mtuSize = buf.readInt();
+        mtuSize = Math.max(AudioUtils.MIN_MTU_SIZE, Math.min(buf.readInt(), AudioUtils.MAX_MTU_SIZE));
         voiceChatDistance = buf.readDouble();
         keepAlive = buf.readInt();
         groupsEnabled = buf.readBoolean();
