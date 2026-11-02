@@ -13,3 +13,5 @@
 - Improved voice chat initialization protocol to prevent potential attacks
 - Prevent incompatible clients from receiving/sending their states to the server
 - Allow addons to hide players from other players using the API
+- Added `packet_queue_size` config option
+- Kick players if they send malformed packets
