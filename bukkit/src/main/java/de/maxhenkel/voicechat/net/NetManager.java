@@ -95,8 +95,14 @@ public class NetManager implements Listener {
                 Voicechat.LOGGER.error("Failed to create new packet instance of {}", packetClass.getSimpleName(), e);
                 return;
             }
-            FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
-            packet.fromBytes(buffer);
+            try {
+                FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
+                packet.fromBytes(buffer);
+            } catch (Exception e) {
+                Voicechat.LOGGER.debug("Failed to parse packet", e);
+                player.kickPlayer("Failed to parse packet");
+                return;
+            }
             packet.onPacket(player);
         });
     }
