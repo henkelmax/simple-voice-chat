@@ -80,13 +80,6 @@ public class MicThread extends Thread {
                 microphoneProcessor = createMicrophoneProcessor();
             }
 
-            if (connection != null) {
-                // Checking here for timeouts, because we don't have any other looping thread
-                connection.checkTimeout();
-                if (!running) {
-                    break;
-                }
-            }
             if (microphoneLocked || ClientManager.getPlayerStateManager().isDisabled()) {
                 flushIfNeeded();
 
