@@ -22,12 +22,17 @@ import java.util.function.Consumer;
 
 public class MicThread extends Thread {
 
+    /**
+     * To avoid duplicate mic usages, since some setups only allow one microphone
+     */
+    private static final Object MICROPHONE_LOCK = new Object();
+
     @Nullable
     private final ClientVoicechat client;
     @Nullable
     private final ClientVoicechatConnection connection;
     @Nullable
-    private Microphone mic;
+    private volatile Microphone mic;
     @Nullable
     private MicrophoneException microphoneError;
     private volatile boolean running;
@@ -67,18 +72,22 @@ public class MicThread extends Thread {
 
     @Override
     public void run() {
+        synchronized (MICROPHONE_LOCK) {
+            try {
+                processMicrophone();
+            } finally {
+                closeResources();
+            }
+        }
+    }
+
+    private void processMicrophone() {
         Microphone mic = getMic();
         if (mic == null) {
             return;
         }
 
         while (running) {
-            MicrophoneActivationType type = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get();
-            if (!type.equals(microphoneProcessor.getActivationType())) {
-                microphoneProcessor.close();
-                microphoneProcessor = createMicrophoneProcessor();
-            }
-
             if (microphoneLocked || ClientManager.getPlayerStateManager().isDisabled()) {
                 flushIfNeeded();
 
@@ -108,9 +117,11 @@ public class MicThread extends Thread {
 
     @Nullable
     public short[] pollMic() {
-        Microphone mic = getMic();
+        // Don't call getMic here as only the mic thread itself should open the microphone, so the lock works
+        Microphone mic = this.mic;
         if (mic == null) {
-            throw new IllegalStateException("No microphone available");
+            Utils.sleep(5);
+            return null;
         }
         if (!mic.isStarted()) {
             mic.start();
@@ -127,6 +138,12 @@ public class MicThread extends Thread {
         short[] audio = pollMic();
         if (audio == null) {
             return null;
+        }
+        // Always do this here to ensure the thread that processes audio can do it
+        MicrophoneActivationType type = VoicechatClient.CLIENT_CONFIG.microphoneActivationType.get();
+        if (!type.equals(microphoneProcessor.getActivationType())) {
+            microphoneProcessor.close();
+            microphoneProcessor = createMicrophoneProcessor();
         }
         microphoneProcessor.process(audio, testing);
         return audio;
@@ -216,21 +233,14 @@ public class MicThread extends Thread {
         microphoneProcessor.reset();
     }
 
+    /**
+     * Stops the thread, which then closes the microphone by itself, so it isn't closed while still being in use.
+     */
     public void close() {
-        if (!running) {
-            return;
-        }
         running = false;
+    }
 
-        if (Thread.currentThread() != this) {
-            try {
-                join(100);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                Voicechat.LOGGER.error("Interrupted while waiting for mic thread to close", e);
-            }
-        }
-
+    private void closeResources() {
         if (mic != null) {
             mic.close();
         }
