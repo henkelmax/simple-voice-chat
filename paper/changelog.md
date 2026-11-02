@@ -16,3 +16,5 @@
 - Allow addons to hide players from other players using the API
 - Added `packet_queue_size` config option
 - Kick players if they send malformed packets
+- Properly prevent players from leaving groups using the API
+- Always call leave group event when a player changes their group
