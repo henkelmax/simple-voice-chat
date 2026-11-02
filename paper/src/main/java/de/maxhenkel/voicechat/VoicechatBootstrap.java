@@ -19,6 +19,10 @@ public final class VoicechatBootstrap implements PluginBootstrap {
 
     @Override
     public void bootstrap(BootstrapContext context) {
+        // Prevent command registration on unsupported MC versions
+        if (!VoicechatPaperPlugin.isSupportedMinecraftVersion()) {
+            return;
+        }
         LifecycleEventManager<BootstrapContext> lifecycleManager = context.getLifecycleManager();
         lifecycleManager.registerEventHandler(LifecycleEvents.COMMANDS, (event) -> {
             PaperCommonCompatibilityManager manager = (PaperCommonCompatibilityManager) CommonCompatibilityManager.INSTANCE;

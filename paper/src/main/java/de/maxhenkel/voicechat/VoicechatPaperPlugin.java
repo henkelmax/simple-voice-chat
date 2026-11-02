@@ -32,7 +32,7 @@ public class VoicechatPaperPlugin extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         try {
-            if (!BuildConstants.MINECRAFT_VERSION.equals(ServerBuildInfo.buildInfo().minecraftVersionId())) {
+            if (!isSupportedMinecraftVersion()) {
                 getLogger().severe("Incompatible Minecraft version - This plugin requires Minecraft %s".formatted(BuildConstants.MINECRAFT_VERSION));
                 Bukkit.getPluginManager().disablePlugin(this);
                 return;
@@ -100,6 +100,10 @@ public class VoicechatPaperPlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onServerStart(ServerLoadEvent event) {
         PluginManager.instance().init();
+    }
+
+    public static boolean isSupportedMinecraftVersion() {
+        return BuildConstants.MINECRAFT_VERSION.equals(ServerBuildInfo.buildInfo().minecraftVersionId());
     }
 
 }
