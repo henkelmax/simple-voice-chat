@@ -9,6 +9,8 @@ public class AudioUtils {
     public static final int SAMPLE_RATE = 48000;
     public static final int FRAME_SIZE = (SAMPLE_RATE / 1000) * 20;
     public static final int MAX_OPUS_PAYLOAD_SIZE = 1275;
+    public static final int MIN_MTU_SIZE = 512;
+    public static final int MAX_MTU_SIZE = 2048;
     public static final double LOWEST_DB = -127D;
 
     public static short[] bytesToShorts(byte[] bytes) {
