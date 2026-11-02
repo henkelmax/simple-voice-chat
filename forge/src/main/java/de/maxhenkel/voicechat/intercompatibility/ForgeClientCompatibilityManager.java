@@ -27,6 +27,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     private final List<RenderHUDEvent> renderHUDEvents;
     private final List<KeyboardEvent> keyboardEvents;
     private final List<MouseEvent> mouseEvents;
+    private final List<Runnable> clientTickEvents;
     private final List<Runnable> renderTickEvents;
     private final List<Runnable> inputEvents;
     private final List<Runnable> disconnectEvents;
@@ -41,6 +42,7 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
         renderHUDEvents = new CopyOnWriteArrayList<>();
         keyboardEvents = new CopyOnWriteArrayList<>();
         mouseEvents = new CopyOnWriteArrayList<>();
+        clientTickEvents = new CopyOnWriteArrayList<>();
         renderTickEvents = new CopyOnWriteArrayList<>();
         inputEvents = new CopyOnWriteArrayList<>();
         disconnectEvents = new CopyOnWriteArrayList<>();
@@ -78,6 +80,14 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @SubscribeEvent
     public void onInput(TickEvent.ClientTickEvent event) {
         inputEvents.forEach(Runnable::run);
+    }
+
+    @SubscribeEvent
+    public void onTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) {
+            return;
+        }
+        clientTickEvents.forEach(Runnable::run);
     }
 
     public void onDisconnect() {
@@ -136,6 +146,11 @@ public class ForgeClientCompatibilityManager extends ClientCompatibilityManager 
     @Override
     public void onMouseEvent(MouseEvent onMouseEvent) {
         mouseEvents.add(onMouseEvent);
+    }
+
+    @Override
+    public void onClientTick(Runnable onClientTick) {
+        clientTickEvents.add(onClientTick);
     }
 
     @Override

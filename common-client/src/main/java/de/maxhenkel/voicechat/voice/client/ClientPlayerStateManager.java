@@ -113,7 +113,6 @@ public class ClientPlayerStateManager {
      */
     public void onVoiceChatDisconnected() {
         disconnected = true;
-        syncOwnState();
         ClientPluginManager.instance().onVoicechatConnection(false);
     }
 
@@ -122,7 +121,6 @@ public class ClientPlayerStateManager {
      */
     public void onVoiceChatConnected(ClientVoicechatConnection client) {
         disconnected = false;
-        syncOwnState();
         ClientPluginManager.instance().onVoicechatConnection(true);
     }
 
