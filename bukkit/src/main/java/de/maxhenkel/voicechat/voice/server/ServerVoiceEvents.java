@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.BuildConstants;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.compatibility.PlayerHideEvent;
 import de.maxhenkel.voicechat.compatibility.PlayerShowEvent;
+import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PacketRateLimiter;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
@@ -92,15 +93,21 @@ public class ServerVoiceEvents implements Listener {
         if (server == null) {
             return;
         }
+        ConnectionSecret connectionSecret = server.getConnectionSecrets().create(player.getUniqueId());
+        if (connectionSecret == null) {
+            if (Voicechat.debugMode()) {
+                Voicechat.LOGGER.warn("Player {} already requested secret - ignoring", player.getName());
+            } else {
+                CooldownTimer.run(String.format("already_requested_secret_%s", player.getUniqueId()), () -> {
+                    Voicechat.LOGGER.warn("Player {} already requested secret - ignoring", player.getName());
+                });
+            }
+            return;
+        }
+
         server.getPlayerStateManager().onPlayerCompatibilityCheckSucceeded(player);
         server.getCategoryManager().onPlayerCompatibilityCheckSucceeded(player);
         server.getGroupManager().onPlayerCompatibilityCheckSucceeded(player);
-
-        ConnectionSecret connectionSecret = server.getConnectionSecrets().create(player.getUniqueId());
-        if (connectionSecret == null) {
-            Voicechat.LOGGER.warn("Player already requested secret - ignoring");
-            return;
-        }
 
         String voiceHost = PluginManager.instance().getVoiceHost(player, Voicechat.SERVER_CONFIG.voiceHost.get());
         NetManager.sendToClient(player, new SecretPacket(player, connectionSecret.getSecret(), connectionSecret.getConnectionId(), server.getPort(), Voicechat.SERVER_CONFIG, voiceHost));
