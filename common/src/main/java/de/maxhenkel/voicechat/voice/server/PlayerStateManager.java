@@ -70,13 +70,17 @@ public class PlayerStateManager {
         PluginManager.instance().onPlayerStateChanged(state);
     }
 
-    private void broadcastRemoveState(ServerPlayer stateOwner) {
+    /**
+     * Needs to be called before the visibility of the state owner is forgotten.
+     */
+    private synchronized void broadcastRemoveState(ServerPlayer stateOwner) {
         RemovePlayerStatePacket packet = new RemovePlayerStatePacket(stateOwner.getUUID());
         for (ServerPlayer receiver : voicechatServer.getServer().getPlayerList().getPlayers()) {
+            if (!canSee(receiver, stateOwner)) {
+                continue;
+            }
             NetManager.sendToClient(receiver, packet);
         }
-        // Send the default disconnected state to the API when disconnecting
-        PluginManager.instance().onPlayerStateChanged(defaultDisconnectedState(stateOwner));
     }
 
     public synchronized void onPlayerCompatibilityCheckSucceeded(ServerPlayer player) {
@@ -114,9 +118,11 @@ public class PlayerStateManager {
     public void onPlayerLoggedOut(ServerPlayer player) {
         synchronized (this) {
             states.remove(player.getUUID());
+            broadcastRemoveState(player);
             forgetVisibility(player);
         }
-        broadcastRemoveState(player);
+        // Send the default disconnected state to the API when disconnecting
+        PluginManager.instance().onPlayerStateChanged(defaultDisconnectedState(player));
         Voicechat.LOGGER.debug("Removing state of {}", player.getName().getString());
     }
 
