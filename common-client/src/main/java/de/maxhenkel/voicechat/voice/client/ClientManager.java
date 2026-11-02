@@ -51,6 +51,7 @@ public class ClientManager {
         ClientCompatibilityManager.INSTANCE.onJoinWorld(this::onJoinWorld);
         ClientCompatibilityManager.INSTANCE.onDisconnect(this::onDisconnect);
         ClientCompatibilityManager.INSTANCE.onPublishServer(this::onPublishServer);
+        ClientCompatibilityManager.INSTANCE.onClientTick(this::onClientTick);
 
         ClientCompatibilityManager.INSTANCE.onVoiceChatConnected(connection -> {
             if (client != null) {
@@ -124,6 +125,16 @@ public class ClientManager {
             client = null;
         }
         ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
+    }
+
+    private void onClientTick() {
+        if (client == null) {
+            return;
+        }
+        ClientVoicechatConnection connection = client.getConnection();
+        if (connection != null) {
+            connection.checkTimeout();
+        }
     }
 
     private void onPublishServer(int port) {

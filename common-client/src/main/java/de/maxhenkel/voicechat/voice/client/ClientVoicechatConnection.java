@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import de.maxhenkel.voicechat.voice.common.*;
+import net.minecraft.client.Minecraft;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -100,7 +101,7 @@ public class ClientVoicechatConnection extends Thread {
                     if (authenticated && !connected) {
                         Voicechat.LOGGER.info("Server acknowledged connection check");
                         connected = true;
-                        ClientCompatibilityManager.INSTANCE.emitVoiceChatConnectedEvent(this);
+                        executeIfActive(() -> ClientCompatibilityManager.INSTANCE.emitVoiceChatConnectedEvent(this));
                         lastKeepAlive = System.currentTimeMillis();
                     }
                 } else if (in.getPacket() instanceof SoundPacket) {
@@ -164,7 +165,18 @@ public class ClientVoicechatConnection extends Thread {
     }
 
     public void disconnect() {
-        ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
+        executeIfActive(ClientCompatibilityManager.INSTANCE::emitVoiceChatDisconnectedEvent);
+    }
+
+    /**
+     * Runs the task on the Minecraft thread, but only if this is still the active connection
+     */
+    private void executeIfActive(Runnable task) {
+        Minecraft.getInstance().execute(() -> {
+            if (running) {
+                task.run();
+            }
+        });
     }
 
     private class AuthThread extends Thread {
