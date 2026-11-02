@@ -56,9 +56,11 @@ public class PlayerStateManager implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         synchronized (this) {
             states.remove(event.getPlayer().getUniqueId());
+            broadcastRemoveState(event.getPlayer());
             forgetVisibility(event.getPlayer());
         }
-        broadcastRemoveState(event.getPlayer());
+        // Send the default disconnected state to the API when disconnecting
+        PluginManager.instance().onPlayerStateChanged(defaultDisconnectedState(event.getPlayer()));
         Voicechat.LOGGER.debug("Removing state of {}", event.getPlayer().getName());
     }
 
@@ -114,13 +116,17 @@ public class PlayerStateManager implements Listener {
         PluginManager.instance().onPlayerStateChanged(state);
     }
 
-    private void broadcastRemoveState(Player stateOwner) {
+    /**
+     * Needs to be called before the visibility of the state owner is forgotten.
+     */
+    private synchronized void broadcastRemoveState(Player stateOwner) {
         RemovePlayerStatePacket packet = new RemovePlayerStatePacket(stateOwner.getUniqueId());
         for (Player receiver : Voicechat.INSTANCE.getServer().getOnlinePlayers()) {
+            if (!canSee(receiver, stateOwner)) {
+                continue;
+            }
             NetManager.sendToClient(receiver, packet);
         }
-        // Send the default disconnected state to the API when disconnecting
-        PluginManager.instance().onPlayerStateChanged(defaultDisconnectedState(stateOwner));
     }
 
     public synchronized void onPlayerCompatibilityCheckSucceeded(Player player) {
