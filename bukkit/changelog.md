@@ -14,3 +14,5 @@
 - Prevent incompatible clients from receiving/sending their states to the server
 - Reworked PlaceholderAPI support
 - Allow addons to hide players from other players using the API
+- Added `packet_queue_size` config option
+- Kick players if they send malformed packets
