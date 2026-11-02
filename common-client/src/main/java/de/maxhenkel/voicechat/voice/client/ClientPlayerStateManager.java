@@ -85,7 +85,7 @@ public class ClientPlayerStateManager {
                 return;
             }
             this.group = packet.getGroup();
-            if (group != null && (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen)) {
+            if (group != null && (screen instanceof JoinGroupScreen || screen instanceof CreateGroupScreen || screen instanceof EnterPasswordScreen || screen instanceof GroupScreen)) {
                 ClientGroup clientGroup = getGroup();
                 if (clientGroup != null) {
                     Minecraft.getInstance().setScreen(new GroupScreen(clientGroup));
