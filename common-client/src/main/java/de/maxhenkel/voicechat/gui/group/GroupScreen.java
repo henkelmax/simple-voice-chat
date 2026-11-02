@@ -91,7 +91,6 @@ public class GroupScreen extends VoiceChatScreenBase {
 
         leave = new ImageButton(guiLeft + xSize - buttonSize - 7, buttonY, LEAVE, button -> {
             ClientServerNetManager.sendToServer(new LeaveGroupPacket());
-            minecraft.gui.setScreen(new JoinGroupScreen());
         });
         leave.setTooltip(Tooltip.create(LEAVE_GROUP));
         addRenderableWidget(leave);
