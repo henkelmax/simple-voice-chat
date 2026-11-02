@@ -94,7 +94,6 @@ public class GroupScreen extends ListScreenBase {
 
         leave = new ImageButton(guiLeft + xSize - buttonSize - 7, buttonY, LEAVE, button -> {
             ClientServerNetManager.sendToServer(new LeaveGroupPacket());
-            minecraft.setScreen(new JoinGroupScreen());
         }, (button, matrices, mouseX, mouseY) -> {
             renderTooltip(matrices, Collections.singletonList(LEAVE_GROUP.getVisualOrderText()), mouseX, mouseY);
         });
