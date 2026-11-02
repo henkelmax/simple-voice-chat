@@ -1,10 +1,12 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.config.ServerConfig;
+import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import de.maxhenkel.voicechat.voice.common.Secret;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.UUID;
 
@@ -98,7 +100,7 @@ public class SecretPacket implements Packet<SecretPacket> {
         serverPort = buf.readInt();
         playerUUID = buf.readUniqueId();
         codec = ServerConfig.Codec.values()[buf.readByte()];
-        mtuSize = buf.readInt();
+        mtuSize = MathHelper.clamp(buf.readInt(), AudioUtils.MIN_MTU_SIZE, AudioUtils.MAX_MTU_SIZE);
         voiceChatDistance = buf.readDouble();
         keepAlive = buf.readInt();
         groupsEnabled = buf.readBoolean();
