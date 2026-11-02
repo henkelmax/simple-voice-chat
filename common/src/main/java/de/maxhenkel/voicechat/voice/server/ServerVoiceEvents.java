@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.BuildConstants;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
 import de.maxhenkel.voicechat.net.NetManager;
@@ -94,13 +95,19 @@ public class ServerVoiceEvents {
         if (server == null) {
             return;
         }
-        CommonCompatibilityManager.INSTANCE.emitPlayerCompatibilityCheckSucceeded(player);
-
         ConnectionSecret connectionSecret = server.getConnectionSecrets().create(player.getUUID());
         if (connectionSecret == null) {
-            Voicechat.LOGGER.warn("Player already requested secret - ignoring");
+            if (Voicechat.debugMode()) {
+                Voicechat.LOGGER.warn("Player {} already requested secret - ignoring", player.getName().getString());
+            } else {
+                CooldownTimer.run(String.format("already_requested_secret_%s", player.getUUID()), () -> {
+                    Voicechat.LOGGER.warn("Player {} already requested secret - ignoring", player.getName().getString());
+                });
+            }
             return;
         }
+
+        CommonCompatibilityManager.INSTANCE.emitPlayerCompatibilityCheckSucceeded(player);
 
         boolean dedicated = CommonCompatibilityManager.INSTANCE.isDedicatedServer();
         String configuredVoiceHost = dedicated ? Voicechat.SERVER_CONFIG.voiceHost.get() : "";
