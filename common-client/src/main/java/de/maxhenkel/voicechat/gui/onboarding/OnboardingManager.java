@@ -38,7 +38,7 @@ public class OnboardingManager {
         MC.displayGuiScreen(null);
     }
 
-    public static void onConnecting() {
+    public static void onJoinWorld() {
         if (!isOnboarding()) {
             return;
         }
