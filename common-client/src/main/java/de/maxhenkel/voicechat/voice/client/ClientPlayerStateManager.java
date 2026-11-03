@@ -259,6 +259,7 @@ public class ClientPlayerStateManager {
         syncOwnState();
     }
 
+    //TODO Check thread?
     public void onSpeakerAvailabilityChanged() {
         syncOwnState();
     }

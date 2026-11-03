@@ -8,21 +8,19 @@ import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import org.lwjgl.openal.*;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
 public class ALMicrophone implements Microphone {
 
     private final int sampleRate;
-    @Nullable
     private final String deviceName;
     private long device;
     private final int bufferSize;
     private boolean captureStereo;
     private boolean started;
 
-    public ALMicrophone(int sampleRate, int bufferSize, @Nullable String deviceName) {
+    public ALMicrophone(int sampleRate, int bufferSize, String deviceName) {
         this.sampleRate = sampleRate;
         this.deviceName = deviceName;
         this.bufferSize = bufferSize;
@@ -127,19 +125,7 @@ public class ALMicrophone implements Microphone {
         }
     }
 
-    private long openMic(@Nullable String name) throws MicrophoneException {
-        try {
-            return tryOpenMic(name);
-        } catch (MicrophoneException e) {
-            if (name == null) {
-                throw e;
-            }
-            Voicechat.LOGGER.warn("Failed to open microphone '{}', falling back to default microphone", name);
-            return tryOpenMic(null);
-        }
-    }
-
-    private long tryOpenMic(@Nullable String string) throws MicrophoneException {
+    private long openMic(String string) throws MicrophoneException {
         long device = ALC11.alcCaptureOpenDevice(string, sampleRate, captureStereo ? EXTFloat32.AL_FORMAT_STEREO_FLOAT32 : EXTFloat32.AL_FORMAT_MONO_FLOAT32, bufferSize);
         if (device == 0L) {
             throw new MicrophoneException("Failed to open microphone");
