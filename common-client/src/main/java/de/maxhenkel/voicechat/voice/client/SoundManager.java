@@ -152,6 +152,14 @@ public class SoundManager {
         return context == 0 || device == 0;
     }
 
+    public boolean isDisconnected() {
+        return isDisconnected(device);
+    }
+
+    public static boolean isDisconnected(long device) {
+        return ALC11.alcIsExtensionPresent(device, "ALC_EXT_disconnect") && ALC11.alcGetInteger(device, EXTDisconnect.ALC_CONNECTED) == ALC11.ALC_FALSE;
+    }
+
     private static long openSpeaker(@Nullable String name) throws SpeakerException {
         try {
             return tryOpenSpeaker(name);
