@@ -123,6 +123,10 @@ public class MicThread extends Thread {
             Utils.sleep(5);
             return null;
         }
+        if (mic.isDisconnected()) {
+            stopWithError(new MicrophoneException("Microphone was disconnected"));
+            return null;
+        }
         if (!mic.isStarted()) {
             mic.start();
         }
@@ -158,13 +162,17 @@ public class MicThread extends Thread {
             try {
                 mic = MicrophoneManager.createMicrophone();
             } catch (MicrophoneException e) {
-                onError.accept(e);
-                microphoneError = e;
-                running = false;
+                stopWithError(e);
                 return null;
             }
         }
         return mic;
+    }
+
+    private void stopWithError(MicrophoneException e) {
+        onError.accept(e);
+        microphoneError = e;
+        running = false;
     }
 
     private void flush() {
