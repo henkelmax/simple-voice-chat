@@ -66,13 +66,13 @@ public class ClientVoicechat {
     }
 
     public void connect(InitializationData data) {
-        checkRenderThread();
         initializationData = data;
         Voicechat.LOGGER.info("Connecting to voice chat server: '{}:{}'", initializationData.getServerIP(), initializationData.getServerPort());
         openConnection();
     }
 
     private void openConnection() {
+        checkRenderThread();
         reconnectTime = -1L;
         try {
             connection = new ClientVoicechatConnection(this, initializationData);
