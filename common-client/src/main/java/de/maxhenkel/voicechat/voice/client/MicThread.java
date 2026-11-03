@@ -4,6 +4,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.config.ServerConfig;
+import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import de.maxhenkel.voicechat.natives.OpusManager;
@@ -32,7 +33,7 @@ public class MicThread extends Thread {
     @Nullable
     private final ClientVoicechatConnection connection;
     @Nullable
-    private volatile Microphone mic;
+    private Microphone mic;
     @Nullable
     private MicrophoneException microphoneError;
     private volatile boolean running;
@@ -88,14 +89,14 @@ public class MicThread extends Thread {
         }
 
         while (running) {
+            checkMicConnection(mic);
+
             if (microphoneLocked || ClientManager.getPlayerStateManager().isDisabled()) {
                 flushIfNeeded();
 
                 if (!microphoneLocked && ClientManager.getPlayerStateManager().isDisabled()) {
                     microphoneProcessor.reset();
-                    if (mic.isStarted()) {
-                        mic.stop();
-                    }
+                    stopMic(mic);
                 }
 
                 Utils.sleep(10);
@@ -117,24 +118,52 @@ public class MicThread extends Thread {
 
     @Nullable
     public short[] pollMic() {
-        // Don't call getMic here as only the mic thread itself should open the microphone, so the lock works
-        Microphone mic = this.mic;
-        if (mic == null) {
+        short[] audio = readMic();
+        if (audio == null) {
             Utils.sleep(5);
-            return null;
         }
-        if (mic.isDisconnected()) {
-            stopWithError(new MicrophoneException("Microphone was disconnected"));
+        return audio;
+    }
+
+    @Nullable
+    private synchronized short[] readMic() {
+        if (mic == null || !mic.isOpen()) {
             return null;
         }
         if (!mic.isStarted()) {
             mic.start();
         }
         if (mic.available() < AudioUtils.FRAME_SIZE) {
-            Utils.sleep(5);
             return null;
         }
         return mic.read();
+    }
+
+    private synchronized void checkMicConnection(Microphone mic) {
+        if (mic.isOpen() && mic.isDisconnected()) {
+            Voicechat.LOGGER.warn("Microphone was disconnected");
+            mic.close();
+            microphoneProcessor.reset();
+            flushIfNeeded();
+            onError.accept(new MicrophoneException("Microphone was disconnected"));
+        } else if (!mic.isOpen()) {
+            CooldownTimer.run("microphone_reconnect", 1000L, () -> reopenMic(mic));
+        }
+    }
+
+    private void reopenMic(Microphone mic) {
+        try {
+            mic.open();
+            Voicechat.LOGGER.info("Microphone was reconnected");
+        } catch (MicrophoneException e) {
+            Voicechat.LOGGER.debug("Failed to reopen microphone: {}", e.getMessage());
+        }
+    }
+
+    private synchronized void stopMic(Microphone mic) {
+        if (mic.isStarted()) {
+            mic.stop();
+        }
     }
 
     @Nullable
@@ -154,7 +183,7 @@ public class MicThread extends Thread {
     }
 
     @Nullable
-    private Microphone getMic() {
+    private synchronized Microphone getMic() {
         if (!running) {
             return null;
         }
@@ -248,9 +277,10 @@ public class MicThread extends Thread {
         running = false;
     }
 
-    private void closeResources() {
+    private synchronized void closeResources() {
         if (mic != null) {
             mic.close();
+            mic = null;
         }
         encoder.close();
         microphoneProcessor.close();
