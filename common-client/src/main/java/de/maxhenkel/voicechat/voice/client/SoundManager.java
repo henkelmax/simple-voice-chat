@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
@@ -257,7 +258,9 @@ public class SoundManager {
             return false;
         }
         StackTraceElement stack = Thread.currentThread().getStackTrace()[2];
-        Voicechat.LOGGER.error("Voicechat sound manager AL error: {}.{}[{}] {}", stack.getClassName(), stack.getMethodName(), stack.getLineNumber(), getAlError(error));
+        CooldownTimer.run(String.format("al_error_%s_%s_%s", stack.getClassName(), stack.getLineNumber(), error), 1000L, () -> {
+            Voicechat.LOGGER.error("Voicechat sound manager AL error: {}.{}[{}] {}", stack.getClassName(), stack.getMethodName(), stack.getLineNumber(), getAlError(error));
+        });
         return true;
     }
 
@@ -267,7 +270,9 @@ public class SoundManager {
             return false;
         }
         StackTraceElement stack = Thread.currentThread().getStackTrace()[2];
-        Voicechat.LOGGER.error("Voicechat sound manager ALC error: {}.{}[{}] {}", stack.getClassName(), stack.getMethodName(), stack.getLineNumber(), getAlcError(error));
+        CooldownTimer.run(String.format("alc_error_%s_%s_%s", stack.getClassName(), stack.getLineNumber(), error), 1000L, () -> {
+            Voicechat.LOGGER.error("Voicechat sound manager ALC error: {}.{}[{}] {}", stack.getClassName(), stack.getMethodName(), stack.getLineNumber(), getAlcError(error));
+        });
         return true;
     }
 
