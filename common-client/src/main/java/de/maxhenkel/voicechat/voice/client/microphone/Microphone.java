@@ -16,6 +16,8 @@ public interface Microphone {
 
     boolean isStarted();
 
+    boolean isDisconnected();
+
     int available();
 
     short[] read();

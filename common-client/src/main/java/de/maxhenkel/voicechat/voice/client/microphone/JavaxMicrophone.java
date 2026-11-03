@@ -100,6 +100,12 @@ public class JavaxMicrophone implements Microphone {
     }
 
     @Override
+    public boolean isDisconnected() {
+        // Java mic doesn't report disconnected devices
+        return false;
+    }
+
+    @Override
     public int available() {
         if (mic == null) {
             return 0;
