@@ -36,7 +36,20 @@ public class MicrophoneManager {
     }
 
     private static Microphone createALMicrophone() throws MicrophoneException {
-        Microphone mic = new ALMicrophone(AudioUtils.SAMPLE_RATE, AudioUtils.FRAME_SIZE, VoicechatClient.CLIENT_CONFIG.microphone.get());
+        String deviceName = VoicechatClient.CLIENT_CONFIG.microphone.get();
+        try {
+            return openALMicrophone(deviceName);
+        } catch (MicrophoneException e) {
+            if (deviceName.isEmpty()) {
+                throw e;
+            }
+            Voicechat.LOGGER.warn("Failed to open microphone '{}', falling back to default microphone", deviceName);
+            return openALMicrophone("");
+        }
+    }
+
+    private static Microphone openALMicrophone(String deviceName) throws MicrophoneException {
+        Microphone mic = new ALMicrophone(AudioUtils.SAMPLE_RATE, AudioUtils.FRAME_SIZE, deviceName);
         mic.open();
         return mic;
     }

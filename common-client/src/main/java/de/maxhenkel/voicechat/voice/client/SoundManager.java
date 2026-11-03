@@ -8,7 +8,6 @@ import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import org.lwjgl.openal.*;
 
-import javax.annotation.Nullable;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +20,6 @@ import java.util.regex.Pattern;
 
 public class SoundManager {
 
-    @Nullable
     private final String deviceName;
     private volatile long device;
     private volatile long context;
@@ -30,7 +28,7 @@ public class SoundManager {
     private final Set<Speaker> speakers = new HashSet<>();
     private boolean closing;
 
-    public SoundManager(@Nullable String deviceName, long device, long context, ALCapabilities alCaps, float maxGain) {
+    public SoundManager(String deviceName, long device, long context, ALCapabilities alCaps, float maxGain) {
         this.deviceName = deviceName;
         this.device = device;
         this.context = context;
@@ -39,10 +37,22 @@ public class SoundManager {
     }
 
     public static SoundManager create() throws SpeakerException {
-        return create(VoicechatClient.CLIENT_CONFIG.speaker.get());
+        String deviceName = VoicechatClient.CLIENT_CONFIG.speaker.get();
+        try {
+            return create(deviceName);
+        } catch (SpeakerException e) {
+            if (deviceName.isEmpty()) {
+                throw e;
+            }
+            Voicechat.LOGGER.warn("Failed to open audio device '{}', falling back to default", deviceName);
+            return create("");
+        }
     }
 
-    public static SoundManager create(@Nullable String deviceName) throws SpeakerException {
+    /**
+     * @param deviceName the name of the device or an empty string for the default device
+     */
+    public static SoundManager create(String deviceName) throws SpeakerException {
         long device = 0L;
         long context = 0L;
         try {
@@ -145,6 +155,10 @@ public class SoundManager {
         }
     }
 
+    public String getDeviceName() {
+        return deviceName;
+    }
+
     public float getMaxGain() {
         return maxGain;
     }
@@ -161,22 +175,10 @@ public class SoundManager {
         return ALC11.alcIsExtensionPresent(device, "ALC_EXT_disconnect") && ALC11.alcGetInteger(device, EXTDisconnect.ALC_CONNECTED) == ALC11.ALC_FALSE;
     }
 
-    private static long openSpeaker(@Nullable String name) throws SpeakerException {
-        try {
-            return tryOpenSpeaker(name);
-        } catch (SpeakerException e) {
-            if (name == null) {
-                throw e;
-            }
-            Voicechat.LOGGER.warn("Failed to open audio device '{}', falling back to default", name);
-            return tryOpenSpeaker(null);
-        }
-    }
-
-    private static long tryOpenSpeaker(@Nullable String string) throws SpeakerException {
+    private static long openSpeaker(String string) throws SpeakerException {
         long device = ALC11.alcOpenDevice(string);
         if (device == 0L) {
-            if (string == null) {
+            if (string.isEmpty()) {
                 throw new SpeakerException("Failed to open default audio device");
             }
             throw new SpeakerException(String.format("Failed to open audio device: Audio device '%s' not found", string));
