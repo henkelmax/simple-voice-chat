@@ -31,10 +31,11 @@ public class DeviceTracker {
     }
 
     /**
-     * @param currentDevice the name of the device that is currently in use or <code>null</code> if there is none
+     * @param deviceOpen    if a device is currently open
+     * @param currentDevice the name of the open device or <code>null</code> if it is unknown (e.g. Java mic implementation)
      * @return if the device should be reopened
      */
-    public boolean shouldChangeDevice(@Nullable String currentDevice) {
+    public boolean shouldChangeDevice(boolean deviceOpen, @Nullable String currentDevice) {
         long time = System.currentTimeMillis();
         if (time - lastDeviceCheckTime < DEVICE_CHECK_INTERVAL) {
             return false;
@@ -49,6 +50,13 @@ public class DeviceTracker {
         lastSeenDefaultDevice = defaultDevice;
         lastSeenDevices = devices;
 
+        if (!deviceOpen) {
+            Voicechat.LOGGER.info("Available {}s have changed while no {} is open", deviceType, deviceType);
+            return true;
+        }
+        if (currentDevice == null) {
+            return false;
+        }
         if (!devices.contains(currentDevice)) {
             Voicechat.LOGGER.info("Current {} '{}' has disappeared", deviceType, currentDevice);
             return true;
