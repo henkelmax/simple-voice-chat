@@ -165,7 +165,7 @@ public class ClientVoicechat {
     private void changeSpeakerIfNeeded() {
         SoundManager soundManager = this.soundManager;
         if (soundManager != null && soundManager.isDisconnected()) {
-            Voicechat.LOGGER.info("Speaker was disconnected");
+            Voicechat.LOGGER.info("Speaker '{}' was disconnected", soundManager.getDeviceName());
             restartSoundManager();
         } else if (speakerDeviceTracker.shouldChangeDevice(soundManager == null ? null : soundManager.getDeviceName())) {
             restartSoundManager();
