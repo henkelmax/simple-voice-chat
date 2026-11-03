@@ -40,6 +40,7 @@ public class ALMicrophone implements Microphone {
         captureStereo = useStereoWorkaround();
         device = openMic(requestedDeviceName);
         deviceName = ALC11.alcGetString(device, ALC11.ALC_CAPTURE_DEVICE_SPECIFIER);
+        Voicechat.LOGGER.info("Opened microphone '{}'", deviceName);
     }
 
     @Override
