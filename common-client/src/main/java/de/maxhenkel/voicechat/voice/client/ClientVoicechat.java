@@ -28,8 +28,7 @@ public class ClientVoicechat {
     @Nullable
     private volatile SoundManager soundManager;
     private final ExecutorService soundManagerExecutor;
-    @Nullable
-    private String disconnectedSpeakerName;
+    private final DeviceTracker speakerDeviceTracker;
     private final Map<UUID, AudioChannel> audioChannels;
     private final TalkCache talkCache;
     @Nullable
@@ -49,6 +48,7 @@ public class ClientVoicechat {
         this.talkCache = new TalkCache();
         this.audioChannels = new HashMap<>();
         this.soundManagerExecutor = Executors.newSingleThreadExecutor(NamedThreadPoolFactory.create("VoicechatSoundManagerThread"));
+        this.speakerDeviceTracker = new DeviceTracker("speaker", SoundManager::getDefaultSpeaker, SoundManager::getAllSpeakers, VoicechatClient.CLIENT_CONFIG.speaker::get);
         reloadSoundManager();
     }
 
@@ -97,7 +97,7 @@ public class ClientVoicechat {
             Voicechat.LOGGER.info("Trying to connect to server again");
             openConnection();
         }
-        submitSoundManagerTask(this::checkSpeakerConnection);
+        submitSoundManagerTask(this::changeSpeakerIfNeeded);
     }
 
     public void processSoundPacket(SoundPacket packet) {
@@ -133,17 +133,18 @@ public class ClientVoicechat {
     }
 
     public void reloadSoundManager() {
-        submitSoundManagerTask(() -> {
-            closeSoundManager();
-            disconnectedSpeakerName = null;
-            try {
-                soundManager = SoundManager.create();
-            } catch (SpeakerException e) {
-                Voicechat.LOGGER.error("Failed to start sound manager", e);
-                sendSpeakerUnavailableMessage(e);
-            }
-            Minecraft.getInstance().execute(() -> ClientManager.getPlayerStateManager().onSpeakerAvailabilityChanged());
-        });
+        submitSoundManagerTask(this::restartSoundManager);
+    }
+
+    private void restartSoundManager() {
+        closeSoundManager();
+        try {
+            soundManager = SoundManager.create();
+        } catch (SpeakerException e) {
+            Voicechat.LOGGER.error("Failed to start sound manager", e);
+            sendSpeakerUnavailableMessage(e);
+        }
+        Minecraft.getInstance().execute(() -> ClientManager.getPlayerStateManager().onSpeakerAvailabilityChanged());
     }
 
     private void submitSoundManagerTask(Runnable task) {
@@ -161,29 +162,14 @@ public class ClientVoicechat {
         }
     }
 
-    private void checkSpeakerConnection() {
+    private void changeSpeakerIfNeeded() {
         SoundManager soundManager = this.soundManager;
         if (soundManager != null && soundManager.isDisconnected()) {
-            Voicechat.LOGGER.error("Audio device was disconnected");
-            closeSoundManager();
-            disconnectedSpeakerName = soundManager.getDeviceName();
-            sendSpeakerUnavailableMessage(new SpeakerException("Audio device was disconnected"));
-            Minecraft.getInstance().execute(() -> ClientManager.getPlayerStateManager().onSpeakerAvailabilityChanged());
-        } else if (disconnectedSpeakerName != null) {
-            CooldownTimer.run("speaker_reconnect", 1000L, this::reopenSoundManager);
+            Voicechat.LOGGER.info("Speaker was disconnected");
+            restartSoundManager();
+        } else if (speakerDeviceTracker.shouldChangeDevice(soundManager == null ? null : soundManager.getDeviceName())) {
+            restartSoundManager();
         }
-    }
-
-    private void reopenSoundManager() {
-        try {
-            soundManager = SoundManager.create(disconnectedSpeakerName);
-        } catch (SpeakerException e) {
-            Voicechat.LOGGER.debug("Failed to reopen audio device: {}", e.getMessage());
-            return;
-        }
-        Voicechat.LOGGER.info("Audio device was reconnected");
-        disconnectedSpeakerName = null;
-        Minecraft.getInstance().execute(() -> ClientManager.getPlayerStateManager().onSpeakerAvailabilityChanged());
     }
 
     private static void sendSpeakerUnavailableMessage(SpeakerException e) {
