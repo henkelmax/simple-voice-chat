@@ -10,16 +10,19 @@ import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import de.maxhenkel.voicechat.voice.common.*;
 import net.minecraft.client.Minecraft;
 
+import javax.annotation.Nullable;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ProtocolException;
+import java.net.UnknownHostException;
 
 public class ClientVoicechatConnection extends Thread {
 
     private final ClientVoicechat client;
     private final InitializationData data;
     private final ClientVoicechatSocket socket;
-    private final InetAddress address;
+    @Nullable
+    private volatile InetAddress address;
     private volatile boolean running;
     private volatile byte[] connectionCheckNonce;
     private volatile boolean authenticated;
@@ -30,17 +33,11 @@ public class ClientVoicechatConnection extends Thread {
     public ClientVoicechatConnection(ClientVoicechat client, InitializationData data) throws Exception {
         this.client = client;
         this.data = data;
-        if (data.getServerIP().equals("rtc-local") || data.getServerIP().equals("rtc-remote")) {
-            this.address = InetAddress.getLoopbackAddress();
-        } else {
-            this.address = InetAddress.getByName(data.getServerIP());
-        }
         this.socket = ClientPluginManager.instance().getClientSocketImplementation();
         this.socket.open();
         this.lastKeepAlive = -1;
         this.running = true;
         this.authThread = new AuthThread();
-        this.authThread.start();
         setDaemon(true);
         setName("VoiceChatConnectionThread");
         setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
@@ -50,6 +47,11 @@ public class ClientVoicechatConnection extends Thread {
         return data;
     }
 
+    /**
+     *
+     * @return the voice chat servers address - May be <code>null</code> if DNS hasn't been resolved yet
+     */
+    @Nullable
     public InetAddress getAddress() {
         return address;
     }
@@ -64,6 +66,16 @@ public class ClientVoicechatConnection extends Thread {
 
     @Override
     public void run() {
+        try {
+            address = resolveAddress();
+        } catch (UnknownHostException e) {
+            if (running) {
+                Voicechat.LOGGER.error("Failed to resolve voice chat server address '{}' - Disconnecting", data.getServerIP());
+                disconnect();
+            }
+            return;
+        }
+        authThread.start();
         try {
             while (running) {
                 RawUdpPacket rawPacket;
@@ -127,6 +139,13 @@ public class ClientVoicechatConnection extends Thread {
                 disconnect();
             }
         }
+    }
+
+    private InetAddress resolveAddress() throws UnknownHostException {
+        if (data.getServerIP().equals("rtc-local") || data.getServerIP().equals("rtc-remote")) {
+            return InetAddress.getLoopbackAddress();
+        }
+        return InetAddress.getByName(data.getServerIP());
     }
 
     public void close() {
