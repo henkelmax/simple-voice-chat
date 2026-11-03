@@ -42,6 +42,7 @@ public class TestSoundPlayer {
 
     public static void playTestSound(Runnable onDone) {
         if (!running.compareAndSet(false, true)) {
+            onDone.run();
             return;
         }
         Thread thread = new Thread(() -> play(onDone));
@@ -67,6 +68,9 @@ public class TestSoundPlayer {
             try {
                 speaker = SpeakerManager.createSpeaker(soundManager, null);
                 for (short[] shorts : testSound) {
+                    if (soundManager.isClosing()) {
+                        break;
+                    }
                     speaker.play(shorts, 1F, null);
                     Utils.sleep(20);
                 }
@@ -81,9 +85,10 @@ public class TestSoundPlayer {
             }
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to play test sound", e);
+        } finally {
+            running.set(false);
+            onDone.run();
         }
-        running.set(false);
-        onDone.run();
     }
 
     private static short[][] loadTestSound() throws IOException, UnsupportedAudioFileException {
