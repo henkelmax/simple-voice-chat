@@ -4,7 +4,6 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.config.ServerConfig;
-import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import de.maxhenkel.voicechat.natives.OpusManager;
@@ -40,6 +39,7 @@ public class MicThread extends Thread {
     private volatile boolean microphoneLocked;
     private final OpusEncoder encoder;
     private volatile MicrophoneProcessor microphoneProcessor;
+    private final DeviceTracker deviceTracker;
 
     private final Consumer<MicrophoneException> onError;
 
@@ -50,6 +50,7 @@ public class MicThread extends Thread {
         this.running = true;
         this.encoder = OpusManager.createEncoder(connection == null ? ServerConfig.Codec.VOIP.getMode() : connection.getData().getCodec().getMode());
         microphoneProcessor = createMicrophoneProcessor();
+        deviceTracker = new DeviceTracker("microphone", MicrophoneManager::getDefaultMicrophone, MicrophoneManager::deviceNames, VoicechatClient.CLIENT_CONFIG.microphone::get);
 
         setDaemon(true);
         setName("MicrophoneThread");
@@ -83,20 +84,19 @@ public class MicThread extends Thread {
     }
 
     private void processMicrophone() {
-        Microphone mic = getMic();
-        if (mic == null) {
+        if (getMic() == null) {
             return;
         }
 
         while (running) {
-            checkMicConnection(mic);
+            changeMicIfNeeded();
 
             if (microphoneLocked || ClientManager.getPlayerStateManager().isDisabled()) {
                 flushIfNeeded();
 
                 if (!microphoneLocked && ClientManager.getPlayerStateManager().isDisabled()) {
                     microphoneProcessor.reset();
-                    stopMic(mic);
+                    stopMic();
                 }
 
                 Utils.sleep(10);
@@ -127,7 +127,7 @@ public class MicThread extends Thread {
 
     @Nullable
     private synchronized short[] readMic() {
-        if (mic == null || !mic.isOpen()) {
+        if (mic == null) {
             return null;
         }
         if (!mic.isStarted()) {
@@ -139,29 +139,31 @@ public class MicThread extends Thread {
         return mic.read();
     }
 
-    private synchronized void checkMicConnection(Microphone mic) {
-        if (mic.isOpen() && mic.isDisconnected()) {
-            Voicechat.LOGGER.warn("Microphone was disconnected");
+    private synchronized void changeMicIfNeeded() {
+        if (mic != null && mic.isDisconnected()) {
+            Voicechat.LOGGER.info("Microphone was disconnected");
+            changeMic();
+        } else if (deviceTracker.shouldChangeDevice(mic == null ? null : mic.getDeviceName())) {
+            changeMic();
+        }
+    }
+
+    private void changeMic() {
+        if (mic != null) {
             mic.close();
-            microphoneProcessor.reset();
-            flushIfNeeded();
-            onError.accept(new MicrophoneException("Microphone was disconnected"));
-        } else if (!mic.isOpen()) {
-            CooldownTimer.run("microphone_reconnect", 1000L, () -> reopenMic(mic));
+            mic = null;
         }
-    }
-
-    private void reopenMic(Microphone mic) {
+        microphoneProcessor.reset();
+        flushIfNeeded();
         try {
-            mic.open();
-            Voicechat.LOGGER.info("Microphone was reconnected");
+            openMic();
         } catch (MicrophoneException e) {
-            Voicechat.LOGGER.debug("Failed to reopen microphone: {}", e.getMessage());
+            onError.accept(e);
         }
     }
 
-    private synchronized void stopMic(Microphone mic) {
-        if (mic.isStarted()) {
+    private synchronized void stopMic() {
+        if (mic != null && mic.isStarted()) {
             mic.stop();
         }
     }
@@ -189,13 +191,17 @@ public class MicThread extends Thread {
         }
         if (mic == null) {
             try {
-                mic = MicrophoneManager.createMicrophone();
+                openMic();
             } catch (MicrophoneException e) {
                 stopWithError(e);
                 return null;
             }
         }
         return mic;
+    }
+
+    private void openMic() throws MicrophoneException {
+        mic = MicrophoneManager.createMicrophone();
     }
 
     private void stopWithError(MicrophoneException e) {
