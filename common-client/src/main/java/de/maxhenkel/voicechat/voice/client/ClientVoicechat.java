@@ -203,7 +203,7 @@ public class ClientVoicechat {
             return;
         }
         micThread = new MicThread(this, connection, e -> {
-            Voicechat.LOGGER.error("Failed to start microphone thread", e);
+            Voicechat.LOGGER.error("Microphone thread failed", e);
             ChatUtils.sendModErrorMessage("message.voicechat.microphone_unavailable", e);
         });
         micThread.start();
