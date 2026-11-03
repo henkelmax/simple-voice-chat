@@ -36,6 +36,7 @@ public class ClientVoicechatConnection extends Thread {
             this.address = InetAddress.getByName(data.getServerIP());
         }
         this.socket = ClientPluginManager.instance().getClientSocketImplementation();
+        this.socket.open();
         this.lastKeepAlive = -1;
         this.running = true;
         this.authThread = new AuthThread();
@@ -43,7 +44,6 @@ public class ClientVoicechatConnection extends Thread {
         setDaemon(true);
         setName("VoiceChatConnectionThread");
         setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
-        this.socket.open();
     }
 
     public InitializationData getData() {
