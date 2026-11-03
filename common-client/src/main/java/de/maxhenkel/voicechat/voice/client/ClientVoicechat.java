@@ -165,7 +165,7 @@ public class ClientVoicechat {
     //     if (soundManager != null && soundManager.isDisconnected()) {
     //         Voicechat.LOGGER.info("Speaker '{}' was disconnected", soundManager.getDeviceName());
     //         restartSoundManager();
-    //     } else if (speakerDeviceTracker.shouldChangeDevice(soundManager == null ? null : soundManager.getDeviceName())) {
+    //     } else if (speakerDeviceTracker.shouldChangeDevice(soundManager != null, soundManager == null ? null : soundManager.getDeviceName())) {
     //         restartSoundManager();
     //     }
     // }
