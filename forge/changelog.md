@@ -18,3 +18,7 @@
 - Properly prevent players from leaving groups using the API
 - Always call leave group event when a player changes their group
 - Added UDP packet rate limiting
+- Fixed voice chat getting stuck and spamming errors after a connection timeout
+- Fixed closing the microphone potentially freezing the game for a moment
+- Voice chat now retries connecting if the connection fails during setup, instead of staying disconnected until rejoining
+- Fixed the game freezing while resolving the voice chat server's hostname
