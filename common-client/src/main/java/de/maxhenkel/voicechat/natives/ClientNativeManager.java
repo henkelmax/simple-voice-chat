@@ -6,7 +6,7 @@ import de.maxhenkel.voicechat.voice.client.ChatUtils;
 
 public class ClientNativeManager {
 
-    public static void onConnecting() {
+    public static void onJoinWorld() {
         if (!CrossSideManager.get().useNatives()) {
             Voicechat.LOGGER.info("Not informing player about natives, since the user has disabled them");
             return;
