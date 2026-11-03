@@ -50,16 +50,16 @@ public class DeviceTracker {
         lastSeenDevices = devices;
 
         if (!devices.contains(currentDevice)) {
-            Voicechat.LOGGER.info("Current {} has disappeared", deviceType);
+            Voicechat.LOGGER.info("Current {} '{}' has disappeared", deviceType, currentDevice);
             return true;
         }
         String preferred = preferredDevice.get();
         if (preferred.isEmpty() && !Objects.equals(currentDevice, defaultDevice)) {
-            Voicechat.LOGGER.info("System default {} has changed", deviceType);
+            Voicechat.LOGGER.info("System default {} has changed to '{}'", deviceType, defaultDevice);
             return true;
         }
         if (!preferred.isEmpty() && !preferred.equals(currentDevice) && devices.contains(preferred)) {
-            Voicechat.LOGGER.info("Preferred {} has become available", deviceType);
+            Voicechat.LOGGER.info("Preferred {} '{}' has become available", deviceType, preferred);
             return true;
         }
         return false;
