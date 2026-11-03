@@ -8,21 +8,24 @@ import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import org.lwjgl.openal.*;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
 public class ALMicrophone implements Microphone {
 
     private final int sampleRate;
-    private final String deviceName;
+    private final String requestedDeviceName;
+    @Nullable
+    private String deviceName;
     private long device;
     private final int bufferSize;
     private boolean captureStereo;
     private boolean started;
 
-    public ALMicrophone(int sampleRate, int bufferSize, String deviceName) {
+    public ALMicrophone(int sampleRate, int bufferSize, String requestedDeviceName) {
         this.sampleRate = sampleRate;
-        this.deviceName = deviceName;
+        this.requestedDeviceName = requestedDeviceName;
         this.bufferSize = bufferSize;
     }
 
@@ -35,7 +38,8 @@ public class ALMicrophone implements Microphone {
             throw new MicrophoneException("Extension 'ALC_EXT_CAPTURE' not supported");
         }
         captureStereo = useStereoWorkaround();
-        device = openMic(deviceName);
+        device = openMic(requestedDeviceName);
+        deviceName = ALC11.alcGetString(device, ALC11.ALC_CAPTURE_DEVICE_SPECIFIER);
     }
 
     @Override
@@ -94,6 +98,12 @@ public class ALMicrophone implements Microphone {
     @Override
     public boolean isStarted() {
         return started;
+    }
+
+    @Nullable
+    @Override
+    public String getDeviceName() {
+        return deviceName;
     }
 
     @Override
