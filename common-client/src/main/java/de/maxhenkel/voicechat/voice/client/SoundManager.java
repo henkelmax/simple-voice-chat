@@ -87,6 +87,7 @@ public class SoundManager {
             ClientPluginManager.instance().onCreateALContext(context, device);
 
             SoundManager soundManager = new SoundManager(ALC11.alcGetString(device, ALC11.ALC_ALL_DEVICES_SPECIFIER), device, context, alCaps, maxGain);
+            Voicechat.LOGGER.info("Opened speaker '{}'", soundManager.getDeviceName());
             device = 0L;
             context = 0L;
             return soundManager;
