@@ -22,3 +22,4 @@
 - Fixed closing the microphone potentially freezing the game for a moment
 - Voice chat now retries connecting if the connection fails during setup, instead of staying disconnected until rejoining
 - Fixed the game freezing while resolving the voice chat server's hostname
+- Added support for switching or disconnecting microphones on the fly
