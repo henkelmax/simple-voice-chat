@@ -24,3 +24,4 @@
 - Show an error message when the speaker or microphone gets disconnected
 - Fixed the game freezing while resolving the voice chat server's hostname
 - Reduced potential log spam caused by OpenAL errors
+- Added support for switching or disconnecting audio devices on the fly
