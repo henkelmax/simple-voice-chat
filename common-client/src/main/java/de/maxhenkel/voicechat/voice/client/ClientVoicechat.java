@@ -66,6 +66,7 @@ public class ClientVoicechat {
     }
 
     public void connect(InitializationData data) {
+        checkRenderThread();
         initializationData = data;
         Voicechat.LOGGER.info("Connecting to voice chat server: '{}:{}'", initializationData.getServerIP(), initializationData.getServerPort());
         openConnection();
@@ -194,6 +195,7 @@ public class ClientVoicechat {
     }
 
     private void startMicThread(ClientVoicechatConnection connection) {
+        checkRenderThread();
         if (micThread != null) {
             micThread.close();
         }
@@ -208,11 +210,23 @@ public class ClientVoicechat {
     }
 
     public void closeMicThread() {
+        checkRenderThread();
         if (micThread != null) {
             Voicechat.LOGGER.info("Stopping microphone thread");
             micThread.close();
             micThread = null;
         }
+    }
+
+    /**
+     * Changes to the connection and microphone thread must only be done on the main render thread, to avoid races
+     */
+    private static void checkRenderThread() {
+        if (Minecraft.getInstance().isSameThread()) {
+            return;
+        }
+        StackTraceElement stack = Thread.currentThread().getStackTrace()[2];
+        Voicechat.LOGGER.error("{} must be called on the render thread, but was called on '{}'", stack.getMethodName(), Thread.currentThread().getName());
     }
 
     public boolean toggleRecording() {
