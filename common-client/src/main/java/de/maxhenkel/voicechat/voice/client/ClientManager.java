@@ -3,11 +3,13 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.debug.DebugOverlay;
+import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.macos.PermissionCheck;
 import de.maxhenkel.voicechat.macos.VersionCheck;
 import de.maxhenkel.voicechat.macos.avfoundation.AVAuthorizationStatus;
+import de.maxhenkel.voicechat.natives.ClientNativeManager;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
 import de.maxhenkel.voicechat.net.SecretPacket;
@@ -77,7 +79,12 @@ public class ClientManager {
             return;
         }
         Voicechat.LOGGER.info("Received secret");
-        serverCompatible = true;
+        if (!serverCompatible) {
+            serverCompatible = true;
+            // Only ever call once for a world
+            OnboardingManager.onJoinWorld();
+            ClientNativeManager.onJoinWorld();
+        }
         playerStateManager.syncOwnState();
         if (client.getConnection() != null) {
             ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
@@ -154,12 +161,8 @@ public class ClientManager {
     }
 
     private void onClientTick() {
-        if (client == null) {
-            return;
-        }
-        ClientVoicechatConnection connection = client.getConnection();
-        if (connection != null) {
-            connection.checkTimeout();
+        if (client != null) {
+            client.tick();
         }
     }
 
