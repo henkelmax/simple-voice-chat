@@ -94,6 +94,7 @@ public class ClientVoicechat {
             Voicechat.LOGGER.info("Trying to connect to server again");
             openConnection();
         }
+        submitSoundManagerTask(this::closeSoundManagerIfDisconnected);
     }
 
     public void processSoundPacket(SoundPacket packet) {
@@ -135,7 +136,7 @@ public class ClientVoicechat {
                 soundManager = SoundManager.create();
             } catch (SpeakerException e) {
                 Voicechat.LOGGER.error("Failed to start sound manager", e);
-                Minecraft.getInstance().execute(() -> ChatUtils.sendModErrorMessage("message.voicechat.speaker_unavailable", e));
+                sendSpeakerUnavailableMessage(e);
             }
             Minecraft.getInstance().execute(() -> ClientManager.getPlayerStateManager().onSpeakerAvailabilityChanged());
         });
@@ -154,6 +155,22 @@ public class ClientVoicechat {
             soundManager.close();
             soundManager = null;
         }
+    }
+
+    //TODO Try to reconnect
+    private void closeSoundManagerIfDisconnected() {
+        SoundManager soundManager = this.soundManager;
+        if (soundManager == null || !soundManager.isDisconnected()) {
+            return;
+        }
+        Voicechat.LOGGER.error("Audio device was disconnected");
+        closeSoundManager();
+        sendSpeakerUnavailableMessage(new SpeakerException("Audio device was disconnected"));
+        Minecraft.getInstance().execute(() -> ClientManager.getPlayerStateManager().onSpeakerAvailabilityChanged());
+    }
+
+    private static void sendSpeakerUnavailableMessage(SpeakerException e) {
+        Minecraft.getInstance().execute(() -> ChatUtils.sendModErrorMessage("message.voicechat.speaker_unavailable", e));
     }
 
     public void reloadAudio() {
