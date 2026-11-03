@@ -227,11 +227,11 @@ public class MicThread extends Thread {
     }
 
     public boolean isTalking() {
-        return !microphoneLocked && microphoneProcessor.shouldTransmitAudio();
+        return running && !microphoneLocked && microphoneProcessor.shouldTransmitAudio();
     }
 
     public boolean isWhispering() {
-        return microphoneProcessor.isWhispering();
+        return running && microphoneProcessor.isWhispering();
     }
 
     public boolean shouldTransmitAudio() {
