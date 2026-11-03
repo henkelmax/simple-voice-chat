@@ -163,6 +163,10 @@ public class MicThread extends Thread {
         }
     }
 
+    public synchronized boolean isMicrophoneAvailable() {
+        return mic != null;
+    }
+
     private synchronized void stopMic() {
         if (mic != null && mic.isStarted()) {
             mic.stop();
