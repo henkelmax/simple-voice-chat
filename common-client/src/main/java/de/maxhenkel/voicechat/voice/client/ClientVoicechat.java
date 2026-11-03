@@ -3,8 +3,6 @@ package de.maxhenkel.voicechat.voice.client;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
-import de.maxhenkel.voicechat.gui.onboarding.OnboardingManager;
-import de.maxhenkel.voicechat.natives.ClientNativeManager;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
@@ -25,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 public class ClientVoicechat {
 
+    private static final long RECONNECT_DELAY = 10_000L;
+
     @Nullable
     private volatile SoundManager soundManager;
     private final ExecutorService soundManagerExecutor;
@@ -39,8 +39,10 @@ public class ClientVoicechat {
     @Nullable
     private AudioRecorder recorder;
     private final long startTime;
+    private long reconnectTime;
 
     public ClientVoicechat() {
+        this.reconnectTime = -1L;
         this.startTime = System.currentTimeMillis();
         this.talkCache = new TalkCache();
         this.audioChannels = new HashMap<>();
@@ -55,18 +57,43 @@ public class ClientVoicechat {
     public void onVoiceChatDisconnected() {
         closeMicThread();
         if (connection != null) {
+            if (!connection.isInitialized()) {
+                reconnectLater();
+            }
             connection.close();
             connection = null;
         }
     }
 
-    public void connect(InitializationData data) throws Exception {
+    public void connect(InitializationData data) {
         initializationData = data;
         Voicechat.LOGGER.info("Connecting to voice chat server: '{}:{}'", initializationData.getServerIP(), initializationData.getServerPort());
-        connection = new ClientVoicechatConnection(this, initializationData);
+        openConnection();
+    }
+
+    private void openConnection() {
+        reconnectTime = -1L;
+        try {
+            connection = new ClientVoicechatConnection(this, initializationData);
+        } catch (Exception e) {
+            Voicechat.LOGGER.error("Failed to connect to voice chat server", e);
+            reconnectLater();
+            return;
+        }
         connection.start();
-        OnboardingManager.onConnecting();
-        ClientNativeManager.onConnecting();
+    }
+
+    private void reconnectLater() {
+        reconnectTime = System.currentTimeMillis() + RECONNECT_DELAY;
+    }
+
+    public void tick() {
+        if (connection != null) {
+            connection.checkTimeout();
+        } else if (reconnectTime >= 0L && System.currentTimeMillis() >= reconnectTime) {
+            Voicechat.LOGGER.info("Trying to connect to server again");
+            openConnection();
+        }
     }
 
     public void processSoundPacket(SoundPacket packet) {
