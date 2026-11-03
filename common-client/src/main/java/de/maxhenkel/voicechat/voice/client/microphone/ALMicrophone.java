@@ -99,6 +99,11 @@ public class ALMicrophone implements Microphone {
     }
 
     @Override
+    public boolean isDisconnected() {
+        return SoundManager.isDisconnected(device);
+    }
+
+    @Override
     public int available() {
         int samples = ALC11.alcGetInteger(device, ALC11.ALC_CAPTURE_SAMPLES);
         SoundManager.checkAlcError(device);
