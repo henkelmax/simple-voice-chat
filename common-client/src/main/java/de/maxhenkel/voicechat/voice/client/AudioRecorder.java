@@ -13,7 +13,6 @@ import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -320,7 +319,7 @@ public class AudioRecorder {
         Minecraft mc = Minecraft.getInstance();
         ClientPlayerEntity player = mc.player;
         if (player != null && mc.level != null) {
-            mc.execute(() -> player.sendMessage(msg, Util.NIL_UUID));
+            ChatUtils.sendPlayerMessage(msg);
         } else {
             Voicechat.LOGGER.info("{}", msg.getString());
         }
