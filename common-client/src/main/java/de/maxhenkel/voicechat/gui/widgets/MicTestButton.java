@@ -169,7 +169,7 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
                     if (System.currentTimeMillis() - lastRender > 500L) {
                         break;
                     }
-                    if (micThread.isClosed()) {
+                    if (micThread.isClosed() || soundManager.isClosing()) {
                         break;
                     }
                     short[] buff = raw ? micThread.pollMic() : micThread.pollProcessedAudio(true);
