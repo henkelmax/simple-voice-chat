@@ -99,6 +99,13 @@ public class JavaxMicrophone implements Microphone {
         return mic.isActive();
     }
 
+    @Nullable
+    @Override
+    public String getDeviceName() {
+        // The Java implementation doesn't tell which device is used by default
+        return null;
+    }
+
     @Override
     public boolean isDisconnected() {
         // Java mic doesn't report disconnected devices
