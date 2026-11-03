@@ -144,7 +144,7 @@ public class MicThread extends Thread {
         if (mic != null && mic.isDisconnected()) {
             Voicechat.LOGGER.info("Microphone '{}' was disconnected", mic.getDeviceName());
             changeMic();
-        } else if (deviceTracker.shouldChangeDevice(mic == null ? null : mic.getDeviceName())) {
+        } else if (deviceTracker.shouldChangeDevice(mic != null, mic == null ? null : mic.getDeviceName())) {
             changeMic();
         }
     }
