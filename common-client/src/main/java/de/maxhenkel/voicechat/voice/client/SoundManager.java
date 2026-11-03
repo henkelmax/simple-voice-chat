@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import org.lwjgl.openal.*;
 
+import javax.annotation.Nullable;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +21,7 @@ import java.util.regex.Pattern;
 
 public class SoundManager {
 
+    @Nullable
     private final String deviceName;
     private volatile long device;
     private volatile long context;
@@ -28,7 +30,7 @@ public class SoundManager {
     private final Set<Speaker> speakers = new HashSet<>();
     private boolean closing;
 
-    public SoundManager(String deviceName, long device, long context, ALCapabilities alCaps, float maxGain) {
+    public SoundManager(@Nullable String deviceName, long device, long context, ALCapabilities alCaps, float maxGain) {
         this.deviceName = deviceName;
         this.device = device;
         this.context = context;
@@ -52,7 +54,7 @@ public class SoundManager {
     /**
      * @param deviceName the name of the device or an empty string for the default device
      */
-    public static SoundManager create(String deviceName) throws SpeakerException {
+    private static SoundManager create(String deviceName) throws SpeakerException {
         long device = 0L;
         long context = 0L;
         try {
@@ -84,7 +86,7 @@ public class SoundManager {
 
             ClientPluginManager.instance().onCreateALContext(context, device);
 
-            SoundManager soundManager = new SoundManager(deviceName, device, context, alCaps, maxGain);
+            SoundManager soundManager = new SoundManager(ALC11.alcGetString(device, ALC11.ALC_ALL_DEVICES_SPECIFIER), device, context, alCaps, maxGain);
             device = 0L;
             context = 0L;
             return soundManager;
@@ -155,6 +157,10 @@ public class SoundManager {
         }
     }
 
+    /**
+     * @return the name of the opened device or <code>null</code> if it is unknown
+     */
+    @Nullable
     public String getDeviceName() {
         return deviceName;
     }
@@ -191,6 +197,11 @@ public class SoundManager {
             throw new SpeakerException(String.format("Failed to open audio device: %s", getAlcError(error)));
         }
         return device;
+    }
+
+    @Nullable
+    public static String getDefaultSpeaker() {
+        return ALC11.alcGetString(0L, ALC11.ALC_DEFAULT_ALL_DEVICES_SPECIFIER);
     }
 
     public static List<String> getAllSpeakers() {
