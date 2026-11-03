@@ -169,7 +169,7 @@ public class ClientVoicechat {
     // }
 
     // private static void sendSpeakerUnavailableMessage(SpeakerException e) {
-    //     Minecraft.getMinecraft().addScheduledTask(() -> ChatUtils.sendModErrorMessage("message.voicechat.speaker_unavailable", e));
+    //     ChatUtils.sendModErrorMessage("message.voicechat.speaker_unavailable", e);
     // }
 
     public void reloadAudio() {

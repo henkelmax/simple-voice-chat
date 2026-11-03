@@ -316,7 +316,7 @@ public class AudioRecorder {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayerSP player = mc.player;
         if (player != null && mc.world != null) {
-            mc.addScheduledTask(() -> player.sendMessage(msg));
+            ChatUtils.sendPlayerMessage(msg);
         } else {
             Voicechat.LOGGER.info("{}", msg.getUnformattedComponentText());
         }

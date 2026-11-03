@@ -160,8 +160,7 @@ public class ClientManager {
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to change voice chat port", e);
         }
-        Minecraft mc = Minecraft.getMinecraft();
-        mc.addScheduledTask(() -> mc.ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("message.voicechat.server_port", server.getPort())));
+        ChatUtils.sendPlayerMessage(new TextComponentTranslation("message.voicechat.server_port", server.getPort()));
     }
 
     @Nullable

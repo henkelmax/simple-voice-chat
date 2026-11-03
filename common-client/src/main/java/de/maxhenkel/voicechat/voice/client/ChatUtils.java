@@ -45,11 +45,17 @@ public class ChatUtils {
                 .appendSibling(message);
     }
 
+    /**
+     * Must not be called from the main thread. This will ensure its on the main thread
+     */
     public static void sendPlayerMessage(ITextComponent component) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player == null) {
-            return;
-        }
-        player.sendMessage(component);
+        Minecraft mc = Minecraft.getMinecraft();
+        mc.addScheduledTask(() -> {
+            EntityPlayerSP player = mc.player;
+            if (player == null) {
+                return;
+            }
+            player.sendMessage(component);
+        });
     }
 }
