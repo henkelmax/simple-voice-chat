@@ -40,11 +40,17 @@ public class ChatUtils {
                 .append(message);
     }
 
+    /**
+     * Must not be called from the main thread. This will ensure its on the main thread
+     */
     public static void sendPlayerMessage(Component component) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null) {
-            return;
-        }
-        player.sendMessage(component, Util.NIL_UUID);
+        Minecraft mc = Minecraft.getInstance();
+        mc.execute(() -> {
+            LocalPlayer player = mc.player;
+            if (player == null) {
+                return;
+            }
+            player.sendMessage(component, Util.NIL_UUID);
+        });
     }
 }
