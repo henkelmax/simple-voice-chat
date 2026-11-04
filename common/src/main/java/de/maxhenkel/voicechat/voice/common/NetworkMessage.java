@@ -1,10 +1,10 @@
 package de.maxhenkel.voicechat.voice.common;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.api.RawUdpPacket;
 import de.maxhenkel.voicechat.debug.PingHandler;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.ConnectionSecret;
+import de.maxhenkel.voicechat.voice.server.UdpPacket;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.DecoderException;
@@ -41,7 +41,7 @@ public class NetworkMessage {
     }
 
     public NetworkMessage(Packet<?> packet) {
-        this(System.currentTimeMillis());
+        this(Utils.getMilliseconds());
         this.packet = packet;
     }
 
@@ -91,7 +91,7 @@ public class NetworkMessage {
     }
 
     @Nullable
-    public static NetworkMessage readPacketServer(RawUdpPacket packet, Server server) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+    public static NetworkMessage readPacketServer(UdpPacket packet, Server server) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
         try {
             byte[] data = packet.getData();
             FriendlyByteBuf b = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
