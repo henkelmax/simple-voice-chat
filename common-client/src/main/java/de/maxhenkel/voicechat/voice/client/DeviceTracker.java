@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.voice.client;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.voice.common.Utils;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -27,7 +28,7 @@ public class DeviceTracker {
         this.preferredDevice = preferredDevice;
         this.lastSeenDefaultDevice = defaultDeviceQuery.get();
         this.lastSeenDevices = devicesQuery.get();
-        this.lastDeviceCheckTime = System.currentTimeMillis();
+        this.lastDeviceCheckTime = Utils.getMilliseconds();
     }
 
     /**
@@ -36,7 +37,7 @@ public class DeviceTracker {
      * @return if the device should be reopened
      */
     public boolean shouldChangeDevice(boolean deviceOpen, @Nullable String currentDevice) {
-        long time = System.currentTimeMillis();
+        long time = Utils.getMilliseconds();
         if (time - lastDeviceCheckTime < DEVICE_CHECK_INTERVAL) {
             return false;
         }
