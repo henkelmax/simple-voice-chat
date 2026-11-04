@@ -51,7 +51,7 @@ public class WebRTCVoicechatClientSocketImpl implements ClientVoicechatSocket {
             public void onMessage(RTCDataChannelBuffer buffer) {
                 byte[] data = new byte[buffer.data.remaining()];
                 buffer.data.get(data);
-                queue.add(new VoicechatWebrtcRawUdpPacket(data, System.currentTimeMillis(), socketAddress));
+                queue.add(new VoicechatWebrtcRawUdpPacket(data, socketAddress));
                 if (queue.size() > 100) {
                     CooldownTimer.run("voicechat_webrtc_queue_overflow", () -> {
                         Voicechat.LOGGER.warn("WebRTC packet queue is overflowing ({} packets)", queue.size());
