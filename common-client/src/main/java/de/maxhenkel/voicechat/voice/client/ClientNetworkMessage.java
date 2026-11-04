@@ -27,7 +27,7 @@ public class ClientNetworkMessage {
             Voicechat.LOGGER.debug("Received invalid packet from {}", client.getAddress());
             return null;
         }
-        return NetworkMessage.readFromBytes(packet.getSocketAddress(), client.getData().getSecret(), b.readByteArray(Utils.MAX_VOICE_CHAT_PACKET_SIZE), System.currentTimeMillis());
+        return NetworkMessage.readFromBytes(packet.getSocketAddress(), client.getData().getSecret(), b.readByteArray(Utils.MAX_VOICE_CHAT_PACKET_SIZE), Utils.getMilliseconds());
     }
 
     public static byte[] writeClient(ClientVoicechatConnection client, NetworkMessage networkMessage) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
