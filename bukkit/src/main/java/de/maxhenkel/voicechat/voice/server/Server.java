@@ -213,8 +213,8 @@ public class Server extends Thread {
 
         public ProcessThread() {
             running = true;
-            lastKeepAlive = 0L;
-            lastPermissionCheck = 0L;
+            lastKeepAlive = Utils.getMilliseconds();
+            lastPermissionCheck = Utils.getMilliseconds();
             setDaemon(true);
             setName("VoiceChatPacketProcessingThread");
             setUncaughtExceptionHandler(new VoicechatUncaughtExceptionHandler());
@@ -225,7 +225,7 @@ public class Server extends Thread {
             while (running) {
                 try {
                     pingManager.checkTimeouts();
-                    long time = System.currentTimeMillis();
+                    long time = Utils.getMilliseconds();
                     if (time - lastKeepAlive > Voicechat.SERVER_CONFIG.keepAlive.get()) {
                         sendKeepAlives();
                         lastKeepAlive = time;
@@ -326,7 +326,7 @@ public class Server extends Thread {
                         PingPacket packet = (PingPacket) message.getPacket();
                         pingManager.onPongPacket(packet);
                     } else if (message.getPacket() instanceof KeepAlivePacket) {
-                        conn.setLastKeepAliveResponse(System.currentTimeMillis());
+                        conn.setLastKeepAliveResponse(Utils.getMilliseconds());
                     }
                 } catch (Exception e) {
                     Voicechat.LOGGER.error("Voice chat server error", e);
@@ -494,7 +494,7 @@ public class Server extends Thread {
     }
 
     private void sendKeepAlives() {
-        long timestamp = System.currentTimeMillis();
+        long timestamp = Utils.getMilliseconds();
 
         connections.values().removeIf(connection -> {
             if (timestamp - connection.getLastKeepAliveResponse() >= Voicechat.SERVER_CONFIG.keepAlive.get() * 10L) {

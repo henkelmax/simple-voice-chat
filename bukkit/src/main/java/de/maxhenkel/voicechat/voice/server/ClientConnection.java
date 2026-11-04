@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
+import de.maxhenkel.voicechat.voice.common.Utils;
 
 import java.net.SocketAddress;
 import java.util.UUID;
@@ -15,7 +16,7 @@ public class ClientConnection {
     public ClientConnection(ConnectionSecret connectionSecret, SocketAddress address) {
         this.connectionSecret = connectionSecret;
         this.address = address;
-        this.lastKeepAliveResponse = System.currentTimeMillis();
+        this.lastKeepAliveResponse = Utils.getMilliseconds();
     }
 
     public UUID getPlayerUUID() {

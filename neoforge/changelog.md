@@ -25,3 +25,4 @@
 - Fixed the game freezing while resolving the voice chat server's hostname
 - Reduced potential log spam caused by OpenAL errors
 - Added support for switching or disconnecting audio devices on the fly
+- Fixed some systems breaking when the system time changes

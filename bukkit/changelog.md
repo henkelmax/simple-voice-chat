@@ -19,3 +19,4 @@
 - Properly prevent players from leaving groups using the API
 - Always call leave group event when a player changes their group
 - Added UDP packet rate limiting
+- Fixed some systems breaking when the system time changes
