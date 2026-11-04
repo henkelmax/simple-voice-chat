@@ -6,6 +6,7 @@ import net.minecraft.util.math.vector.Vector2f;
 
 import java.security.SecureRandom;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class Utils {
 
@@ -30,6 +31,13 @@ public class Utils {
         byte[] bytes = new byte[length];
         SECURE_RANDOM.nextBytes(bytes);
         return bytes;
+    }
+
+    /**
+     * @return millisecond time without a reference that doesn't change if the system clock gets changed
+     */
+    public static long getMilliseconds() {
+        return TimeUnit.NANOSECONDS.toMillis(System.nanoTime());
     }
 
     public static void sleep(int ms) {
