@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
+import de.maxhenkel.voicechat.voice.common.Utils;
 import org.lwjgl.openal.*;
 
 import javax.annotation.Nullable;
@@ -234,9 +235,9 @@ public class SoundManager {
     }
 
     public void runInContext(Executor executor, Runnable runnable) {
-        long time = System.currentTimeMillis();
+        long time = Utils.getMilliseconds();
         executor.execute(() -> {
-            long diff = System.currentTimeMillis() - time;
+            long diff = Utils.getMilliseconds() - time;
             if (diff > 20 || (diff >= 5 && Voicechat.debugMode())) {
                 Voicechat.LOGGER.warn("Sound executor delay: {} ms!", diff);
             }
