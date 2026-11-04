@@ -57,7 +57,7 @@ public class Server extends Thread {
     private final MinecraftServer server;
     private VoicechatSocket socket;
     private final ProcessThread processThread;
-    private final BlockingQueue<RawUdpPacket> packetQueue;
+    private final BlockingQueue<UdpPacket> packetQueue;
     private final PingManager pingManager;
     private final PlayerStateManager playerStateManager;
     private final ServerGroupManager groupManager;
@@ -300,17 +300,17 @@ public class Server extends Thread {
                         lastPermissionCheck = time;
                     }
 
-                    RawUdpPacket rawPacket = packetQueue.poll(10, TimeUnit.MILLISECONDS);
-                    if (rawPacket == null) {
+                    UdpPacket udpPacket = packetQueue.poll(10, TimeUnit.MILLISECONDS);
+                    if (udpPacket == null) {
                         continue;
                     }
 
                     NetworkMessage message;
                     try {
-                        message = NetworkMessage.readPacketServer(rawPacket, Server.this);
+                        message = NetworkMessage.readPacketServer(udpPacket, Server.this);
                     } catch (Exception e) {
                         CooldownTimer.run("failed_reading_packet", () -> {
-                            Voicechat.LOGGER.warn("Failed to read packet from {}", rawPacket.getSocketAddress());
+                            Voicechat.LOGGER.warn("Failed to read packet from {}", udpPacket.getSocketAddress());
                         });
                         continue;
                     }
@@ -319,7 +319,7 @@ public class Server extends Thread {
                         continue;
                     }
 
-                    if (System.currentTimeMillis() - message.getTimestamp() > message.getTTL()) {
+                    if (Utils.getMilliseconds() - message.getTimestamp() > message.getTTL()) {
                         CooldownTimer.run("ttl", () -> {
                             Voicechat.LOGGER.warn("Dropping voice chat packets! Your Server might be overloaded!");
                             Voicechat.LOGGER.warn("Packet queue has {} packets", packetQueue.size());
@@ -671,7 +671,7 @@ public class Server extends Thread {
     }
 
     private void queuePacket(RawUdpPacket rawUdpPacket) {
-        if (!packetQueue.offer(rawUdpPacket)) {
+        if (!packetQueue.offer(new UdpPacket(rawUdpPacket.getData(), rawUdpPacket.getSocketAddress(), Utils.getMilliseconds()))) {
             CooldownTimer.run("packet_queue_full", () -> {
                 Voicechat.LOGGER.warn("Voice chat packet queue is full ({} packets) - dropping packets", packetQueue.size());
             });
