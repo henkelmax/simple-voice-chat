@@ -15,11 +15,9 @@ public class VoicechatSocketBase {
         if (packet.getLength() >= BUFFER.length) {
             throw new ProtocolException(String.format("Packet from %s is too large", packet.getSocketAddress()));
         }
-        // Setting the timestamp after receiving the packet
-        long timestamp = System.currentTimeMillis();
         byte[] data = new byte[packet.getLength()];
         System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
-        return new RawUdpPacketImpl(data, packet.getSocketAddress(), timestamp);
+        return new RawUdpPacketImpl(data, packet.getSocketAddress());
     }
 
 }
