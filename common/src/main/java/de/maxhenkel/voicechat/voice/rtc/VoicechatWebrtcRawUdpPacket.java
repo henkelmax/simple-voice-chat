@@ -8,12 +8,10 @@ import java.net.SocketAddress;
 public class VoicechatWebrtcRawUdpPacket implements RawUdpPacket {
 
     private final byte[] data;
-    private final long timestamp;
     private final SocketAddress address;
 
-    public VoicechatWebrtcRawUdpPacket(byte[] data, long timestamp, SocketAddress address) {
+    public VoicechatWebrtcRawUdpPacket(byte[] data, SocketAddress address) {
         this.data = data;
-        this.timestamp = timestamp;
         this.address = address;
     }
 
@@ -24,7 +22,7 @@ public class VoicechatWebrtcRawUdpPacket implements RawUdpPacket {
 
     @Override
     public long getTimestamp() {
-        return timestamp;
+        return 0L;
     }
 
     @Override

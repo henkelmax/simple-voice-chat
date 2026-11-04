@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.voice.common.Utils;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -52,7 +53,7 @@ public class UsernameCache {
     }
 
     public synchronized void save() {
-        long time = System.currentTimeMillis();
+        long time = Utils.getMilliseconds();
         file.getParentFile().mkdirs();
         Set<UUID> volumeIds = VoicechatClient.PLAYER_VOLUME_CONFIG.getVolumes().keySet();
 
@@ -65,7 +66,7 @@ public class UsernameCache {
 
         try (Writer writer = new FileWriter(file)) {
             gson.toJson(usernamesToSave, writer);
-            Voicechat.LOGGER.debug("Saved username cache in {}ms", System.currentTimeMillis() - time);
+            Voicechat.LOGGER.debug("Saved username cache in {}ms", Utils.getMilliseconds() - time);
         } catch (Exception e) {
             Voicechat.LOGGER.error("Failed to save username cache", e);
         }

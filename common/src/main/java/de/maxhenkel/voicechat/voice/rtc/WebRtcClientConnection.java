@@ -30,7 +30,7 @@ public class WebRtcClientConnection extends ClientConnection {
             public void onMessage(RTCDataChannelBuffer buffer) {
                 byte[] data = new byte[buffer.data.remaining()];
                 buffer.data.get(data);
-                server.addRawPacket(new VoicechatWebrtcRawUdpPacket(data, System.currentTimeMillis(), address));
+                server.addRawPacket(new VoicechatWebrtcRawUdpPacket(data, address));
             }
         });
     }
