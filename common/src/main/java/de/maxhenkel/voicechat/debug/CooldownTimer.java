@@ -1,5 +1,7 @@
 package de.maxhenkel.voicechat.debug;
 
+import de.maxhenkel.voicechat.voice.common.Utils;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CooldownTimer {
@@ -11,11 +13,13 @@ public class CooldownTimer {
 
     static {
         cooldowns = new ConcurrentHashMap<>();
+        lastCleanup = Utils.getMilliseconds();
     }
 
     public static void run(String id, long time, Runnable runnable) {
-        long currentTime = System.currentTimeMillis();
-        if (currentTime > cooldowns.getOrDefault(id, 0L)) {
+        long currentTime = Utils.getMilliseconds();
+        Long cooldownEnd = cooldowns.get(id);
+        if (cooldownEnd == null || currentTime > cooldownEnd) {
             cooldowns.put(id, currentTime + time);
             runnable.run();
         }
