@@ -59,7 +59,7 @@ public class RenderEvents {
         ClientPlayerStateManager manager = ClientManager.getPlayerStateManager();
         ClientVoicechat client = ClientManager.getClient();
 
-        if (manager.isDisconnected() && isStartup()) {
+        if (manager.isDisconnected() && client != null && client.isStartup()) {
             return;
         }
 
@@ -88,11 +88,6 @@ public class RenderEvents {
         if (manager.getGroupID() != null && VoicechatClient.CLIENT_CONFIG.showGroupHud.get()) {
             GroupChatManager.renderIcons(guiGraphics);
         }
-    }
-
-    private boolean isStartup() {
-        ClientVoicechat client = ClientManager.getClient();
-        return client != null && (System.currentTimeMillis() - client.getStartTime()) < 5000;
     }
 
     private void renderIcon(GuiGraphics guiGraphics, ResourceLocation texture) {
