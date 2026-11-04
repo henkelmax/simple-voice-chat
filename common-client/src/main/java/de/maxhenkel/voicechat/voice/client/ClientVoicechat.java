@@ -45,7 +45,7 @@ public class ClientVoicechat {
     private long reconnectTime;
 
     public ClientVoicechat() {
-        this.startTime = System.currentTimeMillis();
+        this.startTime = Utils.getMilliseconds();
         this.talkCache = new TalkCache();
         this.audioChannels = new HashMap<>();
         this.soundManagerExecutor = Executors.newSingleThreadExecutor(NamedThreadPoolFactory.create("VoicechatSoundManagerThread"));
@@ -297,8 +297,13 @@ public class ClientVoicechat {
         return recorder;
     }
 
-    public long getStartTime() {
-        return startTime;
+    /**
+     * Used to avoid showing voice chat states while the client is still initializing.
+     *
+     * @return if its within 5 seconds of the client being initialized
+     */
+    public boolean isStartup() {
+        return Utils.getMilliseconds() - startTime < 5000L;
     }
 
     public Map<UUID, AudioChannel> getAudioChannels() {
