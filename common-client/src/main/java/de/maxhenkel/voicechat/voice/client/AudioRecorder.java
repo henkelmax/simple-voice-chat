@@ -9,6 +9,7 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.natives.LameManager;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
+import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
@@ -72,9 +73,7 @@ public class AudioRecorder {
     }
 
     public static AudioRecorder create() {
-        long timestamp = System.currentTimeMillis();
         Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timestamp);
         String recordingDestination = VoicechatClient.CLIENT_CONFIG.recordingDestination.get();
         Path location;
         if (recordingDestination.trim().isEmpty()) {
@@ -82,7 +81,7 @@ public class AudioRecorder {
         } else {
             location = Paths.get(recordingDestination).resolve(FORMAT.format(cal.getTime()));
         }
-        return new AudioRecorder(location, timestamp);
+        return new AudioRecorder(location, Utils.getMilliseconds());
     }
 
     public Path getLocation() {
@@ -98,7 +97,7 @@ public class AudioRecorder {
     }
 
     public String getDuration() {
-        return getDuration(System.currentTimeMillis());
+        return getDuration(Utils.getMilliseconds());
     }
 
     public String getDuration(long currentTime) {
@@ -109,7 +108,7 @@ public class AudioRecorder {
     }
 
     public String getStorage() {
-        return getStorage(System.currentTimeMillis());
+        return getStorage(Utils.getMilliseconds());
     }
 
     public String getStorage(long currentTime) {
