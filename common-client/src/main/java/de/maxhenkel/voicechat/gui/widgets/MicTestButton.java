@@ -8,6 +8,7 @@ import de.maxhenkel.voicechat.voice.client.speaker.Speaker;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerException;
 import de.maxhenkel.voicechat.voice.client.speaker.SpeakerManager;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
+import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -163,7 +164,7 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
                 speaker = SpeakerManager.createSpeaker(null/*soundManager*/, null);
 
                 while (running) {
-                    if (System.currentTimeMillis() - lastRender > 500L) {
+                    if (Utils.getMilliseconds() - lastRender > 500L) {
                         break;
                     }
                     if (micThread.isClosed()/* || soundManager.isClosing()*/) {
@@ -208,7 +209,7 @@ public class MicTestButton extends ToggleImageButton implements ImageButton.Tool
         }
 
         public void updateLastRender() {
-            lastRender = System.currentTimeMillis();
+            lastRender = Utils.getMilliseconds();
         }
 
         private void setMicLocked(boolean locked) {
