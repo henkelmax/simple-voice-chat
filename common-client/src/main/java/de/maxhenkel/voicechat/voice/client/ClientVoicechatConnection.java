@@ -35,7 +35,6 @@ public class ClientVoicechatConnection extends Thread {
         this.data = data;
         this.socket = ClientPluginManager.instance().getClientSocketImplementation();
         this.socket.open();
-        this.lastKeepAlive = -1;
         this.running = true;
         this.authThread = new AuthThread();
         setDaemon(true);
@@ -115,9 +114,9 @@ public class ClientVoicechatConnection extends Thread {
                 } else if (in.getPacket() instanceof ConnectionCheckAckPacket) {
                     if (authenticated && !connected) {
                         Voicechat.LOGGER.info("Server acknowledged connection check");
+                        lastKeepAlive = Utils.getMilliseconds();
                         connected = true;
                         executeIfActive(() -> ClientCompatibilityManager.INSTANCE.emitVoiceChatConnectedEvent(this));
-                        lastKeepAlive = System.currentTimeMillis();
                     }
                 } else if (in.getPacket() instanceof SoundPacket packet) {
                     client.processSoundPacket(packet);
@@ -125,7 +124,7 @@ public class ClientVoicechatConnection extends Thread {
                     Voicechat.LOGGER.info("Received ping {}, sending pong...", packet.getId());
                     sendToServer(new NetworkMessage(packet));
                 } else if (in.getPacket() instanceof KeepAlivePacket) {
-                    lastKeepAlive = System.currentTimeMillis();
+                    lastKeepAlive = Utils.getMilliseconds();
                     sendToServer(new NetworkMessage(new KeepAlivePacket()));
                 }
             }
@@ -178,7 +177,7 @@ public class ClientVoicechatConnection extends Thread {
      * This must be called on the main thread
      */
     public void checkTimeout() {
-        if (lastKeepAlive >= 0 && System.currentTimeMillis() - lastKeepAlive > data.getKeepAlive() * 10L) {
+        if (connected && Utils.getMilliseconds() - lastKeepAlive > data.getKeepAlive() * 10L) {
             Voicechat.LOGGER.info("Connection timeout");
             ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
         }
