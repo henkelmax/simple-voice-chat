@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.plugins.ClientPluginManager;
 import de.maxhenkel.voicechat.voice.common.NamedThreadPoolFactory;
 import de.maxhenkel.voicechat.voice.common.SoundPacket;
+import de.maxhenkel.voicechat.voice.common.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.text.Style;
@@ -40,10 +41,10 @@ public class ClientVoicechat {
     @Nullable
     private AudioRecorder recorder;
     private final long startTime;
+    private boolean reconnectScheduled;
     private long reconnectTime;
 
     public ClientVoicechat() {
-        this.reconnectTime = -1L;
         this.startTime = System.currentTimeMillis();
         this.talkCache = new TalkCache();
         this.audioChannels = new HashMap<>();
@@ -75,7 +76,7 @@ public class ClientVoicechat {
 
     private void openConnection() {
         checkRenderThread();
-        reconnectTime = -1L;
+        reconnectScheduled = false;
         try {
             connection = new ClientVoicechatConnection(this, initializationData);
         } catch (Exception e) {
@@ -87,13 +88,14 @@ public class ClientVoicechat {
     }
 
     private void reconnectLater() {
-        reconnectTime = System.currentTimeMillis() + RECONNECT_DELAY;
+        reconnectScheduled = true;
+        reconnectTime = Utils.getMilliseconds() + RECONNECT_DELAY;
     }
 
     public void tick() {
         if (connection != null) {
             connection.checkTimeout();
-        } else if (reconnectTime >= 0L && System.currentTimeMillis() >= reconnectTime) {
+        } else if (reconnectScheduled && Utils.getMilliseconds() >= reconnectTime) {
             Voicechat.LOGGER.info("Trying to connect to server again");
             openConnection();
         }
