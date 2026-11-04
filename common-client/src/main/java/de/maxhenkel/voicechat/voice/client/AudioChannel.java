@@ -50,7 +50,7 @@ public class AudioChannel extends Thread {
         this.uuid = uuid;
         this.queue = new LinkedBlockingQueue<>();
         this.packetBuffer = new AudioPacketBuffer(VoicechatClient.CLIENT_CONFIG.audioPacketThreshold.get());
-        this.lastPacketTime = System.currentTimeMillis();
+        this.lastPacketTime = Utils.getMilliseconds();
         this.stopped = false;
         this.decoder = OpusManager.createDecoder();
         this.lastSequenceNumber = -1L;
@@ -62,7 +62,7 @@ public class AudioChannel extends Thread {
     }
 
     public boolean canKill() {
-        return System.currentTimeMillis() - lastPacketTime > 30_000L;
+        return Utils.getMilliseconds() - lastPacketTime > 30_000L;
     }
 
     public void closeAndKill() {
@@ -116,7 +116,7 @@ public class AudioChannel extends Thread {
                 if (packet == null) {
                     continue;
                 }
-                lastPacketTime = System.currentTimeMillis();
+                lastPacketTime = Utils.getMilliseconds();
 
                 if (!packet.isFromClientAudioChannel() && lastSequenceNumber >= 0 && packet.getSequenceNumber() <= lastSequenceNumber) {
                     continue;
