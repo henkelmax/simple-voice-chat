@@ -99,7 +99,21 @@ public class NetworkSimulator implements NetworkSimulatorMBean {
     }
 
     @Override
-    public void disconnect() {
+    public void dropAll() {
+        lossProbability = 1D;
+    }
+
+    @Override
+    public void reset() {
+        lossProbability = 0D;
+        duplicateProbability = 0D;
+        reorderProbability = 0D;
+        delayMillis = 0;
+        jitterMillis = 0;
+    }
+
+    @Override
+    public void socketError() {
         SimulatedClientVoicechatSocket s = socket;
         if (s != null) {
             s.simulateFailure();
