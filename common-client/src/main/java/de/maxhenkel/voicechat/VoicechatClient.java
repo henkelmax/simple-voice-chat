@@ -71,7 +71,7 @@ public abstract class VoicechatClient {
         SpeexManager.init();
         LameManager.init();
 
-        if (CommonCompatibilityManager.INSTANCE.isDevEnvironment()) {
+        if (NetworkSimulator.isEnabled()) {
             NetworkSimulator.register();
         }
 
