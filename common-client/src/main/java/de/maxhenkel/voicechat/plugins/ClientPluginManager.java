@@ -5,8 +5,8 @@ import de.maxhenkel.voicechat.api.ClientVoicechatSocket;
 import de.maxhenkel.voicechat.api.events.*;
 import de.maxhenkel.voicechat.api.internal.events.*;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
+import de.maxhenkel.voicechat.debug.netsim.NetworkSimulator;
 import de.maxhenkel.voicechat.debug.netsim.SimulatedClientVoicechatSocket;
-import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.plugins.impl.ClientVoicechatSocketImpl;
 import de.maxhenkel.voicechat.plugins.impl.PositionImpl;
 import de.maxhenkel.voicechat.plugins.impl.events.*;
@@ -74,7 +74,7 @@ public class ClientPluginManager {
         } else {
             Voicechat.LOGGER.info("Using custom voicechat client socket implementation: {}", socket.getClass().getName());
         }
-        if (CommonCompatibilityManager.INSTANCE.isDevEnvironment()) {
+        if (NetworkSimulator.isEnabled()) {
             Voicechat.LOGGER.warn("Wrapping socket in development voicechat client socket for network condition testing");
             socket = new SimulatedClientVoicechatSocket(socket);
         }
