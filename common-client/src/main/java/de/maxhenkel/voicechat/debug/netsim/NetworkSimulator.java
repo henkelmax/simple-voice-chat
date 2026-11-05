@@ -41,6 +41,10 @@ public class NetworkSimulator implements NetworkSimulatorMBean {
         this.socket = socket;
     }
 
+    public boolean isActive() {
+        return lossProbability > 0D || duplicateProbability > 0D || reorderProbability > 0D || delayMillis != 0 || jitterMillis != 0;
+    }
+
     @Override
     public double getLossProbability() {
         return lossProbability;
