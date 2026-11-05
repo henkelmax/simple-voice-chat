@@ -22,6 +22,10 @@ public interface NetworkSimulatorMBean {
 
     void setJitterMillis(int jitterMillis);
 
+    boolean isSocketErrorOnConnect();
+
+    void setSocketErrorOnConnect(boolean socketErrorOnConnect);
+
     void dropAll();
 
     void reset();

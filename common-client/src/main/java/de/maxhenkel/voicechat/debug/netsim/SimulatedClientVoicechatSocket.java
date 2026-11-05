@@ -21,7 +21,6 @@ public class SimulatedClientVoicechatSocket implements ClientVoicechatSocket {
     private volatile Exception sendError;
 
     public SimulatedClientVoicechatSocket(ClientVoicechatSocket socket) {
-        NetworkSimulator.register();
         this.socket = socket;
         this.scheduler = Executors.newSingleThreadScheduledExecutor(NamedThreadPoolFactory.create("VoiceChatNetworkSimulatorThread"));
         this.received = new LinkedBlockingQueue<>();
@@ -34,6 +33,9 @@ public class SimulatedClientVoicechatSocket implements ClientVoicechatSocket {
         Thread receiveThread = new Thread(this::receiveLoop, "VoiceChatNetworkSimulatorReceiveThread");
         receiveThread.setDaemon(true);
         receiveThread.start();
+        if (NetworkSimulator.INSTANCE.isSocketErrorOnConnect()) {
+            simulateFailure();
+        }
     }
 
     private void receiveLoop() {
@@ -115,7 +117,9 @@ public class SimulatedClientVoicechatSocket implements ClientVoicechatSocket {
     }
 
     public void simulateFailure() {
-        received.add(new Received(null, new SocketException("Simulated connection failure")));
+        SocketException e = new SocketException("Simulated connection failure");
+        sendError = e;
+        received.add(new Received(null, e));
     }
 
     @Override
