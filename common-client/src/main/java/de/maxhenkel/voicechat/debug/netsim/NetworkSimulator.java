@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.debug.netsim;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 
 import javax.annotation.Nullable;
 import javax.management.ObjectName;
@@ -8,6 +9,7 @@ import java.lang.management.ManagementFactory;
 
 /**
  * Used to simulate poor network conditions.
+ * This is only active if you are in a development environment or have <code>-Dvoicechat.netsim</code> set.
  * Change values by running <code>jconsole</code>.
  */
 public class NetworkSimulator implements NetworkSimulatorMBean {
@@ -22,6 +24,10 @@ public class NetworkSimulator implements NetworkSimulatorMBean {
     private volatile boolean socketErrorOnConnect;
     @Nullable
     private volatile SimulatedClientVoicechatSocket socket;
+
+    public static boolean isEnabled() {
+        return CommonCompatibilityManager.INSTANCE.isDevEnvironment() || System.getProperty("voicechat.netsim") != null;
+    }
 
     public static void register() {
         try {
