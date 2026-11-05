@@ -19,16 +19,11 @@ public class NetworkSimulator implements NetworkSimulatorMBean {
     private volatile double reorderProbability;
     private volatile int delayMillis;
     private volatile int jitterMillis;
+    private volatile boolean socketErrorOnConnect;
     @Nullable
     private volatile SimulatedClientVoicechatSocket socket;
 
-    private static boolean registered;
-
-    public static synchronized void register() {
-        if (registered) {
-            return;
-        }
-        registered = true;
+    public static void register() {
         try {
             ManagementFactory.getPlatformMBeanServer().registerMBean(INSTANCE, new ObjectName("de.maxhenkel.voicechat:type=NetworkSimulator"));
             Voicechat.LOGGER.info("Registered network simulator MBean");
@@ -99,6 +94,16 @@ public class NetworkSimulator implements NetworkSimulatorMBean {
     }
 
     @Override
+    public boolean isSocketErrorOnConnect() {
+        return socketErrorOnConnect;
+    }
+
+    @Override
+    public void setSocketErrorOnConnect(boolean socketErrorOnConnect) {
+        this.socketErrorOnConnect = socketErrorOnConnect;
+    }
+
+    @Override
     public void dropAll() {
         lossProbability = 1D;
     }
@@ -110,6 +115,7 @@ public class NetworkSimulator implements NetworkSimulatorMBean {
         reorderProbability = 0D;
         delayMillis = 0;
         jitterMillis = 0;
+        socketErrorOnConnect = false;
     }
 
     @Override
