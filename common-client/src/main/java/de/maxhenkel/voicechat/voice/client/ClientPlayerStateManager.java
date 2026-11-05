@@ -247,6 +247,7 @@ public class ClientPlayerStateManager {
     }
 
     public void onFinishOnboarding() {
+        applyForcedState();
         syncOwnState();
     }
 
