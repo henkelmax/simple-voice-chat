@@ -40,6 +40,10 @@ public class SimulatedClientVoicechatSocket implements ClientVoicechatSocket {
         while (true) {
             try {
                 Received packet = new Received(socket.read(), null);
+                if (!NetworkSimulator.INSTANCE.isActive()) {
+                    received.add(packet);
+                    continue;
+                }
                 for (long delay : simulateDelays()) {
                     schedule(delay, () -> received.add(packet));
                 }
@@ -66,6 +70,10 @@ public class SimulatedClientVoicechatSocket implements ClientVoicechatSocket {
         Exception error = sendError;
         if (error != null) {
             throw error;
+        }
+        if (!NetworkSimulator.INSTANCE.isActive()) {
+            socket.send(data, address);
+            return;
         }
         for (long delay : simulateDelays()) {
             schedule(delay, () -> {
