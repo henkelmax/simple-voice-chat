@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat;
 import com.sun.jna.Platform;
 import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.CategoryVolumeConfig;
+import de.maxhenkel.voicechat.debug.netsim.NetworkSimulator;
 import de.maxhenkel.voicechat.config.ClientConfig;
 import de.maxhenkel.voicechat.config.PlayerVolumeConfig;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
@@ -66,6 +67,10 @@ public abstract class VoicechatClient {
         RNNoiseManager.init();
         SpeexManager.init();
         LameManager.init();
+
+        if (CommonCompatibilityManager.INSTANCE.isDevEnvironment()) {
+            NetworkSimulator.register();
+        }
 
         if (Platform.isMac()) {
             if (!VersionCheck.isMacOSNativeCompatible()) {
