@@ -4,6 +4,7 @@ import de.maxhenkel.configbuilder.ConfigBuilder;
 import de.maxhenkel.voicechat.config.ServerConfig;
 import de.maxhenkel.voicechat.config.Translations;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.legacy.LegacyCompatibility;
 import de.maxhenkel.voicechat.logging.Log4JVoicechatLogger;
 import de.maxhenkel.voicechat.logging.VoicechatLogger;
 import de.maxhenkel.voicechat.plugins.PluginManager;
@@ -35,6 +36,9 @@ public abstract class Voicechat {
         }
 
         LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
+        if (LegacyCompatibility.isEnabled()) {
+            LOGGER.warn("Legacy compatibility enabled - This is an experimental option and makes voice chat less secure - Use at your own risk!");
+        }
 
         initializeConfigs();
 
