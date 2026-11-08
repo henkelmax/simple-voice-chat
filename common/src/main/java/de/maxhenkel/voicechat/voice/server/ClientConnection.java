@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.voice.server;
 
+import de.maxhenkel.voicechat.legacy.LegacyCompatibility;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.Utils;
 
@@ -48,7 +49,7 @@ public class ClientConnection {
     }
 
     public void send(Server server, NetworkMessage message) throws Exception {
-        server.getSocket().send(message.writeServer(this), address);
+        server.getSocket().send(LegacyCompatibility.translateOutgoingVoicePacket(this, message.writeServer(this)), address);
     }
 
 }
