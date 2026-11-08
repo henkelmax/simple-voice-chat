@@ -24,3 +24,4 @@
 - Fixed the game freezing while resolving the voice chat server's hostname
 - Added support for switching or disconnecting microphones on the fly
 - Fixed some systems breaking when the system time changes
+- Fixed recordings drift apart with real time
