@@ -167,6 +167,13 @@ public class NetworkMessage {
     }
 
     public byte[] write(Secret secret) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        return secret.encrypt(encode());
+    }
+
+    /**
+     * @return the unencrypted payload
+     */
+    public byte[] encode() {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
 
         byte type = getPacketType(packet);
@@ -179,7 +186,7 @@ public class NetworkMessage {
 
         byte[] bytes = new byte[buffer.readableBytes()];
         buffer.readBytes(bytes);
-        return secret.encrypt(bytes);
+        return bytes;
     }
 
 }

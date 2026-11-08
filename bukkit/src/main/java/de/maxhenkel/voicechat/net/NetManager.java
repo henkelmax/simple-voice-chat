@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.legacy.LegacyCompatibility;
 import de.maxhenkel.voicechat.util.FriendlyByteBuf;
 import io.netty.buffer.Unpooled;
 import org.bukkit.Bukkit;
@@ -38,6 +39,8 @@ public class NetManager implements Listener {
             registerOutgoingPacket(JoinedGroupPacket.class);
             registerOutgoingPacket(AddCategoryPacket.class);
             registerOutgoingPacket(RemoveCategoryPacket.class);
+
+            LegacyCompatibility.registerChannels(this);
         } catch (Exception e) {
             throw new IllegalStateException("Failed to register voice chat packets", e);
         }
@@ -75,7 +78,7 @@ public class NetManager implements Listener {
         }
     }
 
-    private <T extends Packet<?>> void registerIncomingPacket(Class<T> packetClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public <T extends Packet<?>> void registerIncomingPacket(Class<T> packetClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Constructor<T> c = packetClass.getDeclaredConstructor();
         String id = c.newInstance().getID().toString();
         packets.add(id);
@@ -103,7 +106,10 @@ public class NetManager implements Listener {
                 player.kickPlayer("Failed to parse packet");
                 return;
             }
-            packet.onPacket(player);
+            T translatedPacket = LegacyCompatibility.translateIncoming(player, packet);
+            if (translatedPacket != null) {
+                translatedPacket.onPacket(player);
+            }
         });
     }
 
@@ -118,12 +124,16 @@ public class NetManager implements Listener {
             if (!Voicechat.SERVER.isCompatible(player)) {
                 return;
             }
+            Packet<?> translatedPacket = LegacyCompatibility.translateOutgoing(player, p);
+            if (translatedPacket == null) {
+                return;
+            }
             try {
                 FriendlyByteBuf buf = new FriendlyByteBuf();
-                p.toBytes(buf);
+                translatedPacket.toBytes(buf);
                 byte[] bytes = new byte[buf.readableBytes()];
                 buf.readBytes(bytes);
-                player.sendPluginMessage(Voicechat.INSTANCE, p.getID().toString(), bytes);
+                player.sendPluginMessage(Voicechat.INSTANCE, translatedPacket.getID().toString(), bytes);
             } catch (Exception e) {
                 Voicechat.LOGGER.error("Failed to send packet to '{}'", player.getName(), e);
             }
