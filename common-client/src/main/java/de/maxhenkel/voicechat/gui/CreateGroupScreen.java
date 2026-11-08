@@ -48,8 +48,8 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         groupName.setValidator(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
 
         password = new GuiTextField(1, fontRenderer, guiLeft + 7, guiTop + 57, xSize - 7 * 2, 12);
-        password.setMaxStringLength(Voicechat.MAX_GROUP_NAME_LENGTH);
-        password.setValidator(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
+        password.setMaxStringLength(Voicechat.MAX_CREATE_GROUP_PASSWORD_LENGTH);
+        password.setValidator(s -> s.isEmpty() || Voicechat.GROUP_PASSWORD_REGEX.matcher(s).matches());
 
         groupTypeButton = new ButtonBase(2, guiLeft + 6, guiTop + 74, xSize - 12, 20, GROUP_TYPE.getUnformattedComponentText() + ": " + groupType.getTranslation().getUnformattedComponentText()) {
             @Override

@@ -50,7 +50,7 @@ public class ServerGroupManager {
                 Voicechat.LOGGER.warn("Player {} tried to create a group with an invalid name", player.getName());
                 return;
             }
-            if (packet.getPassword() != null && !Voicechat.GROUP_REGEX.matcher(packet.getPassword()).matches()) {
+            if (packet.getPassword() != null && !Voicechat.GROUP_PASSWORD_REGEX.matcher(packet.getPassword()).matches()) {
                 Voicechat.LOGGER.warn("Player {} tried to create a group with an invalid password", player.getName());
                 return;
             }
