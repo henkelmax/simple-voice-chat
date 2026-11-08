@@ -45,8 +45,8 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         addRenderableWidget(groupName);
 
         password = new EditBox(font, guiLeft + 7, guiTop + 56, xSize - 7 * 2, 14, Component.empty());
-        password.setMaxLength(Voicechat.MAX_GROUP_NAME_LENGTH);
-        password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
+        password.setMaxLength(Voicechat.MAX_CREATE_GROUP_PASSWORD_LENGTH);
+        password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_PASSWORD_REGEX.matcher(s).matches());
         addRenderableWidget(password);
 
         addRenderableWidget(CycleButton.builder(GroupType::getTranslation, GroupType.NORMAL).withValues(GroupType.values()).withTooltip(object -> {
