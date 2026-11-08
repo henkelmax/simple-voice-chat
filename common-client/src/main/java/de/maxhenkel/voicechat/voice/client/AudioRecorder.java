@@ -187,11 +187,9 @@ public class AudioRecorder {
         } else if (relativeTime < -20L) {
             Voicechat.LOGGER.warn("Audio {} overlaps with previous snippet.", chunk.timestamp);
         }
-        if (relativeTime < 0L) {
-            relativeTime = 0L;
-        }
+        long silenceMillis = Math.max(relativeTime, 0L);
 
-        long silenceShorts = relativeTime * getSamplesPerMs() * stereoFormat.getChannels();
+        long silenceShorts = silenceMillis * getSamplesPerMs() * stereoFormat.getChannels();
         int tenSeconds = (int) stereoFormat.getSampleRate() * stereoFormat.getChannels() * 10;
         long insertedSilence = 0L;
 
@@ -207,7 +205,7 @@ public class AudioRecorder {
         encoderData.encoder.encode(silence);
         encoderData.encoder.encode(audio);
 
-        encoderData.lastTimestamp += relativeTime + getAudioTimeMillis(audio.length);
+        encoderData.lastTimestamp += silenceMillis + getAudioTimeMillis(audio.length);
     }
 
     public synchronized void flushChunkThreaded(UUID playerUUID) {
