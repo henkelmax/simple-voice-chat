@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CrossSideManager;
+import de.maxhenkel.voicechat.legacy.LegacyCompatibility;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PacketRateLimiter;
 import de.maxhenkel.voicechat.net.SecretPacket;
@@ -44,7 +45,7 @@ public class ServerVoiceEvents {
         CommonCompatibilityManager.INSTANCE.getNetManager().requestSecretChannel.setServerListener((server, player, handler, packet) -> {
             Voicechat.LOGGER.info("Received secret request of {} ({})", player.getName().getString(), packet.getCompatibilityVersion());
             clientCompatibilities.put(player.getUUID(), packet.getCompatibilityVersion());
-            if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
+            if (!isCompatible(player)) {
                 Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName().getString(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
                 player.sendSystemMessage(getIncompatibleMessage(packet.getCompatibilityVersion()));
             } else {
@@ -69,7 +70,16 @@ public class ServerVoiceEvents {
     }
 
     public boolean isCompatible(UUID playerUuid) {
-        return clientCompatibilities.getOrDefault(playerUuid, -1) == Voicechat.COMPATIBILITY_VERSION;
+        int compatibilityVersion = getCompatibilityVersion(playerUuid);
+        return compatibilityVersion == Voicechat.COMPATIBILITY_VERSION || LegacyCompatibility.isSupported(compatibilityVersion);
+    }
+
+    /**
+     * @param playerUuid the player UUID
+     * @return the compatibility version or -1 if not determined yet
+     */
+    public int getCompatibilityVersion(UUID playerUuid) {
+        return clientCompatibilities.getOrDefault(playerUuid, -1);
     }
 
     public void serverStarting(MinecraftServer mcServer) {
