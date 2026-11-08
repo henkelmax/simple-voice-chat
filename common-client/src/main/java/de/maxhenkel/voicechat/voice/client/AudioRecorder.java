@@ -191,9 +191,9 @@ public class AudioRecorder {
             relativeTime = 0L;
         }
 
-        int silenceShorts = (int) (relativeTime * getSamplesPerMs() * stereoFormat.getChannels());
+        long silenceShorts = relativeTime * getSamplesPerMs() * stereoFormat.getChannels();
         int tenSeconds = (int) stereoFormat.getSampleRate() * stereoFormat.getChannels() * 10;
-        int insertedSilence = 0;
+        long insertedSilence = 0L;
 
         if (silenceShorts > tenSeconds) {
             short[] silence = new short[tenSeconds];
@@ -203,7 +203,7 @@ public class AudioRecorder {
             }
         }
 
-        short[] silence = new short[silenceShorts - insertedSilence];
+        short[] silence = new short[(int) (silenceShorts - insertedSilence)];
         encoderData.encoder.encode(silence);
         encoderData.encoder.encode(audio);
 
