@@ -26,3 +26,4 @@
 - Reduced potential log spam caused by OpenAL errors
 - Added support for switching or disconnecting audio devices on the fly
 - Fixed some systems breaking when the system time changes
+- Fixed recordings drift apart with real time
