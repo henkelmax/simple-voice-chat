@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.api.VoicechatSocket;
 import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.debug.VoicechatUncaughtExceptionHandler;
+import de.maxhenkel.voicechat.legacy.LegacyCompatibility;
 import de.maxhenkel.voicechat.net.PacketRateLimiter;
 import de.maxhenkel.voicechat.plugins.PluginManager;
 import de.maxhenkel.voicechat.plugins.impl.audiosender.AudioSenderImpl;
@@ -172,7 +173,7 @@ public class Server extends Thread {
      * @param address      the address of the client
      * @return the nonce
      */
-    private byte[] createNonce(UUID connectionId, SocketAddress address) throws NoSuchAlgorithmException, InvalidKeyException {
+    public byte[] createNonce(UUID connectionId, SocketAddress address) throws NoSuchAlgorithmException, InvalidKeyException {
         Mac mac = Mac.getInstance(NONCE_MAC);
         mac.init(nonceKey);
         mac.update(ByteBuffer.allocate(16).putLong(connectionId.getMostSignificantBits()).putLong(connectionId.getLeastSignificantBits()).array());
@@ -243,7 +244,7 @@ public class Server extends Thread {
 
                     NetworkMessage message;
                     try {
-                        message = NetworkMessage.readPacketServer(udpPacket, Server.this);
+                        message = NetworkMessage.readPacketServer(LegacyCompatibility.translateIncomingVoicePacket(Server.this, udpPacket), Server.this);
                     } catch (Exception e) {
                         CooldownTimer.run("failed_reading_packet", () -> {
                             Voicechat.LOGGER.warn("Failed to read packet from {}", udpPacket.getSocketAddress());

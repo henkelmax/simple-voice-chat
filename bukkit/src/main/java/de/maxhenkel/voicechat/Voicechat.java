@@ -11,6 +11,7 @@ import de.maxhenkel.voicechat.integration.commodore.CommodoreCommands;
 import de.maxhenkel.voicechat.integration.commodore.MissingArgumentTypeException;
 import de.maxhenkel.voicechat.integration.placeholderapi.VoicechatExpansion;
 import de.maxhenkel.voicechat.integration.viaversion.ViaVersionCompatibility;
+import de.maxhenkel.voicechat.legacy.LegacyCompatibility;
 import de.maxhenkel.voicechat.logging.JavaLoggingLogger;
 import de.maxhenkel.voicechat.logging.VoicechatLogger;
 import de.maxhenkel.voicechat.net.NetManager;
@@ -70,6 +71,9 @@ public final class Voicechat extends JavaPlugin {
         }
 
         LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
+        if (LegacyCompatibility.isEnabled()) {
+            LOGGER.warn("Legacy compatibility enabled - This is an experimental option and makes voice chat less secure - Use at your own risk!");
+        }
 
         SERVER_CONFIG = ConfigBuilder.builder(ServerConfig::new).path(getDataFolder().toPath().resolve("voicechat-server.properties")).build();
         TRANSLATIONS = ConfigBuilder.builder(Translations::new).path(getDataFolder().toPath().resolve("translations.properties")).build();

@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.compatibility.PlayerHideEvent;
 import de.maxhenkel.voicechat.compatibility.PlayerShowEvent;
 import de.maxhenkel.voicechat.debug.CooldownTimer;
+import de.maxhenkel.voicechat.legacy.LegacyCompatibility;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.PacketRateLimiter;
 import de.maxhenkel.voicechat.net.RequestSecretPacket;
@@ -63,7 +64,7 @@ public class ServerVoiceEvents implements Listener {
         }
 
         clientCompatibilities.put(playerUUID, packet.getCompatibilityVersion());
-        if (packet.getCompatibilityVersion() != Voicechat.COMPATIBILITY_VERSION) {
+        if (!isCompatible(player)) {
             Voicechat.LOGGER.warn("Connected client {} has incompatible voice chat version (server={}, client={})", player.getName(), Voicechat.COMPATIBILITY_VERSION, packet.getCompatibilityVersion());
             sendIncompatibleMessage(player, packet.getCompatibilityVersion());
         } else {
@@ -76,7 +77,16 @@ public class ServerVoiceEvents implements Listener {
     }
 
     public boolean isCompatible(UUID playerUuid) {
-        return clientCompatibilities.getOrDefault(playerUuid, -1) == Voicechat.COMPATIBILITY_VERSION;
+        int compatibilityVersion = getCompatibilityVersion(playerUuid);
+        return compatibilityVersion == Voicechat.COMPATIBILITY_VERSION || LegacyCompatibility.isSupported(compatibilityVersion);
+    }
+
+    /**
+     * @param playerUuid the player UUID
+     * @return the compatibility version or -1 if not determined yet
+     */
+    public int getCompatibilityVersion(UUID playerUuid) {
+        return clientCompatibilities.getOrDefault(playerUuid, -1);
     }
 
     public static void sendIncompatibleMessage(Player player, int clientCompatibilityVersion) {
