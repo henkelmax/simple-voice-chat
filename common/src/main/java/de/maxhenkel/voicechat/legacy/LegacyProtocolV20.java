@@ -1,5 +1,6 @@
 package de.maxhenkel.voicechat.legacy;
 
+import de.maxhenkel.voicechat.debug.CooldownTimer;
 import de.maxhenkel.voicechat.net.*;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.common.AuthenticateAckPacket;
@@ -12,6 +13,8 @@ import de.maxhenkel.voicechat.voice.server.ConnectionSecret;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
 import java.net.SocketAddress;
@@ -24,7 +27,9 @@ import java.util.UUID;
  */
 public class LegacyProtocolV20 implements LegacyProtocol {
 
+    private static final byte MIC_PACKET_ID = 0x1;
     private static final byte AUTHENTICATE_PACKET_ID = 0x5;
+    private static final byte KEEP_ALIVE_PACKET_ID = 0x8;
     private static final byte CONNECTION_CHECK_PACKET_ID = 0x9;
 
     @Override
@@ -65,6 +70,7 @@ public class LegacyProtocolV20 implements LegacyProtocol {
         Secret secret = connectionSecret.getSecret();
         byte[] payload = buf.readByteArray(Utils.MAX_VOICE_CHAT_PACKET_SIZE);
         byte[] data = secret.decrypt(payload);
+        notifyForcedState(server, connectionSecret.getPlayerUUID(), data[0]);
         if (data[0] == AUTHENTICATE_PACKET_ID) {
             // Drop the player UUID and secret, decryption succeeding already proves it's the player
             payload = secret.encrypt(new byte[]{AUTHENTICATE_PACKET_ID});
@@ -88,6 +94,27 @@ public class LegacyProtocolV20 implements LegacyProtocol {
             message = new NetworkMessage(new AuthenticateAckPacket(new byte[0]));
         }
         return message.writeServer(connection);
+    }
+
+    private static void notifyForcedState(Server server, UUID playerUuid, byte packetId) {
+        PlayerState state = server.getPlayerStateManager().getState(playerUuid);
+        if (state == null) {
+            return;
+        }
+        if (packetId == MIC_PACKET_ID && state.isForceMuted()) {
+            sendOverlayMessage(server, playerUuid, "message.voicechat.no_speak_permission");
+        } else if (packetId == KEEP_ALIVE_PACKET_ID && state.isForceDisabled()) {
+            sendOverlayMessage(server, playerUuid, "message.voicechat.no_listen_permission");
+        }
+    }
+
+    private static void sendOverlayMessage(Server server, UUID playerUuid, String translationKey) {
+        CooldownTimer.run(translationKey + playerUuid, 30_000L, () -> {
+            ServerPlayer player = server.getServer().getPlayerList().getPlayer(playerUuid);
+            if (player != null) {
+                player.sendOverlayMessage(Component.translatable(translationKey));
+            }
+        });
     }
 
     private static byte[] toByteArray(FriendlyByteBuf buf) {
