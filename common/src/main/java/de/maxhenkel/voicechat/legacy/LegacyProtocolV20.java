@@ -2,10 +2,12 @@ package de.maxhenkel.voicechat.legacy;
 
 import de.maxhenkel.voicechat.net.*;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
+import de.maxhenkel.voicechat.voice.common.AuthenticateAckPacket;
 import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import de.maxhenkel.voicechat.voice.common.Secret;
 import de.maxhenkel.voicechat.voice.common.Utils;
+import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.ConnectionSecret;
 import de.maxhenkel.voicechat.voice.server.Server;
 import io.netty.buffer.Unpooled;
@@ -23,7 +25,6 @@ import java.util.UUID;
 public class LegacyProtocolV20 implements LegacyProtocol {
 
     private static final byte AUTHENTICATE_PACKET_ID = 0x5;
-    private static final byte AUTHENTICATE_ACK_PACKET_ID = 0x6;
     private static final byte CONNECTION_CHECK_PACKET_ID = 0x9;
 
     @Override
@@ -81,19 +82,12 @@ public class LegacyProtocolV20 implements LegacyProtocol {
     }
 
     @Override
-    public byte[] translateOutgoingVoicePacket(ConnectionSecret connectionSecret, byte[] packet) throws Exception {
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(packet));
-        buf.readByte();
-        byte[] data = connectionSecret.getSecret().decrypt(buf.readByteArray(Utils.MAX_VOICE_CHAT_PACKET_SIZE));
-        if (data[0] != AUTHENTICATE_ACK_PACKET_ID) {
-            return packet;
+    public byte[] translateOutgoingVoicePacket(ClientConnection connection, NetworkMessage message) throws Exception {
+        if (message.getPacket() instanceof AuthenticateAckPacket) {
+            // This protocol has no nonce
+            message = new NetworkMessage(new AuthenticateAckPacket(new byte[0]));
         }
-
-        // Drop the nonce from the auth ack packet
-        FriendlyByteBuf translated = new FriendlyByteBuf(Unpooled.buffer());
-        translated.writeByte(NetworkMessage.MAGIC_BYTE);
-        translated.writeByteArray(connectionSecret.getSecret().encrypt(new byte[]{AUTHENTICATE_ACK_PACKET_ID}));
-        return toByteArray(translated);
+        return message.writeServer(connection);
     }
 
     private static byte[] toByteArray(FriendlyByteBuf buf) {
