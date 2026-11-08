@@ -40,12 +40,12 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         hoverAreas.clear();
         clearWidgets();
 
-        groupName = new GroupEditBox(font, guiLeft + 7, guiTop + 30, xSize - 7 * 2, 14);
+        groupName = new GroupEditBox(font, guiLeft + 7, guiTop + 30, xSize - 7 * 2, 14, Voicechat.GROUP_REGEX);
         groupName.setMaxLength(Voicechat.MAX_GROUP_NAME_LENGTH);
         addRenderableWidget(groupName);
 
-        password = new GroupEditBox(font, guiLeft + 7, guiTop + 56, xSize - 7 * 2, 14);
-        password.setMaxLength(Voicechat.MAX_GROUP_NAME_LENGTH);
+        password = new GroupEditBox(font, guiLeft + 7, guiTop + 56, xSize - 7 * 2, 14, Voicechat.GROUP_PASSWORD_REGEX);
+        password.setMaxLength(Voicechat.MAX_CREATE_GROUP_PASSWORD_LENGTH);
         addRenderableWidget(password);
 
         addRenderableWidget(CycleButton.builder(GroupType::getTranslation, GroupType.NORMAL).withValues(GroupType.values()).withTooltip(object -> {
