@@ -2,6 +2,7 @@ package de.maxhenkel.voicechat.net;
 
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
+import de.maxhenkel.voicechat.legacy.LegacyCompatibility;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.ServerPlayNetHandler;
@@ -29,10 +30,17 @@ public class Channel<T extends Packet<T>> {
             return;
         }
         CommonCompatibilityManager.INSTANCE.execute(server, () -> {
-            if (serverListener != null) {
-                serverListener.onPacket(server, player, handler, packet);
+            T translatedPacket = LegacyCompatibility.translateIncoming(player, packet);
+            if (translatedPacket != null) {
+                notifyServerListener(server, player, handler, translatedPacket);
             }
         });
+    }
+
+    public void notifyServerListener(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetHandler handler, T packet) {
+        if (serverListener != null) {
+            serverListener.onPacket(server, player, handler, packet);
+        }
     }
 
 }
