@@ -176,10 +176,12 @@ public class AudioRecorder {
         }
 
         long relativeTime = chunk.timestamp - encoderData.lastTimestamp;
+        short[] audio = chunk.getData();
 
         if (relativeTime < -100L) {
-            Voicechat.LOGGER.warn("Audio snippet {} overlaps more than 100ms with previous snippet.", chunk.timestamp);
-            return;
+            Voicechat.LOGGER.warn("Audio snippet {} overlaps more than 100ms with previous snippet, cutting off overlap.", chunk.timestamp);
+            int overlapShorts = (int) Math.min(-relativeTime * getSamplesPerMs() * stereoFormat.getChannels(), audio.length);
+            audio = Arrays.copyOfRange(audio, overlapShorts, audio.length);
         } else if (relativeTime < -20L) {
             Voicechat.LOGGER.warn("Audio {} overlaps with previous snippet.", chunk.timestamp);
         }
@@ -201,10 +203,9 @@ public class AudioRecorder {
 
         short[] silence = new short[silenceShorts - insertedSilence];
         encoderData.encoder.encode(silence);
-        short[] audio = chunk.getData();
         encoderData.encoder.encode(audio);
 
-        encoderData.lastTimestamp = chunk.timestamp + getAudioTimeMillis(audio.length);
+        encoderData.lastTimestamp += relativeTime + getAudioTimeMillis(audio.length);
     }
 
     public synchronized void flushChunkThreaded(UUID playerUUID) {
