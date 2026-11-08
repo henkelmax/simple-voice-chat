@@ -1,6 +1,8 @@
 package de.maxhenkel.voicechat.legacy;
 
 import de.maxhenkel.voicechat.net.Packet;
+import de.maxhenkel.voicechat.voice.common.NetworkMessage;
+import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.ConnectionSecret;
 import de.maxhenkel.voicechat.voice.server.Server;
 
@@ -32,9 +34,9 @@ public interface LegacyProtocol {
     byte[] translateIncomingVoicePacket(Server server, ConnectionSecret connectionSecret, SocketAddress address, byte[] packet) throws Exception;
 
     /**
-     * @param packet a raw voice chat packet in the current format
-     * @return the packet in the format of this protocol
+     * @param message the voice chat message in the current format
+     * @return the raw voice chat packet in the format of this protocol
      */
-    byte[] translateOutgoingVoicePacket(ConnectionSecret connectionSecret, byte[] packet) throws Exception;
+    byte[] translateOutgoingVoicePacket(ClientConnection connection, NetworkMessage message) throws Exception;
 
 }
