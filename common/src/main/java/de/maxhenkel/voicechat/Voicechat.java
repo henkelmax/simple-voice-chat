@@ -28,7 +28,9 @@ public abstract class Voicechat {
 
     public static final int MAX_GROUP_NAME_LENGTH = 24;
     public static final int MAX_GROUP_PASSWORD_LENGTH = 256;
+    public static final int MAX_CREATE_GROUP_PASSWORD_LENGTH = 24;
     public static final Pattern GROUP_REGEX = Pattern.compile("^[^\\p{C}\\s][^\\p{C}]{0,23}$");
+    public static final Pattern GROUP_PASSWORD_REGEX = Pattern.compile("^[^\\p{C}]{1,256}$");
 
     public void initialize() {
         if (debugMode()) {

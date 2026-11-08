@@ -50,8 +50,8 @@ public class CreateGroupScreen extends VoiceChatScreenBase {
         addButton(groupName);
 
         password = new TextFieldWidget(font, guiLeft + 7, guiTop + 57, xSize - 7 * 2, 12, new StringTextComponent(""));
-        password.setMaxLength(Voicechat.MAX_GROUP_NAME_LENGTH);
-        password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
+        password.setMaxLength(Voicechat.MAX_CREATE_GROUP_PASSWORD_LENGTH);
+        password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_PASSWORD_REGEX.matcher(s).matches());
         addButton(password);
 
         groupTypeButton = new Button(guiLeft + 6, guiTop + 74, xSize - 12, 20, GROUP_TYPE, (button) -> {

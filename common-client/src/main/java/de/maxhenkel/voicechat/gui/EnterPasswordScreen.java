@@ -42,7 +42,7 @@ public class EnterPasswordScreen extends VoiceChatScreenBase {
 
         password = new TextFieldWidget(font, guiLeft + 7, guiTop + 7 + (font.lineHeight + 5) * 2 - 5 + 1, xSize - 7 * 2, 12, new StringTextComponent(""));
         password.setMaxLength(Voicechat.MAX_GROUP_PASSWORD_LENGTH);
-        password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_REGEX.matcher(s).matches());
+        password.setFilter(s -> s.isEmpty() || Voicechat.GROUP_PASSWORD_REGEX.matcher(s).matches());
         addButton(password);
 
         joinGroup = new Button(guiLeft + 7, guiTop + ySize - 20 - 7, xSize - 7 * 2, 20, JOIN_GROUP, button -> {
