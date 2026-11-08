@@ -21,6 +21,7 @@ public class LegacyCompatibility {
 
     static {
         PROTOCOLS = new HashMap<>();
+        PROTOCOLS.put(18, new LegacyProtocolV18());
         PROTOCOLS.put(20, new LegacyProtocolV20());
     }
 
@@ -52,6 +53,8 @@ public class LegacyCompatibility {
             return;
         }
         netManager.registerIncomingPacket(LegacyUpdateStatePacket.class);
+        netManager.registerOutgoingPacket(LegacyPlayerStatePacket.class);
+        netManager.registerOutgoingPacket(LegacyPlayerStatesPacket.class);
     }
 
     /**

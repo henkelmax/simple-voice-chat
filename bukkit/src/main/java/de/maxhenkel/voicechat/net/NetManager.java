@@ -113,7 +113,7 @@ public class NetManager implements Listener {
         });
     }
 
-    private <T extends Packet<?>> void registerOutgoingPacket(Class<T> packetClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public <T extends Packet<?>> void registerOutgoingPacket(Class<T> packetClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         String id = packetClass.getDeclaredConstructor().newInstance().getID().toString();
         packets.add(id);
         Bukkit.getMessenger().registerOutgoingPluginChannel(Voicechat.INSTANCE, id);
