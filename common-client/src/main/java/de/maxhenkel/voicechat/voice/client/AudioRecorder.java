@@ -21,6 +21,7 @@ import org.apache.commons.io.FileUtils;
 import javax.annotation.Nullable;
 import javax.sound.sampled.AudioFormat;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -142,9 +143,13 @@ public class AudioRecorder {
         }
 
         if (!encoders.containsKey(uuid)) {
-            Mp3Encoder encoder = LameManager.createEncoder(stereoFormat, MP3_BITRATE, VoicechatClient.CLIENT_CONFIG.recordingQuality.get(), Files.newOutputStream(getRecordingFile(uuid), StandardOpenOption.CREATE_NEW));
+            Path recordingFile = getRecordingFile(uuid);
+            OutputStream outputStream = Files.newOutputStream(recordingFile, StandardOpenOption.CREATE_NEW);
+            Mp3Encoder encoder = LameManager.createEncoder(stereoFormat, MP3_BITRATE, VoicechatClient.CLIENT_CONFIG.recordingQuality.get(), outputStream);
             encoders.put(uuid, new EncoderData(encoder, timestamp));
             if (encoder == null) {
+                outputStream.close();
+                Files.delete(recordingFile);
                 throw new IOException("Failed to load mp3 encoder");
             }
         }
