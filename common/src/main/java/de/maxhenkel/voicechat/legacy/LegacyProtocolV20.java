@@ -35,7 +35,8 @@ public class LegacyProtocolV20 implements LegacyProtocol {
     @Override
     public Packet<?> translateOutgoing(Packet<?> packet) {
         if (packet instanceof SecretPacket) {
-            return new LegacyPacket(packet.getIdentifier(), buf -> writeSecret(buf, (SecretPacket) packet));
+            SecretPacket secretPacket = (SecretPacket) packet;
+            return new LegacyPacket(packet.getIdentifier(), buf -> writeSecret(buf, secretPacket, secretPacket.getServerPort(), secretPacket.getVoiceHost()));
         } else if (packet instanceof PlayerStatePacket) {
             return new LegacyPacket(packet.getIdentifier(), buf -> writePlayerState(buf, ((PlayerStatePacket) packet).getPlayerState()));
         } else if (packet instanceof PlayerStatesPacket) {
@@ -67,23 +68,21 @@ public class LegacyProtocolV20 implements LegacyProtocol {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(packet));
         buf.readByte();
         buf.readUUID();
-        Secret secret = connectionSecret.getSecret();
-        byte[] payload = buf.readByteArray(Utils.MAX_VOICE_CHAT_PACKET_SIZE);
-        byte[] data = secret.decrypt(payload);
+        byte[] data = decrypt(connectionSecret.getSecret(), buf.readByteArray(Utils.MAX_VOICE_CHAT_PACKET_SIZE));
         notifyForcedState(server, connectionSecret.getPlayerUUID(), data[0]);
         if (data[0] == AUTHENTICATE_PACKET_ID) {
             // Drop the player UUID and secret, decryption succeeding already proves it's the player
-            payload = secret.encrypt(new byte[]{AUTHENTICATE_PACKET_ID});
+            data = new byte[]{AUTHENTICATE_PACKET_ID};
         } else if (data[0] == CONNECTION_CHECK_PACKET_ID) {
             // Fake a nonce so the server accepts the connection
             byte[] nonce = server.createNonce(connectionSecret.getConnectionId(), address);
-            payload = secret.encrypt(ByteBuffer.allocate(data.length + nonce.length).put(data).put(nonce).array());
+            data = ByteBuffer.allocate(data.length + nonce.length).put(data).put(nonce).array();
         }
 
         FriendlyByteBuf translated = new FriendlyByteBuf(Unpooled.buffer());
         translated.writeByte(NetworkMessage.MAGIC_BYTE);
         translated.writeUUID(connectionSecret.getConnectionId());
-        translated.writeByteArray(payload);
+        translated.writeByteArray(connectionSecret.getSecret().encrypt(data));
         return toByteArray(translated);
     }
 
@@ -93,7 +92,18 @@ public class LegacyProtocolV20 implements LegacyProtocol {
             // This protocol has no nonce
             message = new NetworkMessage(new AuthenticateAckPacket(new byte[0]));
         }
-        return message.writeServer(connection);
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        buf.writeByte(NetworkMessage.MAGIC_BYTE);
+        buf.writeByteArray(encrypt(connection.getConnectionSecret().getSecret(), message.encode()));
+        return toByteArray(buf);
+    }
+
+    protected byte[] decrypt(Secret secret, byte[] payload) throws Exception {
+        return secret.decrypt(payload);
+    }
+
+    protected byte[] encrypt(Secret secret, byte[] data) throws Exception {
+        return secret.encrypt(data);
     }
 
     private static void notifyForcedState(Server server, UUID playerUuid, byte packetId) {
@@ -123,27 +133,27 @@ public class LegacyProtocolV20 implements LegacyProtocol {
         return bytes;
     }
 
-    private static void writeSecret(FriendlyByteBuf buf, SecretPacket packet) {
+    protected static void writeSecret(FriendlyByteBuf buf, SecretPacket packet, int serverPort, String voiceHost) {
         packet.getSecret().toBytes(buf);
-        buf.writeInt(packet.getServerPort());
+        buf.writeInt(serverPort);
         buf.writeUUID(packet.getPlayerUUID());
         buf.writeByte(packet.getCodec().ordinal());
         buf.writeInt(packet.getMtuSize());
         buf.writeDouble(packet.getVoiceChatDistance());
         buf.writeInt(packet.getKeepAlive());
         buf.writeBoolean(packet.groupsEnabled());
-        buf.writeUtf(packet.getVoiceHost());
+        buf.writeUtf(voiceHost);
         buf.writeBoolean(packet.allowRecording());
     }
 
-    private static void writePlayerStates(FriendlyByteBuf buf, Collection<PlayerState> states) {
+    protected static void writePlayerStates(FriendlyByteBuf buf, Collection<PlayerState> states) {
         buf.writeInt(states.size());
         for (PlayerState state : states) {
             writePlayerState(buf, state);
         }
     }
 
-    private static void writePlayerState(FriendlyByteBuf buf, PlayerState state) {
+    protected static void writePlayerState(FriendlyByteBuf buf, PlayerState state) {
         buf.writeBoolean(state.isDisabledOrForceDisabled());
         buf.writeBoolean(state.isDisconnected());
         buf.writeUUID(state.getUuid());
@@ -161,7 +171,10 @@ public class LegacyProtocolV20 implements LegacyProtocol {
         writeOptionalString(buf, category.getNameTranslationKey());
         writeOptionalString(buf, category.getDescription());
         writeOptionalString(buf, category.getDescriptionTranslationKey());
-        int[][] icon = category.getIcon();
+        writeIcon(buf, category.getIcon());
+    }
+
+    protected static void writeIcon(FriendlyByteBuf buf, @Nullable int[][] icon) {
         buf.writeBoolean(icon != null);
         if (icon != null) {
             for (int[] column : icon) {
@@ -172,7 +185,7 @@ public class LegacyProtocolV20 implements LegacyProtocol {
         }
     }
 
-    private static void writeOptionalString(FriendlyByteBuf buf, @Nullable String string) {
+    protected static void writeOptionalString(FriendlyByteBuf buf, @Nullable String string) {
         buf.writeBoolean(string != null);
         if (string != null) {
             buf.writeUtf(string);
