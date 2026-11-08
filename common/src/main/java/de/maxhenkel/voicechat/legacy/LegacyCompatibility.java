@@ -1,14 +1,15 @@
 package de.maxhenkel.voicechat.legacy;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.api.RawUdpPacket;
 import de.maxhenkel.voicechat.net.Channel;
 import de.maxhenkel.voicechat.net.NetManager;
 import de.maxhenkel.voicechat.net.Packet;
 import de.maxhenkel.voicechat.net.UpdateStatePacket;
+import de.maxhenkel.voicechat.voice.common.NetworkMessage;
 import de.maxhenkel.voicechat.voice.server.ClientConnection;
 import de.maxhenkel.voicechat.voice.server.ConnectionSecret;
 import de.maxhenkel.voicechat.voice.server.Server;
+import de.maxhenkel.voicechat.voice.server.UdpPacket;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import javax.annotation.Nullable;
@@ -85,9 +86,9 @@ public class LegacyCompatibility {
     /**
      * @return the packet in the current format
      */
-    public static byte[] translateIncomingVoicePacket(Server server, RawUdpPacket packet) {
+    public static UdpPacket translateIncomingVoicePacket(Server server, UdpPacket packet) {
         if (!isEnabled()) {
-            return packet.getData();
+            return packet;
         }
         for (LegacyProtocol protocol : PROTOCOLS.values()) {
             try {
@@ -99,23 +100,24 @@ public class LegacyCompatibility {
                 if (connectionSecret == null) {
                     continue;
                 }
-                return protocol.translateIncomingVoicePacket(server, connectionSecret, packet.getSocketAddress(), packet.getData());
+                byte[] translated = protocol.translateIncomingVoicePacket(server, connectionSecret, packet.getSocketAddress(), packet.getData());
+                return new UdpPacket(translated, packet.getSocketAddress(), packet.getTimestamp());
             } catch (Exception e) {
                 Voicechat.LOGGER.debug("Failed to translate voice chat packet from {}", packet.getSocketAddress(), e);
             }
         }
-        return packet.getData();
+        return packet;
     }
 
     /**
      * @return the packet in the format of the client
      */
-    public static byte[] translateOutgoingVoicePacket(ClientConnection connection, byte[] packet) throws Exception {
+    public static byte[] translateOutgoingVoicePacket(ClientConnection connection, NetworkMessage message) throws Exception {
         LegacyProtocol protocol = getProtocol(connection.getPlayerUUID());
         if (protocol == null) {
-            return packet;
+            return message.writeServer(connection);
         }
-        return protocol.translateOutgoingVoicePacket(connection.getConnectionSecret(), packet);
+        return protocol.translateOutgoingVoicePacket(connection, message);
     }
 
 }

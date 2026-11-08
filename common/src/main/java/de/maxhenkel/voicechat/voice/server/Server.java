@@ -308,7 +308,7 @@ public class Server extends Thread {
 
                     NetworkMessage message;
                     try {
-                        message = NetworkMessage.readPacketServer(udpPacket, Server.this);
+                        message = NetworkMessage.readPacketServer(LegacyCompatibility.translateIncomingVoicePacket(Server.this, udpPacket), Server.this);
                     } catch (Exception e) {
                         CooldownTimer.run("failed_reading_packet", () -> {
                             Voicechat.LOGGER.warn("Failed to read packet from {}", udpPacket.getSocketAddress());
@@ -672,7 +672,7 @@ public class Server extends Thread {
     }
 
     private void queuePacket(RawUdpPacket rawUdpPacket) {
-        if (!packetQueue.offer(new UdpPacket(LegacyCompatibility.translateIncomingVoicePacket(this, rawUdpPacket), rawUdpPacket.getSocketAddress(), Utils.getMilliseconds()))) {
+        if (!packetQueue.offer(new UdpPacket(rawUdpPacket.getData(), rawUdpPacket.getSocketAddress(), Utils.getMilliseconds()))) {
             CooldownTimer.run("packet_queue_full", () -> {
                 Voicechat.LOGGER.warn("Voice chat packet queue is full ({} packets) - dropping packets", packetQueue.size());
             });
