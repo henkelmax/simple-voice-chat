@@ -46,7 +46,7 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
         name = buf.readUtf(Voicechat.MAX_GROUP_NAME_LENGTH);
         password = null;
         if (buf.readBoolean()) {
-            password = buf.readUtf(Voicechat.MAX_GROUP_NAME_LENGTH);
+            password = buf.readUtf(Voicechat.MAX_GROUP_PASSWORD_LENGTH);
         }
         type = GroupImpl.TypeImpl.fromInt(buf.readShort());
         return this;
@@ -57,7 +57,7 @@ public class CreateGroupPacket implements Packet<CreateGroupPacket> {
         buf.writeUtf(name, Voicechat.MAX_GROUP_NAME_LENGTH);
         buf.writeBoolean(password != null);
         if (password != null) {
-            buf.writeUtf(password, Voicechat.MAX_GROUP_NAME_LENGTH);
+            buf.writeUtf(password, Voicechat.MAX_GROUP_PASSWORD_LENGTH);
         }
         buf.writeShort(GroupImpl.TypeImpl.toInt(type));
     }

@@ -113,15 +113,15 @@ public class GroupImpl implements Group {
             if (name.matches("^\\s.*")) {
                 name = name.replaceFirst("^\\s+", "");
             }
-            if (name.length() > 16) {
-                return name.substring(0, 16);
+            if (name.length() > Voicechat.MAX_GROUP_NAME_LENGTH) {
+                return name.substring(0, Voicechat.MAX_GROUP_NAME_LENGTH);
             }
             return name;
         }
 
         @Override
         public Group.Builder setPassword(String password) {
-            this.password = password;
+            this.password = password == null || password.isEmpty() ? null : password;
             return this;
         }
 
@@ -151,8 +151,8 @@ public class GroupImpl implements Group {
             if (!Voicechat.GROUP_REGEX.matcher(name).matches()) {
                 throw new IllegalStateException(String.format("Invalid group name: %s", name));
             }
-            if (password != null && password.length() > Voicechat.MAX_GROUP_PASSWORD_LENGTH) {
-                throw new IllegalStateException(String.format("Group password can't be longer than %s characters", Voicechat.MAX_GROUP_PASSWORD_LENGTH));
+            if (password != null && !Voicechat.GROUP_PASSWORD_REGEX.matcher(password).matches()) {
+                throw new IllegalStateException("Invalid group password");
             }
             GroupImpl group = new GroupImpl(new de.maxhenkel.voicechat.voice.server.Group(id == null ? UUID.randomUUID() : id, name, password, persistent, hidden, type));
             Server server = Voicechat.SERVER.getServer();
