@@ -182,14 +182,14 @@ public class AudioRecorder {
 
         if (relativeTime < -100L) {
             Voicechat.LOGGER.warn("Audio snippet {} overlaps more than 100ms with previous snippet, cutting off overlap.", chunk.timestamp);
-            int overlapShorts = (int) Math.min(-relativeTime * getSamplesPerMs() * stereoFormat.getChannels(), audio.length);
+            int overlapShorts = (int) Math.min(getAudioShortLength(-relativeTime), audio.length);
             audio = Arrays.copyOfRange(audio, overlapShorts, audio.length);
         } else if (relativeTime < -20L) {
             Voicechat.LOGGER.warn("Audio {} overlaps with previous snippet.", chunk.timestamp);
         }
         long silenceMillis = Math.max(relativeTime, 0L);
 
-        long silenceShorts = silenceMillis * getSamplesPerMs() * stereoFormat.getChannels();
+        long silenceShorts = getAudioShortLength(silenceMillis);
         int tenSeconds = (int) stereoFormat.getSampleRate() * stereoFormat.getChannels() * 10;
         long insertedSilence = 0L;
 
@@ -320,6 +320,10 @@ public class AudioRecorder {
         } else {
             Voicechat.LOGGER.info("{}", msg.getString());
         }
+    }
+
+    private long getAudioShortLength(long millis) {
+        return millis * getSamplesPerMs() * stereoFormat.getChannels();
     }
 
     private int getAudioTimeMillis(int audioShortLength) {
