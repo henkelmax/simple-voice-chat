@@ -49,7 +49,7 @@ public class ClientConnection {
     }
 
     public void send(Server server, NetworkMessage message) throws Exception {
-        server.getSocket().send(LegacyCompatibility.translateOutgoingVoicePacket(this, message.writeServer(this)), address);
+        server.getSocket().send(LegacyCompatibility.translateOutgoingVoicePacket(this, message), address);
     }
 
 }
