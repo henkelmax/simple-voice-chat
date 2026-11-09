@@ -57,6 +57,13 @@ public class TalkCache {
         updateTalking(id, whispering, highestAudioLevel);
     }
 
+    public void stopTalking(UUID id, @Nullable String category) {
+        playerCache.remove(id);
+        if (category != null) {
+            categoryCache.remove(category);
+        }
+    }
+
     public boolean isTalking(Entity entity) {
         return isTalking(entity.getUniqueID());
     }
