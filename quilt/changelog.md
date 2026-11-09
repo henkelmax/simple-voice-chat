@@ -27,3 +27,4 @@
 - Added support for switching or disconnecting audio devices on the fly
 - Fixed some systems breaking when the system time changes
 - Fixed recordings drift apart with real time
+- Fixed speaker icon flashing after stopping to whisper
