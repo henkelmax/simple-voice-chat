@@ -140,7 +140,7 @@ public class AudioChannel extends Thread {
                     packetBuffer.clear();
                     flushRecording();
                     decoder.resetState();
-                    client.getTalkCache().updateLevel(uuid, packet.getCategory(), false, new short[0]);
+                    client.getTalkCache().stopTalking(uuid, packet.getCategory());
                     continue;
                 }
 
