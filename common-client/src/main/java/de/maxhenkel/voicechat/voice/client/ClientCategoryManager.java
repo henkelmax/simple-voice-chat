@@ -9,6 +9,7 @@ import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.plugins.CategoryManager;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.ExternalTextureProvider;
 import net.minecraft.client.renderer.texture.TextureResources;
 import net.minecraft.resources.Identifier;
 
@@ -18,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientCategoryManager extends CategoryManager {
 
-    protected final Map<String, Identifier> images;
+    protected final Map<String, CategoryImage> images;
 
     public ClientCategoryManager() {
         images = new ConcurrentHashMap<>();
@@ -59,15 +60,16 @@ public class ClientCategoryManager extends CategoryManager {
 
     private void registerImage(String id, NativeImage image) {
         Identifier identifier = Identifier.fromNamespaceAndPath(Voicechat.MODID, id);
-        Minecraft.getInstance().getEntityRenderDispatcher().textureManager.register(identifier, TextureResources.from2dImage(identifier::toString, image));
-        images.put(id, identifier);
+        TextureResources texture = TextureResources.from2dImage(identifier::toString, image);
+        Minecraft.getInstance().getEntityRenderDispatcher().textureManager.registerProvider(identifier, new ExternalTextureProvider(texture));
+        images.put(id, new CategoryImage(identifier, texture));
     }
 
     private void unRegisterImage(String id) {
-        Identifier identifier = images.get(id);
-        if (identifier != null) {
-            Minecraft.getInstance().getEntityRenderDispatcher().textureManager.release(identifier);
-            images.remove(id);
+        CategoryImage image = images.remove(id);
+        if (image != null) {
+            Minecraft.getInstance().getEntityRenderDispatcher().textureManager.release(image.identifier());
+            image.texture().close();
         }
     }
 
@@ -82,7 +84,14 @@ public class ClientCategoryManager extends CategoryManager {
     }
 
     public Identifier getTexture(String id, Identifier defaultImage) {
-        return images.getOrDefault(id, defaultImage);
+        CategoryImage image = images.get(id);
+        if (image == null) {
+            return defaultImage;
+        }
+        return image.identifier();
+    }
+
+    protected record CategoryImage(Identifier identifier, TextureResources texture) {
     }
 
 }

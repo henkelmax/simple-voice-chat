@@ -19,13 +19,16 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.StringArgument;
 import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.PermissionCheck;
 import net.minecraft.server.permissions.PermissionLevel;
+import net.minecraft.server.permissions.Permissions;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -43,7 +46,8 @@ public class VoicechatCommands {
         literalBuilder.executes(commandSource -> help(dispatcher, commandSource));
         literalBuilder.then(Commands.literal("help").executes(commandSource -> help(dispatcher, commandSource)));
 
-        literalBuilder.then(Commands.literal("test").requires((commandSource) -> checkPermission(commandSource, PermissionManager.INSTANCE.ADMIN_PERMISSION)).then(Commands.argument("target", EntityArgument.player()).executes((commandSource) -> {
+        //TODO Fix when Fabric API was updated
+        literalBuilder.then(Commands.literal("test").requires(Commands.hasPermission(new PermissionCheck.Require(Permissions.COMMANDS_ADMIN))).then(Commands.argument("target", EntityArgument.player()).executes((commandSource) -> {
             if (checkNoVoicechat(commandSource)) {
                 return 0;
             }
@@ -144,29 +148,29 @@ public class VoicechatCommands {
             return joinGroupById(commandSource.getSource(), groupID, null);
         })));
 
-        literalBuilder.then(Commands.literal("join").then(Commands.argument("group_id", UuidArgument.uuid()).then(Commands.argument("password", StringArgumentType.string()).executes((commandSource) -> {
+        literalBuilder.then(Commands.literal("join").then(Commands.argument("group_id", UuidArgument.uuid()).then(Commands.argument("password", StringArgument.string()).executes((commandSource) -> {
             if (checkNoVoicechat(commandSource)) {
                 return 0;
             }
             UUID groupID = UuidArgument.getUuid(commandSource, "group_id");
-            String password = StringArgumentType.getString(commandSource, "password");
+            String password = StringArgument.getString(commandSource, "password");
             return joinGroupById(commandSource.getSource(), groupID, password.isEmpty() ? null : password);
         }))));
 
-        literalBuilder.then(Commands.literal("join").then(Commands.argument("group_name", StringArgumentType.string()).suggests(GroupNameSuggestionProvider.INSTANCE).executes((commandSource) -> {
+        literalBuilder.then(Commands.literal("join").then(Commands.argument("group_name", StringArgument.string()).suggests(GroupNameSuggestionProvider.INSTANCE).executes((commandSource) -> {
             if (checkNoVoicechat(commandSource)) {
                 return 0;
             }
-            String groupName = StringArgumentType.getString(commandSource, "group_name");
+            String groupName = StringArgument.getString(commandSource, "group_name");
             return joinGroupByName(commandSource.getSource(), groupName, null);
         })));
 
-        literalBuilder.then(Commands.literal("join").then(Commands.argument("group_name", StringArgumentType.string()).suggests(GroupNameSuggestionProvider.INSTANCE).then(Commands.argument("password", StringArgumentType.string()).executes((commandSource) -> {
+        literalBuilder.then(Commands.literal("join").then(Commands.argument("group_name", StringArgument.string()).suggests(GroupNameSuggestionProvider.INSTANCE).then(Commands.argument("password", StringArgument.string()).executes((commandSource) -> {
             if (checkNoVoicechat(commandSource)) {
                 return 0;
             }
-            String groupName = StringArgumentType.getString(commandSource, "group_name");
-            String password = StringArgumentType.getString(commandSource, "password");
+            String groupName = StringArgument.getString(commandSource, "group_name");
+            String password = StringArgument.getString(commandSource, "password");
             return joinGroupByName(commandSource.getSource(), groupName, password.isEmpty() ? null : password);
         }))));
 
@@ -289,6 +293,7 @@ public class VoicechatCommands {
         }
     }
 
+    //TODO Check
     private static boolean checkPermission(CommandSourceStack stack, Permission permission) {
         try {
             return permission.hasPermission(stack.getPlayerOrException());

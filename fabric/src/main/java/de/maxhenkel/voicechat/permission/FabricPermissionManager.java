@@ -18,15 +18,17 @@ public class FabricPermissionManager extends PermissionManager {
         return new Permission() {
             @Override
             public boolean hasPermission(ServerPlayer player) {
-                if (v1working) {
+                //TODO Add back once Fabric API is updated
+                /*if (v1working) {
                     try {
                         return player.checkPermission(identifier, fromPermissionType(type));
                     } catch (Throwable t) {
                         v1working = false;
                         Voicechat.LOGGER.warn("Failed to use fabric-permission-api-v1", t);
                     }
-                }
-                if (isFabricPermissionsAPIv0Loaded()) {
+                }*/
+                //TODO Re-add or delete
+                /*if (isFabricPermissionsAPIv0Loaded()) {
                     try {
                         return Permissions.check(player, permissionNode, type.hasPermission(player));
                     } catch (Throwable t) {
@@ -34,7 +36,7 @@ public class FabricPermissionManager extends PermissionManager {
                         Voicechat.LOGGER.warn("Failed to use fabric-permissions-api-v0", t);
                         Voicechat.LOGGER.info("Disabling fabric-permissions-api-v0 integration");
                     }
-                }
+                }*/
                 return type.hasPermission(player);
             }
 

@@ -8,15 +8,19 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.voice.server.Group;
 import de.maxhenkel.voicechat.voice.server.Server;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.suggestions.ServerOnlyCustomSuggestion;
+import net.minecraft.commands.suggestions.SuggestionContext;
+import net.minecraft.commands.suggestions.SuggestionProviders;
+import net.minecraft.server.MinecraftServer;
 
 import java.util.concurrent.CompletableFuture;
 
-public class GroupNameSuggestionProvider implements SuggestionProvider<CommandSourceStack> {
+public class GroupNameSuggestionProvider implements ServerOnlyCustomSuggestion {
 
-    public static final GroupNameSuggestionProvider INSTANCE = new GroupNameSuggestionProvider();
+    public static final SuggestionProvider<CommandSourceStack> INSTANCE = SuggestionProviders.serverOnly(new GroupNameSuggestionProvider());
 
     @Override
-    public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
+    public CompletableFuture<Suggestions> generate(MinecraftServer minecraftServer, CommandContext<? extends SuggestionContext> context, SuggestionsBuilder builder) {
         Server server = Voicechat.SERVER.getServer();
         if (server == null) {
             return builder.buildFuture();
