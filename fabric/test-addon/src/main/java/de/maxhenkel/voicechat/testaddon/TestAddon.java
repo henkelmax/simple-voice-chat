@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.testaddon;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.api.ModInitializer;
@@ -8,6 +7,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.StringArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -34,12 +34,12 @@ public class TestAddon implements ModInitializer {
                     .then(Commands.literal("hide").then(Commands.argument("target", EntityArgument.player()).executes(c -> toggle(c, HIDDEN, "hidden", TestVoicechatPlugin::evaluateVisibility))))
                     .then(Commands.literal("preventleavegroup").then(Commands.argument("target", EntityArgument.player()).executes(c -> toggle(c, PREVENT_LEAVE_GROUP, "preventLeaveGroup", uuid -> {}))))
                     .then(Commands.literal("preventcreategroup").then(Commands.argument("target", EntityArgument.player()).executes(c -> toggle(c, PREVENT_CREATE_GROUP, "preventCreateGroup", uuid -> {}))))
-                    .then(Commands.literal("category").then(Commands.argument("id", StringArgumentType.word()).then(Commands.argument("name", StringArgumentType.string())
+                    .then(Commands.literal("category").then(Commands.argument("id", StringArgument.word()).then(Commands.argument("name", StringArgument.string())
                             .executes(c -> registerCategory(c, null, null))
-                            .then(Commands.argument("tab", StringArgumentType.word())
-                                    .executes(c -> registerCategory(c, StringArgumentType.getString(c, "tab"), null))
-                                    .then(Commands.argument("tabName", StringArgumentType.string())
-                                            .executes(c -> registerCategory(c, StringArgumentType.getString(c, "tab"), StringArgumentType.getString(c, "tabName")))
+                            .then(Commands.argument("tab", StringArgument.word())
+                                    .executes(c -> registerCategory(c, StringArgument.getString(c, "tab"), null))
+                                    .then(Commands.argument("tabName", StringArgument.string())
+                                            .executes(c -> registerCategory(c, StringArgument.getString(c, "tab"), StringArgument.getString(c, "tabName")))
                                     )
                             )
                     )))
@@ -48,8 +48,8 @@ public class TestAddon implements ModInitializer {
     }
 
     private static int registerCategory(CommandContext<CommandSourceStack> context, @Nullable String tab, @Nullable String tabName) {
-        String id = StringArgumentType.getString(context, "id");
-        String name = StringArgumentType.getString(context, "name");
+        String id = StringArgument.getString(context, "id");
+        String name = StringArgument.getString(context, "name");
         if (!TestVoicechatPlugin.registerVolumeCategory(id, name, tab, tabName)) {
             context.getSource().sendFailure(Component.literal("Failed to register category"));
             return 0;
