@@ -18,15 +18,14 @@ public class FabricPermissionManager extends PermissionManager {
         return new Permission() {
             @Override
             public boolean hasPermission(ServerPlayer player) {
-                //TODO Add back once Fabric API is updated
-                /*if (v1working) {
+                if (v1working) {
                     try {
                         return player.checkPermission(identifier, fromPermissionType(type));
                     } catch (Throwable t) {
                         v1working = false;
                         Voicechat.LOGGER.warn("Failed to use fabric-permission-api-v1", t);
                     }
-                }*/
+                }
                 //TODO Re-add or delete
                 /*if (isFabricPermissionsAPIv0Loaded()) {
                     try {
