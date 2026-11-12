@@ -11,6 +11,8 @@ import java.util.*;
 
 public abstract class VolumeConfigBase<T> extends CommentedPropertyConfig {
 
+    public static final double MAX_VOLUME = 4D;
+
     protected final Map<T, Double> volumes;
 
     public VolumeConfigBase(Path path) {

@@ -1,6 +1,7 @@
 package de.maxhenkel.voicechat.gui.volume;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import de.maxhenkel.voicechat.config.VolumeConfigBase;
 import de.maxhenkel.voicechat.gui.widgets.DebouncedSlider;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.client.gui.screen.Screen;
@@ -15,12 +16,10 @@ public class AdjustVolumeSlider extends DebouncedSlider {
     protected static final double YELLOW_DB = -20D;
     protected static final double RED_DB = -6D;
 
-    protected static final float MAXIMUM = 4F;
-
     protected final AdjustVolumeEntry volumeConfigEntry;
 
     public AdjustVolumeSlider(int xIn, int yIn, int widthIn, int heightIn, AdjustVolumeEntry volumeConfigEntry) {
-        super(xIn, yIn, widthIn, heightIn, new StringTextComponent(""), volumeConfigEntry.get() / MAXIMUM);
+        super(xIn, yIn, widthIn, heightIn, new StringTextComponent(""), volumeConfigEntry.get() / VolumeConfigBase.MAX_VOLUME);
         this.volumeConfigEntry = volumeConfigEntry;
         updateMessage();
     }
@@ -31,7 +30,7 @@ public class AdjustVolumeSlider extends DebouncedSlider {
             setMessage(MUTED);
             return;
         }
-        long amp = Math.round(value * MAXIMUM * 100F - 100F);
+        long amp = Math.round(value * VolumeConfigBase.MAX_VOLUME * 100D - 100D);
         setMessage(new TranslationTextComponent("message.voicechat.volume_amplification", (amp > 0F ? "+" : "") + amp + "%"));
     }
 
@@ -42,7 +41,7 @@ public class AdjustVolumeSlider extends DebouncedSlider {
         if (audioLevel <= AudioUtils.LOWEST_DB) {
             return;
         }
-        double adjustedLevel = AudioUtils.linearToDb(getMultiplier());
+        double adjustedLevel = AudioUtils.linearToDb(volumeConfigEntry.getEffectiveVolume());
         int barWidth = (int) ((double) getWidth() * AudioUtils.dbToPerc(audioLevel + adjustedLevel));
         double yellowPerc = AudioUtils.dbToPerc(YELLOW_DB);
         double redPerc = AudioUtils.dbToPerc(RED_DB);
@@ -65,7 +64,7 @@ public class AdjustVolumeSlider extends DebouncedSlider {
     }
 
     private double getMultiplier() {
-        return value * MAXIMUM;
+        return value * VolumeConfigBase.MAX_VOLUME;
     }
 
     public interface AdjustVolumeEntry {
@@ -74,6 +73,10 @@ public class AdjustVolumeSlider extends DebouncedSlider {
         double get();
 
         double getAudioLevel();
+
+        default double getEffectiveVolume() {
+            return get();
+        }
     }
 
 }
