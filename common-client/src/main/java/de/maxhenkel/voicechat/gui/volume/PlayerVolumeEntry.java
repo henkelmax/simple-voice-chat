@@ -20,14 +20,9 @@ public class PlayerVolumeEntry extends VolumeEntry {
     @Nullable
     protected final PlayerState state;
 
-    public PlayerVolumeEntry(@Nullable PlayerState state, AdjustVolumesScreen screen) {
-        super(screen, new AdjustPlayerVolumeEntry(state != null ? state.getUuid() : Util.NIL_UUID, state != null ? state.getName() : null));
+    public PlayerVolumeEntry(@Nullable PlayerState state, AdjustVolumesScreen screen, boolean indented, boolean offset) {
+        super(screen, new AdjustPlayerVolumeEntry(state != null ? state.getUuid() : Util.NIL_UUID, state != null ? state.getName() : null), indented, offset);
         this.state = state;
-    }
-
-    @Nullable
-    public PlayerState getState() {
-        return state;
     }
 
     @Override
@@ -36,10 +31,10 @@ public class PlayerVolumeEntry extends VolumeEntry {
             PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), skinX, skinY, 8, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin.body().texturePath(), skinX, skinY, 40, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
-            renderScrollingString(guiGraphics, Component.literal(state.getName()));
+            renderScrollingString(guiGraphics, Component.literal(state.getName()), textX, textY);
         } else {
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, OTHER_VOLUME_ICON, SKIN_SIZE, SKIN_SIZE, 0, 0, skinX, skinY, SKIN_SIZE, SKIN_SIZE);
-            renderScrollingString(guiGraphics, OTHER_VOLUME);
+            renderScrollingString(guiGraphics, OTHER_VOLUME, textX, textY);
             if (hovered) {
                 guiGraphics.setTooltipForNextFrame(minecraft.font, OTHER_VOLUME_DESCRIPTION, mouseX, mouseY);
             }
