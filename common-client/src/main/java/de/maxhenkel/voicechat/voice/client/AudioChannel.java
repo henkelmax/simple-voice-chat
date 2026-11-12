@@ -203,7 +203,7 @@ public class AudioChannel extends Thread {
         if (VoicechatClient.USERNAME_CACHE.has(uuid)) {
             channelVolume = (float) VoicechatClient.PLAYER_VOLUME_CONFIG.getVolume(uuid);
         } else if (category != null) {
-            channelVolume = (float) VoicechatClient.CATEGORY_VOLUME_CONFIG.getVolume(category);
+            channelVolume = (float) ClientManager.getCategoryManager().getEffectiveVolume(category);
         } else {
             category = CategoryVolumeConfig.OTHER_CATEGORY;
             channelVolume = (float) VoicechatClient.CATEGORY_VOLUME_CONFIG.getVolume(category);

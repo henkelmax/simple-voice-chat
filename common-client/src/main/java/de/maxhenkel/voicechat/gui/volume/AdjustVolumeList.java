@@ -3,11 +3,11 @@ package de.maxhenkel.voicechat.gui.volume;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
+import de.maxhenkel.voicechat.voice.client.ClientCategoryManager;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -97,26 +97,17 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
 
         Map<VolumeCategoryImpl, List<VolumeCategoryImpl>> tree = new LinkedHashMap<>();
         for (VolumeCategoryImpl category : sortedCategories) {
-            if (getValidParent(category, categoriesById) == null) {
+            if (ClientCategoryManager.getParent(category.getId(), categoriesById) == null) {
                 tree.put(category, new ArrayList<>());
             }
         }
         for (VolumeCategoryImpl category : sortedCategories) {
-            VolumeCategoryImpl parent = getValidParent(category, categoriesById);
+            VolumeCategoryImpl parent = ClientCategoryManager.getParent(category.getId(), categoriesById);
             if (parent != null) {
                 tree.get(parent).add(category);
             }
         }
         return tree;
-    }
-
-    @Nullable
-    private static VolumeCategoryImpl getValidParent(VolumeCategoryImpl category, Map<String, VolumeCategoryImpl> categoriesById) {
-        VolumeCategoryImpl parent = categoriesById.get(category.getParent());
-        if (parent == null || parent.getParent() != null) {
-            return null;
-        }
-        return parent;
     }
 
     private void addExpandableCategory(List<VolumeEntry> entries, VolumeCategoryImpl category, List<VolumeCategoryImpl> children) {
