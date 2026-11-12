@@ -1,15 +1,12 @@
 package de.maxhenkel.voicechat.gui.volume;
 
 import de.maxhenkel.voicechat.Voicechat;
-import de.maxhenkel.voicechat.VoicechatClient;
-import de.maxhenkel.voicechat.voice.common.AudioUtils;
+import de.maxhenkel.voicechat.config.CategoryVolumeConfig;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
-
-import java.util.UUID;
 
 public class OtherVolumeEntry extends VolumeEntry {
 
@@ -18,7 +15,7 @@ public class OtherVolumeEntry extends VolumeEntry {
     protected static final ResourceLocation OTHER_VOLUME_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/other_volume.png");
 
     public OtherVolumeEntry(AdjustVolumesScreen screen) {
-        super(screen, new AdjustOtherVolumeEntry(), false, true);
+        super(screen, new CategoryVolumeEntry.AdjustCategoryVolumeEntry(CategoryVolumeConfig.OTHER_CATEGORY), false, true);
     }
 
     @Override
@@ -31,25 +28,6 @@ public class OtherVolumeEntry extends VolumeEntry {
             screen.postRender(() -> {
                 screen.drawHoveringText(OTHER_VOLUME_DESCRIPTION.getUnformattedComponentText(), mouseX, mouseY);
             });
-        }
-    }
-
-    private static class AdjustOtherVolumeEntry implements AdjustVolumeSlider.AdjustVolumeEntry {
-
-        @Override
-        public void save(double value) {
-            VoicechatClient.PLAYER_VOLUME_CONFIG.setVolume(new UUID(0L, 0L), value, "All other volumes");
-            VoicechatClient.PLAYER_VOLUME_CONFIG.save();
-        }
-
-        @Override
-        public double get() {
-            return VoicechatClient.PLAYER_VOLUME_CONFIG.getVolume(new UUID(0L, 0L));
-        }
-
-        @Override
-        public double getAudioLevel() {
-            return AudioUtils.LOWEST_DB;
         }
     }
 
