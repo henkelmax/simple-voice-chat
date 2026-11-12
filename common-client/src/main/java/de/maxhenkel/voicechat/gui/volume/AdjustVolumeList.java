@@ -1,8 +1,13 @@
 package de.maxhenkel.voicechat.gui.volume;
 
 import com.google.common.collect.Lists;
+import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
+import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
+import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.Util;
 
 import java.util.*;
 
@@ -11,14 +16,14 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
     protected AdjustVolumesScreen screen;
     protected final List<VolumeEntry> entries;
     protected String filter;
-    protected VolumeTab tab;
+    protected boolean showPlayers;
 
-    public AdjustVolumeList(int width, int height, int top, int itemSize, AdjustVolumesScreen screen, VolumeTab tab) {
+    public AdjustVolumeList(int width, int height, int top, int itemSize, AdjustVolumesScreen screen) {
         super(width, height, top, itemSize);
         this.screen = screen;
         this.entries = Lists.newArrayList();
         this.filter = "";
-        this.tab = tab;
+        this.showPlayers = true;
         updateEntryList();
     }
 
@@ -30,8 +35,48 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
 
     public void updateEntryList() {
         entries.clear();
-        entries.addAll(tab.createEntries(screen));
+        if (showPlayers) {
+            addPlayers();
+        } else {
+            addOther();
+        }
         updateFilter();
+    }
+
+    private void addPlayers() {
+        Collection<PlayerState> onlinePlayers = ClientManager.getPlayerStateManager().getPlayerStates(false);
+        for (PlayerState state : onlinePlayers) {
+            entries.add(new PlayerVolumeEntry(state, screen));
+        }
+        if (VoicechatClient.CLIENT_CONFIG.offlinePlayerVolumeAdjustment.get()) {
+            addOfflinePlayers(onlinePlayers);
+        }
+    }
+
+    private void addOfflinePlayers(Collection<PlayerState> onlinePlayers) {
+        for (UUID uuid : VoicechatClient.PLAYER_VOLUME_CONFIG.getVolumes().keySet()) {
+            if (uuid.equals(Util.NIL_UUID)) {
+                continue;
+            }
+            if (onlinePlayers.stream().anyMatch(state -> uuid.equals(state.getUuid()))) {
+                continue;
+            }
+
+            String name = VoicechatClient.USERNAME_CACHE.getUsername(uuid);
+
+            if (name == null) {
+                continue;
+            }
+
+            entries.add(new PlayerVolumeEntry(new PlayerState(uuid, name, false, false, true), screen));
+        }
+    }
+
+    private void addOther() {
+        entries.add(new PlayerVolumeEntry(null, screen));
+        for (VolumeCategoryImpl category : ClientManager.getCategoryManager().getCategories()) {
+            entries.add(new CategoryVolumeEntry(category, screen));
+        }
     }
 
     public void updateFilter() {
@@ -65,14 +110,14 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
         updateFilter();
     }
 
-    public void setTab(VolumeTab tab) {
-        this.tab = tab;
+    public void setShowPlayers(boolean showPlayers) {
+        this.showPlayers = showPlayers;
         updateEntryList();
         setScrollAmount(0D);
     }
 
-    public VolumeTab getTab() {
-        return tab;
+    public boolean isShowingPlayers() {
+        return showPlayers;
     }
 
     public boolean isEmpty() {
