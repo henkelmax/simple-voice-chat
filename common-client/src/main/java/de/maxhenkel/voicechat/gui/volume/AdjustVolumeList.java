@@ -29,9 +29,12 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
     }
 
     public static void update() {
-        if (Minecraft.getMinecraft().currentScreen instanceof AdjustVolumesScreen) {
-            ((AdjustVolumesScreen) Minecraft.getMinecraft().currentScreen).volumeList.updateEntryList();
-        }
+        Minecraft minecraft = Minecraft.getMinecraft();
+        minecraft.addScheduledTask(() -> {
+            if (minecraft.currentScreen instanceof AdjustVolumesScreen) {
+                ((AdjustVolumesScreen) minecraft.currentScreen).volumeList.updateEntryList();
+            }
+        });
     }
 
     public void updateEntryList() {
