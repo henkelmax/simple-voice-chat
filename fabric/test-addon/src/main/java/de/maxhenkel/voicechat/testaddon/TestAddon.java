@@ -36,22 +36,19 @@ public class TestAddon implements ModInitializer {
                     .then(Commands.literal("preventleavegroup").then(Commands.argument("target", EntityArgument.player()).executes(c -> toggle(c, PREVENT_LEAVE_GROUP, "preventLeaveGroup", uuid -> {}))))
                     .then(Commands.literal("preventcreategroup").then(Commands.argument("target", EntityArgument.player()).executes(c -> toggle(c, PREVENT_CREATE_GROUP, "preventCreateGroup", uuid -> {}))))
                     .then(Commands.literal("category").then(Commands.argument("id", StringArgumentType.word()).then(Commands.argument("name", StringArgumentType.string())
-                            .executes(c -> registerCategory(c, null, null))
-                            .then(Commands.argument("tab", StringArgumentType.word())
-                                    .executes(c -> registerCategory(c, StringArgumentType.getString(c, "tab"), null))
-                                    .then(Commands.argument("tabName", StringArgumentType.string())
-                                            .executes(c -> registerCategory(c, StringArgumentType.getString(c, "tab"), StringArgumentType.getString(c, "tabName")))
-                                    )
+                            .executes(c -> registerCategory(c, null))
+                            .then(Commands.argument("parent", StringArgumentType.word())
+                                    .executes(c -> registerCategory(c, StringArgumentType.getString(c, "parent")))
                             )
                     )))
             );
         });
     }
 
-    private static int registerCategory(CommandContext<CommandSourceStack> context, @Nullable String tab, @Nullable String tabName) {
+    private static int registerCategory(CommandContext<CommandSourceStack> context, @Nullable String parent) {
         String id = StringArgumentType.getString(context, "id");
         String name = StringArgumentType.getString(context, "name");
-        if (!TestVoicechatPlugin.registerVolumeCategory(id, name, tab, tabName)) {
+        if (!TestVoicechatPlugin.registerVolumeCategory(id, name, parent)) {
             context.getSource().sendFailure(new TextComponent("Failed to register category"));
             return 0;
         }
