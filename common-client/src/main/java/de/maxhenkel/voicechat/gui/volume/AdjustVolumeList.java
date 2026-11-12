@@ -7,6 +7,8 @@ import de.maxhenkel.voicechat.voice.client.ClientCategoryManager;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Util;
 
 import java.util.*;
@@ -14,6 +16,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
+
+    private static final int GROUP_LINE_COLOR = ARGB.color(255, 100, 100, 100);
 
     // Remember expanded categories and the selected tab for the whole session
     private static final Set<String> EXPANDED_CATEGORIES = new HashSet<>();
@@ -169,6 +173,19 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
 
     public boolean isEmpty() {
         return children().isEmpty();
+    }
+
+    @Override
+    protected void extractListItems(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+        List<VolumeEntry> entries = children();
+        for (int i = 1; i < entries.size(); i++) {
+            VolumeEntry entry = entries.get(i);
+            if (entry.indented) {
+                int lineTop = entries.get(i - 1).getContentBottom();
+                guiGraphics.fill(entry.getContentX(), lineTop, entry.getContentX() + VolumeEntry.CHILD_INDENT, entry.getContentBottom(), GROUP_LINE_COLOR);
+            }
+        }
+        super.extractListItems(guiGraphics, mouseX, mouseY, delta);
     }
 
     @Override
