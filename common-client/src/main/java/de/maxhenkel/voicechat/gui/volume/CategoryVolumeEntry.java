@@ -4,11 +4,13 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
-import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
+import de.maxhenkel.voicechat.voice.client.TalkCache;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
+
+import java.util.List;
 
 public class CategoryVolumeEntry extends VolumeEntry {
 
@@ -17,8 +19,8 @@ public class CategoryVolumeEntry extends VolumeEntry {
     protected final VolumeCategoryImpl category;
     protected final Identifier texture;
 
-    public CategoryVolumeEntry(VolumeCategoryImpl category, AdjustVolumesScreen screen, boolean indented, boolean offset) {
-        super(screen, new AdjustCategoryVolumeEntry(category.getId()), indented, offset);
+    public CategoryVolumeEntry(VolumeCategoryImpl category, List<VolumeCategoryImpl> children, AdjustVolumesScreen screen, boolean indented, boolean offset) {
+        super(screen, new AdjustCategoryVolumeEntry(category.getId(), children), indented, offset);
         this.category = category;
         this.texture = ClientManager.getCategoryManager().getTexture(category.getId(), OTHER_VOLUME_ICON_PATH);
     }
@@ -35,9 +37,15 @@ public class CategoryVolumeEntry extends VolumeEntry {
     public static class AdjustCategoryVolumeEntry implements AdjustVolumeSlider.AdjustVolumeEntry {
 
         private final String category;
+        private final List<VolumeCategoryImpl> children;
 
         public AdjustCategoryVolumeEntry(String category) {
+            this(category, List.of());
+        }
+
+        public AdjustCategoryVolumeEntry(String category, List<VolumeCategoryImpl> children) {
             this.category = category;
+            this.children = children;
         }
 
         @Override
@@ -52,17 +60,16 @@ public class CategoryVolumeEntry extends VolumeEntry {
         }
 
         @Override
-        public double getAudioLevel() {
-            ClientVoicechat client = ClientManager.getClient();
-            if (client == null) {
-                return AudioUtils.LOWEST_DB;
+        public double getAudioLevel(TalkCache talkCache) {
+            double audioLevel = getHeardAudioLevel(talkCache, category);
+            for (VolumeCategoryImpl child : children) {
+                audioLevel = Math.max(audioLevel, getHeardAudioLevel(talkCache, child.getId()));
             }
-            return client.getTalkCache().getCategoryAudioLevel(category);
+            return audioLevel;
         }
 
-        @Override
-        public double getEffectiveVolume() {
-            return ClientManager.getCategoryManager().getEffectiveVolume(category);
+        private static double getHeardAudioLevel(TalkCache talkCache, String category) {
+            return AudioUtils.applyVolume(talkCache.getCategoryAudioLevel(category), ClientManager.getCategoryManager().getEffectiveVolume(category));
         }
     }
 
