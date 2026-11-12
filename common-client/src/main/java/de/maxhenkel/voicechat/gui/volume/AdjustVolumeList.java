@@ -52,7 +52,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
         return players.stream()
                 .filter(player -> matchesFilter(player.getName()))
                 .sorted(Comparator.comparing(PlayerState::getName, String.CASE_INSENSITIVE_ORDER))
-                .<VolumeEntry>map(player -> new PlayerVolumeEntry(player, screen, false, false))
+                .<VolumeEntry>map(player -> new PlayerVolumeEntry(player, screen))
                 .collect(Collectors.toList());
     }
 
@@ -80,7 +80,7 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
     private List<VolumeEntry> createOtherEntries() {
         List<VolumeEntry> entries = new ArrayList<>();
         if (filter.isEmpty()) {
-            entries.add(new PlayerVolumeEntry(null, screen, false, true));
+            entries.add(new OtherVolumeEntry(screen));
         }
         getCategoryTree().forEach((category, children) -> {
             if (filter.isEmpty()) {
