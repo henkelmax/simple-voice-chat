@@ -6,55 +6,43 @@ import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
-import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.PlayerSkin;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class PlayerVolumeEntry extends VolumeEntry {
 
-    @Nullable
     protected final PlayerState state;
 
-    public PlayerVolumeEntry(@Nullable PlayerState state, AdjustVolumesScreen screen, boolean indented, boolean offset) {
-        super(screen, new AdjustPlayerVolumeEntry(state != null ? state.getUuid() : Util.NIL_UUID, state != null ? state.getName() : null), indented, offset);
+    public PlayerVolumeEntry(PlayerState state, AdjustVolumesScreen screen) {
+        super(screen, new AdjustPlayerVolumeEntry(state.getUuid(), state.getName()), false, false);
         this.state = state;
     }
 
     @Override
     public void renderElement(GuiGraphicsExtractor guiGraphics, int top, int left, int width, int height, boolean hovered, int skinX, int skinY, int textX, int textY) {
-        if (state != null) {
-            PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
-            guiGraphics.blit(GuiPipeline.TEXTURED, skin.body().texturePath(), skinX, skinY, 8, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
-            guiGraphics.blit(GuiPipeline.TEXTURED, skin.body().texturePath(), skinX, skinY, 40, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
-            renderScrollingString(guiGraphics, Component.literal(state.getName()), textX, textY);
-        } else {
-            guiGraphics.blitSprite(GuiPipeline.TEXTURED, OTHER_VOLUME_ICON, SKIN_SIZE, SKIN_SIZE, 0, 0, skinX, skinY, SKIN_SIZE, SKIN_SIZE);
-            renderScrollingString(guiGraphics, OTHER_VOLUME, textX, textY);
-            if (hovered) {
-                guiGraphics.setTooltipForNextFrame(minecraft.font, OTHER_VOLUME_DESCRIPTION, guiGraphics.mouseX(), guiGraphics.mouseY());
-            }
-        }
+        PlayerSkin skin = GameProfileUtils.getSkin(state.getUuid());
+        guiGraphics.blit(GuiPipeline.TEXTURED, skin.body().texturePath(), skinX, skinY, 8, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
+        guiGraphics.blit(GuiPipeline.TEXTURED, skin.body().texturePath(), skinX, skinY, 40, 8, SKIN_SIZE, SKIN_SIZE, 8, 8, 64, 64);
+        renderScrollingString(guiGraphics, Component.literal(state.getName()), textX, textY);
     }
 
     public static class AdjustPlayerVolumeEntry implements AdjustVolumeSlider.AdjustVolumeEntry {
 
         private final UUID playerUUID;
-        @Nullable
         private final String playerName;
 
-        public AdjustPlayerVolumeEntry(UUID playerUUID, @Nullable String playerName) {
+        public AdjustPlayerVolumeEntry(UUID playerUUID, String playerName) {
             this.playerUUID = playerUUID;
             this.playerName = playerName;
         }
 
         @Override
         public void save(double value) {
-            VoicechatClient.PLAYER_VOLUME_CONFIG.setVolume(playerUUID, value, playerName == null ? "All other volumes" : String.format("Volume of %s", playerName));
+            VoicechatClient.PLAYER_VOLUME_CONFIG.setVolume(playerUUID, value, String.format("Volume of %s", playerName));
             VoicechatClient.PLAYER_VOLUME_CONFIG.save();
         }
 
