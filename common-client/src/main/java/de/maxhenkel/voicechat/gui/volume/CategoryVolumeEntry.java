@@ -18,14 +18,10 @@ public class CategoryVolumeEntry extends VolumeEntry {
     protected final VolumeCategoryImpl category;
     protected final ResourceLocation texture;
 
-    public CategoryVolumeEntry(VolumeCategoryImpl category, AdjustVolumesScreen screen) {
-        super(screen, new AdjustCategoryVolumeEntry(category.getId()));
+    public CategoryVolumeEntry(VolumeCategoryImpl category, AdjustVolumesScreen screen, boolean indented, boolean offset) {
+        super(screen, new AdjustCategoryVolumeEntry(category.getId()), indented, offset);
         this.category = category;
         this.texture = ClientManager.getCategoryManager().getTexture(category.getId(), OTHER_VOLUME_ICON_PATH);
-    }
-
-    public VolumeCategoryImpl getCategory() {
-        return category;
     }
 
     @Override
