@@ -115,11 +115,11 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
 
     private void addExpandableCategory(List<VolumeEntry> entries, VolumeCategoryImpl category, List<VolumeCategoryImpl> children) {
         if (children.isEmpty()) {
-            entries.add(new CategoryVolumeEntry(category, screen, false, true));
+            entries.add(new CategoryVolumeEntry(category, children, screen, false, true));
             return;
         }
         boolean expanded = EXPANDED_CATEGORIES.contains(category.getId());
-        entries.add(new ExpandableCategoryVolumeEntry(category, screen, expanded, () -> toggleExpanded(category)));
+        entries.add(new ExpandableCategoryVolumeEntry(category, children, screen, expanded, () -> toggleExpanded(category)));
         if (expanded) {
             addChildren(entries, children);
         }
@@ -128,14 +128,14 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
     private void addMatchingCategory(List<VolumeEntry> entries, VolumeCategoryImpl category, List<VolumeCategoryImpl> children) {
         List<VolumeCategoryImpl> matchingChildren = children.stream().filter(child -> matchesFilter(child.getSearchName())).collect(Collectors.toList());
         if (matchesFilter(category.getSearchName()) || !matchingChildren.isEmpty()) {
-            entries.add(new CategoryVolumeEntry(category, screen, false, true));
+            entries.add(new CategoryVolumeEntry(category, children, screen, false, true));
             addChildren(entries, matchingChildren);
         }
     }
 
     private void addChildren(List<VolumeEntry> entries, List<VolumeCategoryImpl> children) {
         for (VolumeCategoryImpl child : children) {
-            entries.add(new CategoryVolumeEntry(child, screen, true, false));
+            entries.add(new CategoryVolumeEntry(child, Collections.emptyList(), screen, true, false));
         }
     }
 

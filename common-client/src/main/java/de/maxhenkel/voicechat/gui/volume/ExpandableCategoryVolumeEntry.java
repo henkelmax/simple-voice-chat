@@ -4,13 +4,15 @@ import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 
+import java.util.List;
+
 public class ExpandableCategoryVolumeEntry extends CategoryVolumeEntry {
 
     protected final boolean expanded;
     protected final Runnable onToggle;
 
-    public ExpandableCategoryVolumeEntry(VolumeCategoryImpl category, AdjustVolumesScreen screen, boolean expanded, Runnable onToggle) {
-        super(category, screen, false, true);
+    public ExpandableCategoryVolumeEntry(VolumeCategoryImpl category, List<VolumeCategoryImpl> children, AdjustVolumesScreen screen, boolean expanded, Runnable onToggle) {
+        super(category, children, screen, false, true);
         this.expanded = expanded;
         this.onToggle = onToggle;
     }
