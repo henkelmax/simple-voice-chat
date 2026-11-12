@@ -32,7 +32,7 @@ public class CategoryVolumeEntry extends VolumeEntry {
         }
     }
 
-    private static class AdjustCategoryVolumeEntry implements AdjustVolumeSlider.AdjustVolumeEntry {
+    public static class AdjustCategoryVolumeEntry implements AdjustVolumeSlider.AdjustVolumeEntry {
 
         private final String category;
 
