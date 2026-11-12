@@ -1,20 +1,12 @@
 package de.maxhenkel.voicechat.gui.volume;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
 public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
-
-    protected static final Component OTHER_VOLUME = new TranslatableComponent("message.voicechat.other_volume");
-    protected static final Component OTHER_VOLUME_DESCRIPTION = new TranslatableComponent("message.voicechat.other_volume.description");
-    protected static final ResourceLocation OTHER_VOLUME_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/other_volume.png");
 
     protected static final int SKIN_SIZE = 24;
     protected static final int PADDING = 4;
