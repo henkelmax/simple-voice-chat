@@ -14,6 +14,7 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
     protected static final int ARROW_SIZE = 6;
     protected static final int ARROW_SPACING = 1;
     protected static final int ARROW_COLUMN_WIDTH = ARROW_SPACING + ARROW_SIZE + ARROW_SPACING;
+    protected static final int CHILD_INDENT = ARROW_COLUMN_WIDTH - PADDING;
     protected static final int BG_FILL = ARGB.color(255, 74, 74, 74);
 
     protected final Minecraft minecraft;
@@ -33,7 +34,7 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
 
     @Override
     public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float delta) {
-        int indent = indented ? ARROW_COLUMN_WIDTH - PADDING : 0;
+        int indent = indented ? CHILD_INDENT : 0;
         int left = getContentX() + indent;
         int top = getContentY();
         int width = getContentWidth() - indent;
