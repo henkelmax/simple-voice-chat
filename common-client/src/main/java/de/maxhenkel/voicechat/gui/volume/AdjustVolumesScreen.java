@@ -65,9 +65,7 @@ public class AdjustVolumesScreen extends IngameListScreenBase {
 
         Keyboard.enableRepeatEvents(true);
 
-        boolean showPlayers = volumeList == null || volumeList.isShowingPlayers();
         volumeList = new AdjustVolumeList(width, units * UNIT_SIZE - SEARCH_HEIGHT, guiTop + HEADER_SIZE + SEARCH_HEIGHT, CELL_HEIGHT, this);
-        volumeList.setShowPlayers(showPlayers);
 
         String string = searchBox != null ? searchBox.getText() : "";
         searchBox = new GuiTextField(0, fontRenderer, guiLeft + 28, guiTop + HEADER_SIZE + 6, 196, SEARCH_HEIGHT);
