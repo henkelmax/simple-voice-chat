@@ -2,6 +2,9 @@ package de.maxhenkel.voicechat.gui.volume;
 
 import de.maxhenkel.voicechat.config.VolumeConfigBase;
 import de.maxhenkel.voicechat.gui.widgets.DebouncedSlider;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
+import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
+import de.maxhenkel.voicechat.voice.client.TalkCache;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -34,12 +37,15 @@ public class AdjustVolumeSlider extends DebouncedSlider {
     @Override
     public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         super.extractWidgetRenderState(guiGraphics, i, j, f);
-        double audioLevel = volumeConfigEntry.getAudioLevel();
+        ClientVoicechat client = ClientManager.getClient();
+        if (client == null) {
+            return;
+        }
+        double audioLevel = volumeConfigEntry.getAudioLevel(client.getTalkCache());
         if (audioLevel <= AudioUtils.LOWEST_DB) {
             return;
         }
-        double adjustedLevel = AudioUtils.linearToDb(volumeConfigEntry.getEffectiveVolume());
-        int barWidth = (int) ((double) getWidth() * AudioUtils.dbToPerc(audioLevel + adjustedLevel));
+        int barWidth = (int) ((double) getWidth() * AudioUtils.dbToPerc(audioLevel));
         double yellowPerc = AudioUtils.dbToPerc(YELLOW_DB);
         double redPerc = AudioUtils.dbToPerc(RED_DB);
         int greenWidth = (int) ((double) getWidth() * yellowPerc);
@@ -68,11 +74,7 @@ public class AdjustVolumeSlider extends DebouncedSlider {
 
         double get();
 
-        double getAudioLevel();
-
-        default double getEffectiveVolume() {
-            return get();
-        }
+        double getAudioLevel(TalkCache talkCache);
     }
 
 }

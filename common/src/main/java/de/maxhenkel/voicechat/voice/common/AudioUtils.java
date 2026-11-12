@@ -183,6 +183,18 @@ public class AudioUtils {
     }
 
     /**
+     * @param db         the audio level in dB
+     * @param multiplier the linear volume multiplier
+     * @return the audio level with the volume applied - silence stays at {@link AudioUtils#LOWEST_DB}
+     */
+    public static double applyVolume(double db, double multiplier) {
+        if (db <= LOWEST_DB) {
+            return LOWEST_DB;
+        }
+        return db + linearToDb(multiplier);
+    }
+
+    /**
      * @param samples   the audio samples
      * @param threshold the activation threshold
      * @return if the audio level was above the threshold
