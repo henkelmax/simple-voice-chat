@@ -63,6 +63,11 @@ public class CategoryVolumeEntry extends VolumeEntry {
             }
             return client.getTalkCache().getCategoryAudioLevel(category);
         }
+
+        @Override
+        public double getEffectiveVolume() {
+            return ClientManager.getCategoryManager().getEffectiveVolume(category);
+        }
     }
 
 }
