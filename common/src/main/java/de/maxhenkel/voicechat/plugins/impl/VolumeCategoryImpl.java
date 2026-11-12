@@ -26,18 +26,14 @@ public class VolumeCategoryImpl implements VolumeCategory {
     @Nullable
     private final int[][] icon;
     @Nullable
-    private final String tab;
-    @Nullable
-    private final String tabName;
-    @Nullable
-    private final String tabTranslationKey;
+    private final String parent;
 
-    public VolumeCategoryImpl(String id, String name, @Nullable String nameTranslationKey, @Nullable String description, @Nullable String descriptionTranslationKey, @Nullable int[][] icon, @Nullable String tab, @Nullable String tabName, @Nullable String tabTranslationKey) {
+    public VolumeCategoryImpl(String id, String name, @Nullable String nameTranslationKey, @Nullable String description, @Nullable String descriptionTranslationKey, @Nullable int[][] icon, @Nullable String parent) {
         if (!ID_REGEX.matcher(id).matches()) {
             throw new IllegalStateException("Volume category ID can only contain a-z and _ with a maximum amount of 16 characters");
         }
-        if (tab != null && !ID_REGEX.matcher(tab).matches()) {
-            throw new IllegalStateException("Volume category tab can only contain a-z and _ with a maximum amount of 16 characters");
+        if (parent != null && !ID_REGEX.matcher(parent).matches()) {
+            throw new IllegalStateException("Parent volume category can only contain a-z and _ with a maximum amount of 16 characters");
         }
         this.id = id;
         this.name = name;
@@ -45,9 +41,7 @@ public class VolumeCategoryImpl implements VolumeCategory {
         this.description = description;
         this.descriptionTranslationKey = descriptionTranslationKey;
         this.icon = icon;
-        this.tab = tab;
-        this.tabName = tabName;
-        this.tabTranslationKey = tabTranslationKey;
+        this.parent = parent;
     }
 
     @Override
@@ -112,36 +106,9 @@ public class VolumeCategoryImpl implements VolumeCategory {
         return icon;
     }
 
-    @Nullable
     @Override
-    public String getTab() {
-        return tab;
-    }
-
-    @Nullable
-    @Override
-    public String getTabName() {
-        return tabName;
-    }
-
-    /**
-     * @return the tab name or <code>null</code> if this category doesn't provide one, so the name of another category in the same tab or the tab ID can be used instead
-     */
-    @Nullable
-    public ITextComponent getTabDisplayName() {
-        if (tabTranslationKey != null) {
-            if (I18n.hasKey(tabTranslationKey)) {
-                return new TextComponentTranslation(tabTranslationKey);
-            }
-            return new TextComponentString(tabName != null ? tabName : tab);
-        }
-        return tabName != null ? new TextComponentString(tabName) : null;
-    }
-
-    @Nullable
-    @Override
-    public String getTabTranslationKey() {
-        return tabTranslationKey;
+    public @Nullable String getParent() {
+        return parent;
     }
 
     public static VolumeCategoryImpl fromBytes(PacketBuffer buf) {
@@ -159,10 +126,8 @@ public class VolumeCategoryImpl implements VolumeCategory {
                 }
             }
         }
-        String tab = readOptionalString(buf, 16);
-        String tabName = readOptionalString(buf, 16);
-        String tabTranslationKey = readOptionalString(buf, 256);
-        return new VolumeCategoryImpl(id, name, nameTranslationKey, description, descriptionTranslationKey, icon, tab, tabName, tabTranslationKey);
+        String parent = readOptionalString(buf, 16);
+        return new VolumeCategoryImpl(id, name, nameTranslationKey, description, descriptionTranslationKey, icon, parent);
     }
 
     @Nullable
@@ -187,9 +152,7 @@ public class VolumeCategoryImpl implements VolumeCategory {
                 }
             }
         }
-        writeOptionalString(buf, tab);
-        writeOptionalString(buf, tabName);
-        writeOptionalString(buf, tabTranslationKey);
+        writeOptionalString(buf, parent);
     }
 
     private static void writeOptionalString(PacketBuffer buf, @Nullable String string) {
@@ -229,11 +192,7 @@ public class VolumeCategoryImpl implements VolumeCategory {
         @Nullable
         private int[][] icon;
         @Nullable
-        private String tab;
-        @Nullable
-        private String tabName;
-        @Nullable
-        private String tabTranslationKey;
+        private String parent;
 
         @Override
         public Builder setId(String id) {
@@ -272,20 +231,8 @@ public class VolumeCategoryImpl implements VolumeCategory {
         }
 
         @Override
-        public Builder setTab(@Nullable String tab) {
-            this.tab = tab;
-            return this;
-        }
-
-        @Override
-        public Builder setTabName(@Nullable String tabName) {
-            this.tabName = tabName;
-            return this;
-        }
-
-        @Override
-        public Builder setTabTranslationKey(@Nullable String translationKey) {
-            this.tabTranslationKey = translationKey;
+        public Builder setParent(@Nullable String parent) {
+            this.parent = parent;
             return this;
         }
 
@@ -297,16 +244,16 @@ public class VolumeCategoryImpl implements VolumeCategory {
             if (name == null) {
                 throw new IllegalStateException("Name missing");
             }
+            checkLength(id, 16, "Id");
             checkLength(name, 16, "Name");
             checkLength(nameTranslationKey, 256, "Name translation key");
             checkLength(description, 256, "Description");
             checkLength(descriptionTranslationKey, 256, "Description translation key");
-            checkLength(tabName, 16, "Tab name");
-            checkLength(tabTranslationKey, 256, "Tab translation key");
+            checkLength(parent, 16, "Parent ID");
             if (icon != null && (icon.length != 16 || Arrays.stream(icon).anyMatch(row -> row.length != 16))) {
                 throw new IllegalStateException("Icon is not 16x16");
             }
-            return new VolumeCategoryImpl(id, name, nameTranslationKey, description, descriptionTranslationKey, icon, tab, tabName, tabTranslationKey);
+            return new VolumeCategoryImpl(id, name, nameTranslationKey, description, descriptionTranslationKey, icon, parent);
         }
 
         private static void checkLength(@Nullable String value, int maxLength, String name) {
