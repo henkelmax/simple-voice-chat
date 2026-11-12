@@ -2,6 +2,9 @@ package de.maxhenkel.voicechat.voice.client;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import de.maxhenkel.voicechat.Voicechat;
+import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.config.CategoryVolumeConfig;
+import de.maxhenkel.voicechat.config.VolumeConfigBase;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeList;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
 import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
@@ -51,6 +54,41 @@ public class ClientCategoryManager extends CategoryManager {
         unRegisterImage(categoryId);
         AdjustVolumeList.update();
         return volumeCategory;
+    }
+
+    @Nullable
+    public VolumeCategoryImpl getParent(String categoryId) {
+        return getParent(categoryId, categories);
+    }
+
+    @Nullable
+    public static VolumeCategoryImpl getParent(String categoryId, Map<String, VolumeCategoryImpl> categories) {
+        VolumeCategoryImpl category = categories.get(categoryId);
+        if (category == null || category.getParent() == null) {
+            return null;
+        }
+        VolumeCategoryImpl parent = categories.get(category.getParent());
+        if (parent == null || parent.getParent() != null) {
+            return null;
+        }
+        return parent;
+    }
+
+    public double getEffectiveVolume(String categoryId) {
+        double volume = getVolume(categoryId);
+        VolumeCategoryImpl parent = getParent(categoryId);
+        if (parent == null) {
+            return volume;
+        }
+        return Math.min(volume * getVolume(parent.getId()), VolumeConfigBase.MAX_VOLUME);
+    }
+
+    private static double getVolume(String categoryId) {
+        CategoryVolumeConfig config = VoicechatClient.CATEGORY_VOLUME_CONFIG;
+        if (config == null) {
+            return 1D;
+        }
+        return config.getVolume(categoryId);
     }
 
     public void clear() {
