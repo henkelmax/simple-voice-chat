@@ -15,6 +15,7 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
     protected static final int ARROW_SIZE = 6;
     protected static final int ARROW_SPACING = 1;
     protected static final int ARROW_COLUMN_WIDTH = ARROW_SPACING + ARROW_SIZE + ARROW_SPACING;
+    protected static final int CHILD_INDENT = ARROW_COLUMN_WIDTH - PADDING;
     protected static final int BG_FILL = FastColor.ARGB32.color(255, 74, 74, 74);
     protected static final int PLAYER_NAME_COLOR = FastColor.ARGB32.color(255, 255, 255, 255);
 
@@ -35,7 +36,7 @@ public abstract class VolumeEntry extends ListScreenEntryBase<VolumeEntry> {
 
     @Override
     public void render(GuiGraphics guiGraphics, int index, int top, int rowLeft, int rowWidth, int height, int mouseX, int mouseY, boolean hovered, float delta) {
-        int indent = indented ? ARROW_COLUMN_WIDTH - PADDING : 0;
+        int indent = indented ? CHILD_INDENT : 0;
         int left = rowLeft + indent;
         int width = rowWidth - indent;
         int skinX = left + (offset ? ARROW_COLUMN_WIDTH : PADDING);
