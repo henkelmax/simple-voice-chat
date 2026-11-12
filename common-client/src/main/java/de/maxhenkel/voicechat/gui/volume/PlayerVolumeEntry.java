@@ -4,8 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.maxhenkel.voicechat.VoicechatClient;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
-import de.maxhenkel.voicechat.voice.client.ClientManager;
-import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
+import de.maxhenkel.voicechat.voice.client.TalkCache;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.gui.AbstractGui;
@@ -53,12 +52,8 @@ public class PlayerVolumeEntry extends VolumeEntry {
         }
 
         @Override
-        public double getAudioLevel() {
-            ClientVoicechat client = ClientManager.getClient();
-            if (client == null) {
-                return AudioUtils.LOWEST_DB;
-            }
-            return client.getTalkCache().getPlayerAudioLevel(playerUUID);
+        public double getAudioLevel(TalkCache talkCache) {
+            return AudioUtils.applyVolume(talkCache.getPlayerAudioLevel(playerUUID), get());
         }
     }
 
