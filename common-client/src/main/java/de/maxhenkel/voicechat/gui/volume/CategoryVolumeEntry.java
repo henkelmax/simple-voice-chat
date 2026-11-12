@@ -17,20 +17,16 @@ public class CategoryVolumeEntry extends VolumeEntry {
     protected final VolumeCategoryImpl category;
     protected final Identifier texture;
 
-    public CategoryVolumeEntry(VolumeCategoryImpl category, AdjustVolumesScreen screen) {
-        super(screen, new AdjustCategoryVolumeEntry(category.getId()));
+    public CategoryVolumeEntry(VolumeCategoryImpl category, AdjustVolumesScreen screen, boolean indented, boolean offset) {
+        super(screen, new AdjustCategoryVolumeEntry(category.getId()), indented, offset);
         this.category = category;
         this.texture = ClientManager.getCategoryManager().getTexture(category.getId(), OTHER_VOLUME_ICON_PATH);
-    }
-
-    public VolumeCategoryImpl getCategory() {
-        return category;
     }
 
     @Override
     public void renderElement(GuiGraphicsExtractor guiGraphics, int top, int left, int width, int height, boolean hovered, int skinX, int skinY, int textX, int textY) {
         guiGraphics.blit(GuiPipeline.TEXTURED, texture, skinX, skinY, 16, 16, SKIN_SIZE, SKIN_SIZE, 16, 16, 16, 16);
-        renderScrollingString(guiGraphics, category.getDisplayName());
+        renderScrollingString(guiGraphics, category.getDisplayName(), textX, textY);
         if (hovered && category.getDescription() != null) {
             guiGraphics.setTooltipForNextFrame(minecraft.font, category.getDisplayDescription(), guiGraphics.mouseX(), guiGraphics.mouseY());
         }
