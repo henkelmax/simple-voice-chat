@@ -9,7 +9,7 @@
 - Show above other players if they are muted
 - Fixed onboarding volume testing bar being broken on wide screens
 - Separate players and other volumes into separate tabs in the adjust volumes screen
-- Allow the creation of custom volume tabs using the API
+- Allow nesting volume categories using the API
 - Improved voice chat initialization protocol to prevent potential attacks
 - Prevent incompatible clients from receiving/sending their states to the server
 - Allow addons to hide players from other players using the API
@@ -26,3 +26,4 @@
 - Fixed some systems breaking when the system time changes
 - Fixed recordings drift apart with real time
 - Fixed speaker icon flashing after stopping to whisper
+- Fixed "Other" volume category not working
