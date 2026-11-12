@@ -45,22 +45,10 @@ public interface VolumeCategory {
     int[][] getIcon();
 
     /**
-     * @return the ID of the tab this category is shown in or <code>null</code> if it is shown in the default tab
+     * @return the ID of the parent category
      */
     @Nullable
-    String getTab();
-
-    /**
-     * @return the name of the tab, that is displayed for the end user
-     */
-    @Nullable
-    String getTabName();
-
-    /**
-     * @return the translation key for the name of the tab
-     */
-    @Nullable
-    String getTabTranslationKey();
+    String getParent();
 
     public interface Builder {
 
@@ -114,39 +102,15 @@ public interface VolumeCategory {
         Builder setIcon(@Nullable int[][] icon);
 
         /**
-         * Categories with the same tab ID are shown in the same tab.
-         * Not providing a name/translation key will either fall back to the ID or another addons name.
-         * In case you are adding multiple categories in the same tab, you only need to provide a name/translation key once.
-         * This is also the case for other addons that use this ID.
-         * Use <code>players</code> to show the category in the player tab.
-         * Using <code>other</code> or leaving it <code>null</code>, shows it in the "Other" tab.
-         * This ID has to be between 1 and 16 characters and can only contain lowercase <code>a-z</code> and <code>_</code>.
          *
-         * @param tab the ID of the tab this category is shown in or <code>null</code> to show it in the default tab
+         * @param parent the ID of the parent category
          * @return the builder
          */
-        Builder setTab(@Nullable String tab);
-
-        /**
-         * If no category in the tab provides a name, the tab ID is displayed.
-         * Can't be longer than 16 characters.
-         *
-         * @param tabName the name of the tab, that is displayed for the end user if no translation is present
-         * @return the builder
-         */
-        Builder setTabName(@Nullable String tabName);
-
-        /**
-         * Can't be longer than 256 characters.
-         *
-         * @param translationKey the translation key for the name of the tab
-         * @return the builder
-         */
-        Builder setTabTranslationKey(@Nullable String translationKey);
+        Builder setParent(@Nullable String parent);
 
         /**
          * @return the built category
-         * @throws IllegalStateException if the ID or name is not set, the ID or tab is invalid, a string is too long or the icon is not 16x16
+         * @throws IllegalStateException if the ID or name is not set, the ID or parent is invalid, a string is too long or the icon is not 16x16
          */
         VolumeCategory build();
 
