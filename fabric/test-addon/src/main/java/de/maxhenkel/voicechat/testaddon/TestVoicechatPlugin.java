@@ -31,15 +31,14 @@ public class TestVoicechatPlugin implements VoicechatPlugin {
         registration.registerEvent(CreateGroupEvent.class, this::onCreateGroup);
     }
 
-    public static boolean registerVolumeCategory(String id, String name, @Nullable String tab, @Nullable String tabName) {
+    public static boolean registerVolumeCategory(String id, String name, @Nullable String parent) {
         if (serverApi == null) {
             return false;
         }
         serverApi.registerVolumeCategory(serverApi.volumeCategoryBuilder()
                 .setId(id)
                 .setName(name)
-                .setTab(tab)
-                .setTabName(tabName)
+                .setParent(parent)
                 .build());
         return true;
     }
