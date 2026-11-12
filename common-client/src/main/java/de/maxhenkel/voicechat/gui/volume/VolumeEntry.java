@@ -1,19 +1,11 @@
 package de.maxhenkel.voicechat.gui.volume;
 
-import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
 
 public abstract class VolumeEntry extends ListScreenEntryBase {
-
-    protected static final ITextComponent OTHER_VOLUME = new TextComponentTranslation("message.voicechat.other_volume");
-    protected static final ITextComponent OTHER_VOLUME_DESCRIPTION = new TextComponentTranslation("message.voicechat.other_volume.description");
-    protected static final ResourceLocation OTHER_VOLUME_ICON = new ResourceLocation(Voicechat.MODID, "textures/icons/other_volume.png");
 
     protected static final int SKIN_SIZE = 24;
     protected static final int PADDING = 4;
