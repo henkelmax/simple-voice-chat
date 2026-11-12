@@ -1,18 +1,22 @@
 package de.maxhenkel.voicechat.gui.volume;
 
 import de.maxhenkel.voicechat.VoicechatClient;
+import de.maxhenkel.voicechat.gui.VoiceChatScreenBase;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenListBase;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
 import de.maxhenkel.voicechat.voice.client.ClientCategoryManager;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
+
+    private static final int GROUP_LINE_COLOR = VoiceChatScreenBase.color(255, 100, 100, 100);
 
     // Remember expanded categories and the selected tab for the whole session
     private static final Set<String> EXPANDED_CATEGORIES = new HashSet<>();
@@ -168,6 +172,19 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
 
     public boolean isEmpty() {
         return children().isEmpty();
+    }
+
+    @Override
+    protected void drawSelectionBox(int insideLeft, int insideTop, int mouseX, int mouseY, float partialTicks) {
+        List<VolumeEntry> entries = children();
+        for (int i = 1; i < entries.size(); i++) {
+            VolumeEntry entry = entries.get(i);
+            if (entry.indented) {
+                int lineTop = insideTop + (i - 1) * slotHeight + headerPadding + slotHeight - 4;
+                GuiScreen.drawRect(insideLeft, lineTop, insideLeft + VolumeEntry.CHILD_INDENT, insideTop + i * slotHeight + headerPadding + slotHeight - 4, GROUP_LINE_COLOR);
+            }
+        }
+        super.drawSelectionBox(insideLeft, insideTop, mouseX, mouseY, partialTicks);
     }
 
 }
