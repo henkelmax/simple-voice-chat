@@ -102,6 +102,12 @@ public interface VolumeCategory {
         Builder setIcon(@Nullable int[][] icon);
 
         /**
+         * Nests this category below the provided parent category.
+         * <br>
+         * This makes the volume dependent on its parent - For example when the parent is at 50% will also halve the volume of this category.
+         * <br>
+         * <br>
+         * <b>NOTE</b>: Only one level of nesting is allowed. Deeper nesting will result in undefined behavior!
          *
          * @param parent the ID of the parent category
          * @return the builder
