@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
 
-    private static final int GROUP_LINE_COLOR = ColorHelper.PackedColor.color(255, 100, 100, 100);
+    private static final int GROUP_LINE_COLOR = ColorHelper.PackedColor.color(255, 160, 160, 160);
 
     // Remember expanded categories and the selected tab for the whole session
     private static final Set<String> EXPANDED_CATEGORIES = new HashSet<>();
