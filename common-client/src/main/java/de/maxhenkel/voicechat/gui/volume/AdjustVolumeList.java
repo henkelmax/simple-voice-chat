@@ -30,9 +30,12 @@ public class AdjustVolumeList extends ListScreenListBase<VolumeEntry> {
     }
 
     public static void update() {
-        if (Minecraft.getInstance().gui.screen() instanceof AdjustVolumesScreen volumesScreen) {
-            volumesScreen.volumeList.updateEntryList();
-        }
+        Minecraft minecraft = Minecraft.getInstance();
+        minecraft.execute(() -> {
+            if (minecraft.gui.screen() instanceof AdjustVolumesScreen volumesScreen) {
+                volumesScreen.volumeList.updateEntryList();
+            }
+        });
     }
 
     public void updateEntryList() {
