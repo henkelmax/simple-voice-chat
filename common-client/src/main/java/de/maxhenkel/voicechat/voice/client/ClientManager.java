@@ -16,16 +16,12 @@ import de.maxhenkel.voicechat.net.SecretPacket;
 import de.maxhenkel.voicechat.voice.client.camera.CameraState;
 import de.maxhenkel.voicechat.voice.client.camera.CameraTracker;
 import de.maxhenkel.voicechat.voice.server.Server;
-import io.netty.channel.local.LocalAddress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
 public class ClientManager {
@@ -94,25 +90,17 @@ public class ClientManager {
         if (connection != null) {
             try {
                 SocketAddress socketAddress = ClientCompatibilityManager.INSTANCE.getSocketAddress(connection.getConnection());
-                client.connect(new InitializationData(resolveAddress(socketAddress), secretPacket));
+                ClientVoicechat currentClient = client;
+                InitializationData.create(socketAddress, minecraft.getCurrentServer(), secretPacket).thenAcceptAsync(data -> {
+                    if (client != currentClient) {
+                        return;
+                    }
+                    currentClient.connect(data);
+                }, minecraft);
             } catch (Exception e) {
                 Voicechat.LOGGER.error("Failed to connect to voice chat server", e);
             }
         }
-    }
-
-    private static String resolveAddress(SocketAddress socketAddress) throws IOException {
-        if (socketAddress instanceof LocalAddress) {
-            return "127.0.0.1";
-        }
-        if (!(socketAddress instanceof InetSocketAddress address)) {
-            throw new IOException(String.format("Failed to determine server address with SocketAddress of type %s", socketAddress.getClass().getSimpleName()));
-        }
-        InetAddress inetAddress = address.getAddress();
-        if (inetAddress == null) {
-            return address.getHostString();
-        }
-        return inetAddress.getHostAddress();
     }
 
     private void onJoinWorld() {
