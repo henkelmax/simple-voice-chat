@@ -83,9 +83,6 @@ public class ClientManager {
             ClientNativeManager.onJoinWorld();
         }
         playerStateManager.syncOwnState();
-        if (client.getConnection() != null) {
-            ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
-        }
         ClientPacketListener connection = minecraft.getConnection();
         if (connection != null) {
             try {
@@ -94,6 +91,9 @@ public class ClientManager {
                 InitializationData.create(socketAddress, minecraft.getCurrentServer(), secretPacket).thenAcceptAsync(data -> {
                     if (client != currentClient) {
                         return;
+                    }
+                    if (currentClient.getConnection() != null) {
+                        ClientCompatibilityManager.INSTANCE.emitVoiceChatDisconnectedEvent();
                     }
                     currentClient.connect(data);
                 }, minecraft);
