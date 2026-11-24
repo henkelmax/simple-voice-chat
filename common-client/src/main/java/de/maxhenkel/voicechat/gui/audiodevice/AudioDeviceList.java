@@ -42,7 +42,7 @@ public abstract class AudioDeviceList extends ListScreenListBase<AudioDeviceEntr
             return false;
         }
         if (!isSelected(entry.getDevice())) {
-            minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F));
+            minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F, 1F));
             onSelect(entry);
             return true;
         }
