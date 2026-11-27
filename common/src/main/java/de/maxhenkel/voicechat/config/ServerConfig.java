@@ -30,6 +30,7 @@ public class ServerConfig {
     public ConfigEntry<Boolean> allowPings;
     public ConfigEntry<Boolean> useNatives;
     public ConfigEntry<Boolean> threadedServerSupport;
+    public ConfigEntry<Boolean> backwardsCompatibility;
 
     public ServerConfig(ConfigBuilder builder, Voicechat.Loader loader) {
 
@@ -136,6 +137,12 @@ public class ServerConfig {
                 .booleanEntry("threaded_server_support", Voicechat.Loader.PAPER.equals(loader),
                         "If the voice chat should support servers that run multiple threads, like Folia",
                         "Disabling this may slightly improve performance, but can cause issues on servers that don't run everything on a single thread"
+                );
+        backwardsCompatibility = builder
+                .booleanEntry("backwards_compatibility", false,
+                        "Allows clients with version 2.5.x and 2.6.x to connect to the server",
+                        "Enable this option at your own risk!",
+                        "This will make the server vulnerable to exploits that exist in these older versions!"
                 );
     }
 
