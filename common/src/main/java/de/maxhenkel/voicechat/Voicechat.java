@@ -37,11 +37,12 @@ public abstract class Voicechat {
         }
 
         LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
-        if (LegacyCompatibility.isEnabled()) {
-            LOGGER.warn("Legacy compatibility enabled - This is an experimental option and makes voice chat less secure - Use at your own risk!");
-        }
 
         initializeConfigs();
+
+        if (LegacyCompatibility.isEnabled()) {
+            LOGGER.warn("Backwards compatibility enabled - This is an experimental option and makes voice chat less secure - Use at your own risk!");
+        }
 
         CommonCompatibilityManager.INSTANCE.getNetManager().init();
         SERVER = new ServerVoiceEvents();
