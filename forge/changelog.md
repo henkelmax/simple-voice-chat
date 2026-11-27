@@ -29,3 +29,4 @@
 - Fixed recordings drift apart with real time
 - Fixed speaker icon flashing after stopping to whisper
 - Fixed "Other" volume category not working
+- Added `backwards_compatibility` config option
