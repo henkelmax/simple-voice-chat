@@ -26,7 +26,7 @@ public class LegacyCompatibility {
     }
 
     public static boolean isEnabled() {
-        return System.getProperty("voicechat.legacy") != null;
+        return Voicechat.SERVER_CONFIG.backwardsCompatibility.get();
     }
 
     public static boolean isSupported(int compatibilityVersion) {
