@@ -72,12 +72,13 @@ public final class Voicechat extends JavaPlugin {
         }
 
         LOGGER.info("Compatibility version {}", COMPATIBILITY_VERSION);
-        if (LegacyCompatibility.isEnabled()) {
-            LOGGER.warn("Legacy compatibility enabled - This is an experimental option and makes voice chat less secure - Use at your own risk!");
-        }
 
         SERVER_CONFIG = ConfigBuilder.builder(ServerConfig::new).path(getDataFolder().toPath().resolve("voicechat-server.properties")).build();
         TRANSLATIONS = ConfigBuilder.builder(Translations::new).path(getDataFolder().toPath().resolve("translations.properties")).build();
+
+        if (LegacyCompatibility.isEnabled()) {
+            LOGGER.warn("Backwards compatibility enabled - This is an experimental option and makes voice chat less secure - Use at your own risk!");
+        }
 
         netManager = new NetManager();
         netManager.onEnable();
